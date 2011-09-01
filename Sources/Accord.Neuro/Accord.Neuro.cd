@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Accord.Neuro.Learning.LevenbergMarquardtLearning" BaseTypeListCollapsed="true">
+    <Position X="3.75" Y="1" Width="3.25" />
+    <Members>
+      <Method Name="CalculateDerivatives" Hidden="true" />
+      <Method Name="CalculateError" Hidden="true" />
+      <Method Name="ComputeDerivative" Hidden="true" />
+      <Method Name="createCoefficients" Hidden="true" />
+      <Method Name="CreateWeights" Hidden="true" />
+      <Method Name="getNumberOfParameters" Hidden="true" />
+      <Method Name="JacobianByChainRule" Hidden="true" />
+      <Method Name="JacobianByFiniteDifference" Hidden="true" />
+      <Method Name="UpdateWeights" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Private" Collapsed="true" />
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAEAAiAIAAIAACAASAEAJABARAYIAbiCBDAQQmAQAAo=</HashCode>
+      <FileName>Learning\LevenbergMarquardtLearning.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Accord.Neuro.NguyenWidrowInitializer">
+    <Position X="0.75" Y="1" Width="2" />
+    <Compartments>
+      <Compartment Name="Private" Collapsed="true" />
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAAAAAAAAABACAAAAAAAAABAAAAAAAAAA=</HashCode>
+      <FileName>NguyenWidrowInitializer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="Accord.Neuro.Learning.JacobianMethod">
+    <Position X="0.75" Y="3" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAIAAA=</HashCode>
+      <FileName>Learning\LevenbergMarquardtLearning.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
