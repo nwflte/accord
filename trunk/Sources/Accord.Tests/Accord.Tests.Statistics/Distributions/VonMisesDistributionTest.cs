@@ -1,0 +1,109 @@
+﻿// Accord Unit Tests
+// The Accord.NET Framework
+// http://accord-net.origo.ethz.ch
+//
+// Copyright © César Souza, 2009-2011
+// cesarsouza at gmail.com
+//
+//    This library is free software; you can redistribute it and/or
+//    modify it under the terms of the GNU Lesser General Public
+//    License as published by the Free Software Foundation; either
+//    version 2.1 of the License, or (at your option) any later version.
+//
+//    This library is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+//    Lesser General Public License for more details.
+//
+//    You should have received a copy of the GNU Lesser General Public
+//    License along with this library; if not, write to the Free Software
+//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+//
+
+using Accord.Statistics.Distributions.Univariate;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+namespace Accord.Tests.Statistics
+{
+
+
+    /// <summary>
+    ///This is a test class for NormalDistributionTest and is intended
+    ///to contain all NormalDistributionTest Unit Tests
+    ///</summary>
+    [TestClass()]
+    public class VonMisesDistributionTest
+    {
+
+
+        private TestContext testContextInstance;
+
+        /// <summary>
+        ///Gets or sets the test context which provides
+        ///information about and functionality for the current test run.
+        ///</summary>
+        public TestContext TestContext
+        {
+            get
+            {
+                return testContextInstance;
+            }
+            set
+            {
+                testContextInstance = value;
+            }
+        }
+
+        #region Additional test attributes
+        // 
+        //You can use the following additional attributes as you write your tests:
+        //
+        //Use ClassInitialize to run code before running the first test in the class
+        //[ClassInitialize()]
+        //public static void MyClassInitialize(TestContext testContext)
+        //{
+        //}
+        //
+        //Use ClassCleanup to run code after all tests in a class have run
+        //[ClassCleanup()]
+        //public static void MyClassCleanup()
+        //{
+        //}
+        //
+        //Use TestInitialize to run code before running each test
+        //[TestInitialize()]
+        //public void MyTestInitialize()
+        //{
+        //}
+        //
+        //Use TestCleanup to run code after each test has run
+        //[TestCleanup()]
+        //public void MyTestCleanup()
+        //{
+        //}
+        //
+        #endregion
+
+
+        /// <summary>
+        ///A test for Fit
+        ///</summary>
+        [TestMethod()]
+        public void FitTest()
+        {
+            double[] angles = 
+            {
+               2.537498, 0.780449, 3.246623, 1.835845, 1.525273,
+               2.821987, 1.783134, 1.165753, 3.298262, 2.941366,
+               2.485515, 2.090029, 2.460631, 2.804243, 1.626327,
+            };
+
+
+            var distribution = VonMisesDistribution.Estimate(angles);
+
+            Assert.AreEqual(2.411822, distribution.Concentration, 1e-6);
+            Assert.AreEqual(2.249981, distribution.Mean, 1e-6);
+
+            Assert.AreEqual(0.2441525, distribution.Variance, 1e-3);
+        }
+    }
+}

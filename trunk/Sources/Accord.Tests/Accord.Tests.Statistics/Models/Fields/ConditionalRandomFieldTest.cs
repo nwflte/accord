@@ -1,0 +1,234 @@
+﻿// Accord Unit Tests
+// The Accord.NET Framework
+// http://accord-net.origo.ethz.ch
+//
+// Copyright © César Souza, 2009-2011
+// cesarsouza at gmail.com
+//
+//    This library is free software; you can redistribute it and/or
+//    modify it under the terms of the GNU Lesser General Public
+//    License as published by the Free Software Foundation; either
+//    version 2.1 of the License, or (at your option) any later version.
+//
+//    This library is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+//    Lesser General Public License for more details.
+//
+//    You should have received a copy of the GNU Lesser General Public
+//    License along with this library; if not, write to the Free Software
+//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+//
+
+using Accord.Statistics.Models.Fields;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Accord.Statistics.Models.Fields.Functions;
+using Accord.Statistics.Models.Markov;
+using Accord.Statistics.Models.Markov.Learning;
+using Accord.Math;
+using Accord.Statistics.Models.Markov.Topology;
+
+namespace Accord.Tests.Statistics
+{
+
+
+    /// <summary>
+    ///This is a test class for ConditionalRandomFieldTest and is intended
+    ///to contain all ConditionalRandomFieldTest Unit Tests
+    ///</summary>
+    [TestClass()]
+    public class ConditionalRandomFieldTest
+    {
+
+
+        private TestContext testContextInstance;
+
+        /// <summary>
+        ///Gets or sets the test context which provides
+        ///information about and functionality for the current test run.
+        ///</summary>
+        public TestContext TestContext
+        {
+            get
+            {
+                return testContextInstance;
+            }
+            set
+            {
+                testContextInstance = value;
+            }
+        }
+
+        #region Additional test attributes
+        // 
+        //You can use the following additional attributes as you write your tests:
+        //
+        //Use ClassInitialize to run code before running the first test in the class
+        //[ClassInitialize()]
+        //public static void MyClassInitialize(TestContext testContext)
+        //{
+        //}
+        //
+        //Use ClassCleanup to run code after all tests in a class have run
+        //[ClassCleanup()]
+        //public static void MyClassCleanup()
+        //{
+        //}
+        //
+        //Use TestInitialize to run code before running each test
+        //[TestInitialize()]
+        //public void MyTestInitialize()
+        //{
+        //}
+        //
+        //Use TestCleanup to run code after each test has run
+        //[TestCleanup()]
+        //public void MyTestCleanup()
+        //{
+        //}
+        //
+        #endregion
+
+        private static HiddenMarkovModel trainHMM()
+        {
+            int states = 3;
+            int symbols = 3;
+
+            int[][] sequences = new int[][] 
+            {
+                new int[] { 0, 1, 1, 1, 2 },
+                new int[] { 0, 1, 1, 1, 2, 2, 2 },
+                new int[] { 0, 0, 1, 1, 2, 2 },
+                new int[] { 0, 1, 1, 1, 2, 2, 2 },
+                new int[] { 0, 1, 1, 1, 2, 1 },
+                new int[] { 0, 1, 1, 2, 2 },
+                new int[] { 0, 0, 1, 1, 1, 2, 1 },
+                new int[] { 0, 0, 0, 1, 1, 1, 2, 1 },
+                new int[] { 0, 1, 1, 2, 2, 2 },
+            };
+
+            HiddenMarkovModel hmm = new HiddenMarkovModel(new Forward(states), symbols);
+
+            var teacher = new BaumWelchLearning(hmm) { Iterations = 100, Tolerance = 0 };
+
+            double ll = teacher.Run(sequences);
+
+            return hmm;
+        }
+
+        private static HiddenMarkovModel createHMM()
+        {
+            double[] initial = { 1.0, 0.0 };
+
+            double[,] transitions = 
+            {
+                { 0.33, 0.66 },
+                { 0.00, 1.00 },
+
+            };
+
+            double[,] emissions =
+            {
+                { 0.25, 0.25, 0.50 },
+                { 0.05, 0.05, 0.90 }
+            };
+
+            HiddenMarkovModel model = new HiddenMarkovModel(transitions, emissions, initial);
+            return model;
+        }
+
+
+        /// <summary>
+        ///A test for ConditionalRandomField Constructor
+        ///</summary>
+        [TestMethod()]
+        public void ConditionalRandomFieldConstructorTest()
+        {
+            HiddenMarkovModel hmm = createHMM();
+
+            int states = 2;
+            IPotentialFunction function = new HiddenMarkovModelPotentialFunction(hmm);
+            ConditionalRandomField target = new ConditionalRandomField(states, function);
+
+
+            Assert.AreEqual(function, target.Function);
+            Assert.AreEqual(2, target.States);
+        }
+
+        /// <summary>
+        ///A test for Compute
+        ///</summary>
+        [TestMethod()]
+        public void ComputeTest()
+        {
+
+            HiddenMarkovModel hmm = trainHMM();
+
+            int states = hmm.States;
+
+
+            IPotentialFunction function = new HiddenMarkovModelPotentialFunction(hmm);
+            ConditionalRandomField target = new ConditionalRandomField(states, function);
+            double p1, p2;
+
+            int[] observations, expected, actual;
+
+            observations = new int[] { 0, 0, 1, 1, 1, 2 };
+            expected = hmm.Decode(observations, out p1);
+            actual = target.Compute(observations, out p2);
+
+            Assert.IsTrue(expected.IsEqual(actual));
+            Assert.AreEqual(p1, p2, 1e-6);
+
+
+            observations = new int[] { 0, 1, 2, 2, 2 };
+            expected = hmm.Decode(observations, out p1);
+            actual = target.Compute(observations, out p2);
+
+            Assert.IsTrue(expected.IsEqual(actual));
+            Assert.AreEqual(p1, p2, 1e-6);
+        }
+
+        /// <summary>
+        ///A test for Likelihood
+        ///</summary>
+        [TestMethod()]
+        public void LikelihoodTest()
+        {
+            HiddenMarkovModel hmm = trainHMM();
+
+            int states = hmm.States;
+            int symbols = hmm.Symbols;
+
+
+            IPotentialFunction function1 = new HiddenMarkovModelPotentialFunction(hmm);
+            ConditionalRandomField target1 = new ConditionalRandomField(states, function1);
+
+            IPotentialFunction function2 = new HiddenMarkovModelPotentialFunction(states, symbols);
+            ConditionalRandomField target2 = new ConditionalRandomField(states, function2);
+
+
+            int[] observations;
+
+            double a, b, la, lb;
+
+            observations = new int[] { 0, 0, 1, 1, 1, 2 };
+            a = target1.Likelihood(observations, observations);
+            b = target2.Likelihood(observations, observations);
+            Assert.IsTrue(a > b);
+
+            observations = new int[] { 0, 0, 1, 1, 1, 2 };
+            la = target1.LogLikelihood(observations, observations);
+            lb = target2.LogLikelihood(observations, observations);
+            Assert.IsTrue(la > lb);
+
+            double lla = System.Math.Log(a);
+            double llb = System.Math.Log(b);
+
+            Assert.AreEqual(lla, la, 1e-6);
+            Assert.AreEqual(llb, lb, 1e-6);
+        }
+
+      
+    }
+}
