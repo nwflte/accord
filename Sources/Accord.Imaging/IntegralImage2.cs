@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -25,6 +25,7 @@ namespace Accord.Imaging
     using System;
     using System.Drawing;
     using System.Drawing.Imaging;
+    using System.Runtime.InteropServices;
     using AForge.Imaging;
 
     /// <summary>
@@ -38,16 +39,29 @@ namespace Accord.Imaging
     ///   computed using a specified color channel. This avoids costly conversions.
     /// </remarks>
     /// 
-    public class IntegralImage2
+    public unsafe class IntegralImage2 : IDisposable
     {
-        // TODO: Check the use of pointers for those matrix images with a profiler.
 
-        private int[,] iiSum = null;  // normal  integral image
-        private int[,] iiSquareSum = null; // squared integral image
-        private int[,] iiTiltedSum = null; // tilted  integral image
+        private int[,] nSumImage; // normal  integral image
+        private int[,] sSumImage; // squared integral image
+        private int[,] tSumImage; // tilted  integral image
+
+        private int* nSum; // normal  integral image
+        private int* sSum; // squared integral image
+        private int* tSum; // tilted  integral image
+
+        private GCHandle nSumHandle;
+        private GCHandle sSumHandle;
+        private GCHandle tSumHandle;
 
         private int width;
         private int height;
+
+        private int nWidth;
+        private int nHeight;
+
+        private int tWidth;
+        private int tHeight;
 
 
         /// <summary>
@@ -74,7 +88,7 @@ namespace Accord.Imaging
         /// 
         public int[,] Image
         {
-            get { return iiSum; }
+            get { return nSumImage; }
         }
 
         /// <summary>
@@ -83,7 +97,7 @@ namespace Accord.Imaging
         /// 
         public int[,] Squared
         {
-            get { return iiSquareSum; }
+            get { return sSumImage; }
         }
 
         /// <summary>
@@ -92,7 +106,7 @@ namespace Accord.Imaging
         /// 
         public int[,] Rotated
         {
-            get { return iiTiltedSum; }
+            get { return tSumImage; }
         }
 
         /// <summary>
@@ -103,11 +117,27 @@ namespace Accord.Imaging
         {
             this.width = width;
             this.height = height;
-            iiSum = new int[height + 1, width + 1];
-            iiSquareSum = new int[height + 1, width + 1];
+
+            this.nWidth = width + 1;
+            this.nHeight = height + 1;
+
+            this.tWidth = width + 2;
+            this.tHeight = height + 2;
+
+            this.nSumImage = new int[nHeight, nWidth];
+            this.nSumHandle = GCHandle.Alloc(nSumImage, GCHandleType.Pinned);
+            this.nSum = (int*)nSumHandle.AddrOfPinnedObject().ToPointer();
+
+            this.sSumImage = new int[nHeight, nWidth];
+            this.sSumHandle = GCHandle.Alloc(sSumImage, GCHandleType.Pinned);
+            this.sSum = (int*)sSumHandle.AddrOfPinnedObject().ToPointer();
 
             if (computeTilted)
-                iiTiltedSum = new int[height + 2, width + 2];
+            {
+                this.tSumImage = new int[tHeight, tWidth];
+                this.tSumHandle = GCHandle.Alloc(tSumImage, GCHandleType.Pinned);
+                this.tSum = (int*)tSumHandle.AddrOfPinnedObject().ToPointer();
+            }
         }
 
         /// <summary>
@@ -179,7 +209,8 @@ namespace Accord.Imaging
         ///   Constructs a new Integral image from an unmanaged image.
         /// </summary>
         /// 
-        public static IntegralImage2 FromBitmap(UnmanagedImage image, int channel, bool computeTilted/*, TODO: Rectangle roi*/)
+        public static IntegralImage2 FromBitmap(UnmanagedImage image, int channel, bool computeTilted
+            /*, TODO: Rectangle roi*/)
         {
 
             // check image format
@@ -200,64 +231,108 @@ namespace Accord.Imaging
 
             // create integral image
             IntegralImage2 im = new IntegralImage2(width, height, computeTilted);
-            int[,] ii1 = im.iiSum;
-            int[,] ii2 = im.iiSquareSum;
-            int[,] iit = im.iiTiltedSum;
+            int* nSum = im.nSum, sSum = im.sSum, tSum = im.tSum;
 
+            int nWidth = im.nWidth, nHeight = im.nHeight;
+            int tWidth = im.tWidth, tHeight = im.tHeight;
 
             if (image.PixelFormat == PixelFormat.Format8bppIndexed && channel != 0)
                 throw new ArgumentException("Only the first channel is available for 8 bpp images.", "channel");
 
-            // do the job
-            unsafe
-            {
-                byte* src = (byte*)image.ImageData.ToPointer() + channel;
+            byte* srcStart = (byte*)image.ImageData.ToPointer() + channel;
 
-                // for each line
-                for (int y = 1; y <= height; y++)
+            // do the job
+            byte* src = srcStart;
+
+            // for each line
+            for (int y = 1; y <= height; y++)
+            {
+                int yy = nWidth * (y);
+                int y1 = nWidth * (y - 1);
+
+                // for each pixel
+                for (int x = 1; x <= width; x++, src += pixelSize)
                 {
-                    // for each pixel
-                    for (int x = 1; x <= width; x++, src += pixelSize)
+                    int p1 = *src;
+                    int p2 = p1 * p1;
+
+                    int r = yy + (x);
+                    int a = yy + (x - 1);
+                    int b = y1 + (x);
+                    int c = y1 + (x - 1);
+
+                    nSum[r] = p1 + nSum[a] + nSum[b] - nSum[c];
+                    sSum[r] = p2 + sSum[a] + sSum[b] - sSum[c];
+                }
+                src += offset;
+            }
+
+
+            if (computeTilted)
+            {
+                src = srcStart;
+
+                // Left-to-right, top-to-bottom pass
+                for (int y = 1; y <= height; y++, src += offset)
+                {
+                    int yy = tWidth * (y);
+                    int y1 = tWidth * (y - 1);
+                    
+                    for (int x = 2; x < width + 2; x++, src += pixelSize)
                     {
-                        int p = *src;
-                        int p2 = p * p;
-                        ii1[y, x] = p + ii1[y, x - 1] + ii1[y - 1, x] - ii1[y - 1, x - 1];
-                        ii2[y, x] = p2 + ii2[y, x - 1] + ii2[y - 1, x] - ii2[y - 1, x - 1];
+                        int a = y1 + (x - 1);
+                        int b = yy + (x - 1);
+                        int c = y1 + (x - 2);
+                        int r = yy + (x);
+
+                        tSum[r] = *src + tSum[a] + tSum[b] - tSum[c];
                     }
-                    src += offset;
                 }
 
-
-                if (computeTilted)
                 {
-                    src = (byte*)image.ImageData.ToPointer() + channel;
-
-                    // TODO: Optimize with matrix pointers. Will probably make the code cleaner.
-
-                    // Left-to-right, top-to-bottom pass
-                    for (int y = 1; y <= height; y++)
-                    {
-                        for (int x = 2; x < width + 2; x++, src += pixelSize)
-                            iit[y, x] = *src + iit[y - 1, x - 1] + iit[y, x - 1] - iit[y - 1, x - 2];
-                        src += offset;
-                    }
+                    int yy = tWidth * (height);
+                    int y1 = tWidth * (height + 1);
 
                     for (int x = 2; x < width + 2; x++, src += pixelSize)
-                        iit[height + 1, x] = iit[height, x - 1] + iit[height + 1, x - 1] - iit[height, x - 2];
+                    {
+                        int a = yy + (x - 1);
+                        int c = yy + (x - 2);
+                        int b = y1 + (x - 1);
+                        int r = y1 + (x);
 
-
-                    // Right-to-left, bottom-to-top pass
-                    for (int y = height; y >= 0; y--)
-                        for (int x = width + 1; x >= 1; x--)
-                            iit[y, x] += iit[y + 1, x - 1];
-
-                    for (int y = height + 1; y >= 0; y--)
-                        for (int x = width + 1; x >= 2; x--)
-                            iit[y, x] -= iit[y, x - 2];
-
+                        tSum[r] = tSum[a] + tSum[b] - tSum[c];
+                    }
                 }
 
-            } // end unsafe
+
+                // Right-to-left, bottom-to-top pass
+                for (int y = height; y >= 0; y--)
+                {
+                    int yy = tWidth * (y);
+                    int y1 = tWidth * (y + 1);
+
+                    for (int x = width + 1; x >= 1; x--)
+                    {
+                        int r = yy + (x);
+                        int b = y1 + (x - 1);
+
+                        tSum[r] += tSum[b];
+                    }
+                }
+
+                for (int y = height + 1; y >= 0; y--)
+                {
+                    int yy = tWidth * (y);
+
+                    for (int x = width + 1; x >= 2; x--)
+                    {
+                        int r = yy + (x);
+                        int b = yy + (x - 2);
+
+                        tSum[r] -= tSum[b];
+                    }
+                }
+            }
 
 
             return im;
@@ -269,8 +344,12 @@ namespace Accord.Imaging
         /// 
         public int GetSum(int x, int y, int width, int height)
         {
-            return iiSum[y, x] + iiSum[y + height, x + width]
-                 - iiSum[y + height, x] - iiSum[y, x + width];
+            int a = nWidth * (y) + (x);
+            int b = nWidth * (y + height) + (x + width);
+            int c = nWidth * (y + height) + (x);
+            int d = nWidth * (y) + (x + width);
+
+            return nSum[a] + nSum[b] - nSum[c] - nSum[d];
         }
 
         /// <summary>
@@ -279,8 +358,12 @@ namespace Accord.Imaging
         /// 
         public int GetSum2(int x, int y, int width, int height)
         {
-            return iiSquareSum[y, x] + iiSquareSum[y + height, x + width]
-                 - iiSquareSum[y + height, x] - iiSquareSum[y, x + width];
+            int a = nWidth * (y) + (x);
+            int b = nWidth * (y + height) + (x + width);
+            int c = nWidth * (y + height) + (x);
+            int d = nWidth * (y) + (x + width);
+
+            return sSum[a] + sSum[b] - sSum[c] - sSum[d];
         }
 
 
@@ -290,9 +373,74 @@ namespace Accord.Imaging
         /// 
         public int GetSumT(int x, int y, int width, int height)
         {
-            return iiTiltedSum[y + width, x + width + 1] + iiTiltedSum[y + height, x - height + 1]
-                - iiTiltedSum[y, x + 1] - iiTiltedSum[y + width + height, x + width - height + 1];
-        }
-    }
+            int a = tWidth * (y + width) + (x + width + 1);
+            int b = tWidth * (y + height) + (x - height + 1);
+            int c = tWidth * (y) + (x + 1);
+            int d = tWidth * (y + width + height) + (x + width - height + 1);
 
+            return tSum[a] + tSum[b] - tSum[c] - tSum[d];
+        }
+
+
+
+        #region IDisposable Members
+
+        /// <summary>
+        ///   Performs application-defined tasks associated with freeing,
+        ///   releasing, or resetting unmanaged resources.
+        /// </summary>
+        /// 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        ///   Releases unmanaged resources and performs other cleanup operations 
+        ///   before the <see cref="IntegralImage2"/> is reclaimed by garbage collection.
+        /// </summary>
+        /// 
+        ~IntegralImage2()
+        {
+            Dispose(false);
+        }
+
+        /// <summary>
+        ///   Releases unmanaged and - optionally - managed resources
+        /// </summary>
+        /// 
+        /// <param name="disposing"><c>true</c> to release both managed 
+        /// and unmanaged resources; <c>false</c> to release only unmanaged
+        /// resources.</param>
+        /// 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                // free managed resources
+                // (i.e. IDisposable objects)
+            }
+
+            // free native resources
+            if (nSumHandle.IsAllocated)
+            {
+                nSumHandle.Free();
+                nSum = null;
+            }
+            if (sSumHandle.IsAllocated)
+            {
+                sSumHandle.Free();
+                sSum = null;
+            }
+            if (tSumHandle.IsAllocated)
+            {
+                tSumHandle.Free();
+                tSum = null;
+            }
+        }
+
+        #endregion
+
+    }
 }

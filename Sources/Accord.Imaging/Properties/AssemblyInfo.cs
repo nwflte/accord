@@ -11,7 +11,7 @@ using System;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Accord.NET")]
 [assembly: AssemblyProduct("Accord.Imaging")]
-[assembly: AssemblyCopyright("Copyright © César Souza 2009-2011")]
+[assembly: AssemblyCopyright("Copyright © César Souza 2009-2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -35,6 +35,6 @@ using System;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.3.0.0")]
+[assembly: AssemblyVersion("2.4.0.0")]
 [assembly: AssemblyFileVersion("2.2.0.0")]
 
