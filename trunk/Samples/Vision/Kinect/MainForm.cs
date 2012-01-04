@@ -1,7 +1,7 @@
 ﻿// Accord.NET Sample Applications
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -27,7 +27,16 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using Accord.Controls.Vision;
 using AForge.Video.DirectShow;
+using AForge.Imaging;
 using AForge.Video.Kinect;
+using AForge.Imaging.Filters;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Collections.Generic;
+using AForge;
+using Accord.Math;
+using Accord.Imaging.Filters;
+using Accord.Controls.Imaging;
 
 namespace KinectController
 {
@@ -102,19 +111,18 @@ namespace KinectController
                     videoCamera.CameraMode = VideoCameraMode.Color;
 
                     controller.Device = videoCamera;
-
-                    //videoCameraPlayer.VideoSource = videoCamera;
-                    //videoCameraPlayer.Start();
+                    controller.Start();
                 }
 
                 if (depthCamera == null)
                 {
-                    depthCamera = kinectDevice.GetDepthCamera();
+                    //depthCamera = kinectDevice.GetDepthCamera();
+                    depthCamera = new KinectDepthCamera(deviceId, CameraResolution.Medium, true);
+
                     videoSourcePlayer1.VideoSource = depthCamera;
                     videoSourcePlayer1.Start();
                 }
 
-                controller.Start();
 
                 toolStripStatusLabel1.Text = "Initializing...";
             }
@@ -183,7 +191,162 @@ namespace KinectController
             faceForm.Show();
         }
 
-      
+        private void videoSourcePlayer1_NewFrame(object sender, ref Bitmap image)
+        {
+            Invert inv = new Invert();
+            inv.ApplyInPlace(image);
+
+            UnmanagedImage ui = UnmanagedImage.FromManagedImage(image);
+
+            pictureBox1.Image = image;
+
+
+            if (controller.Tracker.TrackingObject == null)
+                return;
+
+            if (controller.Tracker.TrackingObject.IsEmpty)
+                return;
+
+            var rect = controller.Tracker.TrackingObject.Rectangle;
+            Crop crop = new Crop(rect);
+
+            UnmanagedImage head = crop.Apply(ui);
+
+            var points = new List<IntPoint>() { new IntPoint(head.Width / 2, head.Height / 2) };
+            var pps = head.Collect16bppPixelValues(points);
+
+            double mean = Accord.Statistics.Tools.Mean(pps);
+
+            double cutoff = mean + 15;
+            Threshold t = new Threshold((int)cutoff);
+            var mask = t.Apply(ui);
+
+
+
+            LevelsLinear16bpp levels = new LevelsLinear16bpp();
+            levels.InGray = new IntRange((int)cutoff, 65535);
+            levels.OutGray = new IntRange(0, 65535);
+            levels.ApplyInPlace(ui);
+
+
+            var mask8bit = AForge.Imaging.Image.Convert16bppTo8bpp(mask.ToManagedImage());
+
+
+
+            BlobCounter bc = new BlobCounter();
+            bc.ObjectsOrder = ObjectsOrder.Area;
+            bc.ProcessImage(mask8bit);
+            var blobs = bc.GetObjectsInformation();
+
+            inv.ApplyInPlace(image);
+            Intersect intersect = new Intersect();
+            intersect.UnmanagedOverlayImage = mask;
+            mask = intersect.Apply(ui);
+
+            List<Rectangle> rects = new List<Rectangle>();
+
+            // Extract the uppermost largest blobs.
+            for (int i = 0; i < blobs.Length; i++)
+            {
+                double dx = (blobs[i].Rectangle.Top - controller.Tracker.TrackingObject.Center.Y);
+                double d = (dx * dx) / controller.Tracker.TrackingObject.Area;
+                if (d < 2 && blobs[i].Area > 1000)
+                    rects.Add(blobs[i].Rectangle);
+            }
+
+            rects.Sort(compare);
+
+            if (rects.Count > 0)
+            {
+                captureHand(mask, rects[0], pbLeftArm, pbLeftHand);
+            }
+            if (rects.Count > 1)
+            {
+                captureHand(mask, rects[1], pbRightArm, pbRightHand);
+
+            }
+
+            RectanglesMarker marker = new RectanglesMarker(rects);
+            marker.MarkerColor = Color.White;
+            marker.ApplyInPlace(mask8bit);
+
+            image = mask.ToManagedImage();
+        }
+
+        private void captureHand(UnmanagedImage mask, Rectangle rect, PictureBox pbArm, PictureBox pbHand)
+        {
+            Crop c = new Crop(rect);
+            var handImage = c.Apply(mask);
+
+            var ps = handImage.Collect16bppPixelValues(handImage.CollectActivePixels());
+
+            if (ps.Length > 0)
+            {
+                ushort max = Matrix.Max(ps);
+
+                LevelsLinear16bpp levels = new LevelsLinear16bpp();
+                levels.InGray = new IntRange(0, max);
+                levels.OutGray = new IntRange(0, 65535);
+                levels.ApplyInPlace(handImage);
+
+
+               // pbArm.Image = handImage.ToManagedImage();
+
+
+                double cutoff = 30000;
+                Threshold th = new Threshold((int)cutoff);
+                var handMask = th.Apply(handImage);
+
+                var handMask8bit = AForge.Imaging.Image.Convert16bppTo8bpp(handMask.ToManagedImage());
+
+                BlobCounter bch = new BlobCounter();
+                bch.ObjectsOrder = ObjectsOrder.Area;
+                bch.ProcessImage(handMask8bit);
+                var blob = bch.GetObjectsInformation();
+
+                if (blob.Length > 0)
+                {
+                    Intersect inters = new Intersect();
+                    inters.UnmanagedOverlayImage = handMask;
+                    inters.ApplyInPlace(handImage);
+
+                    Crop ch = new Crop(blob[0].Rectangle);
+                    handImage = ch.Apply(handImage);
+
+                    ResizeNearestNeighbor res = new ResizeNearestNeighbor(25, 25);
+                    handImage = res.Apply(handImage);
+
+                    var leftHand = AForge.Imaging.Image.Convert16bppTo8bpp(handImage.ToManagedImage());
+
+                    pbHand.Image = leftHand;
+                }
+            }
+        }
+
+        private static int compare(Rectangle a, Rectangle b)
+        {
+            return b.X.CompareTo(a.X);
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            if (pbLeftHand.Image != null)
+            {
+                var image = pbLeftHand.Image as Bitmap;
+                dataGridView1.Rows.Add(image, 0);
+            }
+        }
+
+        private void saveImagesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (DataGridViewRow row in dataGridView1.Rows)
+            {
+                Bitmap hand = row.Cells[0].Value as Bitmap;
+
+            }
+        }
+
+
 
     }
 }

@@ -1,7 +1,7 @@
 ﻿// Accord.NET Sample Applications
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -20,24 +20,17 @@
 //
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
+using System.IO;
 using System.Windows.Forms;
-
-using Accord.Statistics.Analysis;
-using Accord.Statistics.Kernels;
 using Accord.Controls;
 using Accord.Math;
-
-using Components;
-using System.IO;
-using ZedGraph;
-using System.Diagnostics;
+using Accord.Statistics.Analysis;
 using Accord.Statistics.Formats;
+using Accord.Statistics.Kernels;
+using Components;
+using ZedGraph;
 
 
 namespace KernelComponents
@@ -100,7 +93,7 @@ namespace KernelComponents
                 string extension = Path.GetExtension(filename);
                 if (extension == ".xls" || extension == ".xlsx")
                 {
-                    ExcelSpreadsheetReader db = new ExcelSpreadsheetReader(filename, true, false);
+                    ExcelReader db = new ExcelReader(filename, true, false);
                     TableSelectDialog t = new TableSelectDialog(db.GetWorksheetList());
 
                     if (t.ShowDialog(this) == DialogResult.OK)
@@ -160,7 +153,8 @@ namespace KernelComponents
 
 
             // Creates the Kernel Principal Component Analysis of the given source
-            kpca = new KernelPrincipalComponentAnalysis(data, kernel, (AnalysisMethod)cbMethod.SelectedValue);
+            kpca = new KernelPrincipalComponentAnalysis(data, kernel,
+                (AnalysisMethod)cbMethod.SelectedValue);
 
             kpca.Center = cbCenter.Checked;
 
@@ -168,12 +162,22 @@ namespace KernelComponents
             kpca.Compute();
 
 
-            // Perform the transformation of the data using two components
-            double[,] result = kpca.Transform(data, 2);
+            
+            double[,] result;
+
+            if (kpca.Components.Count >= 2)
+            {
+                // Perform the transformation of the data using two components 
+                result = kpca.Transform(data, 2);
+            }
+            else
+            {
+                result = kpca.Transform(data, 1);
+                result = result.InsertColumn(Matrix.Vector(result.GetLength(0), 0.0));
+            }
 
             // Create a new plot with the original Z column
             double[,] points = result.InsertColumn(sourceMatrix.GetColumn(2));
-
 
             // Create output scatter plot
             outputScatterplot.DataSource = points;
@@ -228,7 +232,7 @@ namespace KernelComponents
             CreateScatterplot(graphMapFeature, graph);
 
             // Create output table
-            dgvProjectionResult.DataSource = new ArrayDataView(graph, sourceColumns);
+            dgvProjectionResult.DataSource = new ArrayDataView(graph);
         }
 
         private void btnReversion_Click(object sender, EventArgs e)

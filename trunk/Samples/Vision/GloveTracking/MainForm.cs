@@ -1,7 +1,7 @@
 // Accord.NET Sample Applications
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -234,6 +234,9 @@ namespace GloveTracking
                 if (tracker == null)
                     return;
 
+                if (form != null && !form.IsDisposed)
+                    form.Image = image;
+
                 BitmapData data = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
                     ImageLockMode.ReadWrite, image.PixelFormat);
 
@@ -331,6 +334,16 @@ namespace GloveTracking
         private void tbSensitivity_Scroll(object sender, EventArgs e)
         {
             bf.Threshold = (byte)tbSensitivity.Value;
+        }
+
+        HSLFilteringForm form;
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (form == null || form.IsDisposed)
+                form = new HSLFilteringForm();
+            form.Filter = tracker.Filter;
+            form.Show();
         }
 
 

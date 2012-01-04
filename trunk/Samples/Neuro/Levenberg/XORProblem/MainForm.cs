@@ -1,7 +1,7 @@
 // Accord.NET Sample Applications
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -525,18 +525,9 @@ namespace XORProblem
 
 			// create teacher
             LevenbergMarquardtLearning teacher = new LevenbergMarquardtLearning(network);
-            BackPropagationLearning teacher2 = new BackPropagationLearning(network);
 
-
-            // set learning rate and momentum
+            // set learning rate 
             teacher.LearningRate = learningRate;
-           // teacher2.LearningRate = learningRate;
-
-            // set initial weights
-          //  for (int i = 0; i < 5; i++)
-          //  {
-          //      teacher2.RunEpoch(input, output);
-          //  }
 
 
 			// iterations

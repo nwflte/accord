@@ -1,7 +1,7 @@
 ﻿// Accord.NET Sample Applications
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -23,23 +23,25 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using Accord.Controls;
 using Accord.Math;
+using Accord.Statistics.Distributions.Fitting;
+using Accord.Statistics.Distributions.Multivariate;
+using Accord.Statistics.Formats;
 using Accord.Statistics.Models.Markov;
 using Accord.Statistics.Models.Markov.Learning;
 using Accord.Statistics.Models.Markov.Topology;
-using MouseGesture;
 using ZedGraph;
-using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Gestures
 {
     public partial class MainForm : Form
     {
 
-        SequenceClassifier classifier;
+        HiddenMarkovClassifier classifier;
 
 
         private Bitmap ToBitmap(double[][] sequence)
@@ -130,23 +132,28 @@ namespace Gestures
 
             int rows = dataGridView1.Rows.Count;
             int[] outputs = new int[rows];
-            int[][] sequences = new int[rows][];
+            var sequences = new int[rows][];
             for (int i = 0; i < rows; i++)
             {
                 outputs[i] = (int)dataGridView1.Rows[i].Cells["colLabel"].Value - 1;
                 sequences[i] = GetFeatures((double[][])dataGridView1.Rows[i].Tag);
             }
 
+            int classes = outputs.Distinct().Count();
 
-            string[] labels = new string[] { "1", "2", "3" };
+
+            string[] labels = new string[classes];
+            for (int i = 0; i < labels.Length; i++)
+                labels[i] = (i+1).ToString();
+
 
             // Create a sequence classifier for 3 classes
-            classifier = new SequenceClassifier(3,
-                new Forward(states), 20, labels);
+            classifier = new HiddenMarkovClassifier(labels.Length,
+                new Forward(states), symbols: 20, names: labels);
 
 
             // Create the learning algorithm for the ensemble classifier
-            var teacher = new SequenceClassifierLearning(classifier,
+            var teacher = new HiddenMarkovClassifierLearning(classifier,
 
                 // Train each model using the selected convergence criteria
                 i => new BaumWelchLearning(classifier.Models[i])
@@ -158,11 +165,14 @@ namespace Gestures
 
             // Create and use a rejection threshold model
             teacher.Rejection = cbRejection.Checked;
+            teacher.Empirical = true;
             teacher.Smoothing = (double)numSmoothing.Value;
 
 
             // Run the learning algorithm
             teacher.Run(sequences, outputs);
+
+            double error = classifier.LogLikelihood(sequences, outputs);
 
 
             int hits = 0;
@@ -224,23 +234,7 @@ namespace Gestures
             }
         }
 
-        private void btnAddToClass1_Click(object sender, EventArgs e)
-        {
-            addSequence(1);
-            inputCanvas.Clear();
-        }
 
-        private void btnAddToClass2_Click(object sender, EventArgs e)
-        {
-            addSequence(2);
-            inputCanvas.Clear();
-        }
-
-        private void btnAddToClass3_Click(object sender, EventArgs e)
-        {
-            addSequence(3);
-            inputCanvas.Clear();
-        }
 
         private void btnCanvasClear_Click(object sender, EventArgs e)
         {
@@ -395,16 +389,47 @@ namespace Gestures
 
 
 
-
         private void openFileDialog1_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            TrainingSample[] samples;
+            TrainingSample[] samples = null;
 
-            using (var stream = openFileDialog.OpenFile())
+            string filename = openFileDialog.FileName;
+            string extension = Path.GetExtension(filename);
+            if (extension == ".xls" || extension == ".xlsx")
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(TrainingSample[]));
-                samples = (TrainingSample[])serializer.Deserialize(stream);
+                ExcelReader db = new ExcelReader(filename, true, false);
+                TableSelectDialog t = new TableSelectDialog(db.GetWorksheetList());
+
+                if (t.ShowDialog(this) == DialogResult.OK)
+                {
+                    var sampleTable = db.GetWorksheet(t.Selection);
+                    samples = new TrainingSample[sampleTable.Rows.Count];
+                    for (int i = 0; i < samples.Length; i++)
+                    {
+                        samples[i] = new TrainingSample();
+                        samples[i].Sequence = new double[(sampleTable.Columns.Count - 1) / 2][];
+                        for (int j = 0; j < samples[i].Sequence.Length; j++)
+                        {
+                            samples[i].Sequence[j] =
+                            new double[] 
+                            { 
+                                    (double)sampleTable.Rows[i][j] * 50, 
+                                    (double)sampleTable.Rows[i][j+1] * 50
+                            };
+                        }
+                        samples[i].Output = (int)(double)sampleTable.Rows[i][sampleTable.Columns.Count - 1] - 1;
+                    }
+                }
             }
+            else if (extension == ".xml")
+            {
+                using (var stream = openFileDialog.OpenFile())
+                {
+                    XmlSerializer serializer = new XmlSerializer(typeof(TrainingSample[]));
+                    samples = (TrainingSample[])serializer.Deserialize(stream);
+                }
+            }
+
 
             dataGridView1.Rows.Clear();
             for (int i = 0; i < samples.Length; i++)
@@ -417,6 +442,7 @@ namespace Gestures
                 dataGridView1.Rows[row].Tag = sequence;
             }
         }
+
 
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -449,6 +475,14 @@ namespace Gestures
                 BinaryFormatter fmt = new BinaryFormatter();
                 fmt.Serialize(stream, classifier);
             }
+        }
+
+        private void btnAddToClass_Click(object sender, EventArgs e)
+        {
+            Button btn = (Button)sender;
+            int c = int.Parse((string)btn.Tag);
+            addSequence(c);
+            inputCanvas.Clear();
         }
     }
 }

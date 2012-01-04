@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            Controller.Properties.Settings settings12 = new Controller.Properties.Settings();
             this.btnVerticalMax = new System.Windows.Forms.Button();
             this.btnVerticalMin = new System.Windows.Forms.Button();
             this.btnHorizontalMax = new System.Windows.Forms.Button();
@@ -107,15 +108,28 @@
             // 
             // faceController
             // 
-            this.faceController.DataBindings.Add(new System.Windows.Forms.Binding("XAxisMax", global::Controller.Properties.Settings.Default, "face_xmax", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.faceController.DataBindings.Add(new System.Windows.Forms.Binding("XAxisMin", global::Controller.Properties.Settings.Default, "face_xmin", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.faceController.DataBindings.Add(new System.Windows.Forms.Binding("YAxisMax", global::Controller.Properties.Settings.Default, "face_ymax", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.faceController.DataBindings.Add(new System.Windows.Forms.Binding("YAxisMin", global::Controller.Properties.Settings.Default, "face_ymin", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            settings12.angleMax = 1.3290820121765137D;
+            settings12.angleMin = 1.83104407787323D;
+            settings12.face_xmax = -0.65D;
+            settings12.face_xmin = 0.65D;
+            settings12.face_ymax = -0.1D;
+            settings12.face_ymin = 0.35D;
+            settings12.scaleMax = 140;
+            settings12.scaleMin = 90;
+            settings12.SettingsKey = "";
+            settings12.xMax = 128;
+            settings12.xMin = 180;
+            settings12.yMax = 100;
+            settings12.yMin = 150;
+            this.faceController.DataBindings.Add(new System.Windows.Forms.Binding("XAxisMax", settings12, "face_xmax", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.faceController.DataBindings.Add(new System.Windows.Forms.Binding("XAxisMin", settings12, "face_xmin", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.faceController.DataBindings.Add(new System.Windows.Forms.Binding("YAxisMax", settings12, "face_ymax", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.faceController.DataBindings.Add(new System.Windows.Forms.Binding("YAxisMin", settings12, "face_ymin", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.faceController.SynchronizingObject = this;
-            this.faceController.XAxisMax = global::Controller.Properties.Settings.Default.face_xmax;
-            this.faceController.XAxisMin = global::Controller.Properties.Settings.Default.face_xmin;
-            this.faceController.YAxisMax = global::Controller.Properties.Settings.Default.face_ymax;
-            this.faceController.YAxisMin = global::Controller.Properties.Settings.Default.face_ymin;
+            this.faceController.XAxisMax = settings12.face_xmax;
+            this.faceController.XAxisMin = settings12.face_xmin;
+            this.faceController.YAxisMax = settings12.face_ymax;
+            this.faceController.YAxisMin = settings12.face_ymin;
             this.faceController.FaceMove += new System.EventHandler<Accord.Controls.Vision.FaceEventArgs>(this.controller_FaceMove);
             // 
             // pointBox1
@@ -141,7 +155,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(397, 369);
+            this.ClientSize = new System.Drawing.Size(399, 369);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.pointBox1);
             this.Controls.Add(this.btnVerticalMax);

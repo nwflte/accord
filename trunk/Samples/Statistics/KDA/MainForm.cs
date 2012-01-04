@@ -58,7 +58,7 @@ namespace KernelDiscriminant
                 string extension = Path.GetExtension(filename);
                 if (extension == ".xls" || extension == ".xlsx")
                 {
-                    ExcelSpreadsheetReader db = new ExcelSpreadsheetReader(filename, true, false);
+                    ExcelReader db = new ExcelReader(filename, true, false);
                     TableSelectDialog t = new TableSelectDialog(db.GetWorksheetList());
 
                     if (t.ShowDialog(this) == DialogResult.OK)
@@ -119,7 +119,7 @@ namespace KernelDiscriminant
             kda = new KernelDiscriminantAnalysis(data, labels, kernel);
 
             // Keep all components
-            kda.Threshold = 0;
+            kda.Threshold = (double)numThreshold.Value;
 
 
             // Computes the analysis

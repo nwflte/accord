@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
@@ -112,9 +111,11 @@
             this.progressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.menuStrip1.SuspendLayout();
             this.tabSamples.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).BeginInit();
             this.splitContainer3.Panel1.SuspendLayout();
             this.splitContainer3.Panel2.SuspendLayout();
             this.splitContainer3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer7)).BeginInit();
             this.splitContainer7.Panel1.SuspendLayout();
             this.splitContainer7.Panel2.SuspendLayout();
             this.splitContainer7.SuspendLayout();
@@ -471,11 +472,6 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.numComplexity.DecimalPlaces = 6;
             this.numComplexity.Location = new System.Drawing.Point(89, 200);
-            this.numComplexity.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
             this.numComplexity.Name = "numComplexity";
             this.numComplexity.Size = new System.Drawing.Size(82, 20);
             this.numComplexity.TabIndex = 7;
@@ -904,13 +900,13 @@
             this.graphClassification.Dock = System.Windows.Forms.DockStyle.Fill;
             this.graphClassification.Location = new System.Drawing.Point(3, 16);
             this.graphClassification.Name = "graphClassification";
-            this.graphClassification.ScrollGrace = 0;
-            this.graphClassification.ScrollMaxX = 0;
-            this.graphClassification.ScrollMaxY = 0;
-            this.graphClassification.ScrollMaxY2 = 0;
-            this.graphClassification.ScrollMinX = 0;
-            this.graphClassification.ScrollMinY = 0;
-            this.graphClassification.ScrollMinY2 = 0;
+            this.graphClassification.ScrollGrace = 0D;
+            this.graphClassification.ScrollMaxX = 0D;
+            this.graphClassification.ScrollMaxY = 0D;
+            this.graphClassification.ScrollMaxY2 = 0D;
+            this.graphClassification.ScrollMinX = 0D;
+            this.graphClassification.ScrollMinY = 0D;
+            this.graphClassification.ScrollMinY2 = 0D;
             this.graphClassification.Size = new System.Drawing.Size(412, 351);
             this.graphClassification.TabIndex = 6;
             // 
@@ -975,9 +971,11 @@
             this.tabSamples.ResumeLayout(false);
             this.splitContainer3.Panel1.ResumeLayout(false);
             this.splitContainer3.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
             this.splitContainer3.ResumeLayout(false);
             this.splitContainer7.Panel1.ResumeLayout(false);
             this.splitContainer7.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer7)).EndInit();
             this.splitContainer7.ResumeLayout(false);
             this.groupBox15.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvTrainingSource)).EndInit();

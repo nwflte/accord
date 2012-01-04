@@ -1,7 +1,7 @@
 ﻿// Accord.NET Sample Applications
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -34,6 +34,8 @@ using Accord.Statistics.Analysis;
 using Accord.Statistics.Kernels;
 using Components;
 using ZedGraph;
+using Accord.Statistics.Formats;
+using Accord.MachineLearning;
 
 
 namespace SVMs
@@ -117,16 +119,10 @@ namespace SVMs
             {
                 kernel = new Gaussian((double)numSigma.Value);
             }
-            else if (rbPolynomial.Checked)
+            else
             {
                 kernel = new Polynomial((int)numDegree.Value, (double)numConstant.Value);
             }
-            else
-            {
-                kernel = new Sigmoid((double)numGamma.Value, (double)numSigmoidConstant.Value);
-            }
-
-
 
 
             // Perform classification
@@ -147,14 +143,17 @@ namespace SVMs
             smo = new SequentialMinimalOptimization(svm, inputs.ToArray(), labels);
 
             // Set learning parameters
-            smo.Complexity = (double)numC.Value;
+            if (!checkBox1.Checked)
+                smo.Complexity = (double)numC.Value;
+            else smo.UseComplexityHeuristic = true;
             smo.Epsilon = (double)numE.Value;
             smo.Tolerance = (double)numT.Value;
 
             // Run
             double error = smo.Run();
 
-
+            if (checkBox1.Checked)
+                numC.Value = (decimal)smo.Complexity;
 
             // Show support vectors
             double[,] supportVectors = svm.SupportVectors.ToMatrix();
@@ -169,7 +168,7 @@ namespace SVMs
             }
 
             dgvSupportVectors.DataSource = new ArrayDataView(supportVectorsWeights,
-                sourceColumns.Submatrix(0, supportVectors.GetLength(1) - 1).Combine("Weight"));
+                sourceColumns.Submatrix(0, supportVectors.GetLength(1) - 1).Concatenate("Weight"));
 
             double[,] graph = supportVectors;
 
@@ -182,6 +181,17 @@ namespace SVMs
 
             // Plot support vectors
             CreateScatterplot(graphSupportVectors, graph);
+
+            var ranges = Matrix.Range(sourceMatrix);
+            double[][] map = Matrix.CartesianProduct(
+                Matrix.Interval(ranges[0], 0.05),
+                Matrix.Interval(ranges[1], 0.05));
+
+            var result = map.Apply(svm.Compute).Apply(Math.Sign);
+
+            var graph2 = map.ToMatrix().InsertColumn(result.ToDouble());
+
+            CreateScatterplot(zedGraphControl2, graph2);
         }
 
 
@@ -346,6 +356,63 @@ namespace SVMs
             zgc.Invalidate();
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            // Creates a matrix from the source data table
+            double[,] sourceMatrix = (dgvLearningSource.DataSource as DataTable).ToMatrix(out sourceColumns);
 
+            // Get only the input vector values
+            double[][] inputs = sourceMatrix.Submatrix(0, sourceMatrix.GetLength(0) - 1, 0, 1).ToArray();
+
+            // Get only the label outputs
+            int[] outputs = new int[sourceMatrix.GetLength(0)];
+            for (int i = 0; i < outputs.Length; i++)
+                outputs[i] = (int)sourceMatrix[i, 2];
+
+            var cv = new Crossvalidation<KernelSupportVectorMachine>(inputs.Length, 10);
+            cv.Fitting = (int[] training, int[] testing) =>
+            {
+                var trainingInputs = inputs.Submatrix(training);
+                var trainingOutputs = outputs.Submatrix(training);
+                var testingInputs = inputs.Submatrix(testing);
+                var testingOutputs = outputs.Submatrix(testing);
+
+                // Create the specified Kernel
+                IKernel kernel;
+                if (rbGaussian.Checked)
+                {
+                    kernel = new Gaussian((double)numSigma.Value);
+                }
+                else 
+                {
+                    kernel = new Polynomial((int)numDegree.Value, (double)numConstant.Value);
+                }
+
+
+                // Creates the Support Vector Machine using the selected kernel
+                var svm = new KernelSupportVectorMachine(kernel, 2);
+
+                // Creates a new instance of the SMO Learning Algortihm
+                var smo = new SequentialMinimalOptimization(svm, trainingInputs, trainingOutputs);
+
+                // Set learning parameters
+                if (!checkBox1.Checked)
+                    smo.Complexity = (double)numC.Value;
+                else smo.UseComplexityHeuristic = true;
+                smo.Epsilon = (double)numE.Value;
+                smo.Tolerance = (double)numT.Value;
+
+                // Run
+                double trainingError = smo.Run();
+                double validationError = smo.ComputeError(testingInputs, testingOutputs);
+
+                return new CrossvalidationInfo<KernelSupportVectorMachine>(svm, trainingError, validationError);
+
+            };
+
+            var result = cv.Compute();
+
+         //   dataGridView2.DataSource = new[] { result };
+        }
     }
 }

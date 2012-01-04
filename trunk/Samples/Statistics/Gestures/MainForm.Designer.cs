@@ -28,8 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.button1 = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.colImage = new System.Windows.Forms.DataGridViewImageColumn();
@@ -43,11 +41,17 @@
             this.numSmoothing = new System.Windows.Forms.NumericUpDown();
             this.cbRejection = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.inputCanvas = new MouseGesture.Canvas();
+            this.inputCanvas = new Gestures.Canvas();
             this.btnCanvasClear = new System.Windows.Forms.Button();
-            this.btnCanvas1 = new System.Windows.Forms.Button();
-            this.btnCanvas2 = new System.Windows.Forms.Button();
-            this.btnCanvas3 = new System.Windows.Forms.Button();
+            this.btnAddClass3 = new System.Windows.Forms.Button();
+            this.btnAddClass2 = new System.Windows.Forms.Button();
+            this.btnAddClass1 = new System.Windows.Forms.Button();
+            this.btnAddClass6 = new System.Windows.Forms.Button();
+            this.btnAddClass9 = new System.Windows.Forms.Button();
+            this.btnAddClass5 = new System.Windows.Forms.Button();
+            this.btnAddClass8 = new System.Windows.Forms.Button();
+            this.btnAddClass4 = new System.Windows.Forms.Button();
+            this.btnAddClass7 = new System.Windows.Forms.Button();
             this.numConvergence = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
             this.numIterations = new System.Windows.Forms.NumericUpDown();
@@ -73,7 +77,7 @@
             this.groupBox21 = new System.Windows.Forms.GroupBox();
             this.button11 = new System.Windows.Forms.Button();
             this.button12 = new System.Windows.Forms.Button();
-            this.canvas2 = new MouseGesture.Canvas();
+            this.canvas2 = new Gestures.Canvas();
             this.groupBox20 = new System.Windows.Forms.GroupBox();
             this.graphClassification = new ZedGraph.ZedGraphControl();
             this.tabPage2 = new System.Windows.Forms.TabPage();
@@ -86,7 +90,7 @@
             this.label10 = new System.Windows.Forms.Label();
             this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
-            this.canvas1 = new MouseGesture.Canvas();
+            this.canvas1 = new Gestures.Canvas();
             this.groupBox22 = new System.Windows.Forms.GroupBox();
             this.zedGraphControl1 = new ZedGraph.ZedGraphControl();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -156,6 +160,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer11)).BeginInit();
             this.splitContainer11.Panel1.SuspendLayout();
             this.splitContainer11.Panel2.SuspendLayout();
             this.splitContainer11.SuspendLayout();
@@ -166,6 +171,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numIterations)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numStates)).BeginInit();
             this.tabPage7.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer6)).BeginInit();
             this.splitContainer6.Panel1.SuspendLayout();
             this.splitContainer6.Panel2.SuspendLayout();
             this.splitContainer6.SuspendLayout();
@@ -176,9 +182,11 @@
             this.groupBox23.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvProbabilities)).BeginInit();
             this.tabPage6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer12)).BeginInit();
             this.splitContainer12.Panel1.SuspendLayout();
             this.splitContainer12.Panel2.SuspendLayout();
             this.splitContainer12.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer13)).BeginInit();
             this.splitContainer13.Panel1.SuspendLayout();
             this.splitContainer13.Panel2.SuspendLayout();
             this.splitContainer13.SuspendLayout();
@@ -186,9 +194,11 @@
             this.groupBox21.SuspendLayout();
             this.groupBox20.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer5)).BeginInit();
             this.splitContainer5.Panel1.SuspendLayout();
             this.splitContainer5.Panel2.SuspendLayout();
             this.splitContainer5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer8)).BeginInit();
             this.splitContainer8.Panel1.SuspendLayout();
             this.splitContainer8.Panel2.SuspendLayout();
             this.splitContainer8.SuspendLayout();
@@ -200,22 +210,28 @@
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.tabSamples.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).BeginInit();
             this.splitContainer3.Panel1.SuspendLayout();
             this.splitContainer3.Panel2.SuspendLayout();
             this.splitContainer3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer7)).BeginInit();
             this.splitContainer7.Panel1.SuspendLayout();
             this.splitContainer7.Panel2.SuspendLayout();
             this.splitContainer7.SuspendLayout();
             this.groupBox6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numThreshold)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer4)).BeginInit();
             this.splitContainer4.Panel1.SuspendLayout();
             this.splitContainer4.Panel2.SuspendLayout();
             this.splitContainer4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.SuspendLayout();
             this.tabPage3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer9)).BeginInit();
             this.splitContainer9.Panel1.SuspendLayout();
             this.splitContainer9.Panel2.SuspendLayout();
             this.splitContainer9.SuspendLayout();
@@ -251,7 +267,7 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowTemplate.Height = 40;
-            this.dataGridView1.Size = new System.Drawing.Size(361, 384);
+            this.dataGridView1.Size = new System.Drawing.Size(350, 384);
             this.dataGridView1.TabIndex = 2;
             // 
             // colImage
@@ -283,7 +299,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 24);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(584, 435);
+            this.tabControl1.Size = new System.Drawing.Size(622, 435);
             this.tabControl1.TabIndex = 4;
             // 
             // tabPage1
@@ -292,7 +308,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(576, 409);
+            this.tabPage1.Size = new System.Drawing.Size(614, 409);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Samples (input)";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -322,8 +338,8 @@
             this.splitContainer11.Panel2.Controls.Add(this.rbStopIterations);
             this.splitContainer11.Panel2.Controls.Add(this.numStates);
             this.splitContainer11.Panel2.Controls.Add(this.button1);
-            this.splitContainer11.Size = new System.Drawing.Size(570, 403);
-            this.splitContainer11.SplitterDistance = 367;
+            this.splitContainer11.Size = new System.Drawing.Size(608, 403);
+            this.splitContainer11.SplitterDistance = 356;
             this.splitContainer11.TabIndex = 21;
             // 
             // groupBox1
@@ -332,7 +348,7 @@
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(367, 403);
+            this.groupBox1.Size = new System.Drawing.Size(356, 403);
             this.groupBox1.TabIndex = 11;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Training Dataset";
@@ -378,12 +394,18 @@
             // 
             this.groupBox2.Controls.Add(this.inputCanvas);
             this.groupBox2.Controls.Add(this.btnCanvasClear);
-            this.groupBox2.Controls.Add(this.btnCanvas1);
-            this.groupBox2.Controls.Add(this.btnCanvas2);
-            this.groupBox2.Controls.Add(this.btnCanvas3);
+            this.groupBox2.Controls.Add(this.btnAddClass3);
+            this.groupBox2.Controls.Add(this.btnAddClass2);
+            this.groupBox2.Controls.Add(this.btnAddClass1);
+            this.groupBox2.Controls.Add(this.btnAddClass6);
+            this.groupBox2.Controls.Add(this.btnAddClass9);
+            this.groupBox2.Controls.Add(this.btnAddClass5);
+            this.groupBox2.Controls.Add(this.btnAddClass8);
+            this.groupBox2.Controls.Add(this.btnAddClass4);
+            this.groupBox2.Controls.Add(this.btnAddClass7);
             this.groupBox2.Location = new System.Drawing.Point(3, 4);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(190, 156);
+            this.groupBox2.Size = new System.Drawing.Size(240, 156);
             this.groupBox2.TabIndex = 13;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Gesture Canvas";
@@ -410,35 +432,104 @@
             this.btnCanvasClear.UseVisualStyleBackColor = true;
             this.btnCanvasClear.Click += new System.EventHandler(this.btnCanvasClear_Click);
             // 
-            // btnCanvas1
+            // btnAddClass3
             // 
-            this.btnCanvas1.Location = new System.Drawing.Point(140, 18);
-            this.btnCanvas1.Name = "btnCanvas1";
-            this.btnCanvas1.Size = new System.Drawing.Size(43, 23);
-            this.btnCanvas1.TabIndex = 5;
-            this.btnCanvas1.Text = "1";
-            this.btnCanvas1.UseVisualStyleBackColor = true;
-            this.btnCanvas1.Click += new System.EventHandler(this.btnAddToClass1_Click);
+            this.btnAddClass3.Location = new System.Drawing.Point(206, 18);
+            this.btnAddClass3.Name = "btnAddClass3";
+            this.btnAddClass3.Size = new System.Drawing.Size(28, 23);
+            this.btnAddClass3.TabIndex = 5;
+            this.btnAddClass3.Tag = "3";
+            this.btnAddClass3.Text = "3";
+            this.btnAddClass3.UseVisualStyleBackColor = true;
+            this.btnAddClass3.Click += new System.EventHandler(this.btnAddToClass_Click);
             // 
-            // btnCanvas2
+            // btnAddClass2
             // 
-            this.btnCanvas2.Location = new System.Drawing.Point(140, 47);
-            this.btnCanvas2.Name = "btnCanvas2";
-            this.btnCanvas2.Size = new System.Drawing.Size(45, 23);
-            this.btnCanvas2.TabIndex = 7;
-            this.btnCanvas2.Text = "2";
-            this.btnCanvas2.UseVisualStyleBackColor = true;
-            this.btnCanvas2.Click += new System.EventHandler(this.btnAddToClass2_Click);
+            this.btnAddClass2.Location = new System.Drawing.Point(174, 18);
+            this.btnAddClass2.Name = "btnAddClass2";
+            this.btnAddClass2.Size = new System.Drawing.Size(28, 23);
+            this.btnAddClass2.TabIndex = 5;
+            this.btnAddClass2.Tag = "2";
+            this.btnAddClass2.Text = "2";
+            this.btnAddClass2.UseVisualStyleBackColor = true;
+            this.btnAddClass2.Click += new System.EventHandler(this.btnAddToClass_Click);
             // 
-            // btnCanvas3
+            // btnAddClass1
             // 
-            this.btnCanvas3.Location = new System.Drawing.Point(140, 76);
-            this.btnCanvas3.Name = "btnCanvas3";
-            this.btnCanvas3.Size = new System.Drawing.Size(45, 23);
-            this.btnCanvas3.TabIndex = 9;
-            this.btnCanvas3.Text = "3";
-            this.btnCanvas3.UseVisualStyleBackColor = true;
-            this.btnCanvas3.Click += new System.EventHandler(this.btnAddToClass3_Click);
+            this.btnAddClass1.Location = new System.Drawing.Point(140, 18);
+            this.btnAddClass1.Name = "btnAddClass1";
+            this.btnAddClass1.Size = new System.Drawing.Size(28, 23);
+            this.btnAddClass1.TabIndex = 5;
+            this.btnAddClass1.Tag = "1";
+            this.btnAddClass1.Text = "1";
+            this.btnAddClass1.UseVisualStyleBackColor = true;
+            this.btnAddClass1.Click += new System.EventHandler(this.btnAddToClass_Click);
+            // 
+            // btnAddClass6
+            // 
+            this.btnAddClass6.Location = new System.Drawing.Point(206, 47);
+            this.btnAddClass6.Name = "btnAddClass6";
+            this.btnAddClass6.Size = new System.Drawing.Size(28, 23);
+            this.btnAddClass6.TabIndex = 7;
+            this.btnAddClass6.Tag = "6";
+            this.btnAddClass6.Text = "6";
+            this.btnAddClass6.UseVisualStyleBackColor = true;
+            this.btnAddClass6.Click += new System.EventHandler(this.btnAddToClass_Click);
+            // 
+            // btnAddClass9
+            // 
+            this.btnAddClass9.Location = new System.Drawing.Point(206, 76);
+            this.btnAddClass9.Name = "btnAddClass9";
+            this.btnAddClass9.Size = new System.Drawing.Size(28, 23);
+            this.btnAddClass9.TabIndex = 9;
+            this.btnAddClass9.Tag = "9";
+            this.btnAddClass9.Text = "9";
+            this.btnAddClass9.UseVisualStyleBackColor = true;
+            this.btnAddClass9.Click += new System.EventHandler(this.btnAddToClass_Click);
+            // 
+            // btnAddClass5
+            // 
+            this.btnAddClass5.Location = new System.Drawing.Point(174, 47);
+            this.btnAddClass5.Name = "btnAddClass5";
+            this.btnAddClass5.Size = new System.Drawing.Size(28, 23);
+            this.btnAddClass5.TabIndex = 7;
+            this.btnAddClass5.Tag = "5";
+            this.btnAddClass5.Text = "5";
+            this.btnAddClass5.UseVisualStyleBackColor = true;
+            this.btnAddClass5.Click += new System.EventHandler(this.btnAddToClass_Click);
+            // 
+            // btnAddClass8
+            // 
+            this.btnAddClass8.Location = new System.Drawing.Point(174, 76);
+            this.btnAddClass8.Name = "btnAddClass8";
+            this.btnAddClass8.Size = new System.Drawing.Size(28, 23);
+            this.btnAddClass8.TabIndex = 9;
+            this.btnAddClass8.Tag = "8";
+            this.btnAddClass8.Text = "8";
+            this.btnAddClass8.UseVisualStyleBackColor = true;
+            this.btnAddClass8.Click += new System.EventHandler(this.btnAddToClass_Click);
+            // 
+            // btnAddClass4
+            // 
+            this.btnAddClass4.Location = new System.Drawing.Point(140, 47);
+            this.btnAddClass4.Name = "btnAddClass4";
+            this.btnAddClass4.Size = new System.Drawing.Size(28, 23);
+            this.btnAddClass4.TabIndex = 7;
+            this.btnAddClass4.Tag = "4";
+            this.btnAddClass4.Text = "4";
+            this.btnAddClass4.UseVisualStyleBackColor = true;
+            this.btnAddClass4.Click += new System.EventHandler(this.btnAddToClass_Click);
+            // 
+            // btnAddClass7
+            // 
+            this.btnAddClass7.Location = new System.Drawing.Point(140, 76);
+            this.btnAddClass7.Name = "btnAddClass7";
+            this.btnAddClass7.Size = new System.Drawing.Size(28, 23);
+            this.btnAddClass7.TabIndex = 9;
+            this.btnAddClass7.Tag = "7";
+            this.btnAddClass7.Text = "7";
+            this.btnAddClass7.UseVisualStyleBackColor = true;
+            this.btnAddClass7.Click += new System.EventHandler(this.btnAddToClass_Click);
             // 
             // numConvergence
             // 
@@ -545,7 +636,7 @@
             this.tabPage7.Location = new System.Drawing.Point(4, 22);
             this.tabPage7.Name = "tabPage7";
             this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage7.Size = new System.Drawing.Size(576, 409);
+            this.tabPage7.Size = new System.Drawing.Size(614, 409);
             this.tabPage7.TabIndex = 4;
             this.tabPage7.Text = "Hidden Markov Models";
             this.tabPage7.UseVisualStyleBackColor = true;
@@ -650,7 +741,7 @@
             this.tabPage6.Location = new System.Drawing.Point(4, 22);
             this.tabPage6.Name = "tabPage6";
             this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage6.Size = new System.Drawing.Size(576, 409);
+            this.tabPage6.Size = new System.Drawing.Size(614, 409);
             this.tabPage6.TabIndex = 3;
             this.tabPage6.Text = "Classification";
             this.tabPage6.UseVisualStyleBackColor = true;
@@ -776,13 +867,13 @@
             this.graphClassification.Dock = System.Windows.Forms.DockStyle.Fill;
             this.graphClassification.Location = new System.Drawing.Point(3, 16);
             this.graphClassification.Name = "graphClassification";
-            this.graphClassification.ScrollGrace = 0;
-            this.graphClassification.ScrollMaxX = 0;
-            this.graphClassification.ScrollMaxY = 0;
-            this.graphClassification.ScrollMaxY2 = 0;
-            this.graphClassification.ScrollMinX = 0;
-            this.graphClassification.ScrollMinY = 0;
-            this.graphClassification.ScrollMinY2 = 0;
+            this.graphClassification.ScrollGrace = 0D;
+            this.graphClassification.ScrollMaxX = 0D;
+            this.graphClassification.ScrollMaxY = 0D;
+            this.graphClassification.ScrollMaxY2 = 0D;
+            this.graphClassification.ScrollMinX = 0D;
+            this.graphClassification.ScrollMinY = 0D;
+            this.graphClassification.ScrollMinY2 = 0D;
             this.graphClassification.Size = new System.Drawing.Size(419, 384);
             this.graphClassification.TabIndex = 7;
             // 
@@ -792,7 +883,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(576, 409);
+            this.tabPage2.Size = new System.Drawing.Size(614, 409);
             this.tabPage2.TabIndex = 5;
             this.tabPage2.Text = "Continuous classification";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -811,7 +902,7 @@
             // splitContainer5.Panel2
             // 
             this.splitContainer5.Panel2.Controls.Add(this.groupBox22);
-            this.splitContainer5.Size = new System.Drawing.Size(570, 403);
+            this.splitContainer5.Size = new System.Drawing.Size(608, 403);
             this.splitContainer5.SplitterDistance = 141;
             this.splitContainer5.TabIndex = 16;
             // 
@@ -921,7 +1012,7 @@
             this.groupBox22.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox22.Location = new System.Drawing.Point(0, 0);
             this.groupBox22.Name = "groupBox22";
-            this.groupBox22.Size = new System.Drawing.Size(425, 403);
+            this.groupBox22.Size = new System.Drawing.Size(463, 403);
             this.groupBox22.TabIndex = 10;
             this.groupBox22.TabStop = false;
             this.groupBox22.Text = "Models relative response";
@@ -931,14 +1022,14 @@
             this.zedGraphControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.zedGraphControl1.Location = new System.Drawing.Point(3, 16);
             this.zedGraphControl1.Name = "zedGraphControl1";
-            this.zedGraphControl1.ScrollGrace = 0;
-            this.zedGraphControl1.ScrollMaxX = 0;
-            this.zedGraphControl1.ScrollMaxY = 0;
-            this.zedGraphControl1.ScrollMaxY2 = 0;
-            this.zedGraphControl1.ScrollMinX = 0;
-            this.zedGraphControl1.ScrollMinY = 0;
-            this.zedGraphControl1.ScrollMinY2 = 0;
-            this.zedGraphControl1.Size = new System.Drawing.Size(419, 384);
+            this.zedGraphControl1.ScrollGrace = 0D;
+            this.zedGraphControl1.ScrollMaxX = 0D;
+            this.zedGraphControl1.ScrollMaxY = 0D;
+            this.zedGraphControl1.ScrollMaxY2 = 0D;
+            this.zedGraphControl1.ScrollMinX = 0D;
+            this.zedGraphControl1.ScrollMinY = 0D;
+            this.zedGraphControl1.ScrollMinY2 = 0D;
+            this.zedGraphControl1.Size = new System.Drawing.Size(457, 384);
             this.zedGraphControl1.TabIndex = 7;
             // 
             // menuStrip1
@@ -948,7 +1039,7 @@
             this.helpToolStripMenuItem1});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(584, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(622, 24);
             this.menuStrip1.TabIndex = 5;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -968,7 +1059,6 @@
             // 
             // newToolStripMenuItem
             // 
-            this.newToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("newToolStripMenuItem.Image")));
             this.newToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
             this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
@@ -978,7 +1068,6 @@
             // 
             // openToolStripMenuItem
             // 
-            this.openToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("openToolStripMenuItem.Image")));
             this.openToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
             this.openToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
@@ -992,7 +1081,6 @@
             // 
             // saveToolStripMenuItem
             // 
-            this.saveToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("saveToolStripMenuItem.Image")));
             this.saveToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
@@ -1039,14 +1127,14 @@
             this.toolStripProgressBar1});
             this.statusStrip1.Location = new System.Drawing.Point(0, 459);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(584, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(622, 22);
             this.statusStrip1.TabIndex = 18;
             this.statusStrip1.Text = "statusStrip1";
             // 
             // toolStripStatusLabel1
             // 
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(569, 17);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(607, 17);
             this.toolStripStatusLabel1.Spring = true;
             this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
             this.toolStripStatusLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -1552,7 +1640,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(584, 481);
+            this.ClientSize = new System.Drawing.Size(622, 481);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
@@ -1565,6 +1653,7 @@
             this.splitContainer11.Panel1.ResumeLayout(false);
             this.splitContainer11.Panel2.ResumeLayout(false);
             this.splitContainer11.Panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer11)).EndInit();
             this.splitContainer11.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.numSmoothing)).EndInit();
@@ -1575,6 +1664,7 @@
             this.tabPage7.ResumeLayout(false);
             this.splitContainer6.Panel1.ResumeLayout(false);
             this.splitContainer6.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer6)).EndInit();
             this.splitContainer6.ResumeLayout(false);
             this.groupBox24.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvModels)).EndInit();
@@ -1585,9 +1675,11 @@
             this.tabPage6.ResumeLayout(false);
             this.splitContainer12.Panel1.ResumeLayout(false);
             this.splitContainer12.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer12)).EndInit();
             this.splitContainer12.ResumeLayout(false);
             this.splitContainer13.Panel1.ResumeLayout(false);
             this.splitContainer13.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer13)).EndInit();
             this.splitContainer13.ResumeLayout(false);
             this.groupBox19.ResumeLayout(false);
             this.groupBox21.ResumeLayout(false);
@@ -1595,9 +1687,11 @@
             this.tabPage2.ResumeLayout(false);
             this.splitContainer5.Panel1.ResumeLayout(false);
             this.splitContainer5.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer5)).EndInit();
             this.splitContainer5.ResumeLayout(false);
             this.splitContainer8.Panel1.ResumeLayout(false);
             this.splitContainer8.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer8)).EndInit();
             this.splitContainer8.ResumeLayout(false);
             this.groupBox13.ResumeLayout(false);
             this.groupBox14.ResumeLayout(false);
@@ -1612,22 +1706,28 @@
             this.tabSamples.ResumeLayout(false);
             this.splitContainer3.Panel1.ResumeLayout(false);
             this.splitContainer3.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
             this.splitContainer3.ResumeLayout(false);
             this.splitContainer7.Panel1.ResumeLayout(false);
             this.splitContainer7.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer7)).EndInit();
             this.splitContainer7.ResumeLayout(false);
             this.groupBox6.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.numThreshold)).EndInit();
             this.splitContainer2.Panel1.ResumeLayout(false);
             this.splitContainer2.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
             this.splitContainer4.Panel1.ResumeLayout(false);
             this.splitContainer4.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer4)).EndInit();
             this.splitContainer4.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
             this.splitContainer9.Panel1.ResumeLayout(false);
             this.splitContainer9.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer9)).EndInit();
             this.splitContainer9.ResumeLayout(false);
             this.groupBox9.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvClasses)).EndInit();
@@ -1652,10 +1752,10 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colClassification;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
-        private MouseGesture.Canvas inputCanvas;
-        private System.Windows.Forms.Button btnCanvas3;
-        private System.Windows.Forms.Button btnCanvas2;
-        private System.Windows.Forms.Button btnCanvas1;
+        private Gestures.Canvas inputCanvas;
+        private System.Windows.Forms.Button btnAddClass7;
+        private System.Windows.Forms.Button btnAddClass4;
+        private System.Windows.Forms.Button btnAddClass1;
         private System.Windows.Forms.Button btnCanvasClear;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.GroupBox groupBox1;
@@ -1729,7 +1829,7 @@
         private System.Windows.Forms.Button button9;
         private System.Windows.Forms.GroupBox groupBox18;
         private System.Windows.Forms.GroupBox groupBox21;
-        private MouseGesture.Canvas canvas2;
+        private Gestures.Canvas canvas2;
         private System.Windows.Forms.GroupBox groupBox19;
         private System.Windows.Forms.Label lbClassification;
         private System.Windows.Forms.GroupBox groupBox20;
@@ -1760,7 +1860,7 @@
         private System.Windows.Forms.GroupBox groupBox14;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.NumericUpDown numericUpDown1;
-        private MouseGesture.Canvas canvas1;
+        private Gestures.Canvas canvas1;
         private System.Windows.Forms.GroupBox groupBox22;
         private ZedGraph.ZedGraphControl zedGraphControl1;
         private System.Windows.Forms.Label label11;
@@ -1768,6 +1868,12 @@
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.NumericUpDown numSmoothing;
         private System.Windows.Forms.SaveFileDialog saveFileDialog2;
+        private System.Windows.Forms.Button btnAddClass3;
+        private System.Windows.Forms.Button btnAddClass2;
+        private System.Windows.Forms.Button btnAddClass6;
+        private System.Windows.Forms.Button btnAddClass9;
+        private System.Windows.Forms.Button btnAddClass5;
+        private System.Windows.Forms.Button btnAddClass8;
     }
 }
 

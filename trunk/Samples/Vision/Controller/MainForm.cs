@@ -1,7 +1,7 @@
 ﻿// Accord.NET Sample Applications
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -24,6 +24,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using Accord.Controls.Vision;
 using AForge.Video.DirectShow;
+using System.Drawing;
 
 namespace Controller
 {
@@ -85,6 +86,7 @@ namespace Controller
             if (form.ShowDialog() == DialogResult.OK)
             {
                 VideoCaptureDevice device = new VideoCaptureDevice(form.VideoDevice);
+                device.DesiredFrameSize = new Size(320, 240);
 
                 controller.Device = device;
                 controller.Start();

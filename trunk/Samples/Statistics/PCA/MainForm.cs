@@ -1,7 +1,7 @@
 // Accord.NET Sample Applications
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -176,7 +176,7 @@ namespace Components
                 string extension = Path.GetExtension(filename);
                 if (extension == ".xls" || extension == ".xlsx")
                 {
-                    ExcelSpreadsheetReader db = new ExcelSpreadsheetReader(filename, true, false);
+                    ExcelReader db = new ExcelReader(filename, true, false);
                     TableSelectDialog t = new TableSelectDialog(db.GetWorksheetList());
 
                     if (t.ShowDialog(this) == DialogResult.OK)

@@ -1,7 +1,7 @@
 ﻿// Accord.NET Sample Applications
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -169,7 +169,7 @@ namespace Regression
             // Populate projection source table
             string[] cols = independentNames;
             if (!independentNames.Contains(dependentName))
-                cols = independentNames.Combine(dependentName);
+                cols = independentNames.Concatenate(dependentName);
 
             DataTable projSource = sourceTable.DefaultView.ToTable(false, cols);
             dgvProjectionSource.DataSource = projSource;

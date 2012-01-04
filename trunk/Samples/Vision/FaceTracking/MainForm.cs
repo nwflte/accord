@@ -1,7 +1,7 @@
 // Accord.NET Sample Applications
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -31,16 +31,15 @@ using System.Threading;
 using System.Windows.Forms;
 using Accord.Imaging.Filters;
 using Accord.Vision.Detection;
+using Accord.Vision.Detection.Cascades;
 using Accord.Vision.Tracking;
-using AForge;
 using AForge.Imaging;
+using AForge.Imaging.Filters;
+using AForge.Math.Geometry;
 using AForge.Video;
 using AForge.Video.DirectShow;
 using AForge.Video.VFW;
 using MotionDetectorSample;
-using AForge.Imaging.Filters;
-using AForge.Math.Geometry;
-using Accord.Vision.Detection.Cascades;
 
 
 namespace FaceTracking
@@ -331,6 +330,9 @@ namespace FaceTracking
                     }
                     else if (drawObjectBoxToolStripMenuItem.Checked)
                     {
+                        //InteractionPoints p = new InteractionPoints();
+                        //p.setHead(obj.Rectangle);
+
                         marker = new RectanglesMarker(obj.Rectangle);
                     }
                     else if (drawTrackingWindowToolStripMenuItem.Checked)
@@ -341,6 +343,7 @@ namespace FaceTracking
                     {
                         marker = null;
                     }
+
 
                     if (marker != null)
                         marker.ApplyInPlace(im);
