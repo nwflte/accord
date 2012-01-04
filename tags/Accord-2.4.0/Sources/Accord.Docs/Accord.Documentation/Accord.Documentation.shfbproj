@@ -1,0 +1,449 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <!-- The configuration and platform will be used to determine which
+         assemblies to include from solution and project documentation
+         sources -->
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{048acc63-3b91-4e14-b5a3-38e7898426fe}</ProjectGuid>
+    <SHFBSchemaVersion>1.9.3.0</SHFBSchemaVersion>
+    <!-- AssemblyName, Name, and RootNamespace are not used by SHFB but Visual
+         Studio adds them anyway -->
+    <AssemblyName>Documentation</AssemblyName>
+    <RootNamespace>Documentation</RootNamespace>
+    <Name>Documentation</Name>
+    <!-- SHFB properties -->
+    <OutputPath>..\..\..\Docs\</OutputPath>
+    <HtmlHelpName>Accord.NET</HtmlHelpName>
+    <DocumentationSources>
+      <DocumentationSource sourceFile="..\..\..\Release\Accord.Audio.dll" />
+      <DocumentationSource sourceFile="..\..\..\Release\Accord.Audio.Formats.dll" />
+      <DocumentationSource sourceFile="..\..\..\Release\Accord.Audio.Formats.xml" />
+      <DocumentationSource sourceFile="..\..\..\Release\Accord.Audio.xml" />
+      <DocumentationSource sourceFile="..\..\..\Release\Accord.Audition.dll" />
+      <DocumentationSource sourceFile="..\..\..\Release\Accord.Audition.xml" />
+      <DocumentationSource sourceFile="..\..\..\Release\Accord.Controls.Audio.dll" />
+      <DocumentationSource sourceFile="..\..\..\Release\Accord.Controls.Audio.xml" />
+      <DocumentationSource sourceFile="..\..\..\Release\Accord.Controls.dll" />
+      <DocumentationSource sourceFile="..\..\..\Release\Accord.Controls.Imaging.dll" />
+      <DocumentationSource sourceFile="..\..\..\Release\Accord.Controls.Imaging.xml" />
+      <DocumentationSource sourceFile="..\..\..\Release\Accord.Controls.Vision.dll" />
+      <DocumentationSource sourceFile="..\..\..\Release\Accord.Controls.Vision.xml" />
+      <DocumentationSource sourceFile="..\..\..\Release\Accord.Controls.xml" />
+      <DocumentationSource sourceFile="..\..\..\Release\Accord.DirectSound.dll" />
+      <DocumentationSource sourceFile="..\..\..\Release\Accord.DirectSound.xml" />
+      <DocumentationSource sourceFile="..\..\..\Release\Accord.dll" />
+      <DocumentationSource sourceFile="..\..\..\Release\Accord.Imaging.dll" />
+      <DocumentationSource sourceFile="..\..\..\Release\Accord.Imaging.xml" />
+      <DocumentationSource sourceFile="..\..\..\Release\Accord.MachineLearning.dll" />
+      <DocumentationSource sourceFile="..\..\..\Release\GPL\Accord.MachineLearning.GPL.dll" />
+      <DocumentationSource sourceFile="..\..\..\Release\GPL\Accord.MachineLearning.GPL.xml" />
+      <DocumentationSource sourceFile="..\..\..\Release\Accord.MachineLearning.xml" />
+      <DocumentationSource sourceFile="..\..\..\Release\Accord.Math.dll" />
+      <DocumentationSource sourceFile="..\..\..\Release\Accord.Math.xml" />
+      <DocumentationSource sourceFile="..\..\..\Release\Accord.Music.dll" />
+      <DocumentationSource sourceFile="..\..\..\Release\Accord.Music.xml" />
+      <DocumentationSource sourceFile="..\..\..\Release\Accord.Neuro.dll" />
+      <DocumentationSource sourceFile="..\..\..\Release\Accord.Neuro.xml" />
+      <DocumentationSource sourceFile="..\..\..\Release\Accord.Statistics.dll" />
+      <DocumentationSource sourceFile="..\..\..\Release\Accord.Statistics.xml" />
+      <DocumentationSource sourceFile="..\..\..\Release\Accord.Vision.dll" />
+      <DocumentationSource sourceFile="..\..\..\Release\Accord.Vision.xml" />
+      <DocumentationSource sourceFile="..\..\..\Release\Accord.xml" />
+    </DocumentationSources>
+    <CopyrightText>
+    </CopyrightText>
+    <FeedbackEMailAddress>
+    </FeedbackEMailAddress>
+    <NamespaceSummaries>
+      <NamespaceSummaryItem name="(global)" isDocumented="False">&lt;b&gt;Accord.NET Framework&lt;/b&gt;</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.Audio" isDocumented="True">The &lt;b&gt;Accord.Audio&lt;/b&gt; namespace contains a set of experimental classes and routines for Audio processing. The items under this namespace are still under development.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.Audio.ComplexFilters" isDocumented="True">The &lt;b&gt;Accord.Audio.ComplexFilters&lt;/b&gt; namespace contains filters which work upon Fourier or Hilbert- transformed signals.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.Audio.Filters" isDocumented="True">The &lt;b&gt;Accord.Imaging.Filters&lt;/b&gt; namespace contains a collection of interfaces and classes which provide different signal processing filters.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.Audio.Generators" isDocumented="True">The &lt;b&gt;Accord.Audio.Generators&lt;/b&gt; namespace contains signal generators.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.Audio.Windows" isDocumented="True">The &lt;b&gt;Accord.Audio.Windows&lt;/b&gt; namespace contains windowing functions used to split signals.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.Math" isDocumented="True">The &lt;b&gt;Accord.Math&lt;/b&gt; namespace contains a set of mathematical and linear algebra routines for matrix manipulation and other related functions.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.Math.Decompositions" isDocumented="True">The &lt;b&gt;Accord.Math.Decompositions&lt;/b&gt; namespace contains many numerical matrix decompositions used in linear algebra.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.Audition.Beat" isDocumented="True">The &lt;b&gt;Accord.Audition.Beat&lt;/b&gt; namespace contains beat detection algorithms.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.Audition.Tempo" isDocumented="True">The &lt;b&gt;Accord.Audition.Tempo&lt;/b&gt; namespace contains tempo detection algorithms.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.Controls" isDocumented="True">The &lt;b&gt;Accord.Controls&lt;/b&gt; namespace contains useful Windows Forms controls to aid in the creation of applications using the Framework.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.Audio.Formats" isDocumented="True">The &lt;b&gt;Accord.Audio.Formats&lt;/b&gt; namespace contains classes used to handle different audio file formats.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.DirectSound" isDocumented="True">The &lt;b&gt;Accord.DirectSound&lt;/b&gt; namespace contains classes and tools to interface with DirectSound.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.Imaging" isDocumented="True">The &lt;b&gt;Accord.Imaging&lt;/b&gt; namespace extends the AForge.NET Imaging library with new filters and routines.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.Imaging.Filters" isDocumented="True">The &lt;b&gt;Accord.Imaging.Filters&lt;/b&gt; namespace contains filters for Image processing.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.MachineLearning" isDocumented="True">The &lt;b&gt;Accord.MachineLearning&lt;/b&gt; namespace extends AForge's machine learning library with Support Vector Machines and other related tools.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.MachineLearning.VectorMachines" isDocumented="True">The &lt;b&gt;Accord.MachineLearning.VectorMachines&lt;/b&gt; namespace contains classes for Support Vector Machines (SVMs).</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.MachineLearning.VectorMachines.Learning" isDocumented="True">The &lt;b&gt;Accord.MachineLearning.VectorMachines.Learning&lt;/b&gt; namespace contains algorithms for training Support Vector Machines (SVMs).</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.Music" isDocumented="True">The &lt;b&gt;Accord.Music&lt;/b&gt; namespace is still incomplete and should not be used. It accomodates musical theory which may be used together with other computer audition methods.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.Neuro" isDocumented="True">The &lt;b&gt;Accord.Neuro&lt;/b&gt; namespace extends the AForge.NET Neuro library with more learning algorithms and related tools.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.Neuro.Learning" isDocumented="True">The &lt;b&gt;Accord.Neuro.Learning&lt;/b&gt; namespace contains Neural Network learning algorithms.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.Statistics" isDocumented="True">The &lt;b&gt;Accord.Statistics&lt;/b&gt; namespace contains a set of classes and tools for statistical analysis, modeling and hypothesis testing, among several other useful statistical tools.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.Statistics.Analysis" isDocumented="True">The &lt;b&gt;Accord.Statistics.Analysis&lt;/b&gt; namespace contains models and tools to perform statistical analysis such as Principal Component Analysis, Fisher Discriminant Analysis and Logistic Regression Analysis.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.Statistics.Distributions" isDocumented="True">The &lt;b&gt;Accord.Statistics.Distributions&lt;/b&gt; namespace contains a set of classes for probability distributions.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.Statistics.Filters" isDocumented="True">The &lt;b&gt;Accord.Statistics.Filters&lt;/b&gt; namespace contains a set of Filters for tabular data.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.Statistics.Kernels" isDocumented="True">The &lt;b&gt;Accord.Statistics.Kernels&lt;/b&gt; namespace contains a collection of Kernel functions for Machine Learning and Statistics applications.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.Statistics.Models" isDocumented="True">The &lt;b&gt;Accord.Statistics.Models&lt;/b&gt; namespace contains a set of classes for statistical modeling.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.Statistics.Models.Regression" isDocumented="True">The &lt;b&gt;Accord.Statistics.Models.Regression&lt;/b&gt; namespace contains statistical regression models such as logistic and linear regressions.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.Statistics.Models.Regression.Linear" isDocumented="True">The &lt;b&gt;Accord.Statistics.Models.Regression.Linear&lt;/b&gt; namespace contains linear statistical regression models such as simple, multiple and multivariate linear regressions.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.Statistics.Testing" isDocumented="True">The &lt;b&gt;Accord.Statistics.Testing&lt;/b&gt; namespace contains a set of classes for statistical hypothesis testing.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.Statistics.Visualizations" isDocumented="True">The &lt;b&gt;Accord.Statistics.Visualizations&lt;/b&gt; contains statistical visualization tools such as Histograms.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.Wavelets" isDocumented="True">The &lt;b&gt;Accord.Wavelets&lt;/b&gt; namespace contains 1D and 2D wavelets transforms suitable for signal and imaging processing tasks.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.Music.Melody" isDocumented="False" />
+      <NamespaceSummaryItem name="AForge" isDocumented="False" />
+      <NamespaceSummaryItem name="AForge.Imaging" isDocumented="False" />
+      <NamespaceSummaryItem name="AForge.Imaging.ComplexFilters" isDocumented="False" />
+      <NamespaceSummaryItem name="AForge.Imaging.Filters" isDocumented="False" />
+      <NamespaceSummaryItem name="AForge.Imaging.Textures" isDocumented="False" />
+      <NamespaceSummaryItem name="AForge.Math" isDocumented="False" />
+      <NamespaceSummaryItem name="AForge.Math.Geometry" isDocumented="False" />
+      <NamespaceSummaryItem name="AForge.Math.Random" isDocumented="False" />
+      <NamespaceSummaryItem name="AForge.Neuro" isDocumented="False" />
+      <NamespaceSummaryItem name="AForge.Neuro.Learning" isDocumented="False" />
+      <NamespaceSummaryItem name="Accord.Vision" isDocumented="True">The &lt;b&gt;Accord.Vision&lt;/b&gt; namespace contains a set of classes and routines for Computer Vision, such as object detectors and trackers.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.Vision.Detection" isDocumented="True">The &lt;b&gt;Accord.Vision.Detection&lt;/b&gt; namespace contains methods for visual object detector, such as the Viola-Jones object detector.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.Vision.Tracking" isDocumented="True">The &lt;b&gt;Accord.Vision.Tracking&lt;/b&gt; namespace contains classes for object tracking, such as the camshift tracking algorithm.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord" isDocumented="True">The &lt;b&gt;Accord&lt;/b&gt; namespace contains common classes which are used throughout the Framework, such as exceptions and event related classes.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.Controls.Imaging" isDocumented="True">The &lt;b&gt;Accord.Controls.Imaging&lt;/b&gt; namespace contains Windows Forms controls useful for Imaging applications.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.Statistics.Models.Fields" isDocumented="True">The &lt;b&gt;Accord.Statistics.Models.Fields&lt;/b&gt; namespace contains classes related to Conditional Random Fields, Hidden Conditional Random Fields and their learning algorithms.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.Statistics.Models.Markov" isDocumented="True">The &lt;b&gt;Accord.Statistics.Models.Markov&lt;/b&gt; namespace contains classes related to Hidden Markov Models and their learning algorithms.</NamespaceSummaryItem>
+    </NamespaceSummaries>
+    <ProjectSummary>Accord.NET is an extension to AForge.NET, a popular framework for computer vision and machine learning. Currently, Accord.NET provides many statistical analysis and processing functions, as well as still experimental audio signal analysis package.</ProjectSummary>
+    <HelpTitle>Accord.NET Framework</HelpTitle>
+    <FooterText>&amp;lt%3ba href=&amp;quot%3bhttp://accord-net.origo.ethz.ch&amp;quot%3b target=&amp;quot%3b_blank&amp;quot%3b&amp;gt%3bAccord.NET&amp;lt%3b/a&amp;gt%3b &amp;#169%3b 2009-2012. All documentation is licensed under the Creative Commons Attribution/Share-Alike License.</FooterText>
+    <MissingTags>AutoDocumentCtors, AutoDocumentDispose</MissingTags>
+    <KeepLogFile>True</KeepLogFile>
+    <RootNamespaceContainer>True</RootNamespaceContainer>
+    <RootNamespaceTitle>Accord.NET</RootNamespaceTitle>
+    <ApiFilter>
+      <Filter entryType="Namespace" fullName="Accord.Music" isExposed="False" xmlns="" />
+      <Filter entryType="Namespace" fullName="Accord.Music.Melody" isExposed="False" xmlns="" />
+      <Filter entryType="Namespace" fullName="Accord.Music.Notation" isExposed="False" xmlns="" />
+      <Filter entryType="Namespace" fullName="Accord.Music.Scales" isExposed="False" xmlns="" />
+      <Filter entryType="Namespace" fullName="Accord.Music.Sets" isExposed="False" xmlns="" />
+      <Filter entryType="Namespace" fullName="AForge" isExposed="False" xmlns="" />
+      <Filter entryType="Namespace" fullName="AForge.Imaging" isExposed="False" xmlns="" />
+      <Filter entryType="Namespace" fullName="AForge.Imaging.ComplexFilters" isExposed="False" xmlns="" />
+      <Filter entryType="Namespace" fullName="AForge.Imaging.Filters" isExposed="False" xmlns="" />
+      <Filter entryType="Namespace" fullName="AForge.Imaging.Textures" isExposed="False" xmlns="" />
+      <Filter entryType="Namespace" fullName="AForge.Math" isExposed="False" xmlns="" />
+      <Filter entryType="Namespace" fullName="AForge.Math.Geometry" isExposed="False" xmlns="" />
+      <Filter entryType="Namespace" fullName="AForge.Math.Random" isExposed="False" xmlns="" />
+      <Filter entryType="Namespace" fullName="AForge.Neuro" isExposed="False" xmlns="" />
+      <Filter entryType="Namespace" fullName="AForge.Neuro.Learning" isExposed="False" xmlns="" />
+    </ApiFilter>
+    <HelpFileFormat>HtmlHelp1, Website</HelpFileFormat>
+    <ComponentConfigurations>
+      <ComponentConfig id="Post-transform Component" enabled="True">
+        <component id="Post-transform Component" type="SandcastleBuilder.Components.PostTransformComponent" assembly="{@SHFBFolder}SandcastleBuilder.Components.dll">
+          <!-- Code colorizer files (required).
+                 Attributes:
+                    Stylesheet file (required)
+                    Script file (required)
+                    "Copy" image file (required) -->
+          <colorizer stylesheet="{@SHFBFolder}Colorizer\highlight.css" scriptFile="{@SHFBFolder}Colorizer\highlight.js" copyImage="{@SHFBFolder}Colorizer\CopyCode.gif" />
+          <!-- Base output path for the files (required).  This should match
+                 the parent folder of the output path of the HTML files (see
+                 SaveComponent). -->
+          <outputPaths>{@HelpFormatOutputPaths}</outputPaths>
+          <!-- Logo image file (optional).  Filename is required. The height,
+                 width, altText, placement, and alignment attributes are
+                 optional. -->
+          <logoFile filename="D:\Projects\Accord.NET\Sources\Accord.Docs\Accord.Documentation\Resources\Accord.NET.png" height="0" width="0" altText="" placement="right" alignment="left" />
+        </component>
+      </ComponentConfig>
+      <ComponentConfig id="Code Block Component" enabled="True">
+        <component id="Code Block Component" type="SandcastleBuilder.Components.CodeBlockComponent" assembly="{@SHFBFolder}SandcastleBuilder.Components.dll">
+          <basePath value="{@HtmlEncProjectFolder}" />
+          <languageFilter value="true" />
+          <allowMissingSource value="false" />
+          <removeRegionMarkers value="false" />
+          <colorizer syntaxFile="{@SHFBFolder}Colorizer\highlight.xml" styleFile="{@SHFBFolder}Colorizer\highlight.xsl" copyImageUrl="../icons/CopyCode.gif" language="cs" tabSize="2" numberLines="true" outlining="false" keepSeeTags="false" defaultTitle="true" />
+        </component>
+      </ComponentConfig>
+    </ComponentConfigurations>
+    <CleanIntermediates>True</CleanIntermediates>
+    <PresentationStyle>vs2005</PresentationStyle>
+    <SyntaxFilters>CSharp, VisualBasic</SyntaxFilters>
+    <NamingMethod>MemberName</NamingMethod>
+    <HelpFileVersion>2.4.0.0</HelpFileVersion>
+    <FrameworkVersion>.NET 4.0.30319</FrameworkVersion>
+    <VisibleItems>Attributes, InheritedMembers, InheritedFrameworkMembers, Protected, SealedProtected</VisibleItems>
+    <PlugInNamespaces>ms.vsipcc+, ms.vsexpresscc+</PlugInNamespaces>
+    <CollectionTocStyle>Hierarchical</CollectionTocStyle>
+    <MSHelp2SdkLinkType>Msdn</MSHelp2SdkLinkType>
+    <IncludeStopWordList>True</IncludeStopWordList>
+    <SdkLinkTarget>Blank</SdkLinkTarget>
+    <Preliminary>False</Preliminary>
+    <Language>en-US</Language>
+    <ContentPlacement>AboveNamespaces</ContentPlacement>
+    <PlugInConfigurations>
+      <PlugInConfig id="Hierarchical Table of Contents" enabled="True" xmlns="">
+        <configuration>
+          <toc minParts="2" insertBelow="False" />
+        </configuration>
+      </PlugInConfig>
+    </PlugInConfigurations>
+  </PropertyGroup>
+  <!-- There are no properties for these groups.  AnyCPU needs to appear in
+       order for Visual Studio to perform the build.  The others are optional
+       common platform types that may appear. -->
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Diagrams\Classes\" />
+    <Folder Include="Diagrams\Modules\" />
+    <Folder Include="Resources\" />
+    <Folder Include="Diagrams\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Diagrams\Classes\Accord.Audio.Formats.png">
+      <ImageId>Accord.Audio.Formats</ImageId>
+      <AlternateText>Accord.Audio.Formats</AlternateText>
+    </Image>
+    <Image Include="Diagrams\Classes\Accord.Audio.png">
+      <ImageId>Accord.Audio</ImageId>
+      <AlternateText>Accord.Audio</AlternateText>
+    </Image>
+    <Image Include="Diagrams\Classes\Accord.Audition.png">
+      <ImageId>Accord.Audition</ImageId>
+      <AlternateText>Accord.Audition</AlternateText>
+    </Image>
+    <Image Include="Diagrams\Classes\Accord.Controls.png">
+      <ImageId>Accord.Controls</ImageId>
+      <AlternateText>Accord.Controls</AlternateText>
+    </Image>
+    <Image Include="Diagrams\Classes\Accord.Controls.Vision.png">
+      <ImageId>Accord.Controls.Vision</ImageId>
+      <AlternateText>Accord.Controls.Vision</AlternateText>
+    </Image>
+    <Image Include="Diagrams\Classes\Accord.Core.png">
+      <ImageId>Accord.Core</ImageId>
+      <AlternateText>Accord.Core</AlternateText>
+    </Image>
+    <Image Include="Diagrams\Classes\Accord.DirectSound.png">
+      <ImageId>Accord.DirectSound</ImageId>
+      <AlternateText>Accord.Direct Sound</AlternateText>
+    </Image>
+    <Image Include="Diagrams\Classes\Accord.Imaging.png">
+      <ImageId>Accord.Imaging</ImageId>
+      <AlternateText>Accord.Imaging</AlternateText>
+    </Image>
+    <Image Include="Diagrams\Classes\Accord.MachineLearning.png">
+      <ImageId>Accord.MachineLearning</ImageId>
+      <AlternateText>Accord.Machine Learning</AlternateText>
+    </Image>
+    <Image Include="Diagrams\Classes\Accord.Math.png">
+      <ImageId>Accord.Math</ImageId>
+      <AlternateText>Accord.Math</AlternateText>
+    </Image>
+    <Image Include="Diagrams\Classes\Accord.Music.png">
+      <ImageId>Accord.Music</ImageId>
+      <AlternateText>Accord.Music</AlternateText>
+    </Image>
+    <Image Include="Diagrams\Classes\Accord.Neuro.png">
+      <ImageId>Accord.Neuro</ImageId>
+      <AlternateText>Accord.Neuro</AlternateText>
+    </Image>
+    <Image Include="Diagrams\Classes\Accord.Statistics.png">
+      <ImageId>Accord.Statistics</ImageId>
+      <AlternateText>Accord.Statistics</AlternateText>
+    </Image>
+    <Image Include="Diagrams\Classes\Accord.Vision.png">
+      <ImageId>Accord.Vision</ImageId>
+      <AlternateText>Accord.Vision</AlternateText>
+    </Image>
+    <Image Include="Diagrams\Modules\Graph - Accord-AForge.png">
+      <ImageId>Graph - Accord-AForge</ImageId>
+      <AlternateText>Graph - Accord-AForge</AlternateText>
+    </Image>
+    <Image Include="Diagrams\Modules\Graph - Accord.png">
+      <ImageId>Graph - Accord</ImageId>
+      <AlternateText>Graph - Accord</AlternateText>
+    </Image>
+    <Image Include="Diagrams\Modules\Matrix - Accord-AForge.png">
+      <ImageId>Matrix - Accord-AForge</ImageId>
+      <AlternateText>Matrix - Accord-AForge</AlternateText>
+    </Image>
+    <Image Include="Diagrams\Modules\Matrix - Accord.png">
+      <ImageId>Matrix - Accord</ImageId>
+      <AlternateText>Matrix - Accord</AlternateText>
+    </Image>
+    <Image Include="Resources\Accord.NET.png">
+      <CopyToMedia>True</CopyToMedia>
+      <AlternateText>Accord.NET logo</AlternateText>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Accord">
+      <HintPath>..\..\..\Release\Accord.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Audio.Formats">
+      <HintPath>..\..\..\Release\Accord.Audio.Formats.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Audition">
+      <HintPath>..\..\..\Release\Accord.Audition.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Controls">
+      <HintPath>..\..\..\Release\Accord.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Controls.Audio">
+      <HintPath>..\..\..\Release\Accord.Controls.Audio.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Controls.Imaging">
+      <HintPath>..\..\..\Release\Accord.Controls.Imaging.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Controls.Vision">
+      <HintPath>..\..\..\Release\Accord.Controls.Vision.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.DirectSound">
+      <HintPath>..\..\..\Release\Accord.DirectSound.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Imaging">
+      <HintPath>..\..\..\Release\Accord.Imaging.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.MachineLearning">
+      <HintPath>..\..\..\Release\Accord.MachineLearning.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.MachineLearning.GPL">
+      <HintPath>..\..\..\Release\GPL\Accord.MachineLearning.GPL.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Math">
+      <HintPath>..\..\..\Release\Accord.Math.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Music">
+      <HintPath>..\..\..\Release\Accord.Music.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Neuro">
+      <HintPath>..\..\..\Release\Accord.Neuro.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Statistics">
+      <HintPath>..\..\..\Release\Accord.Statistics.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Vision">
+      <HintPath>..\..\..\Release\Accord.Vision.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge">
+      <HintPath>C:\Program Files (x86)\AForge.NET\Framework\Release\AForge.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Controls">
+      <HintPath>C:\Program Files (x86)\AForge.NET\Framework\Release\AForge.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Fuzzy">
+      <HintPath>C:\Program Files (x86)\AForge.NET\Framework\Release\AForge.Fuzzy.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Genetic">
+      <HintPath>C:\Program Files (x86)\AForge.NET\Framework\Release\AForge.Genetic.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Imaging">
+      <HintPath>C:\Program Files (x86)\AForge.NET\Framework\Release\AForge.Imaging.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Imaging.Formats">
+      <HintPath>C:\Program Files (x86)\AForge.NET\Framework\Release\AForge.Imaging.Formats.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.MachineLearning">
+      <HintPath>C:\Program Files (x86)\AForge.NET\Framework\Release\AForge.MachineLearning.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Math">
+      <HintPath>C:\Program Files (x86)\AForge.NET\Framework\Release\AForge.Math.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Neuro">
+      <HintPath>C:\Program Files (x86)\AForge.NET\Framework\Release\AForge.Neuro.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Robotics.Lego">
+      <HintPath>C:\Program Files (x86)\AForge.NET\Framework\Release\AForge.Robotics.Lego.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Robotics.Surveyor">
+      <HintPath>C:\Program Files (x86)\AForge.NET\Framework\Release\AForge.Robotics.Surveyor.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Robotics.TeRK">
+      <HintPath>C:\Program Files (x86)\AForge.NET\Framework\Release\AForge.Robotics.TeRK.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Video">
+      <HintPath>C:\Program Files (x86)\AForge.NET\Framework\Release\AForge.Video.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Video.DirectShow">
+      <HintPath>C:\Program Files (x86)\AForge.NET\Framework\Release\AForge.Video.DirectShow.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Video.VFW">
+      <HintPath>C:\Program Files (x86)\AForge.NET\Framework\Release\AForge.Video.VFW.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Vision">
+      <HintPath>C:\Program Files (x86)\AForge.NET\Framework\Release\AForge.Vision.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Building.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Accord.Controls.Audio\Accord.Controls.Audio.csproj">
+      <Name>Accord.Controls.Audio</Name>
+      <Project>{e0b826ac-2a51-41ec-9f09-561ca14a82bb}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Accord.Controls.Imaging\Accord.Controls.Imaging.csproj">
+      <Name>Accord.Controls.Imaging</Name>
+      <Project>{e1089999-eaed-4e55-ac47-b6a196df84fc}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Accord.Controls.Vision\Accord.Controls.Vision.csproj">
+      <Name>Accord.Controls.Vision</Name>
+      <Project>{6158e759-fe2b-4308-ba29-11c9e4a07812}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Accord.Core\Accord.Core.csproj">
+      <Name>Accord.Core</Name>
+      <Project>{a177a90c-8207-466a-af70-f2b8452a42ac}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Accord.DirectSound\Accord.DirectSound.csproj">
+      <Name>Accord.DirectSound</Name>
+      <Project>{456db2e8-745a-4f87-a2bd-c43cf8677770}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Accord.Imaging\Accord.Imaging.csproj">
+      <Name>Accord.Imaging</Name>
+      <Project>{4959a83d-f78f-439e-80a5-41583eceaac6}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Accord.MachineLearning\Accord.MachineLearning.csproj">
+      <Name>Accord.MachineLearning</Name>
+      <Project>{7ab4bbcc-6222-423d-9ff9-ba9cb7c09199}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Accord.Math\Accord.Math.csproj">
+      <Name>Accord.Math</Name>
+      <Project>{f718e9a8-db62-4785-8c49-4333a60d256a}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Accord.Music\Accord.Music.csproj">
+      <Name>Accord.Music</Name>
+      <Project>{b2146369-734b-457b-b663-98e49587c988}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Accord.Neuro\Accord.Neuro.csproj">
+      <Name>Accord.Neuro</Name>
+      <Project>{179f3045-8757-4f4b-9508-f48327ba11e3}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Accord.Statistics\Accord.Statistics.csproj">
+      <Name>Accord.Statistics</Name>
+      <Project>{fd8101dd-c95d-42d6-ad44-ae01c25f2811}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Accord.Vision\Accord.Vision.csproj">
+      <Name>Accord.Vision</Name>
+      <Project>{c70a159d-74a4-405f-9a7f-c17acf451cca}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Copyright.txt" />
+    <Content Include="License.txt" />
+  </ItemGroup>
+  <!-- Import the SHFB build targets -->
+  <Import Project="$(SHFBROOT)\SandcastleHelpFileBuilder.targets" />
+</Project>
