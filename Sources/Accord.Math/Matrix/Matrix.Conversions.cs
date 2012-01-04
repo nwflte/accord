@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -234,6 +234,60 @@ namespace Accord.Math
             return m;
         }
 
+        /// <summary>
+        ///   Converts a DataTable to a double[,] array.
+        /// </summary>
+        /// 
+        public static double[,] ToMatrix(this DataTable table, string[] columnNames)
+        {
+            double[,] m = new double[table.Rows.Count, table.Columns.Count];
+            columnNames = new string[table.Columns.Count];
+
+            for (int j = 0; j < table.Columns.Count; j++)
+            {
+                for (int i = 0; i < table.Rows.Count; i++)
+                    m[i, j] = convertToDouble(table.Rows[i][j]);
+
+                columnNames[j] = table.Columns[j].Caption;
+            }
+            return m;
+        }
+
+        /// <summary>
+        ///   Converts a DataTable to a double[,] array.
+        /// </summary>
+        /// 
+        public static DataTable ToTable(this double[,] matrix)
+        {
+            int cols = matrix.GetLength(1);
+
+            String[] columnNames = new String[cols];
+            for (int i = 0; i < columnNames.Length; i++)
+                columnNames[i] = "Column " + i;
+            return ToTable(matrix, columnNames);
+        }
+
+        /// <summary>
+        ///   Converts a DataTable to a double[,] array.
+        /// </summary>
+        /// 
+        public static DataTable ToTable(this double[,] matrix, string[] columnNames)
+        {
+            DataTable table = new DataTable();
+            table.Locale = CultureInfo.CurrentCulture;
+
+            int rows = matrix.GetLength(0);
+            int cols = matrix.GetLength(1);
+
+            for (int i = 0; i < cols; i++)
+                table.Columns.Add(columnNames[i], typeof(double));
+
+            for (int i = 0; i < rows; i++)
+                table.Rows.Add(matrix.GetRow(i));
+
+            return table;
+        }
+
 
         /// <summary>
         ///   Converts a DataTable to a double[][] array.
@@ -269,6 +323,28 @@ namespace Accord.Math
         }
 
         /// <summary>
+        ///   Converts a DataTable to a double[][] array.
+        /// </summary>
+        /// 
+        public static double[][] ToArray(this DataTable table, params string[] columnNames)
+        {
+            double[][] m = new double[table.Rows.Count][];
+
+            for (int i = 0; i < table.Rows.Count; i++)
+                m[i] = new double[columnNames.Length];
+
+            for (int j = 0; j < columnNames.Length; j++)
+            {
+                DataColumn col = table.Columns[columnNames[j]];
+
+                for (int i = 0; i < table.Rows.Count; i++)
+                    m[i][j] = convertToInt32(table.Rows[i][col]);
+            }
+
+            return m;
+        }
+
+        /// <summary>
         ///   Converts a DataColumn to a double[] array.
         /// </summary>
         /// 
@@ -278,6 +354,42 @@ namespace Accord.Math
 
             for (int i = 0; i < m.Length; i++)
                 m[i] = convertToDouble(column.Table.Rows[i][column]);
+
+            return m;
+        }
+
+        /// <summary>
+        ///   Converts a DataTable to a int[][] array.
+        /// </summary>
+        /// 
+        public static int[][] ToIntArray(this DataTable table, params string[] columnNames)
+        {
+            int[][] m = new int[table.Rows.Count][];
+
+            for (int i = 0; i < table.Rows.Count; i++)
+                m[i] = new int[columnNames.Length];
+
+            for (int j = 0; j < columnNames.Length; j++)
+            {
+                DataColumn col = table.Columns[columnNames[j]];
+
+                for (int i = 0; i < table.Rows.Count; i++)
+                    m[i][j] = convertToInt32(table.Rows[i][col]);
+            }
+
+            return m;
+        }
+
+        /// <summary>
+        ///   Converts a DataColumn to a int[] array.
+        /// </summary>
+        /// 
+        public static int[] ToInt32Array(this DataColumn column)
+        {
+            int[] m = new int[column.Table.Rows.Count];
+
+            for (int i = 0; i < m.Length; i++)
+                m[i] = convertToInt32(column.Table.Rows[i][column]);
 
             return m;
         }
@@ -304,6 +416,33 @@ namespace Accord.Math
                 try
                 {
                     d = System.Convert.ToDouble(obj);
+                }
+                catch (InvalidCastException)
+                {
+                    d = 0;
+                }
+            }
+
+            return d;
+        }
+
+        private static int convertToInt32(object obj)
+        {
+            int d;
+
+            if (obj is String)
+            {
+                d = int.Parse((String)obj, CultureInfo.InvariantCulture);
+            }
+            else if (obj is Boolean)
+            {
+                d = (Boolean)obj ? 1 : 0;
+            }
+            else
+            {
+                try
+                {
+                    d = System.Convert.ToInt32(obj);
                 }
                 catch (InvalidCastException)
                 {

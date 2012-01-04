@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -114,18 +114,27 @@ namespace Accord.Math.Formats
                 // Construct the columns for the row
                 if (matrix.Rank == 1)
                 {
-                    #region Process row for jagged arrays
-                    Array row = (Array)matrix.GetValue(i);
-                    cols = row.Length;
+                    Object obj = matrix.GetValue(i);
+                    Array row = obj as Array;
 
-                    // For each column
-                    for (int j = 0; j < cols; j++)
+                    if (row == null)
                     {
-                        sb.Append(handleOtherFormats(elementFormat, row.GetValue(j), culture));
-
-                        if (j < cols - 1) sb.Append(formatProvider.FormatColDelimiter);
+                        handleOtherFormats(elementFormat, obj, culture);
                     }
-                    #endregion
+                    else
+                    {
+                        #region Process row for jagged arrays
+                        cols = row.Length;
+
+                        // For each column
+                        for (int j = 0; j < cols; j++)
+                        {
+                            sb.Append(handleOtherFormats(elementFormat, row.GetValue(j), culture));
+
+                            if (j < cols - 1) sb.Append(formatProvider.FormatColDelimiter);
+                        }
+                        #endregion
+                    }
                 }
                 else
                 {
@@ -243,7 +252,7 @@ namespace Accord.Math.Formats
             try
             {
                 IFormattable obj = arg as IFormattable;
-                if (obj != null && format != null && format.Length > 0)
+                if (obj != null)
                 {
                     return obj.ToString(format, culture);
                 }

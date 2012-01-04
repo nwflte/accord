@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -63,6 +63,9 @@ namespace Accord.Math
     {
 
         #region Constants
+        /// <summary>Euler-Mascheroni constant.</summary>
+        public const double EulerGamma = 0.5772156649015328606065120;
+
         /// <summary>Double-precision machine roundoff error.</summary>
         /// <remarks>This value is actually different from Double.Epsilon.</remarks>
         public const double DoubleEpsilon = 1.11022302462515654042E-16;
@@ -70,6 +73,12 @@ namespace Accord.Math
         /// <summary>Single-precision machine roundoff error.</summary>
         /// <remarks>This value is actually different from Single.Epsilon.</remarks>
         public const float SingleEpsilon = 1.1920929E-07f;
+
+        /// <summary>Double-precision small value.</summary>
+        public const double DoubleSmall = 1.493221789605150e-300;
+
+        /// <summary>Single-precision small value.</summary>
+        public const float SingleSmall = 1.493221789605150e-40f;
 
         /// <summary>Maximum log on the machine.</summary>
         public const double LogMax = 7.09782712893383996732E2;
@@ -213,12 +222,235 @@ namespace Accord.Math
         }
 
         /// <summary>
-        ///   Regularized Gamma function (P)
+        ///   Upper incomplete regularized gamma function Q.
         /// </summary>
         /// 
-        public static double Rgamma(double a, double z)
+        public static double GammaQ(double a, double x)
         {
-            return Igam(a, z) / Gamma(a);
+            #region Copyright information
+            // Copyright (c) 2009-2010 Math.NET
+            //
+            // Permission is hereby granted, free of charge, to any person
+            // obtaining a copy of this software and associated documentation
+            // files (the "Software"), to deal in the Software without
+            // restriction, including without limitation the rights to use,
+            // copy, modify, merge, publish, distribute, sublicense, and/or sell
+            // copies of the Software, and to permit persons to whom the
+            // Software is furnished to do so, subject to the following
+            // conditions:
+            //
+            // The above copyright notice and this permission notice shall be
+            // included in all copies or substantial portions of the Software.
+            //
+            // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+            // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+            // OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+            // NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+            // HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+            // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+            // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+            // OTHER DEALINGS IN THE SOFTWARE.
+            #endregion
+
+            const double eps = 0.000000000000001;
+            const double big = 4503599627370496.0;
+            const double biginv = 2.22044604925031308085 * 0.0000000000000001;
+
+            double ans = 0;
+            double ax = 0;
+            double c = 0;
+            double yc = 0;
+            double r = 0;
+            double t = 0;
+            double y = 0;
+            double z = 0;
+            double pk = 0;
+            double pkm1 = 0;
+            double pkm2 = 0;
+            double qk = 0;
+            double qkm1 = 0;
+            double qkm2 = 0;
+
+
+            if (x <= 0 || a <= 0)
+                return 1;
+
+            if (x < 1 || x < a)
+                return 1.0 - GammaP(a, x);
+
+            ax = a * Math.Log(x) - x - Special.LogGamma(a);
+
+            if (ax < -709.78271289338399)
+                return 0;
+
+            ax = Math.Exp(ax);
+            y = 1 - a;
+            z = x + y + 1;
+            c = 0;
+            pkm2 = 1;
+            qkm2 = x;
+            pkm1 = x + 1;
+            qkm1 = z * x;
+            ans = pkm1 / qkm1;
+
+            do
+            {
+                c = c + 1;
+                y = y + 1;
+                z = z + 2;
+                yc = y * c;
+                pk = pkm1 * z - pkm2 * yc;
+                qk = qkm1 * z - qkm2 * yc;
+                if (qk != 0)
+                {
+                    r = pk / qk;
+                    t = Math.Abs((ans - r) / r);
+                    ans = r;
+                }
+                else
+                {
+                    t = 1;
+                }
+
+                pkm2 = pkm1;
+                pkm1 = pk;
+                qkm2 = qkm1;
+                qkm1 = qk;
+
+                if (Math.Abs(pk) > big)
+                {
+                    pkm2 = pkm2 * biginv;
+                    pkm1 = pkm1 * biginv;
+                    qkm2 = qkm2 * biginv;
+                    qkm1 = qkm1 * biginv;
+                }
+            }
+            while (t > eps);
+
+            return ans * ax;
+        }
+
+        /// <summary>
+        ///   Lower incomplete regularized gamma function P.
+        /// </summary>
+        /// 
+        public static double GammaP(double a, double x)
+        {
+            #region Copyright information
+            // Copyright (c) 2009-2010 Math.NET
+            //
+            // Permission is hereby granted, free of charge, to any person
+            // obtaining a copy of this software and associated documentation
+            // files (the "Software"), to deal in the Software without
+            // restriction, including without limitation the rights to use,
+            // copy, modify, merge, publish, distribute, sublicense, and/or sell
+            // copies of the Software, and to permit persons to whom the
+            // Software is furnished to do so, subject to the following
+            // conditions:
+            //
+            // The above copyright notice and this permission notice shall be
+            // included in all copies or substantial portions of the Software.
+            //
+            // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+            // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+            // OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+            // NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+            // HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+            // WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+            // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+            // OTHER DEALINGS IN THE SOFTWARE.
+            #endregion
+
+            const double eps = 0.000000000000001;
+            const double big = 4503599627370496.0;
+            const double biginv = 2.22044604925031308085e-16;
+
+            if (a < 0) throw new ArgumentOutOfRangeException("a");
+            if (x < 0) throw new ArgumentOutOfRangeException("x");
+
+            if (a == 0.0)
+            {
+                if (x == 0.0)
+                    return Double.NaN;
+                return 1d;
+            }
+
+            if (x == 0.0) return 0d;
+
+            double ax = (a * Math.Log(x)) - x - Special.LogGamma(a);
+
+            if (ax < -709.78271289338399)
+                return 1.0;
+
+            if (x <= 1 || x <= a)
+            {
+                double r2 = a;
+                double c2 = 1;
+                double ans2 = 1;
+
+                do
+                {
+                    r2 = r2 + 1;
+                    c2 = c2 * x / r2;
+                    ans2 += c2;
+                }
+                while ((c2 / ans2) > eps);
+
+                return Math.Exp(ax) * ans2 / a;
+            }
+
+            int c = 0;
+            double y = 1 - a;
+            double z = x + y + 1;
+
+            double p3 = 1;
+            double q3 = x;
+            double p2 = x + 1;
+            double q2 = z * x;
+            double ans = p2 / q2;
+
+            double error = 0;
+
+            do
+            {
+                c++;
+                y += 1;
+                z += 2;
+                double yc = y * c;
+
+                double p = (p2 * z) - (p3 * yc);
+                double q = (q2 * z) - (q3 * yc);
+
+                if (q != 0)
+                {
+                    double nextans = p / q;
+                    error = Math.Abs((ans - nextans) / nextans);
+                    ans = nextans;
+                }
+                else
+                {
+                    // zero div, skip
+                    error = 1;
+                }
+
+                // shift
+                p3 = p2;
+                p2 = p;
+                q3 = q2;
+                q2 = q;
+
+                // normalize fraction when the numerator becomes large
+                if (Math.Abs(p) > big)
+                {
+                    p3 *= biginv;
+                    p2 *= biginv;
+                    q3 *= biginv;
+                    q2 *= biginv;
+                }
+            }
+            while (error > eps);
+
+            return 1.0 - (Math.Exp(ax) * ans);
         }
 
         /// <summary>
@@ -353,18 +585,18 @@ namespace Accord.Math
         ///   Complemented incomplete gamma function.
         /// </summary>
         /// 
-        public static double Igamc(double a, double x)
+        public static double IGammaC(double a, double x)
         {
-            double big = 4.503599627370496e15;
-            double biginv = 2.22044604925031308085e-16;
+            const double big = 4.503599627370496e15;
+            const double biginv = 2.22044604925031308085e-16;
             double ans, ax, c, yc, r, t, y, z;
             double pk, pkm1, pkm2, qk, qkm1, qkm2;
 
             if (x <= 0 || a <= 0) return 1.0;
 
-            if (x < 1.0 || x < a) return 1.0 - Igam(a, x);
+            if (x < 1.0 || x < a) return 1.0 - IGamma(a, x);
 
-            ax = a * Math.Log(x) - x - Lgamma(a);
+            ax = a * Math.Log(x) - x - LogGamma(a);
             if (ax < -LogMax) return 0.0;
 
             ax = Math.Exp(ax);
@@ -416,15 +648,15 @@ namespace Accord.Math
         ///   Incomplete gamma function.
         /// </summary>
         /// 
-        public static double Igam(double a, double x)
+        public static double IGamma(double a, double x)
         {
             double ans, ax, c, r;
 
             if (x <= 0 || a <= 0) return 0.0;
 
-            if (x > 1.0 && x > a) return 1.0 - Igamc(a, x);
+            if (x > 1.0 && x > a) return 1.0 - IGammaC(a, x);
 
-            ax = a * System.Math.Log(x) - x - Lgamma(a);
+            ax = a * System.Math.Log(x) - x - LogGamma(a);
             if (ax < -LogMax) return (0.0);
 
             ax = System.Math.Exp(ax);
@@ -448,7 +680,7 @@ namespace Accord.Math
         ///   Natural logarithm of gamma function.
         /// </summary>
         /// 
-        public static double Lgamma(double x)
+        public static double LogGamma(double x)
         {
             double p, q, w, z;
 
@@ -484,7 +716,7 @@ namespace Accord.Math
             if (x < -34.0)
             {
                 q = -x;
-                w = Lgamma(q);
+                w = LogGamma(q);
                 p = System.Math.Floor(q);
 
                 if (p == q)
@@ -566,7 +798,7 @@ namespace Accord.Math
         /// 
         public static double Lbeta(double a, double b)
         {
-            return Lgamma(a) + Lgamma(b) - Lgamma(a + b);
+            return LogGamma(a) + LogGamma(b) - LogGamma(a + b);
         }
 
         /// <summary>
@@ -647,7 +879,7 @@ namespace Accord.Math
                 return t;
             }
 
-            y += t + Lgamma(a + b) - Lgamma(a) - Lgamma(b);
+            y += t + LogGamma(a + b) - LogGamma(a) - LogGamma(b);
             y += System.Math.Log(w / a);
             if (y < LogMin)
                 t = 0.0;
@@ -875,7 +1107,7 @@ namespace Accord.Math
             }
             else
             {
-                t = Lgamma(a + b) - Lgamma(a) - Lgamma(b) + u + System.Math.Log(s);
+                t = LogGamma(a + b) - LogGamma(a) - LogGamma(b) + u + System.Math.Log(s);
                 if (t < LogMin) s = 0.0;
                 else s = System.Math.Exp(t);
             }
@@ -902,7 +1134,7 @@ namespace Accord.Math
         {
             if (x < 0.0 || df < 1.0) return 0.0;
 
-            return Igam(df / 2.0, x / 2.0);
+            return IGamma(df / 2.0, x / 2.0);
 
         }
 
@@ -921,7 +1153,7 @@ namespace Accord.Math
         {
             if (x < 0.0 || df < 1.0) return 0.0;
 
-            return Igamc(df / 2.0, x / 2.0);
+            return IGammaC(df / 2.0, x / 2.0);
 
         }
 
@@ -935,7 +1167,7 @@ namespace Accord.Math
         {
             if (k < 0 || x < 0) return 0.0;
 
-            return Igamc((double)(k + 1), x);
+            return IGammaC((double)(k + 1), x);
         }
 
         /// <summary>
@@ -949,7 +1181,7 @@ namespace Accord.Math
         {
             if (k < 0 || x < 0) return 0.0;
 
-            return Igam((double)(k + 1), x);
+            return IGamma((double)(k + 1), x);
         }
 
         /// <summary>
@@ -1300,7 +1532,7 @@ namespace Accord.Math
         /// </summary>
         public static double Binomial(int n, int k)
         {
-            return Math.Round(Math.Exp(Lfactorial(n) - Lfactorial(k) - Lfactorial(n - k)));
+            return Math.Round(Math.Exp(LogFactorial(n) - LogFactorial(k) - LogFactorial(n - k)));
         }
 
         /// <summary>
@@ -1308,14 +1540,14 @@ namespace Accord.Math
         /// </summary>
         public static double Lbinomial(int n, int k)
         {
-            return Lfactorial(n) - Lfactorial(k) - Lfactorial(n - k);
+            return LogFactorial(n) - LogFactorial(k) - LogFactorial(n - k);
         }
 
 
         /// <summary>
         ///   Returns the log factorial of a number (ln(n!))
         /// </summary>
-        public static double Lfactorial(int n)
+        public static double LogFactorial(int n)
         {
             if (lnfcache == null)
                 lnfcache = new double[101];
@@ -1334,12 +1566,12 @@ namespace Accord.Math
             {
                 // Compute the factorial using ln(gamma(n)) approximation, using the cache
                 // if the value has been previously computed.
-                return (lnfcache[n] > 0) ? lnfcache[n] : (lnfcache[n] = Lgamma(n + 1.0));
+                return (lnfcache[n] > 0) ? lnfcache[n] : (lnfcache[n] = LogGamma(n + 1.0));
             }
             else
             {
                 // Just compute the factorial using ln(gamma(n)) approximation.
-                return Lgamma(n + 1.0);
+                return LogGamma(n + 1.0);
             }
         }
 
@@ -1366,7 +1598,7 @@ namespace Accord.Math
             {
                 // Return Gamma approximation using exp(gammaln(n+1)),
                 //  which for some reason is faster than gamma(n+1).
-                return Math.Exp(Lgamma(n + 1.0));
+                return Math.Exp(LogGamma(n + 1.0));
             }
             else
             {
@@ -1708,10 +1940,12 @@ namespace Accord.Math
         /// <summary>
         ///   Computes log(1+x) without losing precision for small values of x.
         /// </summary>
+        /// 
         /// <remarks>
         ///   References:
         ///   - http://www.johndcook.com/csharp_log_one_plus_x.html
         /// </remarks>
+        /// 
         public static double Log1p(double x)
         {
             if (x <= -1.0)
@@ -1774,6 +2008,41 @@ namespace Accord.Math
             double x = (a >= 0 ? a : -a);
             return (b >= 0 ? x : -x);
         }
+
+        /// <summary>
+        ///   Computes x + y without losing precision using ln(x) and ln(y).
+        /// </summary>
+        /// 
+        public static double LogSum(double lnx, double lny)
+        {
+            if (lnx == Double.NegativeInfinity)
+                return lny;
+            if (lny == Double.NegativeInfinity)
+                return lnx;
+
+            if (lnx > lny)
+                return lnx + Math.Log(1.0 + Math.Exp(lny - lnx));
+
+            return lny + Math.Log(1.0 + Math.Exp(lnx - lny));
+        }
+
+        /// <summary>
+        ///   Computes x + y without losing precision using ln(x) and ln(y).
+        /// </summary>
+        /// 
+        public static double LogSum(float lnx, float lny)
+        {
+            if (lnx == Single.NegativeInfinity)
+                return lny;
+            if (lny == Single.NegativeInfinity)
+                return lnx;
+
+            if (lnx > lny)
+                return lnx + Math.Log(1.0 + Math.Exp(lny - lnx));
+
+            return lny + Math.Log(1.0 + Math.Exp(lnx - lny));
+        }
+
 
         #endregion
 

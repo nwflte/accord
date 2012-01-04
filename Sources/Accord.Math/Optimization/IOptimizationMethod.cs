@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -26,7 +26,7 @@ namespace Accord.Math.Optimization
     ///   Common interface for function optimization methods.
     /// </summary>
     /// 
-    /// <seealso cref="LbfgsOptimization"/>
+    /// <seealso cref="BroydenFletcherGoldfarbShanno"/>
     /// 
     public interface IOptimizationMethod
     {
@@ -37,7 +37,7 @@ namespace Accord.Math.Optimization
         /// 
         /// <param name="values">The initial guess values for the parameters.</param>
         /// 
-        double Optimize(double[] values);
+        double Minimize(double[] values);
 
         /// <summary>
         ///   Gets the solution found, the values of the parameters which

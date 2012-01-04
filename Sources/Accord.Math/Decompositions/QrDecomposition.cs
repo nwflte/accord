@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 // Original work copyright © Lutz Roeder, 2000
@@ -46,7 +46,7 @@ namespace Accord.Math.Decompositions
     ///   This will fail if <see cref="FullRank"/> returns <see langword="false"/>.</para>  
     /// </remarks>
     /// 
-    public sealed class QrDecomposition : ISolverDecomposition, ICloneable
+    public sealed class QrDecomposition : ICloneable
     {
         private double[,] qr;
         private double[] Rdiag;
@@ -86,41 +86,31 @@ namespace Accord.Math.Decompositions
                 // Compute 2-norm of k-th column without under/overflow.
                 double nrm = 0;
                 for (int i = k; i < rows; i++)
-                {
                     nrm = Tools.Hypotenuse(nrm, qr[i, k]);
-                }
 
-                if (nrm != 0.0)
+                if (nrm != 0)
                 {
                     // Form k-th Householder vector.
                     if (qr[k, k] < 0)
-                    {
                         nrm = -nrm;
-                    }
 
                     for (int i = k; i < rows; i++)
-                    {
                         qr[i, k] /= nrm;
-                    }
 
-                    qr[k, k] += 1.0;
+                    qr[k, k] += 1;
 
                     // Apply transformation to remaining columns.
                     for (int j = k + 1; j < cols; j++)
                     {
-                        double s = 0.0;
+                        double s = 0;
 
                         for (int i = k; i < rows; i++)
-                        {
                             s += qr[i, k] * qr[i, j];
-                        }
 
                         s = -s / qr[k, k];
 
                         for (int i = k; i < rows; i++)
-                        {
                             qr[i, j] += s * qr[i, k];
-                        }
                     }
                 }
 
@@ -146,7 +136,7 @@ namespace Accord.Math.Decompositions
 
             // Copy right hand side
             int count = value.GetLength(1);
-            double[,] X = (double[,])value.Clone();
+            var X = (double[,])value.Clone();
             int m = qr.GetLength(0);
             int n = qr.GetLength(1);
 
@@ -155,7 +145,7 @@ namespace Accord.Math.Decompositions
             {
                 for (int j = 0; j < count; j++)
                 {
-                    double s = 0.0;
+                    double s = 0;
 
                     for (int i = k; i < m; i++)
                         s += qr[i, k] * X[i, j];
@@ -178,7 +168,7 @@ namespace Accord.Math.Decompositions
                         X[i, j] -= X[k, j] * qr[i, k];
             }
 
-            double[,] r = new double[n, count];
+            var r = new double[n, count];
             for (int i = 0; i < n; i++)
                 for (int j = 0; j < count; j++)
                     r[i, j] = X[i, j];
@@ -204,7 +194,7 @@ namespace Accord.Math.Decompositions
 
             // Copy right hand side
             int count = value.GetLength(0);
-            double[,] X = value.Transpose();
+            var X = value.Transpose();
             int m = qr.GetLength(0);
             int n = qr.GetLength(1);
 
@@ -213,7 +203,7 @@ namespace Accord.Math.Decompositions
             {
                 for (int j = 0; j < count; j++)
                 {
-                    double s = 0.0;
+                    double s = 0;
 
                     for (int i = k; i < m; i++)
                         s += qr[i, k] * X[i, j];
@@ -236,7 +226,7 @@ namespace Accord.Math.Decompositions
                         X[i, j] -= X[k, j] * qr[i, k];
             }
 
-            double[,] r = new double[count, n];
+            var r = new double[count, n];
             for (int i = 0; i < n; i++)
                 for (int j = 0; j < count; j++)
                     r[j, i] = X[i, j];
@@ -261,14 +251,14 @@ namespace Accord.Math.Decompositions
                 throw new InvalidOperationException("Matrix is rank deficient.");
 
             // Copy right hand side
-            double[] X = (double[])value.Clone();
+            var X = (double[])value.Clone();
             int m = qr.GetLength(0);
             int n = qr.GetLength(1);
 
             // Compute Y = transpose(Q)*B
             for (int k = 0; k < n; k++)
             {
-                double s = 0.0;
+                double s = 0;
 
                 for (int i = k; i < m; i++)
                     s += qr[i, k] * X[i];
@@ -302,9 +292,7 @@ namespace Accord.Math.Decompositions
                 for (int i = 0; i < columns; i++)
                 {
                     if (this.Rdiag[i] == 0)
-                    {
                         return false;
-                    }
                 }
 
                 return true;
@@ -317,7 +305,7 @@ namespace Accord.Math.Decompositions
             get
             {
                 int n = this.qr.GetLength(1);
-                double[,] x = new double[n, n];
+                var x = new double[n, n];
 
                 for (int i = 0; i < n; i++)
                 {
@@ -333,7 +321,7 @@ namespace Accord.Math.Decompositions
                         }
                         else
                         {
-                            x[i, j] = 0.0;
+                            x[i, j] = 0;
                         }
                     }
                 }
@@ -349,33 +337,27 @@ namespace Accord.Math.Decompositions
             {
                 int rows = qr.GetLength(0);
                 int cols = qr.GetLength(1);
-                double[,] x = new double[rows, cols];
+                var x = new double[rows, cols];
 
                 for (int k = cols - 1; k >= 0; k--)
                 {
                     for (int i = 0; i < rows; i++)
-                    {
-                        x[i, k] = 0.0;
-                    }
+                        x[i, k] = 0;
 
-                    x[k, k] = 1.0;
+                    x[k, k] = 1;
                     for (int j = k; j < cols; j++)
                     {
                         if (qr[k, k] != 0)
                         {
-                            double s = 0.0;
+                            double s = 0;
 
                             for (int i = k; i < rows; i++)
-                            {
                                 s += qr[i, k] * x[i, j];
-                            }
 
                             s = -s / qr[k, k];
 
                             for (int i = k; i < rows; i++)
-                            {
                                 x[i, j] += s * qr[i, k];
-                            }
                         }
                     }
                 }
@@ -399,20 +381,20 @@ namespace Accord.Math.Decompositions
             // Copy right hand side
             int m = qr.GetLength(0);
             int n = qr.GetLength(1);
-            double[,] X = new double[m, m];
+            var X = new double[m, m];
 
             // Compute Y = transpose(Q)
             for (int k = n - 1; k >= 0; k--)
             {
                 for (int i = 0; i < m; i++)
-                    X[k, i] = 0.0;
+                    X[k, i] = 0;
 
-                X[k, k] = 1.0;
+                X[k, k] = 1;
                 for (int j = k; j < n; j++)
                 {
                     if (qr[k, k] != 0)
                     {
-                        double s = 0.0;
+                        double s = 0;
 
                         for (int i = k; i < m; i++)
                             s += qr[i, k] * X[j, i];

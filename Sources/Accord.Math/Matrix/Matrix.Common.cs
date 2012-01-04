@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -38,6 +38,10 @@ namespace Accord.Math
             if (objA == null) throw new ArgumentNullException("objA");
             if (objB == null) throw new ArgumentNullException("objB");
 
+            if (objA.GetLength(0) != objB.GetLength(0) ||
+                objA.GetLength(1) != objB.GetLength(1))
+                return false;
+
             for (int i = 0; i < objA.GetLength(0); i++)
             {
                 for (int j = 0; j < objB.GetLength(1); j++)
@@ -54,7 +58,8 @@ namespace Accord.Math
         /// <summary>
         ///   Compares two matrices for equality, considering an acceptance threshold.
         /// </summary>
-        public static bool IsEqual(this float[,] objA, float[,] objB, float threshold)
+        /// 
+        public static bool IsEqual(this float[,] objA, float[,] objB, double threshold)
         {
             if (objA == null && objB == null) return true;
             if (objA == null) throw new ArgumentNullException("objA");
@@ -89,9 +94,7 @@ namespace Accord.Math
                     double x = objA[i][j], y = objB[i][j];
 
                     if (Math.Abs(x - y) > threshold || (Double.IsNaN(x) ^ Double.IsNaN(y)))
-                    {
                         return false;
-                    }
                 }
             }
             return true;
@@ -100,7 +103,7 @@ namespace Accord.Math
         /// <summary>
         ///   Compares two matrices for equality, considering an acceptance threshold.
         /// </summary>
-        public static bool IsEqual(this float[][] objA, float[][] objB, float threshold)
+        public static bool IsEqual(this float[][] objA, float[][] objB, double threshold)
         {
             if (objA == null && objB == null) return true;
             if (objA == null) throw new ArgumentNullException("objA");
@@ -141,7 +144,7 @@ namespace Accord.Math
         /// <summary>
         ///   Compares two vectors for equality, considering an acceptance threshold.
         /// </summary>
-        public static bool IsEqual(this float[] objA, float[] objB, float threshold)
+        public static bool IsEqual(this float[] objA, float[] objB, double threshold)
         {
             if (objA == null && objB == null) return true;
             if (objA == null) throw new ArgumentNullException("objA");
@@ -273,10 +276,28 @@ namespace Accord.Math
         /// <summary>
         ///   This method should not be called. Use Matrix.IsEqual instead.
         /// </summary>
+        /// 
         public static new bool Equals(object value)
         {
             throw new NotSupportedException("Use Matrix.IsEqual instead.");
         }
+
+        /// <summary>
+        ///   Returns a value indicating whether the specified
+        ///   matrix contains a value that is not a number (NaN).
+        /// </summary>
+        /// 
+        /// <param name="matrix">A double-precision multidimensional matrix.</param>
+        /// 
+        /// <returns>True if the matrix contains a value that is not a number, false otherwise.</returns>
+        /// 
+        public static bool HasNaN(this double[,] matrix)
+        {
+            foreach (var e in matrix)
+                if (Double.IsNaN(e)) return true;
+            return false;
+        }
+
         #endregion
 
 
@@ -427,7 +448,7 @@ namespace Accord.Math
         /// </summary>
         /// <param name="matrix"></param>
         /// <returns></returns>
-        public static bool IsSymmetric(this double[,] matrix)
+        public static bool IsSymmetric<T>(this T[,] matrix) where T : IComparable
         {
             if (matrix == null) throw new ArgumentNullException("matrix");
 
@@ -437,7 +458,7 @@ namespace Accord.Math
                 {
                     for (int j = 0; j <= i; j++)
                     {
-                        if (matrix[i, j] != matrix[j, i])
+                        if (matrix[i, j].CompareTo(matrix[j, i]) != 0)
                             return false;
                     }
                 }
@@ -445,6 +466,164 @@ namespace Accord.Math
             }
             return false;
         }
+
+        /// <summary>
+        ///   Returns true if a matrix is upper triangular.
+        /// </summary>
+        /// <param name="matrix"></param>
+        /// <returns></returns>
+        public static bool IsUpperTriangular<T>(this T[][] matrix) where T : IComparable
+        {
+            if (matrix == null) throw new ArgumentNullException("matrix");
+
+            T zero = default(T);
+
+            if (matrix.Length != matrix[0].Length)
+                return false;
+
+            for (int i = 0; i < matrix.Length; i++)
+                for (int j = 0; j < i; j++)
+                    if (matrix[i][j].CompareTo(zero) != 0)
+                        return false;
+
+            return true;
+        }
+
+        /// <summary>
+        ///   Returns true if a matrix is lower triangular.
+        /// </summary>
+        /// <param name="matrix"></param>
+        /// <returns></returns>
+        public static bool IsLowerTriangular<T>(this T[][] matrix) where T : IComparable
+        {
+            if (matrix == null) throw new ArgumentNullException("matrix");
+
+            T zero = default(T);
+
+            if (matrix.Length != matrix[0].Length)
+                return false;
+
+            for (int i = 0; i < matrix.Length; i++)
+                for (int j = i+1; j < matrix[i].Length; j++)
+                    if (matrix[i][j].CompareTo(zero) != 0)
+                        return false;
+
+            return true;
+        }
+
+        /// <summary>
+        ///   Returns true if a matrix is upper triangular.
+        /// </summary>
+        /// <param name="matrix"></param>
+        /// <returns></returns>
+        public static bool IsUpperTriangular<T>(this T[,] matrix) where T : IComparable
+        {
+            if (matrix == null) throw new ArgumentNullException("matrix");
+
+            T zero = default(T);
+
+            if (matrix.GetLength(0) != matrix.GetLength(1))
+                return false;
+
+            for (int i = 0; i < matrix.GetLength(0); i++)
+                for (int j = 0; j < i; j++)
+                    if (matrix[i, j].CompareTo(zero) != 0)
+                        return false;
+
+            return true;
+        }
+
+        /// <summary>
+        ///   Returns true if a matrix is lower triangular.
+        /// </summary>
+        /// <param name="matrix"></param>
+        /// <returns></returns>
+        public static bool IsLowerTriangular<T>(this T[,] matrix) where T : IComparable
+        {
+            if (matrix == null) throw new ArgumentNullException("matrix");
+
+            T zero = default(T);
+
+            if (matrix.GetLength(0) != matrix.GetLength(1))
+                return false;
+
+            for (int i = 0; i < matrix.GetLength(0); i++)
+                for (int j = i + 1; j < matrix.GetLength(1); j++)
+                    if (matrix[i, j].CompareTo(zero) != 0)
+                        return false;
+
+            return true;
+        }
+
+        /// <summary>
+        ///   Returns true if a matrix is lower triangular.
+        /// </summary>
+        /// <param name="matrix"></param>
+        /// <returns></returns>
+        public static bool IsDiagonal<T>(this T[,] matrix) where T : IComparable
+        {
+            if (matrix == null) throw new ArgumentNullException("matrix");
+
+            T zero = default(T);
+
+            if (matrix.GetLength(0) != matrix.GetLength(1))
+                return false;
+
+            for (int i = 0; i < matrix.GetLength(0); i++)
+                for (int j = 0; j < matrix.GetLength(1); j++)
+                    if (i != j && matrix[i, j].CompareTo(zero) != 0)
+                        return false;
+
+            return true;
+        }
+
+        /// <summary>
+        ///   Returns true if a matrix is lower triangular.
+        /// </summary>
+        /// <param name="matrix"></param>
+        /// <returns></returns>
+        public static bool IsDiagonal<T>(this T[][] matrix) where T : IComparable
+        {
+            if (matrix == null) throw new ArgumentNullException("matrix");
+
+            T zero = default(T);
+
+            if (matrix.Length != matrix[0].Length)
+                return false;
+
+            for (int i = 0; i < matrix.Length; i++)
+                for (int j = 0; j < matrix[i].Length; j++)
+                    if (i != j && matrix[i][j].CompareTo(zero) != 0)
+                        return false;
+
+            return true;
+        }
+
+        /// <summary>
+        ///   Returns true if a matrix is symmetric.
+        /// </summary>
+        /// <param name="matrix"></param>
+        /// <returns></returns>
+        public static bool IsSymmetric<T>(this T[][] matrix) where T : IComparable
+        {
+            if (matrix == null) throw new ArgumentNullException("matrix");
+
+            if (matrix.Length == matrix[0].Length)
+            {
+                for (int i = 0; i < matrix.Length; i++)
+                {
+                    for (int j = 0; j <= i; j++)
+                    {
+                        if (matrix[i][j].CompareTo(matrix[j][i]) != 0)
+                            return false;
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+
+
 
         /// <summary>
         ///   Gets the trace of a matrix.
@@ -462,6 +641,58 @@ namespace Accord.Math
             for (int i = 0; i < matrix.GetLength(0); i++)
                 trace += matrix[i, i];
             return trace;
+        }
+
+        /// <summary>
+        ///   Gets the trace of a matrix.
+        /// </summary>
+        /// <remarks>
+        ///   The trace of an n-by-n square matrix A is defined to be the sum of the
+        ///   elements on the main diagonal (the diagonal from the upper left to the
+        ///   lower right) of A.
+        /// </remarks>
+        public static float Trace(this float[,] matrix)
+        {
+            if (matrix == null) throw new ArgumentNullException("matrix");
+
+            float trace = 0.0f;
+            for (int i = 0; i < matrix.GetLength(0); i++)
+                trace += matrix[i, i];
+            return trace;
+        }
+
+        /// <summary>
+        ///   Gets the trace of a matrix.
+        /// </summary>
+        /// <remarks>
+        ///   The trace of an n-by-n square matrix A is defined to be the sum of the
+        ///   elements on the main diagonal (the diagonal from the upper left to the
+        ///   lower right) of A.
+        /// </remarks>
+        public static float Trace(this float[][] matrix)
+        {
+            if (matrix == null) throw new ArgumentNullException("matrix");
+
+            float trace = 0.0f;
+            for (int i = 0; i < matrix.Length; i++)
+                trace += matrix[i][i];
+            return trace;
+        }
+
+        /// <summary>
+        ///   Gets the diagonal vector from a matrix.
+        /// </summary>
+        /// <param name="matrix">A matrix.</param>
+        /// <returns>The diagonal vector from the given matrix.</returns>
+        public static T[] Diagonal<T>(this T[][] matrix)
+        {
+            if (matrix == null) throw new ArgumentNullException("matrix");
+
+            T[] r = new T[matrix.Length];
+            for (int i = 0; i < r.Length; i++)
+                r[i] = matrix[i][i];
+
+            return r;
         }
 
         /// <summary>
@@ -536,7 +767,13 @@ namespace Accord.Math
 
             double[] sum;
 
-            if (dimension == 0)
+            if (dimension == -1)
+            {
+                sum = new double[1];
+                foreach (double a in matrix)
+                    sum[0] += a;
+            }
+            else if (dimension == 0)
             {
                 sum = new double[cols];
 
@@ -675,11 +912,26 @@ namespace Accord.Math
         /// <summary>
         ///   Gets the sum of all elements in a vector.
         /// </summary>
+        /// 
         public static double Sum(this double[] vector)
         {
             if (vector == null) throw new ArgumentNullException("vector");
 
             double sum = 0.0;
+            for (int i = 0; i < vector.Length; i++)
+                sum += vector[i];
+            return sum;
+        }
+
+        /// <summary>
+        ///   Gets the sum of all elements in a vector.
+        /// </summary>
+        /// 
+        public static float Sum(this float[] vector)
+        {
+            if (vector == null) throw new ArgumentNullException("vector");
+
+            float sum = 0.0f;
             for (int i = 0; i < vector.Length; i++)
                 sum += vector[i];
             return sum;
