@@ -29,6 +29,7 @@ namespace Accord.Neuro
     /// <summary>
     ///  Nguyen-Widrow weight initializer
     /// </summary>
+    /// 
     /// <remarks>
     /// <para>The Nguyen-Widrow initialization algorithm chooses values in
     /// order to distribute the active region of each neuron in the layer
@@ -38,7 +39,7 @@ namespace Accord.Neuro
     /// same each time this function is called.</para> 
     /// </remarks>
     /// 
-    public class NguyenWidrowInitializer
+    public class NguyenWidrow
     {
         private ActivationNetwork network;
         private Range randRange;
@@ -47,8 +48,10 @@ namespace Accord.Neuro
         /// <summary>
         ///   Constructs a new Nguyen-Widrow Weight Initializer.
         /// </summary>
+        /// 
         /// <param name="network">The activation network whose weights will be initialized.</param>
-        public NguyenWidrowInitializer(ActivationNetwork network)
+        /// 
+        public NguyenWidrow(ActivationNetwork network)
         {
             this.network = network;
 
@@ -63,6 +66,7 @@ namespace Accord.Neuro
         ///   Randomizes (initializes) the weights of
         ///   the network using Nguyen-Widrow method's.
         /// </summary>
+        /// 
         public void Randomize()
         {
             Neuron.RandGenerator = Accord.Math.Tools.Random;
@@ -78,17 +82,14 @@ namespace Accord.Neuro
 
                     // Calculate the Euclidean Norm for the weights
                     for (int k = 0; k < neuron.InputsCount; k++)
-                    {
                         norm += neuron[k] * neuron[k];
-                    }
                     norm += neuron.Threshold * neuron.Threshold;
+
                     norm = System.Math.Sqrt(norm);
 
                     // Rescale the weights using beta and the norm
                     for (int k = 0; k < neuron.InputsCount; k++)
-                    {
                         neuron[k] = beta * neuron[k] / norm;
-                    }
                     neuron.Threshold = beta * neuron.Threshold / norm;
                 }
             }
