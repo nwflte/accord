@@ -2,7 +2,7 @@
 // The Accord.NET Framework (LGPL) 
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 // Copyright © Masakazu Ohtsuka, 2008
@@ -34,10 +34,14 @@
 
 namespace Accord.Vision.Detection
 {
+    using System;
     using System.Collections.Generic;
     using System.Drawing;
+    using System.Threading.Tasks;
     using Accord.Imaging;
     using AForge.Imaging;
+    using System.Collections.Concurrent;
+    using Accord.Math;
 
     /// <summary>
     ///   Object detector options for the search procedure.
@@ -55,14 +59,14 @@ namespace Accord.Vision.Detection
         ///   Only a single object will be retrieved.
         /// </summary>
         /// 
-        Single = 1,
+        Single,
 
         /// <summary>
         ///   If a object has already been detected inside an area,
         ///   it will not be scanned twice for inner/overlapping objects.
         /// </summary>
         /// 
-        NoOverlap = 2,
+        NoOverlap,
 
         // TODO: Add mode for maximum/fixed number of faces
     }
@@ -142,7 +146,15 @@ namespace Accord.Vision.Detection
         private Rectangle[] lastObjects;
         private int steadyThreshold = 2;
 
+        private int baseWidth;
+        private int baseHeight;
 
+        private int lastWidth;
+        private int lastHeight;
+        private float[] steps;
+
+
+        #region Constructors
 
         /// <summary>
         ///   Constructs a new Haar object detector.
@@ -154,8 +166,7 @@ namespace Accord.Vision.Detection
         /// </param>
         /// 
         public HaarObjectDetector(HaarCascade cascade)
-            : this(cascade, 15)
-        { }
+            : this(cascade, 15) { }
 
         /// <summary>
         ///   Constructs a new Haar object detector.
@@ -169,8 +180,7 @@ namespace Accord.Vision.Detection
         /// objects. Default value is <c>15</c>.</param>
         /// 
         public HaarObjectDetector(HaarCascade cascade, int minSize)
-            : this(cascade, minSize, ObjectDetectorSearchMode.NoOverlap)
-        { }
+            : this(cascade, minSize, ObjectDetectorSearchMode.NoOverlap) { }
 
         /// <summary>
         ///   Constructs a new Haar object detector.
@@ -187,8 +197,7 @@ namespace Accord.Vision.Detection
         /// for details. Default value is <see cref="ObjectDetectorSearchMode.NoOverlap"/></param>
         /// 
         public HaarObjectDetector(HaarCascade cascade, int minSize, ObjectDetectorSearchMode searchMode)
-            : this(cascade, minSize, searchMode, 1.2f)
-        { }
+            : this(cascade, minSize, searchMode, 1.2f) { }
 
         /// <summary>
         ///   Constructs a new Haar object detector.
@@ -206,8 +215,7 @@ namespace Accord.Vision.Detection
         /// <param name="scaleFactor">The re-scaling factor to use when re-scaling the window during search.</param>
         /// 
         public HaarObjectDetector(HaarCascade cascade, int minSize, ObjectDetectorSearchMode searchMode, float scaleFactor)
-            : this(cascade, minSize, searchMode, scaleFactor, ObjectDetectorScalingMode.SmallerToGreater)
-        { }
+            : this(cascade, minSize, searchMode, scaleFactor, ObjectDetectorScalingMode.SmallerToGreater) { }
 
         /// <summary>
         ///   Constructs a new Haar object detector.
@@ -236,8 +244,22 @@ namespace Accord.Vision.Detection
             this.ScalingMode = scalingMode;
             this.factor = scaleFactor;
             this.detectedObjects = new List<Rectangle>();
-        }
 
+            this.baseWidth = cascade.Width;
+            this.baseHeight = cascade.Height;
+        }
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        ///   Gets or sets a value indicating whether this <see cref="HaarObjectDetector"/>
+        ///   should scan the image using multiple threads.
+        /// </summary>
+        /// 
+        /// <value><c>true</c> to use multiple threads; otherwise, <c>false</c>.</value>
+        /// 
+        public bool UseParallelProcessing { get; set; }
 
         /// <summary>
         ///   Minimum window size to consider when searching objects.
@@ -276,7 +298,14 @@ namespace Accord.Vision.Detection
         public float ScalingFactor
         {
             get { return factor; }
-            set { factor = value; }
+            set
+            {
+                if (value != factor)
+                {
+                    factor = value;
+                    steps = null;
+                }
+            }
         }
 
         /// <summary>
@@ -296,7 +325,14 @@ namespace Accord.Vision.Detection
         public ObjectDetectorScalingMode ScalingMode
         {
             get { return scalingMode; }
-            set { scalingMode = value; }
+            set
+            {
+                if (value != scalingMode)
+                {
+                    scalingMode = value;
+                    steps = null;
+                }
+            }
         }
 
         /// <summary>
@@ -326,6 +362,8 @@ namespace Accord.Vision.Detection
         ///   
         public int Steady { get; private set; }
 
+        #endregion
+
 
         /// <summary>
         ///   Performs object detection on the given frame.
@@ -352,44 +390,31 @@ namespace Accord.Vision.Detection
             int width = integralImage.Width;
             int height = integralImage.Height;
 
-            int baseWidth = classifier.Cascade.Width;
-            int baseHeight = classifier.Cascade.Height;
+            // Update parameters only if different size
+            if (steps == null || width != lastWidth || height != lastHeight)
+                update(width, height);
+
 
             Rectangle window = Rectangle.Empty;
 
-            float fstart, fstop, fstep; bool inv;
+            // For each scaling step
+            for (int i = 0; i < steps.Length; i++)
+            {
+                float scaling = steps[i];
 
-            // Set initial parameters according to scaling mode
-            if (scalingMode == ObjectDetectorScalingMode.SmallerToGreater)
-            {
-                fstart = 1f;
-                fstop = System.Math.Min(width / (float)baseWidth, height / (float)baseHeight);
-                fstep = factor;
-                inv = false;
-            }
-            else
-            {
-                fstart = System.Math.Min(width / (float)baseWidth, height / (float)baseHeight);
-                fstop = 1f;
-                fstep = 1f / factor;
-                inv = true;
-            }
-
-            for (float f = fstart; (inv && f > fstop) || (!inv && f < fstop); f *= fstep)
-            {
                 // Set the classifier window scale
-                classifier.Scale = f;
+                classifier.Scale = scaling;
 
                 // Get the scaled window size
-                window.Width = (int)(baseWidth * f);
-                window.Height = (int)(baseHeight * f);
+                window.Width = (int)(baseWidth * scaling);
+                window.Height = (int)(baseHeight * scaling);
 
                 // Check if the window is lesser than the minimum size
                 if (window.Width < minSize.Width && window.Height < minSize.Height &&
                     window.Width > maxSize.Width && window.Height > maxSize.Height)
                 {
-                    // If we are in inverted operation (bigger to smaller),
-                    if (inv)
+                    // If we are searching in greater to smaller mode,
+                    if (scalingMode == ObjectDetectorScalingMode.GreaterToSmaller)
                     {
                         goto EXIT; // it won't get bigger, so we should stop.
                     }
@@ -401,48 +426,144 @@ namespace Accord.Vision.Detection
 
 
                 // Grab some scan loop parameters
-                int stepx = window.Width >> 3;
-                int stepy = window.Height >> 3;
+                int xStep = window.Width >> 3;
+                int yStep = window.Height >> 3;
 
-                int endx = width - window.Width;
-                int endy = height - window.Height;
+                int xEnd = width - window.Width;
+                int yEnd = height - window.Height;
 
-
-                // Scan the integral image searching for positives
-                for (int y = 0; y < endy; y += stepy)
+                // Check if we should run in parallel or sequential
+                if (!UseParallelProcessing)
                 {
-                    window.Y = y;
+                    // Sequential mode. Scan the integral image searching
+                    // for objects in the window without parallelization.
 
-                    for (int x = 0; x < endx; x += stepx)
+                    // For every pixel in the window column
+                    for (int y = 0; y < yEnd; y += yStep)
                     {
-                        window.X = x;
+                        window.Y = y;
 
-                        if (searchMode == ObjectDetectorSearchMode.NoOverlap && overlaps(window))
-                            continue; // We have already detected something here, moving along.
-
-                        // Try to detect and object inside the window
-                        if (classifier.Compute(integralImage, window))
+                        // For every pixel in the window row
+                        for (int x = 0; x < xEnd; x += xStep)
                         {
-                            // an object has been detected
-                            detectedObjects.Add(window);
+                            window.X = x;
 
-                            if (searchMode == ObjectDetectorSearchMode.Single)
-                                goto EXIT; // Stop on first object found
+                            if (searchMode == ObjectDetectorSearchMode.NoOverlap && overlaps(window))
+                                continue; // We have already detected something here, moving along.
+
+                            // Try to detect and object inside the window
+                            if (classifier.Compute(integralImage, window))
+                            {
+                                // an object has been detected
+                                detectedObjects.Add(window);
+
+                                if (searchMode == ObjectDetectorSearchMode.Single)
+                                    goto EXIT; // Stop on first object found
+                            }
                         }
                     }
                 }
+
+                else
+                {
+                    // Parallel mode. Scan the integral image searching
+                    // for objects in the window with parallelization.
+                    ConcurrentBag<Rectangle> bag = new ConcurrentBag<Rectangle>();
+
+                    int numSteps = (int)Math.Ceiling((double)yEnd / yStep);
+
+                    // For each pixel in the window column
+                    Parallel.For(0, numSteps, (j, options) =>
+                    {
+                        int y = j * yStep;
+
+                        // Create a local window reference
+                        Rectangle localWindow = window;
+
+                        localWindow.Y = y;
+
+                        // For each pixel in the window row
+                        for (int x = 0; x < xEnd; x += xStep)
+                        {
+                            if (options.ShouldExitCurrentIteration) return;
+
+                            localWindow.X = x;
+
+                            // Try to detect and object inside the window
+                            if (classifier.Compute(integralImage, localWindow))
+                            {
+                                // an object has been detected
+                                bag.Add(localWindow);
+
+                                if (searchMode == ObjectDetectorSearchMode.Single)
+                                    options.Stop();
+                            }
+                        }
+                    });
+
+                    // If required, avoid adding overlapping objects at
+                    // the expense of extra computation. Otherwise, only
+                    // add objects to the detected objects collection.
+                    if (searchMode == ObjectDetectorSearchMode.NoOverlap)
+                    {
+                        foreach (Rectangle obj in bag)
+                            if (!overlaps(obj)) detectedObjects.Add(obj);
+                    }
+                    else if (searchMode == ObjectDetectorSearchMode.Single)
+                    {
+                        if (bag.TryPeek(out window))
+                        {
+                            detectedObjects.Add(window);
+                            goto EXIT;
+                        }
+                    }
+                    else
+                    {
+                        foreach (Rectangle obj in bag)
+                            detectedObjects.Add(obj);
+                    }
+                }
             }
+
 
         EXIT:
 
             Rectangle[] objects = detectedObjects.ToArray();
 
             checkSteadiness(objects);
-
             lastObjects = objects;
 
-            // Returns the array of detected objects.
-            return objects;
+            return objects; // Returns the array of detected objects.
+        }
+
+        private void update(int width, int height)
+        {
+            List<float> listSteps = new List<float>();
+
+            // Set initial parameters according to scaling mode
+            if (scalingMode == ObjectDetectorScalingMode.SmallerToGreater)
+            {
+                float start = 1f;
+                float stop = Math.Min(width / (float)baseWidth, height / (float)baseHeight);
+                float step = factor;
+
+                for (float f = start; f < stop; f *= step)
+                    listSteps.Add(f);
+            }
+            else
+            {
+                float start = Math.Min(width / (float)baseWidth, height / (float)baseHeight);
+                float stop = 1f;
+                float step = 1f / factor;
+
+                for (float f = start; f > stop; f *= step)
+                    listSteps.Add(f);
+            }
+
+            steps = listSteps.ToArray();
+
+            lastWidth = width;
+            lastHeight = height;
         }
 
         private void checkSteadiness(Rectangle[] rectangles)

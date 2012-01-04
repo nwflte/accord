@@ -2,7 +2,7 @@
 // The Accord.NET Framework (LGPL)
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -29,6 +29,13 @@ namespace Accord.Vision.Detection
     /// <summary>
     ///   Automatic transcriber for Haar cascades.
     /// </summary>
+    /// 
+    /// <remarks>
+    ///   This class can be used to generate code-only definitions for Haar cascades,
+    ///   avoiding the need for loading and parsing XML files during application startup.
+    ///   This class generates a C# code for a class inheriting from <see cref="HaarCascade"/>
+    ///   which may be used to create a <see cref="HaarObjectDetector"/>.
+    /// </remarks>
     /// 
     public class HaarCascadeWriter
     {

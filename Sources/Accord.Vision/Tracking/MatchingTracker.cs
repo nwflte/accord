@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -39,7 +39,7 @@ namespace Accord.Vision.Tracking
         private UnmanagedImage template;
         private Crop crop;
         private TrackingObject trackingObject;
-        private double threshold = 0.9;
+        private double threshold = 0.95;
 
         private int steady;
 
@@ -123,11 +123,18 @@ namespace Accord.Vision.Tracking
 
         private void track(UnmanagedImage frame)
         {
-            if (SearchWindow.Width < template.Width ||
+            if (searchWindow.Width < template.Width)
+                searchWindow.Width = template.Width;
+            if (searchWindow.Height < template.Height)
+                searchWindow.Height = template.Height;
+
+            searchWindow.Intersect(new Rectangle(0, 0, frame.Width, frame.Height));
+
+            if (searchWindow.Width < template.Width || 
                 searchWindow.Height < template.Height)
             {
-                searchWindow.Inflate((int)(0.4f * searchWindow.Width),
-                                     (int)(0.4f * searchWindow.Height));
+                searchWindow.Inflate((int)(0.2f * searchWindow.Width),
+                                     (int)(0.2f * searchWindow.Height));
                 return;
             }
 
@@ -148,20 +155,20 @@ namespace Accord.Vision.Tracking
                 Reset(); return;
             }
 
-            if (obj.Similarity >= 0.99)
-            {
-                registerTemplate(frame, obj.Rectangle);
-            }
+             if (obj.Similarity >= 0.99)
+             {
+                 registerTemplate(frame, obj.Rectangle);
+             }
 
 
             // Compute a new window size
             searchWindow = obj.Rectangle;
 
             if (obj.Similarity < 0.98)
-                searchWindow.Inflate((int)(0.4f * width), (int)(0.4f * height));
+                searchWindow.Inflate((int)(0.2f * width), (int)(0.2f * height));
 
             else
-                searchWindow.Inflate((int)(0.2f * width), (int)(0.3f * height));
+                searchWindow.Inflate((int)(0.1f * width), (int)(0.1f * height));
         }
 
         private bool checkSteadiness(TemplateMatch match)
@@ -180,7 +187,6 @@ namespace Accord.Vision.Tracking
 
         private TemplateMatch match(UnmanagedImage frame)
         {
-            searchWindow.Intersect(new Rectangle(0, 0, frame.Width, frame.Height));
             TemplateMatch[] matchings = matcher.ProcessImage(frame, template, searchWindow);
 
             // Select highest match
@@ -195,6 +201,7 @@ namespace Accord.Vision.Tracking
                     max = match.Similarity;
                 }
             }
+
             return match;
         }
 

@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -33,48 +33,58 @@ namespace Accord.Vision.Tracking
     /// <summary>
     ///   Axis orientation.
     /// </summary>
+    /// 
     public enum AxisOrientation
     {
         /// <summary>
         ///   Horizontal axis.
         /// </summary>
         Horizontal,
+
         /// <summary>
         ///   Vertical axis.
         /// </summary>
         Vertical
+
     }
 
     /// <summary>
     ///   Tracking object to represent an object in a scene.
     /// </summary>
+    /// 
     public class TrackingObject
     {
 
         /// <summary>
         /// Gets or sets an user-defined tag associated with this object.
         /// </summary>
+        /// 
         public object Tag { get; set; }
 
         /// <summary>
         ///   Gets or sets the rectangle containing the object.
         /// </summary>
+        /// 
         public Rectangle Rectangle { get; set; }
 
         /// <summary>
         ///   Gets or sets the center of the object.
         /// </summary>
+        /// 
         public IntPoint Center { get; set; }
 
         /// <summary>
         ///   Gets or sets the object's extracted image.
         /// </summary>
+        /// 
         public UnmanagedImage Image { get; set; }
 
         /// <summary>
         /// Gets a value indicating whether the object is empty.
         /// </summary>
+        /// 
         /// <value><c>true</c> if this instance is empty; otherwise, <c>false</c>.</value>
+        /// 
         public bool IsEmpty
         {
             get { return Rectangle.IsEmpty; }
@@ -83,6 +93,7 @@ namespace Accord.Vision.Tracking
         /// <summary>
         ///   Gets the area of the object.
         /// </summary>
+        /// 
         public int Area
         {
             get { return Rectangle.Width * Rectangle.Height; }
@@ -91,11 +102,13 @@ namespace Accord.Vision.Tracking
         /// <summary>
         ///   Gets or sets the angle of the object.
         /// </summary>
+        /// 
         public float Angle { get; set; }
 
         /// <summary>
         ///   Constructs a new tracking object.
         /// </summary>
+        /// 
         public TrackingObject()
         {
         }
@@ -103,6 +116,7 @@ namespace Accord.Vision.Tracking
         /// <summary>
         ///   Constructs a new tracking object.
         /// </summary>
+        /// 
         public TrackingObject(IntPoint center)
         {
             this.Center = center;
@@ -111,6 +125,7 @@ namespace Accord.Vision.Tracking
         /// <summary>
         ///   Constructs a new tracking object.
         /// </summary>
+        /// 
         public TrackingObject(Rectangle rectangle, IntPoint center, float angle)
         {
             this.Rectangle = rectangle;
@@ -121,6 +136,7 @@ namespace Accord.Vision.Tracking
         /// <summary>
         ///   Gets two points defining the horizontal axis of the object.
         /// </summary>
+        /// 
         public LineSegment GetAxis()
         {
             return GetAxis(AxisOrientation.Horizontal);
@@ -129,6 +145,7 @@ namespace Accord.Vision.Tracking
         /// <summary>
         ///   Gets two points defining the axis of the object.
         /// </summary>
+        /// 
         public LineSegment GetAxis(AxisOrientation axis)
         {
             double x1, y1;
@@ -163,6 +180,7 @@ namespace Accord.Vision.Tracking
         /// <summary>
         ///   Resets this tracking object.
         /// </summary>
+        /// 
         public void Reset()
         {
             this.Rectangle = Rectangle.Empty;
@@ -170,5 +188,6 @@ namespace Accord.Vision.Tracking
             this.Image = null;
             this.Angle = 0;
         }
+
     }
 }

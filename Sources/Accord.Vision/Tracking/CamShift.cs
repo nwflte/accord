@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 // Copyright © Benjamin Jung, 2009
@@ -133,6 +133,12 @@ namespace Accord.Vision.Tracking
         private const int MAX_ITERATIONS = 10;
 
         private IMovingStatistics angleHistory;
+
+        private IMovingStatistics yHistory;
+        private IMovingStatistics xHistory;
+        private IMovingStatistics widthHistory;
+        private IMovingStatistics heightHistory;
+
         private int unstableCounter;
 
         private Object sync = new Object();
@@ -190,7 +196,13 @@ namespace Accord.Vision.Tracking
             this.trackingObject = new TrackingObject();
             this.searchWindow = objectArea;
             this.mode = colorMode;
+
             this.angleHistory = new MovingCircularStatistics(4);
+
+            this.widthHistory = new MovingNormalStatistics(15);
+            this.heightHistory = new MovingNormalStatistics(15);
+            this.yHistory = new MovingNormalStatistics(15);
+            this.xHistory = new MovingNormalStatistics(15);
 
             if (frame != null && objectArea != Rectangle.Empty)
             {
@@ -317,10 +329,16 @@ namespace Accord.Vision.Tracking
         public void Reset()
         {
             this.unstableCounter = 0;
-            this.angleHistory.Clear();
+
             this.originalHistogram = null;
             this.IsSteady = false;
             this.trackingObject.Reset();
+
+            this.angleHistory.Clear();
+            this.heightHistory.Clear();
+            this.widthHistory.Clear();
+            this.xHistory.Clear();
+            this.yHistory.Clear();
         }
 
 
@@ -496,6 +514,17 @@ namespace Accord.Vision.Tracking
             if (extract)
             {
                 Rectangle inner = rec;
+
+                xHistory.Push(rec.X);
+                yHistory.Push(rec.Y);
+                widthHistory.Push(rec.Width);
+                heightHistory.Push(rec.Height);
+
+                inner.X = (int)xHistory.Mean;
+                inner.Y = (int)yHistory.Mean;
+                inner.Width = (int)widthHistory.Mean;
+                inner.Height = (int)heightHistory.Mean;
+
                 inner.Intersect(area);
 
                 Crop crop = new Crop(inner);
