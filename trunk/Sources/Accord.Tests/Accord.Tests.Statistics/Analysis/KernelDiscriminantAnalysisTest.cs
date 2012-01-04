@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -20,31 +20,20 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics.Analysis;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Accord.Statistics.Kernels;
-using Accord.Math;
-using System;
-
 namespace Accord.Tests.Statistics
 {
+    using Accord.Statistics.Analysis;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Accord.Statistics.Kernels;
+    using Accord.Math;
+    using System;
 
-
-    /// <summary>
-    ///This is a test class for KernelDiscriminantAnalysisTest and is intended
-    ///to contain all KernelDiscriminantAnalysisTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class KernelDiscriminantAnalysisTest
     {
 
-
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -87,10 +76,10 @@ namespace Accord.Tests.Statistics
         //
         #endregion
 
+
         [TestMethod()]
         public void ClassifyTest()
         {
-
             // Create some sample input data
 
             // This is the same data used in the example by Gutierrez-Osuna
@@ -184,7 +173,7 @@ namespace Accord.Tests.Statistics
         }
 
         [TestMethod()]
-        public void KDAComputeTest()
+        public void ComputeTest()
         {
             double[,] inputs = 
             {
@@ -212,52 +201,7 @@ namespace Accord.Tests.Statistics
         }
 
         [TestMethod()]
-        public void ThresholdTest()
-        {
-            double[,] inputs = 
-            {
-                { 1 },
-                { 2 },
-                { 3 },
-            };
-
-            int[] output = { 0, 1, 1 };
-
-            IKernel kernel = new Gaussian(0.1);
-
-            KernelDiscriminantAnalysis target = new KernelDiscriminantAnalysis(inputs, output, kernel);
-
-            bool thrown = false;
-            try { target.Threshold = -1; }
-            catch (ArgumentOutOfRangeException) { thrown = true; }
-            Assert.IsTrue(thrown);
-
-            thrown = false;
-            try { target.Threshold = 1.1; }
-            catch (ArgumentOutOfRangeException) { thrown = true; }
-            Assert.IsTrue(thrown);
-
-            target.Threshold = 1.0;
-
-            target.Compute();
-
-            Assert.AreEqual(2, target.Classes.Count);
-            Assert.AreEqual(0, target.Classes[0].Number);
-            Assert.AreEqual(1, target.Classes[0].Indices.Length);
-            Assert.AreEqual(0, target.Classes[0].Indices[0]);
-            Assert.AreEqual(1, target.Classes[1].Number);
-            Assert.AreEqual(2, target.Classes[1].Indices.Length);
-            Assert.AreEqual(1, target.Classes[1].Indices[0]);
-            Assert.AreEqual(2, target.Classes[1].Indices[1]);
-            Assert.AreEqual(0, target.CumulativeProportions.Length);
-            Assert.AreEqual(3, target.DiscriminantMatrix.GetLength(0)); // dimension
-            Assert.AreEqual(0, target.DiscriminantMatrix.GetLength(1)); // components kept
-            Assert.AreEqual(0, target.DiscriminantProportions.Length);
-            Assert.AreEqual(0, target.Discriminants.Count);
-        }
-
-        [TestMethod()]
-        public void KDAComputeTest2()
+        public void ComputeTest2()
         {
             // Scholkopf KPCA toy example
             double[,] inputs =
@@ -338,6 +282,50 @@ namespace Accord.Tests.Statistics
             Assert.IsTrue(Matrix.IsEqual(result, projection));
         }
 
+        [TestMethod()]
+        public void ThresholdTest()
+        {
+            double[,] inputs = 
+            {
+                { 1 },
+                { 2 },
+                { 3 },
+            };
+
+            int[] output = { 0, 1, 1 };
+
+            IKernel kernel = new Gaussian(0.1);
+
+            KernelDiscriminantAnalysis target = new KernelDiscriminantAnalysis(inputs, output, kernel);
+
+            bool thrown = false;
+            try { target.Threshold = -1; }
+            catch (ArgumentOutOfRangeException) { thrown = true; }
+            Assert.IsTrue(thrown);
+
+            thrown = false;
+            try { target.Threshold = 1.1; }
+            catch (ArgumentOutOfRangeException) { thrown = true; }
+            Assert.IsTrue(thrown);
+
+            target.Threshold = 1.0;
+
+            target.Compute();
+
+            Assert.AreEqual(2, target.Classes.Count);
+            Assert.AreEqual(0, target.Classes[0].Number);
+            Assert.AreEqual(1, target.Classes[0].Indices.Length);
+            Assert.AreEqual(0, target.Classes[0].Indices[0]);
+            Assert.AreEqual(1, target.Classes[1].Number);
+            Assert.AreEqual(2, target.Classes[1].Indices.Length);
+            Assert.AreEqual(1, target.Classes[1].Indices[0]);
+            Assert.AreEqual(2, target.Classes[1].Indices[1]);
+            Assert.AreEqual(0, target.CumulativeProportions.Length);
+            Assert.AreEqual(3, target.DiscriminantMatrix.GetLength(0)); // dimension
+            Assert.AreEqual(0, target.DiscriminantMatrix.GetLength(1)); // components kept
+            Assert.AreEqual(0, target.DiscriminantProportions.Length);
+            Assert.AreEqual(0, target.Discriminants.Count);
+        }
 
     }
 }

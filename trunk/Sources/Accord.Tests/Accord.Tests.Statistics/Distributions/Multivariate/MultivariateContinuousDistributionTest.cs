@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -20,21 +20,16 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics.Distributions.Multivariate;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Accord.Statistics.Distributions;
-using Accord.Math;
-using System;
-using Accord.Statistics.Distributions.Fitting;
-
 namespace Accord.Tests.Statistics
 {
+    using Accord.Statistics.Distributions.Multivariate;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Accord.Statistics.Distributions;
+    using Accord.Math;
+    using System;
+    using Accord.Statistics.Distributions.Fitting;
 
 
-    /// <summary>
-    ///This is a test class for MultivariateContinuousDistributionTest and is intended
-    ///to contain all MultivariateContinuousDistributionTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class MultivariateContinuousDistributionTest
     {
@@ -42,10 +37,6 @@ namespace Accord.Tests.Statistics
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -88,6 +79,7 @@ namespace Accord.Tests.Statistics
         //
         #endregion
 
+
         internal virtual MultivariateContinuousDistribution CreateMultivariateContinuousDistribution()
         {
             double[] mean = { 0.2, 4.2 };
@@ -100,9 +92,6 @@ namespace Accord.Tests.Statistics
             return new MultivariateNormalDistribution(mean, cov);
         }
 
-        /// <summary>
-        ///A test for Variance
-        ///</summary>
         [TestMethod()]
         public void VarianceTest()
         {
@@ -112,9 +101,6 @@ namespace Accord.Tests.Statistics
             Assert.IsTrue(expected.IsEqual(actual));
         }
 
-        /// <summary>
-        ///A test for Mean
-        ///</summary>
         [TestMethod()]
         public void MeanTest()
         {
@@ -124,9 +110,6 @@ namespace Accord.Tests.Statistics
             Assert.IsTrue(expected.IsEqual(actual));
         }
 
-        /// <summary>
-        ///A test for Dimension
-        ///</summary>
         [TestMethod()]
         public void DimensionTest()
         {
@@ -136,9 +119,6 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(expected, actual);
         }
 
-        /// <summary>
-        ///A test for Covariance
-        ///</summary>
         [TestMethod()]
         public void CovarianceTest()
         {
@@ -152,9 +132,6 @@ namespace Accord.Tests.Statistics
             Assert.IsTrue(expected.IsEqual(actual));
         }
 
-        /// <summary>
-        ///A test for ProbabilityDensityFunction
-        ///</summary>
         [TestMethod()]
         public void ProbabilityDensityFunctionTest()
         {
@@ -165,9 +142,16 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(expected, actual, 1e-10);
         }
 
-        /// <summary>
-        ///A test for Fit
-        ///</summary>
+        [TestMethod()]
+        public void LogProbabilityDensityFunctionTest()
+        {
+            MultivariateContinuousDistribution target = CreateMultivariateContinuousDistribution();
+            double[] x = { 0.4, 2 };
+            double expected = System.Math.Log(0.032309150392899);
+            double actual = target.LogProbabilityDensityFunction(x);
+            Assert.AreEqual(expected, actual, 1e-10);
+        }
+
         [TestMethod()]
         public void FitTest7()
         {
@@ -204,9 +188,6 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(expected, actual, 1e-10);
         }
 
-        /// <summary>
-        ///A test for Fit
-        ///</summary>
         [TestMethod()]
         public void FitTest6()
         {
@@ -239,9 +220,6 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(expected, actual, 1e-10);
         }
 
-        /// <summary>
-        ///A test for Fit
-        ///</summary>
         [TestMethod()]
         public void FitTest5()
         {
@@ -287,9 +265,6 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(false, thrown);
         }
 
-        /// <summary>
-        ///A test for Fit
-        ///</summary>
         [TestMethod()]
         public void FitTest4()
         {
@@ -333,9 +308,6 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(false, thrown);
         }
 
-        /// <summary>
-        ///A test for Accord.Statistics.Distributions.IDistribution.ProbabilityFunction
-        ///</summary>
         [TestMethod()]
         [DeploymentItem("Accord.Statistics.dll")]
         public void ProbabilityFunctionTest()
@@ -347,9 +319,18 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(expected, actual, 1e-10);
         }
 
-        /// <summary>
-        ///A test for Accord.Statistics.Distributions.IDistribution.Fit
-        ///</summary>
+
+        [TestMethod()]
+        [DeploymentItem("Accord.Statistics.dll")]
+        public void LogProbabilityFunctionTest()
+        {
+            IDistribution target = CreateMultivariateContinuousDistribution();
+            double[] x = { 0.4, 2 };
+            double expected = System.Math.Log(0.032309150392899);
+            double actual = target.LogProbabilityFunction(x);
+            Assert.AreEqual(expected, actual, 1e-10);
+        }
+
         [TestMethod()]
         [DeploymentItem("Accord.Statistics.dll")]
         public void FitTest3()

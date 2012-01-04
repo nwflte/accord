@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -158,6 +158,19 @@ namespace Accord.Tests.Statistics
         }
 
         [TestMethod()]
+        public void LogProbabilityDistributionFunctionTest()
+        {
+            FDistribution f = new FDistribution(2, 3);
+
+            double expected = System.Math.Log(0.487139289628747);
+            double actual = f.LogProbabilityDensityFunction(0.5);
+
+            Assert.AreEqual(expected, actual, 1e-6);
+        }
+
+
+
+        [TestMethod()]
         public void ProbabilityDistributionFunctionTest2()
         {
             FDistribution f = new FDistribution(2, 2);
@@ -174,6 +187,32 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(new FDistribution(8, 8).ProbabilityDensityFunction(3), 0.0577, 1e-4);
             Assert.AreEqual(new FDistribution(9, 9).ProbabilityDensityFunction(3), 0.0532, 1e-4);
             Assert.AreEqual(new FDistribution(10, 10).ProbabilityDensityFunction(3), 0.0487, 1e-4);
+        }
+
+        [TestMethod()]
+        public void LogProbabilityDistributionFunctionTest2()
+        {
+            FDistribution f = new FDistribution(2, 2);
+            double actual;
+            double expected;
+            double x;
+
+            for (int i = 1; i <= 6; i++)
+            {
+                x = i;
+                actual = f.LogProbabilityDensityFunction(x);
+                expected = System.Math.Log(f.ProbabilityDensityFunction(x));
+                Assert.AreEqual(expected, actual, 1e-10);
+            }
+
+            for (int i = 5; i <= 10; i++)
+            {
+                f = new FDistribution(i, i);
+                x = 3;
+                actual = f.LogProbabilityDensityFunction(x);
+                expected = System.Math.Log(f.ProbabilityDensityFunction(x));
+                Assert.AreEqual(expected, actual, 1e-10);
+            }
         }
 
     }

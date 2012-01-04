@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -126,9 +126,6 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(expected, actual);
         }
 
-        /// <summary>
-        ///A test for ProbabilityDensityFunction
-        ///</summary>
         [TestMethod()]
         public void ProbabilityDensityFunctionTest()
         {
@@ -158,6 +155,37 @@ namespace Accord.Tests.Statistics
             expected = 0.0077650207237835792;
             actual = target.ProbabilityDensityFunction(4.2);
             Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod()]
+        public void LogProbabilityDensityFunctionTest()
+        {
+            TDistribution target = new TDistribution(1);
+            double expected = System.Math.Log(0.31830988618379075);
+            double actual = target.LogProbabilityDensityFunction(0);
+            Assert.AreEqual(expected, actual);
+
+            expected = System.Math.Log(0.017076710632177614);
+            actual = target.LogProbabilityDensityFunction(4.2);
+            Assert.AreEqual(expected, actual,1e-6);
+
+            target = new TDistribution(2);
+            expected = System.Math.Log(0.35355339059327379);
+            actual = target.LogProbabilityDensityFunction(0);
+            Assert.AreEqual(expected, actual, 1e-6);
+
+            expected = System.Math.Log(0.011489146700777093);
+            actual = target.LogProbabilityDensityFunction(4.2);
+            Assert.AreEqual(expected, actual, 1e-6);
+
+            target = new TDistribution(3);
+            expected = System.Math.Log(0.36755259694786141);
+            actual = target.LogProbabilityDensityFunction(0);
+            Assert.AreEqual(expected, actual, 1e-6);
+
+            expected = System.Math.Log(0.0077650207237835792);
+            actual = target.LogProbabilityDensityFunction(4.2);
+            Assert.AreEqual(expected, actual, 1e-6);
         }
 
         [TestMethod()]

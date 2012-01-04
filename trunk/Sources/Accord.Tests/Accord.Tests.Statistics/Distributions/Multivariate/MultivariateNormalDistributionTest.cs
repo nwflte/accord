@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -101,6 +101,25 @@ namespace Accord.Tests.Statistics
             double[] x = { 1.2, -0.8 };
             double expected = 0.446209421363460;
             double actual = target.ProbabilityDensityFunction(x);
+
+            Assert.AreEqual(expected, actual, 0.00000001);
+        }
+
+        [TestMethod()]
+        public void LogProbabilityDensityFunctionTest()
+        {
+            double[] mean = { 1, -1 };
+            double[,] covariance = 
+            {
+                { 0.9, 0.4 },
+                { 0.4, 0.3 },
+            };
+
+            var target = new MultivariateNormalDistribution(mean, covariance);
+
+            double[] x = { 1.2, -0.8 };
+            double expected = System.Math.Log(0.446209421363460);
+            double actual = target.LogProbabilityDensityFunction(x);
 
             Assert.AreEqual(expected, actual, 0.00000001);
         }

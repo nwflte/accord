@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -20,14 +20,14 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics.Models.Markov;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Accord.Math;
-using Accord.Statistics.Models.Markov.Learning;
-using Accord.Statistics.Models.Markov.Topology;
 namespace Accord.Tests.Statistics
 {
-
+    using Accord.Statistics.Models.Markov;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Accord.Math;
+    using Accord.Statistics.Models.Markov.Learning;
+    using Accord.Statistics.Models.Markov.Topology;
+    using System;
 
     /// <summary>
     ///This is a test class for HiddenMarkovModelTest and is intended
@@ -112,9 +112,9 @@ namespace Accord.Tests.Statistics
 
             Assert.AreEqual(2, hmm.States);
             Assert.AreEqual(4, hmm.Symbols);
-            Assert.IsTrue(A.IsEqual(hmm.Transitions));
-            Assert.IsTrue(B.IsEqual(hmm.Emissions));
-            Assert.IsTrue(pi.IsEqual(hmm.Probabilities));
+            Assert.IsTrue(Matrix.Log(A).IsEqual(hmm.Transitions));
+            Assert.IsTrue(Matrix.Log(B).IsEqual(hmm.LogEmissions));
+            Assert.IsTrue(Matrix.Log(pi).IsEqual(hmm.Probabilities));
 
 
 
@@ -136,17 +136,17 @@ namespace Accord.Tests.Statistics
 
             Assert.AreEqual(2, hmm.States);
             Assert.AreEqual(4, hmm.Symbols);
-            Assert.IsTrue(A.IsEqual(hmm.Transitions));
-            Assert.IsTrue(B.IsEqual(hmm.Emissions));
-            Assert.IsTrue(pi.IsEqual(hmm.Probabilities));
+            Assert.IsTrue(Matrix.Log(A).IsEqual(hmm.Transitions));
+            Assert.IsTrue(Matrix.Log(B).IsEqual(hmm.LogEmissions));
+            Assert.IsTrue(Matrix.Log(pi).IsEqual(hmm.Probabilities));
 
 
             hmm = new HiddenMarkovModel(A, B, pi);
             Assert.AreEqual(2, hmm.States);
             Assert.AreEqual(4, hmm.Symbols);
-            Assert.IsTrue(A.IsEqual(hmm.Transitions));
-            Assert.IsTrue(B.IsEqual(hmm.Emissions));
-            Assert.IsTrue(pi.IsEqual(hmm.Probabilities));
+            Assert.IsTrue(Matrix.Log(A).IsEqual(hmm.Transitions));
+            Assert.IsTrue(Matrix.Log(B).IsEqual(hmm.LogEmissions));
+            Assert.IsTrue(Matrix.Log(pi).IsEqual(hmm.Probabilities));
         }
 
         [TestMethod()]
@@ -173,13 +173,13 @@ namespace Accord.Tests.Statistics
 
             HiddenMarkovModel hmm = new HiddenMarkovModel(transition, emission, initial);
 
-            double probability;
+            double logLikelihood;
             int[] sequence = new int[] { 0, 1, 2 };
-            int[] path = hmm.Decode(sequence, out probability);
+            int[] path = hmm.Decode(sequence, out logLikelihood);
 
-            double expected = 0.01344;
+            double expected = Math.Log(0.01344);
 
-            Assert.AreEqual(probability, expected, 1e-10);
+            Assert.AreEqual(logLikelihood, expected, 1e-10);
             Assert.AreEqual(path[0], 1);
             Assert.AreEqual(path[1], 0);
             Assert.AreEqual(path[2], 0);
@@ -208,15 +208,19 @@ namespace Accord.Tests.Statistics
 
             double ll = teacher.Run(sequences);
 
-            double p0; hmm.Decode(sequences[0], out p0);
-            double p1; hmm.Decode(sequences[1], out p1);
-            double p2; hmm.Decode(sequences[2], out p2);
+            double l0; hmm.Decode(sequences[0], out l0);
+            double l1; hmm.Decode(sequences[1], out l1);
+            double l2; hmm.Decode(sequences[2], out l2);
 
-            double l0 = System.Math.Exp(ll);
-            Assert.AreEqual(l0, 0.013521513735420035, 1e-10);
-            Assert.AreEqual(p0, 0.014012065043262294, 1e-10);
-            Assert.AreEqual(p1, 0.016930905415294094, 1e-10);
-            Assert.AreEqual(p2, 0.001936595918966074, 1e-10);
+            double pl = System.Math.Exp(ll);
+            double p0 = System.Math.Exp(l0);
+            double p1 = System.Math.Exp(l1);
+            double p2 = System.Math.Exp(l2);
+
+            Assert.AreEqual(0.49788370872923726, pl, 1e-10);
+            Assert.AreEqual(0.014012065043262294, p0, 1e-10);
+            Assert.AreEqual(0.016930905415294094, p1, 1e-10);
+            Assert.AreEqual(0.001936595918966074, p2, 1e-10);
         }
 
         [TestMethod()]
@@ -268,7 +272,7 @@ namespace Accord.Tests.Statistics
                 Tolerance = 0
             };
 
-            double ll = teacher.Run(observation2);
+            double ll = teacher.Run(observation);
 
 
             double[] pi = { 1.0, 0.0 };
@@ -281,14 +285,19 @@ namespace Accord.Tests.Statistics
 
             double[,] B =
             {
-                { 0.6, 0.1, 0.3},
-                { 0.1, 0.7, 0.2}
+                { 0.6, 0.1, 0.3 },
+                { 0.1, 0.7, 0.2 }
             };
 
+            
+            var hmmA = Matrix.Exp(hmm.Transitions);
+            var hmmB = Matrix.Exp(hmm.LogEmissions);
+            var hmmP = Matrix.Exp(hmm.Probabilities);
 
-            Assert.IsTrue(Matrix.IsEqual(A, hmm.Transitions, 0.22));
-            Assert.IsTrue(Matrix.IsEqual(B, hmm.Emissions, 0.11));
-            Assert.IsTrue(Matrix.IsEqual(pi, hmm.Probabilities));
+
+            Assert.IsTrue(Matrix.IsEqual(A, hmmA, 0.1));
+            Assert.IsTrue(Matrix.IsEqual(B, hmmB, 0.1));
+            Assert.IsTrue(Matrix.IsEqual(pi, hmmP));
         }
 
 
@@ -335,14 +344,21 @@ namespace Accord.Tests.Statistics
             double l5; hmm.Decode(new int[] { 0, 1, 0, 1, 1, 1, 1, 1, 1 }, out l5); // 0.0002
             double l6; hmm.Decode(new int[] { 0, 1, 1, 1, 1, 1, 1, 0, 1 }, out l6); // 0.0002
 
-            double l0 = System.Math.Exp(ll);
-            Assert.AreEqual(l0, 0.3067926453804403, 1e-4);
-            Assert.AreEqual(l1, 0.4999419764097881, 1e-4);
-            Assert.AreEqual(l2, 0.1145702973735144, 1e-4);
-            Assert.AreEqual(l3, 0.0000529972606821, 1e-4);
-            Assert.AreEqual(l4, 0.0000000000000001, 1e-4);
-            Assert.AreEqual(l5, 0.0002674509390361, 1e-4);
-            Assert.AreEqual(l6, 0.0002674509390361, 1e-4);
+            ll = System.Math.Exp(ll);
+            l1 = System.Math.Exp(l1);
+            l2 = System.Math.Exp(l2);
+            l3 = System.Math.Exp(l3);
+            l4 = System.Math.Exp(l4);
+            l5 = System.Math.Exp(l5);
+            l6 = System.Math.Exp(l6);
+
+            Assert.AreEqual(0.95151126952069587, ll, 1e-4);
+            Assert.AreEqual(0.4999419764097881, l1, 1e-4);
+            Assert.AreEqual(0.1145702973735144, l2, 1e-4);
+            Assert.AreEqual(0.0000529972606821, l3, 1e-4);
+            Assert.AreEqual(0.0000000000000001, l4, 1e-4);
+            Assert.AreEqual(0.0002674509390361, l5, 1e-4);
+            Assert.AreEqual(0.0002674509390361, l6, 1e-4);
 
             Assert.IsTrue(l1 > l3 && l1 > l4);
             Assert.IsTrue(l2 > l3 && l2 > l4);
@@ -389,14 +405,21 @@ namespace Accord.Tests.Statistics
             double l5 = hmm.Evaluate(new int[] { 0, 1, 0, 1, 1, 1, 1, 1, 1 }); // 0.034
             double l6 = hmm.Evaluate(new int[] { 0, 1, 1, 1, 1, 1, 1, 0, 1 }); // 0.034
 
-            double l0 = System.Math.Exp(ll);
-            Assert.AreEqual(l0, 0.30679264538043993, 1e-6);
-            Assert.AreEqual(l1, 0.99996863060890995, 1e-6);
-            Assert.AreEqual(l2, 0.91667240076011669, 1e-6);
-            Assert.AreEqual(l3, 0.00002335133758386, 1e-6);
-            Assert.AreEqual(l4, 0.00000000000000012, 1e-6);
-            Assert.AreEqual(l5, 0.034237231443226858, 1e-6);
-            Assert.AreEqual(l6, 0.034237195920532461, 1e-6);
+            double pl = System.Math.Exp(ll);
+            double p1 = System.Math.Exp(l1);
+            double p2 = System.Math.Exp(l2);
+            double p3 = System.Math.Exp(l3);
+            double p4 = System.Math.Exp(l4);
+            double p5 = System.Math.Exp(l5);
+            double p6 = System.Math.Exp(l6);
+
+            Assert.AreEqual(0.95151126952069587, pl, 1e-6);
+            Assert.AreEqual(0.99996863060890995, p1, 1e-6);
+            Assert.AreEqual(0.91667240076011669, p2, 1e-6);
+            Assert.AreEqual(0.00002335133758386, p3, 1e-6);
+            Assert.AreEqual(0.00000000000000012, p4, 1e-6);
+            Assert.AreEqual(0.034237231443226858, p5, 1e-6);
+            Assert.AreEqual(0.034237195920532461, p6, 1e-6);
 
             Assert.IsTrue(l1 > l3 && l1 > l4);
             Assert.IsTrue(l2 > l3 && l2 > l4);
@@ -526,20 +549,22 @@ namespace Accord.Tests.Statistics
 
             int[] input = { 1, 2 }; // base sequence for prediction
 
-            double[] probabilities;
+            double[] logLikelihoods;
 
             // Predict the next observation in sequence
-            int prediction = hmm.Predict(input, out probabilities);
+            int prediction = hmm.Predict(input, out logLikelihoods);
+
+            var probs = Matrix.Exp(logLikelihoods);
 
             // At this point, prediction probabilities
             // should be equilibrated around 3, 4 and 5
-            Assert.AreEqual(probabilities.Length, 6);
-            Assert.AreEqual(probabilities[0], 0.00, 0.01);
-            Assert.AreEqual(probabilities[1], 0.00, 0.01);
-            Assert.AreEqual(probabilities[2], 0.00, 0.01);
-            Assert.AreEqual(probabilities[3], 0.33, 0.05);
-            Assert.AreEqual(probabilities[4], 0.33, 0.05);
-            Assert.AreEqual(probabilities[5], 0.33, 0.05);
+            Assert.AreEqual(probs.Length, 6);
+            Assert.AreEqual(probs[0], 0.00, 0.01);
+            Assert.AreEqual(probs[1], 0.00, 0.01);
+            Assert.AreEqual(probs[2], 0.00, 0.01);
+            Assert.AreEqual(probs[3], 0.33, 0.05);
+            Assert.AreEqual(probs[4], 0.33, 0.05);
+            Assert.AreEqual(probs[5], 0.33, 0.05);
 
 
             double[][] probabilities2;
@@ -551,7 +576,7 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(probabilities2[0].Length, 6);
             Assert.AreEqual(probabilities2[1].Length, 6);
 
-            Assert.IsTrue(probabilities2[0].IsEqual(probabilities));
+            Assert.IsTrue(probabilities2[0].IsEqual(logLikelihoods));
         }
 
     }

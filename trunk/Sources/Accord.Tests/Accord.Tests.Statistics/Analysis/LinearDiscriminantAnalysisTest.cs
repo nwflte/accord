@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -20,28 +20,18 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics.Analysis;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Accord.Math;
 namespace Accord.Tests.Statistics
 {
+    using Accord.Statistics.Analysis;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Accord.Math;
 
-
-    /// <summary>
-    ///This is a test class for LinearDiscriminantAnalysisTest and is intended
-    ///to contain all LinearDiscriminantAnalysisTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class LinearDiscriminantAnalysisTest
     {
 
-
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -85,35 +75,107 @@ namespace Accord.Tests.Statistics
         #endregion
 
 
+        // This is the same data used in the example by Gutierrez-Osuna
+        // http://research.cs.tamu.edu/prism/lectures/pr/pr_l10.pdf
+
+        private static double[,] inputs =
+        {
+            {  4,  1 }, // Class 1
+            {  2,  4 },
+            {  2,  3 },
+            {  3,  6 },
+            {  4,  4 },
+
+            {  9, 10 }, // Class 2
+            {  6,  8 },
+            {  9,  5 },
+            {  8,  7 },
+            { 10,  8 }
+        };
+
+        private static int[] output = 
+        {
+            1, 1, 1, 1, 1, // Class labels for the input vectors
+            2, 2, 2, 2, 2
+        };
+
+
         [TestMethod()]
         public void ComputeTest()
         {
-            double[,] inputs;
-            LinearDiscriminantAnalysis lda;
-            createAnalysis(out inputs, out lda);
+            LinearDiscriminantAnalysis lda = new LinearDiscriminantAnalysis(inputs, output);
 
             // Compute the analysis
             lda.Compute();
 
-            Assert.IsTrue(Matrix.IsEqual(lda.Classes[0].Scatter,
-                new double[,] { { 0.80, -0.40 }, { -0.40, 2.64 } }, 0.01));
+            double[,] expectedScatter1 = 
+            {
+                {  0.80, -0.40 }, 
+                { -0.40,  2.64 } 
+            };
 
-            Assert.IsTrue(Matrix.IsEqual(lda.Classes[1].Scatter,
-                new double[,] { { 1.84, -0.04 }, { -0.04, 2.64 } }, 0.01));
+            double[,] expectedScatter2 = 
+            {
+                {  1.84, -0.04 }, 
+                { -0.04,  2.64 }
+            };
 
-            Assert.IsTrue(Matrix.IsEqual(lda.ScatterBetweenClass,
-                new double[,] { { 29.16, 21.60 }, { 21.60, 16.00 } }, 0.01));
+            double[,] expectedBetween = 
+            {
+                { 29.16, 21.60 },
+                { 21.60, 16.00 },
+            };
 
-            Assert.IsTrue(Matrix.IsEqual(lda.ScatterWithinClass,
-                new double[,] { { 2.64, -0.44 }, { -0.44, 5.28 } }, 0.01));
+            double[,] expectedWithin = 
+            {
+                {  2.64, -0.44 },
+                { -0.44,  5.28 }
+            };
+
+            Assert.IsTrue(Matrix.IsEqual(lda.Classes[0].Scatter, expectedScatter1, 0.01));
+            Assert.IsTrue(Matrix.IsEqual(lda.Classes[1].Scatter, expectedScatter2, 0.01));
+
+            Assert.IsTrue(Matrix.IsEqual(lda.ScatterBetweenClass, expectedBetween, 0.01));
+            Assert.IsTrue(Matrix.IsEqual(lda.ScatterWithinClass, expectedWithin, 0.01));
+        }
+
+        [TestMethod()]
+        public void ComputeTest2()
+        {
+            LinearDiscriminantAnalysis lda = new LinearDiscriminantAnalysis(inputs, output);
+
+            // Compute the analysis
+            lda.Compute();
+
+            Assert.AreEqual(2, lda.Classes.Count);
+            Assert.AreEqual(3.0, lda.Classes[0].Mean[0]);
+            Assert.AreEqual(3.6, lda.Classes[0].Mean[1]);
+            Assert.AreEqual(5, lda.Classes[0].Indices.Length);
+
+            Assert.AreEqual(0, lda.Classes[0].Indices[0]);
+            Assert.AreEqual(1, lda.Classes[0].Indices[1]);
+            Assert.AreEqual(2, lda.Classes[0].Indices[2]);
+            Assert.AreEqual(3, lda.Classes[0].Indices[3]);
+            Assert.AreEqual(4, lda.Classes[0].Indices[4]);
+
+            Assert.AreEqual(5, lda.Classes[1].Indices[0]);
+            Assert.AreEqual(6, lda.Classes[1].Indices[1]);
+            Assert.AreEqual(7, lda.Classes[1].Indices[2]);
+            Assert.AreEqual(8, lda.Classes[1].Indices[3]);
+            Assert.AreEqual(9, lda.Classes[1].Indices[4]);
+
+            Assert.AreEqual(2, lda.Discriminants.Count);
+            Assert.AreEqual(15.65685019206146, lda.Discriminants[0].Eigenvalue);
+            Assert.AreEqual(-0.00000000000000, lda.Discriminants[1].Eigenvalue, 1e-15);
+
+            Assert.AreEqual(5.7, lda.Means[0]);
+            Assert.AreEqual(5.6, lda.Means[1]);
         }
 
         [TestMethod()]
         public void ProjectionTest()
         {
-            double[,] inputs;
-            LinearDiscriminantAnalysis lda;
-            createAnalysis(out inputs, out lda);
+            LinearDiscriminantAnalysis lda = new LinearDiscriminantAnalysis(inputs, output);
 
             // Compute the analysis
             lda.Compute();
@@ -148,74 +210,15 @@ namespace Accord.Tests.Statistics
         }
 
         [TestMethod()]
-        public void ComputeTest2()
+        public void ClassifyTest()
         {
-
-            double[,] inputs;
-            LinearDiscriminantAnalysis lda;
-            createAnalysis(out inputs, out lda);
+            LinearDiscriminantAnalysis lda = new LinearDiscriminantAnalysis(inputs, output);
 
             // Compute the analysis
             lda.Compute();
 
-            Assert.AreEqual(2, lda.Classes.Count);
-            Assert.AreEqual(3.0, lda.Classes[0].Mean[0]);
-            Assert.AreEqual(3.6, lda.Classes[0].Mean[1]);
-            Assert.AreEqual(5, lda.Classes[0].Indices.Length);
-
-            Assert.AreEqual(0, lda.Classes[0].Indices[0]);
-            Assert.AreEqual(1, lda.Classes[0].Indices[1]);
-            Assert.AreEqual(2, lda.Classes[0].Indices[2]);
-            Assert.AreEqual(3, lda.Classes[0].Indices[3]);
-            Assert.AreEqual(4, lda.Classes[0].Indices[4]);
-
-            Assert.AreEqual(5, lda.Classes[1].Indices[0]);
-            Assert.AreEqual(6, lda.Classes[1].Indices[1]);
-            Assert.AreEqual(7, lda.Classes[1].Indices[2]);
-            Assert.AreEqual(8, lda.Classes[1].Indices[3]);
-            Assert.AreEqual(9, lda.Classes[1].Indices[4]);
-
-            Assert.AreEqual(2, lda.Discriminants.Count);
-            Assert.AreEqual(15.65685019206146, lda.Discriminants[0].Eigenvalue);
-            Assert.AreEqual(-0.00000000000000, lda.Discriminants[1].Eigenvalue, 1e-15);
-
-            Assert.AreEqual(5.7, lda.Means[0]);
-            Assert.AreEqual(5.6, lda.Means[1]);
-        }
-
-
-
-
-        private static void createAnalysis(out double[,] inputs, out LinearDiscriminantAnalysis lda)
-        {
-            // Create some sample input data
-
-            // This is the same data used in the example by Gutierrez-Osuna
-            // http://research.cs.tamu.edu/prism/lectures/pr/pr_l10.pdf
-
-            inputs =
-            new double[,]{
-                {  4,  1 }, // Class 1
-                {  2,  4 },
-                {  2,  3 },
-                {  3,  6 },
-                {  4,  4 },
-
-                {  9, 10 }, // Class 2
-                {  6,  8 },
-                {  9,  5 },
-                {  8,  7 },
-                { 10,  8 }
-            };
-
-            int[] output = 
-            {
-                1, 1, 1, 1, 1, // Class labels for the input vectors
-                2, 2, 2, 2, 2
-            };
-
-            // Create a new Linear Discriminant Analysis object
-            lda = new LinearDiscriminantAnalysis(inputs, output);
+            for (int i = 0; i < output.Length; i++)
+                Assert.AreEqual(lda.Classify(inputs.GetRow(i)), output[i]);
         }
 
     }

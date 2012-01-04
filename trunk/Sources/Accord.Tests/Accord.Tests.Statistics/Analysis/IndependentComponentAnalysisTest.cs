@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -20,30 +20,20 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics.Analysis;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Accord.Math;
-using System;
-using Accord.Math.Formats;
 namespace Accord.Tests.Statistics
 {
+    using Accord.Statistics.Analysis;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Accord.Math;
+    using System;
+    using Accord.Math.Formats;
 
-
-    /// <summary>
-    ///This is a test class for PrincipalComponentAnalysisTest and is intended
-    ///to contain all PrincipalComponentAnalysisTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class IndependentComponentAnalysisTest
     {
 
-
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -87,9 +77,6 @@ namespace Accord.Tests.Statistics
         #endregion
 
 
-        /// <summary>
-        ///A test for Transform
-        ///</summary>
         [TestMethod()]
         public void ComputeTest()
         {
@@ -131,9 +118,6 @@ namespace Accord.Tests.Statistics
             Assert.IsTrue(expected.IsEqual(revertMatrix, 0.008));
         }
 
-        /// <summary>
-        ///A test for Transform
-        ///</summary>
         [TestMethod()]
         public void ComputeTest2()
         {
@@ -186,9 +170,6 @@ namespace Accord.Tests.Statistics
             Assert.IsTrue(reverted.IsEqual(original, 0.1));
         }
 
-        /// <summary>
-        ///A test for Transform
-        ///</summary>
         [TestMethod()]
         public void SeparateTest()
         {
@@ -215,9 +196,6 @@ namespace Accord.Tests.Statistics
             Assert.IsTrue(expected.IsEqual(actual, 1e-4));
         }
 
-        /// <summary>
-        ///A test for Transform
-        ///</summary>
         [TestMethod()]
         public void CombineTest()
         {
@@ -246,9 +224,6 @@ namespace Accord.Tests.Statistics
             Assert.IsTrue(expected.IsEqual(actual, 1e-4));
         }
 
-        /// <summary>
-        ///A test for Transform
-        ///</summary>
         [TestMethod()]
         public void CombineTest2()
         {
@@ -277,10 +252,6 @@ namespace Accord.Tests.Statistics
             Assert.IsTrue(expected.IsEqual(actual, 1e-4f));
         }
 
-
-        /// <summary>
-        ///A test for Transform
-        ///</summary>
         [TestMethod()]
         public void SeparateTest2()
         {
@@ -306,7 +277,6 @@ namespace Accord.Tests.Statistics
 
             Assert.IsTrue(expected.IsEqual(actual, 1e-4f));
         }
-
 
     }
 }

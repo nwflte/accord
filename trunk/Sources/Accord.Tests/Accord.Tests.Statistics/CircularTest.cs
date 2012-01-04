@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -20,28 +20,18 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Accord.Math;
 namespace Accord.Tests.Statistics
 {
+    using Accord.Statistics;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Accord.Math;
 
-
-    /// <summary>
-    ///This is a test class for CircularTest and is intended
-    ///to contain all CircularTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class CircularTest
     {
 
-
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -95,9 +85,6 @@ namespace Accord.Tests.Statistics
         };
 
 
-        /// <summary>
-        ///A test for WeightedKappa
-        ///</summary>
         [TestMethod()]
         public void WeightedKappaTest()
         {
@@ -119,9 +106,6 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(expectedKappa, actualKappa, 1e-6);
         }
 
-        /// <summary>
-        ///A test for Kappa
-        ///</summary>
         [TestMethod()]
         public void KappaTest1()
         {
@@ -131,9 +115,6 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(expected, actual, 1e-6);
         }
 
-        /// <summary>
-        ///A test for Kappa
-        ///</summary>
         [TestMethod()]
         public void KappaTest()
         {
@@ -145,9 +126,6 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(expected, actual, 1e-6);
         }
 
-        /// <summary>
-        ///A test for Mean
-        ///</summary>
         [TestMethod()]
         public void MeanTest()
         {
@@ -157,9 +135,6 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(expected, actual, 1e-6);
         }
 
-        /// <summary>
-        ///A test for Variance
-        ///</summary>
         [TestMethod()]
         public void VarianceTest()
         {
@@ -168,5 +143,6 @@ namespace Accord.Tests.Statistics
 
             Assert.AreEqual(expected, actual, 1e-6);
         }
+
     }
 }

@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -99,9 +99,9 @@ namespace Accord.Tests.Math
 
             double[] inputs = { -1, 0.4 };
 
-            target.Function = LBFGSTest.rosenbrockFunction;
+            target.Function = BroydenFletcherGoldfarbShannoTest.rosenbrockFunction;
 
-            double[] expected = LBFGSTest.rosenbrockGradient(inputs);
+            double[] expected = BroydenFletcherGoldfarbShannoTest.rosenbrockGradient(inputs);
             double[] actual = target.Compute(inputs);
 
             Assert.IsTrue(expected.IsEqual(actual, 0.05));

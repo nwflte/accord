@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -22,6 +22,8 @@
 
 using Accord.Math;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+
 namespace Accord.Tests.Math
 {
 
@@ -205,6 +207,35 @@ namespace Accord.Tests.Math
             double expected = 0.450958210666019;
             double actual = Distance.Bhattacharyya(X, Y);
             Assert.AreEqual(expected, actual, 1e-10);
+        }
+
+        [TestMethod()]
+        public void BhattacharyyaTest1()
+        {
+            double[] histogram1 = { 0.1, 0.5, 0.4 };
+            double[] histogram2 = { 0.7, 0.2, 0.1 };
+
+            double expected = 0.468184902444219;
+            double actual = Distance.Bhattacharyya(histogram1, histogram2);
+
+            Assert.AreEqual(expected, actual, 1e-10);
+            Assert.IsFalse(Double.IsNaN(actual));
+        }
+
+        [TestMethod()]
+        public void EuclideanTest1()
+        {
+            double x1 = 1.5;
+            double y1 = -2.1;
+
+            double x2 = 4;
+            double y2 = 1;
+
+            double expected = 4.6861498055439927;
+            double actual = Distance.Euclidean(x1, y1, x2, y2);
+
+            Assert.AreEqual(expected, actual, 1e-10);
+            Assert.IsFalse(double.IsNaN(actual));
         }
     }
 }

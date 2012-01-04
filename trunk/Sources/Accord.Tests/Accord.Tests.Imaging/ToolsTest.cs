@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -32,21 +32,12 @@ namespace Accord.Tests.Imaging
 {
 
 
-    /// <summary>
-    ///This is a test class for ToolsTest and is intended
-    ///to contain all ToolsTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class ToolsTest
     {
 
-
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -90,9 +81,6 @@ namespace Accord.Tests.Imaging
         #endregion
 
 
-        /// <summary>
-        ///A test for Normalize
-        ///</summary>
         [TestMethod()]
         public void NormalizeTest()
         {
@@ -133,9 +121,6 @@ namespace Accord.Tests.Imaging
 
         }
 
-        /// <summary>
-        ///A test for Multiply
-        ///</summary>
         [TestMethod()]
         public void MultiplyTest()
         {
@@ -171,9 +156,6 @@ namespace Accord.Tests.Imaging
 
         }
 
-        /// <summary>
-        ///A test for Colinear
-        ///</summary>
         [TestMethod()]
         public void ColinearTest()
         {
@@ -197,25 +179,25 @@ namespace Accord.Tests.Imaging
             Assert.AreEqual(expected, actual);
         }
 
-        /// <summary>
-        ///A test for Homography
-        ///</summary>
+        
         [TestMethod()]
         public void HomographyTest()
         {
-            PointH[] x1 = {
-                              new PointH(0,0),
-                              new PointH(1,0),
-                              new PointH(0,1),
-                              new PointH(1,1),
-                          };
+            PointH[] x1 = 
+            {
+                new PointH(0,0),
+                new PointH(1,0),
+                new PointH(0,1),
+                new PointH(1,1),
+            };
 
-            PointH[] x2 = {
-                              new PointH(0,0),
-                              new PointH(1,0),
-                              new PointH(0,1),
-                              new PointH(1,1),
-                          };
+            PointH[] x2 = 
+            {
+                new PointH(0,0),
+                new PointH(1,0),
+                new PointH(0,1),
+                new PointH(1,1),
+            };
 
             double[,] expected = Matrix.Identity(3);
 
@@ -230,25 +212,27 @@ namespace Accord.Tests.Imaging
             Assert.IsTrue(Matrix.IsEqual(expected, actual));
 
 
-            x1 = new PointH[] {
-                              new PointH(2,0),
-                              new PointH(1,0),
-                              new PointH(5,1),
-                              new PointH(1,1),
-                              new PointH(7,1),
-                              new PointH(1,2),
-                              new PointH(1,1),
-                          };
+            x1 = new PointH[] 
+            {
+                new PointH(2,0),
+                new PointH(1,0),
+                new PointH(5,1),
+                new PointH(1,1),
+                new PointH(7,1),
+                new PointH(1,2),
+                new PointH(1,1),
+            };
 
-            x2 = new PointH[] {
-                              new PointH(9,1),
-                              new PointH(1,5),
-                              new PointH(9,1),
-                              new PointH(1,7),
-                              new PointH(2,7),
-                              new PointH(6,5),
-                              new PointH(1,7),
-                          };
+            x2 = new PointH[] 
+            {
+                new PointH(9,1),
+                new PointH(1,5),
+                new PointH(9,1),
+                new PointH(1,7),
+                new PointH(2,7),
+                new PointH(6,5),
+                new PointH(1,7),
+            };
 
             expected = new double[,]
             {
@@ -265,78 +249,77 @@ namespace Accord.Tests.Imaging
 
         }
 
-        /// <summary>
-        ///A test for Homography
-        ///</summary>
         [TestMethod()]
         public void HomographyTestF()
         {
-            PointF[] x1 = {
-                              new PointF(0,0),
-                              new PointF(1,0),
-                              new PointF(0,1),
-                              new PointF(1,1),
-                          };
+            PointF[] x1 = 
+            {
+                new PointF(0,0),
+                new PointF(1,0),
+                new PointF(0,1),
+                new PointF(1,1),
+            };
 
-            PointF[] x2 = {
-                              new PointF(0,0),
-                              new PointF(1,0),
-                              new PointF(0,1),
-                              new PointF(1,1),
-                          };
+            PointF[] x2 = 
+            {
+                new PointF(0,0),
+                new PointF(1,0),
+                new PointF(0,1),
+                new PointF(1,1),
+            };
 
-            double[,] expected = Matrix.Identity(3);
+            float[,] expected = Matrix.Identity(3).ToSingle();
 
-            double[,] actual;
+            float[,] actual;
 
-            actual = (double[,])Tools.Homography(x1, x2);
+            actual = (float[,])Tools.Homography(x1, x2);
 
             for (int i = 0; i < 3; i++)
                 for (int j = 0; j < 3; j++)
                     actual[i, j] /= actual[2, 2];
 
-            Assert.IsTrue(Matrix.IsEqual(expected, actual));
+            
+            Assert.IsTrue(Matrix.IsEqual(expected, actual, 1e-5));
 
 
-            x1 = new PointF[] {
-                              new PointF(2,0),
-                              new PointF(1,0),
-                              new PointF(5,1),
-                              new PointF(1,1),
-                              new PointF(7,1),
-                              new PointF(1,2),
-                              new PointF(1,1),
-                          };
-
-            x2 = new PointF[] {
-                              new PointF(9,1),
-                              new PointF(1,5),
-                              new PointF(9,1),
-                              new PointF(1,7),
-                              new PointF(2,7),
-                              new PointF(6,5),
-                              new PointF(1,7),
-                          };
-
-            expected = new double[,]
+            x1 = new PointF[]
             {
-              { 0.2225, -3.1727,  1.8023 },
-              { 0.3648, -1.7149, -0.2173 },
-              { 0.0607, -0.4562,  0.1229 },
+                new PointF(2,0),
+                new PointF(1,0),
+                new PointF(5,1),
+                new PointF(1,1),
+                new PointF(7,1),
+                new PointF(1,2),
+                new PointF(1,1),
             };
 
-            expected = (double[,])(new MatrixH(expected));
+            x2 = new PointF[]
+            {
+                new PointF(9,1),
+                new PointF(1,5),
+                new PointF(9,1),
+                new PointF(1,7),
+                new PointF(2,7),
+                new PointF(6,5),
+                new PointF(1,7),
+            };
 
-            actual = (double[,])Tools.Homography(x1, x2);
+            expected = new float[,]
+            {
+                { 0.2225f, -3.1727f,  1.8023f },
+                { 0.3648f, -1.7149f, -0.2173f },
+                { 0.0607f, -0.4562f,  0.1229f },
+            };
+
+            expected = (float[,])(new MatrixH(expected));
+
+            actual = (float[,])Tools.Homography(x1, x2);
 
             Assert.IsTrue(Matrix.IsEqual(expected, actual, 0.01));
 
         }
 
 
-        /// <summary>
-        ///A test for ToDoubleArray
-        ///</summary>
         [TestMethod()]
         public void ToDoubleArrayTest()
         {
@@ -357,9 +340,6 @@ namespace Accord.Tests.Imaging
         }
 
 
-        /// <summary>
-        ///A test for Colinear
-        ///</summary>
         [TestMethod()]
         public void ColinearTest1()
         {
@@ -382,9 +362,6 @@ namespace Accord.Tests.Imaging
             Assert.AreEqual(false, actual);
         }
 
-        /// <summary>
-        ///A test for Sum
-        ///</summary>
         [TestMethod()]
         public void SumTest()
         {
@@ -396,13 +373,10 @@ namespace Accord.Tests.Imaging
                 for (int j = 0; j < 16; j++)
                     expected += image.GetPixel(i, j).R;
 
-            int actual = Tools.Sum(image);
+            int actual = (int)Tools.Sum(image);
             Assert.AreEqual(expected, actual);
         }
 
-        /// <summary>
-        ///A test for Sum
-        ///</summary>
         [TestMethod()]
         public void SumTest1()
         {
@@ -424,9 +398,6 @@ namespace Accord.Tests.Imaging
             image.UnlockBits(data);
         }
 
-        /// <summary>
-        ///A test for Sum
-        ///</summary>
         [TestMethod()]
         public void SumTest2()
         {
@@ -438,14 +409,11 @@ namespace Accord.Tests.Imaging
                 for (int j = 2; j < 10; j++)
                     expected += image.GetPixel(i, j).R;
 
-            int actual = Tools.Sum(image, new Rectangle(3, 2, 9 - 3, 10 - 2));
+            int actual = (int)Tools.Sum(image, new Rectangle(3, 2, 9 - 3, 10 - 2));
             Assert.AreEqual(expected, actual);
 
         }
 
-        /// <summary>
-        ///A test for ToBitmap
-        ///</summary>
         [TestMethod()]
         public void ToBitmapTest1()
         {
@@ -483,9 +451,6 @@ namespace Accord.Tests.Imaging
 
         }
 
-        /// <summary>
-        ///A test for ToBitmap
-        ///</summary>
         [TestMethod()]
         public void ToBitmapTest()
         {
@@ -508,7 +473,6 @@ namespace Accord.Tests.Imaging
             Assert.IsTrue(Matrix.IsEqual(array, actualarray));
 
         }
-
 
     }
 }

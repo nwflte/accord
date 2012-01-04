@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -94,9 +94,6 @@ namespace Accord.Tests.Statistics
             return new BernoulliDistribution(mean);
         }
 
-        /// <summary>
-        ///A test for Variance
-        ///</summary>
         [TestMethod()]
         public void VarianceTest()
         {
@@ -106,9 +103,6 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(expected, actual);
         }
 
-        /// <summary>
-        ///A test for StandardDeviation
-        ///</summary>
         [TestMethod()]
         public void StandardDeviationTest()
         {
@@ -118,9 +112,6 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(expected, actual);
         }
 
-        /// <summary>
-        ///A test for Mean
-        ///</summary>
         [TestMethod()]
         public void MeanTest()
         {
@@ -130,9 +121,6 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(expected, actual);
         }
 
-        /// <summary>
-        ///A test for Entropy
-        ///</summary>
         [TestMethod()]
         public void EntropyTest()
         {
@@ -158,9 +146,6 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(expected, actual);
         }
 
-        /// <summary>
-        ///A test for ProbabilityMassFunction
-        ///</summary>
         [TestMethod()]
         public void ProbabilityMassFunctionTest()
         {
@@ -183,9 +168,21 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(p, target.ProbabilityMassFunction(1));
         }
 
-        /// <summary>
-        ///A test for Fit
-        ///</summary>
+        [TestMethod()]
+        public void LogProbabilityMassFunctionTest()
+        {
+            UnivariateDiscreteDistribution target = CreateUnivariateDiscreteDistribution();
+
+            double p = 0.42;
+            double q = 1 - p;
+
+            double lnp = System.Math.Log(p);
+            double lnq = System.Math.Log(q);
+
+            Assert.AreEqual(lnq, target.LogProbabilityMassFunction(0));
+            Assert.AreEqual(lnp, target.LogProbabilityMassFunction(1));
+        }
+
         [TestMethod()]
         public void FitTest7()
         {
@@ -199,9 +196,6 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(mean, target.Mean);
         }
 
-        /// <summary>
-        ///A test for Fit
-        ///</summary>
         [TestMethod()]
         public void FitTest6()
         {
@@ -214,9 +208,6 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(mean, target.Mean);
         }
 
-        /// <summary>
-        ///A test for Fit
-        ///</summary>
         [TestMethod()]
         public void FitTest5()
         {
@@ -232,9 +223,6 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(mean, target.Mean);
         }
 
-        /// <summary>
-        ///A test for Fit
-        ///</summary>
         [TestMethod()]
         public void FitTest4()
         {
@@ -249,9 +237,6 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(mean, target.Mean);
         }
 
-        /// <summary>
-        ///A test for DistributionFunction
-        ///</summary>
         [TestMethod()]
         public void DistributionFunctionTest1()
         {
@@ -267,9 +252,6 @@ namespace Accord.Tests.Statistics
 
 
 
-        /// <summary>
-        ///A test for Accord.Statistics.Distributions.IDistribution.ProbabilityFunction
-        ///</summary>
         [TestMethod()]
         [DeploymentItem("Accord.Statistics.dll")]
         public void ProbabilityFunctionTest()
@@ -294,9 +276,6 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(p, target.ProbabilityFunction(1));
         }
 
-        /// <summary>
-        ///A test for Accord.Statistics.Distributions.IDistribution.Fit
-        ///</summary>
         [TestMethod()]
         [DeploymentItem("Accord.Statistics.dll")]
         public void FitTest3()
@@ -310,9 +289,6 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(mean, (target as BernoulliDistribution).Mean);
         }
 
-        /// <summary>
-        ///A test for Accord.Statistics.Distributions.IDistribution.Fit
-        ///</summary>
         [TestMethod()]
         [DeploymentItem("Accord.Statistics.dll")]
         public void FitTest2()
@@ -326,9 +302,6 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(mean, (target as BernoulliDistribution).Mean);
         }
 
-        /// <summary>
-        ///A test for Accord.Statistics.Distributions.IDistribution.Fit
-        ///</summary>
         [TestMethod()]
         [DeploymentItem("Accord.Statistics.dll")]
         public void FitTest1()
@@ -345,9 +318,6 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(mean, (target as BernoulliDistribution).Mean);
         }
 
-        /// <summary>
-        ///A test for Accord.Statistics.Distributions.IDistribution.Fit
-        ///</summary>
         [TestMethod()]
         [DeploymentItem("Accord.Statistics.dll")]
         public void FitTest()
@@ -363,9 +333,6 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(mean, (target as BernoulliDistribution).Mean);
         }
 
-        /// <summary>
-        ///A test for Accord.Statistics.Distributions.IDistribution.DistributionFunction
-        ///</summary>
         [TestMethod()]
         [DeploymentItem("Accord.Statistics.dll")]
         public void DistributionFunctionTest()

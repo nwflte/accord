@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -25,6 +25,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Accord.MachineLearning.VectorMachines;
 using Accord.Statistics.Kernels;
 using Accord.MachineLearning.VectorMachines.Learning;
+using System;
 namespace Accord.Tests.MachineLearning
 {
 
@@ -132,9 +133,15 @@ namespace Accord.Tests.MachineLearning
                 SequentialMinimalOptimization smo = new SequentialMinimalOptimization(ksvm, inputs, xor);
                 smo.Complexity = complexity;
 
-                // Measure the model performance to return as an out parameter
-                error = smo.Run();
-
+                try
+                {
+                    // Measure the model performance to return as an out parameter
+                    error = smo.Run();
+                }
+                catch (Exception)
+                {
+                    error = 0;
+                }
                 return ksvm; // Return the current model
             };
 

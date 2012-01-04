@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -20,28 +20,17 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics.Analysis;
-using Accord.Math;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Accord.Tests.Statistics
 {
+    using Accord.Statistics.Analysis;
+    using Accord.Math;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-
-    /// <summary>
-    ///This is a test class for ReceiverOperatingCharacteristicTest and is intended
-    ///to contain all ReceiverOperatingCharacteristicTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class ReceiverOperatingCharacteristicTest
     {
-
-
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -85,146 +74,86 @@ namespace Accord.Tests.Statistics
         #endregion
 
 
-        /// <summary>
-        ///A test for Compute
-        ///</summary>
         [TestMethod()]
         public void ComputeTest()
         {
-
             // Example from
             // http://faculty.vassar.edu/lowry/roc1.html
 
-            double[,] data = { 
-                               { 4,  1 },
-                               { 4,  1 },
-                               { 4,  1 },
-                               { 4,  1 },
-                               { 4,  1 },
-                               { 4,  1 },
-                               { 4,  1 },
-                               { 4,  1 },
-                               { 4,  1 },
-                               { 4,  1 },
-                               { 4,  1 },
-                               { 4,  1 },
-                               { 4,  1 },
-                               { 4,  1 },
-                               { 4,  1 },
-                               { 4,  1 },
-                               { 4,  1 },
-                               { 4,  1 }, // 18
-                               { 4,  0 },
+            double[,] data = 
+            { 
+                { 4,  1 },                { 4,  1 },
+                { 4,  1 },                { 4,  1 },
+                { 4,  1 },                { 4,  1 },
+                { 4,  1 },                { 4,  1 },
+                { 4,  1 },                { 4,  1 },
+                { 4,  1 },                { 4,  1 },
+                { 4,  1 },                { 4,  1 },
+                { 4,  1 },                { 4,  1 },
+                { 4,  1 },                { 4,  1 }, // 18
+                { 4,  0 },
 
-                               { 6,  1 }, 
-                               { 6,  1 }, 
-                               { 6,  1 }, 
-                               { 6,  1 }, 
-                               { 6,  1 }, 
-                               { 6,  1 }, 
-                               { 6,  1 }, // 7
-                               { 6,  0 },
-                               { 6,  0 },
-                               { 6,  0 },
-                               { 6,  0 },
-                               { 6,  0 },
-                               { 6,  0 },
-                               { 6,  0 },
-                               { 6,  0 },
-                               { 6,  0 },
-                               { 6,  0 },
-                               { 6,  0 },
-                               { 6,  0 },
-                               { 6,  0 },
-                               { 6,  0 },
-                               { 6,  0 },
-                               { 6,  0 },
-                               { 6,  0 }, // 17
+                { 6,  1 },                 { 6,  1 }, 
+                { 6,  1 },                 { 6,  1 }, 
+                { 6,  1 },                 { 6,  1 }, 
+                { 6,  1 }, // 7
 
-                               { 8,  1 },
-                               { 8,  1 },
-                               { 8,  1 },
-                               { 8,  1 }, // 4
-                               { 8,  0 },
-                               { 8,  0 },
-                               { 8,  0 },
-                               { 8,  0 },
-                               { 8,  0 },
-                               { 8,  0 },
-                               { 8,  0 },
-                               { 8,  0 },
-                               { 8,  0 },
-                               { 8,  0 },
-                               { 8,  0 },
-                               { 8,  0 },
-                               { 8,  0 },
-                               { 8,  0 },
-                               { 8,  0 },
-                               { 8,  0 },
-                               { 8,  0 },
-                               { 8,  0 },
-                               { 8,  0 },
-                               { 8,  0 },
-                               { 8,  0 },
-                               { 8,  0 },
-                               { 8,  0 },
-                               { 8,  0 },
-                               { 8,  0 },
-                               { 8,  0 },
-                               { 8,  0 },
-                               { 8,  0 },
-                               { 8,  0 },
-                               { 8,  0 },
-                               { 8,  0 },
-                               { 8,  0 },
-                               { 8,  0 },
-                               { 8,  0 },
-                               { 8,  0 },
-                               { 8,  0 }, // 36
+                { 6,  0 },                 { 6,  0 },
+                { 6,  0 },                 { 6,  0 },
+                { 6,  0 },                 { 6,  0 },
+                { 6,  0 },                 { 6,  0 },
+                { 6,  0 },                 { 6,  0 },
+                { 6,  0 },                 { 6,  0 },
+                { 6,  0 },                 { 6,  0 },
+                { 6,  0 },                 { 6,  0 },
+                { 6,  0 }, // 17
 
-                               { 9, 1 },
-                               { 9, 1 },
-                               { 9, 1 }, // 3
-                               { 9, 0 },
-                               { 9, 0 },
-                               { 9, 0 },
-                               { 9, 0 },
-                               { 9, 0 },
-                               { 9, 0 },
-                               { 9, 0 },
-                               { 9, 0 },
-                               { 9, 0 },
-                               { 9, 0 },
-                               { 9, 0 },
-                               { 9, 0 },
-                               { 9, 0 },
-                               { 9, 0 },
-                               { 9, 0 },
-                               { 9, 0 },
-                               { 9, 0 },
-                               { 9, 0 },
-                               { 9, 0 },
-                               { 9, 0 },
-                               { 9, 0 },
-                               { 9, 0 },
-                               { 9, 0 },
-                               { 9, 0 },
-                               { 9, 0 },
-                               { 9, 0 },
-                               { 9, 0 },
-                               { 9, 0 },
-                               { 9, 0 },
-                               { 9, 0 },
-                               { 9, 0 },
-                               { 9, 0 },
-                               { 9, 0 },
-                               { 9, 0 },
-                               { 9, 0 },
-                               { 9, 0 }, 
-                               { 9, 0 }, 
-                               { 9, 0 }, 
-                               { 9, 0 }, // 39
-                             };
+                { 8,  1 },                { 8,  1 },
+                { 8,  1 },                { 8,  1 }, // 4
+
+                { 8,  0 },                { 8,  0 },
+                { 8,  0 },                { 8,  0 },
+                { 8,  0 },                { 8,  0 },
+                { 8,  0 },                { 8,  0 },
+                { 8,  0 },                { 8,  0 },
+                { 8,  0 },                { 8,  0 },
+                { 8,  0 },                { 8,  0 },
+                { 8,  0 },                { 8,  0 },
+                { 8,  0 },                { 8,  0 },
+                { 8,  0 },                { 8,  0 },
+                { 8,  0 },                { 8,  0 },
+                { 8,  0 },                { 8,  0 },
+                { 8,  0 },                { 8,  0 },
+                { 8,  0 },                { 8,  0 },
+                { 8,  0 },                { 8,  0 },
+                { 8,  0 },                { 8,  0 },
+                { 8,  0 },                { 8,  0 },
+                { 8,  0 },                { 8,  0 }, // 36
+
+                { 9, 1 },                 { 9, 1 },
+                { 9, 1 }, // 3
+
+                { 9, 0 },                { 9, 0 },
+                { 9, 0 },                { 9, 0 },
+                { 9, 0 },                { 9, 0 },
+                { 9, 0 },                { 9, 0 },
+                { 9, 0 },                { 9, 0 },
+                { 9, 0 },                { 9, 0 },
+                { 9, 0 },                { 9, 0 },
+                { 9, 0 },                { 9, 0 },
+                { 9, 0 },                { 9, 0 },
+                { 9, 0 },                { 9, 0 },
+                { 9, 0 },                { 9, 0 },
+                { 9, 0 },                { 9, 0 },
+                { 9, 0 },                { 9, 0 },
+                { 9, 0 },                { 9, 0 },
+                { 9, 0 },                { 9, 0 },
+                { 9, 0 },                { 9, 0 },
+                { 9, 0 },                { 9, 0 },
+                { 9, 0 },                { 9, 0 }, 
+                { 9, 0 },                { 9, 0 }, 
+                { 9, 0 }, // 39
+            };
 
 
             double[] measurement = data.GetColumn(1);
@@ -263,9 +192,6 @@ namespace Accord.Tests.Statistics
 
         }
 
-        /// <summary>
-        ///A test for ReceiverOperatingCharacteristic Constructor
-        ///</summary>
         [TestMethod()]
         public void ReceiverOperatingCharacteristicConstructorTest2()
         {

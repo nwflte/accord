@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -87,9 +87,6 @@ namespace Accord.Tests.Statistics
         #endregion
 
 
-        /// <summary>
-        ///A test for EmpiricalDistribution Constructor
-        ///</summary>
         [TestMethod()]
         public void EmpiricalDistributionConstructorTest1()
         {
@@ -105,9 +102,6 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(target.Variance, target.Variance);
         }
 
-        /// <summary>
-        ///A test for EmpiricalDistribution Constructor
-        ///</summary>
         [TestMethod()]
         public void EmpiricalDistributionConstructorTest2()
         {
@@ -166,7 +160,6 @@ namespace Accord.Tests.Statistics
                 Assert.AreEqual(observations[i], target.Samples[i]);
         }
 
-        ///</summary>
         [TestMethod()]
         public void ProbabilityDensityFunctionTest()
         {
@@ -196,6 +189,41 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(0.049293898826709738, actual);
         }
 
+        [TestMethod()]
+        public void LogProbabilityDensityFunctionTest()
+        {
+            double[] samples = { 1, 5, 2, 5, 1, 7, 1, 9, 4, 2 };
+            EmpiricalDistribution target = new EmpiricalDistribution(samples, 1);
+
+            Assert.AreEqual(1.0, target.Smoothing);
+
+            double actual;
+            double expected;
+
+            actual = target.LogProbabilityDensityFunction(1);
+            expected = System.Math.Log(0.16854678051819402);
+            Assert.AreEqual(expected, actual, 1e-6);
+
+            actual = target.LogProbabilityDensityFunction(2);
+            expected = System.Math.Log(0.15866528844260089);
+            Assert.AreEqual(expected, actual, 1e-6);
+
+            actual = target.LogProbabilityDensityFunction(3);
+            expected = System.Math.Log(0.0996000842425018);
+            Assert.AreEqual(expected, actual, 1e-6);
+
+            actual = target.LogProbabilityDensityFunction(4);
+            expected = System.Math.Log(0.1008594542833362);
+            Assert.AreEqual(expected, actual, 1e-6);
+
+            actual = target.LogProbabilityDensityFunction(6);
+            expected = System.Math.Log(0.078460710909263);
+            Assert.AreEqual(expected, actual, 1e-6);
+
+            actual = target.LogProbabilityDensityFunction(8);
+            expected = System.Math.Log(0.049293898826709738);
+            Assert.AreEqual(expected, actual, 1e-6);
+        }
 
     }
 }

@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -20,13 +20,12 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics.Kernels;
-using Accord.Math;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Diagnostics;
 namespace Accord.Tests.Statistics
 {
-
+    using Accord.Statistics.Kernels;
+    using Accord.Math;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System.Diagnostics;
 
     /// <summary>
     ///This is a test class for GaussianTest and is intended
@@ -136,10 +135,6 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(expected, actual, 1e-10);
         }
 
-
-        /// <summary>
-        ///A test for Function
-        ///</summary>
         [TestMethod()]
         public void FunctionTest()
         {
@@ -183,7 +178,48 @@ namespace Accord.Tests.Statistics
             gaussian.Sigma = sigma;
             actual = gaussian.Gamma;
 
-            Assert.AreEqual(expected, actual,1e-12);
+            Assert.AreEqual(expected, actual, 1e-12);
         }
+
+        [TestMethod]
+        public void FunctionTest2()
+        {
+            // Tested against R's kernlab
+
+            double[][] data = 
+            {
+                new double[] { 5.1, 3.5, 1.4, 0.2 },
+                new double[] { 5.0, 3.6, 1.4, 0.2 },
+                new double[] { 4.9, 3.0, 1.4, 0.2 },
+                new double[] { 5.8, 4.0, 1.2, 0.2 },
+                new double[] { 4.7, 3.2, 1.3, 0.2 },
+            };
+
+            // rbf <- rbfdot(sigma = 1)
+            
+            // R's sigma is framework's Gaussian's gamma:
+            Gaussian kernel = new Gaussian() { Gamma = 1 };
+
+            // Compute the kernel matrix
+            double[,] actual = new double[5, 5];
+            for (int i = 0; i < 5; i++)
+                for (int j = 0; j < 5; j++)
+                    actual[i,j] = kernel.Function(data[i], data[j]);
+
+            double[,] expected =
+            {
+                { 1.0000000, 0.9801987, 0.7482636, 0.4584060, 0.7710516 },
+                { 0.9801987, 1.0000000, 0.6907343, 0.4317105, 0.7710516 },
+                { 0.7482636, 0.6907343, 1.0000000, 0.1572372, 0.9139312 },
+                { 0.4584060, 0.4317105, 0.1572372, 1.0000000, 0.1556726 },
+                { 0.7710516, 0.7710516, 0.9139312, 0.1556726, 1.0000000 },
+            };
+
+            // Assert both are equal
+            for (int i = 0; i < 5; i++)
+                for (int j = 0; j < 5; j++)
+                    Assert.AreEqual(expected[i, j], actual[i, j], 1e-6);
+        }
+
     }
 }

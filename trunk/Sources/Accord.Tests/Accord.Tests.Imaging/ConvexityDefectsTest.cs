@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -132,14 +132,14 @@ namespace Accord.Tests.Imaging
             Assert.AreEqual(new IntPoint(130, 10), contour[defects[0].Start]);
             Assert.AreEqual(new IntPoint(93, 109), contour[defects[0].Point]);
             Assert.AreEqual(new IntPoint(64, 9), contour[defects[0].End]);
-            Assert.AreEqual(99.549179077148438, defects[0].Depth, 1e-6);
+            Assert.AreEqual(99.549179077148438, defects[0].Depth, 1e-5);
             Assert.IsFalse(double.IsNaN(defects[0].Depth));
             //    Assert.AreEqual(9912.9531239366424, defects[0].Area);
 
             Assert.AreEqual(new IntPoint(49, 18), contour[defects[1].Start]);
             Assert.AreEqual(new IntPoint(61, 106), contour[defects[1].Point]);
             Assert.AreEqual(new IntPoint(18, 127), contour[defects[1].End]);
-            Assert.AreEqual(35.615153852366504, defects[1].Depth, 1e-6);
+            Assert.AreEqual(35.615153852366504, defects[1].Depth, 1e-5);
             Assert.IsFalse(double.IsNaN(defects[1].Depth));
             //    Assert.AreEqual(2293.7535682510002, defects[1].Area);
 

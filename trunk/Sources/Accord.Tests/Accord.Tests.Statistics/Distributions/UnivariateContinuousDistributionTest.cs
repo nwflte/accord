@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -146,6 +146,18 @@ namespace Accord.Tests.Statistics
             double x = 18.14;
             double expected = 0.011697993604177;
             double actual = target.ProbabilityDensityFunction(x);
+
+            Assert.IsFalse(double.IsNaN(actual));
+            Assert.AreEqual(expected, actual, 1e-10);
+        }
+
+        [TestMethod()]
+        public void LogProbabilityDensityFunctionTest()
+        {
+            UnivariateContinuousDistribution target = CreateUnivariateContinuousDistribution();
+            double x = 18.14;
+            double expected = System.Math.Log(0.011697993604177);
+            double actual = target.LogProbabilityDensityFunction(x);
 
             Assert.IsFalse(double.IsNaN(actual));
             Assert.AreEqual(expected, actual, 1e-10);

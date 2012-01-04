@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -154,15 +154,15 @@ namespace Accord.Tests.MachineLearning
 
 
             // Compute the cross-validation
-            crossvalidation.Compute();
+            var result = crossvalidation.Compute();
 
             // Get the average training and validation errors
-            double errorTraining = crossvalidation.TrainingError;
-            double errorValidation = crossvalidation.ValidationError;
+            double errorTraining = result.TrainingMean;
+            double errorValidation = result.ValidationMean;
 
-            Assert.AreEqual(crossvalidation.K, 3);
-            Assert.AreEqual(crossvalidation.TrainingError, 0);
-            Assert.AreEqual(crossvalidation.ValidationError, 0);
+            Assert.AreEqual(3, crossvalidation.K);
+            Assert.AreEqual(0, result.TrainingMean);
+            Assert.AreEqual(0, result.ValidationMean);
 
             Assert.AreEqual(3, crossvalidation.Folds.Length);
             Assert.AreEqual(3, crossvalidation.Models.Length);
