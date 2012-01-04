@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 
@@ -58,7 +58,7 @@ namespace Accord.Statistics.Models.Markov.Topology
         ///   Creates the state transitions matrix and the 
         ///   initial state probabilities for this topology.
         /// </summary>
-        int Create(out double[,] transitionMatrix, out double[] initialState);
+        int Create(bool logarithm, out double[,] transitionMatrix, out double[] initialState);
 
     }
 }

@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -138,7 +138,7 @@ namespace Accord.Statistics.Models.Regression.Fitting
         private double[] previous;
 
         private bool computeStandardErrors = true;
-        private ISolverDecomposition decomposition;
+        private ISolverMatrixDecomposition<double> decomposition;
         
 
         /// <summary>

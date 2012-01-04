@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -42,12 +42,22 @@ namespace Accord.Statistics.Distributions.Fitting
         public double Regularization { get; set; }
 
         /// <summary>
+        ///   Gets or sets a value indicating whether the covariance
+        ///   matrix to be estimated should be assumed to be diagonal.
+        /// </summary>
+        /// 
+        /// <value><c>true</c> to estimate a diagonal covariance matrix; otherwise, <c>false</c>.</value>
+        /// 
+        public bool Diagonal { get; set; }
+
+        /// <summary>
         ///   Initializes a new instance of the <see cref="NormalOptions"/> class.
         /// </summary>
         /// 
         public NormalOptions()
         {
             Regularization = 0;
+            Diagonal = false;
         }
     }
 }

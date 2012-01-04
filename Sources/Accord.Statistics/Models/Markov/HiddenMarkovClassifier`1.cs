@@ -2,13 +2,15 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 
 namespace Accord.Statistics.Models.Markov
 {
     using System;
+    using System.IO;
+    using System.Runtime.Serialization.Formatters.Binary;
     using Accord.Statistics.Distributions;
     using Accord.Statistics.Models.Markov.Topology;
 
@@ -43,10 +45,10 @@ namespace Accord.Statistics.Models.Markov
     ///   //  containing 2 hidden Markov Models with 2 states and an underlying Normal
     ///   //  distribution as the continuous probability density.
     ///   NormalDistribution density = new NormalDistribution();
-    ///   var classifier = new SequenceClassifier&lt;NormalDistribution&gt;(2, new Ergodic(2), density);
+    ///   var classifier = new HiddenMarkovClassifier&lt;NormalDistribution&gt;(2, new Ergodic(2), density);
     ///
     ///   // Create a new learning algorithm to train the sequence classifier
-    ///   var teacher = new SequenceClassifierLearning&lt;NormalDistribution&gt;(classifier,
+    ///   var teacher = new HiddenMarkovClassifierLearning&lt;NormalDistribution&gt;(classifier,
     ///
     ///       // Train each model until the log-likelihood changes less than 0.001
     ///       modelIndex => new BaumWelchLearning&lt;NormalDistribution&gt;(classifier.Models[modelIndex])
@@ -137,15 +139,16 @@ namespace Accord.Statistics.Models.Markov
     /// </example>
     /// 
     [Serializable]
-    public class SequenceClassifier<TDistribution> : 
-        SequenceClassifierBase<HiddenMarkovModel<TDistribution>>,
-        ISequenceClassifier where TDistribution : IDistribution
+    public class HiddenMarkovClassifier<TDistribution> : 
+        BaseHiddenMarkovClassifier<HiddenMarkovModel<TDistribution>>,
+        IHiddenMarkovClassifier where TDistribution : IDistribution
     {
 
         /// <summary>
         ///   Creates a new Sequence Classifier with the given number of classes.
         /// </summary>
-        public SequenceClassifier(int classes, ITopology topology, TDistribution initial)
+        /// 
+        public HiddenMarkovClassifier(int classes, ITopology topology, TDistribution initial)
             : base(classes)
         {
             for (int i = 0; i < classes; i++)
@@ -155,7 +158,8 @@ namespace Accord.Statistics.Models.Markov
         /// <summary>
         ///   Creates a new Sequence Classifier with the given number of classes.
         /// </summary>
-        public SequenceClassifier(int classes, ITopology topology, TDistribution initial, string[] names)
+        /// 
+        public HiddenMarkovClassifier(int classes, ITopology topology, TDistribution initial, string[] names)
             : base(classes)
         {
             for (int i = 0; i < classes; i++)
@@ -165,7 +169,20 @@ namespace Accord.Statistics.Models.Markov
         /// <summary>
         ///   Creates a new Sequence Classifier with the given number of classes.
         /// </summary>
-        public SequenceClassifier(int classes, ITopology[] topology, TDistribution[] initial, string[] names)
+        /// 
+        public HiddenMarkovClassifier(int classes, ITopology topology, TDistribution[] initial, string[] names)
+            : base(classes)
+        {
+            for (int i = 0; i < classes; i++)
+                Models[i] = new HiddenMarkovModel<TDistribution>(topology, initial) { Tag = names[i] };
+        }
+
+
+        /// <summary>
+        ///   Creates a new Sequence Classifier with the given number of classes.
+        /// </summary>
+        /// 
+        public HiddenMarkovClassifier(int classes, ITopology[] topology, TDistribution[] initial, string[] names)
             : base(classes)
         {
             for (int i = 0; i < classes; i++)
@@ -175,7 +192,8 @@ namespace Accord.Statistics.Models.Markov
         /// <summary>
         ///   Creates a new Sequence Classifier with the given number of classes.
         /// </summary>
-        public SequenceClassifier(HiddenMarkovModel<TDistribution>[] models)
+        /// 
+        public HiddenMarkovClassifier(HiddenMarkovModel<TDistribution>[] models)
             : base(models)
         {
         }
@@ -184,6 +202,13 @@ namespace Accord.Statistics.Models.Markov
         /// <summary>
         ///   Computes the most likely class for a given sequence.
         /// </summary>
+        /// 
+        /// <param name="sequence">The sequence of observations.</param>
+        /// 
+        /// <returns>Return the label of the given sequence, or -1 if it has
+        /// been rejected by the <see cref="BaseHiddenMarkovClassifier{T}.Threshold">
+        /// threshold model</see>.</returns>
+        /// 
         public new int Compute(Array sequence)
         {
             return base.Compute(sequence);
@@ -192,18 +217,129 @@ namespace Accord.Statistics.Models.Markov
         /// <summary>
         ///   Computes the most likely class for a given sequence.
         /// </summary>
-        public new int Compute(Array sequence, out double likelihood)
+        /// 
+        /// <param name="sequence">The sequence of observations.</param>
+        /// <param name="response">The probability of the assigned class.</param>
+        /// 
+        /// <returns>Return the label of the given sequence, or -1 if it has
+        /// been rejected by the <see cref="BaseHiddenMarkovClassifier{T}.Threshold">
+        /// threshold model</see>.</returns>
+        /// 
+        public new int Compute(Array sequence, out double response)
         {
-            return base.Compute(sequence, out likelihood);
+            return base.Compute(sequence, out response);
         }
 
         /// <summary>
         ///   Computes the most likely class for a given sequence.
         /// </summary>
-        public new int Compute(Array sequence, out double[] likelihoods)
+        /// 
+        /// <param name="sequence">The sequence of observations.</param>
+        /// <param name="responsibilities">The class responsibilities (or
+        /// the probability of the sequence to belong to each class). When
+        /// using threshold models, the sum of the probabilities will not
+        /// equal one, and the amount left was the threshold probability.
+        /// If a threshold model is not being used, the array should sum to
+        /// one.</param>
+        /// 
+        /// <returns>Return the label of the given sequence, or -1 if it has
+        /// been rejected by the <see cref="BaseHiddenMarkovClassifier{T}.Threshold">
+        /// threshold model</see>.</returns>
+        /// 
+        public new int Compute(Array sequence, out double[] responsibilities)
         {
-            return base.Compute(sequence, out likelihoods);
+            return base.Compute(sequence, out responsibilities);
         }
 
+        /// <summary>
+        ///   Computes the log-likelihood of a sequence
+        ///   belong to a given class according to this
+        ///   classifier.
+        /// </summary>
+        /// <param name="sequence">The sequence of observations.</param>
+        /// <param name="output">The output class label.</param>
+        /// 
+        /// <returns>The log-likelihood of the sequence belonging to the given class.</returns>
+        /// 
+        public new double LogLikelihood(Array sequence, int output)
+        {
+            double[] responsabilities;
+            base.Compute(sequence, out responsabilities);
+            return Math.Log(responsabilities[output]);
+        }
+
+        /// <summary>
+        ///   Computes the log-likelihood of a set of sequences
+        ///   belonging to their given respective classes according
+        ///   to this classifier.
+        /// </summary>
+        /// <param name="sequences">A set of sequences of observations.</param>
+        /// <param name="outputs">The output class label for each sequence.</param>
+        /// 
+        /// <returns>The log-likelihood of the sequences belonging to the given classes.</returns>
+        /// 
+        public new double LogLikelihood(Array[] sequences, int[] outputs)
+        {
+            double[] responsabilities;
+
+            double logLikelihood = 0;
+            for (int i = 0; i < sequences.Length; i++)
+            {
+                base.Compute(sequences[i], out responsabilities);
+                logLikelihood += Math.Log(responsabilities[outputs[i]]);
+            }
+            return logLikelihood;
+        }
+
+
+        /// <summary>
+        ///   Saves the classifier to a stream.
+        /// </summary>
+        /// 
+        /// <param name="stream">The stream to which the classifier is to be serialized.</param>
+        /// 
+        public void Save(Stream stream)
+        {
+            BinaryFormatter b = new BinaryFormatter();
+            b.Serialize(stream, this);
+        }
+
+        /// <summary>
+        ///   Saves the classifier to a stream.
+        /// </summary>
+        /// 
+        /// <param name="path">The stream to which the classifier is to be serialized.</param>
+        /// 
+        public void Save(string path)
+        {
+            Save(new FileStream(path, FileMode.Create));
+        }
+
+        /// <summary>
+        ///   Loads a classifier from a stream.
+        /// </summary>
+        /// 
+        /// <param name="stream">The stream from which the classifier is to be deserialized.</param>
+        /// 
+        /// <returns>The deserialized classifier.</returns>
+        /// 
+        public static HiddenMarkovClassifier<TDistribution> Load(Stream stream)
+        {
+            BinaryFormatter b = new BinaryFormatter();
+            return (HiddenMarkovClassifier<TDistribution>)b.Deserialize(stream);
+        }
+
+        /// <summary>
+        ///   Loads a classifier from a file.
+        /// </summary>
+        /// 
+        /// <param name="path">The path to the file from which the classifier is to be deserialized.</param>
+        /// 
+        /// <returns>The deserialized classifier.</returns>
+        /// 
+        public static HiddenMarkovClassifier<TDistribution> Load(string path)
+        {
+            return Load(new FileStream(path, FileMode.Open));
+        }
     }
 }

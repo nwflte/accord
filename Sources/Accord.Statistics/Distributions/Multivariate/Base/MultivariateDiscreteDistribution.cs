@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -82,6 +82,10 @@ namespace Accord.Statistics.Distributions.Multivariate
         /// <summary>
         ///   Gets the mean for this distribution.
         /// </summary>
+        /// <value>
+        ///   An array of double-precision values containing
+        ///   the mean values for this distribution.
+        /// </value>
         /// 
         public abstract double[] Mean { get; }
 
@@ -89,17 +93,32 @@ namespace Accord.Statistics.Distributions.Multivariate
         ///   Gets the mean for this distribution.
         /// </summary>
         /// 
+        /// <value>
+        ///   An array of double-precision values containing
+        ///   the variance values for this distribution.
+        /// </value>
+        /// 
         public abstract double[] Variance { get; }
 
         /// <summary>
         ///   Gets the variance for this distribution.
         /// </summary>
         /// 
+        /// <value>
+        ///   An multidimensional array of double-precision values
+        ///   containing the covariance values for this distribution.
+        /// </value>
+        /// 
         public abstract double[,] Covariance { get; }
 
         /// <summary>
         ///   Gets the mode for this distribution.
         /// </summary>
+        /// 
+        /// <value>
+        ///   An array of double-precision values containing
+        ///   the mode values for this distribution.
+        /// </value>
         /// 
         public virtual double[] Mode
         {
@@ -109,6 +128,11 @@ namespace Accord.Statistics.Distributions.Multivariate
         /// <summary>
         ///   Gets the median for this distribution.
         /// </summary>
+        /// 
+        /// <value>
+        ///   An array of double-precision values containing
+        ///   the median values for this distribution.
+        /// </value>
         /// 
         public virtual double[] Median
         {
@@ -121,6 +145,7 @@ namespace Accord.Statistics.Distributions.Multivariate
         /// Gets the cumulative distribution function (cdf) for
         /// the this distribution evaluated at point <c>x</c>.
         /// </summary>
+        /// 
         /// <remarks>
         /// The Cumulative Distribution Function (CDF) describes the cumulative
         /// probability that a given value or any value smaller than it will occur.
@@ -135,15 +160,18 @@ namespace Accord.Statistics.Distributions.Multivariate
         ///   Gets the probability mass function (pmf) for
         ///   this distribution evaluated at point <c>x</c>.
         /// </summary>
+        /// 
         /// <param name="x">
         ///   A single point in the distribution range. For a 
         ///   univariate distribution, this should be a single
         ///   double value. For a multivariate distribution,
         ///   this should be a double array.</param>
+        ///   
         /// <remarks>
         ///   The Probability Mass Function (PMF) describes the
         ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
+        /// 
         /// <returns>
         ///   The probability of <c>x</c> occurring
         ///   in the current distribution.</returns>
@@ -154,13 +182,40 @@ namespace Accord.Statistics.Distributions.Multivariate
         }
 
         /// <summary>
+        ///   Gets the log-probability density function (pdf)
+        ///   for this distribution evaluated at point <c>x</c>.
+        /// </summary>
+        /// 
+        /// <param name="x">
+        ///   A single point in the distribution range. For a 
+        ///   univariate distribution, this should be a single
+        ///   double value. For a multivariate distribution,
+        ///   this should be a double array.</param>
+        ///   
+        /// <remarks>
+        ///   The Probability Mass Function (PMF) describes the
+        ///   probability that a given value <c>x</c> will occur.
+        /// </remarks>
+        /// <returns>
+        ///   The logarithm of the probability of <c>x</c>
+        ///   occurring in the current distribution.
+        /// </returns>
+        ///   
+        double IDistribution.LogProbabilityFunction(params double[] x)
+        {
+            return LogProbabilityMassFunction(Array.ConvertAll<double, int>(x, Convert.ToInt32));
+        }
+
+        /// <summary>
         ///   Fits the underlying distribution to a given set of observations.
         /// </summary>
+        /// 
         /// <param name="observations">
         ///   The array of observations to fit the model against. The array
         ///   elements can be either of type double (for univariate data) or
         ///   type double[] (for multivariate data).</param>
         /// <remarks>
+        /// 
         ///   Although both double[] and double[][] arrays are supported,
         ///   providing a double[] for a multivariate distribution or a
         ///   double[][] for a univariate distribution may have a negative
@@ -296,6 +351,25 @@ namespace Accord.Statistics.Distributions.Multivariate
         ///   in the current distribution.</returns>
         ///   
         public abstract double ProbabilityMassFunction(int[] x);
+
+        /// <summary>
+        ///   Gets the log-probability mass function (pmf) for
+        ///   this distribution evaluated at point <c>x</c>.
+        /// </summary>
+        /// 
+        /// <param name="x">
+        ///   A single point in the distribution range.</param>
+        ///   
+        /// <remarks>
+        ///   The Probability Mass Function (PMF) describes the
+        ///   probability that a given value <c>x</c> will occur.
+        /// </remarks>
+        /// 
+        /// <returns>
+        ///   The logarithm of the probability of <c>x</c> 
+        ///   occurring in the current distribution.</returns>
+        ///   
+        public abstract double LogProbabilityMassFunction(int[] x);
 
         /// <summary>
         ///   Fits the underlying distribution to a given set of observations.

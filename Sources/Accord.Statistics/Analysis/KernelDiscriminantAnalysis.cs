@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -60,8 +60,6 @@ namespace Accord.Statistics.Analysis
         private double regularization = 1e-4;
         private double threshold = 1e-3;
 
-        private double[][] kernelClassMeans;
-
 
         //---------------------------------------------
 
@@ -82,7 +80,6 @@ namespace Accord.Statistics.Analysis
             if (kernel == null) throw new ArgumentNullException("kernel");
 
             this.kernel = kernel;
-            this.kernelClassMeans = new double[Classes.Count][];
         }
         #endregion
 
@@ -301,11 +298,7 @@ namespace Accord.Statistics.Analysis
             // Compute feature space means for later classification
             for (int c = 0; c < Classes.Count; c++)
             {
-                double[] mean = new double[eigs.GetLength(1)];
-                for (int i = 0; i < eigs.GetLength(0); i++)
-                    for (int j = 0; j < eigs.GetLength(1); j++)
-                        mean[j] += ClassMeans[c][i] * eigs[i, j];
-                kernelClassMeans[c] = mean;
+                ProjectionMeans[c] = ClassMeans[c].Multiply(eigs);
             }
 
 
@@ -364,17 +357,6 @@ namespace Accord.Statistics.Analysis
             return result;
         }
 
-        /// <summary>
-        ///   Gets the discriminant function output for class c.
-        /// </summary>
-        /// 
-        /// <param name="i">The class index.</param>
-        /// <param name="projection">The projected input.</param>
-        /// 
-        internal override double DiscriminantFunction(int i, double[] projection)
-        {
-            return -Distance.SquareEuclidean(projection, kernelClassMeans[i]);
-        }
         #endregion
 
     }

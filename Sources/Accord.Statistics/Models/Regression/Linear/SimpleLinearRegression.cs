@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -37,19 +37,39 @@ namespace Accord.Statistics.Models.Regression.Linear
     /// </remarks>
     /// 
     /// <example>
+    ///  <para>
+    ///   Let's say we have some univariate, continuous sets of input data,
+    ///   and a corresponding univariate, continuous set of output data, such
+    ///   as a set of points in R². A simple linear regression is able to fit
+    ///   a line relating the input variables to the output variables in which
+    ///   the minimum-squared-error of the line and the actual output points
+    ///   is minimum.</para>
+    ///   
     ///   <code>
-    ///   // Declare some example data
+    ///   // Let's say we have some univariate, continuous sets of input data,
+    ///   // and a corresponding univariate, continuous set of output data, such
+    ///   // as a set of points in R². A simple linear regression is able to fit
+    ///   // a line relating the input variables to the output variables in which
+    ///   // the minimum-squared-error of the line and the actual output points
+    ///   // is minimum.
+    ///   
+    ///   // Declare some sample test data.
     ///   double[] inputs =  { 80, 60, 10, 20, 30 };
     ///   double[] outputs = { 20, 40, 30, 50, 60 };
-    ///     
-    ///   // Create a new Simple Linear Regression
-    ///   SimpleLinearRegression linreg = new SimpleLinearRegression();
-    ///     
-    ///   // Perform the linear regression
-    ///   linreg.Regress(inputs, outputs);
-    ///     
-    ///   // Compute the output for a given input
-    ///   double y = linreg.Compute(85);
+    ///   
+    ///   // Create a new simple linear regression
+    ///   SimpleLinearRegression regression = new SimpleLinearRegression();
+    ///   
+    ///   // Compute the linear regression
+    ///   regression.Regress(inputs, outputs);
+    ///   
+    ///   // Compute the output for a given input. The
+    ///   double y = regression.Compute(85); // The answer will be 28.088
+    ///   
+    ///   // We can also extract the slope and the intercept term
+    ///   // for the line. Those will be -0.26 and 50.5, respectively.
+    ///   double s = regression.Slope;
+    ///   double c = regression.Intercept;
     ///   </code>
     /// </example>
     /// 

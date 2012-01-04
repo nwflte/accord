@@ -2,13 +2,14 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 
 namespace Accord.Statistics.Models.Markov.Topology
 {
     using System;
+    using Accord.Math;
 
     /// <summary>
     ///   Custom Topology for Hidden Markov Model.
@@ -53,6 +54,13 @@ namespace Accord.Statistics.Models.Markov.Topology
         ///   transition matrix and initial state probabilities.
         /// </summary>
         public Custom(double[,] transitions, double[] initial)
+            : this(transitions, initial, false) { }
+
+        /// <summary>
+        ///   Creates a new custom topology with user-defined
+        ///   transition matrix and initial state probabilities.
+        /// </summary>
+        public Custom(double[,] transitions, double[] initial, bool logarithm)
         {
             if (transitions == null)
             {
@@ -80,8 +88,16 @@ namespace Accord.Statistics.Models.Markov.Topology
             }
 
             this.states = transitions.GetLength(0);
-            this.transitions = transitions;
-            this.pi = initial;
+            if (logarithm)
+            {
+                this.transitions = Matrix.Exp(transitions);
+                this.pi = Matrix.Exp(initial);
+            }
+            else
+            {
+                this.transitions = transitions;
+                this.pi = initial;
+            }
         }
 
 
@@ -115,10 +131,19 @@ namespace Accord.Statistics.Models.Markov.Topology
         ///   Creates the state transitions matrix and the
         ///   initial state probabilities for this topology.
         /// </summary>
-        public int Create(out double[,] transitionMatrix, out double[] initialState)
+        public int Create(bool logarithm, out double[,] transitionMatrix, out double[] initialState)
         {
-            transitionMatrix = (double[,])transitions.Clone();
-            initialState = (double[])pi.Clone();
+            if (logarithm)
+            {
+                transitionMatrix = Matrix.Log(transitions);
+                initialState = Matrix.Log(pi);
+            }
+            else
+            {
+                transitionMatrix = (double[,])transitions.Clone();
+                initialState = (double[])pi.Clone();
+            }
+
             return states;
         }
 

@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -61,7 +61,7 @@ namespace Accord.Statistics.Distributions.Multivariate
         private double[] probabilities;
 
         // derived measures
-        private double nfac;
+        private double lnfac;
         private double[] mean;
         private double[] variance;
         private double[,] covariance;
@@ -83,7 +83,7 @@ namespace Accord.Statistics.Distributions.Multivariate
         {
             this.N = n;
             this.probabilities = prob;
-            this.nfac = Accord.Math.Special.Factorial(n);
+            this.lnfac = Accord.Math.Special.LogFactorial(n);
 
             this.mean = null;
             this.variance = null;
@@ -206,15 +206,46 @@ namespace Accord.Statistics.Distributions.Multivariate
         /// 
         public override double ProbabilityMassFunction(int[] x)
         {
-            double theta = 1.0;
-            double prod = 1.0;
+            double theta = 0;
+            double prod = 0;
             for (int i = 0; i < x.Length; i++)
             {
-                theta *= Accord.Math.Special.Factorial(x[i]);
-                prod *= System.Math.Pow(probabilities[i], x[i]);
+                theta += Accord.Math.Special.LogFactorial(x[i]);
+                prod += x[i] * Math.Log(probabilities[i]);
             }
 
-            return (nfac / theta) * prod;
+            return Math.Exp(lnfac - theta + prod);
+        }
+
+
+        /// <summary>
+        ///   Gets the log-probability mass function (pmf) for
+        ///   this distribution evaluated at point <c>x</c>.
+        /// </summary>
+        /// 
+        /// <param name="x">A single point in the distribution range.</param>
+        /// 
+        /// <returns>
+        ///   The logarithm of the probability of <c>x</c>
+        ///   occurring in the current distribution.
+        /// </returns>
+        /// 
+        /// <remarks>
+        ///   The Probability Mass Function (PMF) describes the
+        ///   probability that a given value <c>x</c> will occur.
+        /// </remarks>
+        /// 
+        public override double LogProbabilityMassFunction(int[] x)
+        {
+                double theta = 0;
+                double prod = 0;
+                for (int i = 0; i < x.Length; i++)
+                {
+                    theta += Accord.Math.Special.LogFactorial(x[i]);
+                    prod += x[i] * Math.Log(probabilities[i]);
+                }
+
+                return lnfac - theta + prod;
         }
 
 

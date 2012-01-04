@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -23,11 +23,12 @@
 namespace Accord.Statistics.Models.Fields
 {
     using System;
-    using Accord.Statistics.Models.Fields.Features;
+    using System.IO;
+    using System.Runtime.Serialization.Formatters.Binary;
     using Accord.Statistics.Models.Fields.Functions;
 
     /// <summary>
-    ///   Linear-Chain Conditional Random Field (experimental).
+    ///   Linear-Chain Conditional Random Field (CRF).
     /// </summary>
     /// <remarks>
     ///   <para>A conditional random field (CRF) is a type of discriminative undirected
@@ -38,8 +39,10 @@ namespace Accord.Statistics.Models.Fields
     ///   <para>This implementation is currently experimental.</para>
     /// </remarks>
     /// 
-    public class ConditionalRandomField
+    [Serializable]
+    public class ConditionalRandomField<T>
     {
+        
 
         /// <summary>
         ///   Gets the number of states in this
@@ -53,17 +56,17 @@ namespace Accord.Statistics.Models.Fields
         ///   all feature functions for this model.
         /// </summary>
         /// 
-        public IPotentialFunction Function { get; private set; }
+        public IPotentialFunction<T> Function { get; private set; }
 
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref="ConditionalRandomField"/> class.
+        ///   Initializes a new instance of the <see cref="ConditionalRandomField{T}"/> class.
         /// </summary>
         /// 
         /// <param name="states">The number of states for the model.</param>
         /// <param name="function">The potential function to be used by the model.</param>
         /// 
-        public ConditionalRandomField(int states, IPotentialFunction function)
+        public ConditionalRandomField(int states, IPotentialFunction<T> function)
         {
             this.States = states;
             this.Function = function;
@@ -74,59 +77,32 @@ namespace Accord.Statistics.Models.Fields
         ///   for the specified observations.
         /// </summary>
         /// 
-        private double Partition(int[] observations)
+        public double Partition(T[] observations)
         {
-            double[,] fwd = ForwardBackwardAlgorithm.Forward(Function, observations);
-
-            int T = observations.Length - 1;
-
-            double z = 0.0;
-            for (int i = 0; i < States; i++)
-                z += fwd[T, i];
-
-            return z;
+            return Math.Exp(LogPartition(observations));
         }
 
         /// <summary>
         ///   Computes the Log of the partition function.
         /// </summary>
         /// 
-        private double LogPartition(int[] observations)
+        public double LogPartition(T[] observations)
         {
-            return Math.Log(Partition(observations));
+            double logLikelihood;
+            double[,] fwd = ForwardBackwardAlgorithm.LogForward(Function.Factors[0], observations, 0, out logLikelihood);
+            return logLikelihood;
         }
 
-
-        /// <summary>
-        ///   Computes the likelihood of the model for the given observations.
-        /// </summary>
-        /// 
-        public double Likelihood(int[] observations, int[] labels)
-        {
-            double p = Function.LogCompute(-1, labels[0], observations, 0);
-            for (int t = 1; t < observations.Length; t++)
-                p += Function.LogCompute(labels[t - 1], labels[t], observations, t);
-            p = Math.Exp(p);
-
-#if DEBUG
-            if (Double.IsNaN(p) || Double.IsInfinity(p))
-                throw new Exception();
-#endif
-
-            double z = Partition(observations);
-
-            return p / z;
-        }
 
         /// <summary>
         ///   Computes the log-likelihood of the model for the given observations.
         /// </summary>
         /// 
-        public double LogLikelihood(int[] observations, int[] labels)
+        public double LogLikelihood(T[] observations, int[] labels)
         {
-            double p = Function.LogCompute(-1, labels[0], observations, 0);
+            double p = Function.Factors[0].Compute(-1, labels[0], observations, 0);
             for (int t = 1; t < observations.Length; t++)
-                p += Function.LogCompute(labels[t - 1], labels[t], observations, t);
+                p += Function.Factors[0].Compute(labels[t - 1], labels[t], observations, t);
 
             double z = LogPartition(observations);
 
@@ -155,36 +131,35 @@ namespace Accord.Statistics.Models.Fields
         ///   returning the overall sequence probability for this model.
         /// </summary>
         /// 
-        public int[] Compute(int[] observations, out double probability)
+        public int[] Compute(T[] observations, out double logLikelihood)
         {
             // Viterbi-forward algorithm.
-            int T = observations.Length;
             int states = States;
             int maxState;
             double maxWeight;
             double weight;
 
-            int[,] s = new int[states, T];
-            double[,] a = new double[states, T];
+            int[,] s = new int[states, observations.Length];
+            double[,] lnFwd = new double[states, observations.Length];
 
 
             // Base
             for (int i = 0; i < states; i++)
-                a[i, 0] = Function.Compute(-1, i, observations, 0);
+                lnFwd[i, 0] = Function.Factors[0].Compute(-1, i, observations, 0);
 
             // Induction
-            for (int t = 1; t < T; t++)
+            for (int t = 1; t < observations.Length; t++)
             {
-                int observation = observations[t];
+                T observation = observations[t];
 
                 for (int j = 0; j < states; j++)
                 {
                     maxState = 0;
-                    maxWeight = a[0, t - 1] * Function.Compute(0, j, observations, t);
+                    maxWeight = lnFwd[0, t - 1] + Function.Factors[0].Compute(0, j, observations, t);
 
                     for (int i = 1; i < states; i++)
                     {
-                        weight = a[i, t - 1] * Function.Compute(i, j, observations, t);
+                        weight = lnFwd[i, t - 1] + Function.Factors[0].Compute(i, j, observations, t);
 
                         if (weight > maxWeight)
                         {
@@ -193,7 +168,7 @@ namespace Accord.Statistics.Models.Fields
                         }
                     }
 
-                    a[j, t] = maxWeight;
+                    lnFwd[j, t] = maxWeight;
                     s[j, t] = maxState;
                 }
             }
@@ -201,68 +176,104 @@ namespace Accord.Statistics.Models.Fields
 
             // Find minimum value for time T-1
             maxState = 0;
-            maxWeight = a[0, T - 1];
+            maxWeight = lnFwd[0, observations.Length - 1];
 
             for (int i = 1; i < states; i++)
             {
-                if (a[i, T - 1] > maxWeight)
+                if (lnFwd[i, observations.Length - 1] > maxWeight)
                 {
                     maxState = i;
-                    maxWeight = a[i, T - 1];
+                    maxWeight = lnFwd[i, observations.Length - 1];
                 }
             }
 
 
             // Trackback
-            int[] path = new int[T];
-            path[T - 1] = maxState;
+            int[] path = new int[observations.Length];
+            path[path.Length - 1] = maxState;
 
-            for (int t = T - 2; t >= 0; t--)
+            for (int t = path.Length - 2; t >= 0; t--)
                 path[t] = s[path[t + 1], t + 1];
 
 
             // Returns the sequence probability as an out parameter
-            probability = maxWeight;
+            logLikelihood = maxWeight;
 
             // Returns the most likely (Viterbi path) for the given sequence
             return path;
         }
 
-        /// <summary>
-        ///   Computes the most likely state labels for the given observations,
-        ///   returning the overall sequence probability for this model.
-        /// </summary>
-        /// 
-        public double Likelihood(int[][] observations, int[][] labels)
-        {
-            double ll = 1;
-            for (int i = 0; i < observations.Length; i++)
-                ll *= Likelihood(observations[i], labels[i]);
-
-            return ll;
-        }
 
         /// <summary>
         ///   Computes the most likely state labels for the given observations,
         ///   returning the overall sequence log-likelihood for this model.
         /// </summary>
         /// 
-        public double LogLikelihood(int[][] observations, int[][] labels)
+        public double LogLikelihood(T[][] observations, int[][] labels)
         {
-            double ll = 0;
+            double logLikelihood = 0;
             for (int i = 0; i < observations.Length; i++)
-                ll += LogLikelihood(observations[i], labels[i]);
+                logLikelihood += LogLikelihood(observations[i], labels[i]);
 
 #if DEBUG
-            if (Double.IsNaN(ll) || Double.IsInfinity(ll))
+            if (Double.IsNaN(logLikelihood) || Double.IsInfinity(logLikelihood))
                 throw new Exception();
 #endif
 
-            return ll;
+            return logLikelihood;
         }
 
+
+
+        /// <summary>
+        ///   Saves the random field to a stream.
+        /// </summary>
+        /// 
+        /// <param name="stream">The stream to which the random field is to be serialized.</param>
+        /// 
+        public void Save(Stream stream)
+        {
+            BinaryFormatter b = new BinaryFormatter();
+            b.Serialize(stream, this);
+        }
+
+        /// <summary>
+        ///   Saves the random field to a stream.
+        /// </summary>
+        /// 
+        /// <param name="path">The stream to which the random field is to be serialized.</param>
+        /// 
+        public void Save(string path)
+        {
+            Save(new FileStream(path, FileMode.Create));
+        }
+
+        /// <summary>
+        ///   Loads a random field from a stream.
+        /// </summary>
+        /// 
+        /// <param name="stream">The stream from which the random field is to be deserialized.</param>
+        /// 
+        /// <returns>The deserialized random field.</returns>
+        /// 
+        public static ConditionalRandomField<T> Load(Stream stream)
+        {
+            BinaryFormatter b = new BinaryFormatter();
+            return (ConditionalRandomField<T>)b.Deserialize(stream);
+        }
+
+        /// <summary>
+        ///   Loads a random field from a file.
+        /// </summary>
+        /// 
+        /// <param name="path">The path to the file from which the random field is to be deserialized.</param>
+        /// 
+        /// <returns>The deserialized random field.</returns>
+        /// 
+        public static ConditionalRandomField<T> Load(string path)
+        {
+            return Load(new FileStream(path, FileMode.Open));
+        }
     }
-
-
 
 }

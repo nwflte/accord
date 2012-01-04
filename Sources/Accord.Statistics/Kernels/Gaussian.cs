@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -48,6 +48,12 @@ namespace Accord.Statistics.Kernels
     {
         private double sigma;
         private double gamma;
+
+        /// <summary>
+        ///   Constructs a new Gaussian Kernel
+        /// </summary>
+        /// 
+        public Gaussian() : this(0) { }
 
         /// <summary>
         ///   Constructs a new Gaussian Kernel

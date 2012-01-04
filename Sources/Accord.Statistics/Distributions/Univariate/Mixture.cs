@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -158,8 +158,33 @@ namespace Accord.Statistics.Distributions.Univariate
         {
             double r = 0.0;
             for (int i = 0; i < components.Length; i++)
-                r = coefficients[i] * components[i].ProbabilityFunction(x);
+                r += coefficients[i] * components[i].ProbabilityFunction(x);
             return r;
+        }
+
+        /// <summary>
+        ///   Gets the log-probability density function (pdf) for
+        ///   this distribution evaluated at point <c>x</c>.
+        /// </summary>
+        /// 
+        /// <param name="x">A single point in the distribution range.</param>
+        /// 
+        /// <returns>
+        ///   The logarithm of the probability of <c>x</c>
+        ///   occurring in the current distribution.
+        /// </returns>
+        /// 
+        /// <remarks>
+        ///   The Probability Density Function (PDF) describes the
+        ///   probability that a given value <c>x</c> will occur.
+        /// </remarks>
+        /// 
+        public override double LogProbabilityDensityFunction(double x)
+        {
+            double r = 0.0;
+            for (int i = 0; i < components.Length; i++)
+                r += coefficients[i] * components[i].ProbabilityFunction(x);
+            return Math.Log(r);
         }
 
         /// <summary>
@@ -196,6 +221,12 @@ namespace Accord.Statistics.Distributions.Univariate
             double threshold = 1e-3;
             IFittingOptions innerOptions = null;
 
+#if DEBUG
+            for (int i = 0; i < weights.Length; i++)
+                if (Double.IsNaN(weights[i]) || Double.IsInfinity(weights[i]))
+                    throw new Exception("Invalid numbers in the weight vector.");
+#endif
+
             if (options != null)
             {
                 // Process optional arguments
@@ -211,53 +242,51 @@ namespace Accord.Statistics.Distributions.Univariate
             int N = observations.Length;
             int K = components.Length;
 
-            weights = weights.Multiply(N);
+            double weightSum = weights.Sum();
 
+            // Initialize responsibilities
+            double[] norms = new double[N];
             double[][] gamma = new double[K][];
             for (int k = 0; k < gamma.Length; k++)
                 gamma[k] = new double[N];
 
 
+            // Clone the current distribution values
             double[] pi = (double[])coefficients.Clone();
-
             T[] pdf = new T[components.Length];
             for (int i = 0; i < components.Length; i++)
                 pdf[i] = (T)components[i].Clone();
 
-
+            // Prepare the iteration
             double likelihood = logLikelihood(pi, pdf, observations, weights);
             bool converged = false;
 
-
+            // Start
             while (!converged)
             {
-                // 2. Expectation: Evaluate the responsibilities using the
-                //    current parameter values.
-                for (int n = 0; n < observations.Length; n++)
-                {
-                    double den = 0.0;
-                    double w = weights[n];
-                    double x = observations[n];
+                // 2. Expectation: Evaluate the component distributions 
+                //    responsibilities using the current parameter values.
+                Array.Clear(norms, 0, norms.Length);
 
-                    for (int k = 0; k < gamma.Length; k++)
-                        den += gamma[k][n] = pi[k] * pdf[k].ProbabilityFunction(x) * w;
+                for (int k = 0; k < gamma.Length; k++)
+                    for (int i = 0; i < observations.Length; i++)
+                        norms[i] += gamma[k][i] = pi[k] * pdf[k].ProbabilityFunction(observations[i]);
 
-                    if (den != 0)
-                    {
-                        for (int k = 0; k < gamma.Length; k++)
-                            gamma[k][n] /= den;
-                    }
-                }
+                for (int k = 0; k < gamma.Length; k++)
+                    for (int i = 0; i < weights.Length; i++)
+                        if (norms[i] != 0) gamma[k][i] *= weights[i] / norms[i];
 
-                // 3. Maximization: Re-estimate the parameters using the
-                //    current responsibilities
+                // 3. Maximization: Re-estimate the distribution parameters
+                //    using the previously computed responsibilities
                 for (int k = 0; k < gamma.Length; k++)
                 {
-                    double Nk = gamma[k].Sum();
-                    double[] w = gamma[k].Divide(Nk);
+                    double sum = gamma[k].Sum();
 
-                    pi[k] = Nk / N;
-                    pdf[k].Fit(observations, w, innerOptions);
+                    for (int i = 0; i < gamma[k].Length; i++)
+                        gamma[k][i] /= sum;
+
+                    pi[k] = sum / weightSum;
+                    pdf[k].Fit(observations, gamma[k], innerOptions);
                 }
 
                 // 4. Evaluate the log-likelihood and check for convergence
@@ -307,24 +336,23 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         private static double logLikelihood(double[] pi, T[] pdf, double[] observations, double[] weigths)
         {
-            int N = observations.Length;
+            double logLikelihood = 0.0;
 
-            double likelihood = 0.0;
-            for (int n = 0; n < observations.Length; n++)
+            for (int i = 0; i < observations.Length; i++)
             {
-                double x = observations[n];
-                double w = weigths[n];
+                double x = observations[i];
+                double w = weigths[i];
 
                 if (w == 0) continue;
 
                 double sum = 0.0;
                 for (int k = 0; k < pi.Length; k++)
-                    sum += pi[k] * pdf[k].ProbabilityFunction(x) * w;
+                    sum += pi[k] * pdf[k].ProbabilityFunction(x);
 
-                if (sum > 0) likelihood += Math.Log(sum);
+                if (sum > 0) logLikelihood += Math.Log(sum) * w;
             }
 
-            return likelihood;
+            return logLikelihood;
         }
 
         /// <summary>

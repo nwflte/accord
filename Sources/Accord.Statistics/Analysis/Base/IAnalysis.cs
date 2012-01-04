@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -28,9 +28,11 @@ namespace Accord.Statistics.Analysis
     /// 
     public enum AnalysisMethod
     {
+
         /// <summary>
         ///   By choosing Center, the method will be run on the mean-centered data.
         /// </summary>
+        /// 
         /// <remarks>
         ///   In Principal Component Analysis this means the method will operate
         ///   on the Covariance matrix of the given data.
@@ -42,6 +44,7 @@ namespace Accord.Statistics.Analysis
         ///    By choosing Standardize, the method will be run on the mean-centered and
         ///    standardized data.
         /// </summary>
+        /// 
         /// <remarks>
         ///    In Principal Component Analysis this means the method
         ///    will operate on the Correlation matrix of the given data. One should always

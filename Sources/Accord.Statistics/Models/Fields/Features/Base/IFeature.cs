@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -22,22 +22,82 @@
 
 namespace Accord.Statistics.Models.Fields.Features
 {
+    using Accord.Statistics.Models.Fields.Functions;
+
     /// <summary>
-    ///   Common interface for CRF feature functions.
+    ///   Common interface for <see cref="ConditionalRandomField{T}">Conditional Random Fields</see>
+    ///   <see cref="IFeature{T}">feature functions</see>
     /// </summary>
-    public interface IFeature
+    /// 
+    /// <typeparam name="TObservation">The type of the observations being modeled.</typeparam>
+    /// 
+    public interface IFeature<TObservation>
     {
+
+        /// <summary>
+        ///   Gets the potential function containing this feature.
+        /// </summary>
+        /// 
+        IPotentialFunction<TObservation> Owner { get; }
+
+        /// <summary>
+        ///   Gets the potential factor to which this feature belongs.
+        /// </summary>
+        /// 
+        int OwnerFactorIndex { get; }
+
 
         /// <summary>
         ///   Computes the feature for the given parameters.
         /// </summary>
         /// 
-        /// <param name="previous">The previous state.</param>
-        /// <param name="current">The current state.</param>
+        /// <param name="previousState">The previous state.</param>
+        /// <param name="currentState">The current state.</param>
         /// <param name="observations">The observations.</param>
-        /// <param name="index">The index of the current observation.</param>
+        /// <param name="observationIndex">The index of the current observation.</param>
+        /// <param name="outputClass">The output class label for the sequence.</param>
         /// 
-        double Compute(int previous, int current, int[] observations, int index);
+        double Compute(int previousState, int currentState, TObservation[] observations, int observationIndex, int outputClass = 0);
+
+        /// <summary>
+        ///   Computes the feature for the given parameters.
+        /// </summary>
+        /// 
+        /// <param name="states">The sequence of states.</param>
+        /// <param name="observations">The sequence of observations.</param>
+        /// <param name="output">The output class label for the sequence.</param>
+        /// 
+        /// <returns>The result of the feature.</returns>
+        /// 
+        double Compute(int[] states, TObservation[] observations, int output);
+
+        /// <summary>
+        ///   Computes the probability of occurance of this 
+        ///   feature given a sequence of observations.
+        /// </summary>
+        /// 
+        /// <param name="fwd">The matrix of forward state probabilities.</param>
+        /// <param name="bwd">The matrix of backward state probabilties.</param>
+        /// <param name="x">The observation sequence.</param>
+        /// <param name="y">The output class label for the sequence.</param>
+        /// 
+        /// <returns>The probability of occurance of this feature.</returns>
+        /// 
+        double Marginal(double[,] fwd, double[,] bwd, TObservation[] x, int y);
+
+        /// <summary>
+        ///   Computes the log-probability of occurance of this 
+        ///   feature given a sequence of observations.
+        /// </summary>
+        /// 
+        /// <param name="lnFwd">The matrix of forward state log-probabilities.</param>
+        /// <param name="lnBwd">The matrix of backward state log-probabilties.</param>
+        /// <param name="x">The observation sequence.</param>
+        /// <param name="y">The output class label for the sequence.</param>
+        /// 
+        /// <returns>The probability of occurance of this feature.</returns>
+        /// 
+        double LogMarginal(double[,] lnFwd, double[,] lnBwd, TObservation[] x, int y);
 
     }
 }

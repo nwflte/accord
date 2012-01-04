@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 
@@ -48,10 +48,10 @@ namespace Accord.Statistics.Models.Markov.Learning
     ///   int[] states = new int[] { 2, 2 };
     ///
     ///   // Creates a new Hidden Markov Model Sequence Classifier with the given parameters
-    ///   SequenceClassifier classifier = new SequenceClassifier(classes, states, symbols);
+    ///   SequenceClassifier classifier = new HiddenMarkovClassifier(classes, states, symbols);
     ///   
     ///   // Create a new learning algorithm to train the sequence classifier
-    ///   var teacher = new SequenceClassifierLearning(classifier,
+    ///   var teacher = new HiddenMarkovClassifierLearning(classifier,
     ///   
     ///       // Train each model until the log-likelihood changes less than 0.001
     ///       modelIndex => new BaumWelchLearning(classifier.Models[modelIndex])
@@ -67,8 +67,8 @@ namespace Accord.Statistics.Models.Markov.Learning
     ///   </code>
     /// </example>
     /// 
-    public class SequenceClassifierLearning :
-        SequenceClassifierLearningBase<SequenceClassifier, HiddenMarkovModel>
+    public class HiddenMarkovClassifierLearning :
+        BaseSequenceClassifierLearning<HiddenMarkovClassifier, HiddenMarkovModel>
     {
 
         private int smoothingKernelSize = 3;
@@ -90,22 +90,12 @@ namespace Accord.Statistics.Models.Markov.Learning
             }
         }
 
-        private void createSmoothingKernel()
-        {
-            AForge.Math.Gaussian g = new AForge.Math.Gaussian(smoothingSigma);
-            gaussianKernel = g.Kernel(smoothingKernelSize);
-
-            // Normalize
-            double norm = gaussianKernel.Euclidean();
-            gaussianKernel = gaussianKernel.Divide(norm);
-        }
-
         /// <summary>
         ///   Creates a new instance of the learning algorithm for a given 
         ///   Markov sequence classifier using the specified configuration
         ///   function.
         /// </summary>
-        public SequenceClassifierLearning(SequenceClassifier classifier,
+        public HiddenMarkovClassifierLearning(HiddenMarkovClassifier classifier,
             ClassifierLearningAlgorithmConfiguration algorithm)
             : base(classifier, algorithm)
         {
@@ -148,15 +138,18 @@ namespace Accord.Statistics.Models.Markov.Learning
 
             for (int i = 0, m = 0; i < Models.Length; i++)
             {
+                var A = Matrix.Exp(Models[i].Transitions);
+                var B = Matrix.Exp(Models[i].LogEmissions);
+
                 for (int j = 0; j < Models[i].States; j++)
                 {
                     for (int k = 0; k < Models[i].States; k++)
                     {
                         if (j != k)
-                            transition[j + m, k + m] = (1.0 - Models[i].Transitions[j, k]) / (states - 1.0);
-                        else transition[j + m, k + m] = Models[i].Transitions[j, k];
+                            transition[j + m, k + m] = (1.0 - A[j, k]) / (states - 1.0);
+                        else transition[j + m, k + m] = A[j, k];
                     }
-                    emissions.SetRow(j + m, Models[i].Emissions.GetRow(j));
+                    emissions.SetRow(j + m, B.GetRow(j));
                 }
 
                 initial[m] = 1.0 / Models.Length;
@@ -177,6 +170,17 @@ namespace Accord.Statistics.Models.Markov.Learning
             }
 
             return new HiddenMarkovModel(transition, emissions, initial) { Tag = "Threshold" };
+        }
+
+
+        private void createSmoothingKernel()
+        {
+            AForge.Math.Gaussian g = new AForge.Math.Gaussian(smoothingSigma);
+            gaussianKernel = g.Kernel(smoothingKernelSize);
+
+            // Normalize
+            double norm = gaussianKernel.Euclidean();
+            gaussianKernel = gaussianKernel.Divide(norm);
         }
     }
 }

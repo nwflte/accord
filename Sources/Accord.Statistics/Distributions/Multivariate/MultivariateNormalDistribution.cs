@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -26,6 +26,7 @@ namespace Accord.Statistics.Distributions.Multivariate
     using Accord.Math.Decompositions;
     using System;
     using Accord.Statistics.Distributions.Fitting;
+    using Accord.Statistics.Distributions.Univariate;
 
     /// <summary>
     ///   Multivariate Normal (Gaussian) distribution.
@@ -158,6 +159,7 @@ namespace Accord.Statistics.Distributions.Multivariate
             //
             //     log(constant) =  log( 1 / ( ((2PI)^(k/2)) * detSqrt) ) 
             //                   =  log(1)-log(((2PI)^(k/2)) * detSqrt) )
+            //                   =    0   -log(((2PI)^(k/2)) * detSqrt) )
             //                   = -log(       ((2PI)^(k/2)) * detSqrt) )
             //                   = -log(       ((2PI)^(k/2)) * exp(log(detSqrt))))
             //                   = -log(       ((2PI)^(k/2)) * exp(lndetsqrt)))
@@ -262,6 +264,33 @@ namespace Accord.Statistics.Distributions.Multivariate
             return r > 1 ? 1 : r;
         }
 
+        /// <summary>
+        ///   Gets the log-probability density function (pdf)
+        ///   for this distribution evaluated at point <c>x</c>.
+        /// </summary>
+        /// 
+        /// <param name="x">A single point in the distribution range. For a
+        ///   univariate distribution, this should be a single
+        ///   double value. For a multivariate distribution,
+        ///   this should be a double array.</param>
+        ///   
+        /// <returns>
+        ///   The logarithm of the probability of <c>x</c>
+        ///   occurring in the current distribution.
+        /// </returns>
+        /// 
+        public override double LogProbabilityDensityFunction(params double[] x)
+        {
+            if (x.Length != Dimension)
+                throw new DimensionMismatchException("x", "The vector should have the same dimension as the distribution.");
+
+            double[] z = x.Subtract(mean);
+            double[] a = chol.Solve(z);
+            double b = a.InnerProduct(z);
+
+            return lnconstant - b * 0.5;
+        }
+
 
         /// <summary>
         ///   Fits the underlying distribution to a given set of observations.
@@ -286,18 +315,30 @@ namespace Accord.Statistics.Distributions.Multivariate
             double[] means;
             double[,] cov;
 
+            NormalOptions opt = options as NormalOptions;
+
+
             if (weights != null)
             {
 #if DEBUG
+                double sum = 0;
                 for (int i = 0; i < weights.Length; i++)
+                {
                     if (Double.IsNaN(weights[i]) || Double.IsInfinity(weights[i]))
                         throw new Exception("Invalid numbers in the weight vector.");
+                    sum += weights[i];
+                }
+
+                if (Math.Abs(sum - 1.0) > 1e-10)
+                    throw new Exception("Weights do not sum to one.");
 #endif
                 // Compute weighted mean vector
                 means = Statistics.Tools.Mean(observations, weights);
 
                 // Compute weighted covariance matrix
-                cov = Statistics.Tools.WeightedCovariance(observations, weights, means);
+                if (opt != null && opt.Diagonal)
+                    cov = Matrix.Diagonal(Statistics.Tools.WeightedVariance(observations, weights, means));
+                else cov = Statistics.Tools.WeightedCovariance(observations, weights, means);
             }
             else
             {
@@ -305,16 +346,17 @@ namespace Accord.Statistics.Distributions.Multivariate
                 means = Statistics.Tools.Mean(observations);
 
                 // Compute covariance matrix
+                if (opt != null && opt.Diagonal)
+                    cov = Matrix.Diagonal(Statistics.Tools.Variance(observations, means));
                 cov = Statistics.Tools.Covariance(observations, means);
             }
 
             CholeskyDecomposition chol = new CholeskyDecomposition(cov, false, true);
 
-            if (options != null)
+            if (opt != null)
             {
                 // Parse optional estimation options
-                NormalOptions o = (NormalOptions)options;
-                double regularization = o.Regularization;
+                double regularization = opt.Regularization;
 
                 if (regularization > 0)
                 {
@@ -323,7 +365,13 @@ namespace Accord.Statistics.Distributions.Multivariate
                     while (!chol.PositiveDefinite)
                     {
                         for (int i = 0; i < dimension; i++)
+                        {
+                            for (int j = 0; j < dimension; j++)
+                                if (Double.IsNaN(cov[i, j]) || Double.IsInfinity(cov[i, j]))
+                                    cov[i, j] = 0.0;
+
                             cov[i, i] += regularization;
+                        }
 
                         chol = new CholeskyDecomposition(cov, false, true);
                     }
@@ -389,6 +437,24 @@ namespace Accord.Statistics.Distributions.Multivariate
             return clone;
         }
 
+        /// <summary>
+        ///   Converts this <see cref="MultivariateNormalDistribution">multivariate
+        ///   normal distribution</see> into a <see cref="Independent{T}">joint distribution
+        ///   of independent</see> <see cref="NormalDistribution">normal distributions</see>.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="Independent{T}">independent joint distribution</see> of 
+        ///   <see cref="NormalDistribution">normal distributions</see>.
+        /// </returns>
+        /// 
+        public Independent<NormalDistribution> ToIndependentNormalDistribution()
+        {
+            NormalDistribution[] components = new NormalDistribution[this.Dimension];
+            for (int i = 0; i < components.Length; i++)
+                components[i] = new NormalDistribution(this.Mean[i], Math.Sqrt(this.Variance[i]));
+            return new Independent<NormalDistribution>(components);
+        }
 
         /// <summary>
         ///   Generates a random vector of observations from the current distribution.

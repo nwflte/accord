@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -104,6 +104,29 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
+        /// Gets the log-probability density function (pdf) for
+        /// this distribution evaluated at point <c>x</c>.
+        /// </summary>
+        /// <param name="x">A single point in the distribution range.</param>
+        /// <returns>
+        /// The logarithm of the probability of <c>x</c>
+        /// occurring in the current distribution.
+        /// </returns>
+        /// <remarks>
+        /// The Probability Density Function (PDF) describes the
+        /// probability that a given value <c>x</c> will occur.
+        /// </remarks>
+        public override double LogProbabilityDensityFunction(double x)
+        {
+            double v = degreesOfFreedom;
+            double m1 = ((v - 2.0) / 2.0) * Math.Log(x);
+            double m2 = (-x / 2.0);
+            double m3 = (v / 2.0) * Math.Log(2) + Special.LogGamma(v / 2.0);
+            return (m1 + m2) - m3;
+        }
+
+
+        /// <summary>
         ///   Gets the cumulative distribution function (cdf) for
         ///   the χ² distribution evaluated at point <c>x</c>.
         /// </summary>
@@ -160,7 +183,7 @@ namespace Accord.Statistics.Distributions.Univariate
                     double kd2 = degreesOfFreedom / 2.0;
                     double m1 = Math.Log(2.0 * Special.Gamma(kd2));
                     double m2 = (1.0 - kd2) * Special.Digamma(kd2);
-                    entropy =  kd2 + m1 + m2;
+                    entropy = kd2 + m1 + m2;
                 }
 
                 return entropy.Value;

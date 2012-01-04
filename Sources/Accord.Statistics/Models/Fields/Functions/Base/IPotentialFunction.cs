@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -20,23 +20,44 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-namespace Accord.Statistics.Models.Fields.Learning
+namespace Accord.Statistics.Models.Fields.Functions
 {
+    using Accord.Statistics.Models.Fields.Features;
 
     /// <summary>
-    ///   Common interface for Conditional Random Fields learning algorithms.
+    ///   Common interface for CRF's Potential functions.
     /// </summary>
     /// 
-    public interface IConditionalRandomFieldLearning
+    public interface IPotentialFunction<T>
     {
+
         /// <summary>
-        ///   Runs the learning algorithm with the specified input
-        ///   training observations and corresponding output labels.
+        ///   Gets the factor potentials (also known as clique potentials) 
+        ///   functions composing this potential function.
         /// </summary>
         /// 
-        /// <param name="observations">The training observations.</param>
-        /// <param name="labels">The observation's labels.</param>
+        FactorPotential<T>[] Factors { get; }
+
+        /// <summary>
+        ///   Gets the number of output classes assumed by this function.
+        /// </summary>
         /// 
-        double Run(int[][] observations, int[][] labels);
+        int Outputs { get; }
+
+        /// <summary>
+        ///   Gets or sets the set of weights for each feature function.
+        /// </summary>
+        /// 
+        /// <value>The weights for each of the feature functions.</value>
+        /// 
+        double[] Weights { get; set; }
+
+        /// <summary>
+        ///   Gets the feature functions composing this potential function.
+        /// </summary>
+        /// 
+        IFeature<T>[] Features { get; }
+
+
     }
 }

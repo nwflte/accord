@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -20,41 +20,39 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-namespace Accord.Statistics.Models.Fields.Features
+namespace Accord.Statistics.Models.Fields.Learning
 {
 
     /// <summary>
-    ///   Abstract class for CRF's State features.
+    ///   Common interface for Hidden Conditional Random Fields learning algorithms.
     /// </summary>
     /// 
-    public abstract class StateFeature : IFeature
+    public interface IHiddenConditionalRandomFieldLearning<T>
     {
 
-
         /// <summary>
-        ///   Computes the feature for the given parameters.
+        ///   Runs the learning algorithm with the specified input
+        ///   training observations and corresponding output labels.
         /// </summary>
         /// 
-        /// <param name="previous">The previous state.</param>
-        /// <param name="current">The current state.</param>
-        /// <param name="observations">The observations.</param>
-        /// <param name="index">The index of the current observation.</param>
+        /// <param name="observations">The training observations.</param>
+        /// <param name="outputs">The observation's labels.</param>
         /// 
-        double IFeature.Compute(int previous, int current, int[] observations, int index)
-        {
-            return Compute(current, observations, index);
-        }
-
+        /// <returns>The error in the last iteration.</returns>
+        /// 
+        double RunEpoch(T[][] observations, int[] outputs);
 
         /// <summary>
-        ///   Computes the state feature for the given state parameters.
+        ///   Runs one iteration of the learning algorithm with the
+        ///   specified input training observation and corresponding
+        ///   output label.
         /// </summary>
         /// 
-        /// <param name="currentState">The current state.</param>
-        /// <param name="observations">The observations.</param>
-        /// <param name="index">The index for the current observation.</param>
+        /// <param name="observations">The training observations.</param>
+        /// <param name="output">The observation's labels.</param>
         /// 
-        public abstract double Compute(int currentState, int[] observations, int index);
-
+        /// <returns>The error in the last iteration.</returns>
+        /// 
+        double Run(T[] observations, int output);
     }
 }
