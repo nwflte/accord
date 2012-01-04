@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -33,7 +33,7 @@ namespace Accord.Audio.Generators
 
         private int interval;
 
-        private const float ampMax = 1.0f;
+        private const float ampMax = 1f;
 
         /// <summary>
         ///   Gets or sets the number of channels to generate.

@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -90,8 +90,8 @@ namespace Accord.Audio
     {
 
         #region Consts: Standard values used in almost all conversions.
-        private const float const_1_div_128_ = 1.0f / 128.0f;  // 8 bit multiplier
-        private const float const_1_div_32768_ = 1.0f / 32768.0f; // 16 bit multiplier
+        private const float const_1_div_128_ = 1f / 128f;  // 8 bit multiplier
+        private const float const_1_div_32768_ = 1f / 32768f; // 16 bit multiplier
         private const double const_1_div_2147483648_ = 1.0 / 2147483648.0; // 32 bit
         #endregion
 
@@ -466,7 +466,7 @@ namespace Accord.Audio
         {
             for (int i = 0; i < from.Length; i++)
                 for (int j = 0; j < from[0].Length; j++)
-                    to[i][j] = (byte)(128 + ((byte)(to[i][j] * (127.0f))));
+                    to[i][j] = (byte)(128 + ((byte)(to[i][j] * (127f))));
         }
 
         /// <summary>
@@ -478,7 +478,7 @@ namespace Accord.Audio
         public static void Convert(float[] from, byte[] to)
         {
             for (int i = 0; i < from.Length; i++)
-                to[i] = (byte)(128 + ((byte)(to[i] * (127.0f))));
+                to[i] = (byte)(128 + ((byte)(to[i] * (127f))));
         }
 
         /// <summary>
@@ -489,7 +489,7 @@ namespace Accord.Audio
         /// <param name="to">The resulting sample.</param>
         public static void Convert(float from, out byte to)
         {
-            to = (byte)(128 + ((byte)(from * (127.0f))));
+            to = (byte)(128 + ((byte)(from * (127f))));
         }
         #endregion
 
@@ -504,7 +504,7 @@ namespace Accord.Audio
         {
             for (int i = 0; i < from.Length; i++)
                 for (int j = 0; i < from[0].Length; j++)
-                    to[i][j] = (short)(from[i][j] * (32767.0f));
+                    to[i][j] = (short)(from[i][j] * (32767f));
         }
 
         /// <summary>
@@ -516,7 +516,7 @@ namespace Accord.Audio
         public static void Convert(float[] from, short[] to)
         {
             for (int i = 0; i < from.Length; i++)
-                to[i] = (short)(from[i] * (32767.0f));
+                to[i] = (short)(from[i] * (32767f));
         }
 
         /// <summary>
@@ -527,7 +527,7 @@ namespace Accord.Audio
         /// <param name="to">The resulting sample.</param>
         public static void Convert(float from, out short to)
         {
-            to = (short)(from * (32767.0f));
+            to = (short)(from * (32767f));
         }
         #endregion
 

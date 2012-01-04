@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -389,8 +389,10 @@ namespace Accord.Audio
         #region IDisposable Members
 
         /// <summary>
-        ///   Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        ///   Performs application-defined tasks associated with freeing, 
+        ///   releasing, or resetting unmanaged resources.
         /// </summary>
+        /// 
         public void Dispose()
         {
             Dispose(true);
@@ -398,9 +400,10 @@ namespace Accord.Audio
         }
 
         /// <summary>
-        ///   Releases unmanaged resources and performs other cleanup operations before the
-        ///   <see cref="Signal"/> is reclaimed by garbage collection.
+        ///   Releases unmanaged resources and performs other cleanup operations 
+        ///   before the <see cref="Signal"/> is reclaimed by garbage collection.
         /// </summary>
+        /// 
         ~Signal()
         {
             Dispose(false);
@@ -409,7 +412,11 @@ namespace Accord.Audio
         /// <summary>
         ///   Releases unmanaged and - optionally - managed resources
         /// </summary>
-        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        /// 
+        /// <param name="disposing"><c>true</c> to release both managed
+        /// and unmanaged resources; <c>false</c> to release only unmanaged
+        /// resources.</param>
+        ///
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
