@@ -1,6 +1,6 @@
 The Accord.NET Framework
 
-Copyright (c) 2009-2011, César Roberto de Souza <cesarsouza at gmail.com>
+Copyright (c) 2009-2012, César Roberto de Souza <cesarsouza at gmail.com>
 
  This library is free software; you can redistribute it and/or modify it under the terms of
  the GNU Lesser General Public License as published by the Free Software Foundation; either
@@ -19,14 +19,28 @@ Copyright (c) 2009-2011, César Roberto de Souza <cesarsouza at gmail.com>
  You should have received a copy of the GNU Lesser General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+Some modules of this library are distributed under the GPL, and not the LGPL. Those modules
+have been marked with .GPL.dll in their name. All relevant licensing information should also
+be accompanying each respective source code. Please see relevant source headers for details.
 
-Contains routines adapted from Lutz Roeder's Mapack for .NET, LAPACK and Jama routines. Jama has
-been released under the public domain. LAPACK has been released under a compatible 3-clause BSD
-license, listed below. Original ArrayDataView code is copyright (c) 2004 Mihail Stefanov, licensed
-under the LGPL with permission of the original author. Original SortableBindingList source code is
-copyright (c) 2008 Tim Van Wassenhove, licensed under the LGPL with permission of the original author.
-Statistics module contains code for computing the Kolmogorov-Smirnov distribution based on original
-code by Richard Simard, redistributed under the LGPL with permission of the original author.
+The documentation sections contains references to Wikipedia and is thus entirely available under the
+Creative Commons Attribution/Share-Alike License. All referenced sections include a hyperlink to the
+original article page. If you think you have found something which has not properly linked, please
+let me know so it can be corrected.
+
+Overall framework architecture and style was greatly inspired by AForge.NET. The AForge.NET
+Framework is a copyrighted work by Andrew Kirillov. This framework (Accord.NET) is in no way
+affiliated with AForge.NET, its authors or contributors.
+
+
+
+This library also contains routines adapted from Lutz Roeder's Mapack for .NET, LAPACK and Jama
+routines. Jama has been released under the public domain. LAPACK has been released under a compatible
+3-clause BSD license, listed below. Original ArrayDataView code is copyright (c) 2004 Mihail Stefanov,
+licensed under the LGPL with permission of the original author. Original SortableBindingList source
+code is copyright (c) 2008 Tim Van Wassenhove, licensed under the LGPL with permission of the original
+author. Statistics module contains code for computing the Kolmogorov-Smirnov distribution based on
+original code by Richard Simard, redistributed under the LGPL with permission of the original author.
 
 The Accord.Vision module includes definitions for Haar Cascades created by Modesto Castrillon-Santana,
 distributed under the LGPL with permission of the original author. The SURF interest points detector
@@ -38,15 +52,6 @@ distributed under the MIT license, listed below. The Project Marilena is copyrig
 Ohtsuka, distributed under a compatible 2-clause BSD license, listed below. See actual sources for
 details.
 
-The documentation sections contains references to Wikipedia and is thus entirely available under the
-Creative Commons Attribution/Share-Alike License. All referenced sections include a hyperlink to the
-original article page. If you think you have found something which has not properly linked, please
-let me know so it can be corrected.
-
-
-Overall framework architecture and style was greatly inspired by AForge.NET. The AForge.NET
-Framework is a copyrighted work by Andrew Kirillov. This framework (Accord.NET) is in no way
-affiliated with AForge.NET, its authors or contributors.
 
 
 Below are the licenses applying to specific sections of the code. Those are not
