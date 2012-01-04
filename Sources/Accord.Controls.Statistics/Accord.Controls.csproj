@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Accord.Controls</RootNamespace>
     <AssemblyName>Accord.Controls</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>Accord.snk</AssemblyOriginatorKeyFile>
@@ -33,6 +33,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -85,8 +86,15 @@
     <Compile Include="ArrayDataView\ArrayDataView.cs" />
     <Compile Include="ArrayDataView\ArrayPropertyDescriptor.cs" />
     <Compile Include="ArrayDataView\ArrayRowView.cs" />
+    <Compile Include="ArrayDataView\RowNamePropertyDescriptor.cs" />
     <Compile Include="ColorSequenceCollection.cs" />
     <Compile Include="Converters\RangeTypeConverter.cs" />
+    <Compile Include="DecisionTreeView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DecisionTreeView.Designer.cs">
+      <DependentUpon>DecisionTreeView.cs</DependentUpon>
+    </Compile>
     <Compile Include="HistogramView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -105,6 +113,9 @@
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="DecisionTreeView.resx">
+      <DependentUpon>DecisionTreeView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="HistogramView.resx">
       <DependentUpon>HistogramView.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -114,9 +125,18 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Accord.Core\Accord.Core.csproj">
+      <Project>{A177A90C-8207-466A-AF70-F2B8452A42AC}</Project>
+      <Name>Accord.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Accord.Imaging\Accord.Imaging.csproj">
       <Project>{4959A83D-F78F-439E-80A5-41583ECEAAC6}</Project>
       <Name>Accord.Imaging</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Accord.MachineLearning\Accord.MachineLearning.csproj">
+      <Project>{7AB4BBCC-6222-423D-9FF9-BA9CB7C09199}</Project>
+      <Name>Accord.MachineLearning</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Accord.Math\Accord.Math.csproj">

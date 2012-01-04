@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -302,6 +302,9 @@ namespace Accord.Controls.Vision
                     videoSource.NewFrame += source_NewFrame;
                     videoSource.PlayingFinished += videoSource_PlayingFinished;
                     videoSource.VideoSourceError += videoSource_VideoSourceError;
+
+                    VideoCaptureDevice captureDevice = videoSource as VideoCaptureDevice;
+                    if (captureDevice != null) captureDevice.DesiredFrameSize = frameSize;
                 }
             }
         }
@@ -780,7 +783,7 @@ namespace Accord.Controls.Vision
         /// </remarks>
         /// 
         [Browsable(false)]
-        public int BytesReceived
+        public long BytesReceived
         {
             get { return videoSource.BytesReceived; }
         }
@@ -796,7 +799,7 @@ namespace Accord.Controls.Vision
         [Browsable(false)]
         public int FramesReceived
         {
-            get { return videoSource.BytesReceived; }
+            get { return videoSource.FramesReceived; }
         }
 
         /// <summary>

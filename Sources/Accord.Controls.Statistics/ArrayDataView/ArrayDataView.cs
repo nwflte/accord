@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -74,6 +74,7 @@ namespace Accord.Controls
         private int colCount;
 
         private string[] columnNames;
+        private string[] rowNames;
 
 
         /// <summary> Raised when the list changes. </summary>
@@ -111,6 +112,7 @@ namespace Accord.Controls
                 rowCount = 1;
                 colCount = array.GetLength(0);
                 rows = new ArrayRowView[] { new ArrayRowView(this, 0) };
+                type = ArrayDataType.Simple;
             }
         }
 
@@ -163,6 +165,68 @@ namespace Accord.Controls
             }
         }
 
+        /// <summary>
+        ///   Initializes a new ArrayDataView from array with custom column names.
+        /// </summary>
+        /// 
+        /// <param name="array">Array of data.</param>
+        /// <param name="columnNames">Collection of column names.</param>
+        /// <param name="rowNames">Collecion of row names.</param>
+        /// 
+        public ArrayDataView(Array array, object[] columnNames, object[] rowNames)
+            : this(array)
+        {
+            if (array.Rank == 2)
+            {
+                if (columnNames.Length != array.GetLength(1))
+                    throw new ArgumentException("Column names must correspond to array columns.", "columnNames");
+                
+                if (rowNames.Length != array.GetLength(0)) 
+                    throw new ArgumentException("Row names must correspond to array rows.", "rowNames");
+
+                rowCount = array.GetLength(0);
+                colCount = array.GetLength(1);
+                type = ArrayDataType.Multidimensional;
+            }
+            else
+            {
+                if (array.GetValue(0) is Array)
+                {
+                    Array row = array.GetValue(0) as Array;
+
+                    if (columnNames.Length != row.GetLength(0))
+                        throw new ArgumentException("column names must correspond to array columns.", "columnNames");
+
+                    if (rowNames.Length != array.GetLength(0))
+                        throw new ArgumentException("Row names must correspond to array rows.", "rowNames");
+
+                    rowCount = array.GetLength(0);
+                    colCount = row.GetLength(0);
+                    type = ArrayDataType.Jagged;
+                }
+                else
+                {
+                    if (columnNames.Length != array.GetLength(0))
+                        throw new ArgumentException("column names must correspond to array columns.", "columnNames");
+                    if (rowNames.Length != 1)
+                        throw new ArgumentException("Row names must correspond to array rows.", "rowNames");
+
+                    rowCount = 1;
+                    colCount = array.GetLength(0);
+                    type = ArrayDataType.Simple;
+                }
+            }
+
+            this.columnNames = new string[columnNames.Length];
+            for (int i = 0; i < columnNames.Length; i++)
+                this.columnNames[i] = columnNames[i].ToString();
+
+            this.rowNames = new string[rowNames.Length];
+            for (int i = 0; i < rowNames.Length; i++)
+                this.rowNames[i] = rowNames[i].ToString();
+        }
+
+
         #endregion // Constructors
 
 
@@ -189,6 +253,15 @@ namespace Accord.Controls
 
                 return columnNames;
             }
+        }
+
+        /// <summary>
+        ///   Gets the row names for the array currently bound.
+        /// </summary>
+        /// 
+        public string[] RowNames
+        {
+            get { return rowNames; }
         }
 
         /// <summary>

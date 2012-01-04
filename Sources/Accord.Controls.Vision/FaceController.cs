@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -57,8 +57,8 @@ namespace Accord.Controls.Vision
 
         private ISynchronizeInvoke synchronizingObject;
 
-        private MovingNormalStatistics xsmooth = new MovingNormalStatistics(3);
-        private MovingNormalStatistics ysmooth = new MovingNormalStatistics(3);
+        private MovingNormalStatistics xsmooth = new MovingNormalStatistics(5);
+        private MovingNormalStatistics ysmooth = new MovingNormalStatistics(5);
 
 
         #region Properties
@@ -380,6 +380,7 @@ namespace Accord.Controls.Vision
 
                 UnmanagedImage head = new UnmanagedImage(data);
 
+
                 if (IsDetecting)
                 {
                     IsDetecting = false;
@@ -451,8 +452,8 @@ namespace Accord.Controls.Vision
             newPositionX = xsmooth.Mean;
             newPositionY = ysmooth.Mean;
 
-            currentPosition.X = (float)newPositionX;
-            currentPosition.Y = (float)newPositionY;
+            currentPosition.X = (float)(Math.Round(newPositionX, 1));
+            currentPosition.Y = (float)(Math.Round(newPositionY, 1));
         }
         #endregion
 
