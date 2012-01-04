@@ -1,7 +1,7 @@
 ﻿// Accord.NET Sample Applications
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -26,21 +26,19 @@ using Accord.MachineLearning;
 using Accord.Math;
 using Accord.Statistics.Distributions.Multivariate;
 using ZedGraph;
+using Accord.Controls;
 
 namespace GMM
 {
     public partial class MainForm : Form
     {
         // Colors used in the pie graphics
-        private readonly Color[] colors =
-        { 
-            Color.Blue, Color.Red, Color.YellowGreen, Color.SeaGreen, Color.LightBlue,
-            Color.Yellow, Color.Purple, Color.Pink, Color.Orange, Color.Firebrick
-        };
+        ColorSequenceCollection colors = new ColorSequenceCollection(10);
 
         int k;
         double[][] mixture;
 
+        KMeans kmeans;
 
         public MainForm()
         {
@@ -83,10 +81,13 @@ namespace GMM
             }
 
             // Join the generated data
-            mixture = Matrix.Combine(data);
+            mixture = Matrix.Stack(data);
 
             // Update the scatterplot
             CreateScatterplot(graph, mixture, k);
+
+            // Forget previous initialization
+            kmeans = null;
         }
 
         private void btnCompute_Click(object sender, EventArgs e)
@@ -94,16 +95,28 @@ namespace GMM
             // Create a new Gaussian Mixture Model
             GaussianMixtureModel gmm = new GaussianMixtureModel(k);
 
+            // If available, initialize with k-means
+            if (kmeans != null) gmm.Initialize(kmeans);
+
             // Compute the model
             gmm.Compute(mixture);
 
+            // Classify all instances in mixture data
+            int[] classifications = gmm.Classify(mixture);
+
+            // Draw the classifications
+            updateGraph(classifications);
+        }
+
+        private void updateGraph(int[] classifications)
+        {
             // Paint the clusters accordingly
             for (int i = 0; i < k + 1; i++)
                 graph.GraphPane.CurveList[i].Clear();
 
             for (int j = 0; j < mixture.Length; j++)
             {
-                int c = gmm.Classify(mixture[j]);
+                int c = classifications[j];
 
                 var curveList = graph.GraphPane.CurveList[c + 1];
                 double[] point = mixture[j];
@@ -111,6 +124,19 @@ namespace GMM
             }
 
             graph.Invalidate();
+        }
+
+        private void btnInitialize_Click(object sender, EventArgs e)
+        {
+            kmeans = new KMeans(k);
+
+            kmeans.Compute(mixture);
+
+            // Classify all instances in mixture data
+            int[] classifications = kmeans.Classify(mixture);
+
+            // Draw the classifications
+            updateGraph(classifications);
         }
 
 
@@ -149,7 +175,7 @@ namespace GMM
             for (int i = 0; i < n; i++)
             {
                 // Add curves for the clusters to be detected
-                Color color = colors[i % colors.Length];
+                Color color = colors[i];
                 myCurve = myPane.AddCurve("D" + (i + 1), new PointPairList(), color, SymbolType.Diamond);
                 myCurve.Line.IsVisible = false;
                 myCurve.Symbol.Border.IsVisible = false;
@@ -162,6 +188,8 @@ namespace GMM
             zgc.AxisChange();
             zgc.Invalidate();
         }
+
+
 
     }
 }

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.tbHorizontal = new System.Windows.Forms.TrackBar();
             this.tbVertical = new System.Windows.Forms.TrackBar();
             this.tbScale = new System.Windows.Forms.TrackBar();
@@ -54,11 +55,27 @@
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.videoSourcePlayer1 = new AForge.Controls.VideoSourcePlayer();
+            this.pbLeftArm = new AForge.Controls.PictureBox();
+            this.pbRightArm = new AForge.Controls.PictureBox();
+            this.pictureBox1 = new AForge.Controls.PictureBox();
+            this.pbLeftHand = new AForge.Controls.PictureBox();
+            this.pbRightHand = new AForge.Controls.PictureBox();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.colHand = new System.Windows.Forms.DataGridViewImageColumn();
+            this.colLabel = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.saveImagesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.tbHorizontal)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbVertical)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbScale)).BeginInit();
             this.statusStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbLeftArm)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbRightArm)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbLeftHand)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbRightHand)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // tbHorizontal
@@ -196,7 +213,7 @@
             this.toolStripStatusLabel1});
             this.statusStrip1.Location = new System.Drawing.Point(0, 385);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(870, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(926, 22);
             this.statusStrip1.TabIndex = 3;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -245,14 +262,15 @@
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(870, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(926, 24);
             this.menuStrip1.TabIndex = 4;
             this.menuStrip1.Text = "menuStrip1";
             // 
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.selectCameraToolStripMenuItem});
+            this.selectCameraToolStripMenuItem,
+            this.saveImagesToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "File";
@@ -260,7 +278,7 @@
             // selectCameraToolStripMenuItem
             // 
             this.selectCameraToolStripMenuItem.Name = "selectCameraToolStripMenuItem";
-            this.selectCameraToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
+            this.selectCameraToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.selectCameraToolStripMenuItem.Text = "Select camera";
             this.selectCameraToolStripMenuItem.Click += new System.EventHandler(this.btnSelectCamera_Click);
             // 
@@ -310,18 +328,111 @@
             // 
             // videoSourcePlayer1
             // 
-            this.videoSourcePlayer1.Location = new System.Drawing.Point(454, 60);
+            this.videoSourcePlayer1.Location = new System.Drawing.Point(392, 35);
             this.videoSourcePlayer1.Name = "videoSourcePlayer1";
             this.videoSourcePlayer1.Size = new System.Drawing.Size(351, 280);
             this.videoSourcePlayer1.TabIndex = 5;
             this.videoSourcePlayer1.Text = "videoSourcePlayer1";
             this.videoSourcePlayer1.VideoSource = null;
+            this.videoSourcePlayer1.NewFrame += new AForge.Controls.VideoSourcePlayer.NewFrameHandler(this.videoSourcePlayer1_NewFrame);
+            // 
+            // pbLeftArm
+            // 
+            this.pbLeftArm.Image = null;
+            this.pbLeftArm.Location = new System.Drawing.Point(392, 321);
+            this.pbLeftArm.Name = "pbLeftArm";
+            this.pbLeftArm.Size = new System.Drawing.Size(63, 61);
+            this.pbLeftArm.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pbLeftArm.TabIndex = 6;
+            this.pbLeftArm.TabStop = false;
+            // 
+            // pbRightArm
+            // 
+            this.pbRightArm.Image = null;
+            this.pbRightArm.Location = new System.Drawing.Point(461, 321);
+            this.pbRightArm.Name = "pbRightArm";
+            this.pbRightArm.Size = new System.Drawing.Size(63, 61);
+            this.pbRightArm.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pbRightArm.TabIndex = 6;
+            this.pbRightArm.TabStop = false;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = null;
+            this.pictureBox1.Location = new System.Drawing.Point(680, 321);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(63, 61);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox1.TabIndex = 6;
+            this.pictureBox1.TabStop = false;
+            // 
+            // pbLeftHand
+            // 
+            this.pbLeftHand.Image = null;
+            this.pbLeftHand.Location = new System.Drawing.Point(542, 321);
+            this.pbLeftHand.Name = "pbLeftHand";
+            this.pbLeftHand.Size = new System.Drawing.Size(63, 61);
+            this.pbLeftHand.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pbLeftHand.TabIndex = 6;
+            this.pbLeftHand.TabStop = false;
+            // 
+            // pbRightHand
+            // 
+            this.pbRightHand.Image = null;
+            this.pbRightHand.Location = new System.Drawing.Point(611, 321);
+            this.pbRightHand.Name = "pbRightHand";
+            this.pbRightHand.Size = new System.Drawing.Size(63, 61);
+            this.pbRightHand.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pbRightHand.TabIndex = 6;
+            this.pbRightHand.TabStop = false;
+            // 
+            // dataGridView1
+            // 
+            this.dataGridView1.AllowUserToAddRows = false;
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colHand,
+            this.colLabel});
+            this.dataGridView1.Location = new System.Drawing.Point(749, 35);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.Size = new System.Drawing.Size(165, 347);
+            this.dataGridView1.TabIndex = 7;
+            // 
+            // colHand
+            // 
+            this.colHand.HeaderText = "Hand";
+            this.colHand.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Stretch;
+            this.colHand.Name = "colHand";
+            // 
+            // colLabel
+            // 
+            this.colLabel.HeaderText = "Label";
+            this.colLabel.Name = "colLabel";
+            // 
+            // timer1
+            // 
+            this.timer1.Enabled = true;
+            this.timer1.Interval = 2000;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // saveImagesToolStripMenuItem
+            // 
+            this.saveImagesToolStripMenuItem.Name = "saveImagesToolStripMenuItem";
+            this.saveImagesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.saveImagesToolStripMenuItem.Text = "Save images";
+            this.saveImagesToolStripMenuItem.Click += new System.EventHandler(this.saveImagesToolStripMenuItem_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(870, 407);
+            this.ClientSize = new System.Drawing.Size(926, 407);
+            this.Controls.Add(this.dataGridView1);
+            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.pbRightHand);
+            this.Controls.Add(this.pbLeftHand);
+            this.Controls.Add(this.pbRightArm);
+            this.Controls.Add(this.pbLeftArm);
             this.Controls.Add(this.videoSourcePlayer1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
@@ -349,6 +460,12 @@
             this.statusStrip1.PerformLayout();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbLeftArm)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbRightArm)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbLeftHand)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbRightHand)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -382,6 +499,16 @@
         public Accord.Controls.Vision.HeadController controller;
         private System.Windows.Forms.ToolStripMenuItem depthVisionToolStripMenuItem;
         private AForge.Controls.VideoSourcePlayer videoSourcePlayer1;
+        private AForge.Controls.PictureBox pbRightArm;
+        private AForge.Controls.PictureBox pbLeftArm;
+        private AForge.Controls.PictureBox pictureBox1;
+        private AForge.Controls.PictureBox pbRightHand;
+        private AForge.Controls.PictureBox pbLeftHand;
+        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.DataGridViewImageColumn colHand;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colLabel;
+        private System.Windows.Forms.ToolStripMenuItem saveImagesToolStripMenuItem;
     }
 }
 

@@ -1,7 +1,7 @@
 ﻿// Accord.NET Sample Applications
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -39,7 +39,7 @@ namespace Markov
     public partial class MainForm : Form
     {
 
-        SequenceClassifier hmmc;
+        HiddenMarkovClassifier hmmc;
 
 
 
@@ -75,7 +75,7 @@ namespace Markov
             }
 
 
-            hmmc = new SequenceClassifier(classes, states, 3, categories);
+            hmmc = new HiddenMarkovClassifier(classes, states, 3, categories);
 
             dgvModels.DataSource = hmmc.Models;
         }
@@ -133,7 +133,7 @@ namespace Markov
 
             // Train the ensemble
 
-            var teacher = new SequenceClassifierLearning(hmmc, i =>
+            var teacher = new HiddenMarkovClassifierLearning(hmmc, i =>
                 new BaumWelchLearning(hmmc.Models[i])
                 {
                         Iterations = iterations,
@@ -234,7 +234,7 @@ namespace Markov
             {
                 HiddenMarkovModel model = dgvModels.CurrentRow.DataBoundItem as HiddenMarkovModel;
                 dgvProbabilities.DataSource = new ArrayDataView(model.Probabilities);
-                dgvEmissions.DataSource = new ArrayDataView(model.Emissions);
+                dgvEmissions.DataSource = new ArrayDataView(model.LogEmissions);
                 dgvTransitions.DataSource = new ArrayDataView(model.Transitions);
             }
         }

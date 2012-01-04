@@ -50,6 +50,7 @@ namespace GloveTracking
             this.cbContainer = new System.Windows.Forms.CheckBox();
             this.tbSensitivity = new System.Windows.Forms.TrackBar();
             this.cbAngle = new System.Windows.Forms.CheckBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.menuMenu.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbSensitivity)).BeginInit();
@@ -223,27 +224,38 @@ namespace GloveTracking
             this.tbSensitivity.Minimum = 1;
             this.tbSensitivity.Name = "tbSensitivity";
             this.tbSensitivity.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.tbSensitivity.Size = new System.Drawing.Size(45, 240);
+            this.tbSensitivity.Size = new System.Drawing.Size(45, 206);
             this.tbSensitivity.TabIndex = 6;
             this.tbSensitivity.Value = 1;
             this.tbSensitivity.Scroll += new System.EventHandler(this.tbSensitivity_Scroll);
             // 
-            // checkBox1
+            // cbAngle
             // 
             this.cbAngle.AutoSize = true;
             this.cbAngle.Location = new System.Drawing.Point(388, 96);
-            this.cbAngle.Name = "checkBox1";
+            this.cbAngle.Name = "cbAngle";
             this.cbAngle.Size = new System.Drawing.Size(53, 17);
             this.cbAngle.TabIndex = 5;
             this.cbAngle.Text = "Angle";
             this.cbAngle.UseVisualStyleBackColor = true;
             this.cbAngle.CheckedChanged += new System.EventHandler(this.cbContour_CheckedChanged);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(387, 340);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 7;
+            this.button1.Text = "Set color";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(471, 375);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.tbSensitivity);
             this.Controls.Add(this.cbAngle);
             this.Controls.Add(this.cbContainer);
@@ -288,6 +300,7 @@ namespace GloveTracking
         private System.Windows.Forms.CheckBox cbContainer;
         private System.Windows.Forms.TrackBar tbSensitivity;
         private System.Windows.Forms.CheckBox cbAngle;
+        private System.Windows.Forms.Button button1;
     }
 }
 

@@ -1,7 +1,7 @@
 // Accord.NET Sample Applications
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -594,42 +594,21 @@ namespace Approximation
         private void startButton_Click(object sender, System.EventArgs e)
         {
             // get learning rate
-            try
-            {
-                learningRate = double.Parse(learningRateBox.Text);
-            }
-            catch
-            {
-                learningRate = 0.1;
-            }
+            try { learningRate = double.Parse(learningRateBox.Text); }
+            catch { learningRate = 0.1; }
 
             // get sigmoid's alpha value
-            try
-            {
-                sigmoidAlphaValue = Math.Max(0.001, Math.Min(50, double.Parse(alphaBox.Text)));
-            }
-            catch
-            {
-                sigmoidAlphaValue = 2;
-            }
+            try { sigmoidAlphaValue = Math.Max(0.001, Math.Min(50, double.Parse(alphaBox.Text))); }
+            catch { sigmoidAlphaValue = 2; }
+
             // get neurons count in first layer
-            try
-            {
-                neuronsInFirstLayer = Math.Max(5, Math.Min(50, int.Parse(neuronsBox.Text)));
-            }
-            catch
-            {
-                neuronsInFirstLayer = 20;
-            }
+            try { neuronsInFirstLayer = Math.Max(5, Math.Min(50, int.Parse(neuronsBox.Text))); }
+            catch { neuronsInFirstLayer = 20; }
+
             // iterations
-            try
-            {
-                iterations = Math.Max(0, int.Parse(iterationsBox.Text));
-            }
-            catch
-            {
-                iterations = 100;
-            }
+            try { iterations = Math.Max(0, int.Parse(iterationsBox.Text)); }
+            catch { iterations = 100; }
+
             useRegularization = cbRegularization.Checked;
             useNguyenWidrow = cbNguyenWidrow.Checked;
 
@@ -688,7 +667,7 @@ namespace Approximation
 
             if (useNguyenWidrow)
             {
-                NguyenWidrowInitializer initializer = new NguyenWidrowInitializer(network);
+                NguyenWidrow initializer = new NguyenWidrow(network);
                 initializer.Randomize();
             }
 
@@ -714,8 +693,6 @@ namespace Approximation
             // loop
             while (!needToStop)
             {
-                // if (useRegularization)
-                // teacher.UseRegularization = ((iteration % 3) == 0);
                 // run epoch of learning procedure
                 double error = teacher.RunEpoch(input, output) / samples;
 

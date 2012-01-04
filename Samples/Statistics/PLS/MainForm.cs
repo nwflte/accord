@@ -1,7 +1,7 @@
 // Accord.NET Sample Applications
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -162,7 +162,7 @@ namespace PLS
             dgvProjectionSourceX.DataSource = inputTable;
             dgvProjectionSourceY.DataSource = outputTable;
 
-            dgvRegressionInput.DataSource = table.DefaultView.ToTable(false, inputColumnNames.Combine(outputColumnNames));
+            dgvRegressionInput.DataSource = table.DefaultView.ToTable(false, inputColumnNames.Concatenate(outputColumnNames));
         }
 
         private void btnProject_Click(object sender, EventArgs e)

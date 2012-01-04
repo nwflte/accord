@@ -1,7 +1,7 @@
 // Accord.NET Sample Applications
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -816,12 +816,9 @@ namespace TimeSeries
 
             // create teacher
             LevenbergMarquardtLearning teacher = new LevenbergMarquardtLearning(network, useRegularization);
-            //BackPropagationLearning teacher2 = new BackPropagationLearning( network );
-            // set learning rate and momentum
-            teacher.LearningRate = learningRate;
 
-            // run at least one backpropagation epoch
-            //teacher2.RunEpoch(input, output);
+            // set learning rate
+            teacher.LearningRate = learningRate;
 
             // iterations
             int iteration = 1;
