@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -169,12 +169,12 @@ namespace Accord.Tests.Math
         {
             int n = 4;
             double expected = 3.178053830347946;
-            double actual = Special.Lfactorial(n);
+            double actual = Special.LogFactorial(n);
             Assert.AreEqual(expected, actual, 0.0000000001);
 
             n = 170;
             expected = 7.065730622457874e+02;
-            actual = Special.Lfactorial(n);
+            actual = Special.LogFactorial(n);
             Assert.AreEqual(expected, actual, 0.0000000001);
         }
 
@@ -228,7 +228,7 @@ namespace Accord.Tests.Math
             double x = 57;
             double expected = 172.35279713916282;
 
-            double actual = Special.Lgamma(x);
+            double actual = Special.LogGamma(x);
             Assert.AreEqual(expected, actual);
         }
 
@@ -346,18 +346,82 @@ namespace Accord.Tests.Math
             Assert.AreEqual(expected, actual, 1e-10);
         }
 
-        /// <summary>
-        ///A test for NormalInverse
-        ///</summary>
         [TestMethod()]
         public void NormalInverseTest()
         {
-
             double value = 0.662757273151751;
             double expected = 0.42;
             double actual = Special.NormalInverse(value);
             Assert.AreEqual(expected, actual, 1e-10);
         }
 
+        [TestMethod()]
+        public void GammaUpperRTest()
+        {
+            // Example values from
+            // http://opensource.zyba.com/code/maths/special/gamma/gamma_upper_reg.php
+
+            double expected, actual;
+
+            actual = Special.GammaQ(0.000000, 2);
+            expected = 1.000000;
+            Assert.AreEqual(expected, actual);
+            Assert.IsFalse(double.IsNaN(actual));
+
+            actual = Special.GammaQ(0.250000, 2);
+            expected = 0.017286;
+            Assert.AreEqual(expected, actual, 1e-6);
+            Assert.IsFalse(double.IsNaN(actual));
+
+            actual = Special.GammaQ(0.500000, 2);
+            expected = 0.045500;
+            Assert.AreEqual(expected, actual, 1e-6);
+            Assert.IsFalse(double.IsNaN(actual));
+
+            actual = Special.GammaQ(0.750000, 2);
+            expected = 0.085056;
+            Assert.AreEqual(expected, actual, 1e-6);
+            Assert.IsFalse(double.IsNaN(actual));
+
+            actual = Special.GammaQ(1.000000, 2);
+            expected = 0.135335;
+            Assert.AreEqual(expected, actual, 1e-6);
+            Assert.IsFalse(double.IsNaN(actual));
+
+            actual = Special.GammaQ(1.250000, 2);
+            expected = 0.194847;
+            Assert.AreEqual(expected, actual, 1e-6);
+            Assert.IsFalse(double.IsNaN(actual));
+
+            actual = Special.GammaQ(1.500000, 2);
+            expected = 0.261464;
+            Assert.AreEqual(expected, actual, 1e-6);
+            Assert.IsFalse(double.IsNaN(actual));
+
+            actual = Special.GammaQ(1.750000, 2);
+            expected = 0.332706;
+            Assert.AreEqual(expected, actual, 1e-6);
+            Assert.IsFalse(double.IsNaN(actual));
+
+            actual = Special.GammaQ(2.000000, 2);
+            expected = 0.406006;
+            Assert.AreEqual(expected, actual, 1e-6);
+            Assert.IsFalse(double.IsNaN(actual));
+
+            actual = Special.GammaQ(2.250000, 2);
+            expected = 0.478944;
+            Assert.AreEqual(expected, actual, 1e-6);
+            Assert.IsFalse(double.IsNaN(actual));
+
+            actual = Special.GammaQ(2.500000, 2);
+            expected = 0.549416;
+            Assert.AreEqual(expected, actual, 1e-6);
+            Assert.IsFalse(double.IsNaN(actual));
+
+            actual = Special.GammaQ(2.750000, 2);
+            expected = 0.615734;
+            Assert.AreEqual(expected, actual, 1e-6);
+            Assert.IsFalse(double.IsNaN(actual));
+        }
     }
 }

@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -20,33 +20,22 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Accord.Math;
-
-using Tools = Accord.Statistics.Tools;
-using System;
-
 namespace Accord.Tests.Statistics
 {
+    using Accord.Statistics;
+    using System.Linq;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Accord.Math;
 
+    using Tools = Accord.Statistics.Tools;
+    using System;
 
-    /// <summary>
-    ///This is a test class for ToolsTest and is intended
-    ///to contain all ToolsTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class ToolsTest
     {
 
-
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -653,6 +642,39 @@ namespace Accord.Tests.Statistics
             double expected = System.Math.Sqrt(2.7642857142857147);
             double actual = Tools.PooledStandardDeviation(samples);
             Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod()]
+        public void EntropyTest()
+        {
+            {
+                int[] values = { 0, 1 };
+                int classes = 2;
+
+                double expected = 1;
+                double actual = Tools.Entropy(values, classes);
+
+                Assert.AreEqual(expected, actual);
+            }
+            {
+                int[] values = { 0, 0 };
+                int classes = 2;
+
+                double expected = 0;
+                double actual = Tools.Entropy(values, classes);
+
+                Assert.AreEqual(expected, actual);
+            }
+            {
+                int[] values = { 1, 1 };
+                int classes = 2;
+
+                double expected = 0;
+                double actual = Tools.Entropy(values, classes);
+
+                Assert.AreEqual(expected, actual);
+            }
+
         }
     }
 }

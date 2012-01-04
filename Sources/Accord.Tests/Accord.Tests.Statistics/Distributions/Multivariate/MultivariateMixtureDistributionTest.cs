@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -100,6 +100,48 @@ namespace Accord.Tests.Statistics
         }
 
         [TestMethod()]
+        public void ProbabilityDensityFunctionTest()
+        {
+            MultivariateNormalDistribution[] components = new MultivariateNormalDistribution[2];
+            components[0] = new MultivariateNormalDistribution(new double[] { 2 }, new double[,] { { 1 } });
+            components[1] = new MultivariateNormalDistribution(new double[] { 5 }, new double[,] { { 1 } });
+
+            double[] coefficients = { 0.3, 0.7 };
+            var mixture = new MultivariateMixture<MultivariateNormalDistribution>(coefficients, components);
+
+            double[] x = { 1.2 };
+
+            double expected =
+                0.3 * components[0].ProbabilityDensityFunction(x) +
+                0.7 * components[1].ProbabilityDensityFunction(x);
+
+            double actual = mixture.ProbabilityDensityFunction(x);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod()]
+        public void LogProbabilityDensityFunctionTest()
+        {
+            MultivariateNormalDistribution[] components = new MultivariateNormalDistribution[2];
+            components[0] = new MultivariateNormalDistribution(new double[] { 2 }, new double[,] { { 1 } });
+            components[1] = new MultivariateNormalDistribution(new double[] { 5 }, new double[,] { { 1 } });
+
+            double[] coefficients = { 0.3, 0.7 };
+            var mixture = new MultivariateMixture<MultivariateNormalDistribution>(coefficients, components);
+
+            double[] x = { 1.2 };
+
+            double expected = System.Math.Log(
+                0.3 * components[0].ProbabilityDensityFunction(x) +
+                0.7 * components[1].ProbabilityDensityFunction(x));
+
+            double actual = mixture.LogProbabilityDensityFunction(x);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod()]
         public void FitTest()
         {
             double[] coefficients = { 0.50, 0.50 };
@@ -147,7 +189,7 @@ namespace Accord.Tests.Statistics
             var actualVar = target.Covariance;
 
             Assert.AreEqual(expectedMean[0], actualMean[0], 0.0000001);
-           // Assert.AreEqual(expectedVar[0, 0], actualVar[0, 0], 0.0000001);
+            // Assert.AreEqual(expectedVar[0, 0], actualVar[0, 0], 0.0000001);
         }
 
         [TestMethod()]
@@ -161,7 +203,7 @@ namespace Accord.Tests.Statistics
 
             var target = new MultivariateMixture<MultivariateNormalDistribution>(coefficients, components);
 
-            double[][] values = { new double[] { 0 },
+            double[][] values = { new double[] { 2512512312 },
                                   new double[] { 1 }, 
                                   new double[] { 1 },
                                   new double[] { 0 },
@@ -173,10 +215,10 @@ namespace Accord.Tests.Statistics
                                   new double[] { 5 } };
 
             double[] weights = { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+            weights = weights.Divide(weights.Sum());
 
             double[][] part1 = values.Submatrix(1, 4);
             double[][] part2 = values.Submatrix(5, 9);
-
 
 
             target.Fit(values, weights);
@@ -192,14 +234,14 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(var2[0], target.Components[1].Variance[0], 1e-5);
 
 
-            var expectedMean = Accord.Statistics.Tools.Mean(values);
-            var expectedVar = Accord.Statistics.Tools.Covariance(values);
+            var expectedMean = Accord.Statistics.Tools.WeightedMean(values, weights);
+            var expectedVar = Accord.Statistics.Tools.WeightedCovariance(values, weights);
 
             var actualMean = target.Mean;
             var actualVar = target.Covariance;
 
             Assert.AreEqual(expectedMean[0], actualMean[0], 0.0000001);
-            // Assert.AreEqual(expectedVar[0, 0], actualVar[0, 0], 0.0000001);
+            Assert.AreEqual(expectedVar[0, 0], actualVar[0, 0], 0.68);
         }
 
     }

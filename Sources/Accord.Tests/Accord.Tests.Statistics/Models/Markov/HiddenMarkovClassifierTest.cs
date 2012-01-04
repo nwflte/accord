@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -20,12 +20,13 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics.Models.Markov;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Accord.Statistics.Models.Markov.Learning;
 namespace Accord.Tests.Statistics
 {
-
+    using Accord.Statistics.Models.Markov;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Accord.Statistics.Models.Markov.Learning;
+    using Accord.Math;
+    using System;
 
     /// <summary>
     ///This is a test class for HiddenMarkovClassifierTest and is intended
@@ -122,11 +123,11 @@ namespace Accord.Tests.Statistics
             int[] states = new int[] { 2, 2 };
 
             // Creates a new Hidden Markov Model Classifier with the given parameters
-            SequenceClassifier classifier = new SequenceClassifier(classes, states, symbols);
+            HiddenMarkovClassifier classifier = new HiddenMarkovClassifier(classes, states, symbols);
 
 
             // Create a new learning algorithm to train the sequence classifier
-            var teacher = new SequenceClassifierLearning(classifier,
+            var teacher = new HiddenMarkovClassifierLearning(classifier,
 
                 // Train each model until the log-likelihood changes less than 0.001
                 modelIndex => new BaumWelchLearning(classifier.Models[modelIndex])
@@ -187,11 +188,11 @@ namespace Accord.Tests.Statistics
             int[] states = new int[] { 3, 3 };
 
             // Creates a new Hidden Markov Model Classifier with the given parameters
-            SequenceClassifier classifier = new SequenceClassifier(classes, states, symbols);
+            HiddenMarkovClassifier classifier = new HiddenMarkovClassifier(classes, states, symbols);
 
 
             // Create a new learning algorithm to train the sequence classifier
-            var teacher = new SequenceClassifierLearning(classifier,
+            var teacher = new HiddenMarkovClassifierLearning(classifier,
 
                 // Train each model until the log-likelihood changes less than 0.001
                 modelIndex => new BaumWelchLearning(classifier.Models[modelIndex])
@@ -220,27 +221,33 @@ namespace Accord.Tests.Statistics
 
             Assert.AreEqual(6, threshold.States);
 
-            Assert.AreEqual(classifier.Models[0].Transitions[0, 0], threshold.Transitions[0, 0]);
-            Assert.AreEqual(classifier.Models[0].Transitions[1, 1], threshold.Transitions[1, 1]);
-            Assert.AreEqual(classifier.Models[0].Transitions[2, 2], threshold.Transitions[2, 2]);
+            Assert.AreEqual(classifier.Models[0].Transitions[0, 0], threshold.Transitions[0, 0], 1e-10);
+            Assert.AreEqual(classifier.Models[0].Transitions[1, 1], threshold.Transitions[1, 1], 1e-10);
+            Assert.AreEqual(classifier.Models[0].Transitions[2, 2], threshold.Transitions[2, 2], 1e-10);
 
-            Assert.AreEqual(classifier.Models[1].Transitions[0, 0], threshold.Transitions[3, 3]);
-            Assert.AreEqual(classifier.Models[1].Transitions[1, 1], threshold.Transitions[4, 4]);
-            Assert.AreEqual(classifier.Models[1].Transitions[2, 2], threshold.Transitions[5, 5]);
+            Assert.AreEqual(classifier.Models[1].Transitions[0, 0], threshold.Transitions[3, 3], 1e-10);
+            Assert.AreEqual(classifier.Models[1].Transitions[1, 1], threshold.Transitions[4, 4], 1e-10);
+            Assert.AreEqual(classifier.Models[1].Transitions[2, 2], threshold.Transitions[5, 5], 1e-10);
+
+            Assert.IsFalse(Matrix.HasNaN(threshold.Transitions));
 
             int[] r0 = new int[] { 1, 1, 0, 0, 2 };
 
-            double rejection;
-            int c = classifier.Compute(r0, out rejection);
+
+            double logRejection;
+            int c = classifier.Compute(r0, out logRejection);
 
             Assert.AreEqual(-1, c);
-            Assert.AreEqual(0, rejection);
+            Assert.AreEqual(0, logRejection);
+            Assert.IsFalse(double.IsNaN(logRejection));
 
-            rejection = threshold.Evaluate(r0);
-            Assert.AreEqual(0.0012901827440663985, rejection);
+            logRejection = threshold.Evaluate(r0);
+            Assert.AreEqual(-6.7949285513628528, logRejection);
+            Assert.IsFalse(double.IsNaN(logRejection));
 
-            threshold.Decode(r0, out rejection);
-            Assert.AreEqual(0.00013567978248950569, rejection);
+            threshold.Decode(r0, out logRejection);
+            Assert.AreEqual(-8.902077561009957, logRejection);
+            Assert.IsFalse(double.IsNaN(logRejection));
         }
     }
 }

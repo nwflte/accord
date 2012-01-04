@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -20,31 +20,21 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics.Analysis;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Accord.Math;
-using Tools = Accord.Statistics.Tools;
-using System;
-using Accord.Statistics.Models.Regression.Linear;
 namespace Accord.Tests.Statistics
 {
+    using Accord.Statistics.Analysis;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Accord.Math;
+    using Tools = Accord.Statistics.Tools;
+    using System;
+    using Accord.Statistics.Models.Regression.Linear;
 
-
-    /// <summary>
-    ///This is a test class for PartialLeastSquaresAnalysisTest and is intended
-    ///to contain all PartialLeastSquaresAnalysisTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class PartialLeastSquaresAnalysisTest
     {
 
-
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -248,7 +238,6 @@ namespace Accord.Tests.Statistics
         }
 
 
-
         [TestMethod()]
         [DeploymentItem("Accord.Statistics.dll")]
         public void NipalsComputeTest()
@@ -390,7 +379,7 @@ namespace Accord.Tests.Statistics
             var idxTrain = Matrix.Indices(0, 25);
             var idxTest = Matrix.Indices(25, 50);
 
-            double[,] inputs = Matrix.Combine(
+            double[,] inputs = Matrix.Stack(
                 x1.Submatrix(idxTrain),
                 x2.Submatrix(idxTrain),
                 x3.Submatrix(idxTrain));
@@ -442,7 +431,7 @@ namespace Accord.Tests.Statistics
 
 
 
-            double[,] test = Matrix.Combine(
+            double[,] test = Matrix.Stack(
                 x1.Submatrix(idxTest),
                 x2.Submatrix(idxTest),
                 x3.Submatrix(idxTest));
@@ -600,7 +589,6 @@ namespace Accord.Tests.Statistics
                     Assert.AreEqual(aYS[i, j], eYS[i, j], 0.01);
 
         }
-
 
 
         [TestMethod()]

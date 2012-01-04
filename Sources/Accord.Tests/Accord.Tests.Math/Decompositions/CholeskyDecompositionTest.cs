@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -20,13 +20,11 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Math.Decompositions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Accord.Math;
-
 namespace Accord.Tests.Math
 {
-
+    using Accord.Math.Decompositions;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Accord.Math;
 
     /// <summary>
     ///This is a test class for CholeskyDecompositionTest and is intended
@@ -86,9 +84,6 @@ namespace Accord.Tests.Math
         #endregion
 
 
-        /// <summary>
-        ///A test for CholeskyDecomposition Constructor
-        ///</summary>
         [TestMethod()]
         public void CholeskyDecompositionConstructorTest()
         {
@@ -122,9 +117,6 @@ namespace Accord.Tests.Math
             Assert.AreEqual(true, chol.Symmetric);
         }
 
-        /// <summary>
-        ///A test for CholeskyDecomposition Constructor
-        ///</summary>
         [TestMethod()]
         public void SolveTest()
         {
@@ -151,9 +143,6 @@ namespace Accord.Tests.Math
             Assert.IsTrue(Matrix.IsEqual(expected, B, 0.0000000000001));
         }
 
-        /// <summary>
-        ///A test for CholeskyDecomposition Constructor
-        ///</summary>
         [TestMethod()]
         public void SolveTest3()
         {
@@ -179,9 +168,6 @@ namespace Accord.Tests.Math
             Assert.IsTrue(Matrix.IsEqual(expected, B, 0.0000000000001));
         }
 
-        /// <summary>
-        ///A test for CholeskyDecomposition Constructor
-        ///</summary>
         [TestMethod()]
         public void SolveTest2()
         {
@@ -210,9 +196,6 @@ namespace Accord.Tests.Math
             Assert.IsTrue(Matrix.IsEqual(expected, actual, 0.0000000000001));
         }
 
-        /// <summary>
-        ///A test for CholeskyDecomposition Constructor
-        ///</summary>
         [TestMethod()]
         public void SolveTest4()
         {
@@ -235,9 +218,6 @@ namespace Accord.Tests.Math
             Assert.IsTrue(Matrix.IsEqual(expected, actual, 0.0000000000001));
         }
 
-        /// <summary>
-        ///A test for CholeskyDecomposition Constructor
-        ///</summary>
         [TestMethod()]
         public void InverseTest()
         {
@@ -258,9 +238,6 @@ namespace Accord.Tests.Math
             Assert.IsTrue(Matrix.IsEqual(expected, actual, 1e-10));
         }
 
-        /// <summary>
-        ///A test for CholeskyDecomposition Constructor
-        ///</summary>
         [TestMethod()]
         public void CholeskyDecompositionConstructorTest2()
         {
@@ -302,9 +279,6 @@ namespace Accord.Tests.Math
             Assert.AreEqual(true, chol.Symmetric);
         }
 
-        /// <summary>
-        ///A test for CholeskyDecomposition Constructor
-        ///</summary>
         [TestMethod()]
         public void CholeskyDecompositionConstructorTest3()
         {
@@ -347,9 +321,6 @@ namespace Accord.Tests.Math
 
         }
 
-        /// <summary>
-        ///A test for CholeskyDecomposition Constructor
-        ///</summary>
         [TestMethod()]
         public void CholeskyDecompositionConstructorTest4()
         {
@@ -396,9 +367,6 @@ namespace Accord.Tests.Math
         }
 
 
-        /// <summary>
-        ///A test for CholeskyDecomposition Constructor
-        ///</summary>
         [TestMethod()]
         public void LogDeterminantTest()
         {
@@ -422,10 +390,10 @@ namespace Accord.Tests.Math
                {  1, -2,  1,  7 },
             };
 
-           CholeskyDecomposition chol = new CholeskyDecomposition(value);
-           Assert.AreEqual(2232, chol.Determinant, 1e-12);
-           Assert.IsTrue(chol.Nonsingular);
-           Assert.IsTrue(chol.Symmetric);
+            CholeskyDecomposition chol = new CholeskyDecomposition(value);
+            Assert.AreEqual(2232, chol.Determinant, 1e-12);
+            Assert.IsTrue(chol.Nonsingular);
+            Assert.IsTrue(chol.Symmetric);
         }
 
         [TestMethod()]
@@ -445,7 +413,7 @@ namespace Accord.Tests.Math
             double expected = System.Math.Log(2232);
             double actual = chol.LogDeterminant;
 
-            Assert.AreEqual(expected, actual,1e-10);
+            Assert.AreEqual(expected, actual, 1e-10);
         }
 
 

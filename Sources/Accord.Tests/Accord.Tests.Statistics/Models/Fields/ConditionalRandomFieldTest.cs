@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -89,32 +89,7 @@ namespace Accord.Tests.Statistics
         //
         #endregion
 
-        private static HiddenMarkovModel trainHMM()
-        {
-            int states = 3;
-            int symbols = 3;
 
-            int[][] sequences = new int[][] 
-            {
-                new int[] { 0, 1, 1, 1, 2 },
-                new int[] { 0, 1, 1, 1, 2, 2, 2 },
-                new int[] { 0, 0, 1, 1, 2, 2 },
-                new int[] { 0, 1, 1, 1, 2, 2, 2 },
-                new int[] { 0, 1, 1, 1, 2, 1 },
-                new int[] { 0, 1, 1, 2, 2 },
-                new int[] { 0, 0, 1, 1, 1, 2, 1 },
-                new int[] { 0, 0, 0, 1, 1, 1, 2, 1 },
-                new int[] { 0, 1, 1, 2, 2, 2 },
-            };
-
-            HiddenMarkovModel hmm = new HiddenMarkovModel(new Forward(states), symbols);
-
-            var teacher = new BaumWelchLearning(hmm) { Iterations = 100, Tolerance = 0 };
-
-            double ll = teacher.Run(sequences);
-
-            return hmm;
-        }
 
         private static HiddenMarkovModel createHMM()
         {
@@ -138,37 +113,31 @@ namespace Accord.Tests.Statistics
         }
 
 
-        /// <summary>
-        ///A test for ConditionalRandomField Constructor
-        ///</summary>
         [TestMethod()]
         public void ConditionalRandomFieldConstructorTest()
         {
             HiddenMarkovModel hmm = createHMM();
 
             int states = 2;
-            IPotentialFunction function = new HiddenMarkovModelPotentialFunction(hmm);
-            ConditionalRandomField target = new ConditionalRandomField(states, function);
+            var function = new HiddenMarkovModelFunction(hmm);
+            var target = new ConditionalRandomField<int>(states, function);
 
 
             Assert.AreEqual(function, target.Function);
             Assert.AreEqual(2, target.States);
         }
 
-        /// <summary>
-        ///A test for Compute
-        ///</summary>
         [TestMethod()]
         public void ComputeTest()
         {
 
-            HiddenMarkovModel hmm = trainHMM();
+            HiddenMarkovModel hmm = HiddenMarkovModelFunctionTest.CreateModel2();
 
             int states = hmm.States;
 
 
-            IPotentialFunction function = new HiddenMarkovModelPotentialFunction(hmm);
-            ConditionalRandomField target = new ConditionalRandomField(states, function);
+            var function = new HiddenMarkovModelFunction(hmm);
+            var target = new ConditionalRandomField<int>(states, function);
             double p1, p2;
 
             int[] observations, expected, actual;
@@ -189,23 +158,20 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(p1, p2, 1e-6);
         }
 
-        /// <summary>
-        ///A test for Likelihood
-        ///</summary>
         [TestMethod()]
         public void LikelihoodTest()
         {
-            HiddenMarkovModel hmm = trainHMM();
+            HiddenMarkovModel hmm = HiddenMarkovModelFunctionTest.CreateModel2();
 
             int states = hmm.States;
             int symbols = hmm.Symbols;
 
 
-            IPotentialFunction function1 = new HiddenMarkovModelPotentialFunction(hmm);
-            ConditionalRandomField target1 = new ConditionalRandomField(states, function1);
+            var function1 = new HiddenMarkovModelFunction(hmm);
+            var target1 = new ConditionalRandomField<int>(states, function1);
 
-            IPotentialFunction function2 = new HiddenMarkovModelPotentialFunction(states, symbols);
-            ConditionalRandomField target2 = new ConditionalRandomField(states, function2);
+            var function2 = new HiddenMarkovModelFunction(states, symbols);
+            var target2 = new ConditionalRandomField<int>(states, function2);
 
 
             int[] observations;
@@ -213,8 +179,8 @@ namespace Accord.Tests.Statistics
             double a, b, la, lb;
 
             observations = new int[] { 0, 0, 1, 1, 1, 2 };
-            a = target1.Likelihood(observations, observations);
-            b = target2.Likelihood(observations, observations);
+            a = target1.LogLikelihood(observations, observations);
+            b = target2.LogLikelihood(observations, observations);
             Assert.IsTrue(a > b);
 
             observations = new int[] { 0, 0, 1, 1, 1, 2 };

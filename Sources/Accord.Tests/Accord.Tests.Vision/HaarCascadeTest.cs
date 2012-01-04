@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -20,13 +20,12 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Vision.Detection;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Threading;
-using Accord.Vision.Detection.Cascades;
 namespace Accord.Tests.Vision
 {
-
+    using Accord.Vision.Detection;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System.Threading;
+    using Accord.Vision.Detection.Cascades;
 
     /// <summary>
     ///This is a test class for HaarCascadeTest and is intended

@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -132,7 +132,7 @@ namespace Accord.Tests.MachineLearning
             Assert.AreNotEqual(labels[0], labels[6]);
 
 
-            int[] labels2 = kmeans.Nearest(observations);
+            int[] labels2 = kmeans.Classify(observations);
             Assert.IsTrue(labels.IsEqual(labels2));
         }
 

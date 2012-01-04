@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -20,27 +20,18 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics.Distributions.Univariate;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Accord.Tests.Statistics
 {
+    using Accord.Statistics.Distributions.Univariate;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;    
     
-    
-    /// <summary>
-    ///This is a test class for BernoulliDistributionTest and is intended
-    ///to contain all BernoulliDistributionTest Unit Tests
-    ///</summary>
+
     [TestClass()]
     public class BernoulliDistributionTest
     {
 
-
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -84,9 +75,6 @@ namespace Accord.Tests.Statistics
         #endregion
 
 
-        /// <summary>
-        ///A test for ProbabilityMassFunction
-        ///</summary>
         [TestMethod()]
         public void ProbabilityMassFunctionTest()
         {
@@ -98,9 +86,17 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(expected, actual, 1e-6);
         }
 
-        /// <summary>
-        ///A test for DistributionFunction
-        ///</summary>
+        [TestMethod()]
+        public void LogProbabilityMassFunctionTest()
+        {
+            BernoulliDistribution target = new BernoulliDistribution(0.6);
+
+            double expected = System.Math.Log(0.6);
+            double actual = target.LogProbabilityMassFunction(1);
+
+            Assert.AreEqual(expected, actual, 1e-6);
+        }
+
         [TestMethod()]
         public void DistributionFunctionTest()
         {

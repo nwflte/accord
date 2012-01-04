@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -122,10 +122,10 @@ namespace Accord.Tests.Imaging
             */
 
             Assert.AreEqual(4, actual.Count);
-            Assert.IsTrue(actual.Contains(new IntPoint(2, 3)));
-            Assert.IsTrue(actual.Contains(new IntPoint(13, 3)));
-            Assert.IsTrue(actual.Contains(new IntPoint(2, 12)));
-            Assert.IsTrue(actual.Contains(new IntPoint(13, 12)));
+            Assert.IsTrue(actual.Contains(new IntPoint(3, 3)));
+            Assert.IsTrue(actual.Contains(new IntPoint(12, 3)));
+            Assert.IsTrue(actual.Contains(new IntPoint(3, 12)));
+            Assert.IsTrue(actual.Contains(new IntPoint(12, 12)));
         }
 
 
@@ -149,7 +149,7 @@ namespace Accord.Tests.Imaging
             ImageBox.Show(markers.ToManagedImage(), PictureBoxSizeMode.Zoom);
              */
 
-            Assert.AreEqual(actual.Count, 42);
+            Assert.AreEqual(actual.Count, 41);
         }
  
     }

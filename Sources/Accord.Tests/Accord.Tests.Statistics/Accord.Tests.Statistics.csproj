@@ -82,12 +82,8 @@
     <AssemblyOriginatorKeyFile>Accord.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AForge, Version=2.1.2.0, Culture=neutral, PublicKeyToken=c1db6ff4eaa06aeb, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="AForge.Math, Version=2.1.3.0, Culture=neutral, PublicKeyToken=abba2e25397ee8c9, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
+    <Reference Include="AForge, Version=2.2.3.0, Culture=neutral, PublicKeyToken=c1db6ff4eaa06aeb, processorArchitecture=MSIL" />
+    <Reference Include="AForge.Math, Version=2.2.3.0, Culture=neutral, PublicKeyToken=abba2e25397ee8c9, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -100,6 +96,9 @@
     <Compile Include="Analysis\IndependentComponentAnalysisTest.cs" />
     <Compile Include="Analysis\DescriptiveAnalysisTest.cs" />
     <Compile Include="CircularTest.cs" />
+    <Compile Include="Distributions\WeibullDistributionTest.cs" />
+    <Compile Include="Analysis\LogisticRegressionAnalysisTest.cs" />
+    <Compile Include="Models\Fields\Learning\ConjugateGradientHiddenLearningTest.cs" />
     <Compile Include="Distributions\BernoulliDistributionTest.cs" />
     <Compile Include="Distributions\VonMisesDistributionTest.cs" />
     <Compile Include="Distributions\FDistributionTest.cs" />
@@ -113,22 +112,36 @@
     <Compile Include="Distributions\LogNormalDistributionTest.cs" />
     <Compile Include="Analysis\GeneralConfusionMatrixTest.cs" />
     <Compile Include="Formats\SparseSampleReaderTest.cs" />
+    <Compile Include="Distributions\Multivariate\IndependentTest.cs" />
+    <Compile Include="Distributions\InverseGaussianTest.cs" />
+    <Compile Include="Models\Fields\Features\FeatureTest.cs" />
+    <Compile Include="Distributions\Multivariate\JointDistributionTest.cs" />
     <Compile Include="Models\Fields\ConditionalRandomFieldTest.cs" />
+    <Compile Include="Models\Fields\Learning\MultivariateNormalQuasiNewtonHiddenLearningTest.cs" />
+    <Compile Include="Models\Fields\Learning\NormalQuasiNewtonHiddenLearningTest.cs" />
+    <Compile Include="Models\Fields\Functions\MultivariateNormalHiddenMarkovClassifierFunctionTest.cs" />
+    <Compile Include="Models\Fields\Functions\NormalHiddenMarkovClassifierFunctionTest.cs" />
+    <Compile Include="Models\Fields\Functions\HiddenMarkovClassifierFunctionTest.cs" />
+    <Compile Include="Models\Fields\HiddenConditionalRandomFieldTest.cs" />
+    <Compile Include="Models\Fields\Learning\QuasiNewtonHiddenLearningTest.cs" />
     <Compile Include="Models\Fields\ForwardBackwardAlgorithmTest.cs" />
-    <Compile Include="Models\Fields\HiddenMarkovModelPotentialFunctionTest.cs" />
-    <Compile Include="Models\Fields\QuasiNewtonLearningTest.cs" />
-    <Compile Include="Models\MultinomialLogisticRegressionTest.cs">
+    <Compile Include="Models\Fields\Functions\HiddenMarkovModelFunctionTest.cs" />
+    <Compile Include="Models\Fields\Learning\QuasiNewtonLearningTest.cs" />
+    <Compile Include="Models\Markov\ForwardBackwardAlgorithmTest.cs" />
+    <Compile Include="Models\Regression\MultinomialLogisticRegressionTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\MultivariateLinearRegressionTest.cs">
+    <Compile Include="Models\Regression\MultivariateLinearRegressionTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MovingStatisticsTest.cs" />
+    <Compile Include="MovingNormalStatisticsTest.cs" />
+    <Compile Include="Distributions\NakagamiDistributionTest.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="RunningNormalStatisticsTest.cs" />
     <Compile Include="Testing\OneWayAnovaTest.cs" />
     <Compile Include="Distributions\TDistributionTest.cs" />
     <Compile Include="Testing\TTestTest.cs" />
@@ -148,10 +161,10 @@
     <Compile Include="Kernels\Sparse\SparsePolynomialTest.cs" />
     <Compile Include="Kernels\Sparse\SparseGaussianTest.cs" />
     <Compile Include="Kernels\Sparse\SparseLinearTest.cs" />
-    <Compile Include="Models\Markov\GenericHiddenMarkovModelTest.cs" />
+    <Compile Include="Models\Markov\HiddenMarkovModel`1Test.cs" />
     <Compile Include="Distributions\NormalDistributionTest.cs" />
     <Compile Include="Distributions\PoissonDistributionTest.cs" />
-    <Compile Include="Models\Markov\GenericSequenceClassifierTest.cs" />
+    <Compile Include="Models\Markov\HiddenMarkovClassifier`1Test.cs" />
     <Compile Include="Distributions\ChiSquareDistributionTest.cs" />
     <Compile Include="Analysis\ConfusionMatrixTest.cs" />
     <Compile Include="Filters\DiscretizationFilterTest.cs" />
@@ -164,19 +177,19 @@
     <Compile Include="Analysis\KernelPrincipalComponentAnalysisTest.cs" />
     <Compile Include="Analysis\LinearDiscriminantAnalysisTest.cs" />
     <Compile Include="Filters\LinearScalingFilterTest.cs" />
-    <Compile Include="Models\LogisticRegressionTest.cs" />
-    <Compile Include="Models\MultipleLinearRegressionTest.cs" />
+    <Compile Include="Models\Regression\LogisticRegressionTest.cs" />
+    <Compile Include="Models\Regression\MultipleLinearRegressionTest.cs" />
     <Compile Include="Filters\NormalizationFilterTest.cs" />
     <Compile Include="Analysis\PartialLeastSquaresAnalysisTest.cs" />
-    <Compile Include="Models\PolynomialRegressionTest.cs" />
+    <Compile Include="Models\Regression\PolynomialRegressionTest.cs" />
     <Compile Include="Analysis\PrincipalComponentAnalysisTest.cs" />
     <Compile Include="Distributions\Multivariate\MultivariateDiscreteDistributionTest.cs" />
     <Compile Include="Filters\ProjectionFilterTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Analysis\ReceiverOperatingCharacteristicTest.cs" />
-    <Compile Include="Models\SimpleLinearRegressionTest.cs" />
+    <Compile Include="Models\Regression\SimpleLinearRegressionTest.cs" />
     <Compile Include="Kernels\SplineTest.cs" />
-    <Compile Include="Models\StepwiseLogisticRegressionAnalysisTest.cs" />
+    <Compile Include="Models\Regression\StepwiseLogisticRegressionAnalysisTest.cs" />
     <Compile Include="Filters\SelectionFilterTest.cs" />
     <Compile Include="Testing\ChiSquareTestTest.cs" />
     <Compile Include="ToolsTest.cs" />
@@ -199,7 +212,6 @@
     <ProjectReference Include="..\..\Accord.Statistics\Accord.Statistics.csproj">
       <Project>{FD8101DD-C95D-42D6-AD44-AE01C25F2811}</Project>
       <Name>Accord.Statistics</Name>
-      <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\Accord.Tests.Math\Accord.Tests.Math.csproj">
       <Project>{F454DBD6-2AB9-461D-9624-2249B921B6E6}</Project>
@@ -228,19 +240,20 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Test References\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="Accord.snk" />
+    <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\iris.txt" />
     <Content Include="Resources\iris.scale.txt" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

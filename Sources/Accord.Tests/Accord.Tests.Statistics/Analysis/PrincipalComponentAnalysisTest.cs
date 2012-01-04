@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -20,29 +20,19 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics.Analysis;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Accord.Math;
-using System;
 namespace Accord.Tests.Statistics
 {
+    using Accord.Statistics.Analysis;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Accord.Math;
+    using System;
 
-
-    /// <summary>
-    ///This is a test class for PrincipalComponentAnalysisTest and is intended
-    ///to contain all PrincipalComponentAnalysisTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class PrincipalComponentAnalysisTest
     {
 
-
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -86,27 +76,23 @@ namespace Accord.Tests.Statistics
         #endregion
 
 
-        /// <summary>
-        ///A test for Transform
-        ///</summary>
-        [TestMethod()]
-        public void PCATransform()
+        // Lindsay's tutorial data
+        private static double[,] data = 
         {
-            // Lindsay's tutorial data
-            double[,] data = 
-            {
-                { 2.5,  2.4 },
-                { 0.5,  0.7 },
-                { 2.2,  2.9 },
-                { 1.9,  2.2 },
-                { 3.1,  3.0 },
-                { 2.3,  2.7 },
-                { 2.0,  1.6 },
-                { 1.0,  1.1 },
-                { 1.5,  1.6 },
-                { 1.1,  0.9 }
-            };
+            { 2.5,  2.4 },
+            { 0.5,  0.7 },
+            { 2.2,  2.9 },
+            { 1.9,  2.2 },
+            { 3.1,  3.0 },
+            { 2.3,  2.7 },
+            { 2.0,  1.6 },
+            { 1.0,  1.1 },
+            { 1.5,  1.6 },
+            { 1.1,  0.9 }
+        };
 
+        public void TransformTest()
+        {
             PrincipalComponentAnalysis target = new PrincipalComponentAnalysis(data);
 
             // Compute
@@ -138,34 +124,19 @@ namespace Accord.Tests.Statistics
             Assert.IsTrue(Matrix.IsEqual(result, expected, 0.01));
         }
 
-        /// <summary>
-        ///A test for Transform
-        ///</summary>
         [TestMethod()]
-        public void PCATransform2()
+        public void TransformTest2()
         {
             // Lindsay's tutorial data
-            double[,] data = new double[,]
-            {
-                { 2.5,  2.4 },
-                { 0.5,  0.7 },
-                { 2.2,  2.9 },
-                { 1.9,  2.2 },
-                { 3.1,  3.0 },
-                { 2.3,  2.7 },
-                { 2.0,  1.6 },
-                { 1.0,  1.1 },
-                { 1.5,  1.6 },
-                { 1.1,  0.9 }
-            }.Transpose();
+            double[,] datat = data.Transpose();
 
-            PrincipalComponentAnalysis target = new PrincipalComponentAnalysis(data);
+            PrincipalComponentAnalysis target = new PrincipalComponentAnalysis(datat);
 
             // Compute
             target.Compute();
 
             // Transform
-            double[,] actual = target.Transform(data);
+            double[,] actual = target.Transform(datat);
 
             // Assert the scores equals the transformation of the input
 
@@ -173,27 +144,9 @@ namespace Accord.Tests.Statistics
             Assert.IsTrue(Matrix.IsEqual(result, actual, 0.01));
         }
 
-        /// <summary>
-        ///A test for Transform
-        ///</summary>
         [TestMethod()]
-        public void PCATransform3()
+        public void TransformTest3()
         {
-            // Lindsay's tutorial data
-            double[,] data = 
-            {
-                { 2.5,  2.4 },
-                { 0.5,  0.7 },
-                { 2.2,  2.9 },
-                { 1.9,  2.2 },
-                { 3.1,  3.0 },
-                { 2.3,  2.7 },
-                { 2.0,  1.6 },
-                { 1.0,  1.1 },
-                { 1.5,  1.6 },
-                { 1.1,  0.9 }
-            };
-
             PrincipalComponentAnalysis target = new PrincipalComponentAnalysis(data);
 
             // Compute
@@ -204,85 +157,14 @@ namespace Accord.Tests.Statistics
             {
                 double[,] actual = target.Transform(data, 3);
             }
-            catch
-            {
-                thrown = true;
-            }
+            catch { thrown = true; }
 
             Assert.IsTrue(thrown);
         }
 
-        /// <summary>
-        ///A test for adjust
-        ///</summary>
         [TestMethod()]
-        [DeploymentItem("Accord.Statistics.dll")]
-        public void adjustTest()
+        public void Revert()
         {
-            // Lindsay's tutorial data
-            double[,] data = 
-            {
-                { 2.5,  2.4 },
-                { 0.5,  0.7 },
-                { 2.2,  2.9 },
-                { 1.9,  2.2 },
-                { 3.1,  3.0 },
-                { 2.3,  2.7 },
-                { 2.0,  1.6 },
-                { 1.0,  1.1 },
-                { 1.5,  1.6 },
-                { 1.1,  0.9 }
-            };
-
-            PrincipalComponentAnalysis target = new PrincipalComponentAnalysis(data, AnalysisMethod.Standardize);
-
-            double[,] expected =
-            {
-                {  0.87874523495823,   0.578856809114491 },
-                { -1.66834240260186,  -1.42942191638476  },
-                {  0.496682089324217,  1.16952702249663  },
-                {  0.114618943690204,  0.342588723761638 },
-                {  1.64287152622626,   1.28766106517305  },
-                {  0.624036471202221,  0.933258937143772 },
-                {  0.241973325568208, -0.366215532296923 },
-                { -1.03157049321184,  -0.956885745679056 },
-                { -0.394798583821814, -0.366215532296923 },
-                { -0.904216111333831, -1.19315383103191  }
-            };
-            
-
-            double[,] actual = target.Adjust(data, false);
-
-            Assert.IsTrue(expected.IsEqual(actual, 0.00001));
-            Assert.AreNotEqual(data, actual);
-
-            actual = target.Adjust(data, true);
-            Assert.IsTrue(expected.IsEqual(actual, 0.00001));
-            Assert.AreEqual(data, actual);
-        }
-
-
-        /// <summary>
-        ///A test for Transform
-        ///</summary>
-        [TestMethod()]
-        public void PCARevert()
-        {
-            // Lindsay's tutorial data
-            double[,] data = new double[,]
-            {
-                { 2.5,  2.4 },
-                { 0.5,  0.7 },
-                { 2.2,  2.9 },
-                { 1.9,  2.2 },
-                { 3.1,  3.0 },
-                { 2.3,  2.7 },
-                { 2.0,  1.6 },
-                { 1.0,  1.1 },
-                { 1.5,  1.6 },
-                { 1.1,  0.9 }
-            };
-
             PrincipalComponentAnalysis target = new PrincipalComponentAnalysis(data);
 
             // Compute
@@ -314,19 +196,48 @@ namespace Accord.Tests.Statistics
 
             bool thrown = false;
 
-            try
-            {
-                pca.Compute();
-            }
+            try { pca.Compute(); }
             catch (ArithmeticException ex)
             {
                 ex.ToString();
-                thrown = true;    
+                thrown = true;
             }
 
             // Assert that an appropriate exception has been
             //   thrown in the case of a constant variable.
             Assert.IsTrue(thrown);
         }
+
+        [TestMethod()]
+        [DeploymentItem("Accord.Statistics.dll")]
+        public void adjustTest()
+        {
+            PrincipalComponentAnalysis target = new PrincipalComponentAnalysis(data, AnalysisMethod.Standardize);
+
+            double[,] expected =
+            {
+                {  0.87874523495823,   0.578856809114491 },
+                { -1.66834240260186,  -1.42942191638476  },
+                {  0.496682089324217,  1.16952702249663  },
+                {  0.114618943690204,  0.342588723761638 },
+                {  1.64287152622626,   1.28766106517305  },
+                {  0.624036471202221,  0.933258937143772 },
+                {  0.241973325568208, -0.366215532296923 },
+                { -1.03157049321184,  -0.956885745679056 },
+                { -0.394798583821814, -0.366215532296923 },
+                { -0.904216111333831, -1.19315383103191  }
+            };
+
+
+            double[,] actual = target.Adjust(data, false);
+
+            Assert.IsTrue(expected.IsEqual(actual, 0.00001));
+            Assert.AreNotEqual(data, actual);
+
+            actual = target.Adjust(data, true);
+            Assert.IsTrue(expected.IsEqual(actual, 0.00001));
+            Assert.AreEqual(data, actual);
+        }
+
     }
 }

@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -88,9 +88,6 @@ namespace Accord.Tests.Statistics
         //
         #endregion
 
-        /// <summary>
-        ///  A test for Uniform 
-        /// </summary>
         [TestMethod()]
         public void UniformTest()
         {
@@ -98,18 +95,19 @@ namespace Accord.Tests.Statistics
             //   fully-connected states and four sequence symbols.
             var model = new HiddenMarkovModel(new Ergodic(3), 4);
 
-            Assert.AreEqual(model.States, 3);
-            Assert.IsTrue(model.Transitions.IsEqual(new double[,] 
+            var expected = new double[,] 
             {
                 { 0.33, 0.33, 0.33 },
                 { 0.33, 0.33, 0.33 },
                 { 0.33, 0.33, 0.33 },
-            }, 0.01));
+            };
+
+            var A = Matrix.Exp(model.Transitions);
+
+            Assert.AreEqual(model.States, 3);
+            Assert.IsTrue(A.IsEqual(expected, 0.01));
         }
 
-        /// <summary>
-        ///  A test for Uniform 
-        /// </summary>
         [TestMethod()]
         public void ForwardTest()
         {
@@ -118,17 +116,17 @@ namespace Accord.Tests.Statistics
             var model = new HiddenMarkovModel(new Forward(3), 4);
 
             Assert.AreEqual(model.States, 3);
-            Assert.IsTrue(model.Transitions.IsEqual(new double[,] 
+            var actual = Matrix.Exp(model.Transitions);
+            var expected = new double[,] 
             {
                 { 0.33, 0.33, 0.33 },
                 { 0.00, 0.50, 0.50 },
                 { 0.00, 0.00, 1.00 },
-            }, 0.01));
+            };
+
+            Assert.IsTrue(actual.IsEqual(expected, 0.01));
         }
 
-        /// <summary>
-        ///  A test for Uniform 
-        /// </summary>
         [TestMethod()]
         public void ForwardTest2()
         {
@@ -139,16 +137,42 @@ namespace Accord.Tests.Statistics
 
             double[,] actual;
             double[] pi;
-            int states = topology.Create(out actual, out pi);
+            int states = topology.Create(false, out actual, out pi);
             var expected = new double[,] 
             {
                 { 0.50, 0.50, 0.00 },
                 { 0.00, 0.50, 0.50 },
                 { 0.00, 0.00, 1.00 },
             };
-            
+
             Assert.IsTrue(actual.IsEqual(expected, 0.01));
             Assert.AreEqual(states, 3);
+        }
+
+        [TestMethod()]
+        public void ForwardTest3()
+        {
+            var topology = new Forward(states: 3, deepness: 2);
+
+            double[,] actualA;
+            double[] actualPi;
+
+            double[,] expectedA;
+            double[] expectedPi;
+
+            int actualStates = topology.Create(true, out actualA, out actualPi);
+            int expectedStates = topology.Create(false, out expectedA, out expectedPi);
+
+            for (int i = 0; i < 3; i++)
+                for (int j = 0; j < 3; j++)
+                    Assert.AreEqual(actualA[i, j], System.Math.Log(expectedA[i, j]));
+
+            for (int i = 0; i < 3; i++)
+                for (int j = 0; j < 3; j++)
+                    Assert.AreEqual(actualPi[i], System.Math.Log(expectedPi[i]));
+
+            Assert.AreEqual(actualStates, expectedStates);
+            Assert.AreEqual(actualStates, 3);
         }
     }
 

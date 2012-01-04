@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -205,7 +205,6 @@ namespace Accord.Tests.Statistics
         [TestMethod()]
         public void UniformTest()
         {
-
             int a = 2;
             int b = 5;
             int n = b - a + 1;
@@ -216,7 +215,7 @@ namespace Accord.Tests.Statistics
             double p = 1.0 / n;
 
 
-            GeneralDiscreteDistribution dist = GeneralDiscreteDistribution.Uniform(2, 5);
+            GeneralDiscreteDistribution dist = GeneralDiscreteDistribution.Uniform(a, b);
 
             Assert.AreEqual(expectedMean, dist.Mean); ;
             Assert.AreEqual(expectedVar, dist.Variance);
@@ -231,7 +230,39 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(p, dist.ProbabilityMassFunction(5));
             Assert.AreEqual(0, dist.ProbabilityMassFunction(6));
             Assert.AreEqual(0, dist.ProbabilityMassFunction(7));
+        }
 
+        [TestMethod()]
+        public void ProbabilityMassFunctionTest()
+        {
+            GeneralDiscreteDistribution dist = GeneralDiscreteDistribution.Uniform(2, 5);
+            double p = 0.25; 
+            Assert.AreEqual(0, dist.ProbabilityMassFunction(0));
+            Assert.AreEqual(0, dist.ProbabilityMassFunction(1));
+            Assert.AreEqual(p, dist.ProbabilityMassFunction(2));
+            Assert.AreEqual(p, dist.ProbabilityMassFunction(3));
+            Assert.AreEqual(p, dist.ProbabilityMassFunction(4));
+            Assert.AreEqual(p, dist.ProbabilityMassFunction(5));
+            Assert.AreEqual(0, dist.ProbabilityMassFunction(6));
+            Assert.AreEqual(0, dist.ProbabilityMassFunction(7));
+        }
+
+        [TestMethod()]
+        public void LogProbabilityMassFunctionTest()
+        {
+            GeneralDiscreteDistribution dist = GeneralDiscreteDistribution.Uniform(2, 5);
+            
+            double p = System.Math.Log(0.25);
+            double l = System.Math.Log(0);
+
+            Assert.AreEqual(l, dist.LogProbabilityMassFunction(0));
+            Assert.AreEqual(l, dist.LogProbabilityMassFunction(1));
+            Assert.AreEqual(p, dist.LogProbabilityMassFunction(2));
+            Assert.AreEqual(p, dist.LogProbabilityMassFunction(3));
+            Assert.AreEqual(p, dist.LogProbabilityMassFunction(4));
+            Assert.AreEqual(p, dist.LogProbabilityMassFunction(5));
+            Assert.AreEqual(l, dist.LogProbabilityMassFunction(6));
+            Assert.AreEqual(l, dist.LogProbabilityMassFunction(7));
         }
     }
 }

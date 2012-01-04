@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -86,9 +86,6 @@ namespace Accord.Tests.Statistics
         #endregion
 
 
-        /// <summary>
-        ///A test for Fit
-        ///</summary>
         [TestMethod()]
         public void FitTest()
         {
@@ -99,6 +96,28 @@ namespace Accord.Tests.Statistics
 
             double expected = 0.5575;
             Assert.AreEqual(expected, target.Mean);
+        }
+
+        [TestMethod()]
+        public void ProbabilityDensityFunctionTest()
+        {
+            PoissonDistribution target = new PoissonDistribution(25);
+
+            double actual = target.ProbabilityMassFunction(20);
+            double expected = 0.051917468608491321;
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod()]
+        public void LogProbabilityDensityFunctionTest()
+        {
+            PoissonDistribution target = new PoissonDistribution(25);
+
+            double actual = target.LogProbabilityMassFunction(20);
+            double expected = System.Math.Log(0.051917468608491321);
+
+            Assert.AreEqual(expected, actual, 1e-10);
         }
     }
 }

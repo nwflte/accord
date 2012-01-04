@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -84,9 +84,6 @@ namespace Accord.Tests.Statistics
         #endregion
 
 
-        /// <summary>
-        ///   A test for ProbabilityDensityFunction
-        /// </summary>
         [TestMethod()]
         public void ProbabilityDensityFunctionTest()
         {
@@ -99,26 +96,52 @@ namespace Accord.Tests.Statistics
             x = 1;
             actual = target.ProbabilityDensityFunction(x);
             expected = 0.2420;
-            Assert.AreEqual(expected, System.Math.Round(actual, 4));
+            Assert.AreEqual(expected, actual, 1e-4);
 
             degreesOfFreedom = 2;
             target = new ChiSquareDistribution(degreesOfFreedom);
             x = 2;
             actual = target.ProbabilityDensityFunction(x);
             expected = 0.1839;
-            Assert.AreEqual(expected, System.Math.Round(actual, 4));
+            Assert.AreEqual(expected, actual, 1e-4);
 
             degreesOfFreedom = 10;
             target = new ChiSquareDistribution(degreesOfFreedom);
             x = 2;
             actual = target.ProbabilityDensityFunction(x);
             expected = 0.0077;
-            Assert.AreEqual(expected, System.Math.Round(actual, 4));
+            Assert.AreEqual(expected, actual, 1e-4);
         }
 
-        /// <summary>
-        ///  A test for DistributionFunction
-        ///</summary>
+        [TestMethod()]
+        public void LogProbabilityDensityFunctionTest()
+        {
+            int degreesOfFreedom;
+            double actual, expected, x;
+            ChiSquareDistribution target;
+
+            degreesOfFreedom = 1;
+            target = new ChiSquareDistribution(degreesOfFreedom);
+            x = 1;
+            actual = target.LogProbabilityDensityFunction(x);
+            expected = System.Math.Log(target.ProbabilityDensityFunction(x));
+            Assert.AreEqual(expected, actual, 1e-10);
+
+            degreesOfFreedom = 2;
+            target = new ChiSquareDistribution(degreesOfFreedom);
+            x = 2;
+            actual = target.LogProbabilityDensityFunction(x);
+            expected = System.Math.Log(target.ProbabilityDensityFunction(x));
+            Assert.AreEqual(expected, actual, 1e-10);
+
+            degreesOfFreedom = 10;
+            target = new ChiSquareDistribution(degreesOfFreedom);
+            x = 2;
+            actual = target.LogProbabilityDensityFunction(x);
+            expected = System.Math.Log(target.ProbabilityDensityFunction(x));
+            Assert.AreEqual(expected, actual, 1e-10);
+        }
+
         [TestMethod()]
         public void DistributionFunctionTest()
         {
@@ -131,7 +154,7 @@ namespace Accord.Tests.Statistics
             x = 5;
             actual = target.DistributionFunction(x);
             expected = 0.9747;
-            Assert.AreEqual(expected, System.Math.Round(actual, 4));
+            Assert.AreEqual(expected, actual, 1e-4);
 
 
             degreesOfFreedom = 5;
@@ -139,7 +162,7 @@ namespace Accord.Tests.Statistics
             x = 5;
             actual = target.DistributionFunction(x);
             expected = 0.5841;
-            Assert.AreEqual(expected, System.Math.Round(actual, 4));
+            Assert.AreEqual(expected, actual, 1e-4);
         }
 
 

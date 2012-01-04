@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -84,9 +84,6 @@ namespace Accord.Tests.Statistics
         #endregion
 
 
-        /// <summary>
-        ///A test for Fit
-        ///</summary>
         [TestMethod()]
         public void FitTest()
         {
@@ -104,6 +101,29 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(2.249981, distribution.Mean, 1e-6);
 
             Assert.AreEqual(0.2441525, distribution.Variance, 1e-3);
+        }
+
+        [TestMethod()]
+        public void ProbabilityDensityFunctionTest()
+        {
+            VonMisesDistribution dist = new VonMisesDistribution(2.249981, 2.411822);
+
+            double actual = dist.ProbabilityDensityFunction(2.14);
+            double expected = 0.5686769438969197;
+
+            Assert.AreEqual(expected, actual, 1e-10);
+        }
+
+        [TestMethod()]
+        public void LogProbabilityDensityFunctionTest()
+        {
+            VonMisesDistribution dist = new VonMisesDistribution(2.249981, 2.411822);
+            double x = 2.14;
+
+            double actual = dist.LogProbabilityDensityFunction(x);
+            double expected = System.Math.Log(dist.ProbabilityDensityFunction(x));
+
+            Assert.AreEqual(expected, actual, 1e-10);
         }
     }
 }

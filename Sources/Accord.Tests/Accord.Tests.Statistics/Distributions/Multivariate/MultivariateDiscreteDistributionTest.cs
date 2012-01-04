@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -84,20 +84,31 @@ namespace Accord.Tests.Statistics
         #endregion
 
 
-        /// <summary>
-        ///A test for ProbabilityMassFunction
-        ///</summary>
         [TestMethod()]
         public void ProbabilityMassFunctionTest()
         {
-            // Testing Multinomial Distribution PMF
             MultivariateDiscreteDistribution target = new MultinomialDistribution(5, 0.25, 0.25, 0.25, 0.25);
             
             int[] observation = { 1, 1, 1, 2 };
 
-            double p = target.ProbabilityMassFunction(observation);
+            double expected = 0.05859375;
+            double actual = target.ProbabilityMassFunction(observation);
 
-            Assert.AreEqual(p, 0.05859, 0.00001);
+            Assert.AreEqual(expected, actual, 1e-6);
         }
+
+        [TestMethod()]
+        public void LogProbabilityMassFunctionTest()
+        {
+            MultivariateDiscreteDistribution target = new MultinomialDistribution(5, 0.25, 0.25, 0.25, 0.25);
+
+            int[] observation = { 1, 1, 1, 2 };
+
+            double expected = System.Math.Log(target.ProbabilityMassFunction(observation));
+            double actual = target.LogProbabilityMassFunction(observation);
+
+            Assert.AreEqual(expected, actual, 1e-6);
+        }
+
     }
 }
