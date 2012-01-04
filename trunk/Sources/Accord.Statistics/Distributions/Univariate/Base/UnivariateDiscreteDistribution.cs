@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -147,6 +147,7 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   Gets the probability density function (pdf) for
         ///   this distribution evaluated at point <c>x</c>.
         /// </summary>
+        /// 
         /// <param name="x">
         ///   A single point in the distribution range. For a 
         ///   univariate distribution, this should be a single
@@ -156,6 +157,32 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   The Probability Density Function (PDF) describes the
         ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
+        /// 
+        /// <returns>
+        ///   The probability of <c>x</c> occurring
+        ///   in the current distribution.</returns>
+        ///   
+        double IUnivariateDistribution.DistributionFunction(double x)
+        {
+            return DistributionFunction((int)x);
+        }
+
+        /// <summary>
+        ///   Gets the probability density function (pdf) for
+        ///   this distribution evaluated at point <c>x</c>.
+        /// </summary>
+        /// 
+        /// <param name="x">
+        ///   A single point in the distribution range. For a 
+        ///   univariate distribution, this should be a single
+        ///   double value. For a multivariate distribution,
+        ///   this should be a double array.</param>
+        ///   
+        /// <remarks>
+        ///   The Probability Density Function (PDF) describes the
+        ///   probability that a given value <c>x</c> will occur.
+        /// </remarks>
+        /// 
         /// <returns>
         ///   The probability of <c>x</c> occurring
         ///   in the current distribution.</returns>
@@ -163,6 +190,71 @@ namespace Accord.Statistics.Distributions.Univariate
         double IDistribution.ProbabilityFunction(params double[] x)
         {
             return ProbabilityMassFunction((int)x[0]);
+        }
+
+        /// <summary>
+        ///   Gets the log-probability density function (pdf)
+        ///   for this distribution evaluated at point <c>x</c>.
+        /// </summary>
+        /// 
+        /// <param name="x">A single point in the distribution range. For a
+        ///   univariate distribution, this should be a single
+        ///   double value. For a multivariate distribution,
+        ///   this should be a double array.</param>
+        /// 
+        /// <returns>
+        ///   The logarithm of the probability of <c>x</c>
+        ///   occurring in the current distribution.
+        /// </returns>
+        /// 
+        double IDistribution.LogProbabilityFunction(params double[] x)
+        {
+            return LogProbabilityMassFunction((int)x[0]);
+        }
+
+        /// <summary>
+        ///   Gets the probability density function (pdf) for
+        ///   this distribution evaluated at point <c>x</c>.
+        /// </summary>
+        /// 
+        /// <param name="x">A single point in the distribution range. For a
+        ///   univariate distribution, this should be a single
+        ///   double value. For a multivariate distribution,
+        ///   this should be a double array.</param>
+        /// <returns>
+        /// 
+        ///   The probability of <c>x</c> occurring
+        ///   in the current distribution.
+        /// </returns>
+        /// 
+        /// <remarks>
+        ///   The Probability Density Function (PDF) describes the
+        ///   probability that a given value <c>x</c> will occur.
+        /// </remarks>
+        /// 
+        double IUnivariateDistribution.ProbabilityFunction(double x)
+        {
+            return ProbabilityMassFunction((int)x);
+        }
+
+        /// <summary>
+        ///   Gets the log-probability density function (pdf)
+        ///   for this distribution evaluated at point <c>x</c>.
+        /// </summary>
+        /// 
+        /// <param name="x">A single point in the distribution range. For a
+        ///   univariate distribution, this should be a single
+        ///   double value. For a multivariate distribution,
+        ///   this should be a double array.</param>
+        /// 
+        /// <returns>
+        ///   The logarithm of the probability of <c>x</c>
+        ///   occurring in the current distribution.
+        /// </returns>
+        /// 
+        double IUnivariateDistribution.LogProbabilityFunction(double x)
+        {
+            return LogProbabilityMassFunction((int)x);
         }
 
         /// <summary>
@@ -265,7 +357,7 @@ namespace Accord.Statistics.Distributions.Univariate
             double[][] multivariate = observations as double[][];
             if (multivariate != null)
             {
-                Fit(Matrix.Combine(multivariate), weights, options);
+                Fit(Matrix.Concatenate(multivariate), weights, options);
                 return;
             }
 
@@ -301,6 +393,22 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   in the current distribution.</returns>
         ///   
         public abstract double ProbabilityMassFunction(int x);
+
+        /// <summary>
+        ///   Gets the log-probability mass function (pmf) for
+        ///   this distribution evaluated at point <c>x</c>.
+        /// </summary>
+        /// <param name="x">
+        ///   A single point in the distribution range.</param>
+        /// <remarks>
+        ///   The Probability Mass Function (PMF) describes the
+        ///   probability that a given value <c>x</c> will occur.
+        /// </remarks>
+        /// <returns>
+        ///   The logarithm of the probability of <c>x</c>
+        ///   occurring in the current distribution.</returns>
+        ///   
+        public abstract double LogProbabilityMassFunction(int x);
 
         /// <summary>
         ///   Fits the underlying distribution to a given set of observations.

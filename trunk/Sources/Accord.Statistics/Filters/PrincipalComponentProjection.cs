@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -25,6 +25,7 @@ namespace Accord.Statistics.Filters
     using System;
     using System.Data;
     using Accord.Statistics.Analysis;
+    using Accord.Math;
 
     /// <summary>
     ///   Principal component projection filter.
@@ -33,8 +34,8 @@ namespace Accord.Statistics.Filters
     public class PrincipalComponentProjection : BaseFilter<PrincipalComponentProjection.Options>, IAutoConfigurableFilter
     {
 
-        PrincipalComponentAnalysis pca;
-        string[] componentNames;
+        private PrincipalComponentAnalysis pca;
+        private string[] componentNames;
 
         /// <summary>
         ///   Gets or sets the analysis associated with the filter.
@@ -82,24 +83,15 @@ namespace Accord.Statistics.Filters
             int rows = data.Rows.Count;
             int cols = this.Columns.Count;
 
-            double[,] inputMatrix = new double[rows, cols];
-
-            // Scale each value from the original ranges to destination ranges
+            string[] columnNames = new string[Columns.Count];
             for (int i = 0; i < Columns.Count; i++)
-            {
-                String columnName = Columns[i].ColumnName;
+                columnNames[i] = Columns[i].ColumnName;
 
-                DataColumn column = data.Columns[columnName];
-
-                for (int j = 0; j < data.Rows.Count; j++)
-                    inputMatrix[i, j] = (double)data.Rows[j][column];
-            }
-
+            double[,] inputMatrix = data.ToMatrix(columnNames);
             double[,] outputMatrix = pca.Transform(inputMatrix);
 
-
             // Generate component column names
-            throw new NotImplementedException();
+            return outputMatrix.ToTable(componentNames);
         }
 
         /// <summary>
@@ -108,6 +100,8 @@ namespace Accord.Statistics.Filters
         /// 
         public void Detect(DataTable data)
         {
+            componentNames = generateNames(pca.Components.Count);
+
             throw new NotImplementedException();
         }
 
@@ -115,7 +109,7 @@ namespace Accord.Statistics.Filters
         {
             String[] componentNames = new String[components];
             for (int i = 0; i < componentNames.Length; i++)
-                componentNames[i] = "Principal Component 1";
+                componentNames[i] = "Principal Component " + i;
             return componentNames;
         }
 

@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 
@@ -17,7 +17,7 @@ namespace Accord.Statistics.Models.Markov
     /// </summary>
     /// 
     [Serializable]
-    public abstract class HiddenMarkovModelBase
+    public abstract class BaseHiddenMarkovModel
     {
 
         private int states;  // number of states
@@ -25,8 +25,8 @@ namespace Accord.Statistics.Models.Markov
 
 
         // Model is defined as M = (A, B, pi)
-        private double[,] A; // Transition probabilities
-        private double[] pi; // Initial state probabilities
+        private double[,] logA; // Transition probabilities
+        private double[] logPi; // Initial state probabilities
 
 
 
@@ -34,9 +34,9 @@ namespace Accord.Statistics.Models.Markov
         ///   Constructs a new Hidden Markov Model.
         /// </summary>
         /// 
-        protected HiddenMarkovModelBase(ITopology topology)
+        protected BaseHiddenMarkovModel(ITopology topology)
         {
-            this.states = topology.Create(out A, out pi);
+            this.states = topology.Create(true, out logA, out logPi);
         }
 
 
@@ -56,7 +56,7 @@ namespace Accord.Statistics.Models.Markov
         /// 
         public double[] Probabilities
         {
-            get { return this.pi; }
+            get { return this.logPi; }
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace Accord.Statistics.Models.Markov
         /// 
         public double[,] Transitions
         {
-            get { return this.A; }
+            get { return this.logA; }
         }
 
         /// <summary>
@@ -80,5 +80,4 @@ namespace Accord.Statistics.Models.Markov
 
 
     }
-
 }

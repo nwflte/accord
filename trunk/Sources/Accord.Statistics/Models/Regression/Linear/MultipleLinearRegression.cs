@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -32,12 +32,61 @@ namespace Accord.Statistics.Models.Regression.Linear
     /// 
     /// <remarks>
     /// <para>
-    ///   In linear regression, the model specification is that the dependent
-    ///   variable, y_i is a linear combination of the parameters (but need not
-    ///   be linear in the independent x_i variables). As the linear regression
-    ///   has a closed form solution, the regression coefficients can be computed
-    ///   by calling the <see cref="Regress"/> method only once.</para>
+    ///   In multiple linear regression, the model specification is that the dependent
+    ///   variable, denoted y_i, is a linear combination of the parameters (but need not
+    ///   be linear in the independent x_i variables). As the linear regression has a
+    ///   closed form solution, the regression coefficients can be computed by calling
+    ///   the <see cref="Regress"/> method only once.</para>
     /// </remarks>
+    /// 
+    /// <example>
+    ///  <para>
+    ///   The following example shows how to fit a multiple linear regression model
+    ///   to model a plane as an equation in the form ax + by + c = z. </para>
+    ///   
+    ///   <code>
+    ///   // We will try to model a plane as an equation in the form
+    ///   // "ax + by + c = z". We have two input variables (x and y)
+    ///   // and we will be trying to find two parameters a and b and 
+    ///   // an intercept term c.
+    ///   
+    ///   // Create a multiple linear regression for two input and an intercept
+    ///   MultipleLinearRegression target = new MultipleLinearRegression(2, true);
+    ///   
+    ///   // Now suppose we have some points
+    ///   double[][] inputs = 
+    ///   {
+    ///       new double[] { 1, 1 },
+    ///       new double[] { 0, 1 },
+    ///       new double[] { 1, 0 },
+    ///       new double[] { 0, 0 },
+    ///   };
+    ///   
+    ///   // located in the same Z (z = 1)
+    ///   double[] outputs = { 1, 1, 1, 1 };
+    ///   
+    ///   
+    ///   // Now we will try to fit a regression model
+    ///   double error = target.Regress(inputs, outputs);
+    ///   
+    ///   // As result, we will be given the following:
+    ///   double a = target.Coefficients[0]; // a = 0
+    ///   double b = target.Coefficients[1]; // b = 0
+    ///   double c = target.Coefficients[2]; // c = 1
+    ///   
+    ///   // Now, considering we were trying to find a plane, which could be
+    ///   // described by the equation ax + by + c = z, and we have found the
+    ///   // aforementioned coefficients, we can conclude the plane we were
+    ///   // trying to find is giving by the equation:
+    ///   //
+    ///   //   ax + by + c = z
+    ///   //     -> 0x + 0y + 1 = z
+    ///   //     -> 1 = z.
+    ///   //
+    ///   // The plane containing the aforementioned points is, in fact,
+    ///   // the plane given by z = 1.
+    ///   </code>
+    /// </example>
     /// 
     [Serializable]
     public class MultipleLinearRegression : ILinearRegression

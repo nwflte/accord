@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -72,7 +72,7 @@ namespace Accord.Statistics.Distributions.Univariate
         private void initialize(double lm)
         {
             this.lambda = lm;
-            this.epml = System.Math.Exp(-lm);
+            this.epml = Math.Exp(-lm);
 
             this.entropy = null;
         }
@@ -136,7 +136,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override double DistributionFunction(int x)
         {
-            return Special.Igam(x + 1, lambda) / Special.Factorial(x);
+            return Special.IGamma(x + 1, lambda) / Special.Factorial(x);
         }
 
         /// <summary>
@@ -158,7 +158,25 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   
         public override double ProbabilityMassFunction(int x)
         {
-            return (System.Math.Pow(lambda, x) / Special.Factorial(x)) * epml;
+            return (Math.Pow(lambda, x) / Special.Factorial(x)) * epml;
+        }
+
+        /// <summary>
+        /// Gets the log-probability mass function (pmf) for
+        /// this distribution evaluated at point <c>x</c>.
+        /// </summary>
+        /// <param name="x">A single point in the distribution range.</param>
+        /// <returns>
+        /// The logarithm of the probability of <c>x</c>
+        /// occurring in the current distribution.
+        /// </returns>
+        /// <remarks>
+        /// The Probability Mass Function (PMF) describes the
+        /// probability that a given value <c>x</c> will occur.
+        /// </remarks>
+        public override double LogProbabilityMassFunction(int x)
+        {
+            return (x * Math.Log(lambda) - Special.LogFactorial(x)) - lambda;
         }
 
 

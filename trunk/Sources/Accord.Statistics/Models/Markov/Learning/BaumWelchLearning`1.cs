@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 
@@ -11,12 +11,13 @@ namespace Accord.Statistics.Models.Markov.Learning
     using System;
     using Accord.Statistics.Distributions.Fitting;
     using Accord.Statistics.Distributions;
+    using Accord.Math;
 
     /// <summary>
     ///   Baum-Welch learning algorithm for arbitrary-density Hidden Markov Models.
     /// </summary>
     /// 
-    public class BaumWelchLearning<TDistribution> : BaumWelchLearningBase, IUnsupervisedLearning
+    public class BaumWelchLearning<TDistribution> : BaseBaumWelchLearning, IUnsupervisedLearning
         where TDistribution : IDistribution
     {
 
@@ -24,7 +25,7 @@ namespace Accord.Statistics.Models.Markov.Learning
 
         private IFittingOptions fittingOptions;
 
-        private double[][][] continuousObservations;
+        private double[][][] vectorObservations;
         private Array samples;
         private double[] weights;
 
@@ -73,21 +74,21 @@ namespace Accord.Statistics.Models.Markov.Learning
         {
 
             // Convert the generic representation to a vector of multivariate sequences
-            this.continuousObservations = new double[observations.Length][][];
-            for (int i = 0; i < continuousObservations.Length; i++)
-                this.continuousObservations[i] = convert(observations[i], model.Dimension);
+            this.vectorObservations = new double[observations.Length][][];
+            for (int i = 0; i < vectorObservations.Length; i++)
+                this.vectorObservations[i] = convert(observations[i], model.Dimension);
 
 
             // Sample array, used to store all observations as a sample vector
             //   will be useful when fitting the distribution models.
             if (model.Emissions[0] is IUnivariateDistribution)
             {
-                this.samples = (Array)Accord.Math.Matrix.Combine(
-                    Accord.Math.Matrix.Combine(continuousObservations));
+                this.samples = (Array)Accord.Math.Matrix.Concatenate(
+                    Accord.Math.Matrix.Stack(vectorObservations));
             }
             else
             {
-                this.samples = (Array)Accord.Math.Matrix.Combine(continuousObservations);
+                this.samples = (Array)Accord.Math.Matrix.Stack(vectorObservations);
             }
 
             this.weights = new double[samples.Length];
@@ -101,37 +102,38 @@ namespace Accord.Statistics.Models.Markov.Learning
         ///   referenced by its index in the input training data.
         /// </summary>
         /// <param name="index">The index of the observation in the input training data.</param>
-        /// <param name="fwd">The matrix of forward probabilities for the observation.</param>
-        /// <param name="bwd">The matrix of backward probabilities for the observation.</param>
-        /// <param name="scaling">The scaling vector computed in previous calculations.</param>
+        /// <param name="lnFwd">The matrix of forward probabilities for the observation.</param>
+        /// <param name="lnBwd">The matrix of backward probabilities for the observation.</param>
         /// 
-        protected override void ComputeKsi(int index, double[,] fwd, double[,] bwd, double[] scaling)
+        protected override void ComputeKsi(int index, double[,] lnFwd, double[,] lnBwd)
         {
             int states = model.States;
-            var A = model.Transitions;
-            var B = model.Emissions;
+            double[,] logA = model.Transitions;
+            TDistribution[] B = model.Emissions;
 
-            var sequence = continuousObservations[index];
-            var ksi = Ksi[index];
+            double[][] sequence = vectorObservations[index];
+
+            int T = sequence.Length;
+            var logKsi = LogKsi[index];
 
 
-            for (int t = 0; t < ksi.Length - 1; t++)
+            for (int t = 0; t < T - 1; t++)
             {
-                double s = 0;
-                var c = scaling[t + 1];
-                var ksit = ksi[t];
-                var x = sequence[t + 1];
+                double lnsum = Double.NegativeInfinity;
+                double[] x = sequence[t + 1];
 
-                for (int k = 0; k < states; k++)
-                    for (int l = 0; l < states; l++)
-                        s += ksit[k, l] = c * fwd[t, k] * A[k, l] * bwd[t + 1, l] * B[l].ProbabilityFunction(x);
-
-                if (s != 0) // Scaling
+                for (int i = 0; i < states; i++)
                 {
-                    for (int k = 0; k < states; k++)
-                        for (int l = 0; l < states; l++)
-                            ksit[k, l] /= s;
+                    for (int j = 0; j < states; j++)
+                    {
+                        logKsi[t][i, j] = lnFwd[t, i] + lnBwd[t + 1, j] + logA[i, j] + B[j].LogProbabilityFunction(x);
+                        lnsum = Special.LogSum(lnsum, logKsi[t][i, j]);
+                    }
                 }
+
+                for (int i = 0; i < states; i++)
+                    for (int j = 0; j < states; j++)
+                        logKsi[t][i, j] = logKsi[t][i, j] - lnsum;
             }
         }
 
@@ -148,25 +150,27 @@ namespace Accord.Statistics.Models.Markov.Learning
         {
             var B = model.Emissions;
 
+            // For each state i in the model
             for (int i = 0; i < B.Length; i++)
             {
-                double sum = 0;
+                double lnsum = Double.NegativeInfinity;
 
-                int w = 0;
-                for (int k = 0; k < continuousObservations.Length; k++)
+                // For each observation sequence k
+                for (int k = 0, w = 0; k < vectorObservations.Length; k++)
                 {
-                    int T = continuousObservations[k].Length;
-                    var gammak = Gamma[k];
+                    int T = vectorObservations[k].Length;
 
+                    // For each observation t in k
                     for (int t = 0; t < T; t++, w++)
-                        sum += weights[w] = gammak[t, i];
+                    {
+                        weights[w] = LogGamma[k][t, i];
+                        lnsum = Special.LogSum(lnsum, weights[w]);
+                    }
                 }
 
-                if (sum != 0)
-                {
-                    for (int j = 0; j < weights.Length; j++)
-                        weights[j] /= sum;
-                }
+                // Normalize and convert to probabilities
+                for (int w = 0; w < weights.Length; w++)
+                    weights[w] = Math.Exp(weights[w] - lnsum);
 
                 B[i].Fit(samples, weights, fittingOptions);
             }
@@ -178,14 +182,21 @@ namespace Accord.Statistics.Models.Markov.Learning
         ///   input training data.
         /// </summary>
         /// <param name="index">The index of the observation in the input training data.</param>
-        /// <param name="fwd">Returns the computed forward probabilities matrix.</param>
-        /// <param name="bwd">Returns the computed backward probabilities matrix.</param>
-        /// <param name="scaling">Returns the scaling parameters used during calculations.</param>
+        /// <param name="lnFwd">Returns the computed forward probabilities matrix.</param>
+        /// <param name="lnBwd">Returns the computed backward probabilities matrix.</param>
         /// 
-        protected override void ComputeForwardBackward(int index, out double[,] fwd, out double[,] bwd, out double[] scaling)
+        protected override void ComputeForwardBackward(int index, double[,] lnFwd, double[,] lnBwd)
         {
-            fwd = ForwardBackwardAlgorithm.Forward(model, continuousObservations[index], out scaling);
-            bwd = ForwardBackwardAlgorithm.Backward(model, continuousObservations[index], scaling);
+            int states = model.States;
+            int T = vectorObservations[index].Length;
+
+            System.Diagnostics.Trace.Assert(lnBwd.GetLength(0) >= T);
+            System.Diagnostics.Trace.Assert(lnBwd.GetLength(1) == states);
+            System.Diagnostics.Trace.Assert(lnFwd.GetLength(0) >= T);
+            System.Diagnostics.Trace.Assert(lnFwd.GetLength(1) == states);
+
+            ForwardBackwardAlgorithm.LogForward(model, vectorObservations[index], lnFwd);
+            ForwardBackwardAlgorithm.LogBackward(model, vectorObservations[index], lnBwd);
         }
 
 

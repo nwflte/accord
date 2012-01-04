@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -20,26 +20,23 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-namespace Accord.Statistics.Models.Fields.Features
+namespace Accord.Statistics.Models.Fields.Learning
 {
 
     /// <summary>
-    ///   Abstract class for CRF's Edge features.
+    ///   Common interface for Conditional Random Fields learning algorithms.
     /// </summary>
     /// 
-    public abstract class EdgeFeature : IFeature
+    public interface IConditionalRandomFieldLearning<T>
     {
-
         /// <summary>
-        ///   Computes the edge feature for the given edge parameters.
+        ///   Runs the learning algorithm with the specified input
+        ///   training observations and corresponding output labels.
         /// </summary>
         /// 
-        /// <param name="previous">The originating state.</param>
-        /// <param name="current">The destination state.</param>
-        /// <param name="observations">The observations.</param>
-        /// <param name="index">The index for the current observation.</param>
+        /// <param name="observations">The training observations.</param>
+        /// <param name="labels">The observation's labels.</param>
         /// 
-        public abstract double Compute(int previous, int current, int[] observations, int index);
-
+        double Run(T[][] observations, int[][] labels);
     }
 }

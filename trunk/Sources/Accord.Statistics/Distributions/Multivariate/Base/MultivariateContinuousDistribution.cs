@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -85,11 +85,15 @@ namespace Accord.Statistics.Distributions.Multivariate
         ///   Gets the mean for this distribution.
         /// </summary>
         /// 
+        /// <value>A vector containing the mean values for the distribution.</value>
+        /// 
         public abstract double[] Mean { get; }
 
         /// <summary>
         ///   Gets the variance for this distribution.
         /// </summary>
+        /// 
+        /// <value>A vector containing the variance values for the distribution.</value>
         /// 
         public abstract double[] Variance { get; }
 
@@ -97,12 +101,16 @@ namespace Accord.Statistics.Distributions.Multivariate
         ///   Gets the variance-covariance matrix for this distribution.
         /// </summary>
         /// 
+        /// <value>A matrix containing the covariance values for the distribution.</value>
+        /// 
         public abstract double[,] Covariance { get; }
 
 
         /// <summary>
         ///   Gets the mode for this distribution.
         /// </summary>
+        /// 
+        /// <value>A vector containing the mode values for the distribution.</value>
         /// 
         public virtual double[] Mode
         {
@@ -112,6 +120,8 @@ namespace Accord.Statistics.Distributions.Multivariate
         /// <summary>
         ///   Gets the median for this distribution.
         /// </summary>
+        /// 
+        /// <value>A vector containing the median values for the distribution.</value>
         /// 
         public virtual double[] Median
         {
@@ -143,6 +153,24 @@ namespace Accord.Statistics.Distributions.Multivariate
         double IDistribution.ProbabilityFunction(params double[] x)
         {
             return ProbabilityDensityFunction(x);
+        }
+
+        /// <summary>
+        ///   Gets the log-probability density function (pdf)
+        ///   for this distribution evaluated at point <c>x</c>.
+        /// </summary>
+        /// <param name="x">
+        ///   A single point in the distribution range. For a 
+        ///   univariate distribution, this should be a single
+        ///   double value. For a multivariate distribution,
+        ///   this should be a double array.</param>
+        /// <returns>
+        ///   The logarithm of the probability of <c>x</c>
+        ///   occurring in the current distribution.</returns>
+        ///   
+        double IDistribution.LogProbabilityFunction(params double[] x)
+        {
+            return LogProbabilityDensityFunction(x);
         }
 
         /// <summary>
@@ -309,6 +337,22 @@ namespace Accord.Statistics.Distributions.Multivariate
         ///   
         public abstract double ProbabilityDensityFunction(params double[] x);
 
+        /// <summary>
+        ///   Gets the log-probability density function (pdf)
+        ///   for this distribution evaluated at point <c>x</c>.
+        /// </summary>
+        /// <param name="x">
+        ///   A single point in the distribution range. For a 
+        ///   univariate distribution, this should be a single
+        ///   double value. For a multivariate distribution,
+        ///   this should be a double array.</param>
+        /// <returns>
+        ///   The logarithm of the probability of <c>x</c>
+        ///   occurring in the current distribution.</returns>
+        ///   
+        public abstract double LogProbabilityDensityFunction(params double[] x);
+
+        /// 
         /// <summary>
         ///   Fits the underlying distribution to a given set of observations.
         /// </summary>

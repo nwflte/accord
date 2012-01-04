@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -329,10 +329,16 @@ namespace Accord.Statistics.Models.Regression
 
             for (int i = 0; i < input.Length; i++)
             {
-                double y = Compute(input[i]);
-                double o = output[i];
+                double actualOutput = Compute(input[i]);
+                double expectedOutput = output[i];
 
-                sum += o * Math.Log(y) + (1 - o) * Math.Log(1 - y);
+                if (expectedOutput != 0)
+                    sum += expectedOutput * Math.Log(actualOutput);
+
+                if (expectedOutput != 1)
+                    sum += (1 - expectedOutput) * Math.Log(1 - actualOutput);
+
+                System.Diagnostics.Debug.Assert(!Double.IsNaN(sum));
             }
 
             return sum;
@@ -412,7 +418,7 @@ namespace Accord.Statistics.Models.Regression
         /// 
         public object Clone()
         {
-            LogisticRegression regression = new LogisticRegression(coefficients.Length);
+            var regression = new LogisticRegression(coefficients.Length);
             regression.coefficients = (double[])this.coefficients.Clone();
             regression.standardErrors = (double[])this.standardErrors.Clone();
             return regression;

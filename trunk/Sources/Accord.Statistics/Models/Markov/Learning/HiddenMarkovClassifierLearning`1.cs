@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 
@@ -10,6 +10,7 @@ namespace Accord.Statistics.Models.Markov.Learning
 {
     using System;
     using Accord.Statistics.Distributions;
+    using Accord.Math;
 
     /// <summary>
     ///   Arbitrary-density hidden Markov Sequence Classifier learning algorithm.
@@ -100,10 +101,10 @@ namespace Accord.Statistics.Models.Markov.Learning
     ///   // Creates a sequence classifier containing 2 hidden Markov Models
     ///   //  with 2 states and an underlying Normal distribution as density.
     ///   MultivariateNormalDistribution density = new MultivariateNormalDistribution(1);
-    ///   var classifier = new SequenceClassifier&lt;MultivariateNormalDistribution&gt;(2, new Ergodic(2), density);
+    ///   var classifier = new HiddenMarkovClassifier&lt;MultivariateNormalDistribution&gt;(2, new Ergodic(2), density);
     ///   
     ///   // Configure the learning algorithms to train the sequence classifier
-    ///   var teacher = new SequenceClassifierLearning&lt;MultivariateNormalDistribution&gt;(classifier,
+    ///   var teacher = new HiddenMarkovLearning&lt;MultivariateNormalDistribution&gt;(classifier,
     ///
     ///      // Train each model until the log-likelihood changes less than 0.001
     ///      modelIndex => new BaumWelchLearning&lt;NormalDistribution&gt;(classifier.Models[modelIndex])
@@ -129,8 +130,8 @@ namespace Accord.Statistics.Models.Markov.Learning
     ///   </code>
     /// </example>
     /// 
-    public class SequenceClassifierLearning<TDistribution> : 
-        SequenceClassifierLearningBase<SequenceClassifier<TDistribution>,
+    public class HiddenMarkovClassifierLearning<TDistribution> : 
+        BaseSequenceClassifierLearning<HiddenMarkovClassifier<TDistribution>,
         HiddenMarkovModel<TDistribution>> 
         where TDistribution : IDistribution
     {
@@ -142,7 +143,7 @@ namespace Accord.Statistics.Models.Markov.Learning
         ///   function.
         /// </summary>
         /// 
-        public SequenceClassifierLearning(SequenceClassifier<TDistribution> classifier,
+        public HiddenMarkovClassifierLearning(HiddenMarkovClassifier<TDistribution> classifier,
             ClassifierLearningAlgorithmConfiguration algorithm)
             : base(classifier, algorithm)
         {
@@ -186,13 +187,17 @@ namespace Accord.Statistics.Models.Markov.Learning
             {
                 for (int j = 0; j < Models[i].States; j++)
                 {
+                    var A = Matrix.Exp(Models[i].Transitions);
+                    var B = Models[i].Emissions;
+
                     for (int k = 0; k < Models[i].States; k++)
                     {
                         if (j != k)
-                            transition[j + m, k + m] = (1 - Models[i].Transitions[j, k]) / (states - 1.0);
-                        else transition[j + m, k + m] = Models[i].Transitions[j, k];
+                            transition[j + m, k + m] = (1.0 - A[j, k]) / (states - 1.0);
+                        else transition[j + m, k + m] = A[j, k];
                     }
-                    emissions[j + m] = Models[i].Emissions[j];
+
+                    emissions[j + m] = B[j];
                 }
 
                 initial[m] = 1.0 / Models.Length;

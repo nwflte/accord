@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 
@@ -10,6 +10,7 @@ namespace Accord.Statistics.Models.Markov.Learning
 {
     using System;
     using Accord.Math;
+    using System.Threading.Tasks;
 
     /// <summary>
     ///   Configuration function delegate for Sequence Classifier Learning algorithms.
@@ -21,24 +22,18 @@ namespace Accord.Statistics.Models.Markov.Learning
     ///   Abstract base class for Sequence Classifier learning algorithms.
     /// </summary>
     /// 
-    public abstract class SequenceClassifierLearningBase<TClassifier, TModel> 
-        where TClassifier : SequenceClassifierBase<TModel> 
+    public abstract class BaseSequenceClassifierLearning<TClassifier, TModel>
+        where TClassifier : BaseHiddenMarkovClassifier<TModel>
         where TModel : IHiddenMarkovModel
     {
 
-        private TClassifier classifier;
-        private bool updateThresholdModel = false;
-        private ClassifierLearningAlgorithmConfiguration algorithm;
 
         /// <summary>
         ///   Gets the classifier being trained by this instance.
         /// </summary>
         /// <value>The classifier being trained by this instance.</value>
         /// 
-        public TClassifier Classifier
-        {
-            get { return classifier; }
-        }
+        public TClassifier Classifier { get; private set; }
 
         /// <summary>
         ///   Gets or sets the configuration function specifying which
@@ -46,24 +41,23 @@ namespace Accord.Statistics.Models.Markov.Learning
         ///   in the hidden Markov model set.
         /// </summary>
         /// 
-        public ClassifierLearningAlgorithmConfiguration Algorithm
-        {
-            get { return algorithm; }
-            set { algorithm = value; }
-        }
+        public ClassifierLearningAlgorithmConfiguration Algorithm { get; set; }
 
         /// <summary>
-        ///   Gets or sets a value indicating whether a threshold
-        ///   model should be created after training to support rejection.
+        ///   Gets or sets a value indicating whether a threshold model
+        ///   should be created or updated after training to support rejection.
         /// </summary>
         /// <value><c>true</c> to update the threshold model after training;
         /// otherwise, <c>false</c>.</value>
         /// 
-        public bool Rejection
-        {
-            get { return updateThresholdModel; }
-            set { updateThresholdModel = value; }
-        }
+        public bool Rejection { get; set; }
+
+        /// <summary>
+        ///   Gets or sets a value indicating whether the class priors
+        ///   should be estimated from the data, as in an empirical bayes method.
+        /// </summary>
+        /// 
+        public bool Empirical { get; set; }
 
 
         /// <summary>
@@ -72,14 +66,14 @@ namespace Accord.Statistics.Models.Markov.Learning
         ///   function.
         /// </summary>
         /// 
-        protected SequenceClassifierLearningBase(TClassifier classifier,
+        protected BaseSequenceClassifierLearning(TClassifier classifier,
             ClassifierLearningAlgorithmConfiguration algorithm)
         {
-            this.classifier = classifier;
-            this.algorithm = algorithm;
+            this.Classifier = classifier;
+            this.Algorithm = algorithm;
         }
 
-        
+
 
         /// <summary>
         ///   Trains each model to recognize each of the output labels.
@@ -88,12 +82,13 @@ namespace Accord.Statistics.Models.Markov.Learning
         /// 
         protected double Run<T>(T[] inputs, int[] outputs)
         {
-            int classes = classifier.Classes;
+            int classes = Classifier.Classes;
             double[] logLikelihood = new double[classes];
+            int[] classCounts = new int[classes];
 
             // For each model,
 #if !DEBUG
-            AForge.Parallel.For(0, classes, i =>
+            Parallel.For(0, classes, i =>
 #else
             for (int i = 0; i < classes; i++)
 #endif
@@ -103,10 +98,12 @@ namespace Accord.Statistics.Models.Markov.Learning
                 int[] inx = outputs.Find(y => y == i);
                 T[] observations = inputs.Submatrix(inx);
 
+                classCounts[i] = observations.Length;
+
                 if (observations.Length > 0)
                 {
                     // Create and configure the learning algorithm
-                    IUnsupervisedLearning teacher = algorithm(i);
+                    IUnsupervisedLearning teacher = Algorithm(i);
 
                     // Train the current model in the input/output subset
                     logLikelihood[i] = teacher.Run(observations as Array[]);
@@ -116,8 +113,14 @@ namespace Accord.Statistics.Models.Markov.Learning
             );
 #endif
 
-            if (updateThresholdModel)
-                classifier.Threshold = Threshold();
+            if (Empirical)
+            {
+                for (int i = 0; i < classes; i++)
+                    Classifier.Priors[i] = (double)classCounts[i] / inputs.Length;
+            }
+
+            if (Rejection)
+                Classifier.Threshold = Threshold();
 
             // Returns the sum log-likelihood for all models.
             return logLikelihood.Sum();
@@ -129,7 +132,7 @@ namespace Accord.Statistics.Models.Markov.Learning
         /// </summary>
         /// <returns>A <see cref="Threshold">threshold Markov model</see>.</returns>
         /// 
-        public abstract TModel Threshold(); 
+        public abstract TModel Threshold();
 
     }
 }

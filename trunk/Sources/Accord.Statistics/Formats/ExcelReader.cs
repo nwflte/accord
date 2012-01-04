@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -25,6 +25,7 @@ namespace Accord.Statistics.Formats
     using System;
     using System.Data;
     using System.Data.OleDb;
+    using System.Globalization;
 
     /// <summary>
     ///   Excel file reader using Microsoft Jet Database Engine.
@@ -35,10 +36,9 @@ namespace Accord.Statistics.Formats
     ///   applications or the ACE 14.0 for 64 bit applications.
     /// </remarks>
     /// 
-    public class ExcelSpreadsheetReader
+    public class ExcelReader
     {
 
-        private string path;
         private string strConnection;
 
         /// <summary>
@@ -49,9 +49,8 @@ namespace Accord.Statistics.Formats
         /// <param name="hasHeaders">True if the spreadsheet contains headers, false otherwise.</param>
         /// <param name="hasMixedData">True to read "intermixed" data columns as text, false otherwise.</param>
         /// 
-        public ExcelSpreadsheetReader(string path, bool hasHeaders = true, bool hasMixedData = true)
+        public ExcelReader(string path, bool hasHeaders = true, bool hasMixedData = true)
         {
-            this.path = path;
             OleDbConnectionStringBuilder strBuilder = new OleDbConnectionStringBuilder();
             strBuilder.Provider = "Microsoft.Jet.OLEDB.4.0";
             strBuilder.DataSource = path;
@@ -85,7 +84,7 @@ namespace Accord.Statistics.Formats
                 worksheets[i] = worksheets[i].Remove(worksheets[i].Length - 1).Trim('"', '\'');
 
                 // removes the trailing $ and other characters appended in the table name
-                while (worksheets[i].EndsWith("$"))
+                while (worksheets[i].EndsWith("$", StringComparison.Ordinal))
                     worksheets[i] = worksheets[i].Remove(worksheets[i].Length - 1).Trim('"', '\'');
             }
 
@@ -125,6 +124,7 @@ namespace Accord.Statistics.Formats
             OleDbConnection connection = new OleDbConnection(strConnection);
             OleDbDataAdapter adaptor = new OleDbDataAdapter(String.Format("SELECT * FROM [{0}$]", worksheet), connection);
             ws = new DataTable(worksheet);
+            ws.Locale = CultureInfo.InvariantCulture;
             adaptor.FillSchema(ws, SchemaType.Source);
             adaptor.Fill(ws);
 
@@ -145,6 +145,7 @@ namespace Accord.Statistics.Formats
             OleDbConnection connection = new OleDbConnection(strConnection);
             OleDbDataAdapter adaptor = new OleDbDataAdapter("SELECT * FROM *", connection);
             workplace = new DataSet();
+            workplace.Locale = CultureInfo.InvariantCulture;
             adaptor.FillSchema(workplace, SchemaType.Source);
             adaptor.Fill(workplace);
 
@@ -153,5 +154,6 @@ namespace Accord.Statistics.Formats
 
             return workplace;
         }
+
     }
 }

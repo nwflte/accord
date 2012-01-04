@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -23,11 +23,7 @@
 namespace Accord.Statistics.Running
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
 
-    
     /// <summary>
     ///   Running (normal) statistics.
     /// </summary>
@@ -60,6 +56,10 @@ namespace Accord.Statistics.Running
     public class RunningNormalStatistics : IRunningStatistics
     {
         private int count;
+
+        private double mean;
+        private double sigma;
+
         private double lastMean;
         private double lastSigma;
 
@@ -69,7 +69,7 @@ namespace Accord.Statistics.Running
         /// 
         /// <value>The mean of the values.</value>
         /// 
-        public double Mean { get; private set; }
+        public double Mean { get { return mean; } }
 
         /// <summary>
         /// Gets the current variance of the gathered values.
@@ -77,7 +77,10 @@ namespace Accord.Statistics.Running
         /// 
         /// <value>The variance of the values.</value>
         /// 
-        public double Variance { get; private set; }
+        public double Variance
+        {
+            get { return (count > 1) ? sigma / (count - 1) : 0.0; }
+        }
 
         /// <summary>
         /// Gets the current standard deviation of the gathered values.
@@ -111,18 +114,19 @@ namespace Accord.Statistics.Running
 
             // See Knuth TAOCP vol 2, 3rd edition, page 232
             // http://www.johndcook.com/standard_deviation.html
+
             if (count == 1)
             {
-                Mean = lastMean = value;
-                Variance = lastSigma = 0.0;
+                mean = lastMean = value;
+                sigma = lastSigma = 0.0;
             }
             else
             {
-                Mean = lastMean + (value - lastMean) / count;
-                Variance = lastSigma + (value - lastMean) * (value - Mean);
+                mean = lastMean + (value - lastMean) / count;
+                sigma = (lastSigma + (value - lastMean) * (value - Mean));
 
-                lastMean = Mean;
-                lastSigma = Variance;
+                lastMean = mean;
+                lastSigma = sigma;
             }
         }
 
@@ -133,6 +137,9 @@ namespace Accord.Statistics.Running
         public void Clear()
         {
             count = 0;
+
+            mean = lastMean = 0;
+            sigma = lastSigma = 0;
         }
     }
 }

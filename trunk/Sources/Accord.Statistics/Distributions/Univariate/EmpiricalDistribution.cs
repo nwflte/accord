@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -215,6 +215,37 @@ namespace Accord.Statistics.Distributions.Univariate
             p *= 1.0 / (Special.Sqrt2PI * smoothing);
 
             return p / samples.Length;
+        }
+
+        /// <summary>
+        /// Gets the log-probability density function (pdf) for
+        /// this distribution evaluated at point <c>x</c>.
+        /// </summary>
+        /// <param name="x">A single point in the distribution range.</param>
+        /// <returns>
+        /// The logarithm of the probability of <c>x</c>
+        /// occurring in the current distribution.
+        /// </returns>
+        /// <remarks>
+        /// The Probability Density Function (PDF) describes the
+        /// probability that a given value <c>x</c> will occur.
+        /// </remarks>
+        public override double LogProbabilityDensityFunction(double x)
+        {
+            // References:
+            //  - Bishop, Christopher M.; Pattern Recognition and Machine Learning. 
+
+            double p = 0;
+
+            for (int i = 0; i < samples.Length; i++)
+            {
+                double z = (x - samples[i]) / smoothing;
+                p += Math.Exp(-z * z * 0.5);
+            }
+
+            double logp = Math.Log(p) - Math.Log(Special.Sqrt2PI * smoothing);
+
+            return logp - Math.Log(samples.Length);
         }
 
         /// <summary>

@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -37,12 +37,12 @@ namespace Accord.Statistics.Distributions.Univariate
     /// </remarks>
     /// 
     [Serializable]
-    public class NormalDistribution : UnivariateContinuousDistribution
+    public class NormalDistribution : UnivariateContinuousDistribution, IFormattable
     {
 
         // Distribution parameters
         private double mean = 0;  // mean
-        private double sigma = 1; // standard deviation
+        private double stdDev = 1; // standard deviation
 
         // Distribution measures
         private double? entropy;
@@ -61,7 +61,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public NormalDistribution()
         {
-            initialize(mean, sigma, sigma * sigma);
+            initialize(mean, stdDev, stdDev * stdDev);
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public NormalDistribution(double mean)
         {
-            initialize(mean, sigma, sigma * sigma);
+            initialize(mean, stdDev, stdDev * stdDev);
         }
 
         /// <summary>
@@ -82,14 +82,14 @@ namespace Accord.Statistics.Distributions.Univariate
         /// </summary>
         /// 
         /// <param name="mean">The distribution's mean value.</param>
-        /// <param name="sigma">The distribution's standard deviation.</param>
+        /// <param name="stdDev">The distribution's standard deviation.</param>
         /// 
-        public NormalDistribution(double mean, double sigma)
+        public NormalDistribution(double mean, double stdDev)
         {
-            if (sigma <= 0)
-                throw new ArgumentOutOfRangeException("sigma", "Sigma must be positive.");
+            if (stdDev <= 0)
+                throw new ArgumentOutOfRangeException("stdDev", "Standard deviation must be positive.");
 
-            initialize(mean, sigma, sigma * sigma);
+            initialize(mean, stdDev, stdDev * stdDev);
         }
 
 
@@ -120,7 +120,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override double StandardDeviation
         {
-            get { return sigma; }
+            get { return stdDev; }
         }
 
         /// <summary>
@@ -170,7 +170,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override double DistributionFunction(double x)
         {
-            double z = (x - mean) / sigma;
+            double z = (x - mean) / stdDev;
             return Special.Erfc(-z / Special.Sqrt2) * 0.5;
 
             /*
@@ -184,14 +184,17 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   Gets the probability density function (pdf) for
         ///   the Normal distribution evaluated at point <c>x</c>.
         /// </summary>
+        /// 
         /// <param name="x">A single point in the distribution range. For a
         ///   univariate distribution, this should be a single
         ///   double value. For a multivariate distribution,
         ///   this should be a double array.</param>
+        ///   
         /// <returns>
         ///   The probability of <c>x</c> occurring
         ///   in the current distribution.
         /// </returns>
+        /// 
         /// <remarks>
         ///   The Probability Density Function (PDF) describes the
         ///   probability that a given value <c>x</c> will occur.
@@ -199,7 +202,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override double ProbabilityDensityFunction(double x)
         {
-            double z = (x - mean) / sigma;
+            double z = (x - mean) / stdDev;
             double lnp = lnconstant + ((-z * z) * 0.5);
 
             return Math.Exp(lnp);
@@ -216,12 +219,40 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
+        ///   Gets the probability density function (pdf) for
+        ///   the Normal distribution evaluated at point <c>x</c>.
+        /// </summary>
+        /// 
+        /// <param name="x">A single point in the distribution range. For a
+        ///   univariate distribution, this should be a single
+        ///   double value. For a multivariate distribution,
+        ///   this should be a double array.</param>
+        ///   
+        /// <returns>
+        ///   The probability of <c>x</c> occurring
+        ///   in the current distribution.
+        /// </returns>
+        /// 
+        /// <remarks>
+        ///   The Probability Density Function (PDF) describes the
+        ///   probability that a given value <c>x</c> will occur.
+        /// </remarks>
+        /// 
+        public override double LogProbabilityDensityFunction(double x)
+        {
+            double z = (x - mean) / stdDev;
+            double lnp = lnconstant + ((-z * z) * 0.5);
+
+            return lnp;
+        }
+
+        /// <summary>
         ///   Gets the Z-Score for a given value.
         /// </summary>
         /// 
         public double ZScore(double x)
         {
-            return (x - mean) / sigma;
+            return (x - mean) / stdDev;
         }
 
 
@@ -312,14 +343,14 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override object Clone()
         {
-            return new NormalDistribution(mean, sigma);
+            return new NormalDistribution(mean, stdDev);
         }
 
 
         private void initialize(double mu, double dev, double var)
         {
             this.mean = mu;
-            this.sigma = dev;
+            this.stdDev = dev;
             this.variance = var;
 
             // Compute derived values
@@ -354,6 +385,56 @@ namespace Accord.Statistics.Distributions.Univariate
             NormalDistribution n = new NormalDistribution();
             n.Fit(observations, weights, options);
             return n;
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public override string ToString()
+        {
+            return String.Format("{0} ± {1}", mean, StandardDeviation);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <param name="format">The format.</param>
+        /// <param name="formatProvider">The format provider.</param>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return String.Format(formatProvider, "{0} ± {1}", mean, StandardDeviation);
+        }
+
+        /// <summary>
+        ///   Generates a random vector of observations from the current distribution.
+        /// </summary>
+        /// 
+        /// <param name="samples">The number of samples to generate.</param>
+        /// <returns>A random vector of observations drawn from this distribution.</returns>
+        /// 
+        public double[] Generate(int samples)
+        {
+            double[] r = new double[samples];
+
+            var g = new AForge.Math.Random.GaussianGenerator(
+                (float)mean, (float)stdDev,
+                Accord.Math.Tools.Random.Next());
+
+            for (int i = 0; i < r.Length; i++)
+                r[i] = g.Next();
+
+            return r;
         }
     }
 }

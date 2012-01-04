@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -46,6 +46,173 @@ namespace Accord.Statistics.Filters
         /// 
         public Codification()
         {
+        }
+
+        /// <summary>
+        ///   Creates a new Codification Filter.
+        /// </summary>
+        /// 
+        public Codification(DataTable data)
+        {
+            this.Detect(data);
+        }
+
+        /// <summary>
+        ///   Gets options, including mappings and dictionaries
+        ///   associated with a given variable (data column).
+        /// </summary>
+        /// 
+        /// <param name="columnName">The name of the variable.</param>
+        /// 
+        /// <returns>
+        ///   An <see cref="Options"/> object listing the main
+        ///   properties, such as number of possible symbols and
+        ///   symbol-value mapping for the given column.</returns>
+        /// 
+        public Options this[string columnName]
+        {
+            get { return Columns[columnName]; }
+        }
+
+        /// <summary>
+        ///   Gets options, including mappings and dictionaries
+        ///   associated with a given variable (data column).
+        /// </summary>
+        /// 
+        /// <param name="index">The column's index for the variable.</param>
+        /// 
+        /// <returns>
+        ///   An <see cref="Options"/> object listing the main
+        ///   properties, such as number of possible symbols and
+        ///   symbol-value mapping for the given column.</returns>
+        /// 
+        public Options this[int index]
+        {
+            get { return Columns[index]; }
+        }
+
+        /// <summary>
+        ///   Translates a value of a given variable
+        ///   into its integer (codeword) representation.
+        /// </summary>
+        /// 
+        /// <param name="columnName">The name of the variable's data column.</param>
+        /// <param name="value">The value to be translated.</param>
+        /// 
+        /// <returns>An integer which uniquely identifies the given value
+        /// for the given variable.</returns>
+        /// 
+        public int Translate(string columnName, string value)
+        {
+            return Columns[columnName].Mapping[value];
+        }
+
+        /// <summary>
+        ///   Translates an array of values into their
+        ///   integer representation, assuming values
+        ///   are given in original order of columns.
+        /// </summary>
+        /// 
+        /// <param name="data">The values to be translated.</param>
+        /// 
+        /// <returns>An array of integers in which each value
+        /// uniquely identifies the given value for each of
+        /// the variables.</returns>
+        /// 
+        public int[] Translate(params string[] data)
+        {
+            int[] result = new int[data.Length];
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                for (int j = 0; j < Columns.Count; j++)
+                {
+                    Options options = this.Columns[i];
+                    if (options.Mapping.TryGetValue(data[i], out result[i]))
+                        break;
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        ///   Translates a value of the given variables
+        ///   into their integer (codeword) representation.
+        /// </summary>
+        /// 
+        /// <param name="columnNames">The names of the variable's data column.</param>
+        /// <param name="values">The values to be translated.</param>
+        /// 
+        /// <returns>An array of integers in which each integer
+        /// uniquely identifies the given value for the given 
+        /// variables.</returns>
+        /// 
+        public int[] Translate(string[] columnNames, string[] values)
+        {
+            int[] result = new int[values.Length];
+
+            for (int i = 0; i < columnNames.Length; i++)
+            {
+                Options options = this.Columns[columnNames[i]];
+                result[i] = options.Mapping[values[i]];
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        ///   Translates an integer (codeword) representation of
+        ///   the value of a given variable into its original
+        ///   value.
+        /// </summary>
+        /// 
+        /// <param name="columnName">The name of the variable's data column.</param>
+        /// <param name="codeword">The codeword to be translated.</param>
+        /// 
+        /// <returns>The original meaning of the given codeword.</returns>
+        /// 
+        public string Translate(string columnName, int codeword)
+        {
+            Options options = this.Columns[columnName];
+            foreach (var pair in options.Mapping)
+            {
+                if (pair.Value == codeword)
+                    return pair.Key;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        ///   Translates the integer (codeword) representations of
+        ///   the values of the given variables into their original
+        ///   values.
+        /// </summary>
+        /// 
+        /// <param name="columnNames">The name of the variables' columns.</param>
+        /// <param name="codewords">The codewords to be translated.</param>
+        /// 
+        /// <returns>The original meaning of the given codewords.</returns>
+        /// 
+        public string[] Translate(string[] columnNames, int[] codewords)
+        {
+            string[] result = new string[codewords.Length];
+
+            for (int i = 0; i < columnNames.Length; i++)
+            {
+                Options options = this.Columns[columnNames[i]];
+                foreach (var pair in options.Mapping)
+                {
+                    if (pair.Value == codewords[i])
+                    {
+                        result[i] = pair.Key;
+                        break;
+                    }
+                }
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -145,14 +312,23 @@ namespace Accord.Statistics.Filters
             ///   Gets or sets the label mapping for translating
             ///   integer labels to the original string labels.
             /// </summary>
+            /// 
             public Dictionary<string, int> Mapping { get; private set; }
+
+            /// <summary>
+            ///   Gets the number of symbols used to code this variable.
+            /// </summary>
+            /// 
+            public int Symbols { get { return Mapping.Count; } }
 
             /// <summary>
             ///   Constructs a new Options object for the given column.
             /// </summary>
+            /// 
             /// <param name="name">
             ///   The name of the column to create this options for.
             /// </param>
+            /// 
             public Options(String name)
                 : base(name)
             {
@@ -162,10 +338,13 @@ namespace Accord.Statistics.Filters
             /// <summary>
             ///   Constructs a new Options object for the given column.
             /// </summary>
+            /// 
             /// <param name="name">
             ///   The name of the column to create this options for.
             /// </param>
+            /// 
             /// <param name="map">The initial mapping for this column.</param>
+            /// 
             public Options(String name, Dictionary<string, int> map)
                 : base(name)
             {
@@ -175,6 +354,7 @@ namespace Accord.Statistics.Filters
             /// <summary>
             ///   Constructs a new Options object.
             /// </summary>
+            /// 
             public Options()
                 : this("New column")
             {

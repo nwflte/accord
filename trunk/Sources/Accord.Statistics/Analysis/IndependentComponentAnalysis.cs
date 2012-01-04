@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -27,6 +27,7 @@ namespace Accord.Statistics.Analysis
     using Accord.Math;
     using Accord.Math.Decompositions;
     using Accord.Statistics.Analysis.ContrastFunctions;
+    using System.Threading.Tasks;
 
     /// <summary>
     ///   FastICA's algorithms to be used in Independent Component Analysis.
@@ -656,7 +657,7 @@ namespace Accord.Statistics.Analysis
 #if DEBUG           // For each component (in parallel)
                     for (int i = 0; i < components; i++)
 #else
-                    AForge.Parallel.For(0, components, i =>
+                    Parallel.For(0, components, i =>
 #endif
                     {
                         double[] wx = new double[n];

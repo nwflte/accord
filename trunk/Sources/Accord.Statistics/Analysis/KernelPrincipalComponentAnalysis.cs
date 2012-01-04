@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -56,6 +56,7 @@ namespace Accord.Statistics.Analysis
 
         private IKernel kernel;
         private double[,] sourceCentered;
+        private double[,] kernelMatrix;
         private bool centerFeatureSpace;
         private double threshold = 0.001; // 0.001
 
@@ -67,11 +68,13 @@ namespace Accord.Statistics.Analysis
         /// <summary>
         ///   Constructs the Kernel Principal Component Analysis.
         /// </summary>
+        /// 
         /// <param name="data">The source data to perform analysis. The matrix should contain
         /// variables as columns and observations of each variable as rows.</param>
         /// <param name="kernel">The kernel to be used in the analysis.</param>
         /// <param name="method">The analysis method to perform.</param>
         /// <param name="centerInFeatureSpace">True to center the data in feature space, false otherwise. Default is true.</param>
+        /// 
         public KernelPrincipalComponentAnalysis(double[,] data, IKernel kernel, AnalysisMethod method, bool centerInFeatureSpace)
             : base(data, method)
         {
@@ -84,18 +87,22 @@ namespace Accord.Statistics.Analysis
         /// <summary>
         ///   Constructs the Kernel Principal Component Analysis.
         /// </summary>
+        /// 
         /// <param name="data">The source data to perform analysis. The matrix should contain
         /// variables as columns and observations of each variable as rows.</param>
         /// <param name="kernel">The kernel to be used in the analysis.</param>
         /// <param name="method">The analysis method to perform.</param>
+        /// 
         public KernelPrincipalComponentAnalysis(double[,] data, IKernel kernel, AnalysisMethod method)
             : this(data, kernel, method, true)
         {
         }
 
         /// <summary>Constructs the Kernel Principal Component Analysis.</summary>
+        /// 
         /// <param name="data">The source data to perform analysis.</param>
         /// <param name="kernel">The kernel to be used in the analysis.</param>
+        /// 
         public KernelPrincipalComponentAnalysis(double[,] data, IKernel kernel)
             : this(data, kernel, AnalysisMethod.Center, true)
         {
@@ -151,40 +158,57 @@ namespace Accord.Statistics.Analysis
         /// 
         public override void Compute()
         {
+            Compute(Source.GetLength(1));
+        }
+
+        /// <summary>
+        ///   Computes the Kernel Principal Component Analysis algorithm.
+        /// </summary>
+        /// 
+        public void Compute(int components)
+        {
             int dimension = Source.GetLength(0);
 
-            // Center (adjust) the source matrix
+            // If needed, center the source matrix
             sourceCentered = Adjust(Source, Overwrite);
 
 
             // Create the Gram (Kernel) Matrix
-            double[,] K = new double[dimension, dimension];
+            this.kernelMatrix = new double[dimension, dimension];
             for (int i = 0; i < dimension; i++)
             {
                 double[] row = sourceCentered.GetRow(i);
                 for (int j = i; j < dimension; j++)
                 {
                     double k = kernel.Function(row, sourceCentered.GetRow(j));
-                    K[i, j] = k; // Kernel matrix is symmetric
-                    K[j, i] = k;
+                    kernelMatrix[i, j] = k; // Kernel matrix is symmetric
+                    kernelMatrix[j, i] = k;
                 }
             }
 
-            // Center the Gram (Kernel) Matrix
-            if (centerFeatureSpace)
-                K = centerKernel(K);
+
+            // Center the Gram (Kernel) Matrix if requested
+            double[,] Kc = centerFeatureSpace ? centerKernel(kernelMatrix) : kernelMatrix;
 
 
             // Perform the Eigenvalue Decomposition (EVD) of the Kernel matrix
-            EigenvalueDecomposition evd = new EigenvalueDecomposition(K, true);
+            EigenvalueDecomposition evd = new EigenvalueDecomposition(Kc, assumeSymmetric: true);
 
-            // Gets the eigenvalues and corresponding eigenvectors
+            // Gets the Eigenvalues and corresponding Eigenvectors
             double[] evals = evd.RealEigenvalues;
             double[,] eigs = evd.Eigenvectors;
+
 
             // Sort eigenvalues and vectors in descending order
             eigs = Matrix.Sort(evals, eigs, new GeneralComparer(ComparerDirection.Descending, true));
 
+
+            // Eliminate unwanted components
+            if (components != Source.GetLength(0))
+            {
+                eigs = eigs.Submatrix(null, 0, components - 1);
+                evals = evals.Submatrix(0, components - 1);
+            }
 
             if (threshold > 0)
             {
@@ -204,7 +228,7 @@ namespace Accord.Statistics.Analysis
                     //  have to keep in order to achieve the level of
                     //  explained variance specified by the threshold.
 
-                    while (keep < dimension)
+                    while (keep < components)
                     {
                         // Get the variance explained by the component
                         double explainedVariance = Math.Abs(evals[keep]);
@@ -221,17 +245,20 @@ namespace Accord.Statistics.Analysis
                         // components are ordered by variance.
                     }
 
-                    if (keep > 0)
+                    if (keep != components)
                     {
-                        // Resize the vectors keeping only needed components
-                        eigs = eigs.Submatrix(0, dimension - 1, 0, keep - 1);
-                        evals = evals.Submatrix(0, keep - 1);
-                    }
-                    else
-                    {
-                        // No component will be kept.
-                        eigs = new double[dimension, 0];
-                        evals = new double[0];
+                        if (keep > 0)
+                        {
+                            // Resize the vectors keeping only needed components
+                            eigs = eigs.Submatrix(0, components - 1, 0, keep - 1);
+                            evals = evals.Submatrix(0, keep - 1);
+                        }
+                        else
+                        {
+                            // No component will be kept.
+                            eigs = new double[dimension, 0];
+                            evals = new double[0];
+                        }
                     }
                 }
             }
@@ -242,11 +269,12 @@ namespace Accord.Statistics.Analysis
             {
                 for (int j = 0; j < evals.Length; j++)
                 {
-                    double eig = Math.Sqrt(Math.Abs(evals[j]));
+                    double val = Math.Sqrt(Math.Abs(evals[j]));
                     for (int i = 0; i < eigs.GetLength(0); i++)
-                        eigs[i, j] = eigs[i, j] / eig;
+                        eigs[i, j] = eigs[i, j] / val;
                 }
             }
+
 
 
             // Set analysis properties
@@ -256,7 +284,7 @@ namespace Accord.Statistics.Analysis
 
 
             // Project the original data into principal component space
-            this.Result = K.Multiply(eigs);
+            this.Result = Kc.Multiply(eigs);
 
 
             // Computes additional information about the analysis and creates the
@@ -291,28 +319,27 @@ namespace Accord.Statistics.Analysis
                     "number of components available in the Components collection property.");
             }
 
-            int rows = data.GetLength(0);
-            int N = sourceCentered.GetLength(0);
+            int samples = data.GetLength(0);
+            int rows = sourceCentered.GetLength(0);
 
             // Center the data
             data = Adjust(data, false);
 
             // Create the Kernel matrix
-            double[,] K = new double[rows, N];
-            for (int i = 0; i < rows; i++)
+            double[,] newK = new double[samples, rows];
+            for (int i = 0; i < samples; i++)
             {
                 double[] row = data.GetRow(i);
-                for (int j = 0; j < N; j++)
-                    K[i, j] = kernel.Function(row, sourceCentered.GetRow(j));
+                for (int j = 0; j < rows; j++)
+                    newK[i, j] = kernel.Function(row, sourceCentered.GetRow(j));
             }
 
+            if (centerFeatureSpace)
+                centerKernel(newK, kernelMatrix);
+
             // Project into the kernel principal components
-            // TODO: Use cache-friendly multiplication
-            double[,] result = new double[rows, dimensions];
-            for (int i = 0; i < rows; i++)
-                for (int j = 0; j < dimensions; j++)
-                    for (int k = 0; k < N; k++)
-                        result[i, j] += K[i, k] * ComponentMatrix[k, j];
+            double[,] result = new double[samples, dimensions];
+            newK.Multiply(ComponentMatrix, result: result);
 
             return result;
         }
@@ -461,7 +488,7 @@ namespace Accord.Statistics.Analysis
                     for (int j = 0; j < reversion.GetLength(1); j++)
                         reversion[i, j] = (reversion[i, j] * StandardDeviations[j]) + Means[j];
             }
-            else
+            else if (this.Method == AnalysisMethod.Center)
             {
                 // only add the mean
                 for (int i = 0; i < reversion.GetLength(0); i++)
@@ -483,22 +510,38 @@ namespace Accord.Statistics.Analysis
         private static double[,] centerKernel(double[,] K)
         {
             int rows = K.GetLength(0);
+            double[,] Kc = new double[rows, rows];
 
-            double[] M = Accord.Statistics.Tools.Mean(K);
-            double MM = Accord.Statistics.Tools.Mean(M);
+            double[] rowMean = Accord.Statistics.Tools.Mean(K, 1);
+#if DEBUG
+            // row mean and column means should be equal on a symmetric matrix
+            double[] colMean = Accord.Statistics.Tools.Mean(K, 0);
+            for (int i = 0; i < colMean.Length; i++)
+                if (colMean[i] != rowMean[i]) throw new Exception();
+#endif
+            double mean = Accord.Statistics.Tools.Mean(K, -1)[0];
 
             for (int i = 0; i < rows; i++)
-            {
                 for (int j = i; j < rows; j++)
-                {
-                    double k = K[i, j] - M[i] - M[j] + MM;
-                    K[i, j] = k; // Assume K is symmetric
-                    K[j, i] = k;
-                }
-            }
+                    Kc[i, j] = Kc[j, i] = K[i, j] - rowMean[i] - rowMean[j] + mean;
 
-            return K;
+            return Kc;
         }
+
+        private static void centerKernel(double[,] newK, double[,] K)
+        {
+            int samples = newK.GetLength(0);
+            int dimension = K.GetLength(0);
+
+            double[] rowMean1 = Statistics.Tools.Mean(newK, 1);
+            double[] rowMean2 = Statistics.Tools.Mean(K, 1);
+            double mean = Matrix.Sum(K, -1)[0] / (samples * dimension);
+
+            for (int i = 0; i < samples; i++)
+                for (int j = 0; j < dimension; j++)
+                    newK[i, j] = newK[i, j] - rowMean1[i] - rowMean2[j] + mean;
+        }
+
         #endregion
 
 

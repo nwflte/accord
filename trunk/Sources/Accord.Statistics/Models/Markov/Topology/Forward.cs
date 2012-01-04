@@ -2,13 +2,14 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 
 namespace Accord.Statistics.Models.Markov.Topology
 {
     using System;
+    using Accord.Math;
 
     /// <summary>
     ///   Forward Topology for Hidden Markov Models.
@@ -165,7 +166,7 @@ namespace Accord.Statistics.Models.Markov.Topology
         ///   Creates the state transitions matrix and the
         ///   initial state probabilities for this topology.
         /// </summary>
-        public int Create(out double[,] transitionMatrix, out double[] initialState)
+        public int Create(bool logarithm, out double[,] transitionMatrix, out double[] initialState)
         {
             int m = System.Math.Min(States, Deepness);
             double[,] A = new double[States, States];
@@ -198,8 +199,17 @@ namespace Accord.Statistics.Models.Markov.Topology
                 }
             }
 
-            transitionMatrix = A;
-            initialState = (double[])pi.Clone(); 
+            if (logarithm)
+            {
+                transitionMatrix = Matrix.Log(A);
+                initialState = Matrix.Log(pi);
+            }
+            else
+            {
+                transitionMatrix = A;
+                initialState = (double[])pi.Clone();
+            }
+
             return States;
         }
 

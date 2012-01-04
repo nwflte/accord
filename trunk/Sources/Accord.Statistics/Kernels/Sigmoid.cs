@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -29,43 +29,55 @@ namespace Accord.Statistics.Kernels
     /// </summary>
     /// 
     /// <remarks>
-    ///   Sigmoid kernels are not positive definite and therefore do not induce
-    ///   a reproducing kernel Hilbert space. However, they have been successfully
+    ///   Sigmoid kernel of the form k(x,z) = tanh(a * x'z + c). Sigmoid kernels are only
+    ///   conditionally positive definite for some values of a and c, and therefore may not
+    ///   induce a reproducing kernel Hilbert space. However, they have been successfully 
     ///   used in practice (Scholkopf and Smola, 2002).
     /// </remarks>
     /// 
     [Serializable]
     public sealed class Sigmoid : IKernel
     {
-        private double gamma;
+        private double alpha;
         private double constant;
 
         /// <summary>
         ///   Constructs a Sigmoid kernel.
         /// </summary>
         /// 
-        /// <param name="alpha">Alpha parameter.</param>
-        /// <param name="constant">Constant parameter.</param>
+        public Sigmoid()
+            : this(2.0, -0.5) { }
+
+        /// <summary>
+        ///   Constructs a Sigmoid kernel.
+        /// </summary>
+        /// 
+        /// <param name="alpha">
+        ///   Alpha parameter. Typically should be set to
+        ///   a positive value. Default is 2.</param>
+        /// <param name="constant">
+        ///   Constant parameter. Typically should be set to
+        ///   a negative value. Default is -0.5.</param>
         /// 
         public Sigmoid(double alpha, double constant)
         {
-            this.gamma = alpha;
+            this.alpha = alpha;
             this.constant = constant;
         }
 
         /// <summary>
-        ///   Gets or sets the kernel's gamma parameter.
+        ///   Gets or sets the kernel's alpha parameter.
         /// </summary>
         /// 
         /// <remarks>
-        ///   In a sigmoid kernel, gamma is a inner product
+        ///   In a sigmoid kernel, alpha is a inner product
         ///   coefficient for the hyperbolic tangent function.
         /// </remarks>
         /// 
-        public double Gamma
+        public double Alpha
         {
-            get { return gamma; }
-            set { gamma = value; }
+            get { return alpha; }
+            set { alpha = value; }
         }
 
         /// <summary>
@@ -92,7 +104,7 @@ namespace Accord.Statistics.Kernels
             for (int i = 0; i < x.Length; i++)
                 sum += x[i] * y[i];
 
-            return System.Math.Tanh(gamma * sum + constant);
+            return Math.Tanh(alpha * sum + constant);
         }
 
     }

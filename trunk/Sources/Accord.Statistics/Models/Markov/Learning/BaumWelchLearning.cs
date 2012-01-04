@@ -2,19 +2,20 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 
 namespace Accord.Statistics.Models.Markov.Learning
 {
     using System;
+    using Accord.Math;
 
     /// <summary>
     ///   Baum-Welch learning algorithm for discrete-density Hidden Markov Models.
     /// </summary>
     /// 
-    public class BaumWelchLearning : BaumWelchLearningBase, IUnsupervisedLearning
+    public class BaumWelchLearning : BaseBaumWelchLearning, IUnsupervisedLearning
     {
 
         private HiddenMarkovModel model;
@@ -36,10 +37,13 @@ namespace Accord.Statistics.Models.Markov.Learning
         /// <summary>
         ///   Runs the Baum-Welch learning algorithm for hidden Markov models.
         /// </summary>
+        /// 
         /// <param name="observations">An array of observation sequences to be used to train the model.</param>
+        /// 
         /// <returns>
         ///   The average log-likelihood for the observations after the model has been trained.
         /// </returns>
+        /// 
         /// <remarks>
         ///   Learning problem. Given some training observation sequences O = {o1, o2, ..., oK}
         ///   and general structure of HMM (numbers of hidden and visible states), determine
@@ -57,12 +61,15 @@ namespace Accord.Statistics.Models.Markov.Learning
         /// <summary>
         ///   Runs the Baum-Welch learning algorithm for hidden Markov models.
         /// </summary>
+        /// 
         /// <param name="observations">The sequences of univariate or multivariate observations used to train the model.
         ///   Can be either of type double[] (for the univariate case) or double[][] for the
         ///   multivariate case.</param>
+        ///   
         /// <returns>
         ///   The average log-likelihood for the observations after the model has been trained.
         /// </returns>
+        /// 
         /// <remarks>
         ///   Learning problem. Given some training observation sequences O = {o1, o2, ..., oK}
         ///   and general structure of HMM (numbers of hidden and visible states), determine
@@ -79,20 +86,29 @@ namespace Accord.Statistics.Models.Markov.Learning
         ///   for a given observation referenced by its index in the
         ///   input training data.
         /// </summary>
-        /// <param name="index">The index of the observation in the input training data.</param>
-        /// <param name="fwd">Returns the computed forward probabilities matrix.</param>
-        /// <param name="bwd">Returns the computed backward probabilities matrix.</param>
-        /// <param name="scaling">Returns the scaling parameters used during calculations.</param>
         /// 
-        protected override void ComputeForwardBackward(int index, out double[,] fwd, out double[,] bwd, out double[] scaling)
+        /// <param name="index">The index of the observation in the input training data.</param>
+        /// <param name="lnFwd">Returns the computed forward probabilities matrix.</param>
+        /// <param name="lnBwd">Returns the computed backward probabilities matrix.</param>
+        /// 
+        protected override void ComputeForwardBackward(int index, double[,] lnFwd, double[,] lnBwd)
         {
-            fwd = ForwardBackwardAlgorithm.Forward(model, discreteObservations[index], out scaling);
-            bwd = ForwardBackwardAlgorithm.Backward(model, discreteObservations[index], scaling);
+            int states = model.States;
+            int T = discreteObservations[index].Length;
+
+            System.Diagnostics.Trace.Assert(lnBwd.GetLength(0) >= T);
+            System.Diagnostics.Trace.Assert(lnBwd.GetLength(1) == states);
+            System.Diagnostics.Trace.Assert(lnFwd.GetLength(0) >= T);
+            System.Diagnostics.Trace.Assert(lnFwd.GetLength(1) == states);
+
+            ForwardBackwardAlgorithm.LogForward(model, discreteObservations[index], lnFwd);
+            ForwardBackwardAlgorithm.LogBackward(model, discreteObservations[index], lnBwd);
         }
 
         /// <summary>
         ///   Updates the emission probability matrix.
         /// </summary>
+        /// 
         /// <remarks>
         ///   Implementations of this method should use the observations
         ///   in the training data and the Gamma probability matrix to
@@ -101,7 +117,7 @@ namespace Accord.Statistics.Models.Markov.Learning
         /// 
         protected override void UpdateEmissions()
         {
-            var B = model.Emissions;
+            var B = model.LogEmissions;
             int states = model.States;
             int symbols = model.Symbols;
 
@@ -109,26 +125,24 @@ namespace Accord.Statistics.Models.Markov.Learning
             {
                 for (int j = 0; j < symbols; j++)
                 {
-                    double sum = 0, num = 0;
+                    double lnnum = Double.NegativeInfinity;
+                    double lnden = Double.NegativeInfinity;
 
                     for (int k = 0; k < discreteObservations.Length; k++)
                     {
                         int T = discreteObservations[k].Length;
-                        var gammak = Gamma[k];
+                        var gammak = LogGamma[k];
 
-                        for (int l = 0; l < T; l++)
+                        for (int t = 0; t < T; t++)
                         {
-                            if (discreteObservations[k][l] == j)
-                                num += gammak[l, i];
-
-                            sum += gammak[l, i];
+                            if (discreteObservations[k][t] == j)
+                                lnnum = Special.LogSum(lnnum, gammak[t, i]);
+                            lnden = Special.LogSum(lnden, gammak[t, i]);
                         }
                     }
 
-                    // avoid locking a parameter in zero.
-                    if (num == 0) num = 1e-10;
-
-                    B[i, j] = (sum != 0) ? num / sum : num;
+                    // TODO: avoid locking a parameter in zero.
+                    B[i, j] = lnnum - lnden;
                 }
             }
         }
@@ -137,38 +151,39 @@ namespace Accord.Statistics.Models.Markov.Learning
         ///   Computes the ksi matrix of probabilities for a given observation
         ///   referenced by its index in the input training data.
         /// </summary>
-        /// <param name="index">The index of the observation in the input training data.</param>
-        /// <param name="fwd">The matrix of forward probabilities for the observation.</param>
-        /// <param name="bwd">The matrix of backward probabilities for the observation.</param>
-        /// <param name="scaling">The scaling vector computed in previous calculations.</param>
         /// 
-        protected override void ComputeKsi(int index, double[,] fwd, double[,] bwd, double[] scaling)
+        /// <param name="index">The index of the observation in the input training data.</param>
+        /// <param name="lnFwd">The matrix of forward probabilities for the observation.</param>
+        /// <param name="lnBwd">The matrix of backward probabilities for the observation.</param>
+        /// 
+        protected override void ComputeKsi(int index, double[,] lnFwd, double[,] lnBwd)
         {
             int states = model.States;
-            var A = model.Transitions;
-            var B = model.Emissions;
+            var logA = model.Transitions;
+            var logB = model.LogEmissions;
 
             var sequence = discreteObservations[index];
-            var ksi = Ksi[index];
+            int T = sequence.Length;
+            var logKsi = LogKsi[index];
 
 
-            for (int t = 0; t < sequence.Length - 1; t++)
+            for (int t = 0; t < T - 1; t++)
             {
-                double s = 0;
-                double c = scaling[t + 1];
+                double lnsum = Double.NegativeInfinity;
                 var x = sequence[t + 1];
-                var ksit = ksi[t];
 
-                for (int k = 0; k < states; k++)
-                    for (int l = 0; l < states; l++)
-                        s += ksit[k, l] = c * fwd[t, k] * A[k, l] * bwd[t + 1, l] * B[l, x];
-
-                if (s != 0) // Scaling
+                for (int i = 0; i < states; i++)
                 {
-                    for (int k = 0; k < states; k++)
-                        for (int l = 0; l < states; l++)
-                            ksit[k, l] /= s;
+                    for (int j = 0; j < states; j++)
+                    {
+                        logKsi[t][i, j] = lnFwd[t, i] + logA[i, j] + logB[j, x] + lnBwd[t + 1, j];
+                        lnsum = Special.LogSum(lnsum, logKsi[t][i, j]);
+                    }
                 }
+
+                for (int i = 0; i < states; i++)
+                    for (int j = 0; j < states; j++)
+                        logKsi[t][i, j] = logKsi[t][i, j] - lnsum;
             }
         }
     }

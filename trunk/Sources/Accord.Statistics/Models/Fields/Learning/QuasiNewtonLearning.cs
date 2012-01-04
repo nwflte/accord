@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -25,26 +25,28 @@ namespace Accord.Statistics.Models.Fields.Learning
     using Accord.Math.Optimization;
     using Accord.Statistics.Models.Fields.Features;
     using Accord.Statistics.Models.Fields.Functions;
+    using System;
 
     /// <summary>
-    ///   Quasi-Newton Learning (L-BFGS) learning algorithm for Conditional Random Fields.
+    ///   Quasi-Newton (L-BFGS) learning algorithm for <see cref="ConditionalRandomField{T}">
+    ///   Conditional Hidden Fields</see>.
     /// </summary>
     /// 
-    public class QuasiNewtonLearning : IConditionalRandomFieldLearning
+    public class QuasiNewtonLearning<T> : IConditionalRandomFieldLearning<T>
     {
 
-        private LbfgsOptimization lbfgs;
-        private ConditionalRandomField model;
+        private BroydenFletcherGoldfarbShanno lbfgs;
+        private ConditionalRandomField<T> model;
 
 
         /// <summary>
         ///   Constructs a new L-BFGS learning algorithm.
         /// </summary>
         /// 
-        public QuasiNewtonLearning(ConditionalRandomField model)
+        public QuasiNewtonLearning(ConditionalRandomField<T> model)
         {
             this.model = model;
-            this.lbfgs = new LbfgsOptimization(model.Function.Weights.Length);
+            this.lbfgs = new BroydenFletcherGoldfarbShanno(model.Function.Weights.Length);
             this.lbfgs.Tolerance = 1e-3;
         }
 
@@ -56,7 +58,7 @@ namespace Accord.Statistics.Models.Fields.Learning
         /// <param name="observations">The training observations.</param>
         /// <param name="labels">The observation's labels.</param>
         /// 
-        public double Run(int[][] observations, int[][] labels)
+        public double Run(T[][] observations, int[][] labels)
         {
             double f;
             double[] g;
@@ -76,9 +78,9 @@ namespace Accord.Statistics.Models.Fields.Learning
             };
 
 
-            try 
+            try
             {
-                double ll = lbfgs.Optimize(model.Function.Weights);
+                double ll = lbfgs.Minimize(model.Function.Weights);
             }
             catch (LineSearchFailedException)
             {
@@ -87,12 +89,12 @@ namespace Accord.Statistics.Models.Fields.Learning
 
             model.Function.Weights = lbfgs.Solution;
 
-            return model.LogLikelihood(labels, observations);
+            return model.LogLikelihood(observations, labels);
         }
 
-     
 
-        private double[] gradient(int[][] observations, int[][] labels)
+
+        private double[] gradient(T[][] observations, int[][] labels)
         {
             int N = observations.Length;
 
@@ -108,9 +110,9 @@ namespace Accord.Statistics.Models.Fields.Learning
             {
                 var Pi = P[i] = new double[states + 1, states][];
 
-                int[] x = observations[i];
-                var fwd = ForwardBackwardAlgorithm.Forward(function, x);
-                var bwd = ForwardBackwardAlgorithm.Backward(function, x);
+                T[] x = observations[i];
+                var fwd = ForwardBackwardAlgorithm.Forward(function.Factors[0], x, 0);
+                var bwd = ForwardBackwardAlgorithm.Backward(function.Factors[0], x, 0);
                 double z = partition(fwd, x);
 
                 for (int prev = -1; prev < states; prev++)
@@ -130,12 +132,12 @@ namespace Accord.Statistics.Models.Fields.Learning
             //  function in the model's potential function.
             for (int k = 0; k < g.Length; k++)
             {
-                IFeature feature = function.Features[k];
+                var feature = function.Features[k];
 
                 double sum1 = 0.0, sum2 = 0.0;
                 for (int i = 0; i < N; i++)
                 {
-                    int[] x = observations[i];
+                    T[] x = observations[i];
                     int[] y = labels[i];
                     var Pi = P[i];
 
@@ -163,7 +165,8 @@ namespace Accord.Statistics.Models.Fields.Learning
             return g;
         }
 
-        private static double p(int previous, int next, int[] x, int t, double[,] fwd, double[,] bwd, IPotentialFunction function)
+        private static double p(int previous, int next, T[] x, int t,
+            double[,] fwd, double[,] bwd, IPotentialFunction<T> function)
         {
             // This is the probability of beginning at the start of the
             // sequence, evaluating the sequence until the instant at
@@ -181,7 +184,7 @@ namespace Accord.Statistics.Models.Fields.Learning
             else return 0;
 
             // Compute a transition from "previous" to "next"
-            p *= function.Compute(previous, next, x, t);
+            p *= Math.Exp(function.Factors[0].Compute(previous, next, x, t));
 
             // Continue until the end of the sequence
             p *= bwd[t, next];
@@ -189,7 +192,7 @@ namespace Accord.Statistics.Models.Fields.Learning
             return p;
         }
 
-        private static double partition(double[,] fwd, int[] x)
+        private static double partition(double[,] fwd, T[] x)
         {
             int T = x.Length - 1;
             int states = fwd.GetLength(1);

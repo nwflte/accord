@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -125,9 +125,14 @@ namespace Accord.Statistics.Analysis
         internal double[][] classStdDevs;
         internal double[][,] classScatter;
 
+        internal double[][] projectedMeans;
+
+        // TODO: Use Mahalanobis distance instead of Euclidean
+        // for classification, considering projection covariances.
+        // internal double[][] projectedPrecision;
+
         private double[,] eigenvectors;
         private double[] eigenvalues;
-        private double[] bias;
 
         private double[,] result;
         private double[,] source;
@@ -176,6 +181,7 @@ namespace Accord.Statistics.Analysis
             this.classMeans = new double[classes][];
             this.classStdDevs = new double[classes][];
             this.classScatter = new double[classes][,];
+            this.projectedMeans = new double[classes][];
 
 
             // Creates the object-oriented structure to hold information about the classes
@@ -351,6 +357,15 @@ namespace Accord.Statistics.Analysis
         }
 
         /// <summary>
+        ///   Gets the feature space mean of the projected data.
+        /// </summary>
+        /// 
+        protected double[][] ProjectionMeans
+        {
+            get { return projectedMeans; }
+        }
+
+        /// <summary>
         ///   Gets the Standard Deviation vector for each class.
         /// </summary>
         /// 
@@ -443,18 +458,16 @@ namespace Accord.Statistics.Analysis
             this.Eigenvalues = evals;
             this.DiscriminantMatrix = eigs;
 
-
-            // Create discriminant functions bias
-            bias = new double[classes];
-            for (int i = 0; i < classes; i++)
-            {
-                bias[i] = (-0.5).Multiply(classMeans[i]).InnerProduct(
-                    eigs.Multiply(classMeans[i])) +
-                    System.Math.Log(classCount[i] / total);
-            }
-
-            // Create projections
+            // Create projections into latent space
             this.result = source.Multiply(eigenvectors);
+
+
+            // Compute feature space means for later classification
+            for (int c = 0; c < Classes.Count; c++)
+            {
+                projectedMeans[c] = classMeans[c].Multiply(eigs);
+            }
+            
 
             // Computes additional information about the analysis and creates the
             //  object-oriented structure to hold the discriminants found.
@@ -628,9 +641,9 @@ namespace Accord.Statistics.Analysis
         /// <param name="c">The class index.</param>
         /// <param name="projection">The projected input.</param>
         /// 
-        internal virtual double DiscriminantFunction(int c, double[] projection)
+        internal double DiscriminantFunction(int c, double[] projection)
         {
-            return classMeans[c].InnerProduct(projection) + bias[c];
+            return -Distance.SquareEuclidean(projection, projectedMeans[c]);
         }
         #endregion
 
@@ -748,6 +761,15 @@ namespace Accord.Statistics.Analysis
         public double[] Mean
         {
             get { return analysis.classMeans[index]; }
+        }
+
+        /// <summary>
+        ///   Gets the feature-space means of the projected data.
+        /// </summary>
+        /// 
+        public double[] ProjectionMean
+        {
+            get { return analysis.projectedMeans[index]; }
         }
 
         /// <summary>

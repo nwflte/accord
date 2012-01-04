@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -177,6 +177,26 @@ namespace Accord.Statistics.Distributions.Univariate
             double u = Math.Pow(d1 * x, d1) * Math.Pow(d2, d2) /
                 Math.Pow(d1 * x + d2, d1 + d2);
             return Math.Sqrt(u) / (x * b);
+        }
+
+        /// <summary>
+        /// Gets the log-probability density function (pdf) for
+        /// this distribution evaluated at point <c>x</c>.
+        /// </summary>
+        /// <param name="x">A single point in the distribution range.</param>
+        /// <returns>
+        /// The logarithm of the probability of <c>x</c>
+        /// occurring in the current distribution.
+        /// </returns>
+        /// <remarks>
+        /// The Probability Density Function (PDF) describes the
+        /// probability that a given value <c>x</c> will occur.
+        /// </remarks>
+        public override double LogProbabilityDensityFunction(double x)
+        {
+            double lnu = d1 * Math.Log(d1 * x) + d2 * Math.Log(d2) -
+                (d1 + d2) * Math.Log(d1 * x + d2);
+            return 0.5 * lnu - Math.Log(x * b);
         }
 
 
