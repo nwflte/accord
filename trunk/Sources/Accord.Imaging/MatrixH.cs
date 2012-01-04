@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -121,6 +121,23 @@ namespace Accord.Imaging
             for (int i = 0, k = 0; i < 3; i++)
                 for (int j = 0; j < 3 && k < 8; j++, k++)
                     this.elements[k] = (float)(matrix[i, j] / matrix[2, 2]);
+        }
+
+        /// <summary>
+        ///   Creates a new projective matrix.
+        /// </summary>
+        /// 
+        public MatrixH(float[,] matrix)
+        {
+            if (matrix.GetLength(0) != 3 || matrix.GetLength(1) != 3)
+            {
+                throw new ArgumentException("The projective matrix should be a 3x3 matrix.", "matrix");
+            }
+
+            this.elements = new float[8];
+            for (int i = 0, k = 0; i < 3; i++)
+                for (int j = 0; j < 3 && k < 8; j++, k++)
+                    this.elements[k] = matrix[i, j] / matrix[2, 2];
         }
 
         /// <summary>

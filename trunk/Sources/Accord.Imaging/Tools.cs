@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -163,12 +163,12 @@ namespace Accord.Imaging
             points2 = Tools.Normalize(points2, out T2);
 
             // Create the matrix A
-            double[,] A = new double[3 * N, 9];
+            var A = new float[3 * N, 9];
             for (int i = 0; i < N; i++)
             {
                 PointF X = points1[i];
-                double x = points2[i].X;
-                double y = points2[i].Y;
+                float x = points2[i].X;
+                float y = points2[i].Y;
                 int r = 3 * i;
 
                 A[r, 0] = 0;
@@ -206,14 +206,14 @@ namespace Accord.Imaging
 
 
             // Create the singular value decomposition
-            SingularValueDecomposition svd = new SingularValueDecomposition(A, false, true);
-            double[,] V = svd.RightSingularVectors;
+            SingularValueDecompositionF svd = new SingularValueDecompositionF(A, false, true);
+            float[,] V = svd.RightSingularVectors;
 
 
             // Extract the homography matrix
-            MatrixH H = new MatrixH((float)V[0, 8], (float)V[1, 8], (float)V[2, 8],
-                                    (float)V[3, 8], (float)V[4, 8], (float)V[5, 8],
-                                    (float)V[6, 8], (float)V[7, 8], (float)V[8, 8]);
+            MatrixH H = new MatrixH(V[0, 8], V[1, 8], V[2, 8],
+                                    V[3, 8], V[4, 8], V[5, 8],
+                                    V[6, 8], V[7, 8], V[8, 8]);
 
             // Denormalize
             H = T2.Inverse().Multiply(H.Multiply(T1));
@@ -334,6 +334,7 @@ namespace Accord.Imaging
         /// <summary>
         ///   Computes the sum of the pixels in a given image.
         /// </summary>
+        /// 
         public static int Sum(this BitmapData image)
         {
             if (image.PixelFormat != PixelFormat.Format8bppIndexed)
@@ -348,6 +349,35 @@ namespace Accord.Imaging
             unsafe
             {
                 byte* src = (byte*)image.Scan0.ToPointer();
+
+                for (int y = 0; y < height; y++)
+                {
+                    for (int x = 0; x < width; x++, src++)
+                        sum += (*src);
+                    src += offset;
+                }
+            }
+
+            return sum;
+        }
+
+        /// <summary>
+        ///   Computes the sum of the pixels in a given image.
+        /// </summary>
+        public static int Sum(this UnmanagedImage image)
+        {
+            if (image.PixelFormat != PixelFormat.Format8bppIndexed)
+                throw new UnsupportedImageFormatException("Only grayscale images are supported");
+
+            int width = image.Width;
+            int height = image.Height;
+            int offset = image.Stride - image.Width;
+
+            int sum = 0;
+
+            unsafe
+            {
+                byte* src = (byte*)image.ImageData.ToPointer();
 
                 for (int y = 0; y < height; y++)
                 {
@@ -399,7 +429,66 @@ namespace Accord.Imaging
         /// <summary>
         ///   Computes the sum of the pixels in a given image.
         /// </summary>
-        public static int Sum(this Bitmap image)
+        public static long Sum(this UnmanagedImage image, Rectangle rectangle)
+        {
+            if ((image.PixelFormat != PixelFormat.Format8bppIndexed) &&
+                (image.PixelFormat != PixelFormat.Format16bppGrayScale))
+                throw new UnsupportedImageFormatException("Only grayscale images are supported");
+
+            int width = image.Width;
+            int height = image.Height;
+            int stride = image.Stride;
+            int offset = image.Stride - image.Width;
+
+            int rwidth = rectangle.Width;
+            int rheight = rectangle.Height;
+            int rx = rectangle.X;
+            int ry = rectangle.Y;
+
+            if (image.PixelFormat == PixelFormat.Format8bppIndexed)
+            {
+                int sum = 0;
+
+                unsafe
+                {
+                    byte* src = (byte*)image.ImageData.ToPointer();
+
+                    for (int y = 0; y < rheight; y++)
+                    {
+                        byte* p = src + stride * (ry + y) + rx;
+
+                        for (int x = 0; x < rwidth; x++)
+                            sum += (*p++);
+                    }
+                }
+
+                return sum;
+            }
+            else
+            {
+                long sum = 0;
+
+                unsafe
+                {
+                    ushort* src = (ushort*)image.ImageData.ToPointer();
+
+                    for (int y = 0; y < rheight; y++)
+                    {
+                        ushort* p = src + stride * (ry + y) + rx;
+
+                        for (int x = 0; x < rwidth; x++)
+                            sum += (*p++);
+                    }
+                }
+
+                return sum;
+            }
+        }
+
+        /// <summary>
+        ///   Computes the sum of the pixels in a given image.
+        /// </summary>
+        public static long Sum(this Bitmap image)
         {
             BitmapData data = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
                 ImageLockMode.ReadOnly, image.PixelFormat);
@@ -414,7 +503,7 @@ namespace Accord.Imaging
         /// <summary>
         ///   Computes the sum of the pixels in a given image.
         /// </summary>
-        public static int Sum(this Bitmap image, Rectangle rectangle)
+        public static long Sum(this Bitmap image, Rectangle rectangle)
         {
             BitmapData data = image.LockBits(rectangle,
                 ImageLockMode.ReadOnly, image.PixelFormat);
@@ -424,6 +513,333 @@ namespace Accord.Imaging
             image.UnlockBits(data);
 
             return sum;
+        }
+        #endregion
+
+        #region Mean
+        /// <summary>
+        ///   Computes the arithmetic mean of the pixels in a given image.
+        /// </summary>
+        /// 
+        public static double Mean(this Bitmap image, Rectangle rectangle)
+        {
+            return (double)Sum(image, rectangle) / (rectangle.Width * rectangle.Height);
+        }
+
+        /// <summary>
+        ///   Computes the arithmetic mean of the pixels in a given image.
+        /// </summary>
+        /// 
+        public static double Mean(this BitmapData image, Rectangle rectangle)
+        {
+            return (double)Sum(image, rectangle) / (rectangle.Width * rectangle.Height);
+        }
+
+        /// <summary>
+        ///   Computes the arithmetic mean of the pixels in a given image.
+        /// </summary>
+        /// 
+        public static double Mean(this UnmanagedImage image, Rectangle rectangle)
+        {
+            return (double)Sum(image, rectangle) / (rectangle.Width * rectangle.Height);
+        }
+        #endregion
+
+        #region Maximum & Minimum
+        /// <summary>
+        ///   Computes the maximum pixel value in the given image.
+        /// </summary>
+        /// 
+        public static int Max(this BitmapData image, Rectangle rectangle)
+        {
+            if ((image.PixelFormat != PixelFormat.Format8bppIndexed) &&
+                (image.PixelFormat != PixelFormat.Format16bppGrayScale))
+                throw new UnsupportedImageFormatException("Only grayscale images are supported");
+
+            int width = image.Width;
+            int height = image.Height;
+            int stride = image.Stride;
+            int offset = image.Stride - image.Width;
+
+            int rwidth = rectangle.Width;
+            int rheight = rectangle.Height;
+            int rx = rectangle.X;
+            int ry = rectangle.Y;
+
+            int max = 0;
+
+            if (image.PixelFormat == PixelFormat.Format8bppIndexed)
+            {
+                unsafe
+                {
+                    byte* src = (byte*)image.Scan0.ToPointer();
+
+                    for (int y = 0; y < rheight; y++)
+                    {
+                        byte* p = src + stride * (ry + y) + rx;
+
+                        for (int x = 0; x < rwidth; x++, p++)
+                            if (*p > max) max = *p;
+                    }
+                }
+            }
+            else
+            {
+                unsafe
+                {
+                    ushort* src = (ushort*)image.Scan0.ToPointer();
+
+                    for (int y = 0; y < rheight; y++)
+                    {
+                        ushort* p = src + stride * (ry + y) + rx;
+
+                        for (int x = 0; x < rwidth; x++, p++)
+                            if (*p > max) max = *p;
+                    }
+                }
+            }
+
+            return max;
+        }
+
+        /// <summary>
+        ///   Computes the maximum pixel value in the given image.
+        /// </summary>
+        /// 
+        public static int Max(this UnmanagedImage image, Rectangle rectangle)
+        {
+            if ((image.PixelFormat != PixelFormat.Format8bppIndexed) &&
+                (image.PixelFormat != PixelFormat.Format16bppGrayScale))
+                throw new UnsupportedImageFormatException("Only grayscale images are supported");
+
+            int width = image.Width;
+            int height = image.Height;
+            int stride = image.Stride;
+            int offset = image.Stride - image.Width;
+
+            int rwidth = rectangle.Width;
+            int rheight = rectangle.Height;
+            int rx = rectangle.X;
+            int ry = rectangle.Y;
+
+            int max = 0;
+
+            if (image.PixelFormat == PixelFormat.Format8bppIndexed)
+            {
+                unsafe
+                {
+                    byte* src = (byte*)image.ImageData.ToPointer();
+
+                    for (int y = 0; y < rheight; y++)
+                    {
+                        byte* p = src + stride * (ry + y) + rx;
+
+                        for (int x = 0; x < rwidth; x++, p++)
+                            if (*p > max) max = *p;
+                    }
+                }
+            }
+            else
+            {
+                unsafe
+                {
+                    ushort* src = (ushort*)image.ImageData.ToPointer();
+
+                    for (int y = 0; y < rheight; y++)
+                    {
+                        ushort* p = src + stride * (ry + y) + rx;
+
+                        for (int x = 0; x < rwidth; x++, p++)
+                            if (*p > max) max = *p;
+                    }
+                }
+            }
+
+            return max;
+        }
+
+        /// <summary>
+        ///   Computes the maximum pixel value in the given image.
+        /// </summary>
+        /// 
+        public static int Max(this Bitmap image)
+        {
+            BitmapData data = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
+                ImageLockMode.ReadOnly, image.PixelFormat);
+
+            int max = Max(data, new Rectangle(0, 0, image.Width, image.Height));
+
+            image.UnlockBits(data);
+
+            return max;
+        }
+
+        /// <summary>
+        ///   Computes the maximum pixel value in the given image.
+        /// </summary>
+        /// 
+        public static int Max(this Bitmap image, Rectangle rectangle)
+        {
+            BitmapData data = image.LockBits(rectangle,
+                ImageLockMode.ReadOnly, image.PixelFormat);
+
+            int max = Max(data, new Rectangle(0, 0, image.Width, image.Height));
+
+            image.UnlockBits(data);
+
+            return max;
+        }
+
+        /// <summary>
+        ///   Computes the minimum pixel value in the given image.
+        /// </summary>
+        /// 
+        public static int Min(this BitmapData image, Rectangle rectangle)
+        {
+            if ((image.PixelFormat != PixelFormat.Format8bppIndexed) &&
+                (image.PixelFormat != PixelFormat.Format16bppGrayScale))
+                throw new UnsupportedImageFormatException("Only grayscale images are supported");
+
+            int width = image.Width;
+            int height = image.Height;
+            int stride = image.Stride;
+            int offset = image.Stride - image.Width;
+
+            int rwidth = rectangle.Width;
+            int rheight = rectangle.Height;
+            int rx = rectangle.X;
+            int ry = rectangle.Y;
+
+            int min;
+
+            if (image.PixelFormat == PixelFormat.Format8bppIndexed)
+            {
+                min = byte.MaxValue;
+
+                unsafe
+                {
+                    byte* src = (byte*)image.Scan0.ToPointer();
+
+                    for (int y = 0; y < rheight; y++)
+                    {
+                        byte* p = src + stride * (ry + y) + rx;
+
+                        for (int x = 0; x < rwidth; x++, p++)
+                            if (*p < min) min = *p;
+                    }
+                }
+            }
+            else
+            {
+                min = ushort.MaxValue;
+
+                unsafe
+                {
+                    ushort* src = (ushort*)image.Scan0.ToPointer();
+
+                    for (int y = 0; y < rheight; y++)
+                    {
+                        ushort* p = src + stride * (ry + y) + rx;
+
+                        for (int x = 0; x < rwidth; x++, p++)
+                            if (*p < min) min = *p;
+                    }
+                }
+            }
+
+            return min;
+        }
+
+        /// <summary>
+        ///   Computes the minimum pixel value in the given image.
+        /// </summary>
+        /// 
+        public static int Min(this UnmanagedImage image, Rectangle rectangle)
+        {
+            if ((image.PixelFormat != PixelFormat.Format8bppIndexed) &&
+                (image.PixelFormat != PixelFormat.Format16bppGrayScale))
+                throw new UnsupportedImageFormatException("Only grayscale images are supported");
+
+            int width = image.Width;
+            int height = image.Height;
+            int stride = image.Stride;
+            int offset = image.Stride - image.Width;
+
+            int rwidth = rectangle.Width;
+            int rheight = rectangle.Height;
+            int rx = rectangle.X;
+            int ry = rectangle.Y;
+
+            int min;
+
+            if (image.PixelFormat == PixelFormat.Format8bppIndexed)
+            {
+                min = byte.MaxValue;
+
+                unsafe
+                {
+                    byte* src = (byte*)image.ImageData.ToPointer();
+
+                    for (int y = 0; y < rheight; y++)
+                    {
+                        byte* p = src + stride * (ry + y) + rx;
+
+                        for (int x = 0; x < rwidth; x++, p++)
+                            if (*p < min) min = *p;
+                    }
+                }
+            }
+            else
+            {
+                min = ushort.MaxValue;
+
+                unsafe
+                {
+                    ushort* src = (ushort*)image.ImageData.ToPointer();
+
+                    for (int y = 0; y < rheight; y++)
+                    {
+                        ushort* p = src + stride * (ry + y) + rx;
+
+                        for (int x = 0; x < rwidth; x++, p++)
+                            if (*p < min) min = *p;
+                    }
+                }
+            }
+
+            return min;
+        }
+
+        /// <summary>
+        ///   Computes the maximum pixel value in the given image.
+        /// </summary>
+        /// 
+        public static int Min(this Bitmap image)
+        {
+            BitmapData data = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
+                ImageLockMode.ReadOnly, image.PixelFormat);
+
+            int min = Min(data, new Rectangle(0, 0, image.Width, image.Height));
+
+            image.UnlockBits(data);
+
+            return min;
+        }
+
+        /// <summary>
+        ///   Computes the maximum pixel value in the given image.
+        /// </summary>
+        /// 
+        public static int Min(this Bitmap image, Rectangle rectangle)
+        {
+            BitmapData data = image.LockBits(rectangle,
+                ImageLockMode.ReadOnly, image.PixelFormat);
+
+            int min = Min(data, new Rectangle(0, 0, image.Width, image.Height));
+
+            image.UnlockBits(data);
+
+            return min;
         }
 
         #endregion

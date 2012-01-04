@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -218,8 +218,8 @@ namespace Accord.Imaging.Filters
 
             // Compute maximum center distances
             float dmax1 = Math.Min(
-                distance(center1.X, center1.Y, center1.X + overlayImage.Width / 2f, center1.Y),
-                distance(center1.X, center1.Y, center1.X, center2.X + overlayImage.Height / 2f));
+                distance(center1.X, center1.Y, center2.X - imageSize.Width / 2f, center1.Y),
+                distance(center1.X, center1.Y, center1.X, center1.Y + overlayImage.Height / 2f));
 
             float dmax2 = Math.Min(
                 distance(center2.X, center2.Y, center2.X + imageSize.Width / 2f, center2.Y),
@@ -342,8 +342,8 @@ namespace Accord.Imaging.Filters
                             else if (dst[3] > 0)
                             {
                                 // there is a pixel from the other image here, blend
-                                float d1 = distance(ox, oy, center1.X, center1.Y);
-                                float d2 = distance(ox, oy, center2.X, center2.Y);
+                                float d1 = distance(x, y, center1.X, center1.Y);
+                                float d2 = distance(x, y, center2.X, center2.Y);
                                 float f1 = Accord.Math.Tools.Scale(0, dmax, 0, 1, d1 - d2);
 
                                 if (f1 < 0) f1 = 0f;

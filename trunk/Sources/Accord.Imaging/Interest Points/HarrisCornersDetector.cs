@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -276,7 +276,7 @@ namespace Accord.Imaging
         /// 
         public unsafe List<IntPoint> ProcessImage(UnmanagedImage image)
         {
-            
+
             // check image format
             if (
                 (image.PixelFormat != PixelFormat.Format8bppIndexed) &&
@@ -469,8 +469,8 @@ namespace Accord.Imaging
                                 v += src[k - radius] * kernel[k];
                             *tmp = v;
                         }
-                        src += radius;
-                        tmp += radius;
+                        src += 2 * radius;
+                        tmp += 2 * radius;
                     }
 
 
