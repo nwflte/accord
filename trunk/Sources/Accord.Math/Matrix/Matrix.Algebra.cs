@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -128,10 +128,10 @@ namespace Accord.Math
             // if (a.GetLength(1) != b.GetLength(0))
             //     throw new ArgumentException("Matrix dimensions must match");
 
-
             int n = a.GetLength(1);
-            int m = a.GetLength(0);
-            int p = b.GetLength(1);
+            int m = result.GetLength(0); //a.GetLength(0);
+            int p = result.GetLength(1); //b.GetLength(1);
+
 
             fixed (double* ptrA = a)
             {
@@ -463,6 +463,48 @@ namespace Accord.Math
         }
 
         /// <summary>
+        ///   Computes the product A*B of matrix <c>A</c> and diagonal matrix <c>B</c>.
+        /// </summary>
+        /// 
+        /// <param name="a">The left matrix <c>A</c>.</param>
+        /// <param name="b">The diagonal vector of right matrix <c>B</c>.</param>
+        /// <returns>The product <c>A*B</c> of the given matrices <c>A</c> and <c>B</c>.</returns>
+        /// 
+        public static float[,] MultiplyByDiagonal(this float[,] a, float[] b)
+        {
+            float[,] r = new float[a.GetLength(0), b.Length];
+            MultiplyByDiagonal(a, b, r);
+            return r;
+        }
+
+        /// <summary>
+        ///   Computes the product A*B of matrix <c>A</c> and diagonal matrix <c>B</c>.
+        /// </summary>
+        /// 
+        /// <param name="a">The left matrix <c>A</c>.</param>
+        /// <param name="b">The diagonal vector of right matrix <c>B</c>.</param>
+        /// <param name="result">The matrix <c>R</c> to store the product <c>R = A*B</c>
+        ///   of the given matrices <c>A</c> and <c>B</c>.</param>
+        /// 
+        public static unsafe void MultiplyByDiagonal(this float[,] a, float[] b, float[,] result)
+        {
+            if (a.GetLength(1) != b.Length)
+                throw new ArgumentException("Matrix dimensions must match.");
+
+
+            int rows = a.GetLength(0);
+
+            fixed (float* ptrA = a, ptrR = result)
+            {
+                float* A = ptrA;
+                float* R = ptrR;
+                for (int i = 0; i < rows; i++)
+                    for (int j = 0; j < b.Length; j++)
+                        *R++ = *A++ * b[j];
+            }
+        }
+
+        /// <summary>
         ///   Computes the product A*inv(B) of matrix <c>A</c> and diagonal matrix <c>B</c>.
         /// </summary>
         /// 
@@ -565,6 +607,33 @@ namespace Accord.Math
         }
 
         /// <summary>
+        ///   Multiplies a matrix <c>A</c> and a column vector <c>v</c>,
+        ///   giving the product <c>A*v</c>
+        /// </summary>
+        /// 
+        /// <param name="matrix">The matrix <c>A</c>.</param>
+        /// <param name="columnVector">The column vector <c>v</c>.</param>
+        /// <returns>The product <c>A*v</c> of the multiplication of the
+        ///   given matrix <c>A</c> and column vector <c>v</c>.</returns>
+        /// 
+        public static float[] Multiply(this float[,] matrix, float[] columnVector)
+        {
+            int rows = matrix.GetLength(0);
+            int cols = matrix.GetLength(1);
+
+            if (cols != columnVector.Length)
+                throw new DimensionMismatchException("columnVector",
+                    "Vector must have the same length as columns in the matrix.");
+
+            var r = new float[rows];
+            for (int i = 0; i < rows; i++)
+                for (int j = 0; j < columnVector.Length; j++)
+                    r[i] += matrix[i, j] * columnVector[j];
+
+            return r;
+        }
+
+        /// <summary>
         ///   Multiplies a matrix <c>A</c> by a scalar <c>x</c>.
         /// </summary>
         /// 
@@ -652,14 +721,60 @@ namespace Accord.Math
 
         #region Division
         /// <summary>
-        ///   Divides a vector by a scalar.
+        ///   Divides a scalar by a vector.
         /// </summary>
+        /// 
         /// <param name="vector">A vector.</param>
         /// <param name="x">A scalar.</param>
+        /// <param name="inPlace">True to perform the operation in-place,
+        /// overwriting the original array; false to return a new array.</param>
+        /// 
         /// <returns>The division quotient of the given vector <c>a</c> and scalar <c>b</c>.</returns>
-        public static double[] Divide(this double[] vector, double x)
+        public static double[] Divide(this double x, double[] vector, bool inPlace = false)
         {
-            double[] r = new double[vector.Length];
+            double[] r = inPlace ? vector : new double[vector.Length];
+
+            for (int i = 0; i < vector.Length; i++)
+                r[i] = x / vector[i];
+
+            return r;
+        }
+
+        /// <summary>
+        ///   Divides a scalar by a vector.
+        /// </summary>
+        /// 
+        /// <param name="vector">A vector.</param>
+        /// <param name="x">A scalar.</param>
+        /// <param name="inPlace">True to perform the operation in-place,
+        /// overwriting the original array; false to return a new array.</param>
+        /// 
+        /// <returns>The division quotient of the given vector <c>a</c> and scalar <c>b</c>.</returns>
+        /// 
+        public static double[] Divide(this int x, double[] vector, bool inPlace = false)
+        {
+            double[] r = inPlace ? vector : new double[vector.Length];
+
+            for (int i = 0; i < vector.Length; i++)
+                r[i] = x / vector[i];
+
+            return r;
+        }
+
+        /// <summary>
+        ///   Divides a vector by a scalar.
+        /// </summary>
+        /// 
+        /// <param name="vector">A vector.</param>
+        /// <param name="x">A scalar.</param>
+        /// <param name="inPlace">True to perform the operation in-place,
+        /// overwriting the original array; false to return a new array.</param>
+        /// 
+        /// <returns>The division quotient of the given vector <c>a</c> and scalar <c>b</c>.</returns>
+        /// 
+        public static double[] Divide(this double[] vector, double x, bool inPlace = false)
+        {
+            double[] r = inPlace ? vector : new double[vector.Length];
 
             for (int i = 0; i < vector.Length; i++)
                 r[i] = vector[i] / x;
@@ -670,11 +785,16 @@ namespace Accord.Math
         /// <summary>
         ///   Divides a vector by a scalar.
         /// </summary>
+        /// 
         /// <param name="vector">A vector.</param>
         /// <param name="x">A scalar.</param>
+        /// 
         /// <returns>The division quotient of the given vector <c>a</c> and scalar <c>b</c>.</returns>
+        /// 
         public static float[] Divide(this float[] vector, float x)
         {
+            if (vector == null) throw new ArgumentNullException("vector");
+
             float[] r = new float[vector.Length];
 
             for (int i = 0; i < vector.Length; i++)
@@ -686,9 +806,12 @@ namespace Accord.Math
         /// <summary>
         ///   Elementwise divides a scalar by a vector.
         /// </summary>
+        /// 
         /// <param name="vector">A vector.</param>
         /// <param name="x">A scalar.</param>
+        /// 
         /// <returns>The division quotient of the given scalar <c>a</c> and vector <c>b</c>.</returns>
+        /// 
         public static double[] Divide(this double x, double[] vector)
         {
             double[] r = new double[vector.Length];
@@ -703,9 +826,12 @@ namespace Accord.Math
         /// <summary>
         ///   Divides two matrices by multiplying A by the inverse of B.
         /// </summary>
+        /// 
         /// <param name="a">The first matrix.</param>
         /// <param name="b">The second matrix (which will be inverted).</param>
+        /// 
         /// <returns>The result from the division <c>AB^-1</c> of the given matrices.</returns>
+        /// 
         public static double[,] Divide(this double[,] a, double[,] b)
         {
             if (a == null) throw new ArgumentNullException("a");
@@ -727,9 +853,12 @@ namespace Accord.Math
         /// <summary>
         ///   Divides a matrix by a scalar.
         /// </summary>
+        /// 
         /// <param name="matrix">A matrix.</param>
         /// <param name="x">A scalar.</param>
+        /// 
         /// <returns>The division quotient of the given matrix and scalar.</returns>
+        /// 
         public static double[,] Divide(this double[,] matrix, double x)
         {
             if (matrix == null) throw new ArgumentNullException("matrix");
@@ -749,9 +878,12 @@ namespace Accord.Math
         /// <summary>
         ///   Divides a matrix by a scalar.
         /// </summary>
+        /// 
         /// <param name="matrix">A matrix.</param>
         /// <param name="x">A scalar.</param>
+        /// 
         /// <returns>The division quotient of the given matrix and scalar.</returns>
+        /// 
         public static float[,] Divide(this uint[,] matrix, float x)
         {
             if (matrix == null) throw new ArgumentNullException("matrix");
@@ -771,9 +903,12 @@ namespace Accord.Math
         /// <summary>
         ///   Elementwise divides a scalar by a matrix.
         /// </summary>
+        /// 
         /// <param name="x">A scalar.</param>
         /// <param name="matrix">A matrix.</param>
+        /// 
         /// <returns>The elementwise division of the given scalar and matrix.</returns>
+        /// 
         public static double[,] Divide(this double x, double[,] matrix)
         {
             int rows = matrix.GetLength(0);
@@ -793,9 +928,12 @@ namespace Accord.Math
         /// <summary>
         ///   Gets the inner product (scalar product) between two vectors (a'*b).
         /// </summary>
+        /// 
         /// <param name="a">A vector.</param>
         /// <param name="b">A vector.</param>
+        /// 
         /// <returns>The inner product of the multiplication of the vectors.</returns>
+        /// 
         /// <remarks>
         ///  <para>
         ///    In mathematics, the dot product is an algebraic operation that takes two
@@ -826,12 +964,14 @@ namespace Accord.Math
         /// <summary>
         ///   Gets the outer product (matrix product) between two vectors (a*bT).
         /// </summary>
+        /// 
         /// <remarks>
         ///   In linear algebra, the outer product typically refers to the tensor
         ///   product of two vectors. The result of applying the outer product to
         ///   a pair of vectors is a matrix. The name contrasts with the inner product,
         ///   which takes as input a pair of vectors and produces a scalar.
         /// </remarks>
+        /// 
         public static double[,] OuterProduct(this double[] a, double[] b)
         {
             double[,] r = new double[a.Length, b.Length];
@@ -846,15 +986,18 @@ namespace Accord.Math
         /// <summary>
         ///   Vectorial product.
         /// </summary>
+        /// 
         /// <remarks>
         ///   The cross product, vector product or Gibbs vector product is a binary operation
         ///   on two vectors in three-dimensional space. It has a vector result, a vector which
         ///   is always perpendicular to both of the vectors being multiplied and the plane
         ///   containing them. It has many applications in mathematics, engineering and physics.
         /// </remarks>
+        /// 
         public static double[] VectorProduct(double[] a, double[] b)
         {
-            return new double[] {
+            return new double[] 
+            {
                 a[1]*b[2] - a[2]*b[1],
                 a[2]*b[0] - a[0]*b[2],
                 a[0]*b[1] - a[1]*b[0]
@@ -866,7 +1009,8 @@ namespace Accord.Math
         /// </summary>
         public static float[] VectorProduct(float[] a, float[] b)
         {
-            return new float[] {
+            return new float[]
+            {
                 a[1]*b[2] - a[2]*b[1],
                 a[2]*b[0] - a[0]*b[2],
                 a[0]*b[1] - a[1]*b[0]
@@ -876,10 +1020,12 @@ namespace Accord.Math
         /// <summary>
         ///   Computes the cartesian product of many sets.
         /// </summary>
+        /// 
         /// <remarks>
         ///   References:
         ///   - http://blogs.msdn.com/b/ericlippert/archive/2010/06/28/computing-a-cartesian-product-with-linq.aspx 
         /// </remarks>
+        /// 
         public static IEnumerable<IEnumerable<T>> CartesianProduct<T>(this IEnumerable<IEnumerable<T>> sequences)
         {
             IEnumerable<IEnumerable<T>> empty = new[] { Enumerable.Empty<T>() };
@@ -893,6 +1039,7 @@ namespace Accord.Math
         /// <summary>
         ///   Computes the cartesian product of many sets.
         /// </summary>
+        /// 
         public static T[][] CartesianProduct<T>(params T[][] sequences)
         {
             var result = CartesianProduct(sequences as IEnumerable<IEnumerable<T>>);
@@ -907,6 +1054,7 @@ namespace Accord.Math
         /// <summary>
         ///   Computes the cartesian product of two sets.
         /// </summary>
+        /// 
         public static T[][] CartesianProduct<T>(this T[] sequence1, T[] sequence2)
         {
             return CartesianProduct(new T[][] { sequence1, sequence2 });
@@ -918,6 +1066,7 @@ namespace Accord.Math
         /// 
         /// <param name="a">The left matrix a.</param>
         /// <param name="b">The right matrix b.</param>
+        /// 
         /// <returns>The Kronecker product of the two matrices.</returns>
         /// 
         public unsafe static double[,] KroneckerProduct(this double[,] a, double[,] b)
@@ -968,6 +1117,7 @@ namespace Accord.Math
         /// 
         /// <param name="a">The left vector a.</param>
         /// <param name="b">The right vector b.</param>
+        /// 
         /// <returns>The Kronecker product of the two vectors.</returns>
         /// 
         public static double[] KroneckerProduct(this double[] a, double[] b)
@@ -990,8 +1140,10 @@ namespace Accord.Math
         /// <summary>
         ///   Adds two matrices.
         /// </summary>
+        /// 
         /// <param name="a">A matrix.</param>
         /// <param name="b">A matrix.</param>
+        /// 
         /// <returns>The sum of the given matrices.</returns>
         /// 
         public unsafe static double[,] Add(this double[,] a, double[,] b)
@@ -1018,8 +1170,10 @@ namespace Accord.Math
         /// <summary>
         ///   Adds two matrices.
         /// </summary>
+        /// 
         /// <param name="a">A matrix.</param>
         /// <param name="b">A matrix.</param>
+        /// 
         /// <returns>The sum of the given matrices.</returns>
         /// 
         public static double[][] Add(this double[][] a, double[][] b)
@@ -1041,6 +1195,7 @@ namespace Accord.Math
         /// <summary>
         ///   Adds a vector to a column or row of a matrix.
         /// </summary>
+        /// 
         /// <param name="matrix">A matrix.</param>
         /// <param name="vector">A vector.</param>
         /// <param name="dimension">
@@ -1080,8 +1235,10 @@ namespace Accord.Math
         /// <summary>
         ///   Adds a vector to a column or row of a matrix.
         /// </summary>
+        /// 
         /// <param name="a">A matrix.</param>
         /// <param name="b">A vector.</param>
+        /// 
         /// <param name="dimension">The dimension to add the vector to.</param>
         /// 
         public static double[,] Subtract(this double[,] a, double[] b, int dimension)
@@ -1116,8 +1273,10 @@ namespace Accord.Math
         /// <summary>
         ///   Adds two vectors.
         /// </summary>
+        /// 
         /// <param name="a">A vector.</param>
         /// <param name="b">A vector.</param>
+        /// 
         /// <returns>The addition of the given vectors.</returns>
         /// 
         public static double[] Add(this double[] a, double[] b)
@@ -1139,8 +1298,10 @@ namespace Accord.Math
         /// <summary>
         ///   Subtracts two matrices.
         /// </summary>
+        /// 
         /// <param name="a">A matrix.</param>
         /// <param name="b">A matrix.</param>
+        /// 
         /// <returns>The subtraction of the given matrices.</returns>
         /// 
         public unsafe static double[,] Subtract(this double[,] a, double[,] b)
@@ -1169,8 +1330,10 @@ namespace Accord.Math
         /// <summary>
         ///   Subtracts two matrices.
         /// </summary>
+        /// 
         /// <param name="a">A matrix.</param>
         /// <param name="b">A matrix.</param>
+        /// 
         /// <returns>The subtraction of the given matrices.</returns>
         /// 
         public static double[][] Subtract(this double[][] a, double[][] b)
@@ -1212,8 +1375,10 @@ namespace Accord.Math
         /// <summary>
         ///   Elementwise subtracts an element of a matrix from a scalar.
         /// </summary>
+        /// 
         /// <param name="x">A scalar.</param>
         /// <param name="matrix">A matrix.</param>
+        /// 
         /// <returns>The elementwise subtraction of scalar a and matrix b.</returns>
         /// 
         public static double[,] Subtract(this double x, double[,] matrix)
@@ -1235,8 +1400,10 @@ namespace Accord.Math
         /// <summary>
         ///   Subtracts two vectors.
         /// </summary>
+        /// 
         /// <param name="a">A vector.</param>
         /// <param name="b">A vector.</param>
+        /// 
         /// <returns>The subtraction of vector b from vector a.</returns>
         /// 
         public static double[] Subtract(this double[] a, double[] b)
@@ -1255,8 +1422,10 @@ namespace Accord.Math
         /// <summary>
         ///   Subtracts a scalar from a vector.
         /// </summary>
+        /// 
         /// <param name="vector">A vector.</param>
         /// <param name="x">A scalar.</param>
+        /// 
         /// <returns>The subtraction of given scalar from all elements in the given vector.</returns>
         /// 
         public static double[] Subtract(this double[] vector, double x)
@@ -1272,8 +1441,10 @@ namespace Accord.Math
         /// <summary>
         ///   Subtracts a scalar from a vector.
         /// </summary>
+        /// 
         /// <param name="vector">A vector.</param>
         /// <param name="x">A scalar.</param>
+        /// 
         /// <returns>The subtraction of the given vector elements from the given scalar.</returns>
         /// 
         public static double[] Subtract(this double x, double[] vector)

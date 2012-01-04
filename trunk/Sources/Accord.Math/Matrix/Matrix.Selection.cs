@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -25,10 +25,55 @@ namespace Accord.Math
     using System;
     using System.Collections.Generic;
     using AForge;
-
+    using System.Linq;
 
     public static partial class Matrix
     {
+
+        #region Remove
+        /// <summary>Returns a sub matrix extracted from the current matrix.</summary>
+        /// <param name="data">The matrix to return the submatrix from.</param>
+        /// <param name="rowIndexes">Array of row indices. Pass null to select all indices.</param>
+        /// <param name="columnIndexes">Array of column indices. Pass null to select all indices.</param>
+        /// 
+        public static T[,] Remove<T>(this T[,] data, int[] rowIndexes, int[] columnIndexes)
+        {
+            if (rowIndexes == null)
+                rowIndexes = new int[0];
+
+            if (columnIndexes == null)
+                columnIndexes = new int[0];
+
+
+            int srcRows = data.GetLength(0);
+            int srcCols = data.GetLength(1);
+
+            int dstRows = srcRows - rowIndexes.Length;
+            int dstCols = srcCols - columnIndexes.Length;
+
+
+            T[,] X = new T[dstRows, dstCols];
+
+            for (int i = 0, y = 0; i < srcRows; i++)
+            {
+                if (!rowIndexes.Contains(i))
+                {
+                    for (int j = 0, x = 0; j < srcCols; j++)
+                    {
+                        if (!columnIndexes.Contains(j))
+                        {
+                            X[y, x] = data[i, j];
+                            x++;
+                        }
+                    }
+                    y++;
+                }
+            }
+
+            return X;
+        }
+
+        #endregion
 
         #region Submatrix
 
@@ -70,9 +115,11 @@ namespace Accord.Math
         /// <param name="data">The matrix to return the submatrix from.</param>
         /// <param name="rowIndexes">Array of row indices. Pass null to select all indices.</param>
         /// <param name="columnIndexes">Array of column indices. Pass null to select all indices.</param>
+        /// 
         /// <remarks>
         ///   Routine adapted from Lutz Roeder's Mapack for .NET, September 2000.
         /// </remarks>
+        /// 
         public static T[,] Submatrix<T>(this T[,] data, int[] rowIndexes, int[] columnIndexes)
         {
             if (rowIndexes == null)
@@ -103,6 +150,45 @@ namespace Accord.Math
 
         /// <summary>Returns a sub matrix extracted from the current matrix.</summary>
         /// <param name="data">The matrix to return the submatrix from.</param>
+        /// <param name="rowIndexes">Array of row indices. Pass null to select all indices.</param>
+        /// <param name="columnIndexes">Array of column indices. Pass null to select all indices.</param>
+        /// 
+        /// <remarks>
+        ///   Routine adapted from Lutz Roeder's Mapack for .NET, September 2000.
+        /// </remarks>
+        /// 
+        public static T[][] Submatrix<T>(this T[][] data, int[] rowIndexes, int[] columnIndexes)
+        {
+            if (rowIndexes == null)
+                rowIndexes = Indices(0, data.Length);
+
+            if (columnIndexes == null)
+                columnIndexes = Indices(0, data[0].Length);
+
+
+            T[][] X = new T[rowIndexes.Length][];
+
+            for (int i = 0; i < rowIndexes.Length; i++)
+            {
+                X[i] = new T[columnIndexes.Length];
+
+                for (int j = 0; j < columnIndexes.Length; j++)
+                {
+                    if ((rowIndexes[i] < 0) || (rowIndexes[i] >= data.Length) ||
+                        (columnIndexes[j] < 0) || (columnIndexes[j] >= data[i].Length))
+                    {
+                        throw new ArgumentException("Argument out of range.");
+                    }
+
+                    X[i][j] = data[rowIndexes[i]][columnIndexes[j]];
+                }
+            }
+
+            return X;
+        }
+
+        /// <summary>Returns a sub matrix extracted from the current matrix.</summary>
+        /// <param name="data">The matrix to return the submatrix from.</param>
         /// <param name="rowIndexes">Array of row indices</param>
         /// <remarks>
         ///   Routine adapted from Lutz Roeder's Mapack for .NET, September 2000.
@@ -116,9 +202,7 @@ namespace Accord.Math
                 for (int j = 0; j < data.GetLength(1); j++)
                 {
                     if ((rowIndexes[i] < 0) || (rowIndexes[i] >= data.GetLength(0)))
-                    {
                         throw new ArgumentException("Argument out of range.");
-                    }
 
                     X[i, j] = data[rowIndexes[i], j];
                 }
@@ -138,8 +222,39 @@ namespace Accord.Math
             T[] X = new T[indexes.Length];
 
             for (int i = 0; i < indexes.Length; i++)
-            {
                 X[i] = data[indexes[i]];
+
+            return X;
+        }
+
+        /// <summary>Returns a subvector extracted from the current vector.</summary>
+        /// <param name="data">The vector to return the subvector from.</param>
+        /// <param name="indexes">Array of indices.</param>
+        /// <param name="transpose">True to return a transposed matrix; false otherwise.</param>
+        /// <remarks>
+        ///   Routine adapted from Lutz Roeder's Mapack for .NET, September 2000.
+        /// </remarks>
+        public static T[][] Submatrix<T>(this T[][] data, int[] indexes, bool transpose = false)
+        {
+            T[][] X;
+
+            if (transpose)
+            {
+                X = new T[data[0].Length][];
+
+                for (int j = 0; j < X.Length; j++)
+                {
+                    X[j] = new T[indexes.Length];
+                    for (int i = 0; i < indexes.Length; i++)
+                        X[j][i] = data[indexes[i]][j];
+                }
+            }
+            else
+            {
+                X = new T[indexes.Length][];
+
+                for (int i = 0; i < indexes.Length; i++)
+                    X[i] = data[indexes[i]];
             }
 
             return X;
@@ -157,9 +272,7 @@ namespace Accord.Math
             T[] X = new T[endRow - startRow + 1];
 
             for (int i = startRow; i <= endRow; i++)
-            {
                 X[i - startRow] = data[i];
-            }
 
             return X;
         }
@@ -230,7 +343,12 @@ namespace Accord.Math
             }
 
             if (rowIndexes == null)
+            {
+                if (startColumn == 0 && endColumn == data.GetLength(1) - 1)
+                    return data;
+
                 rowIndexes = Indices(0, data.GetLength(0));
+            }
 
             T[,] X = new T[rowIndexes.Length, endColumn - startColumn + 1];
 
@@ -400,6 +518,7 @@ namespace Accord.Math
         /// <summary>
         ///   Returns a new matrix without one of its columns.
         /// </summary>
+        /// 
         public static T[][] RemoveColumn<T>(this T[][] m, int index)
         {
             T[][] X = new T[m.Length][];
@@ -418,6 +537,33 @@ namespace Accord.Math
             }
             return X;
         }
+
+        /// <summary>
+        ///   Returns a new matrix without one of its columns.
+        /// </summary>
+        /// 
+        public static T[,] RemoveColumn<T>(this T[,] m, int index)
+        {
+            int rows = m.GetLength(0);
+            int cols = m.GetLength(1);
+            int newCols = cols - 1;
+
+            T[,] X = new T[rows, newCols];
+
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < index; j++)
+                {
+                    X[i, j] = m[i, j];
+                }
+                for (int j = index + 1; j < newCols; j++)
+                {
+                    X[i, j - 1] = m[i, j];
+                }
+            }
+            return X;
+        }
+
 
         /// <summary>
         ///   Returns a new matrix with a given column vector inserted at the end of the original matrix.
@@ -595,6 +741,32 @@ namespace Accord.Math
 
 
         #region Element ranges (maximum and minimum)
+
+        /// <summary>
+        ///   Gets the maximum non-null element in a vector.
+        /// </summary>
+        /// 
+        public static Nullable<T> Max<T>(this Nullable<T>[] values, out int imax)
+            where T : struct, IComparable
+        {
+            imax = -1;
+            Nullable<T> max = null;
+
+            for (int i = 0; i < values.Length; i++)
+            {
+                if (values[i].HasValue)
+                {
+                    if (max == null || values[i].Value.CompareTo(max.Value) > 0)
+                    {
+                        max = values[i];
+                        imax = i;
+                    }
+                }
+            }
+
+            return max;
+        }
+
         /// <summary>
         ///   Gets the maximum element in a vector.
         /// </summary>

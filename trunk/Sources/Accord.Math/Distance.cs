@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -105,6 +105,24 @@ namespace Accord.Math
         }
 
         /// <summary>
+        ///   Gets the Square Euclidean distance between two points.
+        /// </summary>
+        /// 
+        /// <param name="x1">The first coordinate of first point in space.</param>
+        /// <param name="y1">The second coordinate of first point in space.</param>
+        /// <param name="x2">The first coordinate of second point in space.</param>
+        /// <param name="y2">The second coordinate of second point in space.</param>
+        /// 
+        /// <returns>The Square Euclidean distance between x and y.</returns>
+        /// 
+        public static double SquareEuclidean(double x1, double x2, double y1, double y2)
+        {
+            double dx = x1 - x2;
+            double dy = y1 - y2;
+            return dx * dx + dy * dy; ;
+        }
+
+        /// <summary>
         ///   Gets the Euclidean distance between two points.
         /// </summary>
         /// 
@@ -116,6 +134,22 @@ namespace Accord.Math
         public static double Euclidean(this double[] x, double[] y)
         {
             return System.Math.Sqrt(SquareEuclidean(x, y));
+        }
+
+        /// <summary>
+        ///   Gets the Euclidean distance between two points.
+        /// </summary>
+        /// 
+        /// <param name="x1">The first coordinate of first point in space.</param>
+        /// <param name="y1">The second coordinate of first point in space.</param>
+        /// <param name="x2">The first coordinate of second point in space.</param>
+        /// <param name="y2">The second coordinate of second point in space.</param>
+        /// 
+        /// <returns>The Euclidean distance between x and y.</returns>
+        /// 
+        public static double Euclidean(double x1, double y1, double x2, double y2)
+        {
+            return System.Math.Sqrt(SquareEuclidean(x1, y1, x2, y2));
         }
 
         /// <summary>

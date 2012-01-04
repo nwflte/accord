@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -24,6 +24,7 @@ namespace Accord.Math
     using System;
     using System.Collections.Generic;
     using AForge.Math.Random;
+    using AForge;
 
 
     public static partial class Matrix
@@ -149,7 +150,7 @@ namespace Accord.Math
         /// </summary>
         public static double[,] Magic(int size)
         {
-            if (size < 3) throw new ArgumentOutOfRangeException("size", size, 
+            if (size < 3) throw new ArgumentOutOfRangeException("size", size,
                 "The square size must be greater or equal to 3.");
 
             double[,] matrix = new double[size, size];
@@ -440,6 +441,14 @@ namespace Accord.Math
         /// <summary>
         ///   Creates an interval vector.
         /// </summary>
+        public static double[] Interval(DoubleRange range, double stepSize)
+        {
+            return Interval(range.Min, range.Max, stepSize);
+        }
+
+        /// <summary>
+        ///   Creates an interval vector.
+        /// </summary>
         public static double[] Interval(double from, double to, double stepSize)
         {
             double range = to - from;
@@ -450,6 +459,45 @@ namespace Accord.Math
                 r[i] = from + i * stepSize;
 
             return r;
+        }
+
+        /// <summary>
+        ///   Creates an interval vector.
+        /// </summary>
+        public static float[] Interval(float from, float to, double stepSize)
+        {
+            float[] r;
+
+            if (from > to)
+            {
+                double range = from - to;
+                int steps = (int)Math.Ceiling(range / stepSize) + 1;
+
+                r = new float[steps];
+                for (int i = 0; i < r.Length; i++)
+                    r[i] = (float)(from - i * stepSize);
+                r[steps - 1] = to;
+            }
+            else
+            {
+                double range = to - from;
+                int steps = (int)Math.Ceiling(range / stepSize) + 1;
+
+                r = new float[steps];
+                for (int i = 0; i < r.Length; i++)
+                    r[i] = (float)(from + i * stepSize);
+                r[steps - 1] = to;
+            }
+
+            return r;
+        }
+
+        /// <summary>
+        ///   Creates an interval vector.
+        /// </summary>
+        public static double[] Interval(DoubleRange range, int steps)
+        {
+            return Interval(range.Min, range.Max, steps);
         }
 
         /// <summary>
@@ -471,6 +519,20 @@ namespace Accord.Math
 
             return r;
         }
+
+        /// <summary>
+        ///   Creates a bidimensional mesh matrix.
+        /// </summary>
+        /// 
+        public static double[][] Mesh(DoubleRange rowRange, DoubleRange colRange,
+            double rowSteps, double colSteps)
+        {
+            double[][] mesh = Matrix.CartesianProduct(
+                Matrix.Interval(rowRange, rowSteps),
+                Matrix.Interval(colRange, colSteps));
+
+            return mesh;
+        }
         #endregion
 
 
@@ -478,7 +540,8 @@ namespace Accord.Math
         /// <summary>
         ///   Combines two vectors horizontally.
         /// </summary>
-        public static T[] Combine<T>(this T[] a, T[] b)
+        /// 
+        public static T[] Concatenate<T>(this T[] a, T[] b)
         {
             T[] r = new T[a.Length + b.Length];
             for (int i = 0; i < a.Length; i++)
@@ -492,7 +555,8 @@ namespace Accord.Math
         /// <summary>
         ///   Combines a vector and a element horizontally.
         /// </summary>
-        public static T[] Combine<T>(this T[] vector, T element)
+        /// 
+        public static T[] Concatenate<T>(this T[] vector, T element)
         {
             T[] r = new T[vector.Length + 1];
             for (int i = 0; i < vector.Length; i++)
@@ -504,9 +568,21 @@ namespace Accord.Math
         }
 
         /// <summary>
+        ///   Combines a matrix and a vector horizontally.
+        /// </summary>
+        /// 
+        public static T[,] Concatenate<T>(this T[,] matrix, T[] vector)
+        {
+            return matrix.InsertColumn(vector);
+        }
+
+
+
+        /// <summary>
         ///   Combine vectors horizontally.
         /// </summary>
-        public static T[] Combine<T>(params T[][] vectors)
+        /// 
+        public static T[] Concatenate<T>(params T[][] vectors)
         {
             int size = 0;
             for (int i = 0; i < vectors.Length; i++)
@@ -523,9 +599,19 @@ namespace Accord.Math
         }
 
         /// <summary>
+        ///   Combines vectors vertically.
+        /// </summary>
+        /// 
+        public static T[,] Stack<T>(params T[][] vectors)
+        {
+            return vectors.ToMatrix();
+        }
+
+        /// <summary>
         ///   Combines matrices vertically.
         /// </summary>
-        public static T[,] Combine<T>(params T[][,] matrices)
+        /// 
+        public static T[,] Stack<T>(params T[][,] matrices)
         {
             // TODO: Rename to "Stack<T>" or similar
 
@@ -558,7 +644,7 @@ namespace Accord.Math
         /// <summary>
         ///   Combines matrices vertically.
         /// </summary>
-        public static T[][] Combine<T>(params T[][][] matrices)
+        public static T[][] Stack<T>(params T[][][] matrices)
         {
             // TODO: Rename to "Stack<T>" or similar
 

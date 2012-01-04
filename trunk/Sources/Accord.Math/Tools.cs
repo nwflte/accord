@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -179,6 +179,62 @@ namespace Accord.Math
             }
 
             return r;
+        }
+
+        /// <summary>
+        ///   Hypotenuse calculus without overflow/underflow
+        /// </summary>
+        /// 
+        /// <param name="a">first value</param>
+        /// <param name="b">second value</param>
+        /// <returns>The hypotenuse Sqrt(a^2 + b^2)</returns>
+        /// 
+        public static decimal Hypotenuse(decimal a, decimal b)
+        {
+            decimal r = 0;
+            decimal absA = System.Math.Abs(a);
+            decimal absB = System.Math.Abs(b);
+
+            if (absA > absB)
+            {
+                r = b / a;
+                r = absA * (decimal)System.Math.Sqrt((double)(1 + r * r));
+            }
+            else if (b != 0)
+            {
+                r = a / b;
+                r = absB * (decimal)System.Math.Sqrt((double)(1 + r * r));
+            }
+
+            return r;
+        }
+
+        /// <summary>
+        ///   Hypotenuse calculus without overflow/underflow
+        /// </summary>
+        /// 
+        /// <param name="a">first value</param>
+        /// <param name="b">second value</param>
+        /// <returns>The hypotenuse Sqrt(a^2 + b^2)</returns>
+        /// 
+        public static float Hypotenuse(float a, float b)
+        {
+            double r = 0;
+            float absA = System.Math.Abs(a);
+            float absB = System.Math.Abs(b);
+
+            if (absA > absB)
+            {
+                r = b / a;
+                r = absA * System.Math.Sqrt(1 + r * r);
+            }
+            else if (b != 0)
+            {
+                r = a / b;
+                r = absB * System.Math.Sqrt(1 + r * r);
+            }
+
+            return (float)r;
         }
 
         /// <summary>
@@ -442,6 +498,43 @@ namespace Accord.Math
             return f;
         }
 
+        /// <summary>
+        ///   Generates all possible combinations of a given
+        ///   number of symbols of a given length.
+        /// </summary>
+        /// 
+        /// <param name="symbols">The number of symbols.</param>
+        /// <param name="length">The length of the sequence to generate.</param>
+        ///
+        public static int[][] Combinations(int symbols, int length)
+        {
+            int size = (int)Math.Pow(symbols, length);
+
+            int[][] sequences = new int[size][];
+            for (int i = 0; i < sequences.Length; i++)
+                sequences[i] = new int[length];
+
+
+            for (int i = 0; i < length; i++)
+            {
+                int m1 = (int)Math.Pow(symbols, i);
+                int m2 = (int)Math.Pow(symbols, length - i);
+                int j = 0;
+
+                for (int k2 = 0; k2 < m2; k2++)
+                {
+                    int s = k2 % symbols;
+                    for (int k = 0; k < m1; k++)
+                    {
+                        sequences[j][i] = s;
+                        j++;
+                    }
+                }
+            }
+
+
+            return sequences;
+        }
     }
 
     /// <summary>
@@ -455,12 +548,54 @@ namespace Accord.Math
         /// </summary>
         /// 
         Ascending,
+
         /// <summary>
         ///   Sorting will be performed in descending order.
         /// </summary>
         /// 
         Descending
     };
+
+    /// <summary>
+    ///   Custom comparer which accepts any delegate or
+    ///   anonymous function to perform comparison of values.
+    /// </summary>
+    /// 
+    /// <typeparam name="T">The type of objects to compare.</typeparam>
+    /// 
+    public class CustomComparer<T> : IComparer<T>
+    {
+        
+        private Func<T, T, int> comparer;
+
+
+        /// <summary>
+        ///   Constructs a new <see cref="CustomComparer&lt;T&gt;"/>.
+        /// </summary>
+        /// 
+        /// <param name="comparer">The comparer function.</param>
+        /// 
+        public CustomComparer(Func<T,T,int> comparer)
+        {
+            this.comparer = comparer;
+        }
+
+        /// <summary>
+        ///   Compares two objects and returns a value indicating
+        ///   whether one is less than, equal to, or greater than
+        ///   the other.
+        /// </summary>
+        /// 
+        /// <param name="x">The first object to compare.</param>
+        /// <param name="y">The second object to compare.</param>
+        /// 
+        /// <returns>A signed integer that indicates the relative values of x and y.</returns>
+        /// 
+        public int Compare(T x, T y)
+        {
+            return comparer(x, y);
+        }
+    }
 
     /// <summary>
     ///   General comparer which supports multiple directions

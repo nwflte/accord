@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -81,7 +81,7 @@ namespace Accord.Math
         /// 
         public static float SquareEuclidean(this float[] a)
         {
-            float sum = 0.0f;
+            float sum = 0;
             for (int i = 0; i < a.Length; i++)
                 sum += a[i] * a[i];
             return sum;
@@ -211,7 +211,7 @@ namespace Accord.Math
 
                 for (int j = 0; j < norm.Length; j++)
                 {
-                    float sum = 0.0f;
+                    float sum = 0;
                     for (int i = 0; i < rows; i++)
                     {
                         float v = a[i, j];
@@ -226,7 +226,7 @@ namespace Accord.Math
 
                 for (int i = 0; i < norm.Length; i++)
                 {
-                    float sum = 0.0f;
+                    float sum = 0;
                     for (int j = 0; j < cols; j++)
                     {
                         float v = a[i, j];

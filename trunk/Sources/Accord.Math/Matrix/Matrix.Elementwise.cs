@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -31,6 +31,7 @@ namespace Accord.Math
         /// <summary>
         ///   Elementwise absolute value.
         /// </summary>
+        /// 
         public static int[] Abs(this int[] value)
         {
             int[] r = new int[value.Length];
@@ -42,6 +43,7 @@ namespace Accord.Math
         /// <summary>
         ///   Elementwise absolute value.
         /// </summary>
+        /// 
         public static double[] Abs(this double[] value)
         {
             double[] r = new double[value.Length];
@@ -53,6 +55,7 @@ namespace Accord.Math
         /// <summary>
         ///   Elementwise absolute value.
         /// </summary>
+        /// 
         public static double[,] Abs(this double[,] value)
         {
             int rows = value.GetLength(0);
@@ -68,6 +71,7 @@ namespace Accord.Math
         /// <summary>
         ///   Elementwise absolute value.
         /// </summary>
+        /// 
         public static int[,] Abs(this int[,] value)
         {
             int rows = value.GetLength(0);
@@ -84,6 +88,7 @@ namespace Accord.Math
         /// <summary>
         ///   Elementwise Square root.
         /// </summary>
+        /// 
         public static double[] Sqrt(this double[] value)
         {
             double[] r = new double[value.Length];
@@ -95,6 +100,7 @@ namespace Accord.Math
         /// <summary>
         ///   Elementwise Square root.
         /// </summary>
+        /// 
         public static double[,] Sqrt(this double[,] value)
         {
             int rows = value.GetLength(0);
@@ -107,13 +113,73 @@ namespace Accord.Math
             return r;
         }
 
+        /// <summary>
+        ///   Elementwise Log operation.
+        /// </summary>
+        /// 
+        public static double[,] Log(this double[,] value)
+        {
+            int rows = value.GetLength(0);
+            int cols = value.GetLength(1);
+
+            double[,] r = new double[rows, cols];
+            for (int i = 0; i < rows; i++)
+                for (int j = 0; j < cols; j++)
+                    r[i, j] = System.Math.Log(value[i, j]);
+            return r;
+        }
+
+        /// <summary>
+        ///   Elementwise Exp operation.
+        /// </summary>
+        /// 
+        public static double[,] Exp(this double[,] value)
+        {
+            int rows = value.GetLength(0);
+            int cols = value.GetLength(1);
+
+            double[,] r = new double[rows, cols];
+            for (int i = 0; i < rows; i++)
+                for (int j = 0; j < cols; j++)
+                    r[i, j] = System.Math.Exp(value[i, j]);
+            return r;
+        }
+
+        /// <summary>
+        ///   Elementwise Exp operation.
+        /// </summary>
+        /// 
+        public static double[] Exp(this double[] value)
+        {
+            double[] r = new double[value.Length];
+            for (int i = 0; i < value.Length; i++)
+                r[i] = System.Math.Exp(value[i]);
+            return r;
+        }
+
+
+        /// <summary>
+        ///   Elementwise Log operation.
+        /// </summary>
+        /// 
+        public static double[] Log(this double[] value)
+        {
+            double[] r = new double[value.Length];
+            for (int i = 0; i < value.Length; i++)
+                r[i] = System.Math.Log(value[i]);
+            return r;
+        }
+
 
         /// <summary>
         ///   Elementwise power operation.
         /// </summary>
+        /// 
         /// <param name="x">A matrix.</param>
         /// <param name="y">A power.</param>
+        /// 
         /// <returns>Returns x elevated to the power of y.</returns>
+        /// 
         public static double[,] ElementwisePower(this double[,] x, double y)
         {
             double[,] r = new double[x.GetLength(0), x.GetLength(1)];
@@ -128,9 +194,12 @@ namespace Accord.Math
         /// <summary>
         ///   Elementwise power operation.
         /// </summary>
+        /// 
         /// <param name="x">A matrix.</param>
         /// <param name="y">A power.</param>
+        /// 
         /// <returns>Returns x elevated to the power of y.</returns>
+        /// 
         public static double[] ElementwisePower(this double[] x, double y)
         {
             double[] r = new double[x.Length];
@@ -145,6 +214,7 @@ namespace Accord.Math
         /// <summary>
         ///   Elementwise divide operation.
         /// </summary>
+        /// 
         public static double[] ElementwiseDivide(this double[] a, double[] b)
         {
             double[] r = new double[a.Length];
@@ -158,6 +228,7 @@ namespace Accord.Math
         /// <summary>
         ///   Elementwise divide operation.
         /// </summary>
+        /// 
         public static double[,] ElementwiseDivide(this double[,] a, double[,] b)
         {
             int rows = a.GetLength(0);
@@ -175,20 +246,22 @@ namespace Accord.Math
         /// <summary>
         ///   Elementwise division.
         /// </summary>
-        public static double[,] ElementwiseDivide(this double[,] a, double[] b)
+        /// 
+        public static double[,] ElementwiseDivide(this double[,] a, double[] b, bool inPlace = false)
         {
-            return ElementwiseDivide(a, b, 0);
+            return ElementwiseDivide(a, b, 0, inPlace);
         }
 
         /// <summary>
         ///   Elementwise division.
         /// </summary>
-        public static double[,] ElementwiseDivide(this double[,] a, double[] b, int dimension)
+        /// 
+        public static double[,] ElementwiseDivide(this double[,] a, double[] b, int dimension, bool inPlace = false)
         {
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            double[,] r = new double[rows, cols];
+            double[,] r = (inPlace) ? a : new double[rows, cols];
 
             if (dimension == 1)
             {
@@ -208,6 +281,7 @@ namespace Accord.Math
                     for (int i = 0; i < rows; i++)
                         r[i, j] = a[i, j] / b[i];
             }
+
             return r;
         }
 
@@ -228,6 +302,7 @@ namespace Accord.Math
         /// <summary>
         ///   Elementwise multiply operation.
         /// </summary>
+        /// 
         public static double[,] ElementwiseMultiply(this double[,] a, double[,] b)
         {
             if (a.GetLength(0) != b.GetLength(0) || a.GetLength(1) != b.GetLength(1))
@@ -248,6 +323,7 @@ namespace Accord.Math
         /// <summary>
         ///   Elementwise multiply operation.
         /// </summary>
+        /// 
         public static int[] ElementwiseMultiply(this int[] a, int[] b)
         {
             if (a.Length != b.Length)
@@ -264,6 +340,7 @@ namespace Accord.Math
         /// <summary>
         ///   Elementwise multiplication.
         /// </summary>
+        /// 
         public static int[,] ElementwiseMultiply(this int[,] a, int[,] b)
         {
             if (a.GetLength(0) != b.GetLength(0) || a.GetLength(1) != b.GetLength(1))

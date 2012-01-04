@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 // Original work copyright © Lutz Roeder, 2000
@@ -49,38 +49,49 @@ namespace Accord.Math.Decompositions
     ///   and right eigenvectors. If the routine is computed on A directly, the diagonal
     ///   of singular values may contain one or more zeros. The identity A = U * S * V'
     ///   may still hold, however. To overcome this problem, pass true to the
-    ///   <see cref="SingularValueDecomposition(double[,], bool, bool, bool)">autoTranspose</see> argument of the class constructor.</para>
+    ///   <see cref="SingularValueDecomposition(Double[,], bool, bool, bool)">autoTranspose</see> argument of the class constructor.</para>
     ///  <para>
     ///   This routine computes the economy decomposition of A.</para> 
     /// </remarks>
     /// 
     [Serializable]
-    public sealed class SingularValueDecomposition : ICloneable, ISolverDecomposition
+    public sealed class SingularValueDecomposition : ICloneable, ISolverMatrixDecomposition<Double>
     {
-        private double[,] u; // left singular vectors
-        private double[,] v; // right singular vectors
-        private double[] s;  // singular values
+        private Double[,] u; // left singular vectors
+        private Double[,] v; // right singular vectors
+        private Double[] s;  // singular values
         private int m;
         private int n;
         private bool swapped;
 
         private int[] si; // sorting order
 
+		private const Double eps = 2 * Special.DoubleEpsilon;
+        private const Double tiny = Special.DoubleSmall;
 
-        /// <summary>Returns the condition number <c>max(S) / min(S)</c>.</summary>
-        public double Condition
+        /// <summary>
+		///   Returns the condition number <c>max(S) / min(S)</c>.
+		/// </summary>
+		///
+        public Double Condition
         {
             get { return s[0] / s[System.Math.Min(m, n) - 1]; }
         }
 
-        /// <summary>Returns the singularity threshold.</summary>
-        public double Threshold
+        /// <summary>
+		///   Returns the singularity threshold.
+		/// </summary>
+		///
+        public Double Threshold
         {
             get { return Double.Epsilon * System.Math.Max(m, n) * s[0]; }
         }
 
-        /// <summary>Returns the Two norm.</summary>
-        public double TwoNorm
+        /// <summary>
+		///   Returns the Two norm.
+		/// </summary>
+		///
+        public Double TwoNorm
         {
             get { return s[0]; }
         }
@@ -91,39 +102,36 @@ namespace Accord.Math.Decompositions
         {
             get
             {
-                double eps = System.Math.Pow(2.0, -52.0);
-                double tol = System.Math.Max(m, n) * s[0] * eps;
+                Double tol = System.Math.Max(m, n) * s[0] * eps;
+
                 int r = 0;
                 for (int i = 0; i < s.Length; i++)
-                {
-                    if (s[i] > tol)
-                        r++;
-                }
+                    if (s[i] > tol) r++;
 
                 return r;
             }
         }
 
         /// <summary>Returns the one-dimensional array of singular values.</summary>		
-        public double[] Diagonal
+        public Double[] Diagonal
         {
             get { return this.s; }
         }
 
         /// <summary>Returns the block diagonal matrix of singular values.</summary>		
-        public double[,] DiagonalMatrix
+        public Double[,] DiagonalMatrix
         {
             get { return Matrix.Diagonal(s); }
         }
 
         /// <summary>Returns the V matrix of Singular Vectors.</summary>		
-        public double[,] RightSingularVectors
+        public Double[,] RightSingularVectors
         {
             get { return v; }
         }
 
         /// <summary>Returns the U matrix of Singular Vectors.</summary>		
-        public double[,] LeftSingularVectors
+        public Double[,] LeftSingularVectors
         {
             get { return u; }
         }
@@ -139,7 +147,7 @@ namespace Accord.Math.Decompositions
         /// <summary>Constructs a new singular value decomposition.</summary>
         /// <param name="value">
         ///   The matrix to be decomposed.</param>
-        public SingularValueDecomposition(double[,] value)
+        public SingularValueDecomposition(Double[,] value)
             : this(value, true, true)
         {
         }
@@ -156,7 +164,7 @@ namespace Accord.Math.Decompositions
         ///   Pass <see langword="true"/> if the right singular vector matrix V
         ///   should be computed. Pass <see langword="false"/> otherwise. Default
         ///   is <see langword="true"/>.</param>
-        public SingularValueDecomposition(double[,] value, bool computeLeftSingularVectors, bool computeRightSingularVectors)
+        public SingularValueDecomposition(Double[,] value, bool computeLeftSingularVectors, bool computeRightSingularVectors)
             : this(value, computeLeftSingularVectors, computeRightSingularVectors, false)
         {
         }
@@ -176,7 +184,7 @@ namespace Accord.Math.Decompositions
         ///   Pass <see langword="true"/> to automatically transpose the value matrix in
         ///   case JAMA's assumptions about the dimensionality of the matrix are violated.
         ///   Pass <see langword="false"/> otherwise. Default is <see langword="false"/>.</param>
-        public SingularValueDecomposition(double[,] value, bool computeLeftSingularVectors, bool computeRightSingularVectors, bool autoTranspose)
+        public SingularValueDecomposition(Double[,] value, bool computeLeftSingularVectors, bool computeRightSingularVectors, bool autoTranspose)
             : this(value, computeLeftSingularVectors, computeRightSingularVectors, autoTranspose, false)
         {
         }
@@ -200,19 +208,16 @@ namespace Accord.Math.Decompositions
         ///   Pass <see langword="true"/> to perform the decomposition in place. The matrix
         ///   <paramref name="value"/> will be destroyed in the process, resulting in less
         ///   memory comsumption.</param>
-        public unsafe SingularValueDecomposition(double[,] value, bool computeLeftSingularVectors, bool computeRightSingularVectors, bool autoTranspose, bool inPlace)
+        public unsafe SingularValueDecomposition(Double[,] value, bool computeLeftSingularVectors, bool computeRightSingularVectors, bool autoTranspose, bool inPlace)
         {
             if (value == null)
             {
                 throw new ArgumentNullException("value", "Matrix cannot be null.");
             }
 
-            double[,] a;
+            Double[,] a;
             m = value.GetLength(0); // rows
             n = value.GetLength(1); // cols
-
-            double eps = System.Math.Pow(2.0, -52.0);
-            double tiny = System.Math.Pow(2.0, -966.0);
 
 
             if (m < n) // Check if we are violating JAMA's assumption
@@ -232,7 +237,7 @@ namespace Accord.Math.Decompositions
                         "WARNING: Computing SVD on a matrix with more columns than rows.");
 
                     // Proceed anyway
-                    a = inPlace ? value : (double[,])value.Clone();
+                    a = inPlace ? value : (Double[,])value.Clone();
                 }
                 else
                 {
@@ -250,23 +255,23 @@ namespace Accord.Math.Decompositions
             else
             {
                 // Input matrix is ok
-                a = inPlace ? value : (double[,])value.Clone();
+                a = inPlace ? value : (Double[,])value.Clone();
             }
 
 
             int nu = System.Math.Min(m, n);
             int ni = System.Math.Min(m + 1, n);
-            s = new double[ni];
-            u = new double[m, nu];
-            v = new double[n, n];
-            double[] e = new double[n];
-            double[] work = new double[m];
+            s = new Double[ni];
+            u = new Double[m, nu];
+            v = new Double[n, n];
+            Double[] e = new Double[n];
+            Double[] work = new Double[m];
             bool wantu = computeLeftSingularVectors;
             bool wantv = computeRightSingularVectors;
 
-            fixed (double* U = u)
-            fixed (double* V = v)
-            fixed (double* A = a)
+            fixed (Double* U = u)
+            fixed (Double* V = v)
+            fixed (Double* A = a)
             {
 
                 // Will store ordered sequence of indices after sorting.
@@ -288,15 +293,15 @@ namespace Accord.Math.Decompositions
                             s[k] = Accord.Math.Tools.Hypotenuse(s[k], a[i, k]);
                         }
 
-                        if (s[k] != 0.0)
+                        if (s[k] != 0)
                         {
-                            if (a[k, k] < 0.0)
+                            if (a[k, k] < 0)
                                 s[k] = -s[k];
 
                             for (int i = k; i < m; i++)
                                 a[i, k] /= s[k];
 
-                            a[k, k] += 1.0;
+                            a[k, k] += 1;
                         }
 
                         s[k] = -s[k];
@@ -304,15 +309,15 @@ namespace Accord.Math.Decompositions
 
                     for (int j = k + 1; j < n; j++)
                     {
-                        double* ptr_ak = A + k * n + k; // A[k,k]
-                        double* ptr_aj = A + k * n + j; // A[k,j]
+                        Double* ptr_ak = A + k * n + k; // A[k,k]
+                        Double* ptr_aj = A + k * n + j; // A[k,j]
 
-                        if ((k < nct) & (s[k] != 0.0))
+                        if ((k < nct) & (s[k] != 0))
                         {
                             // Apply the transformation.
-                            double t = 0;
-                            double* ak = ptr_ak;
-                            double* aj = ptr_aj;
+                            Double t = 0;
+                            Double* ak = ptr_ak;
+                            Double* aj = ptr_aj;
 
                             for (int i = k; i < m; i++)
                             {
@@ -352,36 +357,36 @@ namespace Accord.Math.Decompositions
                         for (int i = k + 1; i < n; i++)
                             e[k] = Accord.Math.Tools.Hypotenuse(e[k], e[i]);
 
-                        if (e[k] != 0.0)
+                        if (e[k] != 0)
                         {
-                            if (e[k + 1] < 0.0)
+                            if (e[k + 1] < 0)
                                 e[k] = -e[k];
 
                             for (int i = k + 1; i < n; i++)
                                 e[i] /= e[k];
 
-                            e[k + 1] += 1.0;
+                            e[k + 1] += 1;
                         }
 
                         e[k] = -e[k];
-                        if ((k + 1 < m) & (e[k] != 0.0))
+                        if ((k + 1 < m) & (e[k] != 0))
                         {
                             // Apply the transformation.
                             for (int i = k + 1; i < m; i++)
-                                work[i] = 0.0;
+                                work[i] = 0;
 
                             int k1 = k + 1;
                             for (int i = k1; i < m; i++)
                             {
-                                double* ai = A + (i * n) + k1;
+                                Double* ai = A + (i * n) + k1;
                                 for (int j = k1; j < n; j++, ai++)
                                     work[i] += e[j] * (*ai);
                             }
 
                             for (int j = k1; j < n; j++)
                             {
-                                double t = -e[j] / e[k1];
-                                double* aj = A + (k1 * n) + j;
+                                Double t = -e[j] / e[k1];
+                                Double* aj = A + (k1 * n) + j;
                                 for (int i = k1; i < m; i++, aj += n)
                                     *aj += t * work[i];
                             }
@@ -399,9 +404,9 @@ namespace Accord.Math.Decompositions
                 // Set up the final bidiagonal matrix or order p.
                 int p = System.Math.Min(n, m + 1);
                 if (nct < n) s[nct] = a[nct, nct];
-                if (m < p) s[p - 1] = 0.0;
+                if (m < p) s[p - 1] = 0;
                 if (nrt + 1 < p) e[nrt] = a[nrt, p - 1];
-                e[p - 1] = 0.0;
+                e[p - 1] = 0;
 
                 // If required, generate U.
                 if (wantu)
@@ -409,22 +414,22 @@ namespace Accord.Math.Decompositions
                     for (int j = nct; j < nu; j++)
                     {
                         for (int i = 0; i < m; i++)
-                            u[i, j] = 0.0;
-                        u[j, j] = 1.0;
+                            u[i, j] = 0;
+                        u[j, j] = 1;
                     }
 
                     for (int k = nct - 1; k >= 0; k--)
                     {
-                        if (s[k] != 0.0)
+                        if (s[k] != 0)
                         {
-                            double* ptr_uk = U + k * nu + k; // u[k,k]
+                            Double* ptr_uk = U + k * nu + k; // u[k,k]
 
-                            double* uk, uj;
+                            Double* uk, uj;
                             for (int j = k + 1; j < nu; j++)
                             {
-                                double* ptr_uj = U + k * nu + j; // u[k,j]
+                                Double* ptr_uj = U + k * nu + j; // u[k,j]
 
-                                double t = 0;
+                                Double t = 0;
                                 uk = ptr_uk;
                                 uj = ptr_uj;
 
@@ -451,15 +456,15 @@ namespace Accord.Math.Decompositions
                                 uk += nu;
                             }
 
-                            u[k, k] = 1.0 + u[k, k];
+                            u[k, k] = 1 + u[k, k];
                             for (int i = 0; i < k - 1; i++)
-                                u[i, k] = 0.0;
+                                u[i, k] = 0;
                         }
                         else
                         {
                             for (int i = 0; i < m; i++)
-                                u[i, k] = 0.0;
-                            u[k, k] = 1.0;
+                                u[i, k] = 0;
+                            u[k, k] = 1;
                         }
                     }
                 }
@@ -469,7 +474,7 @@ namespace Accord.Math.Decompositions
                 {
                     for (int k = n - 1; k >= 0; k--)
                     {
-                        if ((k < nrt) & (e[k] != 0.0))
+                        if ((k < nrt) & (e[k] != 0))
                         {
                             // TODO: The following is a pseudo correction to make SVD
                             //  work on matrices with n > m (less rows than columns).
@@ -484,12 +489,12 @@ namespace Accord.Math.Decompositions
 
                             for (int j = k + 1; j < n; j++) // pseudo-correction
                             {
-                                double* ptr_vk = V + (k + 1) * n + k; // v[k + 1, k]
-                                double* ptr_vj = V + (k + 1) * n + j; // v[k + 1, j]
+                                Double* ptr_vk = V + (k + 1) * n + k; // v[k + 1, k]
+                                Double* ptr_vj = V + (k + 1) * n + j; // v[k + 1, j]
 
-                                double t = 0;
-                                double* vk = ptr_vk;
-                                double* vj = ptr_vj;
+                                Double t = 0;
+                                Double* vk = ptr_vk;
+                                Double* vj = ptr_vj;
 
                                 for (int i = k + 1; i < n; i++)
                                 {
@@ -509,8 +514,8 @@ namespace Accord.Math.Decompositions
                         }
 
                         for (int i = 0; i < n; i++)
-                            v[i, k] = 0.0;
-                        v[k, k] = 1.0;
+                            v[i, k] = 0;
+                        v[k, k] = 1;
                     }
                 }
 
@@ -541,7 +546,7 @@ namespace Accord.Math.Decompositions
                         if (System.Math.Abs(e[k]) <=
                            tiny + eps * (System.Math.Abs(s[k]) + System.Math.Abs(s[k + 1])))
                         {
-                            e[k] = 0.0;
+                            e[k] = 0;
                             break;
                         }
                     }
@@ -558,11 +563,11 @@ namespace Accord.Math.Decompositions
                             if (ks == k)
                                 break;
 
-                            double t = (ks != p ? System.Math.Abs(e[ks]) : 0.0) +
-                                       (ks != k + 1 ? System.Math.Abs(e[ks - 1]) : 0.0);
+                            Double t = (ks != p ? System.Math.Abs(e[ks]) : 0) +
+                                       (ks != k + 1 ? System.Math.Abs(e[ks - 1]) : 0);
                             if (System.Math.Abs(s[ks]) <= tiny + eps * t)
                             {
-                                s[ks] = 0.0;
+                                s[ks] = 0;
                                 break;
                             }
                         }
@@ -586,13 +591,13 @@ namespace Accord.Math.Decompositions
                         // Deflate negligible s(p).
                         case 1:
                             {
-                                double f = e[p - 2];
-                                e[p - 2] = 0.0;
+                                Double f = e[p - 2];
+                                e[p - 2] = 0;
                                 for (int j = p - 2; j >= k; j--)
                                 {
-                                    double t = Accord.Math.Tools.Hypotenuse(s[j], f);
-                                    double cs = s[j] / t;
-                                    double sn = f / t;
+                                    Double t = Accord.Math.Tools.Hypotenuse(s[j], f);
+                                    Double cs = s[j] / t;
+                                    Double sn = f / t;
                                     s[j] = t;
                                     if (j != k)
                                     {
@@ -616,13 +621,13 @@ namespace Accord.Math.Decompositions
                         // Split at negligible s(k).
                         case 2:
                             {
-                                double f = e[k - 1];
-                                e[k - 1] = 0.0;
+                                Double f = e[k - 1];
+                                e[k - 1] = 0;
                                 for (int j = k; j < p; j++)
                                 {
-                                    double t = Accord.Math.Tools.Hypotenuse(s[j], f);
-                                    double cs = s[j] / t;
-                                    double sn = f / t;
+                                    Double t = Accord.Math.Tools.Hypotenuse(s[j], f);
+                                    Double cs = s[j] / t;
+                                    Double sn = f / t;
                                     s[j] = t;
                                     f = -sn * e[j];
                                     e[j] = cs * e[j];
@@ -644,19 +649,19 @@ namespace Accord.Math.Decompositions
                         case 3:
                             {
                                 // Calculate the shift.
-                                double scale = System.Math.Max(System.Math.Max(System.Math.Max(System.Math.Max(System.Math.Abs(s[p - 1]), System.Math.Abs(s[p - 2])), System.Math.Abs(e[p - 2])), System.Math.Abs(s[k])), System.Math.Abs(e[k]));
-                                double sp = s[p - 1] / scale;
-                                double spm1 = s[p - 2] / scale;
-                                double epm1 = e[p - 2] / scale;
-                                double sk = s[k] / scale;
-                                double ek = e[k] / scale;
-                                double b = ((spm1 + sp) * (spm1 - sp) + epm1 * epm1) / 2.0;
-                                double c = (sp * epm1) * (sp * epm1);
-                                double shift = 0.0;
+                                Double scale = System.Math.Max(System.Math.Max(System.Math.Max(System.Math.Max(System.Math.Abs(s[p - 1]), System.Math.Abs(s[p - 2])), System.Math.Abs(e[p - 2])), System.Math.Abs(s[k])), System.Math.Abs(e[k]));
+                                Double sp = s[p - 1] / scale;
+                                Double spm1 = s[p - 2] / scale;
+                                Double epm1 = e[p - 2] / scale;
+                                Double sk = s[k] / scale;
+                                Double ek = e[k] / scale;
+                                Double b = ((spm1 + sp) * (spm1 - sp) + epm1 * epm1) / 2;
+                                Double c = (sp * epm1) * (sp * epm1);
+                                double shift = 0;
 
-                                if ((b != 0.0) | (c != 0.0))
+                                if ((b != 0) | (c != 0))
                                 {
-                                    if (b < 0.0)
+                                    if (b < 0)
                                         shift = -System.Math.Sqrt(b * b + c);
                                     else
                                         shift = System.Math.Sqrt(b * b + c);
@@ -664,15 +669,15 @@ namespace Accord.Math.Decompositions
                                     shift = c / (b + shift);
                                 }
 
-                                double f = (sk + sp) * (sk - sp) + shift;
-                                double g = sk * ek;
+                                Double f = (sk + sp) * (sk - sp) + (Double)shift;
+                                Double g = sk * ek;
 
                                 // Chase zeros.
                                 for (int j = k; j < p - 1; j++)
                                 {
-                                    double t = Accord.Math.Tools.Hypotenuse(f, g);
-                                    double cs = f / t;
-                                    double sn = g / t;
+                                    Double t = Accord.Math.Tools.Hypotenuse(f, g);
+                                    Double cs = f / t;
+                                    Double sn = g / t;
                                     if (j != k) e[j - 1] = t;
                                     f = cs * s[j] + sn * e[j];
                                     e[j] = cs * e[j] - sn * s[j];
@@ -683,10 +688,10 @@ namespace Accord.Math.Decompositions
                                     {
                                         unsafe
                                         {
-                                            fixed (double* ptr_vj = &v[0, j])
+                                            fixed (Double* ptr_vj = &v[0, j])
                                             {
-                                                double* vj = ptr_vj;
-                                                double* vj1 = ptr_vj + 1;
+                                                Double* vj = ptr_vj;
+                                                Double* vj1 = ptr_vj + 1;
 
                                                 for (int i = 0; i < n; i++)
                                                 {
@@ -694,8 +699,8 @@ namespace Accord.Math.Decompositions
                                                     v[i, j + 1] = -sn * v[i, j] + cs * v[i, j + 1];
                                                     v[i, j] = t;*/
 
-                                                    double vij = *vj;
-                                                    double vij1 = *vj1;
+                                                    Double vij = *vj;
+                                                    Double vij1 = *vj1;
 
                                                     t = cs * vij + sn * vij1;
                                                     *vj1 = -sn * vij + cs * vij1;
@@ -718,10 +723,10 @@ namespace Accord.Math.Decompositions
 
                                     if (wantu && (j < m - 1))
                                     {
-                                        fixed (double* ptr_uj = &u[0, j])
+                                        fixed (Double* ptr_uj = &u[0, j])
                                         {
-                                            double* uj = ptr_uj;
-                                            double* uj1 = ptr_uj + 1;
+                                            Double* uj = ptr_uj;
+                                            Double* uj1 = ptr_uj + 1;
 
                                             for (int i = 0; i < m; i++)
                                             {
@@ -729,8 +734,8 @@ namespace Accord.Math.Decompositions
                                                  u[i, j + 1] = -sn * u[i, j] + cs * u[i, j + 1];
                                                  u[i, j] = t;*/
 
-                                                double uij = *uj;
-                                                double uij1 = *uj1;
+                                                Double uij = *uj;
+                                                Double uij1 = *uj1;
 
                                                 t = cs * uij + sn * uij1;
                                                 *uj1 = -sn * uij + cs * uij1;
@@ -752,9 +757,9 @@ namespace Accord.Math.Decompositions
                         case 4:
                             {
                                 // Make the singular values positive.
-                                if (s[k] <= 0.0)
+                                if (s[k] <= 0)
                                 {
-                                    s[k] = (s[k] < 0.0 ? -s[k] : 0.0);
+                                    s[k] = (s[k] < 0 ? -s[k] : 0);
                                     if (wantv)
                                     {
                                         for (int i = 0; i <= pp; i++)
@@ -768,7 +773,7 @@ namespace Accord.Math.Decompositions
                                     if (s[k] >= s[k + 1])
                                         break;
 
-                                    double t = s[k];
+                                    Double t = s[k];
                                     s[k] = s[k + 1];
                                     s[k + 1] = t;
 
@@ -811,7 +816,7 @@ namespace Accord.Math.Decompositions
             // the input dimension, we need to swap u and v.
             if (swapped)
             {
-                double[,] temp = this.u;
+                Double[,] temp = this.u;
                 this.u = this.v;
                 this.v = temp;
             }
@@ -823,7 +828,7 @@ namespace Accord.Math.Decompositions
         /// </summary>
         /// <param name="value">Parameter B from the equation AX = B.</param>
         /// <returns>The solution X from equation AX = B.</returns>
-        public double[,] Solve(double[,] value)
+        public Double[,] Solve(Double[,] value)
         {
             // Additionally an important property is that if there does not exists a solution
             // when the matrix A is singular but replacing 1/Li with 0 will provide a solution
@@ -834,7 +839,7 @@ namespace Accord.Math.Decompositions
             // L is a diagonal matrix with non-negative matrix elements having the same
             // dimension as A, Wi ? 0. The diagonal elements of L are the singular values of matrix A.
 
-            double[,] Y = value;
+            Double[,] Y = value;
 
             // Create L*, which is a diagonal matrix with elements
             //    L*[i] = 1/L[i]  if L[i] < e, else 0, 
@@ -846,30 +851,30 @@ namespace Accord.Math.Decompositions
             // systems even if the matrices are singular or close to singular.
 
             //singularity threshold
-            double e = this.Threshold;
+            Double e = this.Threshold;
 
 
             int scols = s.Length;
-            double[,] Ls = new double[scols, scols];
+            var Ls = new Double[scols, scols];
             for (int i = 0; i < s.Length; i++)
             {
                 if (System.Math.Abs(s[i]) <= e)
-                    Ls[i, i] = 0.0;
-                else Ls[i, i] = 1.0 / s[i];
+                    Ls[i, i] = 0;
+                else Ls[i, i] = 1 / s[i];
             }
 
             //(V x L*) x Ut x Y
-            double[,] VL = v.Multiply(Ls);
+            var VL = v.Multiply(Ls);
 
             //(V x L* x Ut) x Y
             int vrows = v.GetLength(0);
             int urows = u.GetLength(0);
-            double[,] VLU = new double[vrows, scols];
+            var VLU = new Double[vrows, scols];
             for (int i = 0; i < vrows; i++)
             {
                 for (int j = 0; j < urows; j++)
                 {
-                    double sum = 0;
+                    Double sum = 0;
                     for (int k = 0; k < urows; k++)
                         sum += VL[i, k] * u[j, k];
                     VLU[i, j] = sum;
@@ -885,7 +890,7 @@ namespace Accord.Math.Decompositions
         /// </summary>
         /// <param name="value">Parameter B from the equation AX = B.</param>
         /// <returns>The solution X from equation AX = B.</returns>
-        public double[,] SolveForDiagonal(double[] value)
+        public Double[,] SolveForDiagonal(Double[] value)
         {
             // Additionally an important property is that if there does not exists a solution
             // when the matrix A is singular but replacing 1/Li with 0 will provide a solution
@@ -896,7 +901,7 @@ namespace Accord.Math.Decompositions
             // L is a diagonal matrix with non-negative matrix elements having the same
             // dimension as A, Wi ? 0. The diagonal elements of L are the singular values of matrix A.
 
-            double[] Y = value;
+            Double[] Y = value;
 
             // Create L*, which is a diagonal matrix with elements
             //    L*[i] = 1/L[i]  if L[i] < e, else 0, 
@@ -908,30 +913,30 @@ namespace Accord.Math.Decompositions
             // systems even if the matrices are singular or close to singular.
 
             //singularity threshold
-            double e = this.Threshold;
+            Double e = this.Threshold;
 
 
             int scols = s.Length;
-            double[,] Ls = new double[scols, scols];
+            var Ls = new Double[scols, scols];
             for (int i = 0; i < s.Length; i++)
             {
                 if (System.Math.Abs(s[i]) <= e)
-                    Ls[i, i] = 0.0;
-                else Ls[i, i] = 1.0 / s[i];
+                    Ls[i, i] = 0;
+                else Ls[i, i] = 1 / s[i];
             }
 
             //(V x L*) x Ut x Y
-            double[,] VL = v.Multiply(Ls);
+            Double[,] VL = v.Multiply(Ls);
 
             //(V x L* x Ut) x Y
             int vrows = v.GetLength(0);
             int urows = u.GetLength(0);
-            double[,] VLU = new double[vrows, scols];
+            var VLU = new Double[vrows, scols];
             for (int i = 0; i < vrows; i++)
             {
                 for (int j = 0; j < urows; j++)
                 {
-                    double sum = 0;
+                    Double sum = 0;
                     for (int k = 0; k < urows; k++)
                         sum += VL[i, k] * u[j, k];
                     VLU[i, j] = sum;
@@ -948,7 +953,7 @@ namespace Accord.Math.Decompositions
         /// </summary>
         /// <param name="value">The b from the equation Ax = b.</param>
         /// <returns>The x from equation Ax = b.</returns>
-        public double[] Solve(double[] value)
+        public Double[] Solve(Double[] value)
         {
             // Additionally an important property is that if there does not exists a solution
             // when the matrix A is singular but replacing 1/Li with 0 will provide a solution
@@ -960,9 +965,9 @@ namespace Accord.Math.Decompositions
             // dimension as A, Wi ? 0. The diagonal elements of L are the singular values of matrix A.
 
             //singularity threshold
-            double e = this.Threshold;
+            Double e = this.Threshold;
 
-            double[] Y = value;
+            var Y = value;
 
             // Create L*, which is a diagonal matrix with elements
             //    L*i = 1/Li  if Li = e, else 0, 
@@ -976,26 +981,26 @@ namespace Accord.Math.Decompositions
 
             int scols = s.Length;
 
-            double[,] Ls = new double[scols, scols];
+            var Ls = new Double[scols, scols];
             for (int i = 0; i < s.Length; i++)
             {
                 if (System.Math.Abs(s[i]) <= e)
                     Ls[i, i] = 0;
-                else Ls[i, i] = 1.0 / s[i];
+                else Ls[i, i] = 1 / s[i];
             }
 
             //(V x L*) x Ut x Y
-            double[,] VL = v.Multiply(Ls);
+            var VL = v.Multiply(Ls);
 
             //(V x L* x Ut) x Y
             int urows = u.GetLength(0);
             int vrows = v.GetLength(0);
-            double[,] VLU = new double[vrows, urows];
+            var VLU = new Double[vrows, urows];
             for (int i = 0; i < vrows; i++)
             {
                 for (int j = 0; j < urows; j++)
                 {
-                    double sum = 0;
+                    Double sum = 0;
                     for (int k = 0; k < scols; k++)
                         sum += VL[i, k] * u[j, k];
                     VLU[i, j] = sum;
@@ -1009,14 +1014,15 @@ namespace Accord.Math.Decompositions
         /// <summary>
         ///   Computes the (pseudo-)inverse of the matrix given to the Singular value decomposition.
         /// </summary>
-        public double[,] Inverse()
+        ///
+        public Double[,] Inverse()
         {
-            double e = this.Threshold;
+            Double e = this.Threshold;
 
             // X = V*S^-1
             int vrows = v.GetLength(0);
             int vcols = v.GetLength(1);
-            double[,] X = new double[vrows, s.Length];
+            var X = new Double[vrows, s.Length];
             for (int i = 0; i < vrows; i++)
             {
                 for (int j = 0; j < vcols; j++)
@@ -1029,12 +1035,12 @@ namespace Accord.Math.Decompositions
             // Y = X*U'
             int urows = u.GetLength(0);
             int ucols = u.GetLength(1);
-            double[,] Y = new double[vrows, urows];
+            var Y = new Double[vrows, urows];
             for (int i = 0; i < vrows; i++)
             {
                 for (int j = 0; j < urows; j++)
                 {
-                    double sum = 0;
+                    Double sum = 0;
                     for (int k = 0; k < ucols; k++)
                         sum += X[i, k] * u[j, k];
                     Y[i, j] = sum;
@@ -1057,16 +1063,17 @@ namespace Accord.Math.Decompositions
         /// <returns>
         ///   A new object that is a copy of this instance.
         /// </returns>
+        ///
         public object Clone()
         {
             var svd = new SingularValueDecomposition();
             svd.m = m;
             svd.n = n;
-            svd.s = (double[])s.Clone();
+            svd.s = (Double[])s.Clone();
             svd.si = (int[])si.Clone();
             svd.swapped = swapped;
-            if (u != null) svd.u = (double[,])u.Clone();
-            if (v != null) svd.v = (double[,])u.Clone();
+            if (u != null) svd.u = (Double[,])u.Clone();
+            if (v != null) svd.v = (Double[,])u.Clone();
 
             return svd;
         }

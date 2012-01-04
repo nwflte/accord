@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 // Copyright © Jorge Nocedal, 1990
@@ -28,7 +28,7 @@ namespace Accord.Math.Optimization
     using System;
 
     /// <summary>
-    ///   Limited-memory Broyden–Fletcher–Goldfarb–Shanno (L-BFGS) method.
+    ///   Limited-memory Broyden–Fletcher–Goldfarb–Shanno (L-BFGS) optimization method.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -65,7 +65,7 @@ namespace Accord.Math.Optimization
     ///    </list></para>
     /// </remarks>
     /// 
-    public class LbfgsOptimization : IOptimizationMethod
+    public class BroydenFletcherGoldfarbShanno : IOptimizationMethod
     {
         // those values need not be modified
         private const double ftol = 0.0001;
@@ -92,6 +92,7 @@ namespace Accord.Math.Optimization
 
 
         #region Properties
+
         /// <summary>
         ///   Occurs when progress is made during the optimization.
         /// </summary>
@@ -139,7 +140,7 @@ namespace Accord.Math.Optimization
 
         /// <summary>
         ///   Gets the number of iterations performed in the last
-        ///   call to <see cref="Optimize"/>.
+        ///   call to <see cref="Minimize"/>.
         /// </summary>
         /// 
         /// <value>
@@ -152,8 +153,18 @@ namespace Accord.Math.Optimization
         }
 
         /// <summary>
+        ///   Gets or sets the maximum number of iterations
+        ///   to be performed during optimization. Default
+        ///   is 0 (iterate until convergence).
+        /// </summary>
+        /// 
+        public int MaxIterations
+        {
+            get; set;
+        }
+        /// <summary>
         ///   Gets the number of function evaluations performed
-        ///   in the last call to <see cref="Optimize"/>.
+        ///   in the last call to <see cref="Minimize"/>.
         /// </summary>
         /// 
         /// <value>
@@ -250,7 +261,7 @@ namespace Accord.Math.Optimization
         ///   Creates a new instance of the L-BFGS optimization algorithm.
         /// </summary>
         /// <param name="parameters">The number of free parameters in the optimization problem.</param>
-        public LbfgsOptimization(int parameters)
+        public BroydenFletcherGoldfarbShanno(int parameters)
         {
             if (parameters <= 0)
                 throw new ArgumentOutOfRangeException("parameters");
@@ -266,7 +277,7 @@ namespace Accord.Math.Optimization
         /// <param name="parameters">The number of free parameters in the function to be optimized.</param>
         /// <param name="function">The function to be optimized.</param>
         /// <param name="gradient">The gradient of the function.</param>
-        public LbfgsOptimization(int parameters, Func<double[], double> function, Func<double[], double[]> gradient)
+        public BroydenFletcherGoldfarbShanno(int parameters, Func<double[], double> function, Func<double[], double[]> gradient)
             : this(parameters)
         {
             if (function == null)
@@ -286,7 +297,7 @@ namespace Accord.Math.Optimization
         /// <param name="function">The function to be optimized.</param>
         /// <param name="gradient">The gradient of the function.</param>
         /// <param name="diagonal">The diagonal of the Hessian.</param>
-        public LbfgsOptimization(int parameters, Func<double[], double> function, Func<double[], double[]> gradient, Func<double[]> diagonal)
+        public BroydenFletcherGoldfarbShanno(int parameters, Func<double[], double> function, Func<double[], double[]> gradient, Func<double[]> diagonal)
             : this(parameters, function, gradient)
         {
             this.Diagonal = diagonal;
@@ -301,7 +312,7 @@ namespace Accord.Math.Optimization
         /// <param name="values">The initial guess values for the parameters.</param>
         /// <returns>The values of the parameters which optimizes the function.</returns>
         /// 
-        public unsafe double Optimize(double[] values)
+        public unsafe double Minimize(double[] values)
         {
             if (values == null)
                 throw new ArgumentNullException("values");
@@ -339,7 +350,7 @@ namespace Accord.Math.Optimization
             else
             {
                 diagonal = new double[n];
-                for (int i = 0; i < n; i++)
+                for (int i = 0; i < diagonal.Length; i++)
                     diagonal[i] = 1.0;
             }
 
@@ -356,7 +367,7 @@ namespace Accord.Math.Optimization
 
 
                 // Initialize work vector
-                for (int i = 0; i < n; i++)
+                for (int i = 0; i < g.Length; i++)
                     steps[i] = -g[i] * diagonal[i];
 
                 // Initialize statistics
@@ -446,7 +457,7 @@ namespace Accord.Math.Optimization
                     }
 
                     // Save original gradient
-                    for (int i = 0; i < n; i++)
+                    for (int i = 0; i < g.Length; i++)
                         w[i] = g[i];
 
 
@@ -458,7 +469,7 @@ namespace Accord.Math.Optimization
 
                     // Compute the new step and
                     // new gradient differences
-                    for (int i = 0; i < n; i++)
+                    for (int i = 0; i < g.Length; i++)
                     {
                         steps[npt + i] *= stp;
                         delta[npt + i] = g[i] - w[i];
@@ -489,6 +500,7 @@ namespace Accord.Math.Optimization
         /// <summary>
         ///   Finds a step which satisfies a sufficient decrease and curvature condition.
         /// </summary>
+        /// 
         private unsafe void mcsrch(double[] x, ref double f, ref double[] g, double* s,
             ref double stp, out int nfev, double[] wa)
         {
@@ -499,14 +511,14 @@ namespace Accord.Math.Optimization
             nfev = 0;
 
             if (stp <= 0)
-                return;
+                throw new LineSearchFailedException(1, "Invalid step size.");
 
             // Compute the initial gradient in the search direction
             // and check that s is a descent direction.
 
             double dginit = 0;
 
-            for (int j = 0; j < n; j++)
+            for (int j = 0; j < g.Length; j++)
                 dginit = dginit + g[j] * s[j];
 
             if (dginit >= 0)
@@ -520,7 +532,7 @@ namespace Accord.Math.Optimization
             double width = stpmax - stpmin;
             double width1 = width / 0.5;
 
-            for (int j = 0; j < n; j++)
+            for (int j = 0; j < x.Length; j++)
                 wa[j] = x[j];
 
             // The variables stx, fx, dgx contain the values of the
@@ -584,7 +596,6 @@ namespace Accord.Math.Optimization
                     x[j] = wa[j] + stp * s[j];
 
                 // Reevaluate function and gradient
-
                 f = getFunction(x);
                 g = getGradient(x);
 
@@ -646,7 +657,7 @@ namespace Accord.Math.Optimization
                     // Call cstep to update the interval of uncertainty
                     // and to compute the new step.
 
-                    mcstep(ref stx, ref fxm, ref dgxm,
+                    SearchStep(ref stx, ref fxm, ref dgxm,
                         ref sty, ref fym, ref dgym, ref stp,
                         fm, dgm, ref brackt, out infoc);
 
@@ -661,7 +672,7 @@ namespace Accord.Math.Optimization
                     // Call mcstep to update the interval of uncertainty
                     // and to compute the new step.
 
-                    mcstep(ref stx, ref fx, ref dgx,
+                    SearchStep(ref stx, ref fx, ref dgx,
                         ref sty, ref fy, ref dgy, ref stp,
                         f, dg, ref brackt, out infoc);
                 }
@@ -681,7 +692,8 @@ namespace Accord.Math.Optimization
             }
         }
 
-        private static void mcstep(ref double stx, ref double fx, ref double dx,
+        // TODO: Move to separate classes
+        internal static void SearchStep(ref double stx, ref double fx, ref double dx,
                                    ref double sty, ref double fy, ref double dy,
                                    ref double stp, double fp, double dp,
                                    ref bool brackt, out int info)
@@ -707,25 +719,21 @@ namespace Accord.Math.Optimization
                 info = 1;
                 bound = true;
                 double theta = 3.0 * (fx - fp) / (stp - stx) + dx + dp;
-                double s = max3(Math.Abs(theta), Math.Abs(dx), Math.Abs(dp));
-                double gamma = s * Math.Sqrt(sqr(theta / s) - (dx / s) * (dp / s));
+                double s = Math.Max(Math.Abs(theta), Math.Max(Math.Abs(dx), Math.Abs(dp)));
+                double gamma = s * Math.Sqrt((theta / s) * (theta / s) - (dx / s) * (dp / s));
 
                 if (stp < stx) gamma = -gamma;
 
-                double p = (gamma - dx) + theta;
-                double q = ((gamma - dx) + gamma) + dp;
+                double p = gamma - dx + theta;
+                double q = gamma - dx + gamma + dp;
                 double r = p / q;
                 stpc = stx + r * (stp - stx);
                 stpq = stx + ((dx / ((fx - fp) / (stp - stx) + dx)) / 2) * (stp - stx);
 
                 if (Math.Abs(stpc - stx) < Math.Abs(stpq - stx))
-                {
                     stpf = stpc;
-                }
                 else
-                {
                     stpf = stpc + (stpq - stpc) / 2.0;
-                }
 
                 brackt = true;
             }
@@ -739,8 +747,8 @@ namespace Accord.Math.Optimization
                 info = 2;
                 bound = false;
                 double theta = 3 * (fx - fp) / (stp - stx) + dx + dp;
-                double s = max3(Math.Abs(theta), Math.Abs(dx), Math.Abs(dp));
-                double gamma = s * Math.Sqrt(sqr(theta / s) - (dx / s) * (dp / s));
+                double s = Math.Max(Math.Abs(theta), Math.Max(Math.Abs(dx), Math.Abs(dp)));
+                double gamma = s * Math.Sqrt((theta / s) * (theta / s) - (dx / s) * (dp / s));
 
                 if (stp > stx) gamma = -gamma;
 
@@ -751,13 +759,8 @@ namespace Accord.Math.Optimization
                 stpq = stp + (dp / (dp - dx)) * (stx - stp);
 
                 if (Math.Abs(stpc - stp) > Math.Abs(stpq - stp))
-                {
                     stpf = stpc;
-                }
-                else
-                {
-                    stpf = stpq;
-                }
+                else stpf = stpq;
 
                 brackt = true;
             }
@@ -775,8 +778,8 @@ namespace Accord.Math.Optimization
                 info = 3;
                 bound = true;
                 double theta = 3 * (fx - fp) / (stp - stx) + dx + dp;
-                double s = max3(Math.Abs(theta), Math.Abs(dx), Math.Abs(dp));
-                double gamma = s * Math.Sqrt(Math.Max(0, sqr(theta / s) - (dx / s) * (dp / s)));
+                double s = Math.Max(Math.Abs(theta), Math.Max(Math.Abs(dx), Math.Abs(dp)));
+                double gamma = s * Math.Sqrt(Math.Max(0, (theta / s) * (theta / s) - (dx / s) * (dp / s)));
 
                 if (stp > stx) gamma = -gamma;
 
@@ -785,41 +788,24 @@ namespace Accord.Math.Optimization
                 double r = p / q;
 
                 if (r < 0.0 && gamma != 0.0)
-                {
                     stpc = stp + r * (stx - stp);
-                }
                 else if (stp > stx)
-                {
                     stpc = stpmax;
-                }
-                else
-                {
-                    stpc = stpmin;
-                }
+                else stpc = stpmin;
 
                 stpq = stp + (dp / (dp - dx)) * (stx - stp);
 
                 if (brackt)
                 {
                     if (Math.Abs(stp - stpc) < Math.Abs(stp - stpq))
-                    {
                         stpf = stpc;
-                    }
-                    else
-                    {
-                        stpf = stpq;
-                    }
+                    else stpf = stpq;
                 }
                 else
                 {
                     if (Math.Abs(stp - stpc) > Math.Abs(stp - stpq))
-                    {
                         stpf = stpc;
-                    }
-                    else
-                    {
-                        stpf = stpq;
-                    }
+                    else stpf = stpq;
                 }
             }
             else
@@ -835,8 +821,8 @@ namespace Accord.Math.Optimization
                 if (brackt)
                 {
                     double theta = 3 * (fp - fy) / (sty - stp) + dy + dp;
-                    double s = max3(Math.Abs(theta), Math.Abs(dy), Math.Abs(dp));
-                    double gamma = s * Math.Sqrt(sqr(theta / s) - (dy / s) * (dp / s));
+                    double s = Math.Max(Math.Abs(theta), Math.Max(Math.Abs(dy), Math.Abs(dp)));
+                    double gamma = s * Math.Sqrt((theta / s) * (theta / s) - (dy / s) * (dp / s));
 
                     if (stp > sty) gamma = -gamma;
 
@@ -847,13 +833,8 @@ namespace Accord.Math.Optimization
                     stpf = stpc;
                 }
                 else if (stp > stx)
-                {
                     stpf = stpmax;
-                }
-                else
-                {
-                    stpf = stpmin;
-                }
+                else stpf = stpmin;
             }
 
             // Update the interval of uncertainty. This update does not
@@ -879,7 +860,6 @@ namespace Accord.Math.Optimization
             }
 
             // Compute the new step and safeguard it.
-
             stpf = Math.Min(stpmax, stpf);
             stpf = Math.Max(stpmin, stpf);
             stp = stpf;
@@ -887,13 +867,9 @@ namespace Accord.Math.Optimization
             if (brackt && bound)
             {
                 if (sty > stx)
-                {
                     stp = Math.Min(stx + 0.66 * (sty - stx), stp);
-                }
                 else
-                {
                     stp = Math.Max(stx + 0.66 * (sty - stx), stp);
-                }
             }
 
             return;
@@ -942,16 +918,6 @@ namespace Accord.Math.Optimization
         #endregion
 
         #region Static methods
-        private static double sqr(double x)
-        {
-            return x * x;
-        }
-
-        private static double max3(double x, double y, double z)
-        {
-            return x < y ? (y < z ? z : y) : (x < z ? z : x);
-        }
-
         private unsafe static void daxpy(int n, double da, double* dx, double* dy)
         {
             for (int i = 0; i < n; i++)

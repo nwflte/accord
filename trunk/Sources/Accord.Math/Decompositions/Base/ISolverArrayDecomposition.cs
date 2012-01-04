@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -22,20 +22,33 @@
 
 namespace Accord.Math.Decompositions
 {
+
     /// <summary>
     ///   Common interface for matrix decompositions which
-    ///   can be used to solve linear systems of equations.
+    ///   can be used to solve linear systems of equations
+    ///   involving jagged array matrices.
     /// </summary>
     /// 
-    public interface ISolverDecomposition
+    public interface ISolverArrayDecomposition<T> where T : struct
     {
-        /// <summary>Solves a set of equation systems of type <c>A * X = B</c>.</summary>
-        double[,] Solve(double[,] value);
 
-        /// <summary>Solves a set of equation systems of type <c>A * X = B</c>.</summary>
-        double[] Solve(double[] value);
+        /// <summary>
+        ///   Solves a set of equation systems of type <c>A * X = B</c>.
+        /// </summary>
+        /// 
+        T[][] Solve(T[][] value);
 
-        /// <summary>Solves a set of equation systems of type <c>A * X = I</c>.</summary>
-        double[,] Inverse();
+        /// <summary>
+        ///   Solves a set of equation systems of type <c>A * X = B</c>.
+        /// </summary>
+        /// 
+        T[] Solve(T[] value);
+
+        /// <summary>
+        ///   Solves a set of equation systems of type <c>A * X = I</c>.
+        /// </summary>
+        /// 
+        T[][] Inverse();
+
     }
 }

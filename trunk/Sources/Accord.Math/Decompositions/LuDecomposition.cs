@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 // Original work copyright © Lutz Roeder, 2000
@@ -48,7 +48,7 @@ namespace Accord.Math.Decompositions
     ///   </para>
     /// </remarks>
     /// 
-    public sealed class LuDecomposition : ISolverDecomposition, ICloneable
+    public sealed class LuDecomposition : ICloneable, ISolverMatrixDecomposition<double>
     {
         private int rows;
         private int cols;
@@ -121,7 +121,7 @@ namespace Accord.Math.Decompositions
             for (int i = 0; i < rows; i++)
                 pivotVector[i] = i;
 
-            double[] LUcolj = new double[rows];
+            var LUcolj = new double[rows];
 
 
             unsafe
@@ -138,7 +138,7 @@ namespace Accord.Math.Decompositions
                         // Apply previous transformations.
                         for (int i = 0; i < rows; i++)
                         {
-                            double s = 0.0;
+                            double s = 0;
 
                             // Most of the time is spent in
                             // the following dot product:
@@ -162,7 +162,7 @@ namespace Accord.Math.Decompositions
                         {
                             for (int k = 0; k < cols; k++)
                             {
-                                double t = lu[p, k];
+                                var t = lu[p, k];
                                 lu[p, k] = lu[j, k];
                                 lu[j, k] = t;
                             }
@@ -198,12 +198,11 @@ namespace Accord.Math.Decompositions
                     if (rows != cols)
                         throw new InvalidOperationException("Matrix must be square.");
 
-                    bool ns = true;
-                    for (int i = 0; i < rows && ns; i++)
-                        if (lu[i, i] == 0)
-                            ns = false;
+                    bool nonSingular = true;
+                    for (int i = 0; i < rows && nonSingular; i++)
+                        if (lu[i, i] == 0) nonSingular = false;
 
-                    nonsingular = ns;
+                    nonsingular = nonSingular;
                 }
 
                 return nonsingular.Value;
@@ -249,8 +248,7 @@ namespace Accord.Math.Decompositions
 
                     double lndet = 0;
                     for (int i = 0; i < rows; i++)
-                        lndet += System.Math.Log(System.Math.Abs(lu[i, i]));
-
+                        lndet += Math.Log((double)Math.Abs(lu[i, i]));
                     lndeterminant = lndet;
                 }
 
@@ -268,7 +266,7 @@ namespace Accord.Math.Decompositions
             {
                 if (lowerTriangularFactor == null)
                 {
-                    double[,] L = new double[rows, rows];
+                    var L = new double[rows, rows];
 
                     for (int i = 0; i < rows; i++)
                     {
@@ -277,9 +275,9 @@ namespace Accord.Math.Decompositions
                             if (i > j)
                                 L[i, j] = lu[i, j];
                             else if (i == j)
-                                L[i, j] = 1.0;
+                                L[i, j] = 1;
                             else
-                                L[i, j] = 0.0;
+                                L[i, j] = 0;
                         }
                     }
 
@@ -300,7 +298,7 @@ namespace Accord.Math.Decompositions
             {
                 if (upperTriangularFactor == null)
                 {
-                    double[,] U = new double[rows, cols];
+                    var U = new double[rows, cols];
                     for (int i = 0; i < rows; i++)
                     {
                         for (int j = 0; j < cols; j++)
@@ -308,7 +306,7 @@ namespace Accord.Math.Decompositions
                             if (i <= j)
                                 U[i, j] = lu[i, j];
                             else
-                                U[i, j] = 0.0;
+                                U[i, j] = 0;
                         }
                     }
 
@@ -341,11 +339,11 @@ namespace Accord.Math.Decompositions
             int count = rows;
 
             // Copy right hand side with pivoting
-            double[,] X = new double[rows, rows];
+            var X = new double[rows, rows];
             for (int i = 0; i < rows; i++)
             {
                 int k = pivotVector[i];
-                X[i, k] = 1.0;
+                X[i, k] = 1;
             }
 
             // Solve L*Y = B(piv,:)
@@ -430,7 +428,7 @@ namespace Accord.Math.Decompositions
 
 
             // Copy right hand side with pivoting
-            double[,] X = value.Submatrix(null, pivotVector);
+            var X = value.Submatrix(null, pivotVector);
 
             int count = X.GetLength(1);
 
@@ -474,13 +472,13 @@ namespace Accord.Math.Decompositions
 
             // Copy right hand side with pivoting
             int count = value.Length;
-            double[] b = new double[count];
+            var b = new double[count];
             for (int i = 0; i < b.Length; i++)
                 b[i] = value[pivotVector[i]];
 
 
             // Solve L*Y = B
-            double[] X = new double[count];
+            var X = new double[count];
             for (int i = 0; i < rows; i++)
             {
                 X[i] = b[i];
@@ -491,7 +489,6 @@ namespace Accord.Math.Decompositions
             // Solve U*X = Y;
             for (int i = rows - 1; i >= 0; i--)
             {
-                //double sum = 0.0;
                 for (int j = rows - 1; j > i; j--)
                     X[i] -= lu[i, j] * X[j];
                 X[i] /= lu[i, i];

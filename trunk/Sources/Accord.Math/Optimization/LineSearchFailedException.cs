@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -32,7 +32,7 @@ namespace Accord.Math.Optimization
     /// </summary>
     /// 
     /// <remarks>
-    ///   This exception may be thrown by the <see cref="LbfgsOptimization">L-BFGS Optimizer</see>
+    ///   This exception may be thrown by the <see cref="BroydenFletcherGoldfarbShanno">L-BFGS Optimizer</see>
     ///   when the line search routine used by the optimization method fails.
     /// </remarks>
     /// 
