@@ -7,7 +7,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Accord.Audio.Formats</RootNamespace>
     <AssemblyName>Accord.Audio.Formats</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>Accord.snk</AssemblyOriginatorKeyFile>
@@ -30,6 +30,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\Debug\</OutputPath>
@@ -68,6 +69,8 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="WaveEncoder.cs" />
+    <Compile Include="IAudioEncoder.cs" />
     <Compile Include="IAudioDecoder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WaveDecoder.cs" />

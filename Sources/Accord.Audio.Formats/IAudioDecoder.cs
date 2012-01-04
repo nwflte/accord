@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -62,7 +62,7 @@ namespace Accord.Audio.Formats
         /// <returns>Returns the decoded signal.</returns>
         /// 
         /// <remarks>Implementations of this method may throw
-        /// <see cref="System.NullReferenceException"/> exception in the case if no image
+        /// <see cref="System.NullReferenceException"/> exception in the case if no audio
         /// stream was opened previously, <see cref="System.ArgumentOutOfRangeException"/> in the
         /// case if stream does not contain frame with specified index or  <see cref="System.ArgumentException"/>
         /// exception to report about incorrectly formatted audio.
