@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -23,6 +23,8 @@
 namespace Accord.Neuro.Learning
 {
     using System;
+    using System.Diagnostics;
+    using System.Threading.Tasks;
     using Accord.Math;
     using Accord.Math.Decompositions;
     using AForge.Neuro;
@@ -137,16 +139,16 @@ namespace Accord.Neuro.Learning
         // Bayesian Regularization Hyperparameters
         private double gamma;
         private double alpha;
-        private double beta = 1.0;
+        private double beta = 1;
 
         // Levenberg-Marquardt variables
-        private double[][] jacobian;
-        private double[,] hessian;
+        private float[][] jacobian;
+        private float[][] hessian;
 
-        private double[] diagonal;
-        private double[] gradient;
-        private double[] weigths;
-        private double[] deltas;
+        private float[] diagonal;
+        private float[] gradient;
+        private float[] weights;
+        private float[] deltas;
         private double[] errors;
 
         private JacobianMethod method;
@@ -154,13 +156,15 @@ namespace Accord.Neuro.Learning
         // Levenberg damping factor
         private double lambda = 0.1;
 
-        // The ammount the damping factor is adjusted
-        //  when searching for the minimum error surface
+        // The amount the damping factor is adjusted
+        // when searching the minimum error surface
         private double v = 10.0;
 
         // Total of weights in the network
         private int numberOfParameters;
 
+        private int blocks = 1;
+        private int outputCount;
 
 
         /// <summary>
@@ -169,7 +173,7 @@ namespace Accord.Neuro.Learning
         /// 
         /// <remarks><para>The value determines speed of learning.</para>
         /// 
-        /// <para>Default value equals to <b>0.1</b>.</para>
+        /// <para>Default value is <b>0.1</b>.</para>
         /// </remarks>
         ///
         public double LearningRate
@@ -185,7 +189,7 @@ namespace Accord.Neuro.Learning
         /// <remarks><para>The value by which the learning rate
         /// is adjusted when searching for the minimum cost surface.</para>
         /// 
-        /// <para>Default value equals to <b>10</b>.</para>
+        /// <para>Default value is <b>10</b>.</para>
         /// </remarks>
         ///
         public double Adjustment
@@ -257,6 +261,18 @@ namespace Accord.Neuro.Learning
             set { useBayesianRegularization = value; }
         }
 
+        /// <summary>
+        ///   Gets or sets the number of blocks to divide the 
+        ///   Jacobian matrix in the Hessian calculation to
+        ///   preserve memory. Default is 1.
+        /// </summary>
+        /// 
+        public int Blocks
+        {
+            get { return blocks; }
+            set { blocks = value; }
+        }
+
 
 
         /// <summary>
@@ -266,9 +282,7 @@ namespace Accord.Neuro.Learning
         /// <param name="network">Network to teach.</param>
         /// 
         public LevenbergMarquardtLearning(ActivationNetwork network) :
-            this(network, false, JacobianMethod.ByBackpropagation)
-        {
-        }
+            this(network, false, JacobianMethod.ByBackpropagation) { }
 
         /// <summary>
         ///   Initializes a new instance of the <see cref="LevenbergMarquardtLearning"/> class.
@@ -278,9 +292,7 @@ namespace Accord.Neuro.Learning
         /// <param name="useRegularization">True to use bayesian regularization, false otherwise.</param>
         /// 
         public LevenbergMarquardtLearning(ActivationNetwork network, bool useRegularization) :
-            this(network, useRegularization, JacobianMethod.ByBackpropagation)
-        {
-        }
+            this(network, useRegularization, JacobianMethod.ByBackpropagation) { }
 
         /// <summary>
         ///   Initializes a new instance of the <see cref="LevenbergMarquardtLearning"/> class.
@@ -292,43 +304,39 @@ namespace Accord.Neuro.Learning
         /// 
         public LevenbergMarquardtLearning(ActivationNetwork network, bool useRegularization, JacobianMethod method)
         {
-            if (network[network.LayersCount - 1].NeuronsCount > 1)
-            {
-                throw new NotSupportedException("Currently only networks with a single output are supported.");
-            }
-
-
             this.network = network;
             this.numberOfParameters = getNumberOfParameters(network);
+            this.outputCount = network[network.LayersCount - 1].NeuronsCount;
+
             this.useBayesianRegularization = useRegularization;
-            this.weigths = new double[numberOfParameters];
-            this.hessian = new double[numberOfParameters, numberOfParameters];
-            this.diagonal = new double[numberOfParameters];
-            this.gradient = new double[numberOfParameters];
-            this.jacobian = new double[numberOfParameters][];
             this.method = method;
 
+            this.weights = new float[numberOfParameters];
+            this.hessian = new float[numberOfParameters][];
+            for (int i = 0; i < hessian.Length; i++)
+                hessian[i] = new float[numberOfParameters];
+            this.diagonal = new float[numberOfParameters];
+            this.gradient = new float[numberOfParameters];
+            this.jacobian = new float[numberOfParameters][];
 
 
             // Will use backpropagation method for Jacobian computation
             if (method == JacobianMethod.ByBackpropagation)
             {
                 // create weight derivatives arrays
-                this.weightDerivatives = new double[network.LayersCount][][];
-                this.thresholdsDerivatives = new double[network.LayersCount][];
+                this.weightDerivatives = new float[network.LayersCount][][];
+                this.thresholdsDerivatives = new float[network.LayersCount][];
 
                 // initialize arrays
                 for (int i = 0; i < network.LayersCount; i++)
                 {
                     ActivationLayer layer = network[i];
 
-                    this.weightDerivatives[i] = new double[layer.NeuronsCount][];
-                    this.thresholdsDerivatives[i] = new double[layer.NeuronsCount];
+                    this.weightDerivatives[i] = new float[layer.NeuronsCount][];
+                    this.thresholdsDerivatives[i] = new float[layer.NeuronsCount];
 
                     for (int j = 0; j < layer.NeuronsCount; j++)
-                    {
-                        this.weightDerivatives[i][j] = new double[layer.InputsCount];
-                    }
+                        this.weightDerivatives[i][j] = new float[layer.InputsCount];
                 }
             }
             else // Will use finite difference method for Jacobian computation
@@ -339,9 +347,7 @@ namespace Accord.Neuro.Learning
 
                 // initialize arrays
                 for (int i = 0; i < numberOfParameters; i++)
-                {
                     this.derivativeStepSize[i] = derivativeStep;
-                }
             }
         }
 
@@ -383,77 +389,119 @@ namespace Accord.Neuro.Learning
             // Initial definitions and memory allocations
             int N = input.Length;
 
-            LuDecomposition decomposition = null;
+            JaggedCholeskyDecompositionF decomposition = null;
             double sumOfSquaredErrors = 0.0;
             double sumOfSquaredWeights = 0.0;
             double trace = 0.0;
 
+            // Set upper triangular Hessian to zero
+            for (int i = 0; i < hessian.Length; i++)
+                Array.Clear(hessian[i], i, hessian.Length - i);
 
-            // Re-allocate errorr vector if needed
-            if (errors == null || errors.Length != N)
-                errors = new double[N];
+            // Set Gradient vector to zero
+            Array.Clear(gradient, 0, gradient.Length);
 
-            // Re-allocate the Jacobian matrix if needed
-            if (jacobian[0] == null || jacobian[0].Length != N)
+
+            // Divide the problem into blocks. Instead of computing
+            // a single Jacobian and a single error vector, we will
+            // be computing multiple Jacobians for smaller problems
+            // and then sum all blocks into the final Hessian matrix
+            // and gradient vector.
+
+            int blockSize = input.Length / Blocks;
+            int finalBlock = input.Length % Blocks;
+            int jacobianSize = blockSize * outputCount;
+
+            // Re-allocate the partial Jacobian matrix only if needed
+            if (jacobian[0] == null || jacobian[0].Length < jacobianSize)
             {
                 for (int i = 0; i < jacobian.Length; i++)
-                    this.jacobian[i] = new double[N];
+                    this.jacobian[i] = new float[jacobianSize];
             }
 
+            // Re-allocate error vector only if needed
+            if (errors == null || errors.Length < jacobianSize)
+                errors = new double[jacobianSize];
 
-            // Compute the Jacobian matrix
-            if (method == JacobianMethod.ByBackpropagation)
-                sumOfSquaredErrors = JacobianByChainRule(input, output);
-            else
-                sumOfSquaredErrors = JacobianByFiniteDifference(input, output);
 
+            // For each block
+            for (int s = 0; s <= Blocks; s++)
+            {
+                if (s == Blocks && finalBlock == 0)
+                    continue;
+
+                Trace.TraceInformation("Starting Jacobian block {0}/{1}", s + 1, Blocks);
+
+                int B = (s == Blocks) ? finalBlock : blockSize;
+                int[] block = Matrix.Indices(s * blockSize, s * blockSize + B);
+
+                double[][] inputBlock = input.Submatrix(block);
+                double[][] outputBlock = output.Submatrix(block);
+
+
+                // Compute the partial Jacobian matrix
+                if (method == JacobianMethod.ByBackpropagation)
+                    sumOfSquaredErrors = JacobianByChainRule(inputBlock, outputBlock);
+                else
+                    sumOfSquaredErrors = JacobianByFiniteDifference(inputBlock, outputBlock);
+
+                Trace.TraceInformation("Jacobian block finished.");
+
+
+                // Compute error gradient using jacobian
+                Trace.TraceInformation("Updating gradient.");
+                for (int i = 0; i < jacobian.Length; i++)
+                {
+                    double gsum = 0;
+                    for (int j = 0; j < jacobianSize; j++)
+                        gsum += jacobian[i][j] * errors[j];
+                    gradient[i] += (float)gsum;
+                }
+                
+                
+                // Compute Quasi-Hessian Matrix approximation
+                //  using the outer project Jacobian (H ~ J'J)
+                Trace.TraceInformation("Updating Hessian.");
+                Parallel.For(0, jacobian.Length, i =>
+                {
+                    float[] ji = jacobian[i];
+                    float[] hi = hessian[i];
+
+                    for (int j = i; j < hi.Length; j++)
+                    {
+                        float[] jj = jacobian[j];
+
+                        double hsum = 0;
+                        for (int k = 0; k < jacobianSize; k++)
+                            hsum += ji[k] * jj[k];
+
+                        // The Hessian need only be upper-triangular, since
+                        // it is symmetric. The Cholesky decomposition will
+                        // make use of this fact and use the lower-triangular
+                        // portion to hold the decomposition, conserving memory.
+                        hi[j] += (float)(2 * beta * hsum);
+                    }
+                });
+            }
+
+            Trace.TraceInformation("Hessian computation finished.");
+
+            // Store the Hessian's diagonal for future computations. The
+            // diagonal will be destroyed in the decomposition, so it can
+            // still be updated on every iteration by restoring this copy.
+            for (int i = 0; i < hessian.Length; i++)
+                diagonal[i] = hessian[i][i];
 
             // Create the initial weights vector
             sumOfSquaredWeights = saveNetworkToArray();
 
 
-            // Compute error gradient
-            for (int i = 0; i < jacobian.Length; i++)
-            {
-                double[] ji = jacobian[i];
-
-                double s = 0.0;
-                for (int j = 0; j < ji.Length; j++)
-                    s += ji[j] * errors[j];
-                gradient[i] = s;
-            }
-
-            // Compute Quasi-Hessian Matrix approximation
-            //  using the outer project Jacobian (H ~ J'J)
-            for (int i = 0; i < jacobian.Length; i++)
-            {
-                double[] ji = jacobian[i];
-
-                for (int j = 0; j < jacobian.Length; j++)
-                {
-                    double[] jj = jacobian[j];
-
-                    double s = 0.0;
-                    for (int k = 0; k < ji.Length; k++)
-                        s += ji[k] * jj[k];
-
-                    hessian[i, j] = 2.0 * beta * s;
-                }
-            }
-
-            // Store the Hessian diagonal for future computations
-            for (int i = 0; i < diagonal.Length; i++)
-                diagonal[i] = hessian[i, i];
-
-
-            // Define the objective function
-            // bayesian regularization objective function
+            // Define the objective function: (bayesian regularization objective)
             double objective = beta * sumOfSquaredErrors + alpha * sumOfSquaredWeights;
-            double current = objective + 1.0;
+            double current = objective + 1.0; // (starting value to enter iteration)
 
 
-
-            // Begin of the main Levenberg-Macquardt method
+            // Begin of the main Levenberg-Marcquardt method
             lambda /= v;
 
             // We'll try to find a direction with less error
@@ -462,15 +510,20 @@ namespace Accord.Neuro.Learning
             {
                 lambda *= v;
 
-                // Update diagonal (Levenberg-Marquardt formula)
+                // Update diagonal (Levenberg-Marquardt)
                 for (int i = 0; i < diagonal.Length; i++)
-                    hessian[i, i] = diagonal[i] + 2.0 * (lambda + alpha);
+                    hessian[i][i] = (float)(diagonal[i] + 2 * lambda + 2 * alpha);
 
-                // Decompose to solve the linear system
-                decomposition = new LuDecomposition(hessian, false, true);
+                Trace.TraceInformation("Decomposition started.");
 
-                // Check if the Hessian has become non-invertible
-                if (!decomposition.Nonsingular)
+                // Decompose to solve the linear system. The Cholesky decomposition
+                // is done in place, occupying the Hessian's lower-triangular part.
+                decomposition = new JaggedCholeskyDecompositionF(hessian, robust: true, inPlace: true);
+
+                Trace.TraceInformation("Decomposition ended.");
+
+                // Check if the decomposition exists
+                if (decomposition.IsNotDefined)
                 {
                     // The Hessian is singular. Continue to the next
                     // iteration until the diagonal update transforms
@@ -478,20 +531,18 @@ namespace Accord.Neuro.Learning
                     continue;
                 }
 
-                // Solve using LU (or SVD) decomposition
-                // TODO: Investigate the use of Cholesky
+                Trace.TraceInformation("Solving linear system.");
+
+                // Solve using Cholesky decomposition
                 deltas = decomposition.Solve(gradient);
+
+                Trace.TraceInformation("Updating weights.");
 
                 // Update weights using the calculated deltas
                 sumOfSquaredWeights = loadArrayIntoNetwork();
 
                 // Calculate the new error
-                sumOfSquaredErrors = 0.0;
-                for (int i = 0; i < input.Length; i++)
-                {
-                    network.Compute(input[i]); // forward pass
-                    sumOfSquaredErrors += calculateError(output[i]);
-                }
+                sumOfSquaredErrors = ComputeError(input, output);
 
                 // Update the objective function
                 current = beta * sumOfSquaredErrors + alpha * sumOfSquaredWeights;
@@ -505,7 +556,6 @@ namespace Accord.Neuro.Learning
             lambda /= v;
 
 
-
             // If we are using bayesian regularization, we need to
             //   update the bayesian hyperparameters alpha and beta
             if (useBayesianRegularization)
@@ -514,13 +564,16 @@ namespace Accord.Neuro.Learning
                 // - http://www-alg.ist.hokudai.ac.jp/~jan/alpha.pdf
                 // - http://www.inference.phy.cam.ac.uk/mackay/Bayes_FAQ.html
 
-                // Compute the trace for the inverse hessian
-                trace = Matrix.Trace(decomposition.Inverse());
+                // Compute the trace for the inverse hessian in place. The
+                // Hessian which was still being hold together with the L
+                // factorization will be destroyed after this computation.
+                trace = decomposition.InverseTrace(destroy: true);
+
 
                 // Poland update's formula:
                 gamma = numberOfParameters - (alpha * trace);
-                alpha = numberOfParameters / (2.0 * sumOfSquaredWeights + trace);
-                beta = System.Math.Abs((N - gamma) / (2.0 * sumOfSquaredErrors));
+                alpha = numberOfParameters / (2 * sumOfSquaredWeights + trace);
+                beta = System.Math.Abs((N - gamma) / (2 * sumOfSquaredErrors));
                 //beta = (N - gama) / (2.0 * sumOfSquaredErrors);
 
                 // Original MacKay's update formula:
@@ -533,25 +586,49 @@ namespace Accord.Neuro.Learning
         }
 
         /// <summary>
-        ///   Calculates error values for the last network layer.
+        ///   Compute network error for a given data set.
         /// </summary>
         /// 
-        /// <param name="expected">Desired output vector.</param>
+        /// <param name="input">The input points.</param>
+        /// <param name="output">The output points.</param>
         /// 
-        /// <returns>Returns summary squared error of the last layer divided by 2.</returns>
+        /// <returns>The sum of squared errors for the data.</returns>
         /// 
-        private double calculateError(double[] expected)
+        public double ComputeError(double[][] input, double[][] output)
         {
-            double sumOfSquaredErrors = 0.0;
+            double sumOfSquaredErrors = 0;
+            object lockSum = new Object();
 
-            for (int j = 0; j < expected.Length; j++)
-            {
-                double e = expected[j] - network.Output[j];
-                sumOfSquaredErrors += e * e;
-            }
+            Parallel.For(0, input.Length,
+
+                // Initialize
+                () => 0.0,
+
+                // Map
+                (i, loopState, partialSum) =>
+                {
+                    // Compute network answer
+                    double[] y = network.Compute(input[i]);
+
+                    for (int j = 0; j < y.Length; j++)
+                    {
+                        double e = (y[j] - output[i][j]);
+                        partialSum += e * e;
+                    }
+
+                    return partialSum;
+                },
+
+                // Reduce
+                (partialSum) =>
+                {
+                    lock (lockSum) sumOfSquaredErrors += partialSum;
+                }
+            );
 
             return sumOfSquaredErrors / 2.0;
         }
+
 
         /// <summary>
         ///  Update network's weights.
@@ -562,27 +639,26 @@ namespace Accord.Neuro.Learning
         private double loadArrayIntoNetwork()
         {
             double w, sumOfSquaredWeights = 0.0;
-            int j = 0;
 
             // For each layer in the network
-            for (int li = 0; li < network.LayersCount; li++)
+            for (int li = 0, cur = 0; li < network.LayersCount; li++)
             {
                 ActivationLayer layer = network[li];
 
                 // for each neuron in the layer
-                for (int ni = 0; ni < layer.NeuronsCount; ni++, j++)
+                for (int ni = 0; ni < layer.NeuronsCount; ni++, cur++)
                 {
                     ActivationNeuron neuron = layer[ni];
 
                     // for each weight in the neuron
-                    for (int wi = 0; wi < neuron.InputsCount; wi++, j++)
+                    for (int wi = 0; wi < neuron.InputsCount; wi++, cur++)
                     {
-                        w = neuron[wi] = weigths[j] + deltas[j];
+                        neuron[wi] = w = weights[cur] + deltas[cur];
                         sumOfSquaredWeights += w * w;
                     }
 
                     // for each threshold value (bias):
-                    w = neuron.Threshold = weigths[j] + deltas[j];
+                    neuron.Threshold = w = weights[cur] + deltas[cur];
                     sumOfSquaredWeights += w * w;
                 }
             }
@@ -598,29 +674,28 @@ namespace Accord.Neuro.Learning
         /// 
         private double saveNetworkToArray()
         {
-            int j = 0;
             double w, sumOfSquaredWeights = 0.0;
 
             // for each layer in the network
-            for (int li = 0; li < network.LayersCount; li++)
+            for (int li = 0, cur = 0; li < network.LayersCount; li++)
             {
                 ActivationLayer layer = network[li];
 
                 // for each neuron in the layer
-                for (int ni = 0; ni < network[li].NeuronsCount; ni++)
+                for (int ni = 0; ni < network[li].NeuronsCount; ni++, cur++)
                 {
                     ActivationNeuron neuron = layer[ni];
 
                     // for each weight in the neuron
-                    for (int wi = 0; wi < neuron.InputsCount; wi++)
+                    for (int wi = 0; wi < neuron.InputsCount; wi++, cur++)
                     {
                         // We copy it to the starting weights vector
-                        w = weigths[j++] = neuron[wi];
+                        w = weights[cur] = (float)neuron[wi];
                         sumOfSquaredWeights += w * w;
                     }
 
                     // and also for the threshold value (bias):
-                    w = weigths[j++] = neuron.Threshold;
+                    w = weights[cur] = (float)neuron.Threshold;
                     sumOfSquaredWeights += w * w;
                 }
             }
@@ -633,26 +708,24 @@ namespace Accord.Neuro.Learning
         /// </summary>
         private static int getNumberOfParameters(ActivationNetwork network)
         {
-            int w = 0;
+            int sum = 0;
+
             for (int i = 0; i < network.LayersCount; i++)
             {
                 for (int j = 0; j < network[i].NeuronsCount; j++)
                 {
                     // number of weights plus the bias value
-                    w += network[i][j].InputsCount + 1;
+                    sum += network[i][j].InputsCount + 1;
                 }
             }
-            return w;
+            return sum;
         }
-
-
-
 
 
         #region Jacobian Calculation By Chain Rule
 
-        private double[][][] weightDerivatives;
-        private double[][] thresholdsDerivatives;
+        private float[][][] weightDerivatives;
+        private float[][] thresholdsDerivatives;
 
         /// <summary>
         ///   Calculates the Jacobian matrix by using the chain rule.
@@ -665,47 +738,42 @@ namespace Accord.Neuro.Learning
         {
             double e, sumOfSquaredErrors = 0.0;
 
-            // foreach training vector
-            for (int i = 0; i < input.Length; i++)
+            // foreach input training sample
+            for (int i = 0, row = 0; i < input.Length; i++)
             {
-                // Do a forward pass
+                // Compute a forward pass
                 network.Compute(input[i]);
 
-                // Calculate the derivatives for the j-th output            
-                //  by using a backpropagation pass
-                e = errors[i] = CalculateDerivatives(input[i], output[i], 0);
-                sumOfSquaredErrors += e * e;
-                int j = 0;
-
-
-                // Create the Jacobian matrix row: for each layer in the network
-                for (int li = 0; li < network.LayersCount; li++)
+                // for each output of for the input sample
+                for (int j = 0; j < output[i].Length; j++, row++)
                 {
-                    ActivationLayer layer = network[li];
+                    // Calculate the derivatives for the input/output
+                    //  pair by computing a backpropagation chain pass
+                    e = errors[row] = CalculateDerivatives(input[i], output[i], j);
+                    sumOfSquaredErrors += e * e;
 
-                    double[] layerThresoldDerivatives = thresholdsDerivatives[li];
-                    double[][] layerDerivatives = weightDerivatives[li];
-
-                    // for each neuron in the layer
-                    for (int ni = 0; ni < layerDerivatives.Length; ni++)
+                    // Create the Jacobian matrix row: for each layer in the network
+                    for (int li = 0, col = 0; li < weightDerivatives.Length; li++)
                     {
-                        ActivationNeuron neuron = layer[ni];
+                        float[][] layerDerivatives = weightDerivatives[li];
+                        float[] layerThresoldDerivatives = thresholdsDerivatives[li];
 
-                        double[] neuronWeightDerivatives = layerDerivatives[ni];
-
-                        // for each weight of the neuron
-                        for (int wi = 0; wi < neuronWeightDerivatives.Length; wi++)
+                        // for each neuron in the layer
+                        for (int ni = 0; ni < layerDerivatives.Length; ni++, col++)
                         {
-                            // copy derivative
-                            jacobian[j++][i] = neuronWeightDerivatives[wi];
-                        }
+                            float[] neuronWeightDerivatives = layerDerivatives[ni];
 
-                        // also copy for the neuron threshold
-                        jacobian[j++][i] = layerThresoldDerivatives[ni];
+                            // for each weight of the neuron, copy the derivative
+                            for (int wi = 0; wi < neuronWeightDerivatives.Length; wi++, col++)
+                                jacobian[col][row] = neuronWeightDerivatives[wi];
+
+                            // also copy the neuron threshold
+                            jacobian[col][row] = layerThresoldDerivatives[ni];
+                        }
                     }
                 }
-
             }
+
             return sumOfSquaredErrors / 2.0;
         }
 
@@ -721,58 +789,58 @@ namespace Accord.Neuro.Learning
         /// 
         private double CalculateDerivatives(double[] input, double[] desiredOutput, int outputIndex)
         {
-            // assume, that all neurons of the network have the same activation function
+            // Assume all network neurons have the same activation function
             IActivationFunction function = network[0][0].ActivationFunction;
 
-            double[] previousLayerOutput;
-
+            
             // Start by the output layer first
             int outputLayerIndex = network.LayersCount - 1;
             ActivationLayer outputLayer = network[outputLayerIndex];
+            double[] previousLayerOutput;
 
             // If we have only one single layer, the previous layer outputs is given by the input layer
             previousLayerOutput = (outputLayerIndex == 0) ? input : network[outputLayerIndex - 1].Output;
 
-            // Assume single output neuron
+            // Retrieve current desired output neuron
             ActivationNeuron outputNeuron = outputLayer[outputIndex];
-            double[] neuronWeightDerivatives = weightDerivatives[outputLayerIndex][outputIndex];
+            float[] neuronWeightDerivatives = weightDerivatives[outputLayerIndex][outputIndex];
 
             double output = outputNeuron.Output;
-            double e = desiredOutput[outputIndex] - output;
+            double error = desiredOutput[outputIndex] - output;
             double derivative = function.Derivative2(output);
 
             // Set derivative for each weight in the neuron
-            for (int i = 0; i < previousLayerOutput.Length; i++)
-                neuronWeightDerivatives[i] = derivative * previousLayerOutput[i];
+            for (int i = 0; i < neuronWeightDerivatives.Length; i++)
+                neuronWeightDerivatives[i] = (float)(derivative * previousLayerOutput[i]);
 
             // Set derivative for the current threshold (bias) term
-            thresholdsDerivatives[outputLayerIndex][outputIndex] = derivative;
+            thresholdsDerivatives[outputLayerIndex][outputIndex] = (float)derivative;
 
 
-            // Now, proceed to the hidden layers
-            for (int layerIndex = network.LayersCount - 2; layerIndex >= 0; layerIndex--)
+            // Now, proceed to the next hidden layers
+            for (int li = network.LayersCount - 2; li >= 0; li--)
             {
-                int nextLayerIndex = layerIndex + 1;
+                int nextLayerIndex = li + 1;
 
-                ActivationLayer layer = network[layerIndex];
+                ActivationLayer layer = network[li];
                 ActivationLayer nextLayer = network[nextLayerIndex];
 
                 // If we are in the first layer, the previous layer is just the input layer
-                previousLayerOutput = (layerIndex == 0) ? input : network[layerIndex - 1].Output;
+                previousLayerOutput = (li == 0) ? input : network[li - 1].Output;
 
                 // Now, we will compute the derivatives for the current layer applying the chain
                 //  rule. To apply the chain-rule, we will make use of the previous derivatives
                 //  computed for the inner layers (forming a calculation chain, hence the name).
 
                 // So, for each neuron in the current layer:
-                for (int neuronIndex = 0; neuronIndex < layer.NeuronsCount; neuronIndex++)
+                for (int ni = 0; ni < layer.NeuronsCount; ni++)
                 {
-                    ActivationNeuron neuron = layer[neuronIndex];
+                    ActivationNeuron neuron = layer[ni];
 
-                    neuronWeightDerivatives = weightDerivatives[layerIndex][neuronIndex];
+                    neuronWeightDerivatives = weightDerivatives[li][ni];
 
-                    double[] layerDerivatives = thresholdsDerivatives[layerIndex];
-                    double[] nextLayerDerivatives = thresholdsDerivatives[layerIndex + 1];
+                    float[] layerDerivatives = thresholdsDerivatives[li];
+                    float[] nextLayerDerivatives = thresholdsDerivatives[li + 1];
 
                     double sum = 0;
 
@@ -784,25 +852,25 @@ namespace Accord.Neuro.Learning
                     //  them using their connection weight (sinapses).
                     //
                     // So, for each neuron in the next layer:
-                    for (int j = 0; j < nextLayerDerivatives.Length; j++)
+                    for (int nj = 0; nj < nextLayerDerivatives.Length; nj++)
                     {
                         // retrieve the weight connecting the output of the current
                         //   neuron and the activation function of the next neuron.
-                        double weight = nextLayer[j][neuronIndex];
+                        double weight = nextLayer[nj][ni];
 
                         // accumulate the sinapse weight * next layer derivative
-                        sum += weight * nextLayerDerivatives[j];
+                        sum += weight * nextLayerDerivatives[nj];
                     }
 
                     // Continue forming the chain-rule statement
                     derivative = sum * function.Derivative2(neuron.Output);
 
                     // Set derivative for each weight in the neuron
-                    for (int i = 0; i < previousLayerOutput.Length; i++)
-                        neuronWeightDerivatives[i] = derivative * previousLayerOutput[i];
+                    for (int wi = 0; wi < neuronWeightDerivatives.Length; wi++)
+                        neuronWeightDerivatives[wi] = (float)(derivative * previousLayerOutput[wi]);
 
                     // Set derivative for the current threshold
-                    layerDerivatives[neuronIndex] = derivative;
+                    layerDerivatives[ni] = (float)(derivative);
 
                     // The threshold derivatives also gather the derivatives for
                     // the layer, and thus can be re-used in next calculations.
@@ -810,7 +878,7 @@ namespace Accord.Neuro.Learning
             }
 
             // return error
-            return e;
+            return error;
         }
         #endregion
 
@@ -828,47 +896,52 @@ namespace Accord.Neuro.Learning
         /// <summary>
         ///   Calculates the Jacobian Matrix using Finite Differences
         /// </summary>
+        /// 
         /// <returns>Returns the sum of squared errors of the network divided by 2.</returns>
+        /// 
         private double JacobianByFiniteDifference(double[][] input, double[][] desiredOutput)
         {
-            double[] networkOutput;
             double e, sumOfSquaredErrors = 0;
-            int N = input.Length;
 
-            // foreach training vector
-            for (int i = 0; i < N; i++)
+            // for each input training sample
+            for (int i = 0, row = 0; i < input.Length; i++)
             {
-                networkOutput = network.Compute(input[i]);
+                // Compute a forward pass
+                double[] networkOutput = network.Compute(input[i]);
 
-                // Calculate network error to build the residuals vector
-                e = errors[i] = desiredOutput[i][0] - networkOutput[0];
-                sumOfSquaredErrors += e * e;
-
-                // Computation of one of the Jacobian Matrix rows by nummerical differentiation:
-                // for each weight wj in the network, we have to compute its partial
-                //   derivative to build the jacobian matrix.
-                int jj = 0;
-
-                // So, for each layer:
-                for (int layerIndex = 0; layerIndex < network.LayersCount; layerIndex++)
+                // for each output respective to the input
+                for (int j = 0; j < networkOutput.Length; j++, row++)
                 {
-                    ActivationLayer layer = network[layerIndex];
+                    // Calculate network error to build the residuals vector
+                    e = errors[row] = desiredOutput[i][j] - networkOutput[j];
+                    sumOfSquaredErrors += e * e;
 
-                    // for each neuron:
-                    for (int neuronIndex = 0; neuronIndex < layer.NeuronsCount; neuronIndex++)
+                    // Computation of one of the Jacobian Matrix rows by nummerical differentiation:
+                    // for each weight wj in the network, we have to compute its partial derivative
+                    // to build the jacobian matrix.
+
+                    // So, for each layer:
+                    for (int li = 0, col = 0; li < network.LayersCount; li++)
                     {
-                        ActivationNeuron neuron = layer[neuronIndex];
+                        ActivationLayer layer = network[li];
 
-                        // for each weight:
-                        for (int weight = 0; weight < neuron.InputsCount; weight++)
+                        // for each neuron:
+                        for (int ni = 0; ni < layer.NeuronsCount; ni++, col++)
                         {
-                            // Compute its partial derivative
-                            jacobian[jj][i] = ComputeDerivative(input[i], layerIndex, neuronIndex, weight, ref derivativeStepSize[jj], networkOutput[0]);
-                            jj++;
+                            ActivationNeuron neuron = layer[ni];
+
+                            // for each weight:
+                            for (int wi = 0; wi < neuron.InputsCount; wi++, col++)
+                            {
+                                // Compute its partial derivative
+                                jacobian[col][row] = (float)ComputeDerivative(input[i], li, ni,
+                                    wi, ref derivativeStepSize[col], networkOutput[j], j);
+                            }
+
+                            // and also for each threshold value (bias)
+                            jacobian[col][row] = (float)ComputeDerivative(input[i], li, ni,
+                                -1, ref derivativeStepSize[col], networkOutput[j], j);
                         }
-                        // and also for each threshold value (bias)
-                        jacobian[jj][i] = ComputeDerivative(input[i], layerIndex, neuronIndex, -1, ref derivativeStepSize[jj], networkOutput[0]);
-                        jj++;
                     }
                 }
             }
@@ -888,7 +961,7 @@ namespace Accord.Neuro.Learning
         {
             double[][,] coefficients = new double[points][,];
 
-            for (int i = 0; i < points; i++)
+            for (int i = 0; i < coefficients.Length; i++)
             {
                 double[,] delts = new double[points, points];
 
@@ -916,15 +989,15 @@ namespace Accord.Neuro.Learning
         }
 
         /// <summary>
-        ///   Computes the derivative of the network in respect to the
-        ///   weight passed as parameter.
+        ///   Computes the derivative of the network in 
+        ///   respect to the weight passed as parameter.
         /// </summary>
+        /// 
         private double ComputeDerivative(double[] inputs,
             int layer, int neuron, int weight,
-            ref double stepSize, double networkOutput)
+            ref double stepSize, double networkOutput, int outputIndex)
         {
             int numPoints = differentialCoefficients.Length;
-            double ret = 0.0;
             double originalValue;
 
             // Saves a copy of the original value in the neuron
@@ -948,7 +1021,7 @@ namespace Accord.Neuro.Learning
                     if (weight >= 0) network[layer][neuron][weight] = newValue;
                     else network[layer][neuron].Threshold = newValue;
 
-                    points[i] = network.Compute(inputs)[0];
+                    points[i] = network.Compute(inputs)[outputIndex];
                 }
                 else
                 {
@@ -956,12 +1029,9 @@ namespace Accord.Neuro.Learning
                 }
             }
 
-            ret = 0.0;
+            double ret = 0.0;
             for (int i = 0; i < differentialCoefficients.Length; i++)
-            {
                 ret += differentialCoefficients[centerPoint][1, i] * points[i];
-            }
-
             ret /= System.Math.Pow(stepSize, 1);
 
 
@@ -971,6 +1041,7 @@ namespace Accord.Neuro.Learning
 
             return ret;
         }
+
         #endregion
 
     }
