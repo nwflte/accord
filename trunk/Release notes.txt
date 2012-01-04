@@ -1,3 +1,93 @@
+Accord.NET Framework 2.4.0 release notes
+-----------------------------------------
+04.01.2012.    
+
+Version updates and fixes:
+
+* General
+  - Updating all projects to .NET 4.0;
+  - Updating all libraries to use Task Parallel Library;
+  - Updating SlimDX to latest version (September 2011);
+  - Adding new project for GPL source codes.
+
+* Accord.Audio
+  - Adding WaveEncoder class for saving/encoding Wave files.
+
+* Accord.Controls
+  - Updating ArrowDataView to support row labels.
+
+Accord.Imaging
+  - Correcting Blending filter and Harris corners detector convolutions.
+
+* Accord.MachineLearning
+  - Adding Naïve Bayes classifier;
+  - Adding Decision Trees models;
+  - Adding ID3 and C4.5 learning algorithms for decision trees;
+  - Adding Load and Save methods to all Support Vector Machines;
+  - Correcting race condition in multi-class vector machine decision;
+  - Renaming KMean's method "Nearest" to "Classify".
+
+* Accord.Math
+  - Adding Conjugate Gradient (CG) optimization algorithm;
+  - Adding IsUpperTriangular, IsLowerTriangular, IsDiagonal methods to matrix class;
+  - Adding Mode for integers and Entropy calculation in Math.Tools;
+  - Adding Lambda Comparer for specifying ad-hoc comparison rules;
+  - Adding LogSum function for summing exponential without losing accuracy;
+  - Adding efficient trace of the inverse in Cholesky decomposition;
+  - Adding jagged-array variants of Cholesky and Lu decompositions;
+  - Adding single-precision and decimal variants of Cholesky, Qr,
+    Eigenvalue, Singular value and Lu matrix decompositions;
+  - Correcting matrix formatter to use argument culture;
+  - Correcting regularized Gamma special functions;
+  - Updating numeric decompositions to use T4 templates;
+  - Renaming LbfgsOptimization to BroydenFletcherGoldfarbShanno;
+  - Adding parallelization to LDLt Cholesky Decomposition.
+
+* Accord.Neuro
+  - Heavily optimizing Levenberg-Marquardt to lessen memory and CPU requirements;
+  - Adding partial Jacobian calculation in Levenberg-Marquardt to conserve memory;
+  - Adding Resilient Backpropagation (RProp) learning algorithm;
+  - Renaming NguyenWidrowInitializer to NguyenWidrow.
+  
+* Accord.Statistics
+  - Adding Conditional Random Fields (CRFs);
+  - Adding Hidden Conditional Random Fields (HCRFs);
+  - Adding Stochastic Gradient Descent (SGD) learning for HCRFs;
+  - Adding Conjugate Gradient and QuasiNewton (LBFGS) learning for HCRFs;
+  - Renaming SequenceClassifiers to HiddenMarkovClassifiers;
+  - Adding class priors to HiddenMarkovClassifiers;
+  - Adding InverseGaussian, Nakagami, Rayleigh and Weibull distributions;
+  - Adding Joint and Independent probability distributions;
+  - Adding fitting options for GeneralDiscreteDistribution;
+  - Adding LogProbabilityFunction method to all probability distributions;
+  - Adding Load and Save methods for all Hidden Markov Models and Fields;
+  - Updating Markov models to use log-domain computations by default;
+  - Updating Normal fitting options to limit to diagonal covariance matrices; 
+  - Correcting weighted mixture distribution fitting;
+  - Correcting running normal statistics;
+  - Correcting LDA classification function;
+  - Correcting Kernel matrix centering in KPCA;
+  - Correcting Backward algorithm for HMMs.
+
+* Accord.Vision
+  - Adding smoothness to Camshift image extraction;
+  - Adding parallelism to Haar Object Detector;
+  - Optimizing IntegralImage computation with unsafe operations.
+
+* Sample applications
+  - Adding Naive Bayes sample application;
+  - Adding Decision Tree sample application;
+  - Adding Classification sample application for
+    Levenberg-Marquardt trained Neural Networks;
+  - Adding XOR, TimeSeries and Approximation samples
+    for ResilientBackpropagation trained Networks.
+
+* AForge Compatibility
+  - Compiled against AForge.NET Framework 2.2.3. May work with newer versions.
+
+
+
+
 Accord.NET Framework 2.3.0 release notes
 -----------------------------------------
 01.09.2011.    
@@ -36,10 +126,10 @@ Version updates and fixes:
   - Adding Kronocker product to Matrix class.
 
 * Accord.Controls
- - Introducing ScatterplotView.
+  - Introducing ScatterplotView.
 
 * Sample applications
- - Adding Kinect controller for interfacing with Microsoft Kinect.
+  - Adding Kinect controller for interfacing with Microsoft Kinect.
 
 * AForge Compatibility
   - Compiled against AForge.NET Framework 2.2.1. May work with newer versions.
