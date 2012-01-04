@@ -20,19 +20,36 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-namespace Accord.MachineLearning.VectorMachines
+namespace Accord.MachineLearning.DecisionTrees.Learning
 {
-    /// <summary>
-    ///   Common interface for Support Vector Machines
-    /// </summary>
-    public interface ISupportVectorMachine
-    {
-        /// <summary>
-        ///   Computes the given input to produce the corresponding output.
-        /// </summary>
-        /// <param name="inputs">An input vector.</param>
-        /// <returns>The output for the given input.</returns>
-        double Compute(double[] inputs);
-    }
+    using System;
 
+    /// <summary>
+    ///   Static class for common information measures.
+    /// </summary>
+    /// 
+    public static class Measures
+    {
+
+        /// <summary>
+        ///   Computes the split information measure.
+        /// </summary>
+        /// 
+        /// <param name="samples">The total number of samples.</param>
+        /// <param name="partitions">The partitioning.</param>
+        /// <returns>The split information for the given partitions.</returns>
+        /// 
+        public static double SplitInformation(int samples, int[][] partitions)
+        {
+            double info = 0;
+
+            for (int i = 0; i < partitions.Length; i++)
+            {
+                double p = (double)partitions[i].Length / samples;
+                if (p != 0) info -= p * Math.Log(p, 2);
+            }
+
+            return info;
+        }
+    }
 }

@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 // Copyright © Antonino Porcino, 2010
@@ -179,7 +179,7 @@ namespace Accord.MachineLearning
         /// 
         /// <param name="k">The number of clusters to divide input data.</param>       
         /// <param name="distance">The distance function to use. Default is to
-        /// use the <see cref="Accord.Math.Distance.SquareEuclidean"/> distance.</param>
+        /// use the <see cref="Accord.Math.Distance.SquareEuclidean(double[], double[])"/> distance.</param>
         /// 
         public KMeans(int k, Func<double[], double[], double> distance)
         {
@@ -441,7 +441,7 @@ namespace Accord.MachineLearning
         ///   An array containing the index of the nearest cluster
         ///   to the corresponding point in the input array.</returns>
         ///   
-        public int[] Nearest(double[][] points)
+        public int[] Classify(double[][] points)
         {
             return points.Apply(p => Nearest(p));
         }
@@ -465,7 +465,7 @@ namespace Accord.MachineLearning
         /// 
         public double Error(double[][] data)
         {
-            return Error(data, Nearest(data));
+            return Error(data, Classify(data));
         }
 
         /// <summary>

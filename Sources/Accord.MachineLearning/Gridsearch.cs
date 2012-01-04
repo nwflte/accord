@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -26,6 +26,7 @@ namespace Accord.MachineLearning
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using Accord.Math;
+    using System.Threading.Tasks;
 
     /// <summary>
     ///   Delegate for Grid search fitting function.
@@ -177,7 +178,7 @@ namespace Accord.MachineLearning
             int best;
 
             // Search the grid for the optimal parameters
-            AForge.Parallel.For(0, grid.Length, i =>
+            Parallel.For(0, grid.Length, i =>
             {
                 // Get the current parameters for the current point
                 parameters[i] = new GridSearchParameterCollection(grid[i]);

@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -180,6 +180,7 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         ///   of a more accurate model that may not generalize well. Default value is the
         ///   number of examples divided by the trace of the kernel matrix.
         /// </summary>
+        /// 
         /// <remarks>
         ///   The cost parameter C controls the trade off between allowing training
         ///   errors and forcing rigid margins. It creates a soft margin that permits
@@ -187,10 +188,16 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         ///   misclassifying points and forces the creation of a more accurate model
         ///   that may not generalize well.
         /// </remarks>
+        /// 
         public double Complexity
         {
             get { return this.c; }
-            set { this.c = value; }
+            set
+            {
+                if (value <= 0)
+                    throw new ArgumentOutOfRangeException("value");
+                this.c = value;
+            }
         }
 
 
@@ -201,6 +208,7 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         /// <value>
         /// 	<c>true</c> if complexity should be computed automatically; otherwise, <c>false</c>.
         /// </value>
+        /// 
         public bool UseComplexityHeuristic
         {
             get { return useComplexityHeuristic; }
@@ -211,28 +219,42 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         ///   Insensitivity zone ε. Increasing the value of ε can result in fewer support
         ///   vectors in the created model. Default value is 1e-3.
         /// </summary>
+        /// 
         /// <remarks>
         ///   Parameter ε controls the width of the ε-insensitive zone, used to fit the training
         ///   data. The value of ε can affect the number of support vectors used to construct the
         ///   regression function. The bigger ε, the fewer support vectors are selected. On the
         ///   other hand, bigger ε-values results in more flat estimates.
         /// </remarks>
+        /// 
         public double Epsilon
         {
             get { return epsilon; }
-            set { epsilon = value; }
+            set
+            {
+                if (value <= 0)
+                    throw new ArgumentOutOfRangeException("value");
+                epsilon = value;
+            }
         }
 
         /// <summary>
         ///   Convergence tolerance. Default value is 1e-3.
         /// </summary>
+        /// 
         /// <remarks>
         ///   The criterion for completing the model training process. The default is 0.001.
         /// </remarks>
+        /// 
         public double Tolerance
         {
             get { return this.tolerance; }
-            set { this.tolerance = value; }
+            set
+            {
+                if (value <= 0)
+                    throw new ArgumentOutOfRangeException("value");
+                this.tolerance = value;
+            }
         }
         #endregion
 
@@ -273,6 +295,7 @@ namespace Accord.MachineLearning.VectorMachines.Learning
 
             // Lagrange multipliers
             this.alpha = new double[N];
+            this.bias = 0;
 
             // Error cache
             this.errors = new double[N];
@@ -398,7 +421,7 @@ namespace Accord.MachineLearning.VectorMachines.Learning
                 if (alpha[i] > 0 && alpha[i] < c)
                 {
                     double error1 = errors[i];
-                    double aux = System.Math.Abs(e2 - error1);
+                    double aux = Math.Abs(e2 - error1);
 
                     if (aux > max)
                     {
@@ -492,8 +515,8 @@ namespace Accord.MachineLearning.VectorMachines.Learning
             {
                 // If the target y1 does equal the target               (14)
                 // y2, then the following bounds apply to a2:
-                L = Math.Max(0,  alph2 + alph1 - c);
-                H = Math.Min(c,  alph2 + alph1);
+                L = Math.Max(0, alph2 + alph1 - c);
+                H = Math.Min(c, alph2 + alph1);
             }
 
             if (L == H) return false;
@@ -570,7 +593,7 @@ namespace Accord.MachineLearning.VectorMachines.Learning
                     // chooses the threshold to be halfway in between b1 and b2.
                     b1 = e1 + y1 * (a1 - alph1) * k11 + y2 * (a2 - alph2) * k12 + bias;
                     b2 = e2 + y1 * (a1 - alph1) * k12 + y2 * (a2 - alph2) * k22 + bias;
-                    new_b = (b1 + b2) / 2;
+                    new_b = (b1 + b2) / 2.0;
                 }
             }
 
@@ -586,17 +609,11 @@ namespace Accord.MachineLearning.VectorMachines.Learning
             {
                 if (0 < alpha[i] && alpha[i] < c)
                 {
-                    double[] point = inputs[i];
-                    errors[i] +=
-                          t1 * kernel.Function(p1, point) +
-                          t2 * kernel.Function(p2, point) -
-                          delta_b;
+                    errors[i] += t1 * kernel.Function(p1, inputs[i]) +
+                                 t2 * kernel.Function(p2, inputs[i]) -
+                                 delta_b;
                 }
             }
-
-            errors[i1] = 0f;
-            errors[i2] = 0f;
-
 
             // Update lagrange multipliers
             alpha[i1] = a1;

@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -23,6 +23,8 @@
 namespace Accord.MachineLearning.VectorMachines
 {
     using System;
+    using System.Runtime.Serialization.Formatters.Binary;
+    using System.IO;
 
     /// <summary>
     ///   Sparse Linear Support Vector Machine (SVM)
@@ -95,7 +97,9 @@ namespace Accord.MachineLearning.VectorMachines
         /// <summary>
         ///   Creates a new Support Vector Machine
         /// </summary>
+        /// 
         /// <param name="inputs">The number of inputs for the machine.</param>
+        /// 
         public SupportVectorMachine(int inputs)
         {
             this.inputCount = inputs;
@@ -104,11 +108,13 @@ namespace Accord.MachineLearning.VectorMachines
         /// <summary>
         ///   Gets the number of inputs accepted by this machine.
         /// </summary>
+        /// 
         /// <remarks>
         ///   If the number of inputs is zero, this means the machine
         ///   accepts a indefinite number of inputs. This is often the
         ///   case for kernel vector machines using a sequence kernel.
         /// </remarks>
+        /// 
         public int Inputs
         {
             get { return inputCount; }
@@ -117,6 +123,7 @@ namespace Accord.MachineLearning.VectorMachines
         /// <summary>
         ///   Gets or sets the collection of support vectors used by this machine.
         /// </summary>
+        /// 
         public double[][] SupportVectors
         {
             get { return supportVectors; }
@@ -126,6 +133,7 @@ namespace Accord.MachineLearning.VectorMachines
         /// <summary>
         ///   Gets or sets the collection of weights used by this machine.
         /// </summary>
+        /// 
         public double[] Weights
         {
             get { return weights; }
@@ -135,6 +143,7 @@ namespace Accord.MachineLearning.VectorMachines
         /// <summary>
         ///   Gets or sets the threshold (bias) term for this machine.
         /// </summary>
+        /// 
         public double Threshold
         {
             get { return threshold; }
@@ -144,13 +153,16 @@ namespace Accord.MachineLearning.VectorMachines
         /// <summary>
         ///   Computes the given input to produce the corresponding output.
         /// </summary>
+        /// 
         /// <remarks>
         ///   For a binary decision problem, the decision for the negative
         ///   or positive class is typically computed by taking the sign of
         ///   the machine's output.
         /// </remarks>
+        /// 
         /// <param name="inputs">An input vector.</param>
         /// <returns>The output for the given input.</returns>
+        /// 
         public virtual double Compute(double[] inputs)
         {
             double s = threshold;
@@ -169,11 +181,13 @@ namespace Accord.MachineLearning.VectorMachines
         /// <summary>
         ///   Computes the given inputs to produce the corresponding outputs.
         /// </summary>
+        /// 
         /// <remarks>
         ///   For a binary decision problem, the decision for the negative
         ///   or positive class is typically computed by taking the sign of
         ///   the machine's output.
         /// </remarks>
+        /// 
         public double[] Compute(double[][] inputs)
         {
             double[] outputs = new double[inputs.Length];
@@ -182,6 +196,56 @@ namespace Accord.MachineLearning.VectorMachines
                 outputs[i] = Compute(inputs[i]);
 
             return outputs;
+        }
+
+        /// <summary>
+        ///   Saves the machine to a stream.
+        /// </summary>
+        /// 
+        /// <param name="stream">The stream to which the machine is to be serialized.</param>
+        /// 
+        public virtual void Save(Stream stream)
+        {
+            BinaryFormatter b = new BinaryFormatter();
+            b.Serialize(stream, this);
+        }
+
+        /// <summary>
+        ///   Saves the machine to a stream.
+        /// </summary>
+        /// 
+        /// <param name="path">The stream to which the machine is to be serialized.</param>
+        /// 
+        public void Save(string path)
+        {
+            Save(new FileStream(path, FileMode.Create));
+        }
+
+        /// <summary>
+        ///   Loads a machine from a stream.
+        /// </summary>
+        /// 
+        /// <param name="stream">The stream from which the machine is to be deserialized.</param>
+        /// 
+        /// <returns>The deserialized machine.</returns>
+        /// 
+        public static SupportVectorMachine Load(Stream stream)
+        {
+            BinaryFormatter b = new BinaryFormatter();
+            return (SupportVectorMachine)b.Deserialize(stream);
+        }
+
+        /// <summary>
+        ///   Loads a machine from a file.
+        /// </summary>
+        /// 
+        /// <param name="path">The path to the file from which the machine is to be deserialized.</param>
+        /// 
+        /// <returns>The deserialized machine.</returns>
+        /// 
+        public static SupportVectorMachine Load(string path)
+        {
+            return Load(new FileStream(path, FileMode.Open));
         }
     }
 }
