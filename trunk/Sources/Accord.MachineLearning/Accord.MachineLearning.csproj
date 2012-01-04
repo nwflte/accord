@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Accord.MachineLearning</RootNamespace>
     <AssemblyName>Accord.MachineLearning</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>Accord.snk</AssemblyOriginatorKeyFile>
@@ -33,6 +33,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -72,10 +73,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bayes\NaiveBayes`1.cs" />
     <Compile Include="Crossvalidation.cs" />
+    <Compile Include="DecisionTrees\DecisionVariable.cs" />
+    <Compile Include="DecisionTrees\Learning\C45Learning.cs" />
+    <Compile Include="DecisionTrees\Learning\Measures.cs" />
+    <Compile Include="DecisionTrees\TreeExpression.cs" />
+    <Compile Include="DecisionTrees\Learning\ID3Learning.cs" />
+    <Compile Include="DecisionTrees\DecisionTree.cs" />
+    <Compile Include="DecisionTrees\DecisionNode.cs" />
     <Compile Include="GaussianMixtureModel.cs" />
+    <Compile Include="Bayes\NaiveBayes.cs" />
     <Compile Include="Properties\GlobalSuppressions.cs" />
-    <Compile Include="Gridsearch.cs" />
+    <Compile Include="GridSearch.cs" />
     <Compile Include="KMeans.cs" />
     <Compile Include="Ransac.cs" />
     <Compile Include="VectorMachines\ISupportVectorMachine.cs" />
@@ -88,6 +98,11 @@
     <Compile Include="VectorMachines\SupportVectorMachine.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Accord.Core\Accord.Core.csproj">
+      <Project>{A177A90C-8207-466A-AF70-F2B8452A42AC}</Project>
+      <Name>Accord.Core</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\Accord.Math\Accord.Math.csproj">
       <Project>{F718E9A8-DB62-4785-8C49-4333A60D256A}</Project>
       <Name>Accord.Math</Name>
@@ -102,7 +117,6 @@
   <ItemGroup>
     <None Include="Accord.MachineLearning.cd" />
     <None Include="Accord.snk" />
-    <None Include="Accord.MachineLearning %28high level%29.cd" />
   </ItemGroup>
   <ItemGroup>
     <CodeAnalysisDictionary Include="Properties\CustomDictionary.xml" />

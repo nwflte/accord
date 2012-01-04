@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -98,6 +98,30 @@ namespace Accord.MachineLearning
                     "The number of components should be greater than zero.");
             }
 
+            constructor(components);
+        }
+
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="GaussianMixtureModel"/> class.
+        /// </summary>
+        /// 
+        /// <param name="kmeans">
+        ///   The initial solution as a K-Means clustering.</param>
+        ///   
+        public GaussianMixtureModel(KMeans kmeans)
+        {
+            if (kmeans == null)
+            {
+                throw new ArgumentNullException("kmeans");
+            }
+
+            constructor(kmeans.K);
+
+            Initialize(kmeans);
+        }
+
+        private void constructor(int components)
+        {
             // Create the object-oriented structure to hold
             //   information about mixture model components.
             var clusterList = new List<GaussianCluster>(components);

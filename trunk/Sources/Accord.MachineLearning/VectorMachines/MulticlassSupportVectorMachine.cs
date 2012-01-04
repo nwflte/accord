@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -25,6 +25,10 @@ namespace Accord.MachineLearning.VectorMachines
     using System;
     using Accord.Math;
     using Accord.Statistics.Kernels;
+    using System.IO;
+    using System.Runtime.Serialization.Formatters.Binary;
+    using System.Threading.Tasks;
+    using System.Threading;
 
     /// <summary>
     ///   One-against-one Multi-class Kernel Support Vector Machine Classifier.
@@ -172,6 +176,7 @@ namespace Accord.MachineLearning.VectorMachines
         /// <summary>
         ///   Gets the number of classes.
         /// </summary>
+        /// 
         public int Classes
         {
             get { return machines.Length + 1; }
@@ -180,6 +185,7 @@ namespace Accord.MachineLearning.VectorMachines
         /// <summary>
         ///   Gets the number of inputs of the machines.
         /// </summary>
+        /// 
         public int Inputs
         {
             get { return machines[0][0].Inputs; }
@@ -188,6 +194,7 @@ namespace Accord.MachineLearning.VectorMachines
         /// <summary>
         ///   Gets the subproblems classifiers.
         /// </summary>
+        /// 
         public KernelSupportVectorMachine[][] Machines
         {
             get { return machines; }
@@ -196,8 +203,10 @@ namespace Accord.MachineLearning.VectorMachines
         /// <summary>
         ///   Computes the given input to produce the corresponding output.
         /// </summary>
+        /// 
         /// <param name="inputs">An input vector.</param>
         /// <returns>The output for the given input.</returns>
+        /// 
         double ISupportVectorMachine.Compute(double[] inputs)
         {
             return Compute(inputs);
@@ -206,8 +215,10 @@ namespace Accord.MachineLearning.VectorMachines
         /// <summary>
         ///   Computes the given input to produce the corresponding output.
         /// </summary>
+        /// 
         /// <param name="inputs">An input vector.</param>
         /// <returns>The output for the given input.</returns>
+        /// 
         public int Compute(double[] inputs)
         {
             int[] votes;
@@ -217,9 +228,12 @@ namespace Accord.MachineLearning.VectorMachines
         /// <summary>
         ///   Computes the given input to produce the corresponding output.
         /// </summary>
+        /// 
         /// <param name="inputs">An input vector.</param>
         /// <param name="votes">A vector containing the number of votes for each class.</param>
+        /// 
         /// <returns>The output for the given input.</returns>
+        /// 
         public int Compute(double[] inputs, out int[] votes)
         {
             // out variables cannot be passed into delegates,
@@ -228,24 +242,21 @@ namespace Accord.MachineLearning.VectorMachines
 
 
             // For each class
-            AForge.Parallel.For(0, Classes, i =>
+            Parallel.For(0, Classes, i =>
             {
                 // For each other class
                 for (int j = 0; j < i; j++)
                 {
                     KernelSupportVectorMachine machine = this[i, j];
 
+                    // Compute the two-class problem
                     double answer = machine.Compute(inputs);
 
-                    // Compute the two-class problem
-                    if (answer < 0)
-                    {
-                        voting[i] += 1; // Class i has won
-                    }
-                    else
-                    {
-                        voting[j] += 1; // Class j has won
-                    }
+                    // Determine the winner class
+                    int y = (answer < 0) ? i : j;
+
+                    // Increment votes for the winner
+                    Interlocked.Increment(ref voting[y]);
                 }
             });
 
@@ -258,5 +269,54 @@ namespace Accord.MachineLearning.VectorMachines
             return output; // Return as the output.
         }
 
+        /// <summary>
+        ///   Saves the machine to a stream.
+        /// </summary>
+        /// 
+        /// <param name="stream">The stream to which the machine is to be serialized.</param>
+        /// 
+        public void Save(Stream stream)
+        {
+            BinaryFormatter b = new BinaryFormatter();
+            b.Serialize(stream, this);
+        }
+
+        /// <summary>
+        ///   Saves the machine to a file.
+        /// </summary>
+        /// 
+        /// <param name="path">The path to the file to which the machine is to be serialized.</param>
+        /// 
+        public void Save(string path)
+        {
+            Save(new FileStream(path, FileMode.Create));
+        }
+
+        /// <summary>
+        ///   Loads a machine from a stream.
+        /// </summary>
+        /// 
+        /// <param name="stream">The stream from which the machine is to be deserialized.</param>
+        /// 
+        /// <returns>The deserialized machine.</returns>
+        /// 
+        public static MulticlassSupportVectorMachine Load(Stream stream)
+        {
+            BinaryFormatter b = new BinaryFormatter();
+            return (MulticlassSupportVectorMachine)b.Deserialize(stream);
+        }
+
+        /// <summary>
+        ///   Loads a machine from a file.
+        /// </summary>
+        /// 
+        /// <param name="path">The path to the file from which the machine is to be deserialized.</param>
+        /// 
+        /// <returns>The deserialized machine.</returns>
+        /// 
+        public static MulticlassSupportVectorMachine Load(string path)
+        {
+            return Load(new FileStream(path, FileMode.Open));
+        }
     }
 }

@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -25,6 +25,7 @@ namespace Accord.MachineLearning
     using System;
     using System.Collections.Generic;
     using Accord.Math;
+    using System.Threading.Tasks;
 
     /// <summary>
     ///   Fitting function delegate.
@@ -165,18 +166,6 @@ namespace Accord.MachineLearning
         public CrossvalidationInfo<TModel>[] Models { get { return models; } }
 
         /// <summary>
-        ///   Gets the average validation error.
-        /// </summary>
-        /// 
-        public double ValidationError { get; private set; }
-
-        /// <summary>
-        ///   Gets the average training error.
-        /// </summary>
-        /// 
-        public double TrainingError { get; private set; }
-
-        /// <summary>
         ///   Gets the array of indexes contained in each fold.
         /// </summary>
         /// 
@@ -238,36 +227,87 @@ namespace Accord.MachineLearning
         ///   Computes the cross validation algorithm.
         /// </summary>
         /// 
-        public void Compute()
+        public CrossvalidationSummary Compute()
         {
-            for (int i = 0; i < folds.Length; i++)
-            {
+            double[] trainingErrors = new double[models.Length];
+            double[] validationErrors = new double[models.Length];
 
+#if DEBUG
+            for (int i = 0; i < folds.Length; i++)
+#else
+            Parallel.For(0, folds.Length, i =>
+#endif
+            {
+                // Create indices for the foldings
                 List<int[]> list = new List<int[]>();
                 for (int j = 0; j < folds.Length; j++)
                     if (i != j) list.Add(folds[j]);
 
                 // Create training set
-                int[] trainingSet = Matrix.Combine(list.ToArray());
+                int[] trainingSet = Matrix.Concatenate(list.ToArray());
 
                 // Select validation set
                 int[] validationSet = folds[i];
 
                 // Fit and evaluate the model
                 models[i] = Fitting(trainingSet, validationSet);
+                trainingErrors[i] = models[i].TrainingError;
+                validationErrors[i] = models[i].ValidationError;
             }
+#if !DEBUG
+            );
+#endif
 
             // Return average training and validation error
-            double vsum = 0, tsum = 0;
-            for (int i = 0; i < folds.Length; i++)
-            {
-                tsum += models[i].TrainingError;
-                vsum += models[i].ValidationError;
-            }
-            this.TrainingError = tsum / folds.Length;
-            this.ValidationError = vsum / folds.Length;
+            double trainMean = Statistics.Tools.Mean(trainingErrors);
+            double trainStdDev = Statistics.Tools.StandardDeviation(trainingErrors, trainMean);
+
+            double valMean = Statistics.Tools.Mean(validationErrors);
+            double valStdDev = Statistics.Tools.StandardDeviation(validationErrors, valMean);
+
+            return new CrossvalidationSummary(trainMean, trainStdDev, valMean, valStdDev);
         }
 
+    }
+
+    /// <summary>
+    ///   Summary statistics for a Cross-validation trial.
+    /// </summary>
+    /// 
+    public class CrossvalidationSummary
+    {
+        /// <summary>
+        ///   Gets the average training error.
+        /// </summary>
+        /// 
+        public double TrainingMean { get; private set; }
+
+        /// <summary>
+        ///   Gets the standard deviation of the training error.
+        /// </summary>
+        /// 
+        public double TrainingDeviation { get; private set; }
+
+        /// <summary>
+        ///   Gets the average validation error.
+        /// </summary>
+        /// 
+        public double ValidationMean { get; private set; }
+
+        /// <summary>
+        ///   Gets the standard deviation of the validation error.
+        /// </summary>
+        /// 
+        public double ValidationDeviation { get; private set; }
+
+        internal CrossvalidationSummary(double trainMean, double trainStdDev, double validationMean, double validationStdDev)
+        {
+            this.TrainingMean = trainMean;
+            this.ValidationMean = validationMean;
+
+            this.TrainingDeviation = trainStdDev;
+            this.ValidationDeviation = validationStdDev;
+        }
     }
 
     /// <summary>

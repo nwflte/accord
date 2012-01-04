@@ -13,7 +13,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAI=</HashCode>
+      <HashCode>AEAAgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAI=</HashCode>
       <FileName>VectorMachines\KernelSupportVectorMachine.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -27,7 +27,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AEAAAAAAgAAAEIAAAAAAAAAAEAAAQCAAAEAgAAAAAAA=</HashCode>
+      <HashCode>AEAAgIAAgAAAEIAAAAAAAAAAEAAAQCAAAEAgAAAAAAA=</HashCode>
       <FileName>VectorMachines\SupportVectorMachine.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -94,7 +94,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AEIAEAAAAIAAQAAAAAAAAAAAAAAAAAAAAAgAAIAIABA=</HashCode>
+      <HashCode>AEIAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAIAIABA=</HashCode>
       <FileName>Crossvalidation.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -118,7 +118,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AEAAACAAAAEgAAgACAAAAAAAEAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AEAAgKAAAAEgAAgACAAAAAAAEAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>VectorMachines\MulticlassSupportVectorMachine.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -156,7 +156,7 @@
     </Compartments>
     <TypeIdentifier>
       <HashCode>AEIAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgCAAA=</HashCode>
-      <FileName>Gridsearch.cs</FileName>
+      <FileName>GridSearch.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
       <Property Name="ParameterRanges" />
@@ -166,7 +166,7 @@
     <Position X="5.75" Y="6" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAggAAAAAA=</HashCode>
-      <FileName>Gridsearch.cs</FileName>
+      <FileName>GridSearch.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.MachineLearning.KMeans">
@@ -239,7 +239,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AEAAAAIAAAAAAQAAAAAAAAAAAEAAIAAAACAAAAAIAAA=</HashCode>
+      <HashCode>QEAAAAIAAAAAAQAAAAAAAAAAAEAAIAAAACAAAAAIAAA=</HashCode>
       <FileName>GaussianMixtureModel.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -275,6 +275,122 @@
       <FileName>GaussianMixtureModel.cs</FileName>
     </TypeIdentifier>
   </Class>
+  <Class Name="Accord.MachineLearning.Bayes.NaiveBayes">
+    <Position X="25.25" Y="0.75" Width="2.25" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AEAAAEABAIAAAAiAABEAAAAQAACAAAgAgAAIAAAAAAA=</HashCode>
+      <FileName>Bayes\NaiveBayes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Accord.MachineLearning.Bayes.NaiveBayes&lt;TDistribution&gt;">
+    <Position X="22.75" Y="0.75" Width="2.25" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AEAAAAABAAAAEQiAABEAAAAQAACAAAgAgAAIAAAAAAA=</HashCode>
+      <FileName>Bayes\NaiveBayes`1.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Accord.MachineLearning.DecisionTrees.DecisionNode">
+    <Position X="35.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AMAAAACAAAAAAgAEAAAIUAAAAAAAAAAAAQAgAAAAAAA=</HashCode>
+      <FileName>DecisionTrees\DecisionNode.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Comparison" />
+      <Property Name="Branches" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Accord.MachineLearning.DecisionTrees.DecisionBranchNodeCollection">
+    <Position X="31.75" Y="6.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DecisionTrees\DecisionNode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Accord.MachineLearning.DecisionTrees.DecisionTree">
+    <Position X="32.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAIAAAAAAAACAAABAAAAAQAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DecisionTrees\DecisionTree.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Root" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="Attributes" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Accord.MachineLearning.DecisionTrees.DecisionVariable">
+    <Position X="29" Y="4.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAACAAAAAAAAAQQAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DecisionTrees\DecisionVariable.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Nature" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Accord.MachineLearning.DecisionTrees.DecisionAttributeCollection">
+    <Position X="29" Y="3" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DecisionTrees\DecisionVariable.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Accord.MachineLearning.DecisionTrees.Learning.C45Learning">
+    <Position X="26.75" Y="11.25" Width="1.5" />
+    <Members>
+      <Field Name="attributes" Hidden="true" />
+      <Method Name="computeGainRatio" Hidden="true" />
+      <Method Name="computeInfo" Hidden="true" />
+      <Method Name="computeInfoGain" Hidden="true" />
+      <Field Name="inputRanges" Hidden="true" />
+      <Field Name="outputClasses" Hidden="true" />
+      <Method Name="split" Hidden="true" />
+      <Field Name="thresholds" Hidden="true" />
+      <Field Name="tree" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAQAQIAAAAAAAAAAgAAAAAAAABAAUAAIBAAAAAAAABI=</HashCode>
+      <FileName>DecisionTrees\Learning\C45Learning.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Accord.MachineLearning.DecisionTrees.Learning.ID3Learning">
+    <Position X="25" Y="11.25" Width="1.5" />
+    <Members>
+      <Field Name="attributes" Hidden="true" />
+      <Method Name="computeGainRatio" Hidden="true" />
+      <Method Name="computeInfo" Hidden="true" />
+      <Method Name="computeInfoGain" Hidden="true" />
+      <Field Name="inputRanges" Hidden="true" />
+      <Field Name="outputClasses" Hidden="true" />
+      <Method Name="split" Hidden="true" />
+      <Field Name="tree" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAQAAIAAAAAAAAAAgAAAAAAAABAAUAAIBAAAAAAAABI=</HashCode>
+      <FileName>DecisionTrees\Learning\ID3Learning.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Accord.MachineLearning.DecisionTrees.Learning.Measures">
+    <Position X="29" Y="11.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>DecisionTrees\Learning\Measures.cs</FileName>
+    </TypeIdentifier>
+  </Class>
   <Struct Name="Accord.MachineLearning.GridSearchParameter">
     <Position X="6" Y="8.25" Width="1.75" />
     <Members>
@@ -287,7 +403,7 @@
     </Compartments>
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAgAAAAAQAAAAEAKAAAAAgAAAAAiA=</HashCode>
-      <FileName>Gridsearch.cs</FileName>
+      <FileName>GridSearch.cs</FileName>
     </TypeIdentifier>
   </Struct>
   <Interface Name="Accord.MachineLearning.VectorMachines.Learning.ISupportVectorMachineLearning">
@@ -308,11 +424,25 @@
     <Position X="9.5" Y="12.25" Width="1.5" />
     <TypeIdentifier />
   </Interface>
+  <Enum Name="Accord.MachineLearning.DecisionTrees.ComparisonKind">
+    <Position X="35.25" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAQVAACA=</HashCode>
+      <FileName>DecisionTrees\DecisionNode.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Accord.MachineLearning.DecisionTrees.DecisionAttributeKind">
+    <Position X="29.25" Y="7" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASA=</HashCode>
+      <FileName>DecisionTrees\DecisionVariable.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
   <Delegate Name="Accord.MachineLearning.GridSearchFittingFunction&lt;TModel&gt;">
     <Position X="1.75" Y="8.75" Width="3" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAABAAAAAAAgAAAAAAAAAAAA=</HashCode>
-      <FileName>Gridsearch.cs</FileName>
+      <FileName>GridSearch.cs</FileName>
     </TypeIdentifier>
   </Delegate>
   <Delegate Name="Accord.MachineLearning.CrossvalidationFittingFunction&lt;TModel&gt;">

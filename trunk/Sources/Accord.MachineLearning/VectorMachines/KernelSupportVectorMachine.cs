@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -24,6 +24,8 @@ namespace Accord.MachineLearning.VectorMachines
 {
     using System;
     using Accord.Statistics.Kernels;
+    using System.IO;
+    using System.Runtime.Serialization.Formatters.Binary;
 
     /// <summary>
     ///  Sparse Kernel Support Vector Machine (kSVM)
@@ -95,13 +97,16 @@ namespace Accord.MachineLearning.VectorMachines
         /// <summary>
         ///   Creates a new Kernel Support Vector Machine.
         /// </summary>
+        /// 
         /// <param name="kernel">The chosen kernel for the machine.</param>
         /// <param name="inputs">The number of inputs for the machine.</param>
+        /// 
         /// <remarks>
         ///   If the number of inputs is zero, this means the machine
         ///   accepts a indefinite number of inputs. This is often the
         ///   case for kernel vector machines using a sequence kernel.
         /// </remarks>
+        /// 
         public KernelSupportVectorMachine(IKernel kernel, int inputs) : base(inputs)
         {
             if (kernel == null) throw new ArgumentNullException("kernel");
@@ -112,6 +117,7 @@ namespace Accord.MachineLearning.VectorMachines
         /// <summary>
         ///   Gets or sets the kernel used by this machine.
         /// </summary>
+        /// 
         public IKernel Kernel
         {
             get { return kernel; }
@@ -121,13 +127,16 @@ namespace Accord.MachineLearning.VectorMachines
         /// <summary>
         ///   Computes the given input to produce the corresponding output.
         /// </summary>
+        /// 
         /// <remarks>
         ///   For a binary decision problem, the decision for the negative
         ///   or positive class is typically computed by taking the sign of
         ///   the machine's output.
         /// </remarks>
+        /// 
         /// <param name="inputs">An input vector.</param>
         /// <returns>The output for the given input.</returns>
+        /// 
         public override double Compute(double[] inputs)
         {
             double s = Threshold;
@@ -138,6 +147,43 @@ namespace Accord.MachineLearning.VectorMachines
             return s;
         }
 
+        /// <summary>
+        ///   Saves the machine to a stream.
+        /// </summary>
+        /// 
+        /// <param name="stream">The stream to which the machine is to be serialized.</param>
+        /// 
+        public override void Save(Stream stream)
+        {
+            BinaryFormatter b = new BinaryFormatter();
+            b.Serialize(stream, this);
+        }
 
+        /// <summary>
+        ///   Loads a machine from a stream.
+        /// </summary>
+        /// 
+        /// <param name="stream">The stream from which the machine is to be deserialized.</param>
+        /// 
+        /// <returns>The deserialized machine.</returns>
+        /// 
+        public static new KernelSupportVectorMachine Load(Stream stream)
+        {
+            BinaryFormatter b = new BinaryFormatter();
+            return (KernelSupportVectorMachine)b.Deserialize(stream);
+        }
+
+        /// <summary>
+        ///   Loads a machine from a file.
+        /// </summary>
+        /// 
+        /// <param name="path">The path to the file from which the machine is to be deserialized.</param>
+        /// 
+        /// <returns>The deserialized machine.</returns>
+        /// 
+        public static new KernelSupportVectorMachine Load(string path)
+        {
+            return Load(new FileStream(path, FileMode.Open));
+        }
     }
 }

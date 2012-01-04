@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -24,6 +24,7 @@ namespace Accord.MachineLearning.VectorMachines.Learning
 {
     using System;
     using Accord.Math;
+    using System.Threading.Tasks;
 
     /// <summary>
     ///   Configuration function to configure the learning algorithms
@@ -197,7 +198,7 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         public double Run(bool computeError)
         {
             // For each class i
-            AForge.Parallel.For(0, msvm.Classes, i =>
+            Parallel.For(0, msvm.Classes, i =>
             {
                 // For each class j
                 for (int j = 0; j < i; j++)
@@ -213,7 +214,7 @@ namespace Accord.MachineLearning.VectorMachines.Learning
 
 
                     // Transform in a two-class problem
-                    subOutputs.ApplyInPlace(x => x = (x == i) ? -1 : 1);
+                    subOutputs.ApplyInPlace(x => x = (x == i) ? -1 : +1);
 
                     // Train the machine on the two-class problem.
                     configure(machine, subInputs, subOutputs, i, j).Run(false);
