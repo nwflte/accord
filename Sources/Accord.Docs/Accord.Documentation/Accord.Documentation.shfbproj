@@ -19,26 +19,27 @@
     <HtmlHelpName>Accord.NET</HtmlHelpName>
     <DocumentationSources>
       <DocumentationSource sourceFile="..\..\..\Release\Accord.Audio.dll" />
-      <DocumentationSource sourceFile="..\..\..\Release\Accord.Audio.xml" />
       <DocumentationSource sourceFile="..\..\..\Release\Accord.Audio.Formats.dll" />
       <DocumentationSource sourceFile="..\..\..\Release\Accord.Audio.Formats.xml" />
+      <DocumentationSource sourceFile="..\..\..\Release\Accord.Audio.xml" />
       <DocumentationSource sourceFile="..\..\..\Release\Accord.Audition.dll" />
       <DocumentationSource sourceFile="..\..\..\Release\Accord.Audition.xml" />
       <DocumentationSource sourceFile="..\..\..\Release\Accord.Controls.Audio.dll" />
       <DocumentationSource sourceFile="..\..\..\Release\Accord.Controls.Audio.xml" />
       <DocumentationSource sourceFile="..\..\..\Release\Accord.Controls.dll" />
-      <DocumentationSource sourceFile="..\..\..\Release\Accord.Controls.xml" />
       <DocumentationSource sourceFile="..\..\..\Release\Accord.Controls.Imaging.dll" />
       <DocumentationSource sourceFile="..\..\..\Release\Accord.Controls.Imaging.xml" />
       <DocumentationSource sourceFile="..\..\..\Release\Accord.Controls.Vision.dll" />
       <DocumentationSource sourceFile="..\..\..\Release\Accord.Controls.Vision.xml" />
+      <DocumentationSource sourceFile="..\..\..\Release\Accord.Controls.xml" />
       <DocumentationSource sourceFile="..\..\..\Release\Accord.DirectSound.dll" />
       <DocumentationSource sourceFile="..\..\..\Release\Accord.DirectSound.xml" />
       <DocumentationSource sourceFile="..\..\..\Release\Accord.dll" />
-      <DocumentationSource sourceFile="..\..\..\Release\Accord.xml" />
       <DocumentationSource sourceFile="..\..\..\Release\Accord.Imaging.dll" />
       <DocumentationSource sourceFile="..\..\..\Release\Accord.Imaging.xml" />
       <DocumentationSource sourceFile="..\..\..\Release\Accord.MachineLearning.dll" />
+      <DocumentationSource sourceFile="..\..\..\Release\GPL\Accord.MachineLearning.GPL.dll" />
+      <DocumentationSource sourceFile="..\..\..\Release\GPL\Accord.MachineLearning.GPL.xml" />
       <DocumentationSource sourceFile="..\..\..\Release\Accord.MachineLearning.xml" />
       <DocumentationSource sourceFile="..\..\..\Release\Accord.Math.dll" />
       <DocumentationSource sourceFile="..\..\..\Release\Accord.Math.xml" />
@@ -50,6 +51,7 @@
       <DocumentationSource sourceFile="..\..\..\Release\Accord.Statistics.xml" />
       <DocumentationSource sourceFile="..\..\..\Release\Accord.Vision.dll" />
       <DocumentationSource sourceFile="..\..\..\Release\Accord.Vision.xml" />
+      <DocumentationSource sourceFile="..\..\..\Release\Accord.xml" />
     </DocumentationSources>
     <CopyrightText>
     </CopyrightText>
@@ -103,10 +105,13 @@
       <NamespaceSummaryItem name="Accord.Vision.Detection" isDocumented="True">The &lt;b&gt;Accord.Vision.Detection&lt;/b&gt; namespace contains methods for visual object detector, such as the Viola-Jones object detector.</NamespaceSummaryItem>
       <NamespaceSummaryItem name="Accord.Vision.Tracking" isDocumented="True">The &lt;b&gt;Accord.Vision.Tracking&lt;/b&gt; namespace contains classes for object tracking, such as the camshift tracking algorithm.</NamespaceSummaryItem>
       <NamespaceSummaryItem name="Accord" isDocumented="True">The &lt;b&gt;Accord&lt;/b&gt; namespace contains common classes which are used throughout the Framework, such as exceptions and event related classes.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.Controls.Imaging" isDocumented="True">The &lt;b&gt;Accord.Controls.Imaging&lt;/b&gt; namespace contains Windows Forms controls useful for Imaging applications.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.Statistics.Models.Fields" isDocumented="True">The &lt;b&gt;Accord.Statistics.Models.Fields&lt;/b&gt; namespace contains classes related to Conditional Random Fields, Hidden Conditional Random Fields and their learning algorithms.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.Statistics.Models.Markov" isDocumented="True">The &lt;b&gt;Accord.Statistics.Models.Markov&lt;/b&gt; namespace contains classes related to Hidden Markov Models and their learning algorithms.</NamespaceSummaryItem>
     </NamespaceSummaries>
     <ProjectSummary>Accord.NET is an extension to AForge.NET, a popular framework for computer vision and machine learning. Currently, Accord.NET provides many statistical analysis and processing functions, as well as still experimental audio signal analysis package.</ProjectSummary>
     <HelpTitle>Accord.NET Framework</HelpTitle>
-    <FooterText>&amp;lt%3ba href=&amp;quot%3bhttp://accord-net.origo.ethz.ch&amp;quot%3b target=&amp;quot%3b_blank&amp;quot%3b&amp;gt%3bAccord.NET&amp;lt%3b/a&amp;gt%3b &amp;#169%3b 2009-2011. All documentation is licensed under the Creative Commons Attribution/Share-Alike License.</FooterText>
+    <FooterText>&amp;lt%3ba href=&amp;quot%3bhttp://accord-net.origo.ethz.ch&amp;quot%3b target=&amp;quot%3b_blank&amp;quot%3b&amp;gt%3bAccord.NET&amp;lt%3b/a&amp;gt%3b &amp;#169%3b 2009-2012. All documentation is licensed under the Creative Commons Attribution/Share-Alike License.</FooterText>
     <MissingTags>AutoDocumentCtors, AutoDocumentDispose</MissingTags>
     <KeepLogFile>True</KeepLogFile>
     <RootNamespaceContainer>True</RootNamespaceContainer>
@@ -162,7 +167,7 @@
     <PresentationStyle>vs2005</PresentationStyle>
     <SyntaxFilters>CSharp, VisualBasic</SyntaxFilters>
     <NamingMethod>MemberName</NamingMethod>
-    <HelpFileVersion>2.3.0.0</HelpFileVersion>
+    <HelpFileVersion>2.4.0.0</HelpFileVersion>
     <FrameworkVersion>.NET 4.0.30319</FrameworkVersion>
     <VisibleItems>Attributes, InheritedMembers, InheritedFrameworkMembers, Protected, SealedProtected</VisibleItems>
     <PlugInNamespaces>ms.vsipcc+, ms.vsexpresscc+</PlugInNamespaces>
@@ -273,6 +278,54 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Accord">
+      <HintPath>..\..\..\Release\Accord.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Audio.Formats">
+      <HintPath>..\..\..\Release\Accord.Audio.Formats.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Audition">
+      <HintPath>..\..\..\Release\Accord.Audition.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Controls">
+      <HintPath>..\..\..\Release\Accord.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Controls.Audio">
+      <HintPath>..\..\..\Release\Accord.Controls.Audio.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Controls.Imaging">
+      <HintPath>..\..\..\Release\Accord.Controls.Imaging.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Controls.Vision">
+      <HintPath>..\..\..\Release\Accord.Controls.Vision.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.DirectSound">
+      <HintPath>..\..\..\Release\Accord.DirectSound.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Imaging">
+      <HintPath>..\..\..\Release\Accord.Imaging.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.MachineLearning">
+      <HintPath>..\..\..\Release\Accord.MachineLearning.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.MachineLearning.GPL">
+      <HintPath>..\..\..\Release\GPL\Accord.MachineLearning.GPL.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Math">
+      <HintPath>..\..\..\Release\Accord.Math.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Music">
+      <HintPath>..\..\..\Release\Accord.Music.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Neuro">
+      <HintPath>..\..\..\Release\Accord.Neuro.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Statistics">
+      <HintPath>..\..\..\Release\Accord.Statistics.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Vision">
+      <HintPath>..\..\..\Release\Accord.Vision.dll</HintPath>
+    </Reference>
     <Reference Include="AForge">
       <HintPath>C:\Program Files (x86)\AForge.NET\Framework\Release\AForge.dll</HintPath>
     </Reference>
