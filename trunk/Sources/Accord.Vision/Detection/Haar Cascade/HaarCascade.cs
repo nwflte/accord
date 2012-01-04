@@ -2,7 +2,7 @@
 // The Accord.NET Framework (LGPL)
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 // Copyright © Masakazu Ohtsuka, 2008
@@ -73,38 +73,62 @@ namespace Accord.Vision.Detection
     ///     </list></para>
     /// </remarks>
     /// 
+    /// <example>
+    /// <para>
+    ///   To load an OpenCV-compatible XML definition for a Haar cascade, you can use HaarCascade's
+    ///   <see cref="HaarCascade.FromXml(Stream)">FromXml</see> static method. An example would be:</para>
+    ///   <code>
+    ///   String path = @"C:\Users\haarcascade-frontalface_alt2.xml";
+    ///   HaarCascade cascade1 = HaarCascade.FromXml(path);
+    ///   </code>
+    ///   
+    /// <para>
+    ///   After the cascade has been loaded, it is possible to create a new <see cref="HaarObjectDetector"/>
+    ///   using the cascade. Please see <see cref="HaarObjectDetector"/> for more details. It is also
+    ///   possible to generate embeddable C# definitions from a cascade, avoiding the need to load
+    ///   XML files on program startup. Please see <see cref="ToCode(string, string)"/> method or 
+    ///   <see cref="HaarCascadeWriter"/> class for details.</para> 
+    /// </example>
+    /// 
     [Serializable]
     public class HaarCascade : ICloneable
     {
         /// <summary>
         ///   Gets the stages' base width.
         /// </summary>
+        /// 
         public int Width { get; protected set; }
 
         /// <summary>
         ///   Gets the stages' base height.
         /// </summary>
+        /// 
         public int Height { get; protected set; }
 
         /// <summary>
         ///   Gets the classification stages.
         /// </summary>
+        /// 
         public HaarCascadeStage[] Stages { get; protected set; }
 
         /// <summary>
         ///   Gets a value indicating whether this cascade has tilted features.
         /// </summary>
+        /// 
         /// <value>
         /// 	<c>true</c> if this cascade has tilted features; otherwise, <c>false</c>.
         /// </value>
+        /// 
         public bool HasTiltedFeatures { get; protected set; }
 
         /// <summary>
         ///   Constructs a new Haar Cascade.
         /// </summary>
+        /// 
         /// <param name="baseWidth">Base feature width.</param>
         /// <param name="baseHeight">Base feature height.</param>
         /// <param name="stages">Haar-like features classification stages.</param>
+        /// 
         public HaarCascade(int baseWidth, int baseHeight, HaarCascadeStage[] stages)
         {
             Width = baseWidth;
@@ -118,8 +142,10 @@ namespace Accord.Vision.Detection
         /// <summary>
         ///   Constructs a new Haar Cascade.
         /// </summary>
+        /// 
         /// <param name="baseWidth">Base feature width.</param>
         /// <param name="baseHeight">Base feature height.</param>
+        /// 
         protected HaarCascade(int baseWidth, int baseHeight)
         {
             Width = baseWidth;
@@ -130,6 +156,7 @@ namespace Accord.Vision.Detection
         /// <summary>
         ///   Checks if the classifier contains tilted (rotated) features
         /// </summary>
+        /// 
         private static bool checkTiltedFeatures(HaarCascadeStage[] stages)
         {
             foreach (var stage in stages)
@@ -141,11 +168,13 @@ namespace Accord.Vision.Detection
         }
 
         /// <summary>
-        /// Creates a new object that is a copy of the current instance.
+        ///   Creates a new object that is a copy of the current instance.
         /// </summary>
+        /// 
         /// <returns>
-        /// A new object that is a copy of this instance.
+        ///   A new object that is a copy of this instance.
         /// </returns>
+        /// 
         public object Clone()
         {
             HaarCascadeStage[] newStages = new HaarCascadeStage[Stages.Length];
@@ -160,13 +189,43 @@ namespace Accord.Vision.Detection
         }
 
 
+        /// <summary>
+        ///   Loads a HaarCascade from a OpenCV-compatible XML file.
+        /// </summary>
+        /// 
+        /// <param name="stream">
+        ///    A <see cref="Stream"/> containing the file stream
+        ///    for the xml definition of the classifier to be loaded.</param>
+        ///    
+        /// <returns>The HaarCascadeClassifier loaded from the file.</returns>
+        /// 
+        public static HaarCascade FromXml(Stream stream)
+        {
+            return FromXml(new StreamReader(stream));
+        }
 
         /// <summary>
         ///   Loads a HaarCascade from a OpenCV-compatible XML file.
         /// </summary>
+        /// 
+        /// <param name="path">
+        ///    The file path for the xml definition of the classifier to be loaded.</param>
+        ///    
+        /// <returns>The HaarCascadeClassifier loaded from the file.</returns>
+        /// 
+        public static HaarCascade FromXml(string path)
+        {
+            return FromXml(new StreamReader(path));
+        }
+
+        /// <summary>
+        ///   Loads a HaarCascade from a OpenCV-compatible XML file.
+        /// </summary>
+        /// 
         /// <param name="stringReader">
         ///    A <see cref="StringReader"/> containing the file stream
         ///    for the xml definition of the classifier to be loaded.</param>
+        ///    
         /// <returns>The HaarCascadeClassifier loaded from the file.</returns>
         /// 
         public static HaarCascade FromXml(TextReader stringReader)
@@ -189,6 +248,15 @@ namespace Accord.Vision.Detection
 
             // Create and return the new cascade
             return new HaarCascade(baseWidth, baseHeight, stages.Stages);
+        }
+
+        /// <summary>
+        ///   Saves a HaarCascade to C# code.
+        /// </summary>
+        /// 
+        public void ToCode(string path, string className)
+        {
+            ToCode(new StreamWriter(path), className);
         }
 
         /// <summary>

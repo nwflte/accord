@@ -2,7 +2,7 @@
 // The Accord.NET Framework (LGPL)
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -44,17 +44,20 @@ namespace Accord.Vision.Detection
         /// <summary>
         ///   Gets or sets whether this feature is tilted.
         /// </summary>
+        /// 
         public bool Tilted { get; set; }
 
         /// <summary>
         ///   Gets or sets the Haar rectangles for this feature.
         /// </summary>
+        /// 
         public HaarRectangle[] Rectangles { get; set; }
 
 
         /// <summary>
         ///   Constructs a new Haar-like feature.
         /// </summary>
+        /// 
         public HaarFeature()
         {
             this.Rectangles = new HaarRectangle[2];
@@ -63,6 +66,7 @@ namespace Accord.Vision.Detection
         /// <summary>
         ///   Constructs a new Haar-like feature.
         /// </summary>
+        /// 
         public HaarFeature(params HaarRectangle[] rectangles)
         {
             this.Rectangles = rectangles;
@@ -71,6 +75,7 @@ namespace Accord.Vision.Detection
         /// <summary>
         ///   Constructs a new Haar-like feature.
         /// </summary>
+        /// 
         public HaarFeature(params int[][] rectangles)
             : this(false, rectangles)
         {
@@ -79,6 +84,7 @@ namespace Accord.Vision.Detection
         /// <summary>
         ///   Constructs a new Haar-like feature.
         /// </summary>
+        /// 
         public HaarFeature(bool tilted, params int[][] rectangles)
         {
             this.Tilted = tilted;
@@ -90,6 +96,7 @@ namespace Accord.Vision.Detection
         /// <summary>
         ///   Gets the sum of the areas of the rectangular features in an integral image.
         /// </summary>
+        /// 
         public double GetSum(IntegralImage2 image, int x, int y)
         {
             double sum = 0.0;
@@ -119,6 +126,7 @@ namespace Accord.Vision.Detection
         /// <summary>
         ///   Sets the scale and weight of a Haar-like rectangular feature container.
         /// </summary>
+        /// 
         public void SetScaleAndWeight(float scale, float weight)
         {
             // manual loop unfolding
