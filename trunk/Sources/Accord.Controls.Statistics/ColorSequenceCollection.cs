@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -86,7 +86,7 @@ namespace Accord.Controls
         /// <param name="skipWhite">If set to <c>true</c> white color is skipped.</param>
         /// <param name="random">If set to <c>true</c> generates a sequence of random colors.</param>
         /// 
-        public ColorSequenceCollection(int number, bool skipWhite, bool random)
+        public ColorSequenceCollection(int number, bool skipWhite = true, bool random = false)
         {
             int start = (skipWhite) ? 1 : 0;
 
@@ -119,6 +119,15 @@ namespace Accord.Controls
         public Color this[int i]
         {
             get { return sequence[i]; }
+        }
+
+        /// <summary>
+        ///   Gets the <see cref="System.Drawing.Color"/> with specified index.
+        /// </summary>
+        /// 
+        public Color GetColor(int i)
+        {
+            return sequence[i];
         }
 
         /// <summary>

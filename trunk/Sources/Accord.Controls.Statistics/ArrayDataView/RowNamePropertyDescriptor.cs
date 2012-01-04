@@ -28,35 +28,28 @@
 
 namespace Accord.Controls
 {
-
     using System;
-    using System.Diagnostics;
     using System.ComponentModel;
+    using System.Diagnostics;
 
     /// <summary>
-    ///   Provides an abstraction of array values.
+    ///   Provides an abstraction for array names.
     /// </summary>
     /// 
-    public class ArrayPropertyDescriptor : PropertyDescriptor
+    public class RowNamePropertyDescriptor : PropertyDescriptor
     {
-        private string name;
-        private Type type;
-        private int columnIndex;
+        private string colName;
 
         /// <summary>
         ///   Constructs a new Array Property Descriptor.
         /// </summary>
         /// 
         /// <param name="name">A title for the array.</param>
-        /// <param name="type">The type of the property being displayed.</param>
-        /// <param name="index">The index to display.</param>
         /// 
-        public ArrayPropertyDescriptor(string name, Type type, int index)
+        public RowNamePropertyDescriptor(string name)
             : base(name, null)
         {
-            this.name = name;
-            this.type = type;
-            this.columnIndex = index;
+            this.colName = name;
         }
 
         /// <summary>
@@ -65,7 +58,7 @@ namespace Accord.Controls
         /// 
         public override string DisplayName
         {
-            get { return name; }
+            get { return colName; }
         }
 
         /// <summary>
@@ -83,7 +76,7 @@ namespace Accord.Controls
         /// 
         public override bool IsReadOnly
         {
-            get { return false; }
+            get { return true; }
         }
 
         /// <summary>
@@ -92,7 +85,7 @@ namespace Accord.Controls
         /// 
         public override Type PropertyType
         {
-            get { return type; }
+            get { return typeof(string); }
         }
 
         /// <summary>
@@ -103,7 +96,7 @@ namespace Accord.Controls
         {
             try
             {
-                return ((ArrayRowView)component).GetColumn(columnIndex);
+                return ((ArrayRowView)component).GetName();
             }
             catch (ArgumentException e)
             {
@@ -123,10 +116,7 @@ namespace Accord.Controls
         /// 
         public override void SetValue(object component, object value)
         {
-            ArrayRowView rowView = component as ArrayRowView;
-
-            if (rowView != null)
-                rowView.SetColumnValue(columnIndex, value);
+            
         }
 
         /// <summary>

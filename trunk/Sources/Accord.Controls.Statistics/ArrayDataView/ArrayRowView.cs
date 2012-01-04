@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord-net.origo.ethz.ch
 //
-// Copyright © César Souza, 2009-2011
+// Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -53,6 +53,10 @@ namespace Accord.Controls
             this.error = String.Empty;
         }
 
+        internal string GetName()
+        {
+            return owner.RowNames[rowIndex];
+        }
 
         /// <summary>
         ///   Gets the value at the specified position of this row.
@@ -107,6 +111,7 @@ namespace Accord.Controls
         /// <summary>
         ///   Returns null.
         /// </summary>
+        /// 
         public TypeConverter GetConverter()
         {
             return null;
@@ -115,6 +120,7 @@ namespace Accord.Controls
         /// <summary>
         ///   Does nothing.
         /// </summary>
+        /// 
         public EventDescriptorCollection GetEvents(Attribute[] attributes)
         {
             return EventDescriptorCollection.Empty;
@@ -123,7 +129,7 @@ namespace Accord.Controls
         /// <summary>
         ///   Does nothing.
         /// </summary>
-        /// <returns></returns>
+        /// 
         EventDescriptorCollection System.ComponentModel.ICustomTypeDescriptor.GetEvents()
         {
             return EventDescriptorCollection.Empty;
@@ -132,6 +138,7 @@ namespace Accord.Controls
         /// <summary>
         ///   Returns null.
         /// </summary>
+        /// 
         public string GetComponentName()
         {
             return null;
@@ -140,6 +147,7 @@ namespace Accord.Controls
         /// <summary>
         ///   Gets the owner ArrayDataView.
         /// </summary>
+        /// 
         public object GetPropertyOwner(PropertyDescriptor pd)
         {
             return owner;
@@ -148,6 +156,7 @@ namespace Accord.Controls
         /// <summary>
         ///   Does nothing.
         /// </summary>
+        /// 
         public AttributeCollection GetAttributes()
         {
             return AttributeCollection.Empty;
@@ -156,6 +165,7 @@ namespace Accord.Controls
         /// <summary>
         ///   Gets the values of the multidimensional array as properties.
         /// </summary>
+        /// 
         public PropertyDescriptorCollection GetProperties(Attribute[] attributes)
         {
             if (owner.ArrayData.Rank == 2)
@@ -163,10 +173,20 @@ namespace Accord.Controls
                 // Multidimensional array of rank 2
                 int col = owner.ArrayData.GetLength(1);
                 Type type = owner.ArrayData.GetType().GetElementType();
-                PropertyDescriptor[] prop = new PropertyDescriptor[col];
-                for (int i = 0; i < col; i++)
+                PropertyDescriptor[] prop;
+
+                if (owner.RowNames != null)
                 {
-                    prop[i] = new ArrayPropertyDescriptor(owner.ColumnNames[i], type, i);
+                    prop = new PropertyDescriptor[col+1];
+                    prop[0] = new RowNamePropertyDescriptor("Row");
+                    for (int i = 0; i < col; i++)
+                        prop[i+1] = new ArrayPropertyDescriptor(owner.ColumnNames[i], type, i);
+                }
+                else
+                {
+                    prop = new PropertyDescriptor[col];
+                    for (int i = 0; i < col; i++)
+                        prop[i] = new ArrayPropertyDescriptor(owner.ColumnNames[i], type, i);
                 }
                 return new PropertyDescriptorCollection(prop);
             }
