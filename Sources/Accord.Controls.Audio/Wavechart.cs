@@ -22,10 +22,13 @@
 
 namespace Accord.Controls
 {
-    using System.Collections;
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Drawing;
     using System.Windows.Forms;
     using Accord.Math;
+    using Accord.Audio;
     using AForge;
 
     /// <summary>
@@ -57,22 +60,46 @@ namespace Accord.Controls
         private class Waveform
         {
             public float[] data = null;
+            public int samples;
+
             public Color color = Color.Blue;
             public int width = 1;
+
             public bool updateYRange = true;
+            
         }
 
-        // data series table
-        Hashtable waveTable = new Hashtable();
+        private Dictionary<string, Waveform> waveTable = new Dictionary<string, Waveform>();
 
-        private Pen blackPen = new Pen(Color.Black);
-        private Brush whiteBrush = new SolidBrush(Color.White);
+        private Pen bordersPen;
+        private Brush backgroundBrush;
 
-        private DoubleRange rangeX = new DoubleRange(0, 1);
-        private DoubleRange rangeY = new DoubleRange(0, 1);
+        private DoubleRange rangeX = new DoubleRange(0, 0);
+        private DoubleRange rangeY = new DoubleRange(0, 0);
 
         /// <summary>
-        /// Chart's X range.
+        ///   Gets or sets the background color for the control.
+        /// </summary>
+        /// 
+        /// <returns>A <see cref="T:System.Drawing.Color"/> that represents the 
+        ///   background color of the control. The default is the value of the 
+        ///   <see cref="P:System.Windows.Forms.Control.DefaultBackColor"/> 
+        ///   property.
+        /// </returns>
+        /// 
+        /// <PermissionSet>
+        /// 	<IPermission class="System.Security.Permissions.FileIOPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true"/>
+        /// </PermissionSet>
+        /// 
+        [DefaultValue("Color.White")]
+        public override Color BackColor
+        {
+            get { return base.BackColor; }
+            set { base.BackColor = value; }
+        }
+
+        /// <summary>
+        ///   Chart's X range.
         /// </summary>
         /// 
         /// <remarks><para>The value sets the X range of data to be displayed on the chart.</para></remarks>
@@ -88,7 +115,7 @@ namespace Accord.Controls
         }
 
         /// <summary>
-        /// Chart's Y range.
+        ///   Chart's Y range.
         /// </summary>
         /// 
         /// <remarks>The value sets the Y range of data to be displayed on the chart.</remarks>
@@ -104,6 +131,16 @@ namespace Accord.Controls
         }
 
         /// <summary>
+        ///   Gets or sets a value indicating whether to
+        ///   create a simple wave chart only (no scaling).
+        /// </summary>
+        /// 
+        /// <value><c>true</c> to enable simple mode; otherwise, <c>false</c>.</value>
+        /// 
+        public bool SimpleMode { get; set; }
+
+
+        /// <summary>
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.Container components = null;
@@ -114,17 +151,18 @@ namespace Accord.Controls
         /// 
         public Wavechart()
         {
-            // This call is required by the Signals.Forms Form Designer.
             InitializeComponent();
 
-            // update control style
-            SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.ResizeRedraw |
-                     ControlStyles.DoubleBuffer | ControlStyles.UserPaint, true);
+            this.DoubleBuffered = true;
+
+            this.bordersPen = new Pen(Color.Black);
+            this.backgroundBrush = new SolidBrush(BackColor);
         }
 
         /// <summary>
-        /// Dispose the object.
+        ///   Dispose the object.
         /// </summary>
+        /// 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -133,8 +171,8 @@ namespace Accord.Controls
                     components.Dispose();
 
                 // free graphics resources
-                blackPen.Dispose();
-                whiteBrush.Dispose();
+                bordersPen.Dispose();
+                backgroundBrush.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -156,65 +194,100 @@ namespace Accord.Controls
         #endregion
 
         /// <summary>
-        ///  Paints the control.
+        ///   Paints the background of the control.
         /// </summary>
+        /// 
+        /// <param name="pevent">A <see cref="T:System.Windows.Forms.PaintEventArgs"/> that contains information about the control to paint.</param>
+        /// 
+        protected override void OnPaintBackground(PaintEventArgs pevent)
+        {
+        }
+
+        /// <summary>
+        ///   Paints the control.
+        /// </summary>
+        /// 
         protected override void OnPaint(PaintEventArgs e)
         {
             Graphics g = e.Graphics;
+
             int clientWidth = ClientRectangle.Width;
             int clientHeight = ClientRectangle.Height;
 
-            // fill with white background
-            g.FillRectangle(whiteBrush, 0, 0, clientWidth - 1, clientHeight - 1);
+            // fill with background
+            g.FillRectangle(backgroundBrush, 0, 0, clientWidth - 1, clientHeight - 1);
 
-            // draw a black rectangle
-            g.DrawRectangle(blackPen, 0, 0, clientWidth - 1, clientHeight - 1);
+            // draw borders
+            g.DrawRectangle(bordersPen, 0, 0, clientWidth - 1, clientHeight - 1);
 
             if (DesignMode)
                 return;
 
-            // check if there are any data series
-            if ((rangeY != null) && (rangeX.Length != 0))
+            DoubleRange rangeClientX = new DoubleRange(0, clientWidth);
+            DoubleRange rangeClientY = new DoubleRange(clientHeight, 0);
+
+            // walk through all data series
+            foreach (Waveform waveform in waveTable.Values)
             {
-                DoubleRange rangeClientX = new DoubleRange(0, clientWidth);
-                DoubleRange rangeClientY = new DoubleRange(clientHeight, 0);
+                // get data of the waveform
+                float[] data = waveform.data;
 
-                // walk through all data series
-                foreach (Waveform waveform in waveTable.Values)
+                // check for available data
+                if (data == null) continue;
+
+
+                using (Pen pen = new Pen(waveform.color, waveform.width))
                 {
-                    // get data of the waveform
-                    float[] data = waveform.data;
-
-                    // check for available data
-                    if (data == null || rangeY.Length == 0)
-                        continue;
-
-                    Pen pen = new Pen(waveform.color, waveform.width);
-
-                    int xPrev = 0;
-                    int yPrev = (int)rangeY.Scale(rangeClientY, data[0]);
-
-                    for (int x = 0; x < clientWidth; x++)
+                    if (SimpleMode)
                     {
-                        int index = (int)rangeClientX.Scale(rangeX, x);
-                        if (index < 0 || index >= data.Length)
-                            index = data.Length - 1;
-                        int y = (int)rangeY.Scale(rangeClientY, data[index]);
-
-                        g.DrawLine(pen, xPrev, yPrev, x, y);
-
-
-                        xPrev = x;
-                        yPrev = y;
+                        int blockSize = waveform.samples / clientWidth;
+                        for (int x = 0; x < clientWidth; x++)
+                        {
+                            double max = data.RootMeanSquare(x * blockSize, blockSize);
+                            int y = clientHeight / 2 + (int)(max * clientHeight);
+                            g.DrawLine(pen, x, clientHeight - y, x, y);
+                        }
                     }
+                    else
+                    {
+                        int xPrev = 0;
+                        int yPrev = (int)rangeY.Scale(rangeClientY, data[0]);
 
-                    pen.Dispose();
+                        for (int x = 0; x < clientWidth; x++)
+                        {
+                            int index = (int)rangeClientX.Scale(rangeX, x);
+                            if (index < 0 || index >= data.Length)
+                                index = data.Length - 1;
+                            int y = (int)rangeY.Scale(rangeClientY, data[index]);
+
+                            g.DrawLine(pen, xPrev, yPrev, x, y);
+
+                            xPrev = x;
+                            yPrev = y;
+                        }
+                    }
                 }
             }
         }
 
+
         /// <summary>
-        /// Add Waveform to the chart.
+        ///   Raises the <see cref="E:System.Windows.Forms.Control.BackColorChanged"/> event.
+        /// </summary>
+        /// 
+        /// <param name="e">An <see cref="T:System.EventArgs"/> that contains the event data.</param>
+        /// 
+        protected override void OnBackColorChanged(EventArgs e)
+        {
+            base.OnBackColorChanged(e);
+
+            Brush oldBrush = backgroundBrush;
+            backgroundBrush = new SolidBrush(BackColor);
+            oldBrush.Dispose();
+        }
+
+        /// <summary>
+        ///   Add Waveform to the chart.
         /// </summary>
         /// 
         /// <param name="name">Waveform name.</param>
@@ -222,7 +295,7 @@ namespace Accord.Controls
         /// <param name="width">Waveform width.</param>
         /// 
         /// <remarks><para>Adds new empty waveform to the collection of waves. To update this
-        /// wave the <see cref="UpdateWaveform"/> method should be used.</para>
+        /// wave the <see cref="UpdateWaveform(string, float[])"/> method should be used.</para>
         /// </remarks>
         /// 
         public void AddWaveform(string name, Color color, int width)
@@ -231,7 +304,7 @@ namespace Accord.Controls
         }
 
         /// <summary>
-        /// Add Waveform to the chart.
+        ///   Add Waveform to the chart.
         /// </summary>
         /// 
         /// <param name="name">Waveform name.</param>
@@ -240,7 +313,7 @@ namespace Accord.Controls
         /// <param name="updateYRange">Specifies if <see cref="RangeY"/> should be updated.</param>
         /// 
         /// <remarks><para>Adds new empty waveform to the collection of waves. To update this
-        /// wave the <see cref="UpdateWaveform"/> method should be used.</para>
+        /// wave the <see cref="UpdateWaveform(string, float[])"/> method should be used.</para>
         /// </remarks>
         /// 
         /// <remarks><para>Adds new empty data series to the collection of data series.</para>
@@ -254,18 +327,16 @@ namespace Accord.Controls
         /// 
         public void AddWaveform(string name, Color color, int width, bool updateYRange)
         {
-            // create new series definition ...
             Waveform series = new Waveform();
-            // ... add fill it
             series.color = color;
             series.width = width;
             series.updateYRange = updateYRange;
-            // add to series table
+
             waveTable.Add(name, series);
         }
 
         /// <summary>
-        /// Update data series on the chart.
+        ///   Update Waveform on the chart.
         /// </summary>
         /// 
         /// <param name="name">Data series name to update.</param>
@@ -273,49 +344,64 @@ namespace Accord.Controls
         /// 
         public void UpdateWaveform(string name, float[] data)
         {
+            UpdateWaveform(name, data, data.Length);
+        }
+
+        /// <summary>
+        ///   Update Waveform on the chart.
+        /// </summary>
+        /// 
+        /// <param name="name">Data series name to update.</param>
+        /// <param name="data">Data series values.</param>
+        /// <param name="samples">The number of samples in the <paramref name="data"/> array.</param>
+        /// 
+        public void UpdateWaveform(string name, float[] data, int samples)
+        {
+            if (samples > data.Length)
+                throw new ArgumentOutOfRangeException("samples");
+
             // get data series
-            Waveform series = (Waveform)waveTable[name];
-            if (series == null)
-                return;
+            Waveform series = waveTable[name];
 
             // update data
             series.data = data;
+            series.samples = samples;
 
             // update Y range
             if (series.updateYRange)
                 UpdateYRange();
-            // invalidate the control
+
             Invalidate();
         }
 
         /// <summary>
-        /// Remove a waveform from the chart.
+        ///   Remove a Waveform from the chart.
         /// </summary>
         /// 
         /// <param name="name">Waveform name to remove.</param>
         /// 
         public void RemoveWaveform(string name)
         {
-            // remove data series from table
             waveTable.Remove(name);
-            // invalidate the control
+
             Invalidate();
         }
 
         /// <summary>
-        /// Remove all waveforms from the chart.
+        ///   Remove all waveforms from the chart.
         /// </summary>
+        /// 
         public void RemoveAllWaveforms()
         {
-            // remove all data series from table
             waveTable.Clear();
-            // invalidate the control
+
             Invalidate();
         }
 
         /// <summary>
-        /// Update Y range.
+        ///   Update Y range.
         /// </summary>
+        /// 
         private void UpdateYRange()
         {
             float minY = float.MaxValue;

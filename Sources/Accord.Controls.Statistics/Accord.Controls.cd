@@ -9,7 +9,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AEIAAEAAAESCBBAQCABANAQgIAAKQBAIKAAQADBQIBQ=</HashCode>
+      <HashCode>AEIEAEAAAESCBBIQCQBANgQwIAQLQAAIKAAQADBQIhQ=</HashCode>
       <FileName>ArrayDataView\ArrayDataView.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -30,7 +30,11 @@
   <Class Name="Accord.Controls.ArrayRowView" BaseTypeListCollapsed="true">
     <Position X="4.5" Y="0.5" Width="2" />
     <Members>
+      <Method Name="ArrayRowView" Hidden="true" />
+      <Field Name="error" Hidden="true" />
       <Method Name="GetColumn" Hidden="true" />
+      <Method Name="GetName" Hidden="true" />
+      <Field Name="rowIndex" Hidden="true" />
       <Method Name="SetColumnValue" Hidden="true" />
       <Method Name="System.ComponentModel.ICustomTypeDescriptor.GetEvents" Hidden="true" />
       <Method Name="System.ComponentModel.ICustomTypeDescriptor.GetProperties" Hidden="true" />
@@ -39,7 +43,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAASAIACAAAgQAgiAEAAACAABAUIAAAAERACAAgCAA=</HashCode>
+      <HashCode>AAAASAIACAAAgQAgiAEAAACAABAUIAAAAERACAAgDAA=</HashCode>
       <FileName>ArrayDataView\ArrayRowView.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -59,7 +63,7 @@
     <Members>
       <Method Name="Dispose" Hidden="true" />
       <Method Name="InitializeComponent" Hidden="true" />
-      <Method Name="OnDataBind" Hidden="true" />
+      <Method Name="onDataBind" Hidden="true" />
       <Method Name="trackBar_ValueChanged" Hidden="true" />
       <Method Name="UpdateTrackbar" Hidden="true" />
     </Members>
@@ -67,7 +71,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>ABAAAIBgACAAAgAIAESEACAGIAgEACgAAAAAQgAAAII=</HashCode>
+      <HashCode>AAAAAIAgACAAAoAAAAagACAGIDgAABgIAAAAQgAAAEI=</HashCode>
       <FileName>HistogramView.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -100,6 +104,55 @@
       <HashCode>AAAABgAAAAAAAEABgAAAACBAAAEIAAgAAAABAAAAEAA=</HashCode>
       <FileName>SortableBindingList\SortableBindingList.cs</FileName>
     </TypeIdentifier>
+  </Class>
+  <Class Name="Accord.Controls.DecisionTreeView">
+    <Position X="13.75" Y="4" Width="1.75" />
+    <Members>
+      <Field Name="components" Hidden="true" />
+      <Method Name="convert" Hidden="true" />
+      <Method Name="Dispose" Hidden="true" />
+      <Method Name="InitializeComponent" Hidden="true" />
+      <Field Name="treeSource" Hidden="true" />
+      <Field Name="treeView1" Hidden="true" />
+      <Method Name="update" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAACAAgAAAAACEAAACBAAAAAAAAAAAAAAEAAA=</HashCode>
+      <FileName>DecisionTreeView.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Accord.Controls.ScatterplotView">
+    <Position X="15.75" Y="4" Width="1.75" />
+    <Members>
+      <Field Name="classes" Hidden="true" />
+      <Field Name="components" Hidden="true" />
+      <Field Name="dataSource" Hidden="true" />
+      <Method Name="Dispose" Hidden="true" />
+      <Method Name="InitializeComponent" Hidden="true" />
+      <Field Name="labelDataMember" Hidden="true" />
+      <Method Name="OnDataBind" Hidden="true" />
+      <Field Name="scatterplot" Hidden="true" />
+      <Field Name="xAxisDataMember" Hidden="true" />
+      <Field Name="yAxisDataMember" Hidden="true" />
+      <Field Name="zedGraphControl" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAEAAAAgACAEAgALAAKAAAACABAAAAwAAAQIAAAAAAA=</HashCode>
+      <FileName>ScatterplotView.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Accord.Controls.ColorSequenceCollection">
+    <Position X="14.5" Y="0.5" Width="3" />
+    <Members>
+      <Field Name="Colors" Hidden="true" />
+      <Field Name="sequence" Hidden="true" />
+      <Method Name="System.Collections.IEnumerable.GetEnumerator" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAABAACAAAAAAAAAAAAACAAQAAgAAAAAA=</HashCode>
+      <FileName>ColorSequenceCollection.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>

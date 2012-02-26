@@ -5,8 +5,8 @@
     <InheritanceLine Type="System.Exception" ManuallyRouted="true">
       <Path>
         <Point X="11.75" Y="1.259" />
-        <Point X="11.75" Y="2.124" />
-        <Point X="6.375" Y="2.124" />
+        <Point X="11.75" Y="2.385" />
+        <Point X="6.375" Y="2.385" />
         <Point X="6.375" Y="6" />
       </Path>
     </InheritanceLine>
@@ -20,10 +20,8 @@
     <InheritanceLine Type="System.Exception" ManuallyRouted="true">
       <Path>
         <Point X="11.75" Y="1.259" />
-        <Point X="11.75" Y="2.124" />
-        <Point X="6.388" Y="2.124" />
-        <Point X="6.388" Y="4.875" />
-        <Point X="3.25" Y="4.875" />
+        <Point X="11.75" Y="2.373" />
+        <Point X="3.25" Y="2.373" />
         <Point X="3.25" Y="6" />
       </Path>
     </InheritanceLine>
@@ -44,10 +42,8 @@
     <InheritanceLine Type="System.Exception" ManuallyRouted="true">
       <Path>
         <Point X="11.75" Y="1.259" />
-        <Point X="11.75" Y="2.124" />
-        <Point X="6.386" Y="2.124" />
-        <Point X="6.386" Y="4.875" />
-        <Point X="9.75" Y="4.875" />
+        <Point X="11.75" Y="2.383" />
+        <Point X="9.75" Y="2.383" />
         <Point X="9.75" Y="6" />
       </Path>
     </InheritanceLine>
@@ -82,8 +78,8 @@
     <InheritanceLine Type="System.Exception" ManuallyRouted="true">
       <Path>
         <Point X="11.75" Y="1.259" />
-        <Point X="11.75" Y="2.124" />
-        <Point X="16.75" Y="2.124" />
+        <Point X="11.75" Y="2.375" />
+        <Point X="16.75" Y="2.375" />
         <Point X="16.75" Y="2.75" />
       </Path>
     </InheritanceLine>

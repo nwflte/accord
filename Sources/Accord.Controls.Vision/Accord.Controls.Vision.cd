@@ -10,6 +10,9 @@
       <Field Name="dataBindings" Hidden="true" />
       <Property Name="DataBindings" Hidden="true" />
       <Field Name="detector" Hidden="true" />
+      <Method Name="OnFaceEnter" Hidden="true" />
+      <Method Name="OnFaceLeave" Hidden="true" />
+      <Method Name="OnFaceMove" Hidden="true" />
       <Method Name="OnPropertyChanged" Hidden="true" />
       <Field Name="rawPosition" Hidden="true" />
       <Method Name="source_NewFrame" Hidden="true" />
@@ -56,6 +59,9 @@
       <Field Name="detector" Hidden="true" />
       <Field Name="frameSize" Hidden="true" />
       <Property Name="FramesReceived" Hidden="true" />
+      <Method Name="OnHeadEnter" Hidden="true" />
+      <Method Name="OnHeadLeave" Hidden="true" />
+      <Method Name="OnHeadMove" Hidden="true" />
       <Method Name="OnPropertyChanged" Hidden="true" />
       <Field Name="requestedToStop" Hidden="true" />
       <Field Name="resize" Hidden="true" />
