@@ -384,6 +384,29 @@ namespace Accord.Statistics.Analysis
         ///   peak. Any local maxima will be also a global maxima.
         /// </remarks>
         /// 
+        /// <param name="maxIterations">
+        ///   The maximum number of iterations to be performed by the regression
+        ///   algorithm.
+        /// </param>
+        /// 
+        /// <returns>
+        ///   True if the model converged, false otherwise.
+        /// </returns>
+        /// 
+        public bool Compute(int maxIterations)
+        {
+            return Compute(10e-4, maxIterations);
+        }
+
+        /// <summary>
+        ///   Computes the Logistic Regression Analysis.
+        /// </summary>
+        /// 
+        /// <remarks>The likelihood surface for the
+        ///   logistic regression learning is convex, so there will be only one
+        ///   peak. Any local maxima will be also a global maxima.
+        /// </remarks>
+        /// 
         /// <param name="limit">
         ///   The difference between two iterations of the regression algorithm
         ///   when the algorithm should stop. If not specified, the value of
@@ -415,7 +438,7 @@ namespace Accord.Statistics.Analysis
             } while (delta > limit && iteration < maxIterations);
 
             // Check if the full model has converged
-            bool converged = iteration <= maxIterations;
+            bool converged = iteration < maxIterations;
 
 
             // Store model information

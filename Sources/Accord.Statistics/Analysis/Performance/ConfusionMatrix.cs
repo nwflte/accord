@@ -83,6 +83,19 @@ namespace Accord.Statistics.Analysis
         ///   Constructs a new Confusion Matrix.
         /// </summary>
         /// 
+        public ConfusionMatrix(int[,] matrix)
+        {
+            this.truePositives = matrix[0, 0];
+            this.falseNegatives = matrix[0, 1];
+
+            this.falsePositives = matrix[1, 0];
+            this.trueNegatives = matrix[1, 1];
+        }
+
+        /// <summary>
+        ///   Constructs a new Confusion Matrix.
+        /// </summary>
+        /// 
         /// <param name="predicted">The values predicted by the model.</param>
         /// <param name="expected">The actual, truth values from the data.</param>
         /// 
@@ -527,7 +540,7 @@ namespace Accord.Statistics.Analysis
             }
         }
 
-        
+
         /// <summary>
         ///   Odds-ratio.
         /// </summary>
@@ -597,6 +610,23 @@ namespace Accord.Statistics.Analysis
 
                 return 1 + num / den;
             }
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="T:int[,,]"/> representing this confusion matrix.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="T:int[,,]"/> representing this confusion matrix.
+        /// </returns>
+        /// 
+        public int[,] ToMatrix()
+        {
+            return new int[,]
+            {
+                { truePositives, falseNegatives },
+                { falsePositives, trueNegatives },
+            };
         }
 
         /// <summary>
