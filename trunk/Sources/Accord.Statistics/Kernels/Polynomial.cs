@@ -53,10 +53,7 @@ namespace Accord.Statistics.Kernels
         /// 
         /// <param name="degree">The polynomial degree for this kernel.</param>
         /// 
-        public Polynomial(int degree)
-            : this(degree, 1.0)
-        {
-        }
+        public Polynomial(int degree) : this(degree, 1.0) { }
 
         /// <summary>
         ///   Gets or sets the kernel's polynomial degree.
@@ -89,11 +86,11 @@ namespace Accord.Statistics.Kernels
         /// 
         public double Function(double[] x, double[] y)
         {
-            double sum = 0.0;
+            double sum = constant;
             for (int i = 0; i < x.Length; i++)
                 sum += x[i] * y[i];
 
-            return System.Math.Pow(sum + constant, degree);
+            return Math.Pow(sum, degree);
         }
 
         /// <summary>
@@ -109,8 +106,8 @@ namespace Accord.Statistics.Kernels
         {
             double q = 1.0 / degree;
 
-            return System.Math.Pow(Function(x, x), q) + System.Math.Pow(Function(y, y), q)
-                - 2.0 * System.Math.Pow(Function(x, y), q);
+            return Math.Pow(Function(x, x), q) + Math.Pow(Function(y, y), q)
+                - 2.0 * Math.Pow(Function(x, y), q);
         }
 
     }

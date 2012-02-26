@@ -90,7 +90,7 @@ namespace Accord.Statistics.Kernels
             }
             norm = System.Math.Sqrt(norm);
 
-            return Accord.Math.Special.BesselJ(order, sigma * norm) /
+            return Accord.Math.Bessel.J(order, sigma * norm) /
                 System.Math.Pow(norm, -norm * order);
         }
 

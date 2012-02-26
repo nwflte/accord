@@ -20,53 +20,36 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-namespace Accord.Statistics.Kernels.Sparse
+namespace Accord.Statistics.Kernels
 {
     using System;
 
     /// <summary>
-    ///   Sparse Polynomial Kernel.
+    ///   Quadratic Kernel.
     /// </summary>
     /// 
     [Serializable]
-    public sealed class SparsePolynomial : IKernel
+    public sealed class Quadratic : IKernel, IDistance
     {
-        private int degree;
         private double constant;
 
         /// <summary>
-        ///   Constructs a new Sparse Polynomial kernel of a given degree.
+        ///   Constructs a new Quadratic kernel.
         /// </summary>
         /// 
-        /// <param name="degree">The polynomial degree for this kernel.</param>
         /// <param name="constant">The polynomial constant for this kernel. Default is 1.</param>
         /// 
-        public SparsePolynomial(int degree, double constant)
+        public Quadratic(double constant)
         {
-            this.degree = degree;
             this.constant = constant;
         }
 
         /// <summary>
-        ///   Constructs a new Polynomial kernel of a given degree.
+        ///   Constructs a new Quadratic kernel.
         /// </summary>
         /// 
-        /// <param name="degree">The polynomial degree for this kernel.</param>
-        /// 
-        public SparsePolynomial(int degree)
-            : this(degree, 1.0)
-        {
-        }
+        public Quadratic() : this(1.0) { }
 
-        /// <summary>
-        ///   Gets or sets the kernel's polynomial degree.
-        /// </summary>
-        /// 
-        public int Degree
-        {
-            get { return degree; }
-            set { degree = value; }
-        }
 
         /// <summary>
         ///   Gets or sets the kernel's polynomial constant term.
@@ -78,8 +61,9 @@ namespace Accord.Statistics.Kernels.Sparse
             set { constant = value; }
         }
 
+
         /// <summary>
-        ///   Polynomial kernel function.
+        ///   Quadratic kernel function.
         /// </summary>
         /// 
         /// <param name="x">Vector <c>x</c> in input space.</param>
@@ -89,31 +73,10 @@ namespace Accord.Statistics.Kernels.Sparse
         public double Function(double[] x, double[] y)
         {
             double sum = constant;
+            for (int i = 0; i < x.Length; i++)
+                sum += x[i] * y[i];
 
-            int i = 0, j = 0;
-            double posx, posy;
-
-            while (i < x.Length && j < y.Length)
-            {
-                posx = x[i]; posy = y[j];
-
-                if (posx == posy)
-                {
-                    sum += x[i + 1] * y[j + 1];
-
-                    i += 2; j += 2;
-                }
-                else if (posx < posy)
-                {
-                    i += 2;
-                }
-                else if (posx > posy)
-                {
-                    j += 2;
-                }
-            }
-
-            return Math.Pow(sum, Degree);
+            return sum * sum;
         }
 
         /// <summary>
@@ -127,10 +90,9 @@ namespace Accord.Statistics.Kernels.Sparse
         /// 
         public double Distance(double[] x, double[] y)
         {
-            double q = 1.0 / degree;
-
-            return Math.Pow(Function(x, x), q) + Math.Pow(Function(y, y), q)
-                - 2.0 * Math.Pow(Function(x, y), q);
+            return Math.Sqrt(Function(x, x)) + Math.Sqrt(Function(y, y))
+                - 2.0 * Math.Sqrt(Function(x, y));
         }
+
     }
 }

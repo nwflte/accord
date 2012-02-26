@@ -23,6 +23,8 @@
 namespace Accord.Statistics.Kernels
 {
     using System;
+    using Accord.Math;
+    using AForge;
 
     /// <summary>
     ///   Sigmoid Kernel.
@@ -42,11 +44,102 @@ namespace Accord.Statistics.Kernels
         private double constant;
 
         /// <summary>
+        ///   Estimates suitable values for the sigmoid kernel
+        ///   by exploring the response area of the tanh function.
+        /// </summary>
+        /// 
+        /// <param name="inputs">An input data set.</param>
+        /// 
+        /// <returns>A Sigmoid kernel initialized with appropriate values.</returns>
+        /// 
+        public static Sigmoid Estimate(double[][] inputs)
+        {
+            double[] norm = new double[inputs.Length];
+            for (int i = 0; i < inputs.Length; i++)
+                norm[i] = Norm.SquareEuclidean(inputs[i]);
+
+            double max = Matrix.Max(norm);
+
+            double r = -Math.E;
+            double a = -r / max;
+
+            return new Sigmoid(a, r);
+        }
+
+        /// <summary>
+        ///   Estimates suitable values for the sigmoid kernel
+        ///   by exploring the response area of the tanh function.
+        /// </summary>
+        /// 
+        /// <param name="inputs">An input data set.</param>
+        /// <param name="samples">The size of the subset to use in the estimation.</param>
+        /// <param name="range">The interquartile range for the data.</param>
+        /// 
+        /// <returns>A Sigmoid kernel initialized with appropriate values.</returns>
+        /// 
+        public static Sigmoid Estimate(double[][] inputs, int samples, out DoubleRange range)
+        {
+            if (samples > inputs.Length)
+                throw new ArgumentOutOfRangeException("samples");
+
+            double[] distances = Products(inputs, samples);
+
+            double q1 = Math.Sqrt(distances[(int)Math.Ceiling(0.15 * distances.Length)] / 2.0);
+            double q9 = Math.Sqrt(distances[(int)Math.Ceiling(0.85 * distances.Length)] / 2.0);
+            double qm = Math.Sqrt(Accord.Statistics.Tools.Median(distances, alreadySorted: true) / 2.0);
+
+            range = new DoubleRange(q1, q9);
+
+            double max = qm;
+
+            double r = -Math.E;
+            double a = -r / max;
+
+            return new Sigmoid(a, r);
+        }
+
+        /// <summary>
+        ///   Computes the set of all distances between 
+        ///   all points in a random subset of the data.
+        /// </summary>
+        /// 
+        /// <param name="inputs">The inputs points.</param>
+        /// <param name="samples">The number of samples.</param>
+        /// 
+        public static double[] Products(double[][] inputs, int samples)
+        {
+            int[] idx = Accord.Statistics.Tools.Random(inputs.Length, samples);
+            int[] idy = Accord.Statistics.Tools.Random(inputs.Length, samples);
+
+            double[] products = new double[samples * samples];
+
+            for (int i = 0; i < idx.Length; i++)
+            {
+                double[] x = inputs[idx[i]];
+
+                for (int j = 0; j < idy.Length; j++)
+                {
+                    double[] y = inputs[idy[j]];
+
+                    double sum = 0;
+                    for (int k = 0; k < x.Length; k++)
+                        sum = x[k] * y[k];
+
+                    products[i * samples + j] = sum;
+                }
+            }
+
+            Array.Sort(products);
+
+            return products;
+        }
+
+        /// <summary>
         ///   Constructs a Sigmoid kernel.
         /// </summary>
         /// 
         public Sigmoid()
-            : this(2.0, -0.5) { }
+            : this(0.01, -Math.E) { }
 
         /// <summary>
         ///   Constructs a Sigmoid kernel.
@@ -54,10 +147,10 @@ namespace Accord.Statistics.Kernels
         /// 
         /// <param name="alpha">
         ///   Alpha parameter. Typically should be set to
-        ///   a positive value. Default is 2.</param>
+        ///   a small positive value. Default is 0.01.</param>
         /// <param name="constant">
         ///   Constant parameter. Typically should be set to
-        ///   a negative value. Default is -0.5.</param>
+        ///   a negative value. Default is -e (Euler's constant).</param>
         /// 
         public Sigmoid(double alpha, double constant)
         {
@@ -104,7 +197,9 @@ namespace Accord.Statistics.Kernels
             for (int i = 0; i < x.Length; i++)
                 sum += x[i] * y[i];
 
-            return Math.Tanh(alpha * sum + constant);
+            double value = Math.Tanh(alpha * sum + constant);
+
+            return value;
         }
 
     }

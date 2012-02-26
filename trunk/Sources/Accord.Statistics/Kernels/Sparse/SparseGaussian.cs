@@ -23,6 +23,7 @@
 namespace Accord.Statistics.Kernels.Sparse
 {
     using System;
+    using AForge;
 
     /// <summary>
     ///   Sparse Gaussian Kernel.
@@ -48,6 +49,7 @@ namespace Accord.Statistics.Kernels.Sparse
     {
         private double sigma;
         private double gamma;
+
 
         /// <summary>
         ///   Constructs a new Sparse Gaussian Kernel
@@ -86,7 +88,7 @@ namespace Accord.Statistics.Kernels.Sparse
             set
             {
                 gamma = value;
-                sigma = System.Math.Sqrt(1.0 / (gamma * 2.0));
+                sigma = Math.Sqrt(1.0 / (gamma * 2.0));
             }
         }
 
@@ -98,7 +100,7 @@ namespace Accord.Statistics.Kernels.Sparse
         /// <param name="y">Vector <c>y</c> in input space.</param>
         /// <returns>Dot product in feature (kernel) space.</returns>
         /// 
-        public  double Function(double[] x, double[] y)
+        public double Function(double[] x, double[] y)
         {
             // Optimization in case x and y are
             // exactly the same object reference.
@@ -133,7 +135,7 @@ namespace Accord.Statistics.Kernels.Sparse
                 }
             }
 
-            return System.Math.Exp(norm * -Gamma);
+            return Math.Exp(-gamma * norm);
         }
 
         /// <summary>
@@ -148,7 +150,7 @@ namespace Accord.Statistics.Kernels.Sparse
         ///   Distance between <c>x</c> and <c>y</c> in input space.
         /// </returns>
         /// 
-        public  double Distance(double[] x, double[] y)
+        public double Distance(double[] x, double[] y)
         {
             if (x == y) return 0.0;
 
@@ -182,7 +184,40 @@ namespace Accord.Statistics.Kernels.Sparse
             }
 
             // TODO: Verify the use of log1p instead
-            return (1.0 / -Gamma) * System.Math.Log(1.0 - 0.5 * norm);
+            return (1.0 / -gamma) * Math.Log(1.0 - 0.5 * norm);
+        }
+
+
+        /// <summary>
+        ///   Estimate appropriate values for sigma given a data set.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   This method uses a simple heuristic to obtain appropriate values
+        ///   for sigma in a radial basis function kernel. The heristic is shown
+        ///   by Caputo, Sim, Furesjo and Smola, "Appearance-based object
+        ///   recognition using SVMs: which kernel should I use?", 2002.
+        /// </remarks>
+        /// 
+        /// <param name="inputs">The data set.</param>
+        /// <param name="samples">The number of random samples to analyze.</param>
+        /// <param name="range">The range of suitable values for sigma.</param>
+        /// <returns>A Gaussian kernel initialized with an appropriate sigma value.</returns>
+        /// 
+        public static SparseGaussian Estimate(double[][] inputs, int samples, out DoubleRange range)
+        {
+            if (samples > inputs.Length)
+                throw new ArgumentOutOfRangeException("samples");
+
+            double[] distances = Gaussian.Distances(inputs, samples);
+
+            double q1 = Math.Sqrt(distances[(int)Math.Ceiling(0.15 * distances.Length)] / 2.0);
+            double q9 = Math.Sqrt(distances[(int)Math.Ceiling(0.85 * distances.Length)] / 2.0);
+            double qm = Math.Sqrt(Accord.Statistics.Tools.Median(distances, alreadySorted: true) / 2.0);
+
+            range = new DoubleRange(q1, q9);
+
+            return new SparseGaussian(sigma: qm);
         }
 
     }

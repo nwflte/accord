@@ -25,43 +25,46 @@ namespace Accord.Statistics.Kernels
     using System;
 
     /// <summary>
-    ///   Linear Kernel.
+    ///   Symmetric Triangle Kernel.
     /// </summary>
     /// 
+    /// <remarks>
+    /// <para>
+    ///   References:
+    ///   <list type="bullet">
+    ///     <item><description>
+    ///      Chaudhuri et al, A Comparative Study of Kernels for the Multi-class Support Vector
+    ///      Machine, 2008. Available on: http://www.computer.org/portal/web/csdl/doi/10.1109/ICNC.2008.803 </description></item>
+    ///    </list></para>
+    /// </remarks>
+    /// 
     [Serializable]
-    public sealed class Linear : IKernel, IDistance
+    public sealed class SymmetricTriangle : IKernel
     {
-        private double constant;
+        private double gamma;
+
 
         /// <summary>
-        ///   Constructs a new Linear kernel.
+        ///   Constructs a new Symmetric Triangle Kernel
         /// </summary>
         /// 
-        /// <param name="constant">A constant intercept term. Default is 1.</param>
-        /// 
-        public Linear(double constant)
+        public SymmetricTriangle(double gamma)
         {
-            this.constant = constant;
+            this.Gamma = gamma;
         }
 
         /// <summary>
-        ///   Constructs a new Linear Kernel.
+        ///   Gets or sets the gamma value for the kernel.
         /// </summary>
         /// 
-        public Linear() : this(1) { }
-
-        /// <summary>
-        ///   Gets or sets the kernel's intercept term.
-        /// </summary>
-        /// 
-        public double Constant
+        public double Gamma
         {
-            get { return constant; }
-            set { constant = value; }
+            get { return gamma; }
+            set { gamma = value; }
         }
 
         /// <summary>
-        ///   Linear kernel function.
+        ///   Symmetric Triangle Kernel function.
         /// </summary>
         /// 
         /// <param name="x">Vector <c>x</c> in input space.</param>
@@ -70,26 +73,18 @@ namespace Accord.Statistics.Kernels
         /// 
         public double Function(double[] x, double[] y)
         {
-            double sum = constant;
+            double norm = 0.0, d;
             for (int i = 0; i < x.Length; i++)
-                sum += x[i] * y[i];
+            {
+                d = x[i] - y[i];
+                norm += d * d;
+            }
 
-            return sum;
+            double z = 1.0 - gamma * Math.Sqrt(norm);
+
+            return (z > 0) ? z : 0;
         }
 
-        /// <summary>
-        ///   Computes the distance in input space
-        ///   between two points given in feature space.
-        /// </summary>
-        /// 
-        /// <param name="x">Vector <c>x</c> in feature (kernel) space.</param>
-        /// <param name="y">Vector <c>y</c> in feature (kernel) space.</param>
-        /// <returns>Distance between <c>x</c> and <c>y</c> in input space.</returns>
-        /// 
-        public double Distance(double[] x, double[] y)
-        {
-            return Function(x, x) + Function(y, y) - 2.0 * Function(x, y);
-        }
 
     }
 }

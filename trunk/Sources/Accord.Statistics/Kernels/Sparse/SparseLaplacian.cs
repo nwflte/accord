@@ -23,6 +23,7 @@
 namespace Accord.Statistics.Kernels.Sparse
 {
     using System;
+    using AForge;
 
     /// <summary>
     ///   Sparse Laplacian Kernel.
@@ -32,26 +33,53 @@ namespace Accord.Statistics.Kernels.Sparse
     public sealed class SparseLaplacian : IKernel
     {
         private double sigma;
+        private double gamma;
 
         /// <summary>
-        ///   Constructs a new Sparse Laplacian Kernel
+        ///   Constructs a new Laplacian Kernel
+        /// </summary>
+        /// 
+        public SparseLaplacian() : this(1) { }
+
+        /// <summary>
+        ///   Constructs a new Laplacian Kernel
         /// </summary>
         /// 
         /// <param name="sigma">The sigma slope value.</param>
         /// 
         public SparseLaplacian(double sigma)
         {
-            this.sigma = sigma;
+            this.Sigma = sigma;
         }
 
         /// <summary>
-        ///   Gets or sets the sigma value for the kernel.
+        ///   Gets or sets the sigma value for the kernel. When setting
+        ///   sigma, gamma gets updated accordingly (gamma = 0.5*/sigma^2).
         /// </summary>
         /// 
         public double Sigma
         {
             get { return sigma; }
-            set { sigma = value; }
+            set
+            {
+                sigma = value;
+                gamma = 1.0 / sigma;
+            }
+        }
+
+        /// <summary>
+        ///   Gets or sets the gamma value for the kernel. When setting
+        ///   gamma, sigma gets updated accordingly (gamma = 0.5*/sigma^2).
+        /// </summary>
+        /// 
+        public double Gamma
+        {
+            get { return gamma; }
+            set
+            {
+                gamma = value;
+                sigma = 1.0 / gamma;
+            }
         }
 
 
@@ -98,7 +126,9 @@ namespace Accord.Statistics.Kernels.Sparse
                 }
             }
 
-            return System.Math.Exp(-System.Math.Sqrt(norm) / Sigma);
+            norm = Math.Sqrt(norm);
+
+            return Math.Exp(-gamma * norm);
         }
 
         /// <summary>
@@ -144,8 +174,44 @@ namespace Accord.Statistics.Kernels.Sparse
                 }
             }
 
-            return Sigma * System.Math.Log(1.0 - 0.5 * System.Math.Sqrt(norm));
+            norm = Math.Sqrt(norm);
+
+            // TODO: Verify the use of log1p instead
+            return (1.0 / -gamma) * Math.Log(1.0 - 0.5 * norm);
         }
 
+
+        /// <summary>
+        ///   Estimate appropriate values for sigma given a data set.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   This method uses a simple heuristic to obtain appropriate values
+        ///   for sigma in a radial basis function kernel. The heristic is shown
+        ///   by Caputo, Sim, Furesjo and Smola, "Appearance-based object
+        ///   recognition using SVMs: which kernel should I use?", 2002.
+        /// </remarks>
+        /// 
+        /// <param name="inputs">The data set.</param>
+        /// <param name="samples">The number of random samples to analyze.</param>
+        /// <param name="range">The range of suitable values for sigma.</param>
+        /// 
+        /// <returns>A Laplacian kernel initialized with an appropriate sigma value.</returns>
+        /// 
+        public static SparseLaplacian Estimate(double[][] inputs, int samples, out DoubleRange range)
+        {
+            if (samples > inputs.Length)
+                throw new ArgumentOutOfRangeException("samples");
+
+            double[] distances = Gaussian.Distances(inputs, samples);
+
+            double q1 = distances[(int)Math.Ceiling(0.15 * distances.Length)];
+            double q9 = distances[(int)Math.Ceiling(0.85 * distances.Length)];
+            double qm = Accord.Statistics.Tools.Median(distances, alreadySorted: true);
+
+            range = new DoubleRange(q1, q9);
+
+            return new SparseLaplacian(sigma: qm);
+        }
     }
 }
