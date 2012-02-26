@@ -236,7 +236,7 @@ namespace Accord.MachineLearning.VectorMachines.Learning
             int count = 0;
             for (int i = 0; i < inputs.Length; i++)
             {
-                double y = msvm.Compute(inputs[i]);
+                int y = msvm.Compute(inputs[i]);
 
                 if (y != expectedOutputs[i])
                     count++;

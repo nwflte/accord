@@ -23,9 +23,9 @@
 namespace Accord.MachineLearning.VectorMachines
 {
     using System;
-    using Accord.Statistics.Kernels;
     using System.IO;
     using System.Runtime.Serialization.Formatters.Binary;
+    using Accord.Statistics.Kernels;
 
     /// <summary>
     ///  Sparse Kernel Support Vector Machine (kSVM)
@@ -107,7 +107,8 @@ namespace Accord.MachineLearning.VectorMachines
         ///   case for kernel vector machines using a sequence kernel.
         /// </remarks>
         /// 
-        public KernelSupportVectorMachine(IKernel kernel, int inputs) : base(inputs)
+        public KernelSupportVectorMachine(IKernel kernel, int inputs)
+            : base(inputs)
         {
             if (kernel == null) throw new ArgumentNullException("kernel");
 
@@ -135,16 +136,28 @@ namespace Accord.MachineLearning.VectorMachines
         /// </remarks>
         /// 
         /// <param name="inputs">An input vector.</param>
-        /// <returns>The output for the given input.</returns>
+        /// <param name="output">The output of the machine. If this is a 
+        ///   <see cref="SupportVectorMachine.IsProbabilistic">probabilistic
+        ///   </see> machine, the output is the probability of the positive
+        ///   class. If this is a standard machine, the output is the distance
+        ///   to the decision hyperplane in feature space.</param>
         /// 
-        public override double Compute(double[] inputs)
+        /// <returns>The decision label for the given input.</returns>
+        /// 
+        public override int Compute(double[] inputs, out double output)
         {
-            double s = Threshold;
+            output = Threshold;
 
             for (int i = 0; i < SupportVectors.Length; i++)
-                s += Weights[i] * kernel.Function(SupportVectors[i], inputs);
+                output += Weights[i] * kernel.Function(SupportVectors[i], inputs);
 
-            return s;
+            if (IsProbabilistic)
+            {
+                output = Link.Inverse(output);
+                return output >= 0.5 ? 1 : -1;
+            }
+
+            return output >= 0 ? 1 : -1;
         }
 
         /// <summary>
@@ -185,5 +198,6 @@ namespace Accord.MachineLearning.VectorMachines
         {
             return Load(new FileStream(path, FileMode.Open));
         }
+
     }
 }

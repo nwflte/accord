@@ -23,8 +23,9 @@
 namespace Accord.MachineLearning.VectorMachines
 {
     using System;
-    using System.Runtime.Serialization.Formatters.Binary;
     using System.IO;
+    using System.Runtime.Serialization.Formatters.Binary;
+    using Accord.Statistics.Links;
 
     /// <summary>
     ///   Sparse Linear Support Vector Machine (SVM)
@@ -46,7 +47,7 @@ namespace Accord.MachineLearning.VectorMachines
     ///   References:
     ///   <list type="bullet">
     ///     <item><description><a href="http://en.wikipedia.org/wiki/Support_vector_machine">
-    ///       http://en.wikipedia.org/wiki/Support_vector_machine</a></description></item>
+    ///       http://en.wikipedia.org/wiki/Support_vector_machine </a></description></item>
     ///   </list></para>   
     /// </remarks>
     /// 
@@ -93,6 +94,34 @@ namespace Accord.MachineLearning.VectorMachines
         private double[][] supportVectors;
         private double[] weights;
         private double threshold;
+
+        private ILinkFunction linkFunction;
+
+        /// <summary>
+        ///   Gets or sets the <see cref="ILinkFunction">link
+        ///   function</see> used by this machine, if any.
+        /// </summary>
+        /// 
+        /// <value>The link function used to transform machine outputs.</value>
+        /// 
+        public ILinkFunction Link
+        {
+            get { return linkFunction; }
+            set { linkFunction = value; }
+        }
+
+        /// <summary>
+        ///   Gets a value indicating whether this machine produces probabilistic outputs.
+        /// </summary>
+        /// 
+        /// <value>
+        ///   <c>true</c> if this machine produces probabilistic outputs; otherwise, <c>false</c>.
+        /// </value>
+        /// 
+        public bool IsProbabilistic
+        {
+            get { return linkFunction != null; }
+        }
 
         /// <summary>
         ///   Creates a new Support Vector Machine
@@ -161,22 +190,55 @@ namespace Accord.MachineLearning.VectorMachines
         /// </remarks>
         /// 
         /// <param name="inputs">An input vector.</param>
-        /// <returns>The output for the given input.</returns>
+        /// <param name="output">The output of the machine. If this is a 
+        ///   <see cref="IsProbabilistic">probabilistic</see> machine, the
+        ///   output is the probability of the positive class. If this is
+        ///   a standard machine, the output is the distance to the decision
+        ///   hyperplane in feature space.</param>
         /// 
-        public virtual double Compute(double[] inputs)
+        /// <returns>The decision label for the given input.</returns>
+        /// 
+        public virtual int Compute(double[] inputs, out double output)
         {
-            double s = threshold;
+            output = threshold;
+
             for (int i = 0; i < supportVectors.Length; i++)
             {
-                double p = 0;
+                double sum = 0;
                 for (int j = 0; j < inputs.Length; j++)
-                    p += supportVectors[i][j] * inputs[j];
-
-                s += weights[i] * p;
+                    sum += supportVectors[i][j] * inputs[j];
+                output += weights[i] * sum;
             }
 
-            return s;
+            if (IsProbabilistic)
+            {
+                output = linkFunction.Inverse(output);
+                return output >= 0.5 ? 1 : -1;
+            }
+
+            return output >= 0 ? 1 : -1;
         }
+
+        /// <summary>
+        ///   Computes the given input to produce the corresponding output.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   For a binary decision problem, the decision for the negative
+        ///   or positive class is typically computed by taking the sign of
+        ///   the machine's output.
+        /// </remarks>
+        /// 
+        /// <param name="inputs">An input vector.</param>
+        /// 
+        /// <returns>The decision label for the given input.</returns>
+        ///  
+        public int Compute(double[] inputs)
+        {
+            double output;
+            return Compute(inputs, out output);
+        }
+
 
         /// <summary>
         ///   Computes the given inputs to produce the corresponding outputs.

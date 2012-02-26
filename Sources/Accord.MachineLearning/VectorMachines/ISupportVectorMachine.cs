@@ -22,17 +22,26 @@
 
 namespace Accord.MachineLearning.VectorMachines
 {
+    using Accord.Statistics.Links;
+
     /// <summary>
     ///   Common interface for Support Vector Machines
     /// </summary>
     public interface ISupportVectorMachine
     {
+
         /// <summary>
         ///   Computes the given input to produce the corresponding output.
         /// </summary>
+        /// 
         /// <param name="inputs">An input vector.</param>
-        /// <returns>The output for the given input.</returns>
-        double Compute(double[] inputs);
+        /// 
+        /// <param name="output">The output for the given input.</param>
+        /// 
+        /// <returns>The decision label for the given input.</returns>
+        /// 
+        int Compute(double[] inputs, out double output);
+
     }
 
 }
