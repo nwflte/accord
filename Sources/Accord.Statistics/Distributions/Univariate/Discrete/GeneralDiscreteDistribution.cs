@@ -26,7 +26,7 @@ namespace Accord.Statistics.Distributions.Univariate
     using Accord.Statistics.Distributions.Fitting;
 
     /// <summary>
-    ///   Univariate generic discrete distribution, also referred as the
+    ///   Univariate general discrete distribution, also referred as the
     ///   Categorical distribution.
     /// </summary>
     /// <remarks>
@@ -41,7 +41,8 @@ namespace Accord.Statistics.Distributions.Univariate
     /// </remarks>
     /// 
     [Serializable]
-    public class GeneralDiscreteDistribution : UnivariateDiscreteDistribution
+    public class GeneralDiscreteDistribution : UnivariateDiscreteDistribution,
+        IFittableDistribution<double, GeneralDiscreteOptions>
     {
 
         // distribution parameters
@@ -268,22 +269,25 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   Gets the probability density function (pdf) for
         ///   this distribution evaluated at point <c>x</c>.
         /// </summary>
-        /// <param name="x">
+        /// 
+        /// <param name="k">
         ///   A single point in the distribution range. For a 
         ///   univariate distribution, this should be a single
         ///   double value. For a multivariate distribution,
         ///   this should be a double array.</param>
+        ///   
         /// <remarks>
         ///   The Probability Density Function (PDF) describes the
-        ///   probability that a given value <c>x</c> will occur.
+        ///   probability that a given value <c>k</c> will occur.
         /// </remarks>
+        /// 
         /// <returns>
-        ///   The probability of <c>x</c> occurring
+        ///   The probability of <c>k</c> occurring
         ///   in the current distribution.</returns>
         ///   
-        public override double DistributionFunction(int x)
+        public override double DistributionFunction(int k)
         {
-            int value = x - start;
+            int value = k - start;
             if (value < 0) return 0;
             if (value >= probabilities.Length) return 1.0;
 
@@ -299,42 +303,49 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   Gets the probability mass function (pmf) for
         ///   this distribution evaluated at point <c>x</c>.
         /// </summary>
-        /// <param name="x">
+        /// 
+        /// <param name="k">
         ///   A single point in the distribution range.</param>
+        ///   
         /// <remarks>
         ///   The Probability Mass Function (PMF) describes the
         ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
+        /// 
         /// <returns>
         ///   The probability of <c>x</c> occurring
         ///   in the current distribution.</returns>
         ///   
-        public override double ProbabilityMassFunction(int x)
+        public override double ProbabilityMassFunction(int k)
         {
-            int value = x - start;
+            int value = k - start;
 
-            if (value < 0 || value >= probabilities.Length) 
+            if (value < 0 || value >= probabilities.Length)
                 return 0;
 
             return probabilities[value];
         }
 
         /// <summary>
-        /// Gets the log-probability mass function (pmf) for
-        /// this distribution evaluated at point <c>x</c>.
+        ///   Gets the log-probability mass function (pmf) for
+        ///   this distribution evaluated at point <c>x</c>.
         /// </summary>
-        /// <param name="x">A single point in the distribution range.</param>
+        /// 
+        /// <param name="k">A single point in the distribution range.</param>
+        /// 
         /// <returns>
-        /// The logarithm of the probability of <c>x</c>
-        /// occurring in the current distribution.
+        ///   The logarithm of the probability of <c>k</c>
+        ///   occurring in the current distribution.
         /// </returns>
+        /// 
         /// <remarks>
-        /// The Probability Mass Function (PMF) describes the
-        /// probability that a given value <c>x</c> will occur.
+        ///   The Probability Mass Function (PMF) describes the
+        ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
-        public override double LogProbabilityMassFunction(int x)
+        /// 
+        public override double LogProbabilityMassFunction(int k)
         {
-            int value = x - start;
+            int value = k - start;
 
             if (value < 0 || value >= probabilities.Length)
                 return double.NegativeInfinity;
@@ -353,23 +364,57 @@ namespace Accord.Statistics.Distributions.Univariate
         /// <param name="options">Optional arguments which may be used during fitting, such
         ///   as regularization constants and additional parameters.</param>
         ///   
-        /// <remarks>
-        ///   Although both double[] and double[][] arrays are supported,
-        ///   providing a double[] for a multivariate distribution or a
-        ///   double[][] for a univariate distribution may have a negative
-        ///   impact in performance.
-        /// </remarks>
-        /// 
         public override void Fit(double[] observations, double[] weights, IFittingOptions options)
         {
-            if (observations.Length != weights.Length)
-                throw new ArgumentException("The weight vector should have the same size as the observations", "weights");
+            Fit(observations, weights, options as GeneralDiscreteOptions);
+        }
 
+        /// <summary>
+        ///   Fits the underlying distribution to a given set of observations.
+        /// </summary>
+        /// 
+        /// <param name="observations">The array of observations to fit the model against. The array
+        ///   elements can be either of type double (for univariate data) or
+        ///   type double[] (for multivariate data).</param>
+        /// <param name="weights">The weight vector containing the weight for each of the samples.</param>
+        /// <param name="options">Optional arguments which may be used during fitting, such
+        ///   as regularization constants and additional parameters.</param>
+        ///   
+        public void Fit(double[] observations, double[] weights, GeneralDiscreteOptions options)
+        {
             double[] p = new double[probabilities.Length];
-            for (int i = 0; i < observations.Length; i++)
+
+            if (weights == null)
             {
-                int symbol = (int)observations[i];
-                p[symbol] += weights[i];
+                for (int i = 0; i < observations.Length; i++)
+                    p[(int)observations[i]]++;
+
+                for (int i = 0; i < p.Length; i++)
+                    p[i] /= observations.Length;
+            }
+            else
+            {
+                if (observations.Length != weights.Length)
+                    throw new ArgumentException("The weight vector should have the same size as the observations", "weights");
+
+                for (int i = 0; i < observations.Length; i++)
+                {
+                    int symbol = (int)observations[i];
+                    p[symbol] += weights[i];
+                }
+            }
+
+            if (options != null)
+            {
+                double sum = 0;
+                for (int i = 0; i < p.Length; i++)
+                {
+                    if (p[i] == 0) p[i] = options.Minimum;
+                    sum += p[i];
+                }
+
+                for (int i = 0; i < p.Length; i++)
+                    p[i] /= sum;
             }
 
             initialize(0, p);

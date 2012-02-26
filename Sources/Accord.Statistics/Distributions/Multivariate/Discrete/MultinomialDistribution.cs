@@ -54,8 +54,10 @@ namespace Accord.Statistics.Distributions.Multivariate
     /// </remarks>
     /// 
     [Serializable]
-    public class MultinomialDistribution : MultivariateDiscreteDistribution
+    public class MultinomialDistribution : MultivariateDiscreteDistribution,
+        IFittableDistribution<double[], IFittingOptions>
     {
+
         // distribution parameters
         private int N;
         private double[] probabilities;
@@ -169,7 +171,7 @@ namespace Accord.Statistics.Distributions.Multivariate
 
         /// <summary>
         ///   Gets the cumulative distribution function (cdf) for
-        ///   the this distribution evaluated at point <c>x</c>.
+        ///   this distribution evaluated at point <c>x</c>.
         /// </summary>
         /// 
         /// <param name="x">A single point in the distribution range.</param>
@@ -254,31 +256,39 @@ namespace Accord.Statistics.Distributions.Multivariate
         /// </summary>
         /// 
         /// <param name="observations">The array of observations to fit the model against. The array
-        /// elements can be either of type double (for univariate data) or
-        /// type double[] (for multivariate data).</param>
+        ///   elements can be either of type double (for univariate data) or
+        ///   type double[] (for multivariate data).</param>
         /// <param name="weights">The weight vector containing the weight for each of the samples.</param>
         /// <param name="options">Optional arguments which may be used during fitting, such
-        /// as regularization constants and additional parameters.</param>
-        /// 
-        /// <remarks>
-        ///   Although both double[] and double[][] arrays are supported,
-        ///   providing a double[] for a multivariate distribution or a
-        ///   double[][] for a univariate distribution may have a negative
-        ///   impact in performance.
-        /// </remarks>
+        ///   as regularization constants and additional parameters.</param>
         /// 
         public override void Fit(double[][] observations, double[] weights, IFittingOptions options)
         {
+            if (options != null)
+                throw new ArgumentException("No options may be specified.");
+
             double[] pi = new double[probabilities.Length];
             double size = weights.Length;
 
-            for (int c = 0; c < probabilities.Length; c++)
+            if (weights == null)
             {
-                for (int i = 0; i < observations.Length; i++)
-                    pi[c] += observations[i][c] * weights[i] * size;
-                pi[c] /= N;
+                for (int c = 0; c < probabilities.Length; c++)
+                {
+                    for (int i = 0; i < observations.Length; i++)
+                        pi[c] += observations[i][c];
+                    pi[c] /= N;
+                }
             }
-
+            else
+            {
+                for (int c = 0; c < probabilities.Length; c++)
+                {
+                    for (int i = 0; i < observations.Length; i++)
+                        pi[c] += observations[i][c] * weights[i] * size;
+                    pi[c] /= N;
+                }
+            }
+            
             initialize(N, pi);
         }
 

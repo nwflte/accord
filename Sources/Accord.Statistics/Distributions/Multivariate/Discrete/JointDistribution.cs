@@ -42,6 +42,7 @@ namespace Accord.Statistics.Distributions.Multivariate
     /// 
     [Serializable]
     public class JointDistribution : MultivariateDiscreteDistribution
+        //IFittableDistribution<int[], GeneralDiscreteOptions>
     {
 
         // distribution parameters
@@ -151,13 +152,6 @@ namespace Accord.Statistics.Distributions.Multivariate
         /// <param name="options">Optional arguments which may be used during fitting, such
         ///   as regularization constants and additional parameters.</param>
         ///   
-        /// <remarks>
-        ///   Although both double[] and double[][] arrays are supported,
-        ///   providing a double[] for a multivariate distribution or a
-        ///   double[][] for a univariate distribution may have a negative
-        ///   impact in performance.
-        /// </remarks>
-        /// 
         public override void Fit(double[][] observations, double[] weights, IFittingOptions options)
         {
             if (observations.Length != weights.Length)
@@ -233,7 +227,7 @@ namespace Accord.Statistics.Distributions.Multivariate
 
         /// <summary>
         /// Gets the cumulative distribution function (cdf) for
-        /// the this distribution evaluated at point <c>x</c>.
+        /// this distribution evaluated at point <c>x</c>.
         /// </summary>
         /// <param name="x">A single point in the distribution range.</param>
         /// <returns></returns>

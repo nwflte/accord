@@ -52,8 +52,8 @@ namespace Accord.Statistics.Distributions.Univariate
     ///   The type of the univariate component distributions.</typeparam>
     ///   
     [Serializable]
-    public class Mixture<T> : UnivariateContinuousDistribution, IMixture<T>
-        where T : IUnivariateDistribution
+    public class Mixture<T> : UnivariateContinuousDistribution, IMixture<T>,
+        IFittableDistribution<double, MixtureOptions> where T : IUnivariateDistribution
     {
 
         // distribution parameters
@@ -208,31 +208,40 @@ namespace Accord.Statistics.Distributions.Univariate
         /// <param name="options">Optional arguments which may be used during fitting, such
         /// as regularization constants and additional parameters.</param>
         /// 
-        /// <remarks>
-        ///   Although both double[] and double[][] arrays are supported,
-        ///   providing a double[] for a multivariate distribution or a
-        ///   double[][] for a univariate distribution may have a negative
-        ///   impact in performance.
-        /// </remarks>
-        /// 
         public override void Fit(double[] observations, double[] weights, IFittingOptions options)
+        {
+            Fit(observations, weights, options as MixtureOptions);
+        }
+
+        /// <summary>
+        ///   Fits the underlying distribution to a given set of observations.
+        /// </summary>
+        /// 
+        /// <param name="observations">The array of observations to fit the model against. The array
+        /// elements can be either of type double (for univariate data) or
+        /// type double[] (for multivariate data).</param>
+        /// <param name="weights">The weight vector containing the weight for each of the samples.</param>
+        /// <param name="options">Optional arguments which may be used during fitting, such
+        /// as regularization constants and additional parameters.</param>
+        /// 
+        public void Fit(double[] observations, double[] weights, MixtureOptions options)
         {
             // Estimation parameters
             double threshold = 1e-3;
             IFittingOptions innerOptions = null;
 
 #if DEBUG
-            for (int i = 0; i < weights.Length; i++)
-                if (Double.IsNaN(weights[i]) || Double.IsInfinity(weights[i]))
-                    throw new Exception("Invalid numbers in the weight vector.");
+            if (weights != null)
+                for (int i = 0; i < weights.Length; i++)
+                    if (Double.IsNaN(weights[i]) || Double.IsInfinity(weights[i]))
+                        throw new Exception("Invalid numbers in the weight vector.");
 #endif
 
             if (options != null)
             {
                 // Process optional arguments
-                MixtureOptions o = (MixtureOptions)options;
-                threshold = o.Threshold;
-                innerOptions = o.InnerOptions;
+                threshold = options.Threshold;
+                innerOptions = options.InnerOptions;
             }
 
 
@@ -242,7 +251,15 @@ namespace Accord.Statistics.Distributions.Univariate
             int N = observations.Length;
             int K = components.Length;
 
-            double weightSum = weights.Sum();
+            double weightSum;
+            if (weights == null)
+            {
+                weights = new double[observations.Length];
+                for (int i = 0; i < weights.Length; i++)
+                    weights[i] = 1.0 / weights.Length;
+                weightSum = 1.0;
+            }
+            else weightSum = weights.Sum();
 
             // Initialize responsibilities
             double[] norms = new double[N];

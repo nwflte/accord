@@ -55,10 +55,13 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public FDistribution(int degrees1, int degrees2)
         {
+            if (degrees1 <= 0) throw new ArgumentOutOfRangeException("degrees1", "Degrees of freedom must be positive.");
+            if (degrees2 <= 0) throw new ArgumentOutOfRangeException("degrees1", "Degrees of freedom must be positive.");
+
             this.d1 = degrees1;
             this.d2 = degrees2;
 
-            this.b = Special.Beta(degrees1 * 0.5, degrees2 * 0.5);
+            this.b = Beta.Function(degrees1 * 0.5, degrees2 * 0.5);
         }
 
         /// <summary>
@@ -152,7 +155,61 @@ namespace Accord.Statistics.Distributions.Univariate
         public override double DistributionFunction(double x)
         {
             double u = (d1 * x) / (d1 * x + d2);
-            return Special.Ibeta(d1 * 0.5, d2 * 0.5, u);
+            return Beta.Incomplete(d1 * 0.5, d2 * 0.5, u);
+        }
+
+        /// <summary>
+        ///   Gets the complementary cumulative distribution
+        ///   function evaluated at point <c>x</c>.
+        /// </summary>
+        /// 
+        public override double ComplementaryDistributionFunction(double x)
+        {
+            double u = d1 / (d1 * x + d2);
+            return Beta.Incomplete(d2 * 0.5, d1 * 0.5, u);
+        }
+
+        /// <summary>
+        ///   Gets the inverse of the cumulative distribution function (icdf) for
+        ///   this distribution evaluated at probability <c>p</c>. This function
+        ///   is also known as the Quantile function.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   The Inverse Cumulative Distribution Function (ICDF) specifies, for
+        ///   a given probability, the value which the random variable will be at,
+        ///   or below, with that probability.
+        /// </remarks>
+        /// 
+        public override double InverseDistributionFunction(double p)
+        {
+            // Cephes Math Library Release 2.8:  June, 2000
+            // Copyright 1984, 1987, 1995, 2000 by Stephen L. Moshier
+            // Adapted under the LGPL with permission of original author.
+
+            if (p <= 0.0 || p > 1.0)
+                throw new ArgumentOutOfRangeException("p", "Input must be between zero and one.");
+
+
+            double d1 = this.d1;
+            double d2 = this.d2;
+
+            double x;
+
+            double w = Beta.Incomplete(0.5 * d2, 0.5 * d1, 0.5);
+
+            if (w > p || p < 0.001)
+            {
+                w = Beta.IncompleteInverse(0.5 * d1, 0.5 * d2, p);
+                x = d2 * w / (d1 * (1.0 - w));
+            }
+            else
+            {
+                w = Beta.IncompleteInverse(0.5 * d2, 0.5 * d1, 1.0 - p);
+                x = (d2 - d2 * w) / (d1 * w);
+            }
+
+            return x;
         }
 
         /// <summary>

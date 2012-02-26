@@ -65,7 +65,7 @@ namespace Accord.Statistics.Distributions.Multivariate
         }
 
         /// <summary>
-        /// Gets the mean for this distribution.
+        ///   Gets the mean for this distribution.
         /// </summary>
         /// 
         /// <value>A vector containing the mean values for the distribution.</value>
@@ -85,7 +85,7 @@ namespace Accord.Statistics.Distributions.Multivariate
         }
 
         /// <summary>
-        /// Gets the variance for this distribution.
+        ///   Gets the variance for this distribution.
         /// </summary> 
         /// 
         /// <value>A vector containing the variance values for the distribution.</value>
@@ -105,7 +105,7 @@ namespace Accord.Statistics.Distributions.Multivariate
         }
 
         /// <summary>
-        /// Gets the variance-covariance matrix for this distribution.
+        ///   Gets the variance-covariance matrix for this distribution.
         /// </summary>
         /// 
         /// <value>A matrix containing the covariance values for the distribution.</value>
@@ -121,21 +121,25 @@ namespace Accord.Statistics.Distributions.Multivariate
         }
 
         /// <summary>
-        /// Gets the probability density function (pdf) for
-        /// this distribution evaluated at point <c>x</c>.
+        ///   Gets the probability density function (pdf) for
+        ///   this distribution evaluated at point <c>x</c>.
         /// </summary>
+        /// 
         /// <param name="x">A single point in the distribution range. For a
-        /// univariate distribution, this should be a single
-        /// double value. For a multivariate distribution,
-        /// this should be a double array.</param>
+        ///   univariate distribution, this should be a single
+        ///   double value. For a multivariate distribution,
+        ///   this should be a double array.</param>
+        /// 
         /// <returns>
-        /// The probability of <c>x</c> occurring
-        /// in the current distribution.
+        ///   The probability of <c>x</c> occurring
+        ///   in the current distribution.
         /// </returns>
+        /// 
         /// <remarks>
-        /// The Probability Density Function (PDF) describes the
-        /// probability that a given value <c>x</c> will occur.
+        ///   The Probability Density Function (PDF) describes the
+        ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
+        /// 
         public override double DistributionFunction(params double[] x)
         {
             double p = 1;
@@ -146,38 +150,45 @@ namespace Accord.Statistics.Distributions.Multivariate
         }
 
         /// <summary>
-        /// Gets the probability density function (pdf) for
-        /// this distribution evaluated at point <c>x</c>.
+        ///   Gets the probability density function (pdf) for
+        ///   this distribution evaluated at point <c>x</c>.
         /// </summary>
+        /// 
         /// <param name="x">A single point in the distribution range. For a
-        /// univariate distribution, this should be a single
-        /// double value. For a multivariate distribution,
-        /// this should be a double array.</param>
+        ///   univariate distribution, this should be a single
+        ///   double value. For a multivariate distribution,
+        ///   this should be a double array.</param>
+        ///   
         /// <returns>
-        /// The probability of <c>x</c> occurring
-        /// in the current distribution.
+        ///   The probability of <c>x</c> occurring
+        ///   in the current distribution.
         /// </returns>
+        /// 
         /// <remarks>
         /// The Probability Density Function (PDF) describes the
         /// probability that a given value <c>x</c> will occur.
         /// </remarks>
+        /// 
         public override double ProbabilityDensityFunction(params double[] x)
         {
             return Math.Exp(LogProbabilityDensityFunction(x));
         }
 
         /// <summary>
-        /// Gets the log-probability density function (pdf)
-        /// for this distribution evaluated at point <c>x</c>.
+        ///   Gets the log-probability density function (pdf)
+        ///   for this distribution evaluated at point <c>x</c>.
         /// </summary>
+        /// 
         /// <param name="x">A single point in the distribution range. For a
         /// univariate distribution, this should be a single
         /// double value. For a multivariate distribution,
         /// this should be a double array.</param>
+        /// 
         /// <returns>
-        /// The logarithm of the probability of <c>x</c>
-        /// occurring in the current distribution.
+        ///   The logarithm of the probability of <c>x</c>
+        ///   occurring in the current distribution.
         /// </returns>
+        /// 
         public override double LogProbabilityDensityFunction(params double[] x)
         {
             double p = 0;
@@ -188,26 +199,22 @@ namespace Accord.Statistics.Distributions.Multivariate
         }
 
         /// <summary>
-        /// Fits the underlying distribution to a given set of observations.
+        ///   Fits the underlying distribution to a given set of observations.
         /// </summary>
+        /// 
         /// <param name="observations">The array of observations to fit the model against. The array
-        /// elements can be either of type double (for univariate data) or
-        /// type double[] (for multivariate data).</param>
+        ///   elements can be either of type double (for univariate data) or
+        ///   type double[] (for multivariate data).</param>
         /// <param name="weights">The weight vector containing the weight for each of the samples.</param>
         /// <param name="options">Optional arguments which may be used during fitting, such
-        /// as regularization constants and additional parameters.</param>
-        /// <remarks>
-        /// Although both double[] and double[][] arrays are supported,
-        /// providing a double[] for a multivariate distribution or a
-        /// double[][] for a univariate distribution may have a negative
-        /// impact in performance.
-        /// </remarks>
+        ///   as regularization constants and additional parameters.</param>
+        /// 
         public override void Fit(double[][] observations, double[] weights, IFittingOptions options)
         {
             observations = observations.Transpose();
 
             for (int i = 0; i < components.Length; i++)
-                components[i].Fit(observations[i]);
+                components[i].Fit(observations[i], weights, options);
 
             mean = null;
             variance = null;
@@ -215,11 +222,13 @@ namespace Accord.Statistics.Distributions.Multivariate
         }
 
         /// <summary>
-        /// Creates a new object that is a copy of the current instance.
+        ///   Creates a new object that is a copy of the current instance.
         /// </summary>
+        /// 
         /// <returns>
-        /// A new object that is a copy of this instance.
+        ///   A new object that is a copy of this instance.
         /// </returns>
+        /// 
         public override object Clone()
         {
             TDistribution[] clone = new TDistribution[components.Length];

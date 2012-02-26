@@ -61,12 +61,15 @@ namespace Accord.Statistics.Distributions.Univariate
     public class EmpiricalDistribution : UnivariateContinuousDistribution
     {
 
+        // Distribution parameters
         double[] samples;
         double smoothing;
 
+        // Derived measures
         double? mean;
         double? variance;
         double? entropy;
+
 
         /// <summary>
         ///   Creates a new Empirical Distribution from the data samples.
@@ -164,7 +167,7 @@ namespace Accord.Statistics.Distributions.Univariate
 
         /// <summary>
         ///   Gets the cumulative distribution function (cdf) for
-        ///   the this distribution evaluated at point <c>x</c>.
+        ///   this distribution evaluated at point <c>x</c>.
         /// </summary>
         /// 
         /// <param name="x">A single point in the distribution range.</param>
@@ -212,7 +215,7 @@ namespace Accord.Statistics.Distributions.Univariate
                 p += Math.Exp(-z * z * 0.5);
             }
 
-            p *= 1.0 / (Special.Sqrt2PI * smoothing);
+            p *= 1.0 / (Constants.Sqrt2PI * smoothing);
 
             return p / samples.Length;
         }
@@ -243,7 +246,7 @@ namespace Accord.Statistics.Distributions.Univariate
                 p += Math.Exp(-z * z * 0.5);
             }
 
-            double logp = Math.Log(p) - Math.Log(Special.Sqrt2PI * smoothing);
+            double logp = Math.Log(p) - Math.Log(Constants.Sqrt2PI * smoothing);
 
             return logp - Math.Log(samples.Length);
         }
@@ -269,7 +272,11 @@ namespace Accord.Statistics.Distributions.Univariate
         public override void Fit(double[] observations, double[] weights, Fitting.IFittingOptions options)
         {
             if (weights != null)
-                throw new NotSupportedException();
+                throw new ArgumentException("This distribution does not support weighted samples.");
+
+            if (options != null)
+                throw new ArgumentException("No options may be specified.");
+
             initialize((double[])observations.Clone(), null);
         }
 

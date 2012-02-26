@@ -24,6 +24,7 @@ namespace Accord.Statistics.Distributions.Univariate
 {
     using System;
     using Accord.Math;
+    using Accord.Statistics.Distributions.Fitting;
 
     /// <summary>
     ///   Nakagami distribution.
@@ -87,7 +88,7 @@ namespace Accord.Statistics.Distributions.Univariate
         private void init(double shape, double spread)
         {
             double twoMuMu = 2.0 * Math.Pow(shape, shape);
-            double gammaMu = Special.Gamma(shape);
+            double gammaMu = Gamma.Function(shape);
             double spreadMu = Math.Pow(spread, shape);
             nratio = -shape / spread;
             twoMu1 = 2.0 * shape - 1.0;
@@ -131,7 +132,7 @@ namespace Accord.Statistics.Distributions.Univariate
             get
             {
                 if (mean == null)
-                    mean = (Special.Gamma(mu + 0.5) / Special.Gamma(mu)) * Math.Sqrt(omega / mu);
+                    mean = (Gamma.Function(mu + 0.5) / Gamma.Function(mu)) * Math.Sqrt(omega / mu);
                 return mean.Value;
             }
         }
@@ -148,7 +149,7 @@ namespace Accord.Statistics.Distributions.Univariate
             {
                 if (variance == null)
                 {
-                    double a = Special.Gamma(mu + 0.5) / Special.Gamma(mu);
+                    double a = Gamma.Function(mu + 0.5) / Gamma.Function(mu);
                     variance = omega * (1.0 - (1.0 / mu) * (a * a));
                 }
                 return variance.Value;
@@ -156,98 +157,116 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
-        /// Gets the entropy for this distribution.
+        ///   Gets the entropy for this distribution.
         /// </summary>
+        /// 
         /// <value>The distribution's entropy.</value>
+        /// 
         public override double Entropy
         {
             get { throw new NotSupportedException(); }
         }
 
         /// <summary>
-        /// Gets the cumulative distribution function (cdf) for
-        /// the this distribution evaluated at point <c>x</c>.
+        ///   Gets the cumulative distribution function (cdf) for
+        ///   this distribution evaluated at point <c>x</c>.
         /// </summary>
+        /// 
         /// <param name="x">A single point in the distribution range.</param>
-        /// <returns></returns>
+        /// 
         /// <remarks>
-        /// The Cumulative Distribution Function (CDF) describes the cumulative
-        /// probability that a given value or any value smaller than it will occur.
+        ///   The Cumulative Distribution Function (CDF) describes the cumulative
+        ///   probability that a given value or any value smaller than it will occur.
         /// </remarks>
+        /// 
         public override double DistributionFunction(double x)
         {
-            return Special.GammaP(mu, (mu / omega) * (x * x));
+            return Gamma.LowerIncomplete(mu, (mu / omega) * (x * x));
         }
 
         /// <summary>
-        /// Gets the probability density function (pdf) for
-        /// this distribution evaluated at point <c>x</c>.
+        ///   Gets the probability density function (pdf) for
+        ///   this distribution evaluated at point <c>x</c>.
         /// </summary>
+        /// 
         /// <param name="x">A single point in the distribution range.</param>
+        /// 
         /// <returns>
-        /// The probability of <c>x</c> occurring
-        /// in the current distribution.
+        ///   The probability of <c>x</c> occurring
+        ///   in the current distribution.
         /// </returns>
+        /// 
         /// <remarks>
-        /// The Probability Density Function (PDF) describes the
-        /// probability that a given value <c>x</c> will occur.
+        ///   The Probability Density Function (PDF) describes the
+        ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
+        /// 
         public override double ProbabilityDensityFunction(double x)
         {
             return constant * Math.Pow(x, twoMu1) * Math.Exp(nratio * x * x);
         }
 
         /// <summary>
-        /// Gets the log-probability density function (pdf) for
-        /// this distribution evaluated at point <c>x</c>.
+        ///   Gets the log-probability density function (pdf) for
+        ///   this distribution evaluated at point <c>x</c>.
         /// </summary>
+        /// 
         /// <param name="x">A single point in the distribution range.</param>
+        /// 
         /// <returns>
-        /// The logarithm of the probability of <c>x</c>
-        /// occurring in the current distribution.
+        ///   The logarithm of the probability of <c>x</c>
+        ///   occurring in the current distribution.
         /// </returns>
+        /// 
         /// <remarks>
-        /// The Probability Density Function (PDF) describes the
-        /// probability that a given value <c>x</c> will occur.
+        ///   The Probability Density Function (PDF) describes the
+        ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
+        /// 
         public override double LogProbabilityDensityFunction(double x)
         {
             return Math.Log(constant) + twoMu1 * Math.Log(x) + nratio * x * x;
         }
 
         /// <summary>
-        /// Fits the underlying distribution to a given set of observations.
+        ///   Fits the underlying distribution to a given set of observations.
         /// </summary>
+        /// 
         /// <param name="observations">The array of observations to fit the model against. The array
-        /// elements can be either of type double (for univariate data) or
-        /// type double[] (for multivariate data).</param>
+        ///   elements can be either of type double (for univariate data) or
+        ///   type double[] (for multivariate data).</param>
         /// <param name="weights">The weight vector containing the weight for each of the samples.</param>
         /// <param name="options">Optional arguments which may be used during fitting, such
-        /// as regularization constants and additional parameters.</param>
+        ///   as regularization constants and additional parameters.</param>
+        ///   
         /// <remarks>
-        /// Although both double[] and double[][] arrays are supported,
-        /// providing a double[] for a multivariate distribution or a
-        /// double[][] for a univariate distribution may have a negative
-        /// impact in performance.
+        ///   Although both double[] and double[][] arrays are supported,
+        ///   providing a double[] for a multivariate distribution or a
+        ///   double[][] for a univariate distribution may have a negative
+        ///   impact in performance.
         /// </remarks>
-        public override void Fit(double[] observations, double[] weights, Fitting.IFittingOptions options)
+        /// 
+        public override void Fit(double[] observations, double[] weights, IFittingOptions options)
         {
+            if (options != null)
+                throw new ArgumentException("No options may be specified.");
+
             // R. Kolar, R. Jirik, J. Jan (2004) "Estimator Comparison of the
             // Nakagami-m Parameter and Its Application in Echocardiography", 
             // Radioengineering, 13 (1), 8–12
 
-            double[] xsquared = Matrix.ElementwisePower(observations, 2);
+            double[] x2 = Matrix.ElementwisePower(observations, 2);
 
             double mean, var;
             if (weights == null)
             {
-                mean = Statistics.Tools.Mean(xsquared);
-                var = Statistics.Tools.Variance(xsquared);
+                mean = Statistics.Tools.Mean(x2);
+                var = Statistics.Tools.Variance(x2);
             }
             else
             {
-                mean = Statistics.Tools.WeightedMean(xsquared, weights);
-                var = Statistics.Tools.WeightedVariance(xsquared, weights);
+                mean = Statistics.Tools.WeightedMean(x2, weights);
+                var = Statistics.Tools.WeightedVariance(x2, weights);
             }
 
             double shape = (mean * mean) / var;

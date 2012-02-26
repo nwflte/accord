@@ -24,41 +24,53 @@ namespace Accord.Statistics.Distributions.Fitting
 {
     using System;
 
+
     /// <summary>
-    ///   Estimation options for <see cref="Accord.Statistics.Distributions.Univariate.NormalDistribution">
-    ///   Normal distributions</see>.
+    ///   Estimable parameters of <see cref="Accord.Statistics.Distributions.Univariate.
+    ///   HypergeometricDistribution">Hypergeometric</see> distributions.
+    /// </summary>
+    /// 
+    public enum HypergeometricParameter
+    {
+        /// <summary>
+        ///   Population size parameter <c>N</c>.
+        /// </summary>
+        /// 
+        PopulationSize,
+
+        /// <summary>
+        ///   Successes in population parameter <c>m</c>.
+        /// </summary>
+        /// 
+        PopulationSuccesses
+    };
+
+    /// <summary>
+    ///   Estimation options for <see cref="Accord.Statistics.Distributions.Univariate.
+    ///   HypergeometricDistribution">Hypergeometric distributions</see>.
     /// </summary>
     /// 
     [Serializable]
-    public class NormalOptions : IFittingOptions
+    public class HypergeometricOptions : IFittingOptions
     {
-        /// <summary>
-        ///   Gets or sets the regularization step to
-        ///   avoid singular or non-positive definite
-        ///   covariance matrices. Default is 0.
-        /// </summary>
-        /// 
-        /// <value>The regularization step.</value>
-        /// 
-        public double Regularization { get; set; }
+
 
         /// <summary>
-        ///   Gets or sets a value indicating whether the covariance
-        ///   matrix to be estimated should be assumed to be diagonal.
+        ///   Gets or sets which parameter of the <see cref="Accord.Statistics.Distributions.
+        ///   Univariate.HypergeometricDistribution"> Hypergeometric distribution</see> should be estimated.
         /// </summary>
         /// 
-        /// <value><c>true</c> to estimate a diagonal covariance matrix; otherwise, <c>false</c>.</value>
+        /// <value>The hypergeometric parameters to estimate.</value>
         /// 
-        public bool Diagonal { get; set; }
+        public HypergeometricParameter Parameter { get; set; }
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref="NormalOptions"/> class.
+        ///   Initializes a new instance of the <see cref="HypergeometricOptions"/> class.
         /// </summary>
         /// 
-        public NormalOptions()
+        public HypergeometricOptions()
         {
-            Regularization = 0;
-            Diagonal = false;
         }
+
     }
 }

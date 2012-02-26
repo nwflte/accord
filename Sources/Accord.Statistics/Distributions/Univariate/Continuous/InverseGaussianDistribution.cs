@@ -24,6 +24,7 @@ namespace Accord.Statistics.Distributions.Univariate
 {
     using System;
     using Accord.Math;
+    using Accord.Statistics.Distributions.Fitting;
 
     /// <summary>
     ///   Inverse Gaussian (Normal) Distribution, also known as the Wald distribution.
@@ -50,10 +51,13 @@ namespace Accord.Statistics.Distributions.Univariate
     /// <seealso cref="NormalDistribution"/>
     ///
     [Serializable]
-    public class InverseGaussian : UnivariateContinuousDistribution
+    public class InverseGaussianDistribution : UnivariateContinuousDistribution
     {
+
+        // Distribution parameters
         private double mean;
         private double lambda;
+
 
         /// <summary>
         ///   Constructs a new Inverse Gaussian distribution.
@@ -62,7 +66,15 @@ namespace Accord.Statistics.Distributions.Univariate
         /// <param name="mean">The mean parameter mu.</param>
         /// <param name="shape">The shape parameter lambda.</param>
         /// 
-        public InverseGaussian(double mean, double shape)
+        public InverseGaussianDistribution(double mean, double shape)
+        {
+            if (mean <= 0) throw new ArgumentOutOfRangeException("mean");
+            if (shape <= 0) throw new ArgumentOutOfRangeException("shape");
+
+            init(mean, shape);
+        }
+
+        private void init(double mean, double shape)
         {
             this.mean = mean;
             this.lambda = shape;
@@ -112,33 +124,45 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
-        /// Gets the cumulative distribution function (cdf) for
-        /// the this distribution evaluated at point <c>x</c>.
+        ///   Gets the cumulative distribution function (cdf) for
+        ///   this distribution evaluated at point <c>x</c>.
         /// </summary>
+        /// 
         /// <param name="x">A single point in the distribution range.</param>
-        /// <returns></returns>
+        /// 
         /// <remarks>
-        /// The Cumulative Distribution Function (CDF) describes the cumulative
-        /// probability that a given value or any value smaller than it will occur.
+        ///   The Cumulative Distribution Function (CDF) describes the cumulative
+        ///   probability that a given value or any value smaller than it will occur.
         /// </remarks>
+        /// 
         public override double DistributionFunction(double x)
         {
-            return lambda * Special.NormalInverse(x) + mean;
+            double sqrt = Math.Sqrt(lambda / x);
+
+            double a = 0.5 * Special.Erfc(sqrt * (mean - x) / (Constants.Sqrt2 * mean));
+            double b = 0.5 * Special.Erfc(sqrt * (mean + x) / (Constants.Sqrt2 * mean));
+            double c = Math.Exp((2.0 * lambda) / mean);
+
+            return a + b * c;
         }
 
         /// <summary>
-        /// Gets the probability density function (pdf) for
-        /// this distribution evaluated at point <c>x</c>.
+        ///   Gets the probability density function (pdf) for
+        ///   this distribution evaluated at point <c>x</c>.
         /// </summary>
+        /// 
         /// <param name="x">A single point in the distribution range.</param>
+        /// 
         /// <returns>
-        /// The probability of <c>x</c> occurring
-        /// in the current distribution.
+        ///   The probability of <c>x</c> occurring
+        ///   in the current distribution.
         /// </returns>
+        /// 
         /// <remarks>
-        /// The Probability Density Function (PDF) describes the
-        /// probability that a given value <c>x</c> will occur.
+        ///   The Probability Density Function (PDF) describes the
+        ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
+        /// 
         public override double ProbabilityDensityFunction(double x)
         {
             double a = Math.Sqrt(lambda / (2.0 * Math.PI * x * x * x));
@@ -148,18 +172,22 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
-        /// Gets the log-probability density function (pdf) for
-        /// this distribution evaluated at point <c>x</c>.
+        ///   Gets the log-probability density function (pdf) for
+        ///   this distribution evaluated at point <c>x</c>.
         /// </summary>
+        /// 
         /// <param name="x">A single point in the distribution range.</param>
+        /// 
         /// <returns>
-        /// The logarithm of the probability of <c>x</c>
-        /// occurring in the current distribution.
+        ///   The logarithm of the probability of <c>x</c>
+        ///   occurring in the current distribution.
         /// </returns>
+        /// 
         /// <remarks>
-        /// The Probability Density Function (PDF) describes the
-        /// probability that a given value <c>x</c> will occur.
+        ///   The Probability Density Function (PDF) describes the
+        ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
+        /// 
         public override double LogProbabilityDensityFunction(double x)
         {
             double a = Math.Sqrt(lambda / (2.0 * Math.PI * x * x * x));
@@ -169,34 +197,65 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
-        /// Fits the underlying distribution to a given set of observations.
+        ///   Fits the underlying distribution to a given set of observations.
         /// </summary>
+        /// 
         /// <param name="observations">The array of observations to fit the model against. The array
-        /// elements can be either of type double (for univariate data) or
-        /// type double[] (for multivariate data).</param>
+        ///   elements can be either of type double (for univariate data) or
+        ///   type double[] (for multivariate data).</param>
         /// <param name="weights">The weight vector containing the weight for each of the samples.</param>
         /// <param name="options">Optional arguments which may be used during fitting, such
-        /// as regularization constants and additional parameters.</param>
+        ///   as regularization constants and additional parameters.</param>
+        ///   
         /// <remarks>
-        /// Although both double[] and double[][] arrays are supported,
-        /// providing a double[] for a multivariate distribution or a
-        /// double[][] for a univariate distribution may have a negative
-        /// impact in performance.
+        ///   Although both double[] and double[][] arrays are supported,
+        ///   providing a double[] for a multivariate distribution or a
+        ///   double[][] for a univariate distribution may have a negative
+        ///   impact in performance.
         /// </remarks>
-        public override void Fit(double[] observations, double[] weights, Fitting.IFittingOptions options)
+        /// 
+        public override void Fit(double[] observations, double[] weights, IFittingOptions options)
         {
-            throw new NotImplementedException();
+            if (options != null)
+                throw new ArgumentException("No options may be specified.");
+
+            double mean;
+            double lambda;
+            int n = observations.Length;
+
+            if (weights == null)
+            {
+                mean = observations.Mean();
+
+                double sum = 0;
+                for (int i = 0; i < observations.Length; i++)
+                    sum += (1.0 / observations[i] - 1.0 / mean);
+                lambda = (n * n) / sum;
+            }
+            else
+            {
+                mean = observations.WeightedMean(observations);
+
+                double sum = 0;
+                for (int i = 0; i < observations.Length; i++)
+                    sum += weights[i] * (1.0 / observations[i] - 1.0 / mean);
+                lambda = n / sum;
+            }
+
+            init(mean, lambda);
         }
 
         /// <summary>
-        /// Creates a new object that is a copy of the current instance.
+        ///   Creates a new object that is a copy of the current instance.
         /// </summary>
+        /// 
         /// <returns>
-        /// A new object that is a copy of this instance.
+        ///   A new object that is a copy of this instance.
         /// </returns>
+        /// 
         public override object Clone()
         {
-            return new InverseGaussian(mean, lambda);
+            return new InverseGaussianDistribution(mean, lambda);
         }
 
         /// <summary>
