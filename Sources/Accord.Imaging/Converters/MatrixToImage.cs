@@ -51,6 +51,33 @@ namespace Accord.Imaging.Converters
         /// 
         public double Min { get; set; }
 
+
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="MatrixToImage"/> class.
+        /// </summary>
+        /// 
+        /// <param name="min">
+        ///   The minimum double value in the double array
+        ///   associated with the darkest color. Default is 0.
+        /// </param>
+        /// <param name="max">
+        ///   The maximum double value in the double array
+        ///   associated with the brightest color. Default is 1.
+        /// </param>
+        ///   
+        public MatrixToImage(double min, double max)
+        {
+            this.Min = min;
+            this.Max = max;
+        }
+
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="MatrixToImage"/> class.
+        /// </summary>
+        /// 
+        public MatrixToImage() : this(0, 1) { }
+
+
         /// <summary>
         ///   Converts an image from one representation to another.
         /// </summary>
