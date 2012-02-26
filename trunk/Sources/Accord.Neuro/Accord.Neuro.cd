@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="Accord.Neuro.Learning.LevenbergMarquardtLearning" BaseTypeListCollapsed="true">
-    <Position X="3.75" Y="1" Width="3.25" />
+    <Position X="3.75" Y="0.75" Width="3.25" />
     <Members>
       <Field Name="alpha" Hidden="true" />
       <Field Name="beta" Hidden="true" />
@@ -86,6 +86,18 @@
     <TypeIdentifier>
       <HashCode>CIQAAkEABCQABAAQgAQAAgAAAAIAgAgAZIBUAAABAAo=</HashCode>
       <FileName>Learning\ResilientBackPropagationLearning.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Accord.Neuro.LinearFunction">
+    <Position X="12" Y="1.25" Width="2.5" />
+    <Members>
+      <Field Name="alpha" Hidden="true" />
+      <Field Name="range" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIEAAACAAAAAAAAAIAAAAAABAAAAAQBAAAAAA=</HashCode>
+      <FileName>Activation Functions\LinearFunction.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
