@@ -2,18 +2,18 @@
 
 [Setup]
 AppName=Accord.NET Framework
-AppVersion=2.4.0
-AppVerName=Accord.NET Framework 2.4.0
+AppVersion=2.5.0
+AppVerName=Accord.NET Framework 2.5.0
 AppPublisher=Accord.NET
 AppPublisherURL=http://accord-net.origo.ethz.ch/
 AppSupportURL=http://accord-net.origo.ethz.ch/
 AppUpdatesURL=http://accord-net.origo.ethz.ch/
 AppCopyright=Copyright (c) 2009-2012 Cesar Souza
-VersionInfoVersion=2.4.0
+VersionInfoVersion=2.5.0
 DefaultDirName={pf}\Accord.NET\Framework
 DefaultGroupName=Accord.NET\Framework
 AllowNoIcons=yes
-OutputBaseFilename=Accord.NET Framework-2.4.0
+OutputBaseFilename=Accord.NET Framework-2.5.0
 Compression=lzma
 SolidCompression=yes
 LicenseFile=..\..\License.txt
@@ -36,7 +36,7 @@ Source: "..\..\Release notes.txt"; DestDir: "{app}";           Components: libs
 Source: "..\..\Release\*";         DestDir: "{app}\Release";   Components: libs;                            Excludes: "*.~*,*.lastcodeanalysissucceeded,*.CodeAnalysisLog.xml,SlimDX.pdb"
 Source: "..\..\Release\GPL\*";     DestDir: "{app}\Release";   Components: libs/gpl; Flags: recursesubdirs; Excludes: "*.~*,*.lastcodeanalysissucceeded,*.CodeAnalysisLog.xml"
 Source: "..\..\Docs\*.chm";        DestDir: "{app}\Docs";      Components: docs;     Flags: skipifsourcedoesntexist; Excludes: "*.~*"
-Source: "..\..\Sources\*";         DestDir: "{app}\Sources";   Components: sources;  Flags: recursesubdirs; Excludes: "*.~*,\TestResults,*\bin,*\obj,\Accord.Setup\Output,*.sdf"
+Source: "..\..\Sources\*";         DestDir: "{app}\Sources";   Components: sources;  Flags: recursesubdirs; Excludes: "*.~*,\TestResults,*\bin,*\obj,\Accord.Setup\Output,*.sdf, *.suo"
 Source: "..\..\Samples\*";         DestDir: "{app}\Samples";   Components: samples;  Flags: recursesubdirs; Excludes: "*.~*,*\obj,*\bin\x64\,*\bin\Debug,*\bin\Release,*\bin\x86\Debug,*.pdb"
 Source: "..\..\Externals\*";       DestDir: "{app}\Externals"; Components: libs;     Flags: recursesubdirs; Excludes: "*.~*,*.pdb"
 
