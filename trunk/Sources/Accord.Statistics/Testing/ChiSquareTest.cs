@@ -55,12 +55,20 @@ namespace Accord.Statistics.Testing
     /// </remarks>
     /// 
     [Serializable]
-    public class ChiSquareTest : HypothesisTest
+    public class ChiSquareTest : HypothesisTest, IHypothesisTest<ChiSquareDistribution>
     {
 
         private ChiSquareDistribution distribution;
 
-
+        /// <summary>
+        ///   Gets the distribution associated
+        ///   with the test statistic.
+        /// </summary>
+        /// 
+        public ChiSquareDistribution StatisticDistribution
+        {
+            get { return distribution; }
+        }
 
         /// <summary>
         ///   Gets the degrees of freedom for the Chi-Square distribution.
@@ -86,7 +94,7 @@ namespace Accord.Statistics.Testing
             this.Threshold = threshold;
             this.distribution = new ChiSquareDistribution(degreesOfFreedom);
 
-            this.PValue = distribution.SurvivalFunction(Statistic);
+            this.PValue = distribution.ComplementaryDistributionFunction(Statistic);
         }
 
         /// <summary>
@@ -132,7 +140,7 @@ namespace Accord.Statistics.Testing
             this.Threshold = threshold;
             this.distribution = new ChiSquareDistribution(degreesOfFreedom);
 
-            this.PValue = distribution.SurvivalFunction(Statistic);
+            this.PValue = distribution.ComplementaryDistributionFunction(Statistic);
         }
         #endregion
 

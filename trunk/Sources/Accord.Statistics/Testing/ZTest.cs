@@ -48,12 +48,23 @@ namespace Accord.Statistics.Testing
     /// </remarks>
     /// 
     [Serializable]
-    public class ZTest : HypothesisTest
+    public class ZTest : HypothesisTest, IHypothesisTest<NormalDistribution>
     {
+
+        /// <summary>
+        ///   Gets the distribution associated
+        ///   with the test statistic.
+        /// </summary>
+        /// 
+        public NormalDistribution StatisticDistribution
+        {
+            get { return NormalDistribution.Standard; }
+        }
 
         /// <summary>
         ///   Constructs a Z test.
         /// </summary>
+        /// 
         /// <param name="samples">The data samples from which the test will be performed.</param>
         /// <param name="hypothesizedMean">The constant to be compared with the samples.</param>
         /// <param name="type">The type of hypothesis to test.</param>
@@ -71,6 +82,7 @@ namespace Accord.Statistics.Testing
         /// <summary>
         ///   Constructs a Z test.
         /// </summary>
+        /// 
         /// <param name="sampleMean">The sample's mean.</param>
         /// <param name="sampleStdDev">The sample's standard deviation.</param>
         /// <param name="hypothesizedMean">The hypothesized value for the distribution's mean.</param>
@@ -88,6 +100,7 @@ namespace Accord.Statistics.Testing
         /// <summary>
         ///   Constructs a Z test.
         /// </summary>
+        /// 
         /// <param name="statistic">The test statistic, as given by (x-μ)/SE.</param>
         /// <param name="type">The type of hypothesis to test.</param>
         /// 
@@ -105,12 +118,12 @@ namespace Accord.Statistics.Testing
             if (this.Hypothesis == Hypothesis.TwoTail)
             {
                 this.PValue = 2.0 * NormalDistribution.Standard.
-                      DistributionFunction(-System.Math.Abs(Statistic));
+                      DistributionFunction(-Math.Abs(Statistic));
             }
             else
             {
                 this.PValue = NormalDistribution.Standard.
-                      DistributionFunction(-System.Math.Abs(Statistic));
+                      DistributionFunction(-Math.Abs(Statistic));
             }
         }
 
