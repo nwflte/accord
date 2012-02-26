@@ -22,12 +22,13 @@
 
 namespace Accord.Tests.Statistics
 {
-    using Accord.Statistics.Kernels;
-    using Accord.Statistics.Kernels.Sparse;
+    using Accord.Statistics.Distributions.Univariate;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Accord.Math;
+    using Accord.Statistics.Distributions.Multivariate;
 
     [TestClass()]
-    public class SparsePolynomialTest
+    public class MultinomialDistributionTest
     {
 
 
@@ -76,62 +77,51 @@ namespace Accord.Tests.Statistics
         #endregion
 
 
+
+
         [TestMethod()]
-        public void FunctionTest()
+        public void ProbabilityMassFunctionTest()
         {
-            Polynomial dense = new Polynomial(3);
-            SparsePolynomial target = new SparsePolynomial(3);
+            MultinomialDistribution dist = new MultinomialDistribution(5, 0.25, 0.25, 0.25, 0.25);
 
-            double[] sx = { 1, -0.555556, 2, +0.250000, 3, -0.864407, 4, -0.916667 };
-            double[] sy = { 1, -0.666667, 2, -0.166667, 3, -0.864407, 4, -0.916667 };
-            double[] sz = { 1, -0.944444, 3, -0.898305, 4, -0.916667 };
+            int[] observation = { 1, 1, 1, 2 };
 
-            double[] dx = { -0.555556, +0.250000, -0.864407, -0.916667 };
-            double[] dy = { -0.666667, -0.166667, -0.864407, -0.916667 };
-            double[] dz = { -0.944444, +0.000000, -0.898305, -0.916667 };
+            double actual = dist.ProbabilityMassFunction(observation);
+            double expected = 0.05859375;
 
-            double expected, actual;
-
-            expected = dense.Function(dx, dy);
-            actual = target.Function(sx, sy);
-            Assert.AreEqual(expected, actual);
-
-            expected = dense.Function(dx, dz);
-            actual = target.Function(sx, sz);
-            Assert.AreEqual(expected, actual);
-
-            expected = dense.Function(dy, dz);
-            actual = target.Function(sy, sz);
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(expected, actual, 1e-6);
         }
 
         [TestMethod()]
-        public void DistanceTest()
+        public void LogProbabilityMassFunctionTest()
         {
-            Polynomial dense = new Polynomial(3);
-            SparsePolynomial target = new SparsePolynomial(3);
+            MultinomialDistribution dist = new MultinomialDistribution(5, 0.25, 0.25, 0.25, 0.25);
 
-            double[] sx = { 1, -0.555556, 2, +0.250000, 3, -0.864407, 4, -0.916667 };
-            double[] sy = { 1, -0.666667, 2, -0.166667, 3, -0.864407, 4, -0.916667 };
-            double[] sz = { 1, -0.944444, 3, -0.898305, 4, -0.916667 };
+            int[] observation = { 1, 1, 1, 2 };
 
-            double[] dx = { -0.555556, +0.250000, -0.864407, -0.916667 };
-            double[] dy = { -0.666667, -0.166667, -0.864407, -0.916667 };
-            double[] dz = { -0.944444, +0.000000, -0.898305, -0.916667 };
+            double actual = dist.LogProbabilityMassFunction(observation);
+            double expected = System.Math.Log(0.058593750);
 
-            double expected, actual;
-
-            expected = dense.Distance(dx, dy);
-            actual = target.Distance(sx, sy);
-            Assert.AreEqual(expected, actual);
-
-            expected = dense.Distance(dx, dz);
-            actual = target.Distance(sx, sz);
-            Assert.AreEqual(expected, actual);
-
-            expected = dense.Distance(dy, dz);
-            actual = target.Distance(sy, sz);
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(expected, actual, 1e-6);
         }
+
+        [TestMethod()]
+        public void FitTest()
+        {
+            MultinomialDistribution dist = new MultinomialDistribution(7, new double[2]);
+
+            double[][] observation =
+            { 
+                new double[] { 0, 2 },
+                new double[] { 1, 2 },
+                new double[] { 5, 1 },
+            };
+
+            dist.Fit(observation);
+
+            Assert.AreEqual(dist.Probabilities[0], 0.857142857142857, 0.000000001);
+            Assert.AreEqual(dist.Probabilities[1], 0.714285714285714, 0.000000001);
+        }
+
     }
 }

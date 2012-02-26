@@ -22,14 +22,12 @@
 
 namespace Accord.Tests.Statistics
 {
-    using Accord.Statistics.Kernels;
-    using Accord.Statistics.Kernels.Sparse;
+    using Accord.Statistics.Distributions.Univariate;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass()]
-    public class SparsePolynomialTest
+    public class VonMisesDistributionTest
     {
-
 
         private TestContext testContextInstance;
 
@@ -77,61 +75,45 @@ namespace Accord.Tests.Statistics
 
 
         [TestMethod()]
-        public void FunctionTest()
+        public void FitTest()
         {
-            Polynomial dense = new Polynomial(3);
-            SparsePolynomial target = new SparsePolynomial(3);
+            double[] angles = 
+            {
+               2.537498, 0.780449, 3.246623, 1.835845, 1.525273,
+               2.821987, 1.783134, 1.165753, 3.298262, 2.941366,
+               2.485515, 2.090029, 2.460631, 2.804243, 1.626327,
+            };
 
-            double[] sx = { 1, -0.555556, 2, +0.250000, 3, -0.864407, 4, -0.916667 };
-            double[] sy = { 1, -0.666667, 2, -0.166667, 3, -0.864407, 4, -0.916667 };
-            double[] sz = { 1, -0.944444, 3, -0.898305, 4, -0.916667 };
 
-            double[] dx = { -0.555556, +0.250000, -0.864407, -0.916667 };
-            double[] dy = { -0.666667, -0.166667, -0.864407, -0.916667 };
-            double[] dz = { -0.944444, +0.000000, -0.898305, -0.916667 };
+            var distribution = VonMisesDistribution.Estimate(angles);
 
-            double expected, actual;
+            Assert.AreEqual(2.411822, distribution.Concentration, 1e-6);
+            Assert.AreEqual(2.249981, distribution.Mean, 1e-6);
 
-            expected = dense.Function(dx, dy);
-            actual = target.Function(sx, sy);
-            Assert.AreEqual(expected, actual);
-
-            expected = dense.Function(dx, dz);
-            actual = target.Function(sx, sz);
-            Assert.AreEqual(expected, actual);
-
-            expected = dense.Function(dy, dz);
-            actual = target.Function(sy, sz);
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(0.2441525, distribution.Variance, 1e-3);
         }
 
         [TestMethod()]
-        public void DistanceTest()
+        public void ProbabilityDensityFunctionTest()
         {
-            Polynomial dense = new Polynomial(3);
-            SparsePolynomial target = new SparsePolynomial(3);
+            VonMisesDistribution dist = new VonMisesDistribution(2.249981, 2.411822);
 
-            double[] sx = { 1, -0.555556, 2, +0.250000, 3, -0.864407, 4, -0.916667 };
-            double[] sy = { 1, -0.666667, 2, -0.166667, 3, -0.864407, 4, -0.916667 };
-            double[] sz = { 1, -0.944444, 3, -0.898305, 4, -0.916667 };
+            double actual = dist.ProbabilityDensityFunction(2.14);
+            double expected = 0.5686769438969197;
 
-            double[] dx = { -0.555556, +0.250000, -0.864407, -0.916667 };
-            double[] dy = { -0.666667, -0.166667, -0.864407, -0.916667 };
-            double[] dz = { -0.944444, +0.000000, -0.898305, -0.916667 };
+            Assert.AreEqual(expected, actual, 1e-10);
+        }
 
-            double expected, actual;
+        [TestMethod()]
+        public void LogProbabilityDensityFunctionTest()
+        {
+            VonMisesDistribution dist = new VonMisesDistribution(2.249981, 2.411822);
+            double x = 2.14;
 
-            expected = dense.Distance(dx, dy);
-            actual = target.Distance(sx, sy);
-            Assert.AreEqual(expected, actual);
+            double actual = dist.LogProbabilityDensityFunction(x);
+            double expected = System.Math.Log(dist.ProbabilityDensityFunction(x));
 
-            expected = dense.Distance(dx, dz);
-            actual = target.Distance(sx, sz);
-            Assert.AreEqual(expected, actual);
-
-            expected = dense.Distance(dy, dz);
-            actual = target.Distance(sy, sz);
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(expected, actual, 1e-10);
         }
     }
 }

@@ -104,7 +104,7 @@ namespace Accord.Tests.Statistics.Models.Fields
                 ForwardBackwardAlgorithm.Backward(function.Factors[0], observations, 0, out logLikelihood);
 
             var A = Matrix.Exp(hmm.Transitions);
-            var B = Matrix.Exp(hmm.LogEmissions);
+            var B = Matrix.Exp(hmm.Emissions);
             var P = Matrix.Exp(hmm.Probabilities);
 
             double a30 = 1;
@@ -199,7 +199,7 @@ namespace Accord.Tests.Statistics.Models.Fields
                 ForwardBackwardAlgorithm.Forward(function.Factors[0], observations);
 
             var A = Matrix.Exp(hmm.Transitions);
-            var B = Matrix.Exp(hmm.LogEmissions);
+            var B = Matrix.Exp(hmm.Emissions);
             var P = Matrix.Exp(hmm.Probabilities);
 
             double a00 = P[0] * B[0, 2];
@@ -253,7 +253,7 @@ namespace Accord.Tests.Statistics.Models.Fields
                 ForwardBackwardAlgorithm.Forward(function.Factors[0], observations);
 
             var A = Matrix.Exp(hmm.Transitions);
-            var B = Matrix.Exp(hmm.LogEmissions);
+            var B = Matrix.Exp(hmm.Emissions);
             var P = Matrix.Exp(hmm.Probabilities);
 
             double a00 = P[0] * B[0, 0];
@@ -347,7 +347,7 @@ namespace Accord.Tests.Statistics.Models.Fields
                 ForwardBackwardAlgorithm.Forward(function.Factors[0], observations, 0, out scaling, out logLikelihood);
 
             double[] P = Matrix.Exp(hmm.Probabilities);
-            double[,] B = Matrix.Exp(hmm.LogEmissions);
+            double[,] B = Matrix.Exp(hmm.Emissions);
             double[,] A = Matrix.Exp(hmm.Transitions);
 
             double a00 = P[0] * B[0, 2];

@@ -91,6 +91,8 @@ namespace Accord.Tests.MachineLearning
         [TestMethod()]
         public void GridsearchConstructorTest()
         {
+            Accord.Math.Tools.SetupGenerator(0);
+
             // Example binary data
             double[][] inputs =
             {
@@ -133,15 +135,9 @@ namespace Accord.Tests.MachineLearning
                 SequentialMinimalOptimization smo = new SequentialMinimalOptimization(ksvm, inputs, xor);
                 smo.Complexity = complexity;
 
-                try
-                {
-                    // Measure the model performance to return as an out parameter
-                    error = smo.Run();
-                }
-                catch (Exception)
-                {
-                    error = 0;
-                }
+                // Measure the model performance to return as an out parameter
+                error = smo.Run();
+
                 return ksvm; // Return the current model
             };
 
@@ -159,8 +155,6 @@ namespace Accord.Tests.MachineLearning
             // The minimum error should be zero because the problem is well-known.
             Assert.AreEqual(minError, 0.0);
 
-            // This complexity constraint is too low to generate the best model.
-            Assert.AreNotEqual(bestParameters["complexity"].Value, 0.00000001);
 
             Assert.IsNotNull(bestModel);
             Assert.IsNotNull(bestParameters);

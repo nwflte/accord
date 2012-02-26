@@ -22,12 +22,13 @@
 
 namespace Accord.Tests.Statistics
 {
-    using Accord.Statistics.Kernels;
-    using Accord.Statistics.Kernels.Sparse;
+    using Accord.Statistics.Testing;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-
+    using System;
+    using Accord.Statistics.Analysis;    
+    
     [TestClass()]
-    public class SparsePolynomialTest
+    public class BowkerTestTest
     {
 
 
@@ -77,61 +78,27 @@ namespace Accord.Tests.Statistics
 
 
         [TestMethod()]
-        public void FunctionTest()
+        public void BowkerTestConstructorTest()
         {
-            Polynomial dense = new Polynomial(3);
-            SparsePolynomial target = new SparsePolynomial(3);
+            // Example from Bortz, Lienert and Klaus. Boehnke Verteilungsfreie Methoden in Der Biostatistik, pg 166
+            // http://books.google.com.br/books?id=chxDIA-x3WIC&printsec=frontcover&source=gbs_atb#v=onepage&q&f=false
 
-            double[] sx = { 1, -0.555556, 2, +0.250000, 3, -0.864407, 4, -0.916667 };
-            double[] sy = { 1, -0.666667, 2, -0.166667, 3, -0.864407, 4, -0.916667 };
-            double[] sz = { 1, -0.944444, 3, -0.898305, 4, -0.916667 };
+            int[,] matrix =
+            {
+                { 14,  7,  9 },
+                {  5, 26, 19 },
+                {  1,  7, 12 },
+            };
 
-            double[] dx = { -0.555556, +0.250000, -0.864407, -0.916667 };
-            double[] dy = { -0.666667, -0.166667, -0.864407, -0.916667 };
-            double[] dz = { -0.944444, +0.000000, -0.898305, -0.916667 };
+            GeneralConfusionMatrix a = new GeneralConfusionMatrix(matrix);
+            
+            BowkerTest target = new BowkerTest(a);
 
-            double expected, actual;
-
-            expected = dense.Function(dx, dy);
-            actual = target.Function(sx, sy);
-            Assert.AreEqual(expected, actual);
-
-            expected = dense.Function(dx, dz);
-            actual = target.Function(sx, sz);
-            Assert.AreEqual(expected, actual);
-
-            expected = dense.Function(dy, dz);
-            actual = target.Function(sy, sz);
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(12.27, target.Statistic, 1e-2);
+            Assert.IsFalse(Double.IsNaN(target.Statistic));
+            Assert.AreEqual(3, target.DegreesOfFreedom);
         }
 
-        [TestMethod()]
-        public void DistanceTest()
-        {
-            Polynomial dense = new Polynomial(3);
-            SparsePolynomial target = new SparsePolynomial(3);
-
-            double[] sx = { 1, -0.555556, 2, +0.250000, 3, -0.864407, 4, -0.916667 };
-            double[] sy = { 1, -0.666667, 2, -0.166667, 3, -0.864407, 4, -0.916667 };
-            double[] sz = { 1, -0.944444, 3, -0.898305, 4, -0.916667 };
-
-            double[] dx = { -0.555556, +0.250000, -0.864407, -0.916667 };
-            double[] dy = { -0.666667, -0.166667, -0.864407, -0.916667 };
-            double[] dz = { -0.944444, +0.000000, -0.898305, -0.916667 };
-
-            double expected, actual;
-
-            expected = dense.Distance(dx, dy);
-            actual = target.Distance(sx, sy);
-            Assert.AreEqual(expected, actual);
-
-            expected = dense.Distance(dx, dz);
-            actual = target.Distance(sx, sz);
-            Assert.AreEqual(expected, actual);
-
-            expected = dense.Distance(dy, dz);
-            actual = target.Distance(sy, sz);
-            Assert.AreEqual(expected, actual);
-        }
+      
     }
 }

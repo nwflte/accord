@@ -28,6 +28,7 @@ namespace Accord.Tests.Statistics
     using Accord.Statistics.Models.Markov.Learning;
     using Accord.Statistics.Models.Markov.Topology;
     using System;
+    using System.Collections.Generic;
 
     /// <summary>
     ///This is a test class for HiddenMarkovModelTest and is intended
@@ -113,7 +114,7 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(2, hmm.States);
             Assert.AreEqual(4, hmm.Symbols);
             Assert.IsTrue(Matrix.Log(A).IsEqual(hmm.Transitions));
-            Assert.IsTrue(Matrix.Log(B).IsEqual(hmm.LogEmissions));
+            Assert.IsTrue(Matrix.Log(B).IsEqual(hmm.Emissions));
             Assert.IsTrue(Matrix.Log(pi).IsEqual(hmm.Probabilities));
 
 
@@ -137,7 +138,7 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(2, hmm.States);
             Assert.AreEqual(4, hmm.Symbols);
             Assert.IsTrue(Matrix.Log(A).IsEqual(hmm.Transitions));
-            Assert.IsTrue(Matrix.Log(B).IsEqual(hmm.LogEmissions));
+            Assert.IsTrue(Matrix.Log(B).IsEqual(hmm.Emissions));
             Assert.IsTrue(Matrix.Log(pi).IsEqual(hmm.Probabilities));
 
 
@@ -145,7 +146,7 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(2, hmm.States);
             Assert.AreEqual(4, hmm.Symbols);
             Assert.IsTrue(Matrix.Log(A).IsEqual(hmm.Transitions));
-            Assert.IsTrue(Matrix.Log(B).IsEqual(hmm.LogEmissions));
+            Assert.IsTrue(Matrix.Log(B).IsEqual(hmm.Emissions));
             Assert.IsTrue(Matrix.Log(pi).IsEqual(hmm.Probabilities));
         }
 
@@ -289,9 +290,9 @@ namespace Accord.Tests.Statistics
                 { 0.1, 0.7, 0.2 }
             };
 
-            
+
             var hmmA = Matrix.Exp(hmm.Transitions);
-            var hmmB = Matrix.Exp(hmm.LogEmissions);
+            var hmmB = Matrix.Exp(hmm.Emissions);
             var hmmP = Matrix.Exp(hmm.Probabilities);
 
 

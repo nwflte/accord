@@ -20,27 +20,18 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.MachineLearning;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Accord.Math;
 namespace Accord.Tests.MachineLearning
 {
+    using Accord.MachineLearning;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Accord.Math;
 
-
-    /// <summary>
-    ///This is a test class for GaussianMixtureModelTest and is intended
-    ///to contain all GaussianMixtureModelTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class GaussianMixtureModelTest
     {
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -84,9 +75,6 @@ namespace Accord.Tests.MachineLearning
         #endregion
 
 
-        /// <summary>
-        ///A test for GaussianMixtureModel Constructor
-        ///</summary>
         [TestMethod()]
         public void GaussianMixtureModelConstructorTest()
         {

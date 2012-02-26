@@ -20,29 +20,19 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics.Distributions.Univariate;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Accord.Statistics.Distributions;
-
 namespace Accord.Tests.Statistics
 {
-    
-    
-    /// <summary>
-    ///This is a test class for PoissonDistributionTest and is intended
-    ///to contain all PoissonDistributionTest Unit Tests
-    ///</summary>
+    using System;
+    using Accord.Statistics.Links;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+
     [TestClass()]
-    public class PoissonDistributionTest
+    public class LogLinkFunctionTest
     {
 
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -87,37 +77,73 @@ namespace Accord.Tests.Statistics
 
 
         [TestMethod()]
-        public void FitTest()
+        public void LogLinkFunctionConstructorTest()
         {
-            PoissonDistribution target = new PoissonDistribution(0);
-            double[] observations = { 0.2, 0.7, 1.0, 0.33 };
-            
-            target.Fit(observations);
+            double beta = 0.52;
+            double constant = 2.42;
+            LogLinkFunction target = new LogLinkFunction(beta, constant);
 
-            double expected = 0.5575;
-            Assert.AreEqual(expected, target.Mean);
+            Assert.AreEqual(beta, target.B);
+            Assert.AreEqual(constant, target.A);
+
+            for (int i = 0; i < 11; i++)
+            {
+                double x = i / 10.0;
+                double y = (Math.Log(x) - constant) / beta;
+
+                Assert.AreEqual(y, target.Function(x), 1e-10);
+                Assert.AreEqual(x, target.Inverse(y), 1e-10);
+            }
         }
 
         [TestMethod()]
-        public void ProbabilityDensityFunctionTest()
+        public void LogLinkFunctionConstructorTest2()
         {
-            PoissonDistribution target = new PoissonDistribution(25);
+            LogLinkFunction target = new LogLinkFunction();
 
-            double actual = target.ProbabilityMassFunction(20);
-            double expected = 0.051917468608491321;
+            Assert.AreEqual(1, target.B);
+            Assert.AreEqual(0, target.A);
 
-            Assert.AreEqual(expected, actual);
+            for (int i = 0; i < 11; i++)
+            {
+                double x = i / 10.0;
+                double y = Math.Log(x);
+
+                Assert.AreEqual(y, target.Function(x), 1e-10);
+                Assert.AreEqual(x, target.Inverse(y), 1e-10);
+            }
         }
 
         [TestMethod()]
-        public void LogProbabilityDensityFunctionTest()
+        public void DerivativeTest()
         {
-            PoissonDistribution target = new PoissonDistribution(25);
+            double beta = 0.52;
+            double constant = 2.42;
 
-            double actual = target.LogProbabilityMassFunction(20);
-            double expected = System.Math.Log(0.051917468608491321);
+            double[] expected =
+            {
+               5.84785, 6.15998, 6.48877, 6.83512, 7.19995, 7.58425, 
+               7.98906, 8.41549, 8.86467, 9.33783, 9.83624
+            };
 
-            Assert.AreEqual(expected, actual, 1e-10);
+            LogLinkFunction target = new LogLinkFunction(beta, constant);
+
+            for (int i = 0; i < 11; i++)
+            {
+                double x = i / 10.0;
+                double y = target.Inverse(x);
+
+                double d1 = target.Derivative(x);
+                double d2 = target.Derivative2(y);
+
+                Assert.AreEqual(expected[i], d1, 1e-5);
+                Assert.AreEqual(expected[i], d2, 1e-5);
+
+                Assert.IsFalse(Double.IsNaN(d1));
+                Assert.IsFalse(Double.IsNaN(d2));
+            }
         }
+
+
     }
 }

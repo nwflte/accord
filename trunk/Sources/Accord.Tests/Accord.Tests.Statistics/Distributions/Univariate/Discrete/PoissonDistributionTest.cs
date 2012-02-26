@@ -20,27 +20,19 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics.Distributions.Univariate;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Accord.Tests.Statistics
 {
-
-
-    /// <summary>
-    ///This is a test class for NormalDistributionTest and is intended
-    ///to contain all NormalDistributionTest Unit Tests
-    ///</summary>
+    using Accord.Statistics.Distributions.Univariate;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Accord.Statistics.Distributions;
+    
     [TestClass()]
-    public class VonMisesDistributionTest
+    public class PoissonDistributionTest
     {
 
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -87,43 +79,36 @@ namespace Accord.Tests.Statistics
         [TestMethod()]
         public void FitTest()
         {
-            double[] angles = 
-            {
-               2.537498, 0.780449, 3.246623, 1.835845, 1.525273,
-               2.821987, 1.783134, 1.165753, 3.298262, 2.941366,
-               2.485515, 2.090029, 2.460631, 2.804243, 1.626327,
-            };
+            PoissonDistribution target = new PoissonDistribution(0);
+            double[] observations = { 0.2, 0.7, 1.0, 0.33 };
+            
+            target.Fit(observations);
 
-
-            var distribution = VonMisesDistribution.Estimate(angles);
-
-            Assert.AreEqual(2.411822, distribution.Concentration, 1e-6);
-            Assert.AreEqual(2.249981, distribution.Mean, 1e-6);
-
-            Assert.AreEqual(0.2441525, distribution.Variance, 1e-3);
+            double expected = 0.5575;
+            Assert.AreEqual(expected, target.Mean);
         }
 
         [TestMethod()]
         public void ProbabilityDensityFunctionTest()
         {
-            VonMisesDistribution dist = new VonMisesDistribution(2.249981, 2.411822);
+            PoissonDistribution target = new PoissonDistribution(25);
 
-            double actual = dist.ProbabilityDensityFunction(2.14);
-            double expected = 0.5686769438969197;
+            double actual = target.ProbabilityMassFunction(20);
+            double expected = 0.051917468608491321;
 
-            Assert.AreEqual(expected, actual, 1e-10);
+            Assert.AreEqual(expected, actual);
         }
 
         [TestMethod()]
         public void LogProbabilityDensityFunctionTest()
         {
-            VonMisesDistribution dist = new VonMisesDistribution(2.249981, 2.411822);
-            double x = 2.14;
+            PoissonDistribution target = new PoissonDistribution(25);
 
-            double actual = dist.LogProbabilityDensityFunction(x);
-            double expected = System.Math.Log(dist.ProbabilityDensityFunction(x));
+            double actual = target.LogProbabilityMassFunction(20);
+            double expected = System.Math.Log(0.051917468608491321);
 
             Assert.AreEqual(expected, actual, 1e-10);
         }
+
     }
 }

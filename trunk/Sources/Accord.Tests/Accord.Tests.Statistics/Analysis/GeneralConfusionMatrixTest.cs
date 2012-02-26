@@ -142,6 +142,52 @@ namespace Accord.Tests.Statistics
 
             Assert.AreEqual(0.563, target.Kappa, 1e-3);
         }
-   
+
+        [TestMethod()]
+        public void TotalTest()
+        {
+            int[,] matrix = 
+            {
+                { 1, 2, 3 },
+                { 4, 5, 6 },
+                { 7, 8, 9 },
+            };
+
+            GeneralConfusionMatrix target = new GeneralConfusionMatrix(matrix);
+
+            int[] colTotals = target.ColumnTotals;
+            int[] rowTotals = target.RowTotals;
+
+            Assert.AreEqual(1 + 2 + 3, rowTotals[0]);
+            Assert.AreEqual(4 + 5 + 6, rowTotals[1]);
+            Assert.AreEqual(7 + 8 + 9, rowTotals[2]);
+
+            Assert.AreEqual(1 + 4 + 7, colTotals[0]);
+            Assert.AreEqual(2 + 5 + 8, colTotals[1]);
+            Assert.AreEqual(3 + 6 + 9, colTotals[2]);
+            
+        }
+
+        [TestMethod()]
+        public void PhiTest()
+        {
+            int[,] matrix =
+            {
+                {  10,      9,      5,      7,      8     },
+                {   1,      2,      0,      1,      2     },
+                {   0,      0,      1,      0,      1     },
+                {   1,      0,      0,      3,      0     },
+                {   0,      2,      0,      0,      2     },
+            };
+
+            GeneralConfusionMatrix target = new GeneralConfusionMatrix(matrix);
+
+            double actual = target.Phi;
+
+            Assert.AreEqual(19.43,actual , 0.01);
+            Assert.IsFalse(Double.IsNaN(actual));
+        }
+
+
     }
 }

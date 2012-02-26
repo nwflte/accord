@@ -256,49 +256,6 @@ namespace Accord.Tests.Statistics
             Assert.IsFalse(double.IsNaN(analysis.Coefficients[1].ConfidenceUpper));
         }
 
-        [TestMethod()]
-        public void RegressTest2()
-        {
-            // Test instance 01
-            double[][] trainInput =
-            {
-               new double[] { 1, 1 },
-               new double[] { 0, 0 },
-            };
-
-            double[] trainOutput = { 1, 0 };
-            double[] testInput = { 0, 0.2 };
-
-            LogisticRegressionAnalysis target = new LogisticRegressionAnalysis(trainInput, trainOutput);
-
-            target.Compute();
-
-            foreach (var coefficient in target.Coefficients)
-                Assert.IsFalse(double.IsNaN(coefficient.Value));
-
-            Assert.AreEqual(0, target.Regression.Compute(testInput));
-
-            // Test instance 02
-            trainInput = new double[][]
-            {
-                new double[] { 1, 0, 1, 1, 0, 1, 1, 0, 1, 0 },
-                new double[] { 0, 1, 0, 1, 1, 0, 1, 1, 0, 1 },
-                new double[] { 1, 1, 0, 0, 1, 1, 0, 1, 1, 1 },
-                new double[] { 1, 0, 1, 1, 0, 1, 1, 0, 1, 0 },
-                new double[] { 0, 1, 0, 1, 1, 0, 1, 1, 0, 1 },
-                new double[] { 1, 1, 0, 0, 1, 1, 0, 1, 1, 1 },
-            };
-
-            trainOutput = new double[6] { 1, 1, 0, 0, 1, 1 };
-
-            target = new LogisticRegressionAnalysis(trainInput, trainOutput);
-
-            target.Compute();
-
-            foreach (LogisticCoefficient coefficient in target.Coefficients)
-                Assert.IsFalse(double.IsNaN(coefficient.Value));
-
-        }
 
     }
 }

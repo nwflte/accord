@@ -140,7 +140,7 @@ namespace Accord.Tests.Math
         {
             double x = 171;
             double expected = 7.257415615308056e+306;
-            double actual = Special.Gamma(x);
+            double actual = Gamma.Function(x);
             Assert.AreEqual(expected, actual, 1e+293);
         }
 
@@ -228,7 +228,7 @@ namespace Accord.Tests.Math
             double x = 57;
             double expected = 172.35279713916282;
 
-            double actual = Special.LogGamma(x);
+            double actual = Gamma.Log(x);
             Assert.AreEqual(expected, actual);
         }
 
@@ -240,7 +240,7 @@ namespace Accord.Tests.Math
         {
             double actual;
 
-            actual = Special.BesselY0(64);
+            actual = Bessel.Y0(64);
             Assert.AreEqual(0.037067103232088, actual, 0.000001);
         }
 
@@ -252,13 +252,13 @@ namespace Accord.Tests.Math
         {
             double actual;
 
-            actual = Special.BesselJ(0, 1);
+            actual = Bessel.J(0, 1);
             Assert.AreEqual(0.765197686557967, actual, 0.000001);
 
-            actual = Special.BesselJ(0, 5);
+            actual = Bessel.J(0, 5);
             Assert.AreEqual(-0.177596771314338, actual, 0.000001);
 
-            actual = Special.BesselJ(2, 17.3);
+            actual = Bessel.J(2, 17.3);
             Assert.AreEqual(0.117351128521774, actual, 0.000001);
         }
 
@@ -270,10 +270,10 @@ namespace Accord.Tests.Math
         {
             double actual;
 
-            actual = Special.BesselY(2, 4);
+            actual = Bessel.Y(2, 4);
             Assert.AreEqual(0.215903594603615, actual, 0.000001);
 
-            actual = Special.BesselY(0, 64);
+            actual = Bessel.Y(0, 64);
             Assert.AreEqual(0.037067103232088, actual, 0.000001);
         }
 
@@ -285,10 +285,10 @@ namespace Accord.Tests.Math
         {
             double actual;
 
-            actual = Special.BesselJ0(1);
+            actual = Bessel.J0(1);
             Assert.AreEqual(0.765197686557967, actual, 0.000001);
 
-            actual = Special.BesselJ0(5);
+            actual = Bessel.J0(5);
             Assert.AreEqual(-0.177596771314338, actual, 0.000001);
         }
 
@@ -300,7 +300,7 @@ namespace Accord.Tests.Math
         {
             double x = 42;
             double expected = 3.7257176179372822;
-            double actual = Special.Digamma(x);
+            double actual = Gamma.Digamma(x);
             Assert.AreEqual(expected, actual);
         }
 
@@ -315,7 +315,7 @@ namespace Accord.Tests.Math
             double bb = 4;
             double expected = 0.696717907200000;
 
-            double actual = Special.Ibeta(aa, bb, xx);
+            double actual = Beta.Incomplete(aa, bb, xx);
             Assert.AreEqual(expected, actual, 0.0000001);
         }
 
@@ -329,7 +329,7 @@ namespace Accord.Tests.Math
             double a = 4.2;
             double b = 3.0;
             double expected = 0.014770176060499;
-            double actual = Special.Beta(a, b);
+            double actual = Beta.Function(a, b);
             Assert.AreEqual(expected, actual, 1e-6);
         }
 
@@ -342,7 +342,7 @@ namespace Accord.Tests.Math
             // p = 0.5 * erfc(-z ./ sqrt(2))
             double value = 0.42;
             double expected = 0.662757273151751;
-            double actual = Special.Normal(value);
+            double actual = Normal.Function(value);
             Assert.AreEqual(expected, actual, 1e-10);
         }
 
@@ -351,7 +351,7 @@ namespace Accord.Tests.Math
         {
             double value = 0.662757273151751;
             double expected = 0.42;
-            double actual = Special.NormalInverse(value);
+            double actual = Normal.Inverse(value);
             Assert.AreEqual(expected, actual, 1e-10);
         }
 
@@ -363,62 +363,62 @@ namespace Accord.Tests.Math
 
             double expected, actual;
 
-            actual = Special.GammaQ(0.000000, 2);
+            actual = Gamma.UpperIncomplete(0.000000, 2);
             expected = 1.000000;
             Assert.AreEqual(expected, actual);
             Assert.IsFalse(double.IsNaN(actual));
 
-            actual = Special.GammaQ(0.250000, 2);
+            actual = Gamma.UpperIncomplete(0.250000, 2);
             expected = 0.017286;
             Assert.AreEqual(expected, actual, 1e-6);
             Assert.IsFalse(double.IsNaN(actual));
 
-            actual = Special.GammaQ(0.500000, 2);
+            actual = Gamma.UpperIncomplete(0.500000, 2);
             expected = 0.045500;
             Assert.AreEqual(expected, actual, 1e-6);
             Assert.IsFalse(double.IsNaN(actual));
 
-            actual = Special.GammaQ(0.750000, 2);
+            actual = Gamma.UpperIncomplete(0.750000, 2);
             expected = 0.085056;
             Assert.AreEqual(expected, actual, 1e-6);
             Assert.IsFalse(double.IsNaN(actual));
 
-            actual = Special.GammaQ(1.000000, 2);
+            actual = Gamma.UpperIncomplete(1.000000, 2);
             expected = 0.135335;
             Assert.AreEqual(expected, actual, 1e-6);
             Assert.IsFalse(double.IsNaN(actual));
 
-            actual = Special.GammaQ(1.250000, 2);
+            actual = Gamma.UpperIncomplete(1.250000, 2);
             expected = 0.194847;
             Assert.AreEqual(expected, actual, 1e-6);
             Assert.IsFalse(double.IsNaN(actual));
 
-            actual = Special.GammaQ(1.500000, 2);
+            actual = Gamma.UpperIncomplete(1.500000, 2);
             expected = 0.261464;
             Assert.AreEqual(expected, actual, 1e-6);
             Assert.IsFalse(double.IsNaN(actual));
 
-            actual = Special.GammaQ(1.750000, 2);
+            actual = Gamma.UpperIncomplete(1.750000, 2);
             expected = 0.332706;
             Assert.AreEqual(expected, actual, 1e-6);
             Assert.IsFalse(double.IsNaN(actual));
 
-            actual = Special.GammaQ(2.000000, 2);
+            actual = Gamma.UpperIncomplete(2.000000, 2);
             expected = 0.406006;
             Assert.AreEqual(expected, actual, 1e-6);
             Assert.IsFalse(double.IsNaN(actual));
 
-            actual = Special.GammaQ(2.250000, 2);
+            actual = Gamma.UpperIncomplete(2.250000, 2);
             expected = 0.478944;
             Assert.AreEqual(expected, actual, 1e-6);
             Assert.IsFalse(double.IsNaN(actual));
 
-            actual = Special.GammaQ(2.500000, 2);
+            actual = Gamma.UpperIncomplete(2.500000, 2);
             expected = 0.549416;
             Assert.AreEqual(expected, actual, 1e-6);
             Assert.IsFalse(double.IsNaN(actual));
 
-            actual = Special.GammaQ(2.750000, 2);
+            actual = Gamma.UpperIncomplete(2.750000, 2);
             expected = 0.615734;
             Assert.AreEqual(expected, actual, 1e-6);
             Assert.IsFalse(double.IsNaN(actual));

@@ -20,19 +20,12 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics.Testing;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using Accord.Statistics.Distributions.Univariate;
-
 namespace Accord.Tests.Statistics
 {
 
+    using Accord.Statistics.Testing;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-    /// <summary>
-    ///This is a test class for TTestTest and is intended
-    ///to contain all TTestTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class TTestTest
     {
@@ -40,10 +33,6 @@ namespace Accord.Tests.Statistics
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -87,9 +76,6 @@ namespace Accord.Tests.Statistics
         #endregion
 
 
-        /// <summary>
-        ///A test for TTest Constructor
-        ///</summary>
         [TestMethod()]
         public void TTestConstructorTest()
         {
@@ -125,5 +111,6 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(Hypothesis.OneLower, target.Hypothesis); // left tail
             Assert.AreEqual(0.99389453783865112, target.PValue);
         }
+
     }
 }

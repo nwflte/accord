@@ -20,34 +20,23 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Data;
-using Accord.Statistics.Filters;
-using Accord.MachineLearning.Bayes;
-using Accord.Math;
-using Accord;
-using Accord.Statistics.Distributions.Univariate;
-
 namespace Accord.Tests.MachineLearning
 {
+    using System.Data;
+    using Accord;
+    using Accord.MachineLearning.Bayes;
+    using Accord.Math;
+    using Accord.Statistics.Distributions.Univariate;
+    using Accord.Statistics.Filters;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 
-    /// <summary>
-    ///This is a test class for NaiveBayesTest and is intended
-    ///to contain all NaiveBayesTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class NaiveBayesGenericTest
     {
 
-
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -98,11 +87,7 @@ namespace Accord.Tests.MachineLearning
             int inputs = 0;
             bool thrown = false;
 
-            try
-            {
-                var target = new NaiveBayes<DiscreteUniformDistribution>(classes, inputs,
-                    new DiscreteUniformDistribution(0, 3));
-            }
+            try { new NaiveBayes<DiscreteUniformDistribution>(classes, inputs, new DiscreteUniformDistribution(0, 3)); }
             catch { thrown = true; }
 
             Assert.IsTrue(thrown);
@@ -132,9 +117,9 @@ namespace Accord.Tests.MachineLearning
             {
                 for (int j = 0; j < inputCount; j++)
                 {
-                    Assert.AreNotSame(initial, target.Distributions[i,j]);
-                    Assert.AreEqual(0, target.Distributions[i,j].Minimum);
-                    Assert.AreEqual(3, target.Distributions[i,j].Maximum);
+                    Assert.AreNotSame(initial, target.Distributions[i, j]);
+                    Assert.AreEqual(0, target.Distributions[i, j].Minimum);
+                    Assert.AreEqual(3, target.Distributions[i, j].Maximum);
                 }
             }
         }
@@ -211,9 +196,9 @@ namespace Accord.Tests.MachineLearning
         [TestMethod()]
         public void DistributionsTest()
         {
-            int classes = 3; 
+            int classes = 3;
             int[] symbols = { 2, 1 };
-            NaiveBayes target = new NaiveBayes(classes, symbols); 
+            NaiveBayes target = new NaiveBayes(classes, symbols);
             double[,][] actual = target.Distributions;
 
             Assert.IsNotNull(actual);

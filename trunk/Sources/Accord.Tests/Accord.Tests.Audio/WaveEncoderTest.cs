@@ -80,34 +80,88 @@ namespace Accord.Tests.Audio
         [TestMethod()]
         public void WaveEncoderConstructorTest()
         {
-            UnmanagedMemoryStream sourceStream = Properties.Resources.Grand_Piano___Fazioli___major_A_middle;
-            MemoryStream destStream = new MemoryStream();
+            // Load a file in PCM 16bpp format
+            // Number of samples: 352.800
+            // Number of frames:  176.400
+            // Sample rate:        44.100 Hz
+            // Block align:         4
+            // Channels:            2
+            // Duration:            4.0   s
+            // Bytes:             705.644 
 
-            WaveDecoder decoder = new WaveDecoder(sourceStream);
-            WaveEncoder encoder = new WaveEncoder(destStream);
+            // sizeof(float) = 4
+            // sizeof(int)   = 4
+            // sizeof(short) = 2
+
+            var sourceStream = Properties.Resources.Grand_Piano___Fazioli___major_A_middle;
+            var destinationStream = new MemoryStream();
+
+            // Create a decoder for the source stream
+            WaveDecoder sourceDecoder = new WaveDecoder(sourceStream);
+            Assert.AreEqual(2, sourceDecoder.Channels);
+            Assert.AreEqual(352800, sourceDecoder.Samples);
+            Assert.AreEqual(176400, sourceDecoder.Frames);
+            Assert.AreEqual(4000, sourceDecoder.Duration);
+            Assert.AreEqual(44100, sourceDecoder.SampleRate);
+            Assert.AreEqual(16, sourceDecoder.BitsPerSample);
+
+            // Decode the signal in the source stream
+            Signal sourceSignal = sourceDecoder.Decode();
+            Assert.AreEqual(352800, sourceSignal.Samples);
+            Assert.AreEqual(176400, sourceSignal.Length);
+            Assert.AreEqual(4000, sourceSignal.Duration);
+            Assert.AreEqual(2, sourceSignal.Channels);
+            Assert.AreEqual(44100, sourceSignal.SampleRate);
+            Assert.AreEqual(sizeof(float) * 352800, sourceSignal.RawData.Length);
+            Assert.AreEqual(sizeof(short) * 352800, sourceDecoder.Bytes);
 
 
-            Signal wave = decoder.Decode();
+            // Create a encoder for the destinoation stream
+            WaveEncoder encoder = new WaveEncoder(destinationStream);
 
-            encoder.Encode(wave);
+            // Encode the signal to the destionation stream
+            encoder.Encode(sourceSignal);
 
+            Assert.AreEqual(2, encoder.Channels);
+            Assert.AreEqual(352800, encoder.Samples);
+            Assert.AreEqual(176400, encoder.Frames);
+            Assert.AreEqual(4000, encoder.Duration);
+            Assert.AreEqual(44100, encoder.SampleRate);
+            Assert.AreEqual(32, encoder.BitsPerSample);
+            Assert.AreEqual(sizeof(float) * 352800, encoder.Bytes);
+
+
+            // Rewind both streams, them attempt to read the destination
             sourceStream.Seek(0, SeekOrigin.Begin);
-            destStream.Seek(0, SeekOrigin.Begin);
+            destinationStream.Seek(0, SeekOrigin.Begin);
 
-            WaveDecoder decoder2 = new WaveDecoder(destStream);
+            // Create a decoder to read the destination stream
+            WaveDecoder destDecoder = new WaveDecoder(destinationStream);
+            Assert.AreEqual(2, destDecoder.Channels);
+            Assert.AreEqual(176400, destDecoder.Frames);
+            Assert.AreEqual(352800, destDecoder.Samples);
+            Assert.AreEqual(4000, destDecoder.Duration);
+            Assert.AreEqual(44100, destDecoder.SampleRate);
+            Assert.AreEqual(32, destDecoder.BitsPerSample);
 
-            Signal wave2 = decoder2.Decode();
+
+            // Decode the destionation stream
+            Signal destSignal = destDecoder.Decode();
+
+            // Assert that the signal which has been saved to the destination
+            // stream and the signal which has just been read from this same
+            // stream are identical
+            Assert.AreEqual(sourceSignal.Length, destSignal.Length);
+            Assert.AreEqual(sourceSignal.SampleFormat, destSignal.SampleFormat);
+            Assert.AreEqual(sourceSignal.SampleRate, destSignal.SampleRate);
+            Assert.AreEqual(sourceSignal.Samples, destSignal.Samples);
+            Assert.AreEqual(sourceSignal.Duration, destSignal.Duration);
 
 
-            Assert.AreEqual(wave.Length, wave2.Length);
-            Assert.AreEqual(wave.SampleFormat, wave2.SampleFormat);
-            Assert.AreEqual(wave.SampleRate, wave2.SampleRate);
-            Assert.AreEqual(wave.Samples, wave2.Samples);
-
-            for (int i = 0; i < wave.RawData.Length; i++)
+            for (int i = 0; i < sourceSignal.RawData.Length; i++)
             {
-                byte actual = wave.RawData[i];
-                byte expected = wave2.RawData[i];
+                byte actual = sourceSignal.RawData[i];
+                byte expected = destSignal.RawData[i];
                 Assert.AreEqual(expected, actual);
             }
 

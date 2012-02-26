@@ -135,7 +135,6 @@ namespace Accord.Tests.MachineLearning
         [TestMethod()]
         public void RunTest2()
         {
-            // simple auto association test
 
             double[][] inputs =
             {
@@ -236,9 +235,9 @@ namespace Accord.Tests.MachineLearning
             // Compute the answer for all training samples
             for (int i = 0; i < inputs.Length; i++)
             {
-                int[] answersWeights;
+                double[] answersWeights;
 
-                double answer = machine.Compute(inputs[i], out answersWeights);
+                double answer = machine.Compute(inputs[i], MulticlassComputeMethod.Voting, out answersWeights);
 
                 // Assert it has been classified correctly
                 Assert.AreEqual(outputs[i], answer);

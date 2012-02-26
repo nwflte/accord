@@ -92,6 +92,7 @@ namespace Accord.Tests.Audio
         public void WaveFileAudioSourceConstructorTest()
         {
             string fileName = @"..\..\..\Accord.Tests\Accord.Tests.Audio\Resources\Grand Piano - Fazioli - major A middle.wav";
+
             WaveFileAudioSource target = new WaveFileAudioSource(fileName);
 
             Signal s = null;
@@ -104,6 +105,7 @@ namespace Accord.Tests.Audio
                 Assert.AreEqual(s.SampleRate, 44100);
                 Assert.AreEqual(s.Channels, 2);
                 Assert.AreEqual(s.Length, 8192);
+                Assert.AreEqual(s.Channels * s.Length, s.Samples);
             };
 
 
@@ -111,14 +113,9 @@ namespace Accord.Tests.Audio
 
             target.WaitForStop();
 
-            Assert.AreEqual(90112, target.FramesReceived);
+            Assert.AreEqual(180224, target.FramesReceived);
             Assert.AreEqual(705600, target.BytesReceived);
 
-
-            double energy = s.GetEnergy();
-            Assert.AreEqual(energy, 135.86719561181962);
-            Assert.AreEqual(s.Channels, 2); 
-            Assert.AreEqual(s.Length, 8192);
         }
 
     }

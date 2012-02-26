@@ -643,7 +643,7 @@ namespace Accord.Tests.Math
 
             double[,] expected = 
             {
-                { 1.7321,  Accord.Math.Special.Sqrt2 },          
+                { 1.7321,  Accord.Math.Constants.Sqrt2 },          
                 { 1.0000, Double.NaN },
             };
 

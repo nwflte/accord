@@ -175,7 +175,7 @@ namespace Accord.Tests.Statistics.Models.Markov
             double[,] actual = ForwardBackwardAlgorithm.Backward(hmm, observations, out logLikelihood);
 
             var A = Matrix.Exp(hmm.Transitions);
-            var B = Matrix.Exp(hmm.LogEmissions);
+            var B = Matrix.Exp(hmm.Emissions);
             var P = Matrix.Exp(hmm.Probabilities);
 
             double a30 = 1;
@@ -260,7 +260,7 @@ namespace Accord.Tests.Statistics.Models.Markov
 
             var P = Matrix.Exp(hmm.Probabilities);
             var A = Matrix.Exp(hmm.Transitions);
-            var B = Matrix.Exp(hmm.LogEmissions);
+            var B = Matrix.Exp(hmm.Emissions);
 
             double a00 = P[0] * B[0, 2];
             double a01 = P[1] * B[1, 2];
@@ -306,7 +306,7 @@ namespace Accord.Tests.Statistics.Models.Markov
 
             var P = Matrix.Exp(hmm.Probabilities);
             var A = Matrix.Exp(hmm.Transitions);
-            var B = Matrix.Exp(hmm.LogEmissions);
+            var B = Matrix.Exp(hmm.Emissions);
 
             double a00 = P[0] * B[0, 0];
             double a01 = P[1] * B[1, 0];
@@ -383,7 +383,7 @@ namespace Accord.Tests.Statistics.Models.Markov
 
             var P = Matrix.Exp(hmm.Probabilities);
             var A = Matrix.Exp(hmm.Transitions);
-            var B = Matrix.Exp(hmm.LogEmissions);
+            var B = Matrix.Exp(hmm.Emissions);
 
             //                     G  G  C  A
             int[] observations = { 2, 2, 1, 0 };

@@ -22,13 +22,14 @@
 
 namespace Accord.Tests.Statistics
 {
-    using Accord.Statistics.Moving;
+    using Accord.Statistics.Analysis;
+    using Accord.Statistics.Testing;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Accord.Statistics;
-    using Accord.Statistics.Distributions.Univariate;
+    using Accord.Math;
+    
 
     [TestClass()]
-    public class InverseGaussianTest
+    public class StuartMaxwellTestTest
     {
 
         private TestContext testContextInstance;
@@ -76,40 +77,31 @@ namespace Accord.Tests.Statistics
         #endregion
 
 
+     
         [TestMethod()]
-        public void ConstructorTest()
+        public void StuartMaxwellTestConstructorTest()
         {
-            InverseGaussian g = new InverseGaussian(1.2, 4.2);
-            Assert.AreEqual(1.2, g.Mean);
-            Assert.AreEqual(4.2, g.Shape);
+            // Example from http://www.john-uebersax.com/stat/mcnemar.htm#stuart
 
-            Assert.AreEqual(0.41142857142857142, g.Variance);
-            Assert.AreEqual(0.64142698058981851, g.StandardDeviation);
+            int[,] matrix = 
+            {
+                { 20, 10,  5 },
+                {  3, 30, 15 },
+                {  0,  5, 40 },
+            };
+
+            GeneralConfusionMatrix a = new GeneralConfusionMatrix(matrix);
+            
+            StuartMaxwellTest target = new StuartMaxwellTest(a);
+
+            Assert.AreEqual(13.76, target.Statistic, 0.01);
+            Assert.AreEqual(2, target.DegreesOfFreedom);
+            Assert.AreEqual(0.001, target.PValue, 1e-4);
+
+            Assert.IsFalse(double.IsNaN(target.Statistic));
+            Assert.IsFalse(double.IsNaN(target.PValue));
         }
 
-        [TestMethod()]
-        public void ProbabilityFunctionTest()
-        {
-            InverseGaussian g = new InverseGaussian(1.2, 4.2);
-
-            double expected = 0.363257;
-            double actual = g.ProbabilityDensityFunction(0.42);
-
-            Assert.AreEqual(expected, actual, 1e-6);
-        }
-
-        [TestMethod()]
-        public void CumulativeFunctionTest()
-        {
-            InverseGaussian g = new InverseGaussian(1.2, 4.2);
-
-            double expected = 0.3520473;
-            double actual = g.DistributionFunction(0.42);
-
-            Assert.AreEqual(expected, actual, 1e-6);
-            Assert.IsFalse(double.IsNaN(actual));
-        }
-
-
+       
     }
 }

@@ -20,33 +20,21 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Data;
-using Accord.Statistics.Filters;
-using Accord.MachineLearning.Bayes;
-using Accord.Math;
-using Accord;
-
 namespace Accord.Tests.MachineLearning
 {
+    using System.Data;
+    using Accord;
+    using Accord.MachineLearning.Bayes;
+    using Accord.Math;
+    using Accord.Statistics.Filters;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-
-    /// <summary>
-    ///This is a test class for NaiveBayesTest and is intended
-    ///to contain all NaiveBayesTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class NaiveBayesTest
     {
 
-
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -97,10 +85,7 @@ namespace Accord.Tests.MachineLearning
             int[] symbols = new int[0];
             bool thrown = false;
 
-            try
-            {
-                NaiveBayes target = new NaiveBayes(classes, symbols);
-            }
+            try { new NaiveBayes(classes, symbols); }
             catch { thrown = true; }
 
             Assert.IsTrue(thrown);
@@ -113,10 +98,7 @@ namespace Accord.Tests.MachineLearning
             int[] symbols = null;
             bool thrown = false;
 
-            try
-            {
-                NaiveBayes target = new NaiveBayes(classes, symbols);
-            }
+            try { new NaiveBayes(classes, symbols); }
             catch { thrown = true; }
 
             Assert.IsTrue(thrown);
@@ -129,10 +111,7 @@ namespace Accord.Tests.MachineLearning
             int[] symbols = new int[2];
             bool thrown = false;
 
-            try
-            {
-                NaiveBayes target = new NaiveBayes(classes, null, symbols);
-            }
+            try { new NaiveBayes(classes, null, symbols); }
             catch { thrown = true; }
 
             Assert.IsTrue(thrown);
@@ -225,9 +204,9 @@ namespace Accord.Tests.MachineLearning
         [TestMethod()]
         public void DistributionsTest()
         {
-            int classes = 3; 
+            int classes = 3;
             int[] symbols = { 2, 1 };
-            NaiveBayes target = new NaiveBayes(classes, symbols); 
+            NaiveBayes target = new NaiveBayes(classes, symbols);
             double[,][] actual = target.Distributions;
 
             Assert.IsNotNull(actual);

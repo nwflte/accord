@@ -20,27 +20,17 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics.Distributions.Univariate;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Accord.Tests.Statistics
 {
+    using Accord.Statistics.Distributions.Univariate;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-
-    /// <summary>
-    ///This is a test class for ChiSquareDistributionTest and is intended
-    ///to contain all ChiSquareDistributionTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class FDistributionTest
     {
 
-
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -147,6 +137,29 @@ namespace Accord.Tests.Statistics
         }
 
         [TestMethod()]
+        public void DistributionFunctionTest3()
+        {
+
+            double[] cdf = 
+            {
+                0, 0.0277778, 0.0816327, 0.140625, 0.197531, 0.25,
+                0.297521, 0.340278, 0.378698, 0.413265, 0.444444
+            };
+
+            FDistribution target = new FDistribution(4, 2);
+
+            for (int i = 0; i < 11; i++)
+            {
+                double x = i / 10.0;
+                double actual = target.DistributionFunction(x);
+                double expected = cdf[i];
+
+                Assert.AreEqual(expected, actual, 1e-5);
+                Assert.IsFalse(double.IsNaN(actual));
+            }
+        }
+
+        [TestMethod()]
         public void ProbabilityDistributionFunctionTest()
         {
             FDistribution f = new FDistribution(2, 3);
@@ -212,6 +225,28 @@ namespace Accord.Tests.Statistics
                 actual = f.LogProbabilityDensityFunction(x);
                 expected = System.Math.Log(f.ProbabilityDensityFunction(x));
                 Assert.AreEqual(expected, actual, 1e-10);
+            }
+        }
+
+        [TestMethod()]
+        public void InverseDistributionFunctionTest()
+        {
+
+            double[] cdf = 
+            {
+                0.231238, 0.404508, 0.605516, 0.86038, 1.20711, 1.71825, 2.5611, 4.23607, 9.24342
+            };
+
+            FDistribution target = new FDistribution(4, 2);
+
+            for (int i = 0; i < cdf.Length; i++)
+            {
+                double x = (i+1) / 10.0;
+                double actual = target.InverseDistributionFunction(x);
+                double expected = cdf[i];
+
+                Assert.AreEqual(expected, actual, 1e-5);
+                Assert.IsFalse(double.IsNaN(actual));
             }
         }
 
