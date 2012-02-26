@@ -30,6 +30,7 @@ using Accord.MachineLearning.VectorMachines.Learning;
 using Accord.Math;
 using Accord.Statistics.Kernels;
 using ZedGraph;
+using AForge;
 
 namespace Handwriting
 {
@@ -44,13 +45,11 @@ namespace Handwriting
          * Good parameter choices are:
          *  
          *  Polynomial kernel (degree = 2, constant = 0)
-         *  epsilon    = 0.001
          *  complexity = 1.0
          *  tolerance  = 0.2
          *  Accuracy: 95% (11mb)
          * 
          *  Gaussian kernel (sigma = 6.22)
-         *  epsilon    = 0.01
          *  complexity = 1.5
          *  tolerance  = 0.2
          *  Accuracy: 94% (35mb)
@@ -177,15 +176,13 @@ namespace Handwriting
 
             // Extract training parameters from the interface
             double complexity = (double)numComplexity.Value;
-            double epsilon =    (double)numEpsilon.Value;
-            double tolerance =  (double)numTolerance.Value;
+            double tolerance = (double)numTolerance.Value;
 
             // Configure the learning algorithm
             ml.Algorithm = (svm, classInputs, classOutputs, i, j) =>
             {
                 var smo = new SequentialMinimalOptimization(svm, classInputs, classOutputs);
                 smo.Complexity = complexity;
-                smo.Epsilon = epsilon;
                 smo.Tolerance = tolerance;
                 return smo;
             };
@@ -205,12 +202,14 @@ namespace Handwriting
                 "Training complete ({0}ms, {1}er). Click Classify to test the classifiers.",
                 sw.ElapsedMilliseconds, error);
 
-            btnClassify.Enabled = true;
+            btnClassifyVoting.Enabled = true;
+            btnClassifyElimination.Enabled = true;
+            btnCalibration.Enabled = true;
 
 
             // Populate the information tab with the machines
             dgvMachines.Rows.Clear();
-            int k = 1, s = 0;
+            int k = 1;
             for (int i = 0; i < 10; i++)
             {
                 for (int j = 0; j < i; j++, k++)
@@ -219,8 +218,6 @@ namespace Handwriting
 
                     int c = dgvMachines.Rows.Add(k, i + "-vs-" + j, machine.SupportVectors.Length, machine.Threshold);
                     dgvMachines.Rows[c].Tag = machine;
-
-                    s += machine.SupportVectors.Length;
                 }
             }
 
@@ -228,9 +225,55 @@ namespace Handwriting
             //   number of support vectors *
             //   number of doubles in a support vector *
             //   size of double
-            int bytes = s * 1024 * sizeof(double);
-            float mb = bytes / (1024 * 1024);
-            lbSize.Text = String.Format("{0} ({1} MB)", s, mb);
+            int bytes = ksvm.SupportVectorUnique * 1024 * sizeof(double);
+            float megabytes = bytes / (1024 * 1024);
+            lbSize.Text = String.Format("{0} ({1} MB)", ksvm.SupportVectorUnique, megabytes);
+        }
+
+
+        private void btnRunCalibration_Click(object sender, EventArgs e)
+        {
+            if (ksvm == null)
+            {
+                MessageBox.Show("Please train the machines first.");
+                return;
+            }
+
+            // Extract inputs and outputs
+            int rows = dgvTrainingSource.Rows.Count;
+            double[][] input = new double[rows][];
+            int[] output = new int[rows];
+            for (int i = 0; i < rows; i++)
+            {
+                input[i] = (double[])dgvTrainingSource.Rows[i].Cells["colTrainingFeatures"].Value;
+                output[i] = (int)dgvTrainingSource.Rows[i].Cells["colTrainingLabel"].Value;
+            }
+
+            // Create the learning algorithm using the machine and the training data
+            MulticlassSupportVectorLearning ml = new MulticlassSupportVectorLearning(ksvm, input, output);
+
+            // Configure the learning algorithm
+            ml.Algorithm = (svm, classInputs, classOutputs, i, j) =>
+            {
+                return new ProbabilisticOutputLearning(svm, classInputs, classOutputs);
+            };
+
+
+            lbStatus.Text = "Calibrating the classifiers. This may take a (very) significant amount of time...";
+            Application.DoEvents();
+
+            Stopwatch sw = Stopwatch.StartNew();
+
+            // Train the machines. It should take a while.
+            double error = ml.Run();
+
+            sw.Stop();
+
+            lbStatus.Text = String.Format(
+                "Calibration complete ({0}ms, {1}er). Click Classify to test the classifiers.",
+                sw.ElapsedMilliseconds, error);
+
+            btnClassifyVoting.Enabled = true;
         }
 
         private void btnClassify_Click(object sender, EventArgs e)
@@ -261,7 +304,12 @@ namespace Handwriting
                 double[] input = (double[])row.Cells["colTestingFeatures"].Value;
                 int expected = (int)row.Cells["colTestingExpected"].Value;
 
-                int output = (int)ksvm.Compute(input);
+                int output;
+                if (sender == btnClassifyElimination)
+                    output = ksvm.Compute(input, MulticlassComputeMethod.Elimination);
+                else
+                    output = ksvm.Compute(input, MulticlassComputeMethod.Voting);
+
                 row.Cells["colTestingOutput"].Value = output;
 
                 if (expected == output)
@@ -297,15 +345,17 @@ namespace Handwriting
             StringReader reader = new StringReader(Properties.Resources.optdigits_tra);
 
             int trainingStart = 0;
-            int trainingCount = 500;
+            int trainingCount = 1000;
 
             int testingStart = 1000;
-            int testingCount = 500;
+            int testingCount = 1000;
 
             dgvTrainingSource.Rows.Clear();
             dgvAnalysisTesting.Rows.Clear();
 
             int c = 0;
+            int trainingSet = 0;
+            int testingSet = 0;
             while (true)
             {
                 char[] buffer = new char[(32 + 2) * 32];
@@ -321,6 +371,7 @@ namespace Handwriting
                     double[] features = Extract(bitmap);
                     int clabel = Int32.Parse(label);
                     dgvTrainingSource.Rows.Add(bitmap, clabel, features);
+                    trainingSet++;
                 }
                 else if (c > testingStart && c <= testingStart + testingCount)
                 {
@@ -328,14 +379,15 @@ namespace Handwriting
                     double[] features = Extract(bitmap);
                     int clabel = Int32.Parse(label);
                     dgvAnalysisTesting.Rows.Add(bitmap, clabel, null, features);
+                    testingSet++;
                 }
 
                 c++;
             }
 
             lbStatus.Text = String.Format(
-                "Dataset loaded. Click Run training to start the training.",
-                trainingCount, testingCount);
+                "Dataset loaded (training: {0} / testing: {1}). Click Run training to start the training.",
+                trainingSet, testingSet);
 
             btnSampleRunAnalysis.Enabled = true;
         }
@@ -348,20 +400,20 @@ namespace Handwriting
                 double[] input = canvas.GetDigit();
 
                 // Classify the input vector
-                int[] votes;
-                int num = (int)ksvm.Compute(input, out votes);
+                double[] responses;
+                int num = ksvm.Compute(input, out responses);
+
+                if (!ksvm.IsProbabilistic)
+                {
+                    // Normalize responses
+                    double max = responses.Max();
+                    double min = responses.Min();
+
+                    responses = Accord.Math.Tools.Scale(min, max, 0, 1, responses);
+                }
 
                 // Set the actual classification answer 
                 lbCanvasClassification.Text = num.ToString();
-
-
-                // Scale the responses to a [0,1] interval
-                double[] responses = new double[votes.Length];
-                double max = votes.Max();
-                double min = votes.Min();
-
-                for (int i = 0; i < responses.Length; i++)
-                    responses[i] = Tools.Scale(min, max, 0, 1, (double)votes[i]);
 
                 // Create the bar graph to show the relative responses
                 CreateBarGraph(graphClassification, responses);
@@ -475,7 +527,42 @@ namespace Handwriting
             }
         }
 
+        private void canvas_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (cbContinuous.Checked && e.Button == MouseButtons.Left)
+                btnCanvasClassify_Click(this, EventArgs.Empty);
+        }
 
+        private void btnEstimate_Click(object sender, EventArgs e)
+        {
+            // Extract inputs
+            int rows = dgvTrainingSource.Rows.Count;
+            double[][] input = new double[rows][];
+            for (int i = 0; i < rows; i++)
+                input[i] = (double[])dgvTrainingSource.Rows[i].Cells["colTrainingFeatures"].Value;
+
+            DoubleRange range;
+            Gaussian g = Gaussian.Estimate(input, input.Length / 4, out range);
+
+            numSigma.Value = (decimal)g.Sigma;
+        }
+
+        private void btnEstimateC_Click(object sender, EventArgs e)
+        {
+            // Extract inputs
+            int rows = dgvTrainingSource.Rows.Count;
+            double[][] input = new double[rows][];
+            for (int i = 0; i < rows; i++)
+                input[i] = (double[])dgvTrainingSource.Rows[i].Cells["colTrainingFeatures"].Value;
+
+            IKernel kernel;
+            if (rbGaussian.Checked)
+                kernel = new Gaussian((double)numSigma.Value);
+            else
+                kernel = new Polynomial((int)numDegree.Value, (double)numConstant.Value);
+
+            numComplexity.Value = (decimal)SequentialMinimalOptimization.EstimateComplexity(kernel, input);
+        }
 
 
 

@@ -234,7 +234,7 @@ namespace Markov
             {
                 HiddenMarkovModel model = dgvModels.CurrentRow.DataBoundItem as HiddenMarkovModel;
                 dgvProbabilities.DataSource = new ArrayDataView(model.Probabilities);
-                dgvEmissions.DataSource = new ArrayDataView(model.LogEmissions);
+                dgvEmissions.DataSource = new ArrayDataView(model.Emissions);
                 dgvTransitions.DataSource = new ArrayDataView(model.Transitions);
             }
         }
