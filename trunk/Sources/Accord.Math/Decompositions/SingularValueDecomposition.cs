@@ -34,7 +34,7 @@ namespace Accord.Math.Decompositions
     /// </summary>
     /// <remarks>
     ///  <para>
-    ///	  For an m-by-n matrix <c>A</c> with <c>m >= n</c>, the singular value decomposition
+    ///      For an m-by-n matrix <c>A</c> with <c>m >= n</c>, the singular value decomposition
     ///   is an m-by-n orthogonal matrix <c>U</c>, an n-by-n diagonal matrix <c>S</c>, and
     ///   an n-by-n orthogonal matrix <c>V</c> so that <c>A = U * S * V'</c>.
     ///   The singular values, <c>sigma[k] = S[k,k]</c>, are ordered so that
@@ -66,31 +66,31 @@ namespace Accord.Math.Decompositions
 
         private int[] si; // sorting order
 
-		private const Double eps = 2 * Special.DoubleEpsilon;
-        private const Double tiny = Special.DoubleSmall;
+        private const Double eps = 2 * Constants.DoubleEpsilon;
+        private const Double tiny = Constants.DoubleSmall;
 
         /// <summary>
-		///   Returns the condition number <c>max(S) / min(S)</c>.
-		/// </summary>
-		///
+        ///   Returns the condition number <c>max(S) / min(S)</c>.
+        /// </summary>
+        ///
         public Double Condition
         {
             get { return s[0] / s[System.Math.Min(m, n) - 1]; }
         }
 
         /// <summary>
-		///   Returns the singularity threshold.
-		/// </summary>
-		///
+        ///   Returns the singularity threshold.
+        /// </summary>
+        ///
         public Double Threshold
         {
             get { return Double.Epsilon * System.Math.Max(m, n) * s[0]; }
         }
 
         /// <summary>
-		///   Returns the Two norm.
-		/// </summary>
-		///
+        ///   Returns the Two norm.
+        /// </summary>
+        ///
         public Double TwoNorm
         {
             get { return s[0]; }
@@ -112,25 +112,25 @@ namespace Accord.Math.Decompositions
             }
         }
 
-        /// <summary>Returns the one-dimensional array of singular values.</summary>		
+        /// <summary>Returns the one-dimensional array of singular values.</summary>        
         public Double[] Diagonal
         {
             get { return this.s; }
         }
 
-        /// <summary>Returns the block diagonal matrix of singular values.</summary>		
+        /// <summary>Returns the block diagonal matrix of singular values.</summary>        
         public Double[,] DiagonalMatrix
         {
             get { return Matrix.Diagonal(s); }
         }
 
-        /// <summary>Returns the V matrix of Singular Vectors.</summary>		
+        /// <summary>Returns the V matrix of Singular Vectors.</summary>        
         public Double[,] RightSingularVectors
         {
             get { return v; }
         }
 
-        /// <summary>Returns the U matrix of Singular Vectors.</summary>		
+        /// <summary>Returns the U matrix of Singular Vectors.</summary>        
         public Double[,] LeftSingularVectors
         {
             get { return u; }

@@ -31,16 +31,16 @@ namespace Accord.Math.Decompositions
     using System.Threading.Tasks;
 
     /// <summary>
-    ///		Cholesky Decomposition of a symmetric, positive definite matrix.
-    ///	</summary>
+    ///        Cholesky Decomposition of a symmetric, positive definite matrix.
+    ///    </summary>
     /// <remarks>
     ///   <para>
-    ///		For a symmetric, positive definite matrix <c>A</c>, the Cholesky decomposition is a
-    ///		lower triangular matrix <c>L</c> so that <c>A = L * L'</c>. The presented algorithm
-    ///		only checks the upper triangular part of the matrix given as parameter and assumes
-    ///		it is symmetric. If the matrix is not positive definite, the constructor returns a 
-    ///		partial decomposition and sets two internal variables that can be queried using the
-    ///		<see cref="PositiveDefinite"/> properties.</para>
+    ///        For a symmetric, positive definite matrix <c>A</c>, the Cholesky decomposition is a
+    ///        lower triangular matrix <c>L</c> so that <c>A = L * L'</c>. The presented algorithm
+    ///        only checks the upper triangular part of the matrix given as parameter and assumes
+    ///        it is symmetric. If the matrix is not positive definite, the constructor returns a 
+    ///        partial decomposition and sets two internal variables that can be queried using the
+    ///        <see cref="PositiveDefinite"/> properties.</para>
     ///   <para>
     ///     Any square matrix A with non-zero pivots can be written as the product of a
     ///     lower triangular matrix L and an upper triangular matrix U; this is called
@@ -51,8 +51,8 @@ namespace Accord.Math.Decompositions
     ///   <para>
     ///     When it is applicable, the Cholesky decomposition is twice as efficient
     ///     as the LU decomposition.</para>
-    ///	</remarks>
-    ///	
+    ///    </remarks>
+    ///    
     [Serializable]
     public sealed class JaggedCholeskyDecomposition : ICloneable, ISolverArrayDecomposition<double>
     {
@@ -64,7 +64,7 @@ namespace Accord.Math.Decompositions
         private bool positiveDefinite;
         private bool undefined;
         private bool robust;
-		private bool destroyed;
+        private bool destroyed;
 
         // cache for lazy evaluation
         private double[][] leftTriangularFactor;
@@ -119,7 +119,7 @@ namespace Accord.Math.Decompositions
         /// </summary>
         /// 
         /// <value>
-        /// 	<c>true</c> if the factorization is not defined; otherwise, <c>false</c>.
+        ///     <c>true</c> if the factorization is not defined; otherwise, <c>false</c>.
         /// </value>
         /// 
         public bool IsNotDefined
@@ -138,9 +138,9 @@ namespace Accord.Math.Decompositions
             {
                 if (leftTriangularFactor == null)
                 {
-					if (destroyed)
-					    throw new InvalidOperationException("The decomposition has been destroyed.");
-						
+                    if (destroyed)
+                        throw new InvalidOperationException("The decomposition has been destroyed.");
+                        
                     var left = new double[L.Length][];
                     for (int i = 0; i < left.Length; i++)
                     {
@@ -159,7 +159,7 @@ namespace Accord.Math.Decompositions
         /// <summary>
         ///   Returns the block diagonal matrix of diagonal
         ///   elements in a LDLt decomposition.
-        /// </summary>		
+        /// </summary>        
         ///   
         public double[][] DiagonalMatrix
         {
@@ -167,9 +167,9 @@ namespace Accord.Math.Decompositions
             {
                 if (diagonalMatrix == null)
                 {
-					if (destroyed)
-					    throw new InvalidOperationException("The decomposition has been destroyed.");
-						
+                    if (destroyed)
+                        throw new InvalidOperationException("The decomposition has been destroyed.");
+                        
                     diagonalMatrix = new double[D.Length][];
                     for (int i = 0; i < diagonalMatrix.Length; i++)
                     {
@@ -185,7 +185,7 @@ namespace Accord.Math.Decompositions
         /// <summary>
         ///   Returns the one-dimensional array of diagonal 
         ///   elements in a LDLt decomposition.
-        /// </summary>		
+        /// </summary>        
         /// 
         public double[] Diagonal
         {
@@ -203,9 +203,9 @@ namespace Accord.Math.Decompositions
             {
                 if (!determinant.HasValue)
                 {
-					if (destroyed)
-					    throw new InvalidOperationException("The decomposition has been destroyed.");
-						
+                    if (destroyed)
+                        throw new InvalidOperationException("The decomposition has been destroyed.");
+                        
                     double detL = 1, detD = 1;
                     for (int i = 0; i < L.Length; i++)
                         detL *= L[i][i];
@@ -234,9 +234,9 @@ namespace Accord.Math.Decompositions
             {
                 if (!lndeterminant.HasValue)
                 {
-					if (destroyed)
-					    throw new InvalidOperationException("The decomposition has been destroyed.");
-						
+                    if (destroyed)
+                        throw new InvalidOperationException("The decomposition has been destroyed.");
+                        
                     double detL = 0, detD = 0;
                     for (int i = 0; i < L.Length; i++)
                         detL += Math.Log((double)L[i][i]);
@@ -265,9 +265,9 @@ namespace Accord.Math.Decompositions
             {
                 if (!nonsingular.HasValue)
                 {
-					if (destroyed)
-					    throw new InvalidOperationException("The decomposition has been destroyed.");
-						
+                    if (destroyed)
+                        throw new InvalidOperationException("The decomposition has been destroyed.");
+                        
                     bool nonSingular = true;
                     for (int i = 0; i < dimension && nonSingular; i++)
                         if (L[i][i] == 0 || D[i] == 0) nonSingular = false;
@@ -385,8 +385,8 @@ namespace Accord.Math.Decompositions
             if (!robust && !positiveDefinite)
                 throw new NonPositiveDefiniteMatrixException("Decomposed matrix is not positive definite.");
 
-			if (destroyed)
-			    throw new InvalidOperationException("The decomposition has been destroyed.");
+            if (destroyed)
+                throw new InvalidOperationException("The decomposition has been destroyed.");
 
             int count = value[0].Length;
             var B = inPlace ? value : value.MemberwiseClone();
@@ -460,9 +460,9 @@ namespace Accord.Math.Decompositions
 
             if (!robust && !positiveDefinite)
                 throw new NonPositiveDefiniteMatrixException("Decomposed matrix is not positive definite.");
-				
-			if (destroyed)
-			    throw new InvalidOperationException("The decomposition has been destroyed.");
+                
+            if (destroyed)
+                throw new InvalidOperationException("The decomposition has been destroyed.");
 
             var B = inPlace ? value : (double[])value.Clone();
 
@@ -487,8 +487,8 @@ namespace Accord.Math.Decompositions
                     B[k] -= B[i] * L[i][k];
                 B[k] /= L[k][k];
             }
-			
-			return B;
+            
+            return B;
         }
 
         /// <summary>
@@ -500,9 +500,9 @@ namespace Accord.Math.Decompositions
             if (!robust && !positiveDefinite)
                 throw new NonPositiveDefiniteMatrixException("Matrix is not positive definite.");
 
-			if (destroyed)
-			    throw new InvalidOperationException("The decomposition has been destroyed.");
-				
+            if (destroyed)
+                throw new InvalidOperationException("The decomposition has been destroyed.");
+                
             // References:
             // http://books.google.com/books?id=myzIPBwyBbcC&pg=PA119
 
@@ -562,36 +562,36 @@ namespace Accord.Math.Decompositions
         /// 
         public double[] InverseDiagonal(bool destroy = false)
         {
-        	double[] diagonal = new double[L.Length];
-			InverseDiagonal(diagonal, destroy);
-			return diagonal;
-		}
-		
+            double[] diagonal = new double[L.Length];
+            InverseDiagonal(diagonal, destroy);
+            return diagonal;
+        }
+        
         /// <summary>
         ///   Computes the diagonal of the inverse of the decomposed matrix.
         /// </summary>
-		///
-		/// <param name="destroy">True to conserve memory by reusing the
-		///    same space used to hold the decomposition, thus destroying
-		///    it in the proccess. Pass false otherwise.</param>
-		/// <param name="result">The array to hold the result of the 
-		///    computation. Should be of same length as the the diagonal
-		///    of the original matrix.</param>
+        ///
+        /// <param name="destroy">True to conserve memory by reusing the
+        ///    same space used to hold the decomposition, thus destroying
+        ///    it in the proccess. Pass false otherwise.</param>
+        /// <param name="result">The array to hold the result of the 
+        ///    computation. Should be of same length as the the diagonal
+        ///    of the original matrix.</param>
         /// 
         public void InverseDiagonal(double[] result, bool destroy = false)
         {
             if (!robust && !positiveDefinite)
                 throw new NonPositiveDefiniteMatrixException("Matrix is not positive definite.");
 
-			if (destroyed)
-			    throw new InvalidOperationException("The decomposition has been destroyed.");
+            if (destroyed)
+                throw new InvalidOperationException("The decomposition has been destroyed.");
 
             double[][] S;
 
-			if (destroy)
-			{
-				S = L; destroyed = true;
-			}
+            if (destroy)
+            {
+                S = L; destroyed = true;
+            }
             else
             {
                 S = new double[L.Length][];
@@ -622,47 +622,47 @@ namespace Accord.Math.Decompositions
             if (robust)
             {
                 for (int i = 0; i < S.Length; i++)
-				{
-					double sum = 0;
+                {
+                    double sum = 0;
                     for (int j = i; j < S[i].Length; j++)
                         sum += S[i][j] * S[i][j] / D[j];
-					result[i] = sum;
-				}
+                    result[i] = sum;
+                }
             }
             else
             {
                 for (int i = 0; i < S.Length; i++)
-				{
-					double sum = 0;
+                {
+                    double sum = 0;
                     for (int j = i; j < S[i].Length; j++)
                         sum += S[i][j] * S[i][j];
-					result[i] = sum;
-				}
+                    result[i] = sum;
+                }
             }
         }
 
-		/// <summary>
+        /// <summary>
         ///   Computes the trace of the inverse of the decomposed matrix.
         /// </summary>
-		///
-		/// <param name="destroy">True to conserve memory by reusing the
-		///    same space used to hold the decomposition, thus destroying
-		///    it in the proccess. Pass false otherwise.</param>
+        ///
+        /// <param name="destroy">True to conserve memory by reusing the
+        ///    same space used to hold the decomposition, thus destroying
+        ///    it in the proccess. Pass false otherwise.</param>
         /// 
         public double InverseTrace(bool destroy = false)
         {
             if (!robust && !positiveDefinite)
                 throw new NonPositiveDefiniteMatrixException("Matrix is not positive definite.");
 
-			if (destroyed)
-			    throw new InvalidOperationException("The decomposition has been destroyed.");
-				
+            if (destroyed)
+                throw new InvalidOperationException("The decomposition has been destroyed.");
+                
             double[][] S;
 
-			if (destroy)
-			{
-				S = L; destroyed = true;
-			}
+            if (destroy)
+            {
+                S = L; destroyed = true;
+            }
             else
             {
                 S = new double[L.Length][];
@@ -690,8 +690,8 @@ namespace Accord.Math.Decompositions
 
             // Compute the 2-norm squared of the rows
             // of the upper (right) triangular matrix S.
-			double trace = 0;
-			
+            double trace = 0;
+            
             if (robust)
             {
                 for (int i = 0; i < S.Length; i++)
@@ -704,8 +704,8 @@ namespace Accord.Math.Decompositions
                     for (int j = i; j < S[i].Length; j++)
                         trace += S[i][j] * S[i][j];
             }
-			
-			return trace;
+            
+            return trace;
         }
 
         /// <summary>
@@ -722,8 +722,8 @@ namespace Accord.Math.Decompositions
             chol.positiveDefinite = true;
             chol.robust = false;
             chol.D = new double[chol.dimension];
-			for (int i = 0; i < chol.D.Length; i++)
-			    chol.D[i] = 1;
+            for (int i = 0; i < chol.D.Length; i++)
+                chol.D[i] = 1;
 
             return chol;
         }
@@ -747,7 +747,7 @@ namespace Accord.Math.Decompositions
             var clone = new JaggedCholeskyDecomposition();
             clone.L = L.MemberwiseClone();
             clone.D = (double[])D.Clone();
-			clone.destroyed = destroyed;
+            clone.destroyed = destroyed;
             clone.dimension = dimension;
             clone.undefined = undefined;
             clone.robust = robust;

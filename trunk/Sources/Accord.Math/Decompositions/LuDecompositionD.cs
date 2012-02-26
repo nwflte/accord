@@ -67,7 +67,7 @@ namespace Accord.Math.Decompositions
 
         /// <summary>
         ///   Constructs a new LU decomposition.
-        /// </summary>	
+        /// </summary>    
         /// <param name="value">The matrix A to be decomposed.</param>
         /// 
         public LuDecompositionD(decimal[,] value)
@@ -77,7 +77,7 @@ namespace Accord.Math.Decompositions
 
         /// <summary>
         ///   Constructs a new LU decomposition.
-        /// </summary>	
+        /// </summary>    
         /// <param name="value">The matrix A to be decomposed.</param>
         /// <param name="transpose">True if the decomposition should be performed on
         /// the transpose of A rather than A itself, false otherwise. Default is false.</param>
@@ -89,7 +89,7 @@ namespace Accord.Math.Decompositions
 
         /// <summary>
         ///   Constructs a new LU decomposition.
-        /// </summary>	
+        /// </summary>    
         /// <param name="value">The matrix A to be decomposed.</param>
         /// <param name="transpose">True if the decomposition should be performed on
         /// the transpose of A rather than A itself, false otherwise. Default is false.</param>
