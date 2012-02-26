@@ -25,35 +25,38 @@ namespace Accord.Statistics.Testing
     using System;
     using Accord.Statistics.Distributions.Univariate;
 
+
     /// <summary>
     ///   Test Hypothesis for the T-Test.
     /// </summary>
     /// 
-    public enum TTestHypotesis
+    public enum TwoSampleTTestHypotesis
     {
         /// <summary>
-        ///   Tests if the sample's mean is significantly
-        ///   different than the hypothesized mean value.
+        ///   Test if the first sample's mean if just different
+        ///   than the second sample's mean, without making any
+        ///   assumptions if it is greater or smaller.
         /// </summary>
         /// 
-        MeanIsDifferentThanHypothesis,
+        FirstSampleMeanIsDifferentThanSecondSampleMean,
 
         /// <summary>
-        ///   Tests if the sample's mean is significantly
-        ///   greater than the hypothesized mean value.
+        ///   Test if the first sample's mean is "greater" than
+        ///   the second sample's mean.
         /// </summary>
         /// 
-        MeanIsGreaterThanHypothesis,
+        FirstSampleMeanIsGreaterThanSecondSampleMean,
 
         /// <summary>
-        ///   Tests if the sample's mean is significantly
-        ///   smaller than the hypothesized mean value.
+        ///   Test if the second sample's mean is "smaller"
+        ///   than the first sample's mean.
         /// </summary>
-        MeanIsSmallerThanHypothesis,
+        /// 
+        FirstSampleMeanIsSmallerThanSecondSampleMean,
     }
 
     /// <summary>
-    ///   One-sample Student's T test.
+    ///   Two-sample Student's T test.
     /// </summary>
     /// 
     /// <remarks>
@@ -77,50 +80,99 @@ namespace Accord.Statistics.Testing
     /// </remarks>
     /// 
     [Serializable]
-    public class TTest : HypothesisTest, IHypothesisTest<TDistribution>
+    public class TwoSampleTTest : HypothesisTest, IHypothesisTest<TDistribution>
     {
+
+        /// <summary>
+        ///   Gets whether the test assumes equal sample variance.
+        /// </summary>
+        /// 
+        public bool AssumeEqualVariance { get; private set; }
+
+        /// <summary>
+        ///   Gets whether the test assumes equal sample size.
+        /// </summary>
+        /// 
+        public bool EqualSampleSize { get; private set; }
 
         /// <summary>
         ///   Gets the probability distribution associated
         ///   with the test statistic.
         /// </summary>
+        /// 
         public TDistribution StatisticDistribution { get; private set; }
 
         /// <summary>
-        ///   Tests the null hypothesis that the population mean is equal to a specified value.
+        ///   Tests whether the means of two samples are different.
         /// </summary>
         /// 
-        /// <param name="sample">The data samples from which the test will be performed.</param>
-        /// <param name="hypothesizedMean">The constant to be compared with the samples.</param>
-        /// <param name="type">The type of hypothesis to test.</param>
-        /// 
-        public TTest(double[] sample, double hypothesizedMean, TTestHypotesis type)
+        public TwoSampleTTest(double[] sample1, double[] sample2, bool assumeEqualVariances, TwoSampleTTestHypotesis type)
         {
-            int n = sample.Length;
-            double x = Accord.Statistics.Tools.Mean(sample);
-            double s = Accord.Statistics.Tools.StandardDeviation(sample, x);
+            // References: http://en.wikipedia.org/wiki/Student's_t-test#Worked_examples
 
-            StatisticDistribution = new TDistribution(n - 1);
-            Statistic = (x - hypothesizedMean) / (s / Math.Sqrt(n));
+            AssumeEqualVariance = assumeEqualVariances;
+            EqualSampleSize = sample1.Length == sample2.Length;
+
+            double x1 = Tools.Mean(sample1);
+            double x2 = Tools.Mean(sample2);
+
+            double s1 = Tools.Variance(sample1);
+            double s2 = Tools.Variance(sample2);
+
+            int n1 = sample1.Length;
+            int n2 = sample2.Length;
+
+            int df;
+
+            if (AssumeEqualVariance)
+            {
+                if (EqualSampleSize)
+                {
+                    // Samples have the same size and assume same variance.
+                    double Sp = Math.Sqrt(0.5 * (s1 + s2));
+                    Statistic = (x1 - x2) / (Sp * Math.Sqrt(2.0 / n1));
+
+                    df = 2 * n1 - 2;
+                }
+                else
+                {
+                    // Samples have unequal sizes, but assume same variance.
+                    double Sp = Statistics.Tools.PooledVariance(sample1, sample2);
+                    Statistic = (x1 - x2) / (Sp * Math.Sqrt(1.0 / n1 + 1.0 / n2));
+
+                    df = n1 + n2 - 2;
+                }
+            }
+            else
+            {
+                // Unequal sample sizes, assume nothing about variance.
+                double Sd = Math.Sqrt(s1 / n1 + s2 / n2);
+                Statistic = (x1 - x2) / Sd;
+
+                double r1 = s1 / n1, r2 = s2 / n2;
+                df = (int)(((r1 + r2) * (r1 + r2)) / ((r1 * r1) / (n1 - 1) + (r2 * r2) / (n2 - 1)));
+            }
 
 
-            if (type == TTestHypotesis.MeanIsDifferentThanHypothesis)
+            StatisticDistribution = new TDistribution(df);
+
+            if (type == TwoSampleTTestHypotesis.FirstSampleMeanIsDifferentThanSecondSampleMean)
             {
                 PValue = 2.0 * StatisticDistribution.ComplementaryDistributionFunction(Statistic);
                 Hypothesis = Testing.Hypothesis.TwoTail;
             }
-            else if (type == TTestHypotesis.MeanIsGreaterThanHypothesis)
+            else if (type == TwoSampleTTestHypotesis.FirstSampleMeanIsGreaterThanSecondSampleMean)
             {
                 PValue = StatisticDistribution.ComplementaryDistributionFunction(Statistic);
                 Hypothesis = Testing.Hypothesis.OneUpper;
             }
-            else if (type == TTestHypotesis.MeanIsSmallerThanHypothesis)
+            else if (type == TwoSampleTTestHypotesis.FirstSampleMeanIsSmallerThanSecondSampleMean)
             {
                 PValue = StatisticDistribution.DistributionFunction(Statistic);
                 Hypothesis = Testing.Hypothesis.OneLower;
             }
         }
 
-    }
 
+    }
 }

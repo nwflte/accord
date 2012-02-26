@@ -50,7 +50,7 @@ namespace Accord.Statistics.Testing
     /// <seealso cref="TwoWayAnova"/>
     /// 
     [Serializable]
-    public class FTest : HypothesisTest
+    public class FTest : HypothesisTest, IHypothesisTest<FDistribution>
     {
         /// <summary>
         ///   Gets the distribution associated
