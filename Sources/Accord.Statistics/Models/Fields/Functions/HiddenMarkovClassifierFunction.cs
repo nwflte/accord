@@ -153,7 +153,7 @@ namespace Accord.Statistics.Models.Fields.Functions
                 {
                     for (int j = 0; j < model.Symbols; j++)
                     {
-                        l.Add(model.LogEmissions[i, j]);
+                        l.Add(model.Emissions[i, j]);
                         f.Add(new EmissionFeature(this, c, i, j));
                         parameters++;
                     }

@@ -24,10 +24,7 @@ namespace Accord.Statistics.Models.Fields.Functions
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
     using Accord.Statistics.Models.Fields.Features;
-    using System.Diagnostics;
 
     /// <summary>
     ///   Factor Potential (Clique Potential) function.

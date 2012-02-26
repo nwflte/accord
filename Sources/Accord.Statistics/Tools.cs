@@ -176,17 +176,109 @@ namespace Accord.Statistics
         /// 
         public static double Median(double[] values, bool alreadySorted)
         {
-            double[] data = new double[values.Length];
-            values.CopyTo(data, 0); // Creates a copy of the given values,
+            return Median(values, 0, values.Length, alreadySorted);
+        }
 
-            if (!alreadySorted) // So we can sort it without modifying the original array.
-                Array.Sort(data);
+        /// <summary>
+        ///   Computes the Median of the given values.
+        /// </summary>
+        /// 
+        /// <param name="values">An integer array containing the vector members.</param>
+        /// <param name="alreadySorted">A boolean parameter informing if the given values have already been sorted.</param>
+        /// <param name="length">The length of the subarray, starting at <paramref name="startIndex"/>.</param>
+        /// <param name="startIndex">The starting index of the array.</param>
+        /// 
+        /// <returns>The median of the given data.</returns>
+        /// 
+        public static double Median(double[] values, int startIndex, int length, bool alreadySorted)
+        {
+            if (!alreadySorted)
+            {
+                values = (double[])values.Clone();
+                Array.Sort(values);
+            }
 
-            int N = data.Length;
+            int half = startIndex + length / 2;
+
+            if (length % 2 == 0)
+                return (values[half - 1] + values[half]) * 0.5; // N is even 
+            else return values[half];                           // N is odd
+        }
+
+        /// <summary>
+        ///   Computes the Quartiles of the given values.
+        /// </summary>
+        /// 
+        /// <param name="values">An integer array containing the vector members.</param>
+        /// <param name="alreadySorted">A boolean parameter informing if the given values have already been sorted.</param>
+        /// <param name="range">The inter-quartile range for the values.</param>
+        /// <returns>The second quartile, the median of the given data.</returns>
+        /// 
+        public static double Quartiles(double[] values, out DoubleRange range, bool alreadySorted)
+        {
+            double q1, q3;
+            double median = Quartiles(values, out q1, out q3, alreadySorted);
+            range = new DoubleRange(q1, q3);
+            return median;
+        }
+
+        /// <summary>
+        ///   Computes the Quartiles of the given values.
+        /// </summary>
+        /// 
+        /// <param name="values">An integer array containing the vector members.</param>
+        /// <param name="q1">The first quartile.</param>
+        /// <param name="q3">The third quartile.</param>
+        /// <param name="alreadySorted">A boolean parameter informing if the given values have already been sorted.</param>
+        /// <returns>The second quartile, the median of the given data.</returns>
+        /// 
+        public static double Quartiles(double[] values, out double q1, out double q3, bool alreadySorted)
+        {
+            if (!alreadySorted)
+            {
+                values = (double[])values.Clone();
+                Array.Sort(values);
+            }
+
+            int N = values.Length;
+            int half = N / 2;
+
+            double median;
 
             if (N % 2 == 0)
-                return (data[N / 2] + data[(N / 2) - 1]) * 0.5; // N is even 
-            else return data[N / 2];                            // N is odd
+            {
+                // N is even 
+                median = (values[half - 1] + values[half]) * 0.5;
+
+                // Separate data in half. Do not include data[half]
+                // and data[half - 1] in the halves. 
+
+                int lowerStart = 0;
+                int lowerLength = half - 1;
+                int upperStart = half + 1;
+                int upperLength = N - upperStart + 1;
+
+                q1 = Median(values, lowerStart, lowerLength, alreadySorted: true);
+                q3 = Median(values, upperStart, upperLength, alreadySorted: true);
+            }
+            else
+            {
+                // N is odd
+                median = values[N / 2];
+
+                // Separate data in half. Do not include data[half]
+                // in the halves. 
+
+                int lowerStart = 0;
+                int lowerLength = half;
+                int upperStart = half + 1;
+                int upperLength = N - upperStart + 1;
+
+                q1 = Median(values, lowerStart, lowerLength, alreadySorted: true);
+                q3 = Median(values, upperStart, upperLength, alreadySorted: true);
+            }
+
+            return median;
         }
 
         /// <summary>

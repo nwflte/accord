@@ -117,7 +117,7 @@ namespace Accord.Statistics.Models.Markov.Learning
         /// 
         protected override void UpdateEmissions()
         {
-            var B = model.LogEmissions;
+            var B = model.Emissions;
             int states = model.States;
             int symbols = model.Symbols;
 
@@ -160,7 +160,7 @@ namespace Accord.Statistics.Models.Markov.Learning
         {
             int states = model.States;
             var logA = model.Transitions;
-            var logB = model.LogEmissions;
+            var logB = model.Emissions;
 
             var sequence = discreteObservations[index];
             int T = sequence.Length;
