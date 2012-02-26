@@ -93,10 +93,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Events\AudioOutputErrorEventArgs.cs" />
+    <Compile Include="Events\PlayFrameEventArgs.cs" />
+    <Compile Include="Events\NewFrameRequestedEventArgs.cs" />
+    <Compile Include="Events\NewFrameEventArgs.cs" />
+    <Compile Include="Exceptions\UnsupportedSampleFormatException.cs" />
     <Compile Include="Filters\Base\BaseFilter.cs" />
-    <Compile Include="Exceptions.cs" />
-    <Compile Include="Extensions.cs" />
-    <Compile Include="AudioEvents.cs">
+    <Compile Include="Exceptions\InvalidSignalPropertiesException.cs" />
+    <Compile Include="Events\AudioSourceErrorEventArgs.cs">
     </Compile>
     <Compile Include="ComplexFilters\Base\BaseComplexFilter.cs" />
     <Compile Include="ComplexFilters\CombFilter.cs" />
@@ -109,6 +113,7 @@
     <Compile Include="Filters\LowPassFilter.cs" />
     <Compile Include="Filters\WaveRectifier.cs" />
     <Compile Include="Generators\ImpulseGenerator.cs" />
+    <Compile Include="Properties\GlobalSuppressions.cs" />
     <Compile Include="IAudioOutput.cs" />
     <Compile Include="Metronome.cs" />
     <Compile Include="SampleConverter.cs">

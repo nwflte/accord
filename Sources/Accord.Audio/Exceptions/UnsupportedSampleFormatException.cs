@@ -26,66 +26,6 @@ namespace Accord.Audio
     using System.Runtime.Serialization;
 
     /// <summary>
-    ///   Invalid signal properties exception.
-    /// </summary>
-    /// 
-    /// <remarks>
-    ///   <para>
-    ///   The invalid signal properties exception is thrown in the case when
-    ///   user provides a signal which do not have the properties expected by
-    ///   a particular signal processing routine.</para>
-    /// </remarks>
-    /// 
-    [Serializable]
-    public class InvalidSignalPropertiesException : ArgumentException
-    {
-        /// <summary>
-        ///   Initializes a new instance of the <see cref="InvalidSignalPropertiesException"/> class.
-        /// </summary>
-        public InvalidSignalPropertiesException() { }
-
-        /// <summary>
-        ///   Initializes a new instance of the <see cref="InvalidSignalPropertiesException"/> class.
-        /// </summary>
-        /// 
-        /// <param name="message">Message providing some additional information.</param>
-        /// 
-        public InvalidSignalPropertiesException(string message) :
-            base(message) { }
-
-        /// <summary>
-        ///   Initializes a new instance of the <see cref="InvalidSignalPropertiesException"/> class.
-        /// </summary>
-        /// 
-        /// <param name="message">Message providing some additional information.</param>
-        /// <param name="paramName">Name of the invalid parameter.</param>
-        /// 
-        public InvalidSignalPropertiesException(string message, string paramName) :
-            base(message, paramName) { }
-
-        /// <summary>
-        ///   Initializes a new instance of the <see cref="InvalidSignalPropertiesException"/> class.
-        /// </summary>
-        /// 
-        /// <param name="message">Message providing some additional information.</param>
-        /// <param name="innerException">The exception that is the cause of the current exception.</param>
-        /// 
-        public InvalidSignalPropertiesException(string message, Exception innerException) :
-            base(message, innerException) { }
-
-        /// <summary>
-        ///   Initializes a new instance of the <see cref="InvalidSignalPropertiesException"/> class.
-        /// </summary>
-        /// 
-        /// <param name="info">The object that holds the serialized object data.</param>
-        /// <param name="context">The contextual information about the source or destination.</param>
-        /// 
-        protected InvalidSignalPropertiesException(SerializationInfo info, StreamingContext context)
-            : base(info, context) { }
-
-    }
-
-    /// <summary>
     ///   Unsupported sample format exception.
     /// </summary>
     /// 

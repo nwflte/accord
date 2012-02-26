@@ -22,27 +22,27 @@
 
 namespace Accord.Audio
 {
-	using System;
-	using Accord;
-	
-	/// <summary>
-	///   Audio Output Device Interface
-	/// </summary>
+    using System;
+    using Accord;
+
+    /// <summary>
+    ///   Audio Output Device Interface
+    /// </summary>
     /// 
-	public interface IAudioOutput
-	{
+    public interface IAudioOutput
+    {
 
         /// <summary>
         ///   Starts playing the buffer
         /// </summary>
         /// 
-		void Play();
+        void Play();
 
         /// <summary>
         ///   Stops playing the buffer
         /// </summary>
         /// 
-		void Stop();
+        void Stop();
 
         /// <summary>
         ///   Audio output.
@@ -58,10 +58,16 @@ namespace Accord.Audio
         string Output { get; set; }
 
         /// <summary>
-        ///   Indicates a frame has started execution.
+        ///   Indicates a block of frames have started execution.
         /// </summary>
         /// 
-		event EventHandler<PlayFrameEventArgs> FramePlayingStarted;
+        event EventHandler<PlayFrameEventArgs> FramePlayingStarted;
+
+        /// <summary>
+        ///   Indicates all frames have been played and the audio finished.
+        /// </summary>
+        /// 
+        event EventHandler Stopped;
 
         /// <summary>
         ///   Indicates the audio output is requesting a new sample.
@@ -69,5 +75,42 @@ namespace Accord.Audio
         /// 
         event EventHandler<NewFrameRequestedEventArgs> NewFrameRequested;
 
-	}
+
+        /// <summary>
+        ///   Gets a value indicating whether this instance is playing audio.
+        /// </summary>
+        /// <value>
+        /// 	<c>true</c> if this instance is running; otherwise, <c>false</c>.
+        /// </value>
+        /// 
+        bool IsRunning { get; }
+
+        /// <summary>
+        ///   Signals audio output to stop its work.
+        /// </summary>
+        /// 
+        /// <remarks>Signals audio output to stop its background thread, stop to
+        /// request new frames and free resources.</remarks>
+        /// 
+        void SignalToStop();
+
+        /// <summary>
+        ///   Wait until audio output has stopped.
+        /// </summary>
+        /// 
+        /// <remarks>Waits for audio output stopping after it was signalled to stop using
+        /// <see cref="SignalToStop"/> method.</remarks>
+        /// 
+        void WaitForStop();
+
+        /// <summary>
+        ///   Audio output error event.
+        /// </summary>
+        /// 
+        /// <remarks>This event is used to notify clients about any type of errors occurred in
+        /// audio output object, for example internal exceptions.</remarks>
+        /// 
+        event EventHandler<AudioOutputErrorEventArgs> AudioOutputError;
+
+    }
 }

@@ -27,6 +27,7 @@ namespace Accord.DirectSound
     using Accord.Audio;
     using SlimDX.DirectSound;
     using SlimDX.Multimedia;
+    using System.Collections.Generic;
 
 
     /// <summary>
@@ -43,83 +44,26 @@ namespace Accord.DirectSound
         private int channels;
 
         private Thread thread;
-        private bool stop;
 
         private NotificationPosition[] notifications;
+        private WaitHandle[] waitHandles;
+
+        private bool isPlaying;
+        private bool stop;
+
+        int firstHalfBufferIndex;
+        int secondHalfBufferIndex;
 
         /// <summary>
-        ///   Constructs a new Audio Output Device.
+        ///   Gets a value indicating whether this instance is playing audio.
         /// </summary>
-        /// 
-        /// <param name="owner">The owner window handle.</param>
-        /// <param name="samplingRate">The sampling rate of the device.</param>
-        /// <param name="channels">The number of channels of the device.</param>
-        /// 
-        public AudioOutputDevice(IntPtr owner, int samplingRate, int channels)
-            : this(Guid.Empty, owner, samplingRate, channels)
+        /// <value>
+        /// 	<c>true</c> if this instance is running; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsRunning
         {
+            get { return isPlaying; }
         }
-
-        /// <summary>
-        ///   Constructs a new Audio Output Device.
-        /// </summary>
-        /// 
-        /// <param name="device">Global identifier of the audio output device.</param>
-        /// <param name="owner">The owner window handle.</param>
-        /// <param name="samplingRate">The sampling rate of the device.</param>
-        /// <param name="channels">The number of channels of the device.</param>
-        /// 
-        public AudioOutputDevice(Guid device, IntPtr owner, int samplingRate, int channels)
-        {
-            this.owner = owner;
-            this.samplingRate = samplingRate;
-            this.channels = channels;
-            this.device = device;
-
-            DirectSound ds = new DirectSound(device);
-            ds.SetCooperativeLevel(owner, CooperativeLevel.Priority);
-
-
-            // Set the output format
-            WaveFormat waveFormat = new WaveFormat();
-            waveFormat.FormatTag = WaveFormatTag.IeeeFloat;
-            waveFormat.BitsPerSample = 32;
-            waveFormat.BlockAlignment = (short)(waveFormat.BitsPerSample * channels / 8);
-            waveFormat.Channels = (short)channels;
-            waveFormat.SamplesPerSecond = samplingRate;
-            waveFormat.AverageBytesPerSecond =
-                waveFormat.SamplesPerSecond *
-                waveFormat.BlockAlignment;
-
-            bufferSize = 8 * waveFormat.AverageBytesPerSecond;
-
-
-            // Setup the secondary buffer
-            SoundBufferDescription desc2 = new SoundBufferDescription();
-            desc2.Flags =
-                BufferFlags.GlobalFocus |
-                BufferFlags.ControlPositionNotify |
-                BufferFlags.GetCurrentPosition2;
-            desc2.SizeInBytes = bufferSize;
-            desc2.Format = waveFormat;
-
-            buffer = new SecondarySoundBuffer(ds, desc2);
-
-
-            notifications = new NotificationPosition[2];
-
-            // Set notification for second half of buffer
-            notifications[0].Offset = bufferSize / 2 + 1;
-            notifications[0].Event = new AutoResetEvent(false);
-
-            // Set notification for first half of buffer
-            notifications[1].Offset = bufferSize - 1;
-            notifications[1].Event = new AutoResetEvent(false);
-
-            buffer.SetNotificationPositions(notifications);
-        }
-
-
 
         /// <summary>
         ///   Gets the sampling rate for the current output device.
@@ -167,16 +111,118 @@ namespace Accord.DirectSound
         public event EventHandler<PlayFrameEventArgs> FramePlayingStarted;
 
         /// <summary>
-        ///   Raised when the device stops playing.
+        ///   Raised when a frame starts playing.
+        /// </summary>
+        /// 
+        public event EventHandler<NewFrameRequestedEventArgs> NewFrameRequested;
+
+        /// <summary>
+        ///   Indicates all frames have been played and the audio finished.
         /// </summary>
         /// 
         public event EventHandler Stopped;
 
         /// <summary>
-        ///   Raised when a frame starts playing.
+        ///   Audio output error event.
         /// </summary>
         /// 
-        public event EventHandler<NewFrameRequestedEventArgs> NewFrameRequested;
+        /// <remarks>This event is used to notify clients about any type of errors occurred in
+        /// audio output object, for example internal exceptions.</remarks>
+        /// 
+        public event EventHandler<AudioOutputErrorEventArgs> AudioOutputError;
+
+        /// <summary>
+        ///   Constructs a new Audio Output Device.
+        /// </summary>
+        /// 
+        /// <param name="owner">The owner window handle.</param>
+        /// <param name="samplingRate">The sampling rate of the device.</param>
+        /// <param name="channels">The number of channels of the device.</param>
+        /// 
+        public AudioOutputDevice(IntPtr owner, int samplingRate, int channels)
+            : this(Guid.Empty, owner, samplingRate, channels) { }
+
+        /// <summary>
+        ///   Constructs a new Audio Output Device.
+        /// </summary>
+        /// 
+        /// <param name="device">Global identifier of the audio output device.</param>
+        /// <param name="owner">The owner window handle.</param>
+        /// <param name="samplingRate">The sampling rate of the device.</param>
+        /// <param name="channels">The number of channels of the device.</param>
+        /// 
+        public AudioOutputDevice(Guid device, IntPtr owner, int samplingRate, int channels)
+        {
+            this.owner = owner;
+            this.samplingRate = samplingRate;
+            this.channels = channels;
+            this.device = device;
+
+            DirectSound ds = new DirectSound(device);
+            ds.SetCooperativeLevel(owner, CooperativeLevel.Priority);
+
+
+            // Set the output format
+            WaveFormat waveFormat = new WaveFormat();
+            waveFormat.FormatTag = WaveFormatTag.IeeeFloat;
+            waveFormat.BitsPerSample = 32;
+            waveFormat.BlockAlignment = (short)(waveFormat.BitsPerSample * channels / 8);
+            waveFormat.Channels = (short)channels;
+            waveFormat.SamplesPerSecond = samplingRate;
+            waveFormat.AverageBytesPerSecond = waveFormat.SamplesPerSecond * waveFormat.BlockAlignment;
+
+            bufferSize = 8 * waveFormat.AverageBytesPerSecond;
+
+
+            // Setup the secondary buffer
+            SoundBufferDescription desc2 = new SoundBufferDescription();
+            desc2.Flags =
+                BufferFlags.GlobalFocus |
+                BufferFlags.ControlPositionNotify |
+                BufferFlags.GetCurrentPosition2;
+            desc2.SizeInBytes = bufferSize;
+            desc2.Format = waveFormat;
+
+            buffer = new SecondarySoundBuffer(ds, desc2);
+
+
+            var list = new List<NotificationPosition>();
+            int numberOfPositions = 32;
+
+            // Set notification for buffer percentiles
+            for (int i = 0; i < numberOfPositions; i++)
+            {
+                list.Add(new NotificationPosition()
+                {
+                    Event = new AutoResetEvent(false),
+                    Offset = i * bufferSize / numberOfPositions + 1,
+                });
+            }
+
+            // Set notification for end of buffer
+            list.Add(new NotificationPosition()
+            {
+                Offset = bufferSize - 1,
+                Event = new AutoResetEvent(false)
+            });
+
+            firstHalfBufferIndex = numberOfPositions / 2;
+            secondHalfBufferIndex = numberOfPositions;
+
+            notifications = list.ToArray();
+
+            System.Diagnostics.Debug.Assert(notifications[firstHalfBufferIndex].Offset == bufferSize / 2 + 1);
+            System.Diagnostics.Debug.Assert(notifications[secondHalfBufferIndex].Offset == bufferSize - 1);
+
+            // Make a copy of the wait handles
+            waitHandles = new WaitHandle[notifications.Length];
+            for (int i = 0; i < notifications.Length; i++)
+                waitHandles[i] = notifications[i].Event;
+
+            // Store all notification positions
+            buffer.SetNotificationPositions(notifications);
+        }
+
 
         /// <summary>
         ///   Starts playing the current buffer.
@@ -184,26 +230,22 @@ namespace Accord.DirectSound
         /// 
         public void Play(float[] samples)
         {
-            if (thread != null && thread.IsAlive)
-                return;
+            if (isPlaying) return;
 
-            Thread t = new Thread(() =>
-            {
-                // TODO: Write an alternative to the following
-                while (buffer.Status == BufferStatus.Playing)
-                    Thread.Sleep(100);
-
-                if (Stopped != null)
-                    Stopped.Invoke(this, EventArgs.Empty);
-            });
-
-            if (FramePlayingStarted != null)
-                FramePlayingStarted(this, PlayFrameEventArgs.Empty);
-
+            // Start playing and exit.
             buffer.Write(samples, 0, LockFlags.None);
-            buffer.Play(0, PlayFlags.None);
 
-            t.Start();
+            new Thread(() =>
+            {
+                OnFramePlayingStarted(new PlayFrameEventArgs(0, samples.Length));
+
+                buffer.Play(0, PlayFlags.None);
+
+                waitHandles[secondHalfBufferIndex].WaitOne();
+
+                OnStopped(EventArgs.Empty);
+
+            }).Start();
         }
 
         /// <summary>
@@ -212,10 +254,21 @@ namespace Accord.DirectSound
         /// 
         public void Play()
         {
-            thread = new Thread(WorkerThread);
+            if (thread == null)
+            {
+                // check source
+                if (device == null)
+                    throw new ArgumentException("Audio output is not specified");
 
-            if (!thread.IsAlive)
+                isPlaying = true;
+
+                // create events
+                stop = false;
+
+                // create and start new thread
+                thread = new Thread(WorkerThread);
                 thread.Start();
+            }
         }
 
         /// <summary>
@@ -226,79 +279,155 @@ namespace Accord.DirectSound
         {
             int samples = bufferSize / sizeof(float);
 
-            // The first write should fill the entire buffer.
-            var request = new NewFrameRequestedEventArgs(samples);
-            NewFrameRequested.Invoke(this, request);
-
-            buffer.Write(request.Buffer, 0, LockFlags.None);
-
-            if (request.Stop)
+            try
             {
-                buffer.Play(0, PlayFlags.None);
-                return;
-            }
 
-            if (FramePlayingStarted != null)
-                FramePlayingStarted.Invoke(this, new PlayFrameEventArgs(0));
-
-            // The buffer starts playing.
-            buffer.Play(0, PlayFlags.Looping);
-
-
-            while (!stop)
-            {
-                // When the first half of the buffer has finished
-                //  playing and we have just started playing the
-                //  second half, we will write the next samples in
-                //  the first half of the buffer again.
-                notifications[0].Event.WaitOne();
-
-                request = new NewFrameRequestedEventArgs(samples / 2);
+                // The first write should fill the entire buffer.
+                var request = new NewFrameRequestedEventArgs(samples);
                 NewFrameRequested.Invoke(this, request);
-
-                if (request.Stop || stop) break;
 
                 buffer.Write(request.Buffer, 0, LockFlags.None);
 
+                // The buffer starts playing.
+                buffer.Play(0, PlayFlags.Looping);
 
-                // When the second half of the buffer has finished
-                //  playing, the first half of the buffer will
-                //  start playing again (since this is a circular
-                //  buffer). At this time, we can write the next
-                //  samples in the second half of the buffer.
-                notifications[1].Event.WaitOne();
+                int framesPlayed = request.FrameIndex;
+                int lastNotificationLocation = 0;
+                bool requestedToStop = false;
 
-                request = new NewFrameRequestedEventArgs(samples / 2);
-                NewFrameRequested.Invoke(this, request);
+                while (!stop)
+                {
+                    int positionIndex = WaitHandle.WaitAny(waitHandles);
 
-                if (request.Stop || stop) break;
+                    if (stop) break;
 
-                buffer.Write(request.Buffer, bufferSize / 2, LockFlags.None);
+
+                    if (positionIndex == firstHalfBufferIndex ||
+                        positionIndex == secondHalfBufferIndex)
+                    {
+                        if (requestedToStop) break;
+
+                        // When the first half of the buffer has finished
+                        //  playing and we have just started playing the
+                        //  second half, we will write the next samples in
+                        //  the first half of the buffer again.
+
+                        // When the second half of the buffer has finished
+                        //  playing, the first half of the buffer will
+                        //  start playing again (since this is a circular
+                        //  buffer). At this time, we can write the next
+                        //  samples in the second half of the buffer.
+
+                        request.Frames = samples / 2;
+                        NewFrameRequested(this, request);
+                        requestedToStop = request.Stop;
+
+                        int offset = (positionIndex == firstHalfBufferIndex) ? 0 : bufferSize / 2;
+
+                        buffer.Write(request.Buffer, 0, request.Frames, offset, LockFlags.None);
+                    }
+
+                    if (positionIndex != secondHalfBufferIndex)
+                    {
+                        // Notify progress
+                        int currentBufferLocation = notifications[positionIndex].Offset;
+
+                        if (lastNotificationLocation >= currentBufferLocation)
+                            lastNotificationLocation = -(bufferSize - lastNotificationLocation);
+
+                        int delta = (currentBufferLocation - lastNotificationLocation);
+
+                        framesPlayed += delta / sizeof(float);
+
+                        lastNotificationLocation = currentBufferLocation;
+
+                        OnFramePlayingStarted(new PlayFrameEventArgs(framesPlayed, delta));
+                    }
+                }
             }
+            catch (Exception ex)
+            {
+                if (AudioOutputError != null)
+                    AudioOutputError(this, new AudioOutputErrorEventArgs(ex.Message));
+                else throw;
+            }
+            finally
+            {
+                buffer.Stop();
 
-            buffer.Stop();
+                OnStopped(EventArgs.Empty);
+            }
+        }
+
+        private void OnFramePlayingStarted(PlayFrameEventArgs e)
+        {
+            isPlaying = true;
+
+            if (FramePlayingStarted != null)
+                FramePlayingStarted(this, e);
+        }
+
+        private void OnStopped(EventArgs e)
+        {
+            isPlaying = false;
 
             if (Stopped != null)
-                Stopped.Invoke(this, EventArgs.Empty);
+                Stopped(this, e);
         }
 
         /// <summary>
         ///   Stops playing the current buffer.
         /// </summary>
+        /// 
         public void Stop()
         {
-            stop = true;
-
-            if (buffer != null)
-                buffer.Stop();
-
-            if (thread != null)
+            if (this.IsRunning)
             {
-                thread.Join();
-                thread = null;
+                if (thread != null)
+                    thread.Abort();
+                WaitForStop();
             }
         }
 
+        /// <summary>
+        ///   Signals audio output to stop its work.
+        /// </summary>
+        /// 
+        /// <remarks>Signals audio output to stop its background thread, stop to
+        /// ask for new frames and free resources.</remarks>
+        /// 
+        public void SignalToStop()
+        {
+            // stop thread
+            if (thread != null)
+            {
+                stop = true;
+
+                for (int i = 0; i < notifications.Length; i++)
+                    (notifications[i].Event as AutoResetEvent).Set();
+            }
+        }
+
+        /// <summary>
+        ///   Wait for audio output has stopped.
+        /// </summary>
+        /// 
+        /// <remarks>Waits for output stopping after it was signalled to stop using
+        /// <see cref="SignalToStop"/> method.</remarks>
+        /// 
+        public void WaitForStop()
+        {
+            if (thread != null)
+            {
+                for (int i = 0; i < notifications.Length; i++)
+                    (notifications[i].Event as AutoResetEvent).Set();
+
+                // wait for thread stop
+                thread.Join();
+
+                thread = null;
+            }
+        }
 
         #region IDisposable members
         /// <summary>
@@ -327,6 +456,7 @@ namespace Accord.DirectSound
             }
         }
         #endregion
+
 
     }
 }

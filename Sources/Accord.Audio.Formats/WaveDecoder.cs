@@ -28,20 +28,39 @@ namespace Accord.Audio.Formats
     using SlimDX.Multimedia;
 
     /// <summary>
-    ///  Wave audio file decoder
+    ///   Wave audio file decoder.
     /// </summary>
     /// 
     public class WaveDecoder : IAudioDecoder
     {
         private WaveStream waveStream;
+
         private int blockAlign;
         private int channels;
         private int numberOfFrames;
+        private int numberOfSamples;
+        private int duration;
         private int sampleRate;
         private int bytes;
+        private int bitsPerSample;
+        private int averageBitsPerSecond;
+
+        private float[] buffer;
+        private int bufferSize;
 
         /// <summary>
-        ///   Gets the number of channels in this Wave stream.
+        ///   Gets the current frame within
+        ///   the current decoder stream.
+        /// </summary>
+        /// 
+        public int Position
+        {
+            get { return (int)(waveStream.Position / blockAlign); }
+        }
+
+        /// <summary>
+        ///   Gets the number of channels of
+        ///   the underlying Wave stream.
         /// </summary>
         /// 
         public int Channels
@@ -50,7 +69,8 @@ namespace Accord.Audio.Formats
         }
 
         /// <summary>
-        ///   Gets the number of frames in this Wave stream.
+        ///   Gets the number of frames of
+        ///   the underlying Wave stream.
         /// </summary>
         /// 
         public int Frames
@@ -59,7 +79,18 @@ namespace Accord.Audio.Formats
         }
 
         /// <summary>
-        ///   Gets the sample rate for this Wave stream.
+        ///   Gets the number of samples of
+        ///   the underlying Wave stream.
+        /// </summary>
+        /// 
+        public int Samples
+        {
+            get { return numberOfSamples; }
+        }
+
+        /// <summary>
+        ///   Gets the sample rate for
+        ///   the underlying Wave stream.
         /// </summary>
         /// 
         public int SampleRate
@@ -71,20 +102,49 @@ namespace Accord.Audio.Formats
         ///   Gets the underlying Wave stream.
         /// </summary>
         /// 
-        public WaveStream Stream
+        public Stream Stream
         {
             get { return waveStream; }
         }
 
         /// <summary>
-        ///   Gets the number of bytes read from the stream in the
-        ///   the last call of any of the <seealso cref="Decode(int)"/>
-        ///   overloads.
+        ///   Gets the total number of bytes
+        ///   read by this Wave encoder.
         /// </summary>
         /// 
         public int Bytes
         {
             get { return bytes; }
+        }
+
+        /// <summary>
+        ///   Gets the total time span duration (in
+        ///   milliseconds) read by this encoder.
+        /// </summary>
+        /// 
+        public int Duration
+        {
+            get { return duration; }
+        }
+
+        /// <summary>
+        ///   Gets the average bits per second
+        ///   of the underlying Wave stream.
+        /// </summary>
+        /// 
+        public int AverageBitsPerSecond
+        {
+            get { return averageBitsPerSecond; }
+        }
+
+        /// <summary>
+        ///   Gets the bits per sample of
+        ///   the underlying Wave stream.
+        /// </summary>
+        /// 
+        public int BitsPerSample
+        {
+            get { return bitsPerSample; }
         }
 
 
@@ -95,14 +155,6 @@ namespace Accord.Audio.Formats
         /// </summary>
         public WaveDecoder()
         {
-        }
-
-        /// <summary>
-        ///   Constructs a new Wave decoder.
-        /// </summary>
-        public WaveDecoder(WaveStream stream)
-        {
-            Open(stream);
         }
 
         /// <summary>
@@ -125,7 +177,7 @@ namespace Accord.Audio.Formats
 
 
         /// <summary>
-        ///   Open specified stream.
+        ///   Opens the specified stream.
         /// </summary>
         /// 
         /// <param name="stream">Stream to open.</param>
@@ -136,10 +188,15 @@ namespace Accord.Audio.Formats
         {
             this.waveStream = stream;
             this.channels = stream.Format.Channels;
-            this.numberOfFrames = (int)stream.Length / (stream.Format.BlockAlignment * Channels);
             this.blockAlign = stream.Format.BlockAlignment;
+            this.numberOfFrames = (int)stream.Length / blockAlign;
             this.sampleRate = stream.Format.SamplesPerSecond;
-            return Frames;
+            this.numberOfSamples = numberOfFrames * Channels;
+            this.duration = (int)(numberOfFrames / (double)sampleRate * 1000.0);
+            this.bitsPerSample = stream.Format.BitsPerSample;
+            this.averageBitsPerSecond = stream.Format.AverageBytesPerSecond;
+
+            return numberOfFrames;
         }
 
         /// <summary>
@@ -189,6 +246,8 @@ namespace Accord.Audio.Formats
             return Decode(0, Frames);
         }
 
+
+
         /// <summary>
         ///   Decodes the Wave stream into a Signal object.
         /// </summary>
@@ -197,12 +256,18 @@ namespace Accord.Audio.Formats
         /// 
         public Signal Decode(int frames)
         {
+            if (waveStream.Position == waveStream.Length)
+                return null;
+
+            bufferSize = Channels * frames;
+
             // Create room to store the samples.
-            float[] data = new float[Channels * frames];
+            if (buffer == null || buffer.Length < bufferSize)
+                buffer = new float[bufferSize];
 
-            bytes = readAs(data, frames);
+            bytes = readAsFloat(buffer, frames);
 
-            return Signal.FromArray(data, channels, sampleRate);
+            return Signal.FromArray(buffer, bufferSize, channels, sampleRate);
         }
 
         /// <summary>
@@ -231,8 +296,7 @@ namespace Accord.Audio.Formats
 
 
 
-
-        private int readAs(float[] buffer, int count)
+        private int readAsFloat(float[] buffer, int count)
         {
             int reads = 0;
 
@@ -245,7 +309,7 @@ namespace Accord.Audio.Formats
                 {
                     case 8: // Stream is 8 bits
                         {
-                            byte[] block = new byte[buffer.Length];
+                            byte[] block = new byte[bufferSize];
                             reads = read(block, count);
                             SampleConverter.Convert(block, buffer);
                         }
@@ -253,7 +317,7 @@ namespace Accord.Audio.Formats
 
                     case 16: // Stream is 16 bits
                         {
-                            short[] block = new short[buffer.Length];
+                            short[] block = new short[bufferSize];
                             reads = read(block, count);
                             SampleConverter.Convert(block, buffer);
                         }
@@ -261,7 +325,7 @@ namespace Accord.Audio.Formats
 
                     case 32: // Stream is 32 bits
                         {
-                            int[] block = new int[buffer.Length];
+                            int[] block = new int[bufferSize];
                             reads = read(block, count);
                             SampleConverter.Convert(block, buffer);
                         }
@@ -273,7 +337,8 @@ namespace Accord.Audio.Formats
             }
             else if (waveStream.Format.FormatTag == WaveFormatTag.IeeeFloat)
             {
-                // Format is Ieee float, just copy to the buffer.
+                // Format is 16-bit IEEE float,
+                // just copy to the buffer.
                 reads = read(buffer, count);
             }
             else
@@ -297,13 +362,13 @@ namespace Accord.Audio.Formats
         {
             int reads;
 
-            int blockSize = blockAlign * count * channels;
+            int blockSize = sizeof(float) * count * channels;
             byte[] block = new byte[blockSize];
             reads = waveStream.Read(block, 0, blockSize);
 
             // Convert from byte to float
-            for (int j = 0; j < buffer.Length; j++)
-                buffer[j] = BitConverter.ToSingle(block, j * blockAlign);
+            for (int j = 0; j < bufferSize; j++)
+                buffer[j] = BitConverter.ToSingle(block, j * sizeof(float));
 
             return reads;
         }
@@ -320,13 +385,13 @@ namespace Accord.Audio.Formats
         {
             int reads;
 
-            int blockSize = blockAlign * count * channels;
+            int blockSize = sizeof(short) * count * channels;
             byte[] block = new byte[blockSize];
             reads = waveStream.Read(block, 0, blockSize);
 
             // Convert from byte to short
-            for (int j = 0; j < buffer.Length; j++)
-                buffer[j] = BitConverter.ToInt16(block, j * blockAlign);
+            for (int j = 0; j < bufferSize; j++)
+                buffer[j] = BitConverter.ToInt16(block, j * sizeof(short));
 
             return reads;
         }
@@ -343,13 +408,13 @@ namespace Accord.Audio.Formats
         {
             int reads;
 
-            int blockSize = blockAlign * count * channels;
+            int blockSize = sizeof(int) * count * channels;
             byte[] block = new byte[blockSize];
             reads = waveStream.Read(block, 0, blockSize);
 
             // Convert from byte to int
-            for (int j = 0; j < buffer.Length; j++)
-                buffer[j] = BitConverter.ToInt32(block, j * blockAlign);
+            for (int j = 0; j < bufferSize; j++)
+                buffer[j] = BitConverter.ToInt32(block, j * sizeof(int));
 
             return reads;
         }

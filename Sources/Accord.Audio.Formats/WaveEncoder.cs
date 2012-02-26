@@ -30,12 +30,33 @@ namespace Accord.Audio.Formats
     using System.Text;
 
     /// <summary>
-    ///  Wave audio file encoder
+    ///   Wave audio file encoder
     /// </summary>
     /// 
     public class WaveEncoder : IAudioEncoder
     {
         private Stream waveStream;
+
+        private int bytes;
+        private int blockAlign;
+        private int channels;
+        private int numberOfFrames;
+        private int numberOfSamples;
+        private int duration;
+        private int sampleRate;
+        private int bitsPerSample;
+        private int averageBitsPerSecond;
+
+        
+        // The following fields are set when the encoder
+        // receives the first signal to be written.
+
+        bool initialized = false;
+        DataChunk header = new DataChunk();
+        FormatHeader format = new FormatHeader();
+        RIFFChunk riff = new RIFFChunk();
+        byte[] waveFormat;
+
 
         /// <summary>
         ///   Gets the underlying Wave stream.
@@ -43,6 +64,85 @@ namespace Accord.Audio.Formats
         /// 
         public Stream Stream { get { return waveStream; } }
 
+        /// <summary>
+        ///   Gets the number of channels
+        ///   of the active Wave stream.
+        /// </summary>
+        /// 
+        public int Channels
+        {
+            get { return channels; }
+        }
+
+        /// <summary>
+        ///   Gets the total number of frames
+        ///   written by this Wave encoder.
+        /// </summary>
+        /// 
+        public int Frames
+        {
+            get { return numberOfFrames; }
+        }
+
+        /// <summary>
+        ///   Gets the total number of samples
+        ///   written by this Wave encoder.
+        /// </summary>
+        /// 
+        public int Samples
+        {
+            get { return numberOfSamples; }
+        }
+
+        /// <summary>
+        ///   Gets the sample rate of
+        ///   the underlying Wave stream.
+        /// </summary>
+        /// 
+        public int SampleRate
+        {
+            get { return sampleRate; }
+        }
+
+        /// <summary>
+        ///   Gets the total number of bytes
+        ///   written by this Wave encoder.
+        /// </summary>
+        /// 
+        public int Bytes
+        {
+            get { return bytes; }
+        }
+
+        /// <summary>
+        ///   Gets the total time span duration (in
+        ///   milliseconds) written by this encoder.
+        /// </summary>
+        /// 
+        public int Duration
+        {
+            get { return duration; }
+        }
+
+        /// <summary>
+        ///   Gets the average bits per second
+        ///   of the underlying Wave stream.
+        /// </summary>
+        /// 
+        public int AverageBitsPerSecond
+        {
+            get { return averageBitsPerSecond; }
+        }
+
+        /// <summary>
+        ///   Gets the bits per sample of
+        ///   the underlying Wave stream.
+        /// </summary>
+        /// 
+        public int BitsPerSample
+        {
+            get { return bitsPerSample; }
+        }
 
         #region Constructors
 
@@ -58,6 +158,8 @@ namespace Accord.Audio.Formats
         ///   Constructs a new Wave encoder.
         /// </summary>
         /// 
+        /// <param name="stream">A file stream to store the encoded data.</param>
+        /// 
         public WaveEncoder(FileStream stream)
         {
             Open(stream);
@@ -67,6 +169,8 @@ namespace Accord.Audio.Formats
         ///   Constructs a new Wave encoder.
         /// </summary>
         /// 
+        /// <param name="stream">A stream to store the encoded data.</param>
+        ///
         public WaveEncoder(Stream stream)
         {
             Open(stream);
@@ -75,6 +179,8 @@ namespace Accord.Audio.Formats
         /// <summary>
         ///   Constructs a new Wave encoder.
         /// </summary>
+        /// 
+        /// <param name="path">The path to a file to store the encoded data.</param>
         /// 
         public WaveEncoder(string path)
         {
@@ -85,7 +191,7 @@ namespace Accord.Audio.Formats
 
 
         /// <summary>
-        ///   Open specified stream.
+        ///   Opens the specified stream.
         /// </summary>
         /// 
         /// <param name="stream">Stream to open.</param>
@@ -123,44 +229,6 @@ namespace Accord.Audio.Formats
             Open(new FileStream(path, FileMode.OpenOrCreate));
         }
 
-
-        /// <summary>
-        ///   Encodes the Wave stream into a Signal object.
-        /// </summary>
-        /// 
-        public void Encode(Signal signal)
-        {
-            byte[] dataStream = signal.RawData;
-
-            DataChunk header = new DataChunk();
-            header.Header = new char[] { 'd', 'a', 't', 'a' };
-            header.Length = dataStream.Length;
-            byte[] dataHeader = header.GetBytes();
-
-            FormatHeader format = new FormatHeader();
-            format.FmtHeader = new char[] { 'f', 'm', 't', ' ' };
-            format.Length = 16;
-            format.Channels = (short)signal.Channels;
-            format.FormatTag = (short)WaveFormatTag.IeeeFloat;
-            format.SamplesPerSecond = signal.SampleRate;
-            format.BitsPerSample = 16;
-            format.BlockAlignment = (short)(format.BitsPerSample / 8 * format.Channels);
-            format.AverageBytesPerSecond = format.BitsPerSample * format.BlockAlignment;
-            byte[] waveFormat = format.GetBytes();
-
-            RIFFChunk riff = new RIFFChunk();
-            riff.RiffHeader = new char[] { 'R', 'I', 'F', 'F' };
-            riff.Length = dataStream.Length + dataHeader.Length + waveFormat.Length;
-            riff.WaveHeader = new char[] { 'W', 'A', 'V', 'E' };
-            byte[] riffHeader = riff.GetBytes();
-
-            waveStream.Write(riffHeader, 0, riffHeader.Length);
-            waveStream.Write(waveFormat, 0, waveFormat.Length);
-            waveStream.Write(dataHeader, 0, dataHeader.Length);
-            waveStream.Write(dataStream, 0, dataStream.Length);
-        }
-
-
         /// <summary>
         ///   Closes the underlying stream.
         /// </summary>
@@ -168,6 +236,93 @@ namespace Accord.Audio.Formats
         public void Close()
         {
             waveStream.Close();
+        }
+
+        /// <summary>
+        ///   Encodes the Wave stream into a Signal object.
+        /// </summary>
+        /// 
+        public void Encode(Signal signal)
+        {
+            if (!initialized)
+            {
+                initialize(signal);
+                firstWriteHeaders();
+            }
+
+            // Update counters
+            numberOfSamples += signal.Samples;
+            numberOfFrames += signal.Length;
+            bytes += signal.RawData.Length;
+            duration += signal.Duration;
+
+            // Navigate to start position
+            waveStream.Seek(0, SeekOrigin.Begin);
+
+            // Update headers
+            updateHeaders();
+
+            // Go back to previous position
+            waveStream.Seek(0, SeekOrigin.End);
+
+            // Write the current signal data
+            waveStream.Write(signal.RawData, 0, signal.RawData.Length);
+        }
+
+
+        private void updateHeaders()
+        {
+            header.Length = this.bytes;
+            byte[] dataHeader = header.GetBytes();
+
+            riff.Length = this.bytes + dataHeader.Length + waveFormat.Length;
+            byte[] riffHeader = riff.GetBytes();
+
+            waveStream.Write(riffHeader, 0, riffHeader.Length);
+            waveStream.Write(waveFormat, 0, waveFormat.Length);
+            waveStream.Write(dataHeader, 0, dataHeader.Length);
+        }
+
+
+        private void firstWriteHeaders()
+        {
+            // Create data header
+            header.Header = new char[] { 'd', 'a', 't', 'a' };
+            header.Length = this.bytes;
+            byte[] dataHeader = header.GetBytes();
+
+            // Create Wave format header
+            format.FmtHeader = new char[] { 'f', 'm', 't', ' ' };
+            format.Length = 16;
+            format.Channels = (short)this.channels;
+            format.FormatTag = (short)WaveFormatTag.IeeeFloat;
+            format.SamplesPerSecond = sampleRate;
+            format.BitsPerSample = (short)this.bitsPerSample;
+            format.BlockAlignment = (short)this.blockAlign;
+            format.AverageBytesPerSecond = this.averageBitsPerSecond;
+            waveFormat = format.GetBytes();
+
+            // Create RIFF header
+            riff.RiffHeader = new char[] { 'R', 'I', 'F', 'F' };
+            riff.WaveHeader = new char[] { 'W', 'A', 'V', 'E' };
+            riff.Length = this.bytes + dataHeader.Length + waveFormat.Length;
+            byte[] riffHeader = riff.GetBytes();
+
+            // Write headers to allocate space
+            waveStream.Write(riffHeader, 0, riffHeader.Length);
+            waveStream.Write(waveFormat, 0, waveFormat.Length);
+            waveStream.Write(dataHeader, 0, dataHeader.Length);
+        }
+
+        private void initialize(Signal signal)
+        {
+            this.channels = signal.Channels;
+            this.sampleRate = signal.SampleRate;
+            this.bitsPerSample = sizeof(float) * 8;
+            this.blockAlign = bitsPerSample / 8 * channels;
+            this.averageBitsPerSecond = sampleRate * blockAlign;
+
+            this.initialized = true;
         }
 
     }

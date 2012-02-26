@@ -23,7 +23,8 @@
 namespace Accord.Audio
 {
     using System;
-    using Accord.Math;
+    using System.Runtime.InteropServices;
+    using Accord.Math.ComplexExtensions;
     using AForge.Math;
 
     /// <summary>
@@ -172,5 +173,138 @@ namespace Accord.Audio
             return logabs.Re();
         }
 
+        /// <summary>
+        ///   Computes the Root-Mean-Square (RMS) value of the given samples.
+        /// </summary>
+        /// 
+        /// <param name="samples">The samples.</param>
+        /// 
+        /// <returns>The root-mean-square value of the samples.</returns>
+        /// 
+        public static double RootMeanSquare(this float[] samples)
+        {
+            return RootMeanSquare(samples, 0, samples.Length);
+        }
+
+        /// <summary>
+        ///   Computes the Root-Mean-Square (RMS) value of the given samples.
+        /// </summary>
+        /// 
+        /// <param name="samples">The samples.</param>
+        /// <param name="startIndex">The start index.</param>
+        /// <param name="count">The number of samples, starting at start index, to compute.</param>
+        /// 
+        /// <returns>The root-mean-square value of the samples.</returns>
+        /// 
+        public static double RootMeanSquare(this float[] samples, int startIndex, int count)
+        {
+            float sum = 0;
+            for (int i = 0; i < count; i++)
+            {
+                float s = samples[startIndex + i];
+                sum += s * s;
+            }
+
+            return Math.Sqrt(sum);
+        }
+
+        /// <summary>
+        ///   Computes the maximum value of the given samples.
+        /// </summary>
+        /// 
+        /// <param name="samples">The samples.</param>
+        /// 
+        /// <returns>The maximum value of the samples</returns>
+        /// 
+        public static float Max(this float[] samples)
+        {
+            return Max(samples, 0, samples.Length);
+        }
+
+        /// <summary>
+        ///   Computes the maximum value of the given samples.
+        /// </summary>
+        /// 
+        /// <param name="samples">The samples.</param>
+        /// <param name="startIndex">The start index.</param>
+        /// <param name="count">The number of samples, starting at start index, to compute.</param>
+        /// 
+        /// <returns>The maximum value of the samples</returns>
+        /// 
+        public static float Max(this float[] samples, int startIndex, int count)
+        {
+            float max = 0;
+            for (int i = 0; i < count; i++)
+            {
+                if (samples[i + startIndex] > max)
+                    max = samples[i];
+            }
+
+            return max;
+        }
+
+        /// <summary>
+        ///  Serializes (converts) any object to a byte array.
+        /// </summary>
+        /// 
+        /// <param name="value">The object to be serialized.</param>
+        /// <returns>The byte array containing the serialized object.</returns>
+        /// 
+        public static byte[] ToByteArray<T>(this T value) where T : struct
+        {
+            int rawsize = Marshal.SizeOf(value);
+            byte[] rawdata = new byte[rawsize];
+            GCHandle handle = GCHandle.Alloc(rawdata, GCHandleType.Pinned);
+            IntPtr buffer = handle.AddrOfPinnedObject();
+            Marshal.StructureToPtr(value, buffer, false);
+            handle.Free();
+            return rawdata;
+        }
+
+        /// <summary>
+        ///   Deserializes (converts) a byte array to a given structure type.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///  This is a potentiality unsafe operation.
+        /// </remarks>
+        /// 
+        /// <param name="rawData">The byte array containing the serialized object.</param>
+        /// <returns>The object stored in the byte array.</returns>
+        /// 
+        public static T RawDeserialize<T>(this byte[] rawData)
+        {
+            return RawDeserialize<T>(rawData, 0);
+        }
+
+        /// <summary>
+        ///   Deserializes (converts) a byte array to a given structure type.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///  This is a potentiality unsafe operation.
+        /// </remarks>
+        /// 
+        /// <param name="rawData">The byte array containing the serialized object.</param>
+        /// <param name="position">The starting position in the rawData array where the object is located.</param>
+        /// <returns>The object stored in the byte array.</returns>
+        /// 
+        public static T RawDeserialize<T>(this byte[] rawData, int position)
+        {
+            Type type = typeof(T);
+
+            int rawsize = Marshal.SizeOf(type);
+
+            if (rawsize > (rawData.Length - position))
+            {
+                throw new ArgumentException("The given array is smaller than the object size.");
+            }
+
+            IntPtr buffer = Marshal.AllocHGlobal(rawsize);
+            Marshal.Copy(rawData, position, buffer, rawsize);
+            T obj = (T)Marshal.PtrToStructure(buffer, type);
+            Marshal.FreeHGlobal(buffer);
+            return obj;
+        }
     }
 }
