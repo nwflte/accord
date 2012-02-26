@@ -69,7 +69,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAAAIAIAAAAACEQAAAAEAAAAAAAAAAAAAgAAIAAU=</HashCode>
+      <HashCode>AAAAAAAIAJAAAAACEQAAAAEAAAAAAAAEAAAAgAAIAAU=</HashCode>
       <FileName>Tools.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -146,21 +146,11 @@
       <FileName>Filters\PairsMarker.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="AForge.Imaging.Filters.BaseTransformationFilter">
-    <Position X="18" Y="1.25" Width="2.75" />
-    <TypeIdentifier />
-  </Class>
-  <Class Name="AForge.Imaging.Filters.BaseInPlaceFilter">
-    <Position X="10.75" Y="1.25" Width="2.5" />
-    <TypeIdentifier />
-  </Class>
   <Class Name="Accord.Imaging.IntegralImage2">
     <Position X="22.75" Y="7.75" Width="2.25" />
     <Members>
+      <Method Name="~IntegralImage2" Hidden="true" />
       <Field Name="height" Hidden="true" />
-      <Field Name="iiSquareSum" Hidden="true" />
-      <Field Name="iiSum" Hidden="true" />
-      <Field Name="iiTiltedSum" Hidden="true" />
       <Field Name="width" Hidden="true" />
     </Members>
     <Compartments>
@@ -169,9 +159,10 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>ABAAAABABAEAAAQAQAAAAEQAAgAAABAABAACBAAAAAA=</HashCode>
+      <HashCode>AJIgAABADCEAABQAQAAAAEQAAAAABBQBBAAGBgAgAIA=</HashCode>
       <FileName>IntegralImage2.cs</FileName>
     </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Imaging.MatrixH">
     <Position X="3.5" Y="4.5" Width="2.5" />
@@ -203,11 +194,6 @@
       <HashCode>AAgAAACAAAAAgAAAAAAACAAAQAAAAAAAAAQAAAAIAAA=</HashCode>
       <FileName>Filters\WaveletTransform.cs</FileName>
     </TypeIdentifier>
-  </Class>
-  <Class Name="AForge.Imaging.Filters.BaseFilter">
-    <Position X="22.75" Y="1.25" Width="2" />
-    <TypeIdentifier />
-    <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Imaging.FastCornersDetector">
     <Position X="7.25" Y="8.25" Width="2.75" />

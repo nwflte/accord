@@ -26,6 +26,7 @@ namespace Accord.Imaging
     using System.Collections.Generic;
     using System.Drawing;
     using System.Drawing.Imaging;
+    using Accord.Math;
     using AForge;
     using AForge.Imaging;
     using AForge.Imaging.Filters;
@@ -394,7 +395,7 @@ namespace Accord.Imaging
                         else
                         {
                             // Harris-Nobel corner measure
-                            M = (A * B - C * C) / (A + B + Accord.Math.Special.SingleEpsilon);
+                            M = (A * B - C * C) / (A + B + Constants.SingleEpsilon);
                         }
 
                         if (M > threshold)

@@ -309,10 +309,10 @@ namespace Accord.Imaging
         /// </summary>
         public static bool Collinear(PointF pt1, PointF pt2, PointF pt3)
         {
-            return System.Math.Abs(
+            return Math.Abs(
                  (pt1.Y - pt2.Y) * pt3.X +
                  (pt2.X - pt1.X) * pt3.Y +
-                 (pt1.X * pt2.Y - pt1.Y * pt2.X)) < Special.SingleEpsilon;
+                 (pt1.X * pt2.Y - pt1.Y * pt2.X)) < Constants.SingleEpsilon;
         }
 
         /// <summary>
@@ -320,10 +320,10 @@ namespace Accord.Imaging
         /// </summary>
         public static bool Collinear(PointH pt1, PointH pt2, PointH pt3)
         {
-            return System.Math.Abs(
+            return Math.Abs(
              (pt1.Y * pt2.W - pt1.W * pt2.Y) * pt3.X +
              (pt1.W * pt2.X - pt1.X * pt2.W) * pt3.Y +
-             (pt1.X * pt2.Y - pt1.Y * pt2.X) * pt3.W) < Special.SingleEpsilon;
+             (pt1.X * pt2.Y - pt1.Y * pt2.X) * pt3.W) < Constants.SingleEpsilon;
         }
         #endregion
 
