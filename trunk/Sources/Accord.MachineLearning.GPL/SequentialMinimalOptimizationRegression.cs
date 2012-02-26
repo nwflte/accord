@@ -109,9 +109,11 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         /// <summary>
         ///   Initializes a new instance of a Sequential Minimal Optimization (SMO) algorithm.
         /// </summary>
+        /// 
         /// <param name="machine">A Support Vector Machine.</param>
         /// <param name="inputs">The input data points as row vectors.</param>
         /// <param name="outputs">The classification label for each data point.</param>
+        /// 
         public SequentialMinimalOptimizationRegression(SupportVectorMachine machine,
             double[][] inputs, double[] outputs)
         {
@@ -161,6 +163,7 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         ///   Complexity (cost) parameter C. Increasing the value of C forces the creation
         ///   of a more accurate model that may not generalize well. Default value is 1.
         /// </summary>
+        /// 
         /// <remarks>
         ///   The cost parameter C controls the trade off between allowing training
         ///   errors and forcing rigid margins. It creates a soft margin that permits
@@ -168,6 +171,7 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         ///   misclassifying points and forces the creation of a more accurate model
         ///   that may not generalize well.
         /// </remarks>
+        /// 
         public double Complexity
         {
             get { return this.c; }
@@ -210,10 +214,12 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         /// <summary>
         ///   Runs the SMO algorithm.
         /// </summary>
+        /// 
         /// <param name="computeError">
         ///   True to compute error after the training
         ///   process completes, false otherwise. Default is true.
         /// </param>
+        /// 
         /// <returns>
         ///   The sum of squares error rate for
         ///   the resulting support vector machine.

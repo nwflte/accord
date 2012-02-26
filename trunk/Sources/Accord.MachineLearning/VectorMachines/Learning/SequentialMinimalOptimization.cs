@@ -25,6 +25,7 @@ namespace Accord.MachineLearning.VectorMachines.Learning
     using System;
     using System.Collections.Generic;
     using Accord.Statistics.Kernels;
+    using Accord.Math;
 
     /// <summary>
     ///   Sequential Minimal Optimization (SMO) Algorithm
@@ -93,7 +94,6 @@ namespace Accord.MachineLearning.VectorMachines.Learning
     /// 
     public class SequentialMinimalOptimization : ISupportVectorMachineLearning
     {
-        private static Random random = new Random();
 
         // Training data
         private double[][] inputs;
@@ -102,7 +102,7 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         // Learning algorithm parameters
         private double c = 1.0;
         private double tolerance = 1e-3;
-        private double epsilon = 1e-3;
+        private double epsilon = 1e-12;
         private bool useComplexityHeuristic;
 
         // Support Vector Machine parameters
@@ -111,9 +111,13 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         private double[] alpha;
         private double bias;
 
+        private HashSet<int> nonBoundExamples; // alpha[i] > 0 && alpha[i] < c
+        private HashSet<int> allOtherExamples;  // otherwise
 
         // Error cache to speed up computations
         private double[] errors;
+        private double[] diagonal;
+
 
 
         /// <summary>
@@ -216,16 +220,8 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         }
 
         /// <summary>
-        ///   Insensitivity zone ε. Increasing the value of ε can result in fewer support
-        ///   vectors in the created model. Default value is 1e-3.
+        ///   Epsilon for round-off errors. Default value is 1e-12.
         /// </summary>
-        /// 
-        /// <remarks>
-        ///   Parameter ε controls the width of the ε-insensitive zone, used to fit the training
-        ///   data. The value of ε can affect the number of support vectors used to construct the
-        ///   regression function. The bigger ε, the fewer support vectors are selected. On the
-        ///   other hand, bigger ε-values results in more flat estimates.
-        /// </remarks>
         /// 
         public double Epsilon
         {
@@ -291,7 +287,7 @@ namespace Accord.MachineLearning.VectorMachines.Learning
             int N = inputs.Length;
 
             if (useComplexityHeuristic)
-                c = computeComplexity();
+                c = EstimateComplexity(kernel, inputs);
 
             // Lagrange multipliers
             this.alpha = new double[N];
@@ -299,6 +295,19 @@ namespace Accord.MachineLearning.VectorMachines.Learning
 
             // Error cache
             this.errors = new double[N];
+
+            // Diagonal cache
+            this.diagonal = new double[N];
+            for (int i = 0; i < inputs.Length; i++)
+                diagonal[i] = kernel.Function(inputs[i], inputs[i]);
+
+            // Prepare indice sets
+            int[] indices = Matrix.Indices(0, N);
+            Accord.Statistics.Tools.Shuffle(indices);
+
+            nonBoundExamples = new HashSet<int>();
+            allOtherExamples = new HashSet<int>(indices);
+
 
             // Algorithm:
             int numChanged = 0;
@@ -316,7 +325,7 @@ namespace Accord.MachineLearning.VectorMachines.Learning
                 else
                 {
                     // loop I over examples where alpha is not 0 and not C
-                    for (int i = 0; i < N; i++)
+                    for (int i = 0; i < alpha.Length; i++)
                         if (alpha[i] != 0 && alpha[i] != c)
                             numChanged += examineExample(i);
                 }
@@ -330,19 +339,18 @@ namespace Accord.MachineLearning.VectorMachines.Learning
 
             // Store Support Vectors in the SV Machine. Only vectors which have lagrange multipliers
             // greater than zero will be stored as only those are actually required during evaluation.
-            List<int> indices = new List<int>();
-            for (int i = 0; i < N; i++)
+            List<int> support = new List<int>();
+            for (int i = 0; i < alpha.Length; i++)
             {
                 // Only store vectors with multipliers > 0
-                if (alpha[i] > 0) indices.Add(i);
+                if (alpha[i] > 0) support.Add(i);
             }
 
-            int vectors = indices.Count;
-            machine.SupportVectors = new double[vectors][];
-            machine.Weights = new double[vectors];
-            for (int i = 0; i < vectors; i++)
+            machine.SupportVectors = new double[support.Count][];
+            machine.Weights = new double[support.Count];
+            for (int i = 0; i < support.Count; i++)
             {
-                int j = indices[i];
+                int j = support[i];
                 machine.SupportVectors[i] = inputs[j];
                 machine.Weights[i] = alpha[j] * outputs[j];
             }
@@ -377,7 +385,7 @@ namespace Accord.MachineLearning.VectorMachines.Learning
             int count = 0;
             for (int i = 0; i < inputs.Length; i++)
             {
-                if (Math.Sign(compute(inputs[i])) != Math.Sign(expectedOutputs[i]))
+                if ((compute(inputs[i]) >= 0) != (expectedOutputs[i] >= 0))
                     count++;
             }
 
@@ -396,7 +404,7 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         {
             double[] p2 = inputs[i2]; // Input point at index i2
             double y2 = outputs[i2];  // Classification label for p2
-            double alph2 = alpha[i2];    // Lagrange multiplier for p2
+            double alph2 = alpha[i2]; // Lagrange multiplier for p2
 
             // SVM output on p2 - y2. Check if it has already been computed
             double e2 = (alph2 > 0 && alph2 < c) ? errors[i2] : compute(p2) - y2;
@@ -416,18 +424,14 @@ namespace Accord.MachineLearning.VectorMachines.Learning
             //    function is time consuming, so SMO approximates the step size by the absolute value of the
             //    absolute error difference.
             int i1 = -1; double max = 0;
-            for (int i = 0; i < inputs.Length; i++)
+            foreach (int i in nonBoundExamples) // (alpha[i] > 0 && alpha[i] < c)
             {
-                if (alpha[i] > 0 && alpha[i] < c)
-                {
-                    double error1 = errors[i];
-                    double aux = Math.Abs(e2 - error1);
+                double aux = Math.Abs(e2 - errors[i]);
 
-                    if (aux > max)
-                    {
-                        max = aux;
-                        i1 = i;
-                    }
+                if (aux > max)
+                {
+                    max = aux;
+                    i1 = i;
                 }
             }
 
@@ -438,17 +442,9 @@ namespace Accord.MachineLearning.VectorMachines.Learning
             //  - Under unusual circumstances, SMO cannot make positive progress using the second
             //    choice heuristic above. If it is the case, then SMO starts iterating through the
             //    non-bound examples, searching for an second example that can make positive progress.
-
-            int start = random.Next(inputs.Length);
-            for (i1 = start; i1 < inputs.Length; i1++)
+            foreach (int i in nonBoundExamples) // (alpha[i1] > 0 && alpha[i1] < c)
             {
-                if (alpha[i1] > 0 && alpha[i1] < c)
-                    if (takeStep(i1, i2)) return 1;
-            }
-            for (i1 = 0; i1 < start; i1++)
-            {
-                if (alpha[i1] > 0 && alpha[i1] < c)
-                    if (takeStep(i1, i2)) return 1;
+                if (takeStep(i, i2)) return 1;
             }
 
 
@@ -458,15 +454,9 @@ namespace Accord.MachineLearning.VectorMachines.Learning
             //    Both the iteration through the non-bound examples and the iteration through the entire
             //    training set are started at random locations, in order not to bias SMO towards the
             //    examples at the beginning of the training set. 
-
-            start = random.Next(inputs.Length);
-            for (i1 = start; i1 < inputs.Length; i1++)
+            foreach (int i in allOtherExamples) // (alpha[i1] <= 0 || alpha[i1] >= c)
             {
-                if (takeStep(i1, i2)) return 1;
-            }
-            for (i1 = 0; i1 < start; i1++)
-            {
-                if (takeStep(i1, i2)) return 1;
+                if (takeStep(i, i2)) return 1;
             }
 
 
@@ -485,14 +475,14 @@ namespace Accord.MachineLearning.VectorMachines.Learning
             if (i1 == i2) return false;
 
             double[] p1 = inputs[i1]; // Input point at index i1
-            double alph1 = alpha[i1];    // Lagrange multiplier for p1
+            double alph1 = alpha[i1]; // Lagrange multiplier for p1
             double y1 = outputs[i1];  // Classification label for p1
 
             // SVM output on p1 - y1. Check if it has already been computed
             double e1 = (alph1 > 0 && alph1 < c) ? errors[i1] : compute(p1) - y1;
 
             double[] p2 = inputs[i2]; // Input point at index i2
-            double alph2 = alpha[i2];    // Lagrange multiplier for p2
+            double alph2 = alpha[i2]; // Lagrange multiplier for p2
             double y2 = outputs[i2];  // Classification label for p2
 
             // SVM output on p2 - y2. Check if it has already been computed
@@ -521,11 +511,10 @@ namespace Accord.MachineLearning.VectorMachines.Learning
 
             if (L == H) return false;
 
-            double k11, k22, k12, eta;
-            k11 = kernel.Function(p1, p1);
-            k12 = kernel.Function(p1, p2);
-            k22 = kernel.Function(p2, p2);
-            eta = k11 + k22 - 2.0 * k12;
+            double k11 = diagonal[i1]; // kernel.Function(p1, p1);
+            double k12 = kernel.Function(p1, p2);
+            double k22 = diagonal[i2]; // kernel.Function(p2, p2);
+            double eta = k11 + k22 - 2.0 * k12;
 
             double a1, a2;
 
@@ -554,7 +543,7 @@ namespace Accord.MachineLearning.VectorMachines.Learning
             }
 
             if (Math.Abs(a2 - alph2) < epsilon * (a2 + alph2 + epsilon))
-                return false;
+                return false; // no step need to be taken
 
             a1 = alph1 + s * (alph2 - a2);
 
@@ -565,10 +554,16 @@ namespace Accord.MachineLearning.VectorMachines.Learning
             }
             else if (a1 > c)
             {
-                double d = a1 - c;
-                a2 += s * d;
+                a2 += s * (a1 - c);
                 a1 = c;
             }
+
+            // Approximate precision
+            double roundoff = c * 1e-10;
+            if (a1 > c - roundoff) a1 = c;
+            else if (a1 < roundoff) a1 = 0;
+            if (a2 > c - roundoff) a2 = c;
+            else if (a2 < roundoff) a2 = 0;
 
 
             // Update threshold (bias) to reflect change in Lagrange multipliers
@@ -605,21 +600,46 @@ namespace Accord.MachineLearning.VectorMachines.Learning
             double t1 = y1 * (a1 - alph1);
             double t2 = y2 * (a2 - alph2);
 
-            for (int i = 0; i < inputs.Length; i++)
+            foreach (var i in nonBoundExamples) // (alpha[i] > 0 && alpha[i] < c)
             {
-                if (0 < alpha[i] && alpha[i] < c)
-                {
+                if (i == i1)
+                    errors[i] += t1 * k11 + t2 * k12 - delta_b;
+
+                else if (i == i2)
+                    errors[i] += t1 * k12 + t2 * k22 - delta_b;
+
+                else
                     errors[i] += t1 * kernel.Function(p1, inputs[i]) +
                                  t2 * kernel.Function(p2, inputs[i]) -
                                  delta_b;
-                }
             }
 
+           
             // Update lagrange multipliers
             alpha[i1] = a1;
             alpha[i2] = a2;
 
 
+            // Update indices sets
+            if (a1 > 0 && a1 < c)
+            {
+                nonBoundExamples.Add(i1); allOtherExamples.Remove(i1);
+            }
+            else
+            {
+                nonBoundExamples.Remove(i1); allOtherExamples.Add(i1);
+            }
+
+            if (a2 > 0 && a2 < c)
+            {
+                nonBoundExamples.Add(i2); allOtherExamples.Remove(i2);
+            }
+            else
+            {
+                nonBoundExamples.Remove(i2); allOtherExamples.Add(i2);
+            }
+
+            // step taken
             return true;
         }
 
@@ -630,7 +650,7 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         private double compute(double[] point)
         {
             double sum = -bias;
-            for (int i = 0; i < inputs.Length; i++)
+            for (int i = 0; i < alpha.Length; i++)
             {
                 if (alpha[i] > 0)
                     sum += alpha[i] * outputs[i] * kernel.Function(inputs[i], point);
@@ -639,11 +659,21 @@ namespace Accord.MachineLearning.VectorMachines.Learning
             return sum;
         }
 
-
-        private double computeComplexity()
+        /// <summary>
+        ///   Estimates the <see cref="Complexity">complexity parameter C</see>
+        ///   for a given kernel and a given data set.
+        /// </summary>
+        /// 
+        /// <param name="kernel">The kernel function.</param>
+        /// <param name="inputs">The input samples.</param>
+        /// 
+        /// <returns>A suitable value for C.</returns>
+        /// 
+        public static double EstimateComplexity(IKernel kernel, double[][] inputs)
         {
             // Compute initial value for C as the number of examples
             // divided by the trace of the input sample kernel matrix.
+
             double sum = 0.0;
             for (int i = 0; i < inputs.Length; i++)
                 sum += kernel.Function(inputs[i], inputs[i]);
