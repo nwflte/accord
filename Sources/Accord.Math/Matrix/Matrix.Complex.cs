@@ -20,7 +20,7 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-namespace Accord.Math
+namespace Accord.Math.ComplexExtensions
 {
     using AForge;
     using AForge.Math;
@@ -88,6 +88,25 @@ namespace Accord.Math
             double[] magnitudes = new double[c.Length];
             for (int i = 0; i < c.Length; i++)
                 magnitudes[i] = c[i].Magnitude;
+
+            return magnitudes;
+        }
+
+        /// <summary>
+        ///   Gets the magnitude of every complex number in a matrix.
+        /// </summary>
+        /// 
+        public static double[,] Magnitude(this Complex[,] c)
+        {
+            if (c == null) throw new ArgumentNullException("c");
+
+            int rows = c.GetLength(0);
+            int cols = c.GetLength(1);
+
+            double[,] magnitudes = new double[rows, cols];
+            for (int i = 0; i < rows; i++)
+                for (int j = 0; j < cols; j++)
+                    magnitudes[i, j] = c[i, j].Magnitude;
 
             return magnitudes;
         }

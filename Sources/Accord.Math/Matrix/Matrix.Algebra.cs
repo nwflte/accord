@@ -716,6 +716,19 @@ namespace Accord.Math
             return vector.Multiply(x);
         }
 
+        /// <summary>
+        ///   Multiplies a scalar <c>x</c> by a vector <c>v</c>.
+        /// </summary>
+        /// <param name="x">The scalar <c>x</c>.</param>
+        /// <param name="vector">The vector <c>v</c>.</param>
+        /// <returns>The product <c>x*v</c> of the multiplication of the 
+        ///   given scalar <c>x</c> and vector <c>v</c>.</returns>
+        /// 
+        public static double[] Multiply(this int x, double[] vector)
+        {
+            return vector.Multiply(x);
+        }
+
         #endregion
 
 
@@ -775,6 +788,25 @@ namespace Accord.Math
         public static double[] Divide(this double[] vector, double x, bool inPlace = false)
         {
             double[] r = inPlace ? vector : new double[vector.Length];
+
+            for (int i = 0; i < vector.Length; i++)
+                r[i] = vector[i] / x;
+
+            return r;
+        }
+
+        /// <summary>
+        ///   Divides a vector by a scalar.
+        /// </summary>
+        /// 
+        /// <param name="vector">A vector.</param>
+        /// <param name="x">A scalar.</param>
+        /// 
+        /// <returns>The division quotient of the given vector <c>a</c> and scalar <c>b</c>.</returns>
+        /// 
+        public static double[] Divide(this int[] vector, double x)
+        {
+            double[] r = new double[vector.Length];
 
             for (int i = 0; i < vector.Length; i++)
                 r[i] = vector[i] / x;
@@ -1296,6 +1328,27 @@ namespace Accord.Math
         }
 
         /// <summary>
+        ///   Adds two vectors.
+        /// </summary>
+        /// 
+        /// <param name="a">A vector.</param>
+        /// <param name="b">A vector.</param>
+        /// 
+        /// <returns>The addition of the given vectors.</returns>
+        /// 
+        public static double[] Add(this double[] a, double b)
+        {
+            if (a == null) throw new ArgumentNullException("a");
+
+            double[] r = new double[a.Length];
+
+            for (int i = 0; i < a.Length; i++)
+                r[i] = a[i] + b;
+
+            return r;
+        }
+
+        /// <summary>
         ///   Subtracts two matrices.
         /// </summary>
         /// 
@@ -1418,6 +1471,7 @@ namespace Accord.Math
 
             return r;
         }
+
 
         /// <summary>
         ///   Subtracts a scalar from a vector.

@@ -1,5 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Comment CommentText="Obs: The numeric decomposition classes are auto-generated for each data type using T4 templates.">
+    <Position X="16.128" Y="17.64" Height="0.65" Width="3.175" />
+  </Comment>
   <Class Name="Accord.Math.Decompositions.CholeskyDecomposition">
     <Position X="7" Y="23.75" Width="2.5" />
     <Members>
@@ -110,7 +113,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>BwAAAEAADQkIANAEIABogGgOwATIIgiAggUQmAAhIQQ=</HashCode>
+      <HashCode>AAAAAEAABQkAAFAEAAAgAAAGgAAAAAgAAAAAEACgIAA=</HashCode>
       <FileName>Special.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -664,6 +667,56 @@
       <Property Name="Method" />
     </ShowAsAssociation>
     <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Accord.Math.Bessel">
+    <Position X="4" Y="16.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAACABIAAAACABIAA=</HashCode>
+      <FileName>Functions\Bessel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Accord.Math.Beta">
+    <Position X="4" Y="9.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAAAAAAAgABAAAIAAAgCAAAAgAAAAAAAAAA=</HashCode>
+      <FileName>Functions\Beta.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Accord.Math.Gamma">
+    <Position X="4" Y="13.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAACEAAAAAABAAgAAAAAIgAAgAAAAAAAAAgAAAAAQ=</HashCode>
+      <FileName>Functions\Gamma.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Accord.Math.Normal">
+    <Position X="4" Y="11.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAAAIAAAIAAAAAAAAAAAAAAACAAAA=</HashCode>
+      <FileName>Functions\Normal.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Accord.Math.Differentiation.FiniteDifferences">
+    <Position X="15.25" Y="11.5" Width="1.75" />
+    <Members>
+      <Field Name="coef" Hidden="true" />
+      <Method Name="createInterpolationCoefficients" Hidden="true" />
+      <Method Name="derivative" Hidden="true" />
+      <Field Name="n" Hidden="true" />
+      <Field Name="step" Hidden="true" />
+      <Field Name="stepSize" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AEAAgAAAAAAABBAAAAAAAAIABAAkAAAAEAAAAAAAAAA=</HashCode>
+      <FileName>Differentiation\FiniteDifferences.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Accord.Math.Constants" Collapsed="true">
+    <Position X="4" Y="18.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AQIAAAAQAAAIAAAAAAAIgCgCAAAAIAAAAgEAAAAgAQA=</HashCode>
+      <FileName>Constants.cs</FileName>
+    </TypeIdentifier>
   </Class>
   <Interface Name="Accord.Math.Formats.IMatrixFormatProvider" Collapsed="true">
     <Position X="22.75" Y="0.5" Width="2" />

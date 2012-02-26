@@ -143,6 +143,32 @@ namespace Accord.Math
         }
 
         /// <summary>
+        ///   Converts a double-precision floating point multidimensional
+        ///   array into a single-precision floating point multidimensional
+        ///   array.
+        /// </summary>
+        public unsafe static double[,] ToDouble(this int[,] matrix)
+        {
+            int rows = matrix.GetLength(0);
+            int cols = matrix.GetLength(1);
+            int length = matrix.Length;
+
+            double[,] result = new double[rows, cols];
+
+            fixed (int* srcPtr = matrix)
+            fixed (double* dstPtr = result)
+            {
+                int* src = srcPtr;
+                double* dst = dstPtr;
+
+                for (int i = 0; i < length; i++, src++, dst++)
+                    *dst = (double)*src;
+            }
+
+            return result;
+        }
+
+        /// <summary>
         ///   Converts a single-precision floating point multidimensional
         ///   array into a double-precision floating point multidimensional
         ///   array.

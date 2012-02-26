@@ -298,6 +298,22 @@ namespace Accord.Math
             return false;
         }
 
+        /// <summary>
+        ///   Returns a value indicating whether the specified
+        ///   matrix contains a value that is not a number (NaN).
+        /// </summary>
+        /// 
+        /// <param name="matrix">A double-precision multidimensional matrix.</param>
+        /// 
+        /// <returns>True if the matrix contains a value that is not a number, false otherwise.</returns>
+        /// 
+        public static bool HasNaN(this double[] matrix)
+        {
+            foreach (var e in matrix)
+                if (Double.IsNaN(e)) return true;
+            return false;
+        }
+
         #endregion
 
 
@@ -637,8 +653,30 @@ namespace Accord.Math
         {
             if (matrix == null) throw new ArgumentNullException("matrix");
 
+            int rows = matrix.GetLength(0);
+
             double trace = 0.0;
-            for (int i = 0; i < matrix.GetLength(0); i++)
+            for (int i = 0; i < rows; i++)
+                trace += matrix[i, i];
+            return trace;
+        }
+
+        /// <summary>
+        ///   Gets the trace of a matrix.
+        /// </summary>
+        /// <remarks>
+        ///   The trace of an n-by-n square matrix A is defined to be the sum of the
+        ///   elements on the main diagonal (the diagonal from the upper left to the
+        ///   lower right) of A.
+        /// </remarks>
+        public static int Trace(this int[,] matrix)
+        {
+            if (matrix == null) throw new ArgumentNullException("matrix");
+
+            int rows = matrix.GetLength(0);
+
+            int trace = 0;
+            for (int i = 0; i < rows; i++)
                 trace += matrix[i, i];
             return trace;
         }
@@ -655,8 +693,10 @@ namespace Accord.Math
         {
             if (matrix == null) throw new ArgumentNullException("matrix");
 
+            int rows = matrix.GetLength(0);
+
             float trace = 0.0f;
-            for (int i = 0; i < matrix.GetLength(0); i++)
+            for (int i = 0; i < rows; i++)
                 trace += matrix[i, i];
             return trace;
         }
