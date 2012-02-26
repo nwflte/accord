@@ -11,7 +11,7 @@ echo.
 REM Settings for complete and (libs-only) package creation
 REM ---------------------------------------------------------
 
-set version=2.4.0
+set version=2.5.0
 set rar="C:\Program Files\WinRAR\rar"
 set fullname="Accord.NET Framework-%version%.rar" 
 set libsname="Accord.NET Framework-%version%-(libs only).rar"
@@ -43,7 +43,7 @@ del %output%
 %rar% %opts%    %output% "..\..\Release notes.txt"
 %rar% %opts%    %output% "..\..\Docs\*.chm"        -x*\.svn*
 %rar% %opts% -r %output% "..\..\Release\*"         -x*\.svn* -x*.lastcodeanalysissucceeded -x*.CodeAnalysisLog.xml -x*SlimDX.pdb
-%rar% %opts% -r %output% "..\..\Sources\*"         -x*\.svn* -x*\obj  -x*\bin      -x*\TestResults -x*\Accord.Setup\Output -x*.sdf 
+%rar% %opts% -r %output% "..\..\Sources\*"         -x*\.svn* -x*\obj  -x*\bin      -x*\TestResults -x*\Accord.Setup\Output -x*.sdf -x*.suo
 %rar% %opts% -r %output% "..\..\Samples\*"         -x*\.svn* -x*\obj  -x*\bin\x64\ -x*\bin\Debug   -x*\bin\Release -x*\bin\x86\Debug -x*.pdb
 %rar% %opts% -r %output% "..\..\Externals\*"       -x*\.svn* -x*.pdb
 %rar% t         %output%
