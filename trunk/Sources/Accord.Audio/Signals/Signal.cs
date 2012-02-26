@@ -108,7 +108,9 @@ namespace Accord.Audio
         /// <summary>
         ///   Gets the sample format used by this signal.
         /// </summary>
+        /// 
         /// <value>The signal's sample format.</value>
+        /// 
         public SampleFormat SampleFormat
         {
             get { return format; }
@@ -117,14 +119,17 @@ namespace Accord.Audio
         /// <summary>
         ///   Gets the signal duration in milliseconds.
         /// </summary>
+        /// 
         public int Duration
         {
-            get { return DurationOfSamples(Length, sampleRate); }
+            get { return DurationOfSamples(length, sampleRate); }
         }
 
         /// <summary>
-        ///   Gets the number of samples in each channel of this signal.
+        ///   Gets the number of samples in each channel of this signal,
+        ///   as known as the number of frames in the signal.
         /// </summary>
+        /// 
         public int Length
         {
             get { return length; }
@@ -133,6 +138,7 @@ namespace Accord.Audio
         /// <summary>
         ///   Gets the total number of samples in this signal.
         /// </summary>
+        /// 
         public int Samples
         {
             get { return length * channels; }
@@ -141,6 +147,7 @@ namespace Accord.Audio
         /// <summary>
         ///   Gets the number of samples per second for this signal.
         /// </summary>
+        /// 
         public int SampleRate
         {
             get { return sampleRate; }
@@ -149,6 +156,7 @@ namespace Accord.Audio
         /// <summary>
         ///   Gets the number of channels of this signal.
         /// </summary>
+        /// 
         public int Channels
         {
             get { return channels; }
@@ -157,6 +165,7 @@ namespace Accord.Audio
         /// <summary>
         ///   Gets the raw binary data representing the signal.
         /// </summary>
+        /// 
         public byte[] RawData
         {
             get { return rawData; }
@@ -314,10 +323,20 @@ namespace Accord.Audio
         /// <summary>
         ///   Creates a new Signal from a float array.
         /// </summary>
+        /// 
         public static Signal FromArray(Array signal, int channels, int sampleRate)
         {
-            int samples = signal.Length / channels;
-            byte[] buffer = new byte[signal.Length * sizeof(float)];
+            return FromArray(signal, signal.Length, channels, sampleRate);
+        }
+
+        /// <summary>
+        ///   Creates a new Signal from a float array.
+        /// </summary>
+        /// 
+        public static Signal FromArray(Array signal, int size, int channels, int sampleRate)
+        {
+            int samples = size / channels;
+            byte[] buffer = new byte[size * sizeof(float)];
             Buffer.BlockCopy(signal, 0, buffer, 0, buffer.Length);
 
             return new Signal(buffer, channels, samples, sampleRate, SampleFormat.Format32BitIeeeFloat);
@@ -326,9 +345,32 @@ namespace Accord.Audio
         /// <summary>
         ///   Copies this signal to a given array.
         /// </summary>
+        /// 
         public void CopyTo(Array array)
         {
             Buffer.BlockCopy(rawData, 0, array, 0, rawData.Length);
+        }
+
+        /// <summary>
+        ///   Copies this signal to a given array.
+        /// </summary>
+        /// 
+        public void CopyTo(float[] array)
+        {
+            Buffer.BlockCopy(rawData, 0, array, 0, rawData.Length);
+        }
+
+        /// <summary>
+        ///   Converts this signal into a array of floating-point samples.
+        /// </summary>
+        /// 
+        /// <returns>An array of single-precision floating-point samples.</returns>
+        /// 
+        public float[] ToFloat()
+        {
+            float[] array = new float[Samples];
+            Buffer.BlockCopy(rawData, 0, array, 0, rawData.Length);
+            return array;
         }
 
 
@@ -348,7 +390,7 @@ namespace Accord.Audio
         /// </summary>
         public static int DurationOfSamples(int samples, int samplingRate)
         {
-            return (int)(((double)samples / samplingRate) * 1000.0);
+            return (int)(samples / (double)samplingRate * 1000.0);
         }
 
         /// <summary>

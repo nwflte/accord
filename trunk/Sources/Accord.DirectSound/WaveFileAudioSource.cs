@@ -27,6 +27,7 @@ namespace Accord.DirectSound
     using Accord.Audio;
     using Accord.Audio.Formats;
     using SlimDX.Multimedia;
+    using System.IO;
 
     /// <summary>
     ///   Wave file audio source.
@@ -58,8 +59,8 @@ namespace Accord.DirectSound
     /// 
     public class WaveFileAudioSource : IAudioSource, IDisposable
     {
-        // audio file name
-        private string source;
+        // audio source stream
+        private Stream stream;
 
         // user data associated with the audio source
         private object userData = null;
@@ -99,8 +100,12 @@ namespace Accord.DirectSound
         /// 
         public string Source
         {
-            get { return source; }
-            set { source = value; }
+            get { return fileName; }
+            set
+            {
+                fileName = value;
+                stream = null;
+            }
         }
 
         /// <summary>
@@ -254,6 +259,18 @@ namespace Accord.DirectSound
             this.decoder = new WaveDecoder();
         }
 
+        /// <summary>
+        ///   Constructs a new Wave file audio source.
+        /// </summary>
+        /// 
+        /// <param name="stream">The stream containing a Wave file.</param>
+        /// 
+        public WaveFileAudioSource(Stream stream)
+        {
+            this.stream = stream;
+            this.decoder = new WaveDecoder();
+        }
+
 
         /// <summary>
         ///   Free resource.
@@ -278,7 +295,10 @@ namespace Accord.DirectSound
 
             try
             {
-                waveStream = new WaveStream(fileName);
+                waveStream = (stream != null) ?
+                    new WaveStream(stream) : new WaveStream(fileName);
+
+                // Open the Wave stream
                 decoder.Open(waveStream);
 
                 while (stopEvent.WaitOne(0, false))

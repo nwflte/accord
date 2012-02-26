@@ -3,6 +3,7 @@
   <Class Name="Accord.Audio.ComplexSignal">
     <Position X="3.5" Y="5.5" Width="2.25" />
     <Members>
+      <Method Name="SetChannel" Hidden="true" />
       <Field Name="status" Hidden="true" />
     </Members>
     <Compartments>
@@ -11,13 +12,6 @@
     <TypeIdentifier>
       <HashCode>AAQAAAAEAAAAAiAAAAEAAAAAggAAAAAAAoABAABAAAA=</HashCode>
       <FileName>Signals\ComplexSignal.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Accord.Audio.Extensions">
-    <Position X="0.5" Y="0.5" Width="2.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAgAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Extensions.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Audio.Metronome">
@@ -70,63 +64,82 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>BQAAAAwIQCACCAAAAEAACABAAgAAQBIwBAgSAAAAMAA=</HashCode>
+      <HashCode>BQAAAAwIQCACCAAAAEAACABAAgAAQBJwBAgSAAAAMAA=</HashCode>
       <FileName>Signals\Signal.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Audio.Tools">
-    <Position X="0.75" Y="2" Width="2" />
+    <Position X="0.5" Y="0.75" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AAAABAIAAAAAAACAAAQAAAAAAAAAAAAAAABBAAABAAA=</HashCode>
+      <HashCode>AAAABAIAAhAAAACAAIQAAAQAAAAAAAAAAABBAAABAAA=</HashCode>
       <FileName>Tools.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Accord.Audio.ComplexFilters.CombFilter" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="7" Y="6" Width="1.5" />
+  <Class Name="Accord.Audio.ComplexFilters.CombFilter" BaseTypeListCollapsed="true">
+    <Position X="7.25" Y="8.25" Width="1.5" />
+    <Members>
+      <Field Name="combSignal" Hidden="true" />
+      <Method Name="generateBaseSignal" Hidden="true" />
+      <Field Name="impulseGenerator" Hidden="true" />
+      <Field Name="length" Hidden="true" />
+    </Members>
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAgAAAgAEAACABAAAAAAAAAAAAAQAAAMAA=</HashCode>
       <FileName>ComplexFilters\CombFilter.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Accord.Audio.ComplexFilters.EnvelopeFilter" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="8.75" Y="6" Width="1.5" />
+  <Class Name="Accord.Audio.ComplexFilters.EnvelopeFilter" BaseTypeListCollapsed="true">
+    <Position X="9" Y="8.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ComplexFilters\EnvelopeFilter.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Accord.Audio.Filters.BaseFilter" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="9.75" Y="1.5" Width="1.5" />
+  <Class Name="Accord.Audio.Filters.BaseFilter" BaseTypeListCollapsed="true">
+    <Position X="9.5" Y="0.5" Width="1.75" />
+    <Members>
+      <Method Name="CheckSourceFormat" Hidden="true" />
+    </Members>
     <TypeIdentifier>
       <HashCode>AAIAAAAAABAAAAAAAAAACAAAQAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Filters\Base\BaseFilter.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Accord.Audio.Filters.EnvelopeFilter" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="9" Y="2.5" Width="1.5" />
+  <Class Name="Accord.Audio.Filters.EnvelopeFilter" BaseTypeListCollapsed="true">
+    <Position X="9" Y="3" Width="1.5" />
+    <Members>
+      <Field Name="alpha" Hidden="true" />
+      <Field Name="formatTranslations" Hidden="true" />
+    </Members>
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAACAAAQAAAABAAAAQQAAAAAAA=</HashCode>
       <FileName>Filters\EnvelopeFilter.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Audio.Filters.HighPassFilter" Collapsed="true">
-    <Position X="12.5" Y="2.5" Width="1.5" />
+    <Position X="12.5" Y="3" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAACAAAQAAAABAAAAQAAAAAAAA=</HashCode>
       <FileName>Filters\HighPassFilter.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Accord.Audio.Filters.LowPassFilter" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="10.75" Y="2.5" Width="1.5" />
+  <Class Name="Accord.Audio.Filters.LowPassFilter" BaseTypeListCollapsed="true">
+    <Position X="10.75" Y="3" Width="1.5" />
+    <Members>
+      <Field Name="formatTranslations" Hidden="true" />
+    </Members>
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAACAAAQAAAABAAAAQAAAAAAAA=</HashCode>
       <FileName>Filters\LowPassFilter.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Accord.Audio.Filters.WaveRectifier" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="7.25" Y="2.5" Width="1.5" />
+  <Class Name="Accord.Audio.Filters.WaveRectifier" BaseTypeListCollapsed="true">
+    <Position X="7.25" Y="3" Width="1.5" />
+    <Members>
+      <Field Name="formatTranslations" Hidden="true" />
+    </Members>
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
@@ -194,6 +207,10 @@
   </Class>
   <Class Name="Accord.Audio.Windows.WindowBase">
     <Position X="17.75" Y="1.25" Width="2" />
+    <Members>
+      <Field Name="sampleRate" Hidden="true" />
+      <Field Name="window" Hidden="true" />
+    </Members>
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
@@ -203,44 +220,44 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Accord.Audio.ComplexFilters.BaseComplexFilter" Collapsed="true">
-    <Position X="8" Y="4.75" Width="1.5" />
+  <Class Name="Accord.Audio.ComplexFilters.BaseComplexFilter">
+    <Position X="8" Y="6.25" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAABAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ComplexFilters\Base\BaseComplexFilter.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Accord.Audio.ComplexFilters.DifferentialRectificationFilter" Collapsed="true">
-    <Position X="10.5" Y="6" Width="1.5" />
+  <Class Name="Accord.Audio.ComplexFilters.DifferentialRectificationFilter">
+    <Position X="10.75" Y="8.25" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ComplexFilters\DifferentialRectificationFilter.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Interface Name="Accord.Audio.IAudioOutput">
-    <Position X="9.5" Y="8.5" Width="1.75" />
+    <Position X="24.5" Y="0.75" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AAAAgAAAAAAAAAAAAAAIAAAAAAQAAAAAoAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAgAAAAAIAAAAAAAAIQAAABAQAAAAAoQAAAIAAAAA=</HashCode>
       <FileName>IAudioOutput.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Accord.Audio.IAudioSource">
-    <Position X="7.25" Y="7.75" Width="1.5" />
+    <Position X="22.75" Y="0.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>BAAAAARAAiAACAgACBAAQAAAAAAAAAAAIQAAAIAIACA=</HashCode>
       <FileName>IAudioSource.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Accord.Audio.ComplexFilters.IComplexFilter">
-    <Position X="10" Y="4.25" Width="1.5" />
+    <Position X="10" Y="6.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ComplexFilters\Base\IComplexFilter.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Accord.Audio.ComplexFilters.IComplexFilterBank">
-    <Position X="12" Y="4" Width="1.75" />
+    <Position X="12.25" Y="6.25" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAABAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ComplexFilters\IComplexFilterBank.cs</FileName>

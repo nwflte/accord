@@ -27,6 +27,7 @@ namespace Accord.DirectSound
     using Accord.Audio;
     using SlimDX.DirectSound;
     using SlimDX.Multimedia;
+    using System.Collections.Generic;
 
     /// <summary>
     ///   Audio source for local audio capture device (for example microphone).
@@ -241,8 +242,8 @@ namespace Accord.DirectSound
                 stopEvent = new ManualResetEvent(false);
 
                 // create and start new thread
-                thread = new Thread(new ThreadStart(WorkerThread));
-                thread.Name = device.ToString(); // mainly for debugging
+                thread = new Thread(WorkerThread);
+                thread.Name = device.ToString();
                 thread.Start();
             }
         }
@@ -328,58 +329,75 @@ namespace Accord.DirectSound
             DirectSoundCapture captureDevice = new DirectSoundCapture(device);
 
             // Set the capture format
-            WaveFormat waveFormat = new WaveFormat();
-            waveFormat.FormatTag = WaveFormatTag.IeeeFloat;
-            waveFormat.BitsPerSample = 32; // Floats are 32 bits
-            waveFormat.BlockAlignment = (short)(waveFormat.BitsPerSample / 8);
-            waveFormat.Channels = 1;
-            waveFormat.SamplesPerSecond = sampleRate;
-            waveFormat.AverageBytesPerSecond =
-                waveFormat.SamplesPerSecond * waveFormat.BlockAlignment * waveFormat.Channels;
+            WaveFormat format = new WaveFormat();
+            format.Channels = 1;
+            format.FormatTag = WaveFormatTag.IeeeFloat;
+            format.BitsPerSample = 32;
+            format.BlockAlignment = (short)(format.BitsPerSample / 8);
+            format.SamplesPerSecond = sampleRate;
+            format.AverageBytesPerSecond = format.SamplesPerSecond * format.BlockAlignment;
 
             // Setup the capture buffer
-            CaptureBufferDescription bufferDescription = new CaptureBufferDescription();
-            bufferDescription.BufferBytes = desiredCaptureSize * sizeof(float);
-            bufferDescription.Format = waveFormat;
-            bufferDescription.WaveMapped = false;
+            CaptureBufferDescription captureBufferDescription = new CaptureBufferDescription();
+            captureBufferDescription.Format = format;
+            captureBufferDescription.BufferBytes = 2 * desiredCaptureSize * sizeof(float);
+            captureBufferDescription.WaveMapped = true;
+            captureBufferDescription.ControlEffects = false;
 
+            CaptureBuffer captureBuffer = new CaptureBuffer(captureDevice, captureBufferDescription);
 
-            // Create the capture buffer
-            CaptureBuffer buffer = new CaptureBuffer(captureDevice, bufferDescription);
-            buffer.Start(true);
+            // Setup the notification positions
+            int bufferPortionSize = captureBuffer.SizeInBytes / 2;
+            NotificationPosition[] notifications = new NotificationPosition[2];
+            notifications[0] = new NotificationPosition();
+            notifications[0].Offset = bufferPortionSize - 1;
+            notifications[0].Event = new AutoResetEvent(false);
+            notifications[1] = new NotificationPosition();
+            notifications[1].Offset = bufferPortionSize - 1 + bufferPortionSize;
+            notifications[1].Event = new AutoResetEvent(false);
+            captureBuffer.SetNotificationPositions(notifications);
+
+            // Make a copy of the wait handles
+            WaitHandle[] waitHandles = new WaitHandle[notifications.Length];
+            for (int i = 0; i < notifications.Length; i++)
+                waitHandles[i] = notifications[i].Event;
+
+            float[] currentSample = new float[desiredCaptureSize];
+
+            // Start capturing
+            captureBuffer.Start(true);
 
             try
             {
-                float[] sample = new float[desiredCaptureSize];
-
                 while (!stopEvent.WaitOne(0, true))
                 {
-                    buffer.Read(sample, 0, true);
-                    OnNewFrame(sample);
-                }
+                    int bufferPortionIndex = WaitHandle.WaitAny(waitHandles);
 
-                buffer.Stop();
+                    captureBuffer.Read(currentSample, 0, currentSample.Length, bufferPortionSize * bufferPortionIndex);
+
+                    OnNewFrame(currentSample);
+                }
             }
             catch (Exception ex)
             {
                 if (AudioSourceError != null)
-                {
                     AudioSourceError(this, new AudioSourceErrorEventArgs(ex.Message));
-                }
-                else
-                {
-                    throw;
-                }
+                else throw;
             }
             finally
             {
-                buffer.Dispose();
+                captureBuffer.Stop();
+
+                for (int i = 0; i < notifications.Length; i++)
+                    notifications[i].Event.Close();
+
+                captureBuffer.Dispose();
                 captureDevice.Dispose();
             }
         }
 
         /// <summary>
-        /// Notifies client about new frame.
+        ///   Notifies client about new block of frames.
         /// </summary>
         /// 
         /// <param name="frame">New frame's audio.</param>
@@ -387,10 +405,10 @@ namespace Accord.DirectSound
         protected void OnNewFrame(float[] frame)
         {
             framesReceived++;
+
             if ((!stopEvent.WaitOne(0, true)) && (NewFrame != null))
             {
-                Signal s = Signal.FromArray(frame, sampleRate);
-                NewFrame(this, new NewFrameEventArgs(s));
+                NewFrame(this, new NewFrameEventArgs(Signal.FromArray(frame, sampleRate)));
             }
         }
 

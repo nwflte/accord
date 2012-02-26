@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="Accord.Audio.Formats.FrameInfo" BaseTypeListCollapsed="true">
-    <Position X="1.5" Y="3" Width="2" />
+    <Position X="1.25" Y="3" Width="2" />
     <Members>
       <Field Name="bitsPerSample" Hidden="true" />
       <Field Name="channels" Hidden="true" />
@@ -19,14 +19,20 @@
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="Accord.Audio.Formats.WaveDecoder" BaseTypeListCollapsed="true">
-    <Position X="6" Y="2.25" Width="2.25" />
+    <Position X="6" Y="0.75" Width="2.25" />
     <Members>
+      <Field Name="averageBitsPerSecond" Hidden="true" />
+      <Field Name="bitsPerSample" Hidden="true" />
       <Field Name="blockAlign" Hidden="true" />
+      <Field Name="buffer" Hidden="true" />
+      <Field Name="bufferSize" Hidden="true" />
       <Field Name="bytes" Hidden="true" />
       <Field Name="channels" Hidden="true" />
+      <Field Name="duration" Hidden="true" />
       <Field Name="numberOfFrames" Hidden="true" />
+      <Field Name="numberOfSamples" Hidden="true" />
       <Method Name="read" Hidden="true" />
-      <Method Name="readAs" Hidden="true" />
+      <Method Name="readAsFloat" Hidden="true" />
       <Field Name="sampleRate" Hidden="true" />
       <Field Name="waveStream" Hidden="true" />
     </Members>
@@ -34,30 +40,38 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>BABAAAQAAAAEIAAACCAAAAAAAAAIAAghAAAYQACAEAE=</HashCode>
+      <HashCode>BABAAAYAAAAOIIAgCCCAAABCAAAIggggAABYQACAEAE=</HashCode>
       <FileName>WaveDecoder.cs</FileName>
     </TypeIdentifier>
-    <ShowAsAssociation>
-      <Property Name="Stream" />
-    </ShowAsAssociation>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="SlimDX.Multimedia.WaveStream">
-    <Position X="9.25" Y="1.75" Width="2.25" />
-    <TypeIdentifier />
-  </Class>
-  <Class Name="System.IO.Stream" Collapsed="true">
-    <Position X="9.5" Y="0.75" Width="1.75" />
-    <TypeIdentifier />
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Audio.Formats.WaveEncoder" BaseTypeListCollapsed="true">
-    <Position X="6" Y="5.75" Width="2.25" />
+    <Position X="9" Y="0.75" Width="2.25" />
+    <Members>
+      <Field Name="averageBitsPerSecond" Hidden="true" />
+      <Field Name="bitsPerSample" Hidden="true" />
+      <Field Name="blockAlign" Hidden="true" />
+      <Field Name="bytes" Hidden="true" />
+      <Field Name="channels" Hidden="true" />
+      <Field Name="duration" Hidden="true" />
+      <Method Name="firstWriteHeaders" Hidden="true" />
+      <Field Name="format" Hidden="true" />
+      <Field Name="header" Hidden="true" />
+      <Method Name="initialize" Hidden="true" />
+      <Field Name="initialized" Hidden="true" />
+      <Field Name="numberOfFrames" Hidden="true" />
+      <Field Name="numberOfSamples" Hidden="true" />
+      <Field Name="riff" Hidden="true" />
+      <Field Name="sampleRate" Hidden="true" />
+      <Method Name="updateHeaders" Hidden="true" />
+      <Field Name="waveFormat" Hidden="true" />
+      <Field Name="waveStream" Hidden="true" />
+    </Members>
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAABEIAAAAAAAAAAAAAAIAAAAAAAAAACAAAA=</HashCode>
+      <HashCode>BABAAEYAABBGIIAAACGACABCAAAIAgggAAAYAACAEAE=</HashCode>
       <FileName>WaveEncoder.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
