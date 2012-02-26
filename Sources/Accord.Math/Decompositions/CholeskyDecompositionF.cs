@@ -30,15 +30,15 @@ namespace Accord.Math.Decompositions
     using System;
 
     /// <summary>
-    ///		Cholesky Decomposition of a symmetric, positive definite matrix.
-    ///	</summary>
+    ///     Cholesky Decomposition of a symmetric, positive definite matrix.
+    /// </summary>
     /// <remarks>
     ///   <para>
-    ///		For a symmetric, positive definite matrix <c>A</c>, the Cholesky decomposition is a
-    ///		lower triangular matrix <c>L</c> so that <c>A = L * L'</c>.
-    ///		If the matrix is not symmetric or positive definite, the constructor returns a partial 
-    ///		decomposition and sets two internal variables that can be queried using the
-    ///		<see cref="Symmetric"/> and <see cref="PositiveDefinite"/> properties.</para>
+    ///     For a symmetric, positive definite matrix <c>A</c>, the Cholesky decomposition is a
+    ///     lower triangular matrix <c>L</c> so that <c>A = L * L'</c>.
+    ///     If the matrix is not symmetric or positive definite, the constructor returns a partial 
+    ///     decomposition and sets two internal variables that can be queried using the
+    ///     <see cref="Symmetric"/> and <see cref="PositiveDefinite"/> properties.</para>
     ///   <para>
     ///     Any square matrix A with non-zero pivots can be written as the product of a
     ///     lower triangular matrix L and an upper triangular matrix U; this is called
@@ -49,8 +49,8 @@ namespace Accord.Math.Decompositions
     ///   <para>
     ///     When it is applicable, the Cholesky decomposition is twice as efficient
     ///     as the LU decomposition.</para>
-    ///	</remarks>
-    ///	
+    ///    </remarks>
+    ///    
     [Serializable]
     public sealed class CholeskyDecompositionF : ICloneable, ISolverMatrixDecomposition<float>
     {
@@ -64,7 +64,7 @@ namespace Accord.Math.Decompositions
         private bool robust;
 
         // cache for lazy evaluation
-		private float[,] diagonalMatrix;
+        private float[,] diagonalMatrix;
         private float? determinant;
         private double? lndeterminant;
         private bool? nonsingular;
@@ -122,63 +122,63 @@ namespace Accord.Math.Decompositions
 
 
         /// <summary>
-		///   Returns <see langword="true"/> if the matrix is symmetric.
-		/// </summary>
-		///
+        ///   Returns <see langword="true"/> if the matrix is symmetric.
+        /// </summary>
+        ///
         public bool Symmetric
         {
             get { return this.symmetric; }
         }
 
         /// <summary>
-		///   Returns <see langword="true"/> if the matrix is positive definite.
-		/// </summary>
-		///
+        ///   Returns <see langword="true"/> if the matrix is positive definite.
+        /// </summary>
+        ///
         public bool PositiveDefinite
         {
             get { return this.positiveDefinite; }
         }
 
         /// <summary>
-		///   Returns the left (lower) triangular factor <c>L</c> so that <c>A = L * D * L'</c>.
-		/// </summary>
-		///
+        ///   Returns the left (lower) triangular factor <c>L</c> so that <c>A = L * D * L'</c>.
+        /// </summary>
+        ///
         public float[,] LeftTriangularFactor
         {
             get { return this.L; }
         }
 
         /// <summary>
-		///   Returns the block diagonal matrix of diagonal elements in a LDLt decomposition.
-		/// </summary>		
-		///
+        ///   Returns the block diagonal matrix of diagonal elements in a LDLt decomposition.
+        /// </summary>        
+        ///
         public float[,] DiagonalMatrix
         {
             get 
-			{
-			    if (diagonalMatrix == null)
-			    {
-			        diagonalMatrix = new float[n, n];
-			        for (int i = 0; i < D.Length; i++)
-			            diagonalMatrix[i,i] = D[i];
-			    }
-			    return diagonalMatrix; 
-			}
+            {
+                if (diagonalMatrix == null)
+                {
+                    diagonalMatrix = new float[n, n];
+                    for (int i = 0; i < D.Length; i++)
+                        diagonalMatrix[i,i] = D[i];
+                }
+                return diagonalMatrix; 
+            }
         }
 
         /// <summary>
-		///   Returns the one-dimensional array of diagonal elements in a LDLt decomposition.
-		/// </summary>		
-		///
+        ///   Returns the one-dimensional array of diagonal elements in a LDLt decomposition.
+        /// </summary>        
+        ///
         public float[] Diagonal
         {
             get { return D; }
         }
 
         /// <summary>
-		///   Returns the determinant of the matrix.
-		/// </summary>
-		///
+        ///   Returns the determinant of the matrix.
+        /// </summary>
+        ///
         public float Determinant
         {
             get
@@ -204,9 +204,9 @@ namespace Accord.Math.Decompositions
         }
 
         /// <summary>
-		///   Returns the log-determinant of the matrix.
-		/// </summary>
-		///
+        ///   Returns the log-determinant of the matrix.
+        /// </summary>
+        ///
         public double LogDeterminant
         {
             get
@@ -232,9 +232,9 @@ namespace Accord.Math.Decompositions
         }
 
         /// <summary>
-		///   Returns if the matrix is non-singular (i.e. invertible).
-		/// </summary>
-		///
+        ///   Returns if the matrix is non-singular (i.e. invertible).
+        /// </summary>
+        ///
         public bool Nonsingular
         {
             get
@@ -262,8 +262,8 @@ namespace Accord.Math.Decompositions
             L = new float[n, n];
             D = new float[n];
 
-			for (int i = 0; i < D.Length; i++)
-			    D[i] = 1;
+            for (int i = 0; i < D.Length; i++)
+                D[i] = 1;
 
             robust = false;
 
@@ -501,8 +501,8 @@ namespace Accord.Math.Decompositions
 
 
             float[,] B = new float[n, n];
-			for (int i = 0; i < n; i++)
-			    B[i, i] = 1;
+            for (int i = 0; i < n; i++)
+                B[i, i] = 1;
 
             // Solve L*Y = B;
             for (int k = 0; k < n; k++)
@@ -554,8 +554,8 @@ namespace Accord.Math.Decompositions
             chol.positiveDefinite = true;
             chol.robust = false;
             chol.D = new float[chol.n];
-			for (int i = 0; i < chol.D.Length; i++)
-			    chol.D[i] = 1;
+            for (int i = 0; i < chol.D.Length; i++)
+                chol.D[i] = 1;
 
             return chol;
         }

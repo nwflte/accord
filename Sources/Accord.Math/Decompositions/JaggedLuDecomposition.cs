@@ -69,7 +69,7 @@ namespace Accord.Math.Decompositions
 
         /// <summary>
         ///   Constructs a new LU decomposition.
-        /// </summary>	
+        /// </summary>    
         /// <param name="value">The matrix A to be decomposed.</param>
         /// <param name="inPlace">True if the decomposition should be performed over the
         /// <paramref name="value"/> matrix rather than on a copy of it. If true, the

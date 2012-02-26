@@ -53,11 +53,11 @@ namespace Accord.Math.Decompositions
     /// 
     public sealed class EigenvalueDecompositionF : ICloneable
     {
-        private int n;           	// matrix dimension
-        private Single[] d, e; 		// storage of eigenvalues.
-        private Single[,] V; 	    // storage of eigenvectors.
-        private Single[,] H;  		// storage of nonsymmetric Hessenberg form.
-        private Single[] ort;    	// storage for nonsymmetric algorithm.
+        private int n;              // matrix dimension
+        private Single[] d, e;      // storage of eigenvalues.
+        private Single[,] V;        // storage of eigenvectors.
+        private Single[,] H;        // storage of nonsymmetric Hessenberg form.
+        private Single[] ort;       // storage for nonsymmetric algorithm.
         private bool symmetric;
 
         /// <summary>
@@ -143,7 +143,7 @@ namespace Accord.Math.Decompositions
             get { return this.d; }
         }
 
-        /// <summary>Returns the imaginary parts of the eigenvalues.</summary>	
+        /// <summary>Returns the imaginary parts of the eigenvalues.</summary>    
         public Single[] ImaginaryEigenvalues
         {
             get { return this.e; }
@@ -316,7 +316,7 @@ namespace Accord.Math.Decompositions
 
             Single f = 0;
             Single tst1 = 0;
-            Single eps = 2 * Special.SingleEpsilon;
+            Single eps = 2 * Constants.SingleEpsilon;
 
             for (int l = 0; l < n; l++)
             {
@@ -548,7 +548,7 @@ namespace Accord.Math.Decompositions
             int n = nn - 1;
             int low = 0;
             int high = nn - 1;
-            Single eps = 2 * Special.SingleEpsilon;
+            Single eps = 2 * Constants.SingleEpsilon;
             Single exshift = 0;
             Single p = 0;
             Single q = 0;
@@ -667,7 +667,7 @@ namespace Accord.Math.Decompositions
                 }
                 else
                 {
-                    // No convergence yet	 
+                    // No convergence yet     
 
                     // Form shift
                     x = H[n, n];

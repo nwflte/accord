@@ -31,7 +31,7 @@ namespace Accord.Math.Decompositions
     using Accord.Math;
 
     /// <summary>
-    ///	  QR decomposition for a rectangular matrix.
+    ///      QR decomposition for a rectangular matrix.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -51,14 +51,14 @@ namespace Accord.Math.Decompositions
         private float[,] qr;
         private float[] Rdiag;
 
-        /// <summary>Constructs a QR decomposition.</summary>	
+        /// <summary>Constructs a QR decomposition.</summary>    
         /// <param name="value">The matrix A to be decomposed.</param>
         public QrDecompositionF(float[,] value)
             : this(value, false)
         {
         }
 
-        /// <summary>Constructs a QR decomposition.</summary>	
+        /// <summary>Constructs a QR decomposition.</summary>    
         /// <param name="value">The matrix A to be decomposed.</param>
         /// <param name="transpose">True if the decomposition should be performed on
         /// the transpose of A rather than A itself, false otherwise. Default is false.</param>

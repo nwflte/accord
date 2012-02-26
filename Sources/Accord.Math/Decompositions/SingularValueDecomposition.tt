@@ -36,7 +36,7 @@ namespace Accord.Math.Decompositions
     /// </summary>
     /// <remarks>
     ///  <para>
-    ///	  For an m-by-n matrix <c>A</c> with <c>m >= n</c>, the singular value decomposition
+    ///      For an m-by-n matrix <c>A</c> with <c>m >= n</c>, the singular value decomposition
     ///   is an m-by-n orthogonal matrix <c>U</c>, an n-by-n diagonal matrix <c>S</c>, and
     ///   an n-by-n orthogonal matrix <c>V</c> so that <c>A = U * S * V'</c>.
     ///   The singular values, <c>sigma[k] = S[k,k]</c>, are ordered so that
@@ -68,31 +68,31 @@ namespace Accord.Math.Decompositions
 
         private int[] si; // sorting order
 
-		private const <#=T#> eps = 2 * Special.<#=T#>Epsilon;
-        private const <#=T#> tiny = Special.<#=T#>Small;
+        private const <#=T#> eps = 2 * Constants.<#=T#>Epsilon;
+        private const <#=T#> tiny = Constants.<#=T#>Small;
 
         /// <summary>
-		///   Returns the condition number <c>max(S) / min(S)</c>.
-		/// </summary>
-		///
+        ///   Returns the condition number <c>max(S) / min(S)</c>.
+        /// </summary>
+        ///
         public <#=T#> Condition
         {
             get { return s[0] / s[System.Math.Min(m, n) - 1]; }
         }
 
         /// <summary>
-		///   Returns the singularity threshold.
-		/// </summary>
-		///
+        ///   Returns the singularity threshold.
+        /// </summary>
+        ///
         public <#=T#> Threshold
         {
             get { return <#=T#>.Epsilon * System.Math.Max(m, n) * s[0]; }
         }
 
         /// <summary>
-		///   Returns the Two norm.
-		/// </summary>
-		///
+        ///   Returns the Two norm.
+        /// </summary>
+        ///
         public <#=T#> TwoNorm
         {
             get { return s[0]; }
@@ -114,25 +114,25 @@ namespace Accord.Math.Decompositions
             }
         }
 
-        /// <summary>Returns the one-dimensional array of singular values.</summary>		
+        /// <summary>Returns the one-dimensional array of singular values.</summary>        
         public <#=T#>[] Diagonal
         {
             get { return this.s; }
         }
 
-        /// <summary>Returns the block diagonal matrix of singular values.</summary>		
+        /// <summary>Returns the block diagonal matrix of singular values.</summary>        
         public <#=T#>[,] DiagonalMatrix
         {
             get { return Matrix.Diagonal(s); }
         }
 
-        /// <summary>Returns the V matrix of Singular Vectors.</summary>		
+        /// <summary>Returns the V matrix of Singular Vectors.</summary>        
         public <#=T#>[,] RightSingularVectors
         {
             get { return v; }
         }
 
-        /// <summary>Returns the U matrix of Singular Vectors.</summary>		
+        /// <summary>Returns the U matrix of Singular Vectors.</summary>        
         public <#=T#>[,] LeftSingularVectors
         {
             get { return u; }
