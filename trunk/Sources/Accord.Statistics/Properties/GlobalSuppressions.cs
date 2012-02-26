@@ -8,6 +8,8 @@
 // "In Project Suppression File". 
 // You do not need to add suppressions to this file manually. 
 
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly", MessageId = "Mc", Scope = "type", Target = "Accord.Statistics.Testing.McNemarTest")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "Function", Scope = "member", Target = "Accord.Statistics.Links.ILinkFunction.#Function(System.Double)")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1000:DoNotDeclareStaticMembersOnGenericTypes", Scope = "member", Target = "Accord.Statistics.Models.Markov.HiddenMarkovClassifier`1.#Load(System.IO.Stream)")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1000:DoNotDeclareStaticMembersOnGenericTypes", Scope = "member", Target = "Accord.Statistics.Models.Markov.HiddenMarkovClassifier`1.#Load(System.String)")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1000:DoNotDeclareStaticMembersOnGenericTypes", Scope = "member", Target = "Accord.Statistics.Models.Fields.HiddenConditionalRandomField`1.#Load(System.String)")]

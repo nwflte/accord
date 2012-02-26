@@ -281,8 +281,8 @@ namespace Accord.Statistics.Models.Regression
             double coeff = coefficients[index];
             double error = standardErrors[index];
 
-            double upper = coeff + 1.96 * error;
-            double lower = coeff - 1.96 * error;
+            double upper = coeff + 1.9599 * error;
+            double lower = coeff - 1.9599 * error;
 
             DoubleRange ci = new DoubleRange(Math.Exp(lower), Math.Exp(upper));
 

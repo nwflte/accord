@@ -139,7 +139,7 @@ namespace Accord.Statistics.Models.Markov.Learning
             for (int i = 0, m = 0; i < Models.Length; i++)
             {
                 var A = Matrix.Exp(Models[i].Transitions);
-                var B = Matrix.Exp(Models[i].LogEmissions);
+                var B = Matrix.Exp(Models[i].Emissions);
 
                 for (int j = 0; j < Models[i].States; j++)
                 {

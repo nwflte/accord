@@ -30,7 +30,7 @@ namespace Accord.Statistics.Models.Markov
         {
             int states = model.States;
             var A = Matrix.Exp(model.Transitions);
-            var B = Matrix.Exp(model.LogEmissions);
+            var B = Matrix.Exp(model.Emissions);
             var pi = Matrix.Exp(model.Probabilities);
 
             int T = observations.Length;
@@ -89,7 +89,7 @@ namespace Accord.Statistics.Models.Markov
         {
             int states = model.States;
             var A = Matrix.Exp(model.Transitions);
-            var B = Matrix.Exp(model.LogEmissions);
+            var B = Matrix.Exp(model.Emissions);
             var pi = Matrix.Exp(model.Probabilities);
 
             int T = observations.Length;
@@ -253,7 +253,7 @@ namespace Accord.Statistics.Models.Markov
         {
             int states = model.States;
             var A = Matrix.Exp(model.Transitions);
-            var B = Matrix.Exp(model.LogEmissions);
+            var B = Matrix.Exp(model.Emissions);
             var pi = Matrix.Exp(model.Probabilities);
 
             int T = observations.Length;
@@ -305,7 +305,7 @@ namespace Accord.Statistics.Models.Markov
         {
             int states = model.States;
             var A = Matrix.Exp(model.Transitions);
-            var B = Matrix.Exp(model.LogEmissions);
+            var B = Matrix.Exp(model.Emissions);
             var pi = Matrix.Exp(model.Probabilities);
 
             int T = observations.Length;
@@ -339,7 +339,7 @@ namespace Accord.Statistics.Models.Markov
 
             double likelihood = 0;
             for (int i = 0; i < model.States; i++)
-                likelihood += bwd[0, i] * Math.Exp(model.Probabilities[i]) * Math.Exp(model.LogEmissions[i, observations[0]]);
+                likelihood += bwd[0, i] * Math.Exp(model.Probabilities[i]) * Math.Exp(model.Emissions[i, observations[0]]);
             logLikelihood = Math.Log(likelihood);
 
             return bwd;
@@ -395,7 +395,7 @@ namespace Accord.Statistics.Models.Markov
         {
             int states = model.States;
             var logA = model.Transitions;
-            var logB = model.LogEmissions;
+            var logB = model.Emissions;
             var logPi = model.Probabilities;
 
             int T = observations.Length;
@@ -524,7 +524,7 @@ namespace Accord.Statistics.Models.Markov
         {
             int states = model.States;
             var logA = model.Transitions;
-            var logB = model.LogEmissions;
+            var logB = model.Emissions;
             var logPi = model.Probabilities;
 
             int T = observations.Length;
@@ -579,7 +579,7 @@ namespace Accord.Statistics.Models.Markov
             logLikelihood = Double.NegativeInfinity;
             for (int i = 0; i < model.States; i++)
                 logLikelihood = Special.LogSum(logLikelihood, lnBwd[0, i] +
-                    model.Probabilities[i] + model.LogEmissions[i, observations[0]]);
+                    model.Probabilities[i] + model.Emissions[i, observations[0]]);
 
             return lnBwd;
         }
