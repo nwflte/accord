@@ -39,7 +39,7 @@ namespace Accord.Math.Environments.Octave
 
         // constants
         protected static double pi = System.Math.PI;
-        protected static double eps = Special.DoubleEpsilon;
+        protected static double eps = Constants.DoubleEpsilon;
 
         // octave language commands
         protected static double[,] eye(int size) { return Matrix.Identity(size); }

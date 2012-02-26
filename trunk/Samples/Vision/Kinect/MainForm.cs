@@ -112,6 +112,7 @@ namespace KinectController
 
                     controller.Device = videoCamera;
                     controller.Start();
+                    controller.NewFrame += new AForge.Video.NewFrameEventHandler(controller_NewFrame);
                 }
 
                 if (depthCamera == null)
@@ -126,6 +127,11 @@ namespace KinectController
 
                 toolStripStatusLabel1.Text = "Initializing...";
             }
+        }
+
+        void controller_NewFrame(object sender, AForge.Video.NewFrameEventArgs eventArgs)
+        {
+            pictureBox2.Image = eventArgs.Frame;
         }
 
         private void btnReset_Click(object sender, EventArgs e)
@@ -330,20 +336,12 @@ namespace KinectController
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            if (pbLeftHand.Image != null)
-            {
-                var image = pbLeftHand.Image as Bitmap;
-                dataGridView1.Rows.Add(image, 0);
-            }
+          
         }
 
         private void saveImagesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            foreach (DataGridViewRow row in dataGridView1.Rows)
-            {
-                Bitmap hand = row.Cells[0].Value as Bitmap;
-
-            }
+           
         }
 
 

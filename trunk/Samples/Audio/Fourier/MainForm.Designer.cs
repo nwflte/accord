@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -126,8 +127,11 @@
             this.chart1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
+            this.chart1.BackColor = System.Drawing.Color.White;
             this.chart1.Location = new System.Drawing.Point(12, 27);
             this.chart1.Name = "chart1";
+            this.chart1.RangeX = ((AForge.DoubleRange)(resources.GetObject("chart1.RangeX")));
+            this.chart1.RangeY = ((AForge.DoubleRange)(resources.GetObject("chart1.RangeY")));
             this.chart1.Size = new System.Drawing.Size(253, 148);
             this.chart1.TabIndex = 6;
             this.chart1.Text = "chart1";
@@ -172,8 +176,8 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
             this.Text = "Fourier Demo";
-            this.Load += new System.EventHandler(this.MainFormLoad);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.MainFormFormClosed);
+            this.Load += new System.EventHandler(this.MainFormLoad);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);

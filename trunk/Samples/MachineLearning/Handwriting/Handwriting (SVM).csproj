@@ -56,6 +56,10 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AForge, Version=2.2.3.0, Culture=neutral, PublicKeyToken=c1db6ff4eaa06aeb, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\AForge.NET\Framework\Release\AForge.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -116,6 +120,10 @@
     <None Include="Resources\optdigits-tra.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Sources\Accord.Core\Accord.Core.csproj">
+      <Project>{A177A90C-8207-466A-AF70-F2B8452A42AC}</Project>
+      <Name>Accord.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Sources\Accord.MachineLearning\Accord.MachineLearning.csproj">
       <Project>{7AB4BBCC-6222-423D-9FF9-BA9CB7C09199}</Project>
       <Name>Accord.MachineLearning</Name>
