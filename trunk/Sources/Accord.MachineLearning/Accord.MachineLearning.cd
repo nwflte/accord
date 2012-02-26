@@ -21,25 +21,24 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="Accord.MachineLearning.VectorMachines.SupportVectorMachine">
-    <Position X="12" Y="8.75" Width="2.25" />
+    <Position X="12" Y="8.5" Width="2.25" />
     <Compartments>
       <Compartment Name="Private" Collapsed="true" />
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AEAAgIAAgAAAEIAAAAAAAAAAEAAAQCAAAEAgAAAAAAA=</HashCode>
+      <HashCode>AEAAgIAAgAAIEIAAAAAAAAAAEAAAQCQAAEAgQAAAAAA=</HashCode>
       <FileName>VectorMachines\SupportVectorMachine.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.MachineLearning.VectorMachines.Learning.SequentialMinimalOptimization" BaseTypeListCollapsed="true">
-    <Position X="10.5" Y="5" Width="2.5" />
+    <Position X="13.25" Y="3.5" Width="2.5" />
     <Members>
       <Field Name="alpha" Hidden="true" />
       <Field Name="bias" Hidden="true" />
       <Field Name="c" Hidden="true" />
       <Method Name="compute" Hidden="true" />
-      <Method Name="computeComplexity" Hidden="true" />
       <Field Name="epsilon" Hidden="true" />
       <Field Name="errors" Hidden="true" />
       <Method Name="examineExample" Hidden="true" />
@@ -47,7 +46,6 @@
       <Field Name="kernel" Hidden="true" />
       <Field Name="machine" Hidden="true" />
       <Field Name="outputs" Hidden="true" />
-      <Field Name="random" Hidden="true" />
       <Method Name="takeStep" Hidden="true" />
       <Field Name="tolerance" Hidden="true" />
       <Field Name="useComplexityHeuristic" Hidden="true" />
@@ -57,7 +55,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAQAAAIAAQACEAEAAAEABBAAAAAQABCABAQQAARAAMI=</HashCode>
+      <HashCode>AgQAAAIAAAACEAGAAAEABBBAAAAQABCABAAQAARAAMM=</HashCode>
       <FileName>VectorMachines\Learning\SequentialMinimalOptimization.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -118,7 +116,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AEAAgKAAAAEgAAgACAAAAAAAEAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AFAAgKAAAAUgAAAACAAAAAEgEIAAAAQAAAAAAABQAAA=</HashCode>
       <FileName>VectorMachines\MulticlassSupportVectorMachine.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -127,7 +125,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.MachineLearning.VectorMachines.Learning.MulticlassSupportVectorLearning">
-    <Position X="16.5" Y="5" Width="2.5" />
+    <Position X="16" Y="3.5" Width="2.5" />
     <Members>
       <Field Name="configure" Hidden="true" />
       <Field Name="inputs" Hidden="true" />
@@ -228,9 +226,10 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.MachineLearning.GaussianMixtureModel">
-    <Position X="7.25" Y="15.75" Width="2" />
+    <Position X="6.5" Y="15.75" Width="2.75" />
     <Members>
       <Field Name="clusters" Hidden="true" />
+      <Method Name="constructor" Hidden="true" />
       <Field Name="model" Hidden="true" />
     </Members>
     <Compartments>
@@ -262,14 +261,14 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.MachineLearning.GaussianClusterCollection">
-    <Position X="10" Y="17.75" Width="2.25" />
+    <Position X="10.25" Y="18" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>GaussianMixtureModel.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.MachineLearning.GaussianMixtureModelOptions">
-    <Position X="7" Y="18" Width="2.5" />
+    <Position X="6.75" Y="18" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
       <FileName>GaussianMixtureModel.cs</FileName>
@@ -296,7 +295,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.MachineLearning.DecisionTrees.DecisionNode">
-    <Position X="35.25" Y="4.5" Width="1.5" />
+    <Position X="27.75" Y="9" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AMAAAACAAAAAAgAEAAAIUAAAAAAAAAAAAQAgAAAAAAA=</HashCode>
       <FileName>DecisionTrees\DecisionNode.cs</FileName>
@@ -307,14 +306,14 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="Accord.MachineLearning.DecisionTrees.DecisionBranchNodeCollection">
-    <Position X="31.75" Y="6.75" Width="2.5" />
+    <Position X="24.25" Y="11.25" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>DecisionTrees\DecisionNode.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.MachineLearning.DecisionTrees.DecisionTree">
-    <Position X="32.5" Y="3.5" Width="1.5" />
+    <Position X="25" Y="8" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AEAAIAAAAAAAACAAABAAAAAQAAgAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>DecisionTrees\DecisionTree.cs</FileName>
@@ -327,7 +326,7 @@
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="Accord.MachineLearning.DecisionTrees.DecisionVariable">
-    <Position X="29" Y="4.75" Width="2.5" />
+    <Position X="21.5" Y="9.25" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAACAAAAAAAAAQQAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>DecisionTrees\DecisionVariable.cs</FileName>
@@ -337,14 +336,14 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="Accord.MachineLearning.DecisionTrees.DecisionAttributeCollection">
-    <Position X="29" Y="3" Width="2.5" />
+    <Position X="21.5" Y="7.5" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>DecisionTrees\DecisionVariable.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.MachineLearning.DecisionTrees.Learning.C45Learning">
-    <Position X="26.75" Y="11.25" Width="1.5" />
+    <Position X="22.5" Y="14" Width="1.5" />
     <Members>
       <Field Name="attributes" Hidden="true" />
       <Method Name="computeGainRatio" Hidden="true" />
@@ -365,7 +364,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.MachineLearning.DecisionTrees.Learning.ID3Learning">
-    <Position X="25" Y="11.25" Width="1.5" />
+    <Position X="20.75" Y="14" Width="1.5" />
     <Members>
       <Field Name="attributes" Hidden="true" />
       <Method Name="computeGainRatio" Hidden="true" />
@@ -385,11 +384,32 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.MachineLearning.DecisionTrees.Learning.Measures">
-    <Position X="29" Y="11.25" Width="1.5" />
+    <Position X="24.5" Y="14" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>DecisionTrees\Learning\Measures.cs</FileName>
     </TypeIdentifier>
+  </Class>
+  <Class Name="Accord.MachineLearning.VectorMachines.Learning.ProbabilisticOutputLearning">
+    <Position X="18.75" Y="3.5" Width="2.25" />
+    <Members>
+      <Field Name="distances" Hidden="true" />
+      <Field Name="inputs" Hidden="true" />
+      <Field Name="machine" Hidden="true" />
+      <Field Name="maxIterations" Hidden="true" />
+      <Field Name="minStepSize" Hidden="true" />
+      <Field Name="negatives" Hidden="true" />
+      <Field Name="outputs" Hidden="true" />
+      <Field Name="positives" Hidden="true" />
+      <Field Name="sigma" Hidden="true" />
+      <Field Name="targets" Hidden="true" />
+      <Field Name="tolerance" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AIAAAAKAgAACAAAAAAAABAAAAEAAABAQAABAAAQQAAI=</HashCode>
+      <FileName>VectorMachines\Learning\ProbabilisticOutputLearning.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
   <Struct Name="Accord.MachineLearning.GridSearchParameter">
     <Position X="6" Y="8.25" Width="1.75" />
@@ -407,7 +427,7 @@
     </TypeIdentifier>
   </Struct>
   <Interface Name="Accord.MachineLearning.VectorMachines.Learning.ISupportVectorMachineLearning">
-    <Position X="13.25" Y="3.25" Width="3" />
+    <Position X="15.5" Y="1.5" Width="3" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
       <FileName>VectorMachines\Learning\ISupportVectorMachineLearning.cs</FileName>
@@ -425,14 +445,14 @@
     <TypeIdentifier />
   </Interface>
   <Enum Name="Accord.MachineLearning.DecisionTrees.ComparisonKind">
-    <Position X="35.25" Y="8" Width="1.5" />
+    <Position X="27.75" Y="12.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>ACAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAQVAACA=</HashCode>
       <FileName>DecisionTrees\DecisionNode.cs</FileName>
     </TypeIdentifier>
   </Enum>
   <Enum Name="Accord.MachineLearning.DecisionTrees.DecisionAttributeKind">
-    <Position X="29.25" Y="7" Width="1.75" />
+    <Position X="21.75" Y="11.5" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASA=</HashCode>
       <FileName>DecisionTrees\DecisionVariable.cs</FileName>

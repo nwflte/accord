@@ -95,6 +95,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VectorMachines\MulticlassSupportVectorMachine.cs" />
     <Compile Include="VectorMachines\Learning\MulticlassSupportVectorLearning.cs" />
+    <Compile Include="VectorMachines\Learning\ProbabilisticOutputLearning.cs" />
     <Compile Include="VectorMachines\SupportVectorMachine.cs" />
   </ItemGroup>
   <ItemGroup>

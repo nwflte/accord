@@ -8,6 +8,7 @@
 // "In Project Suppression File". 
 // You do not need to add suppressions to this file manually. 
 
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2002:DoNotLockOnObjectsWithWeakIdentity", Scope = "member", Target = "Accord.MachineLearning.VectorMachines.MulticlassSupportVectorMachine.#compute(System.Collections.Concurrent.ConcurrentDictionary`2<System.Double[],System.Double>,Accord.MachineLearning.VectorMachines.KernelSupportVectorMachine,System.Double[])")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "kmeans", Scope = "member", Target = "Accord.MachineLearning.GaussianMixtureModel.#Initialize(Accord.MachineLearning.KMeans)")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Scope = "member", Target = "Accord.MachineLearning.GaussianCluster.#GetDistribution()")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "x", Scope = "member", Target = "Accord.MachineLearning.GaussianCluster.#Probability(System.Double[])")]
