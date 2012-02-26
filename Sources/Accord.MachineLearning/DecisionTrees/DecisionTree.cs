@@ -23,20 +23,23 @@
 namespace Accord.MachineLearning.DecisionTrees
 {
     using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.Linq.Expressions;
-    using AForge;
 
     /// <summary>
     ///   Decision tree.
     /// </summary>
     /// 
     /// <remarks>
+    /// <para>
     ///   Represent a decision tree which can be compiled to
-    ///   code at run-time.
+    ///   code at run-time. For sample usage and example of
+    ///   learning, please see the <see cref="Learning.ID3Learning">
+    ///   ID3 learning algorithm for decision trees</see>.</para>
     /// </remarks>
-    /// 
+    ///
+    /// <seealso cref="Learning.ID3Learning"/>
+    /// <seealso cref="Learning.C45Learning"/>
+    ///
     [Serializable]
     public class DecisionTree
     {

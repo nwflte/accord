@@ -27,10 +27,30 @@ namespace Accord.MachineLearning.Bayes
     using Accord.Statistics.Distributions;
     using Accord.Statistics.Distributions.Fitting;
 
-
     /// <summary>
-    ///   Naïve Bayes Classifier
+    ///   Naïve Bayes Classifier for arbitrary distributions.
     /// </summary>
+    /// 
+    /// <remarks>
+    /// <para>
+    ///   A naive Bayes classifier is a simple probabilistic classifier based on applying Bayes' theorem
+    ///   with strong (naive) independence assumptions. A more descriptive term for the underlying probability
+    ///   model would be "independent feature model".</para>
+    /// <para>
+    ///   In simple terms, a naive Bayes classifier assumes that the presence (or absence) of a particular
+    ///   feature of a class is unrelated to the presence (or absence) of any other feature, given the class
+    ///   variable. In spite of their naive design and apparently over-simplified assumptions, naive Bayes 
+    ///   classifiers have worked quite well in many complex real-world situations.</para>
+    ///   
+    /// <para>
+    ///   References:
+    ///   <list type="bullet">
+    ///     <item><description>
+    ///       Wikipedia contributors. "Naive Bayes classifier." Wikipedia, The Free Encyclopedia.
+    ///       Wikipedia, The Free Encyclopedia, 16 Dec. 2011. Web. 5 Jan. 2012.</description></item>
+    ///   </list>
+    /// </para>  
+    /// </remarks>
     /// 
     /// <seealso cref="NaiveBayes"/>
     /// 
