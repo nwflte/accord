@@ -1,3 +1,61 @@
+Accord.NET Framework 2.5.0 release notes
+-----------------------------------------
+20.01.2012.    
+
+Version updates and fixes:
+
+* Accord.Math
+  - Splitting Special class into smaller classes;
+  - Moving ComplexMatrix to ComplexExtensions namespace.
+
+* Accord.Statistics
+  - Introducing Accord.Statistics.Links namespace for link functions;
+  - Adding Absolute, Cauchit, Identity, Inverse, Inverse Squared,
+    Logit, Log, Log-log, Probit and Sin link functions;
+  - Adding IFittableDistribution interface to eventually replace
+    the functionality of IDistribution.Fit in a future version;
+  - Adding Gamma, Cauchy, InverseGaussian, Hypergeometric, Geometric,
+    Exponential, Binomial and Kolmogorov-Smirnov probability distributions;
+  - Adding InverseDistributionFunction to most Univariate distributions;
+  - Adding ComplementaryDistributionFunction for all IDistributions;
+  - Adding HypothesisTest interface for specifying statistical tests;
+  - Adding Kolmogorov-Smirnov tests for one and two samples;
+  - Adding Student's T-Test for one and two samples;
+  - Adding Quartiles function to statistical tools;
+  - Adding several association measures to general contingency tables;
+  - Adding Bhapkar, Bowker, Kappa, McNemar, Stuart-Maxwell and Two-matrix Kappa tests;
+  - Adding symmetric triangle, Squared sinc, Hypersecant and Dirichlet kernels;
+  - Adding Gamma formulations to sparse Gaussian and sparse Laplacian kernels;
+  - Correcting property name from LogEmissions to Emissions in Markov models.
+
+* Accord.MachineLearning
+  - Adding small optimizations to SMO such as index sets and diagonal caching;
+  - Adding support vector sharing in the computation of multi-class SVMs;
+  - Adding Estimate methods for Gaussian, Laplacian and Sigmoid kernels;
+  - Adding probabilistic output learning and link functions to SVMs;
+  - Adding elimination-based multi-class decision for multi-class SVMs (DAGs);
+  - Changing default value for constant in linear and polynomial kernels to 1;
+  - Changing default behavior of SVM compute in order to return decisions.
+
+* Accord.Neuro
+  - Adding linear activation function.
+
+* Accord.Audio
+  - Adding simple mode to Wavechart control;
+  - Adding navigation support to WaveEncoder;
+  - Correcting Wave Encoder and Decoder classes.
+
+* Accord.Imaging
+  - Adding better starting values in Image/Matrix converters.
+
+* Sample applications
+  - Updating Handwriting (SVM) sample application to use all samples
+    available and to perform automatic estimation of Gaussian kernel;
+  - Adding new audio recording sample application.
+
+
+
+
 Accord.NET Framework 2.4.0 release notes
 -----------------------------------------
 04.01.2012.    
