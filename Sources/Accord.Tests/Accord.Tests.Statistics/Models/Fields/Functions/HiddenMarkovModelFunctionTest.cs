@@ -158,7 +158,7 @@ namespace Accord.Tests.Statistics
 
             for (int i = 0; i < model.States; i++)
                 for (int j = 0; j < model.Symbols; j++)
-                    Assert.AreEqual(model.LogEmissions[i, j], weights[k++]);
+                    Assert.AreEqual(model.Emissions[i, j], weights[k++]);
 
         }
 
@@ -179,7 +179,7 @@ namespace Accord.Tests.Statistics
             for (int i = 0; i < model.States; i++)
             {
                 // Check initial state transitions
-                expected = Math.Exp(model.Probabilities[i]) * Math.Exp(model.LogEmissions[i, x[0]]);
+                expected = Math.Exp(model.Probabilities[i]) * Math.Exp(model.Emissions[i, x[0]]);
                 actual = Math.Exp(target.Factors[0].Compute(-1, i, x, 0));
                 Assert.AreEqual(expected, actual, 1e-6);
             }
@@ -189,14 +189,14 @@ namespace Accord.Tests.Statistics
                 for (int i = 0; i < model.States; i++)
                 {
                     // Check initial state transitions
-                    expected = Math.Exp(model.Probabilities[i]) * Math.Exp(model.LogEmissions[i, x[0]]);
+                    expected = Math.Exp(model.Probabilities[i]) * Math.Exp(model.Emissions[i, x[0]]);
                     actual = Math.Exp(target.Factors[0].Compute(-1, i, x, 0));
                     Assert.AreEqual(expected, actual, 1e-6);
 
                     // Check normal state transitions
                     for (int j = 0; j < model.States; j++)
                     {
-                        expected = Math.Exp(model.Transitions[i, j]) * Math.Exp(model.LogEmissions[j, x[t]]);
+                        expected = Math.Exp(model.Transitions[i, j]) * Math.Exp(model.Emissions[j, x[t]]);
                         actual = Math.Exp(target.Factors[0].Compute(i, j, x, t));
                         Assert.AreEqual(expected, actual, 1e-6);
                     }

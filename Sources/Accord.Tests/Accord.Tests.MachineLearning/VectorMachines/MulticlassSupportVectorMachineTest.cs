@@ -20,21 +20,16 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.MachineLearning.VectorMachines;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Accord.Statistics.Kernels;
-using Accord.MachineLearning.VectorMachines.Learning;
-using System.IO;
-using Accord.Math;
-
 namespace Accord.Tests.MachineLearning
 {
 
+    using Accord.MachineLearning.VectorMachines;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Accord.Statistics.Kernels;
+    using Accord.MachineLearning.VectorMachines.Learning;
+    using System.IO;
+    using Accord.Math;
 
-    /// <summary>
-    ///This is a test class for MulticlassSupportVectorMachineTest and is intended
-    ///to contain all MulticlassSupportVectorMachineTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class MulticlassSupportVectorMachineTest
     {
@@ -42,10 +37,6 @@ namespace Accord.Tests.MachineLearning
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -138,6 +129,51 @@ namespace Accord.Tests.MachineLearning
             Assert.AreNotEqual(target[1, 2], target[0, 1]);
         }
 
+        [TestMethod()]
+        public void ComputeTest1()
+        {
+            double[][] inputs =
+            {
+                new double[] { 1, 4, 2, 0, 1 },
+                new double[] { 1, 3, 2, 0, 1 },
+                new double[] { 3, 0, 1, 1, 1 },
+                new double[] { 3, 0, 1, 0, 1 },
+                new double[] { 0, 5, 5, 5, 5 },
+                new double[] { 1, 5, 5, 5, 5 },
+                new double[] { 1, 0, 0, 0, 0 },
+                new double[] { 1, 0, 0, 0, 0 },
+            };
+
+            int[] outputs =
+            {
+                0, 0,
+                1, 1,
+                2, 2,
+                3, 3,
+            };
+
+            IKernel kernel = new Polynomial(2);
+            var msvm = new MulticlassSupportVectorMachine(5, kernel, 4);
+            var smo = new MulticlassSupportVectorLearning(msvm, inputs, outputs);
+            smo.Algorithm = (svm, classInputs, classOutputs, i, j) =>
+                new SequentialMinimalOptimization(svm, classInputs, classOutputs);
+
+            double error = smo.Run();
+
+            for (int i = 0; i < inputs.Length; i++)
+            {
+                double expected = outputs[i];
+                double actual = msvm.Compute(inputs[i], MulticlassComputeMethod.Elimination);
+                Assert.AreEqual(expected, actual);
+            }
+
+            for (int i = 0; i < inputs.Length; i++)
+            {
+                double expected = outputs[i];
+                double actual = msvm.Compute(inputs[i], MulticlassComputeMethod.Voting);
+                Assert.AreEqual(expected, actual);
+            }
+        }
 
         [TestMethod()]
         public void SerializeTest1()

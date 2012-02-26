@@ -125,7 +125,7 @@ namespace Accord.Tests.Wavelets
 
             Haar.FWT(data);
 
-            var d = data.Multiply(Accord.Math.Special.Sqrt2);
+            var d = data.Multiply(Constants.Sqrt2);
 
             Assert.IsTrue(Matrix.IsEqual(expected, d, 0.001));
 

@@ -26,7 +26,7 @@ namespace Accord.Tests.Statistics
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
     using Accord.Math;
-    
+
     [TestClass()]
     public class LogisticRegressionAnalysisTest
     {
@@ -78,15 +78,16 @@ namespace Accord.Tests.Statistics
 
 
         [TestMethod()]
-        public void LogisticRegressionAnalysisConstructorTest()
+        public void ComputeTest1()
         {
-           
+
             double[][] inputs = training.Submatrix(null, 0, 3);
             double[] outputs = training.GetColumn(4);
 
             LogisticRegressionAnalysis regression = new LogisticRegressionAnalysis(inputs, outputs);
 
-            regression.Compute();
+            bool converged = regression.Compute();
+            Assert.IsTrue(converged);
 
             double[] actual = regression.Result;
 
@@ -105,6 +106,65 @@ namespace Accord.Tests.Statistics
 
             for (int i = 0; i < expected.Length; i++)
                 Assert.AreEqual(expected[i], actual[i], 1e-6);
+        }
+
+        [TestMethod()]
+        public void ComputeTest2()
+        {
+            // Test instance 01
+            double[][] trainInput =
+            {
+               new double[] { 1, 1 },
+               new double[] { 0, 0 },
+            };
+
+            double[] trainOutput = { 1, 0 };
+            double[] testInput = { 0, 0.2 };
+
+            LogisticRegressionAnalysis target = new LogisticRegressionAnalysis(trainInput, trainOutput);
+
+            target.Compute();
+
+            foreach (var coefficient in target.Coefficients)
+                Assert.IsFalse(double.IsNaN(coefficient.Value));
+
+            Assert.AreEqual(0, target.Regression.Compute(testInput));
+
+            // Test instance 02
+            trainInput = new double[][]
+            {
+                new double[] { 1, 0, 1, 1, 0, 1, 1, 0, 1, 0 },
+                new double[] { 0, 1, 0, 1, 1, 0, 1, 1, 0, 1 },
+                new double[] { 1, 1, 0, 0, 1, 1, 0, 1, 1, 1 },
+                new double[] { 1, 0, 1, 1, 0, 1, 1, 0, 1, 0 },
+                new double[] { 0, 1, 0, 1, 1, 0, 1, 1, 0, 1 },
+                new double[] { 1, 1, 0, 0, 1, 1, 0, 1, 1, 1 },
+            };
+
+            trainOutput = new double[6] { 1, 1, 0, 0, 1, 1 };
+
+            target = new LogisticRegressionAnalysis(trainInput, trainOutput);
+
+            bool expected = true;
+            bool actual = target.Compute();
+
+            foreach (LogisticCoefficient coefficient in target.Coefficients)
+                Assert.IsFalse(double.IsNaN(coefficient.Value));
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod()]
+        public void ComputeTest3()
+        {
+            double[][] inputs = training.Submatrix(null, 0, 3);
+            double[] outputs = training.GetColumn(4);
+
+            LogisticRegressionAnalysis regression = new LogisticRegressionAnalysis(inputs, outputs);
+
+            bool expected = false;
+            bool actual = regression.Compute(maxIterations: 3);
+            Assert.AreEqual(expected, actual);
         }
 
 

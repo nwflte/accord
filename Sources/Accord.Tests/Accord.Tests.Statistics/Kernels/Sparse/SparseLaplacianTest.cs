@@ -106,15 +106,21 @@ namespace Accord.Tests.Statistics
 
             expected = dense.Function(dx, dy);
             actual = target.Function(sx, sy);
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(expected, actual, 1e-10);
+            Assert.AreEqual(0.88711080792421337, actual);
+            Assert.IsFalse(double.IsNaN(actual));
 
             expected = dense.Function(dx, dz);
             actual = target.Function(sx, sz);
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(expected, actual, 1e-10);
+            Assert.AreEqual(0.87918038010432886, actual, 1e-10);
+            Assert.IsFalse(double.IsNaN(actual));
 
             expected = dense.Function(dy, dz);
             actual = target.Function(sy, sz);
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(expected, actual, 1e-10);
+            Assert.AreEqual(0.91349716289496652, actual);
+            Assert.IsFalse(double.IsNaN(actual));
         }
 
         [TestMethod()]
@@ -135,15 +141,18 @@ namespace Accord.Tests.Statistics
 
             expected = dense.Distance(dx, dy);
             actual = target.Distance(sx, sy);
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(expected, actual, 1e-10);
+            Assert.IsFalse(double.IsNaN(actual));
 
             expected = dense.Distance(dx, dz);
             actual = target.Distance(sx, sz);
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(expected, actual, 1e-10);
+            Assert.IsFalse(double.IsNaN(actual));
 
             expected = dense.Distance(dy, dz);
             actual = target.Distance(sy, sz);
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(expected, actual, 1e-10);
+            Assert.IsFalse(double.IsNaN(actual));
         }
     }
 }

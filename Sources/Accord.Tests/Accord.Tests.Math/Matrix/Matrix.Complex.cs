@@ -25,6 +25,7 @@ namespace Accord.Tests.Math
     using Accord.Math;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
+    using Accord.Math.ComplexExtensions;
     using AForge.Math;
     using AForge;
 

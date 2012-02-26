@@ -20,29 +20,19 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics.Distributions.Univariate;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Accord.Math;
-using Accord.Statistics.Distributions.Multivariate;
 namespace Accord.Tests.Statistics
 {
-
-
-    /// <summary>
-    ///This is a test class for DiscreteDistributionTest and is intended
-    ///to contain all DiscreteDistributionTest Unit Tests
-    ///</summary>
+    using Accord.Statistics.Analysis;
+    using Accord.Statistics.Testing;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;    
+    
     [TestClass()]
-    public class MultinomialDistributionTest
+    public class BhapkarTestTest
     {
 
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -86,50 +76,31 @@ namespace Accord.Tests.Statistics
         #endregion
 
 
-
-
         [TestMethod()]
-        public void ProbabilityMassFunctionTest()
+        public void BhapkarTestConstructorTest()
         {
-            MultinomialDistribution dist = new MultinomialDistribution(5, 0.25, 0.25, 0.25, 0.25);
+            // Bhapkar, V.P. (1966). A note on the equivalence of two test criteria
+            // for hypotheses in categorical data. Journal of the American Statistical
+            // Association, 61, 228-235.
 
-            int[] observation = { 1, 1, 1, 2 };
-
-            double actual = dist.ProbabilityMassFunction(observation);
-            double expected = 0.05859375;
-
-            Assert.AreEqual(expected, actual, 1e-6);
-        }
-
-        [TestMethod()]
-        public void LogProbabilityMassFunctionTest()
-        {
-            MultinomialDistribution dist = new MultinomialDistribution(5, 0.25, 0.25, 0.25, 0.25);
-
-            int[] observation = { 1, 1, 1, 2 };
-
-            double actual = dist.LogProbabilityMassFunction(observation);
-            double expected = System.Math.Log(0.058593750);
-
-            Assert.AreEqual(expected, actual, 1e-6);
-        }
-
-        [TestMethod()]
-        public void FitTest()
-        {
-            MultinomialDistribution dist = new MultinomialDistribution(7, new double[2]);
-
-            double[][] observation =
-            { 
-                new double[] { 0, 2 },
-                new double[] { 1, 2 },
-                new double[] { 5, 1 },
+            int[,] vision =
+            {
+                { 1520,  266,  124,  66 },
+                {  234, 1512,  432,  78 },
+                {  117,  362, 1772, 205 },
+                {   36,   82,  179, 492 },
             };
 
-            dist.Fit(observation);
+            GeneralConfusionMatrix a = new GeneralConfusionMatrix(vision);
 
-            Assert.AreEqual(dist.Probabilities[0], 0.857142857142857, 0.000000001);
-            Assert.AreEqual(dist.Probabilities[1], 0.714285714285714, 0.000000001);
+            BhapkarTest target = new BhapkarTest(a);
+
+            Assert.AreEqual(11.97572, target.Statistic, 1e-5);
+            Assert.AreEqual(0.00746679746972, target.PValue, 1e-6);
+            Assert.AreEqual(3, target.DegreesOfFreedom);
+
+            Assert.IsFalse(double.IsNaN(target.Statistic));
+            Assert.IsFalse(double.IsNaN(target.PValue));
         }
 
     }

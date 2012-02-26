@@ -20,20 +20,14 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.MachineLearning;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Accord.Statistics.Kernels;
-using Accord.MachineLearning.VectorMachines;
-using Accord.MachineLearning.VectorMachines.Learning;
-
 namespace Accord.Tests.MachineLearning
 {
+    using Accord.MachineLearning;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Accord.Statistics.Kernels;
+    using Accord.MachineLearning.VectorMachines;
+    using Accord.MachineLearning.VectorMachines.Learning;
 
-
-    /// <summary>
-    ///This is a test class for SupportVectorMachineTest and is intended
-    ///to contain all SupportVectorMachineTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class SupportVectorMachineTest
     {
@@ -41,10 +35,6 @@ namespace Accord.Tests.MachineLearning
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -139,10 +129,10 @@ namespace Accord.Tests.MachineLearning
             // XOR
             double[][] inputs =
             {
-                new double[] { 0, 0},
-                new double[] { 0, 1},
-                new double[] { 1, 0},
-                new double[] { 1, 1}
+                new double[] { 0, 0 },
+                new double[] { 0, 1 },
+                new double[] { 1, 0 },
+                new double[] { 1, 1 }
             };
 
             int[] labels =
@@ -165,7 +155,6 @@ namespace Accord.Tests.MachineLearning
             Assert.AreEqual(-1, System.Math.Sign(machine.Compute(inputs[3])));
 
             Assert.AreEqual(error, 0);
-
         }
 
 

@@ -20,17 +20,12 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics.Distributions.Univariate;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 namespace Accord.Tests.Statistics
 {
+    using Accord.Statistics.Distributions.Univariate;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System;
 
-
-    /// <summary>
-    ///This is a test class for NormalDistributionTest and is intended
-    ///to contain all NormalDistributionTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class NormalDistributionTest
     {
@@ -38,10 +33,6 @@ namespace Accord.Tests.Statistics
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -108,7 +99,7 @@ namespace Accord.Tests.Statistics
             target.Fit(observations2, weights2);
 
             Assert.AreEqual(expectedMean, target.Mean);
-            //Assert.AreEqual(expectedSigma, actual2.StandardDeviation, 0.000000001);
+            // Assert.AreEqual(expectedSigma, target.StandardDeviation, 1e-6);
         }
 
         [TestMethod()]
@@ -252,6 +243,26 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(expected, actual);
         }
 
+        [TestMethod()]
+        public void InverseDistributionFunctionTest()
+        {
+            double[] expected =
+            {
+                Double.NegativeInfinity, -4.38252, -2.53481, -1.20248,
+                -0.0640578, 1.0, 2.06406, 3.20248, 4.53481, 6.38252,
+                Double.PositiveInfinity
+            };
+
+            NormalDistribution target = new NormalDistribution(1.0, 4.2);
+
+            for (int i = 0; i < expected.Length; i++)
+            {
+                double x = i / 10.0;
+                double actual = target.InverseDistributionFunction(x);
+                Assert.AreEqual(expected[i], actual, 1e-5);
+                Assert.IsFalse(Double.IsNaN(actual));
+            }
+        }
 
         [TestMethod()]
         public void ZScoreTest()

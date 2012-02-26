@@ -22,12 +22,12 @@
 
 namespace Accord.Tests.Statistics
 {
-    using Accord.Statistics.Kernels;
-    using Accord.Statistics.Kernels.Sparse;
+    using Accord.Statistics.Analysis;
+    using Accord.Statistics.Testing;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass()]
-    public class SparsePolynomialTest
+    public class TwoMatrixKappaTestTest
     {
 
 
@@ -76,62 +76,53 @@ namespace Accord.Tests.Statistics
         #endregion
 
 
-        [TestMethod()]
-        public void FunctionTest()
-        {
-            Polynomial dense = new Polynomial(3);
-            SparsePolynomial target = new SparsePolynomial(3);
-
-            double[] sx = { 1, -0.555556, 2, +0.250000, 3, -0.864407, 4, -0.916667 };
-            double[] sy = { 1, -0.666667, 2, -0.166667, 3, -0.864407, 4, -0.916667 };
-            double[] sz = { 1, -0.944444, 3, -0.898305, 4, -0.916667 };
-
-            double[] dx = { -0.555556, +0.250000, -0.864407, -0.916667 };
-            double[] dy = { -0.666667, -0.166667, -0.864407, -0.916667 };
-            double[] dz = { -0.944444, +0.000000, -0.898305, -0.916667 };
-
-            double expected, actual;
-
-            expected = dense.Function(dx, dy);
-            actual = target.Function(sx, sy);
-            Assert.AreEqual(expected, actual);
-
-            expected = dense.Function(dx, dz);
-            actual = target.Function(sx, sz);
-            Assert.AreEqual(expected, actual);
-
-            expected = dense.Function(dy, dz);
-            actual = target.Function(sy, sz);
-            Assert.AreEqual(expected, actual);
-        }
+     
 
         [TestMethod()]
-        public void DistanceTest()
+        public void KappaTestConstructorTest2()
         {
-            Polynomial dense = new Polynomial(3);
-            SparsePolynomial target = new SparsePolynomial(3);
+            int[,] matrix1 =
+            {
+                { 317,  23,  0,  0 },
+                {  61, 120,  0,  0 },
+                {   2,   4, 60,  0 },
+                {  35,  29,  0,  8 },
+            };
 
-            double[] sx = { 1, -0.555556, 2, +0.250000, 3, -0.864407, 4, -0.916667 };
-            double[] sy = { 1, -0.666667, 2, -0.166667, 3, -0.864407, 4, -0.916667 };
-            double[] sz = { 1, -0.944444, 3, -0.898305, 4, -0.916667 };
+            int[,] matrix2 =
+            {
+                { 377,  79,  0,  0 },
+                {   2,  72,  0,  0 },
+                {  33,   5, 60,  0 },
+                {   3,  20,  0,  8 },
+            };
 
-            double[] dx = { -0.555556, +0.250000, -0.864407, -0.916667 };
-            double[] dy = { -0.666667, -0.166667, -0.864407, -0.916667 };
-            double[] dz = { -0.944444, +0.000000, -0.898305, -0.916667 };
+            GeneralConfusionMatrix a = new GeneralConfusionMatrix(matrix1);
+            GeneralConfusionMatrix b = new GeneralConfusionMatrix(matrix2);
 
-            double expected, actual;
 
-            expected = dense.Distance(dx, dy);
-            actual = target.Distance(sx, sy);
-            Assert.AreEqual(expected, actual);
+            TwoMatrixKappaTest target = new TwoMatrixKappaTest(a, b);
 
-            expected = dense.Distance(dx, dz);
-            actual = target.Distance(sx, sz);
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(0.605, a.Kappa, 1e-3);
+            Assert.IsFalse(double.IsNaN(a.Kappa));
 
-            expected = dense.Distance(dy, dz);
-            actual = target.Distance(sy, sz);
-            Assert.AreEqual(expected, actual);
+            Assert.AreEqual(0.00073735, a.Variance, 1e-5);
+            Assert.IsFalse(double.IsNaN(a.Variance));
+
+            Assert.AreEqual(0.586, b.Kappa, 1e-3);
+            Assert.IsFalse(double.IsNaN(b.Kappa));
+
+            Assert.AreEqual(0.00087457, b.Variance, 1e-5);
+            Assert.IsFalse(double.IsNaN(b.Variance));
+
+
+            Assert.AreEqual(0.475, target.Statistic, 1e-3);
+            Assert.IsFalse(double.IsNaN(target.Statistic));
+
+            Assert.IsFalse(target.Significant);
         }
+
+
+
     }
 }

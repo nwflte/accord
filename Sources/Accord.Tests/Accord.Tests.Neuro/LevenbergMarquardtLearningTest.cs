@@ -30,10 +30,6 @@ namespace Accord.Tests.Neuro
     using Accord.Neuro;
     using System;
 
-    /// <summary>
-    ///This is a test class for LevenbergMarquardtLearningTest and is intended
-    ///to contain all LevenbergMarquardtLearningTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class LevenbergMarquardtLearningTest
     {
@@ -41,10 +37,6 @@ namespace Accord.Tests.Neuro
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get

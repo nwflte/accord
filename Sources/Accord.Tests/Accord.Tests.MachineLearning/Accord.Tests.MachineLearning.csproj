@@ -109,6 +109,7 @@
     <Compile Include="Kernels\DynamicalTimeWarpingTest.cs" />
     <Compile Include="KMeansTest.cs" />
     <Compile Include="NaiveBayesTest.cs" />
+    <Compile Include="VectorMachines\ProbabilisticOutputLearningTest.cs" />
     <Compile Include="VectorMachines\MulticlassSupportVectorLearningTest.cs" />
     <Compile Include="VectorMachines\MulticlassSupportVectorMachineTest.cs" />
     <Compile Include="Bayes\NaiveBayesTest.cs" />

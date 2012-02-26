@@ -20,22 +20,14 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.MachineLearning;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Accord.Statistics.Kernels;
-using Accord.MachineLearning.VectorMachines;
-using Accord.MachineLearning.VectorMachines.Learning;
-using System;
-using Accord.Math;
-
 namespace Accord.Tests.MachineLearning
 {
+    using System;
+    using Accord.MachineLearning.VectorMachines;
+    using Accord.MachineLearning.VectorMachines.Learning;
+    using Accord.Statistics.Kernels;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-
-    /// <summary>
-    ///This is a test class for SequentialMinimalOptimizationTest and is intended
-    ///to contain all SequentialMinimalOptimizationTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class SequentialMinimalOptimizationTest
     {
@@ -43,10 +35,6 @@ namespace Accord.Tests.MachineLearning
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -96,10 +84,10 @@ namespace Accord.Tests.MachineLearning
 
             double[][] inputs =
             {
-                new double[] { -1, -1},
-                new double[] { -1,  1},
-                new double[] {  1, -1},
-                new double[] {  1,  1}
+                new double[] { -1, -1 },
+                new double[] { -1,  1 },
+                new double[] {  1, -1 },
+                new double[] {  1,  1 }
             };
 
             int[] xor =
@@ -132,10 +120,10 @@ namespace Accord.Tests.MachineLearning
 
             double[][] inputs =
             {
-                new double[] { -1, -1},
-                new double[] { -1,  1},
-                new double[] {  1, -1},
-                new double[] {  1,  1}
+                new double[] { -1, -1 },
+                new double[] { -1,  1 },
+                new double[] {  1, -1 },
+                new double[] {  1,  1 }
             };
 
             int[] or =
@@ -174,10 +162,10 @@ namespace Accord.Tests.MachineLearning
         {
             double[][] inputs =
             {
-                new double[] { -1, -1},
-                new double[] { -1,  1},
-                new double[] {  1, -1},
-                new double[] {  1,  1}
+                new double[] { -1, -1 },
+                new double[] { -1,  1 },
+                new double[] {  1, -1 },
+                new double[] {  1,  1 }
             };
 
             int[] or =

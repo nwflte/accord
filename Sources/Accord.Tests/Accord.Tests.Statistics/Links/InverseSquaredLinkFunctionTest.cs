@@ -22,14 +22,13 @@
 
 namespace Accord.Tests.Statistics
 {
-    using Accord.Statistics.Kernels;
-    using Accord.Statistics.Kernels.Sparse;
+    using System;
+    using Accord.Statistics.Links;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass()]
-    public class SparsePolynomialTest
+    public class InverseSquaredLinkFunctionTest
     {
-
 
         private TestContext testContextInstance;
 
@@ -77,61 +76,71 @@ namespace Accord.Tests.Statistics
 
 
         [TestMethod()]
-        public void FunctionTest()
+        public void InverseSquaredLinkFunctionConstructorTest()
         {
-            Polynomial dense = new Polynomial(3);
-            SparsePolynomial target = new SparsePolynomial(3);
+            InverseSquaredLinkFunction target = new InverseSquaredLinkFunction();
+            Assert.AreEqual(0, target.A);
+            Assert.AreEqual(1, target.B);
 
-            double[] sx = { 1, -0.555556, 2, +0.250000, 3, -0.864407, 4, -0.916667 };
-            double[] sy = { 1, -0.666667, 2, -0.166667, 3, -0.864407, 4, -0.916667 };
-            double[] sz = { 1, -0.944444, 3, -0.898305, 4, -0.916667 };
+            for (int i = 0; i < 11; i++)
+            {
+                double x = i / 10.0;
+                double y = 1 / (x * x);
 
-            double[] dx = { -0.555556, +0.250000, -0.864407, -0.916667 };
-            double[] dy = { -0.666667, -0.166667, -0.864407, -0.916667 };
-            double[] dz = { -0.944444, +0.000000, -0.898305, -0.916667 };
-
-            double expected, actual;
-
-            expected = dense.Function(dx, dy);
-            actual = target.Function(sx, sy);
-            Assert.AreEqual(expected, actual);
-
-            expected = dense.Function(dx, dz);
-            actual = target.Function(sx, sz);
-            Assert.AreEqual(expected, actual);
-
-            expected = dense.Function(dy, dz);
-            actual = target.Function(sy, sz);
-            Assert.AreEqual(expected, actual);
+                Assert.AreEqual(y, target.Function(x), 1e-10);
+                Assert.AreEqual(x, target.Inverse(y), 1e-10);
+            }
         }
 
         [TestMethod()]
-        public void DistanceTest()
+        public void InverseSquaredLinkFunctionConstructorTest1()
         {
-            Polynomial dense = new Polynomial(3);
-            SparsePolynomial target = new SparsePolynomial(3);
+            double beta = 3.14;
+            double constant = 2.91;
 
-            double[] sx = { 1, -0.555556, 2, +0.250000, 3, -0.864407, 4, -0.916667 };
-            double[] sy = { 1, -0.666667, 2, -0.166667, 3, -0.864407, 4, -0.916667 };
-            double[] sz = { 1, -0.944444, 3, -0.898305, 4, -0.916667 };
+            InverseSquaredLinkFunction target = new InverseSquaredLinkFunction(beta, constant);
+            Assert.AreEqual(constant, target.A);
+            Assert.AreEqual(beta, target.B);
 
-            double[] dx = { -0.555556, +0.250000, -0.864407, -0.916667 };
-            double[] dy = { -0.666667, -0.166667, -0.864407, -0.916667 };
-            double[] dz = { -0.944444, +0.000000, -0.898305, -0.916667 };
+            for (int i = 0; i < 11; i++)
+            {
+                double x = i / 10.0;
+                double y = (1 / (x * x) - constant) / beta;
 
-            double expected, actual;
-
-            expected = dense.Distance(dx, dy);
-            actual = target.Distance(sx, sy);
-            Assert.AreEqual(expected, actual);
-
-            expected = dense.Distance(dx, dz);
-            actual = target.Distance(sx, sz);
-            Assert.AreEqual(expected, actual);
-
-            expected = dense.Distance(dy, dz);
-            actual = target.Distance(sy, sz);
-            Assert.AreEqual(expected, actual);
+                Assert.AreEqual(y, target.Function(x), 1e-10);
+                Assert.AreEqual(x, target.Inverse(y), 1e-10);
+            }
         }
+
+        [TestMethod()]
+        public void DerivativeTest()
+        {
+            double beta = 3.14;
+            double constant = 2.91;
+
+            double[] expected =
+            {
+                -0.316272, -0.271211, -0.235919, -0.207668, -0.184638,
+                -0.16557, -0.149573, -0.135995, -0.124354, -0.114284, -0.105503
+            };
+
+            InverseSquaredLinkFunction target = new InverseSquaredLinkFunction(beta, constant);
+
+            for (int i = 0; i < 11; i++)
+            {
+                double x = i / 10.0;
+                double y = target.Inverse(x);
+
+                double d1 = target.Derivative(x);
+                double d2 = target.Derivative2(y);
+
+                Assert.AreEqual(expected[i], d1, 1e-6);
+                Assert.AreEqual(expected[i], d2, 1e-6);
+
+                Assert.IsFalse(Double.IsNaN(d1));
+                Assert.IsFalse(Double.IsNaN(d2));
+            }
+        }
+
     }
 }

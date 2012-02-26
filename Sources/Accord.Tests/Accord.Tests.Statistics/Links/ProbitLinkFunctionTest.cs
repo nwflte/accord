@@ -22,14 +22,13 @@
 
 namespace Accord.Tests.Statistics
 {
-    using Accord.Statistics.Kernels;
-    using Accord.Statistics.Kernels.Sparse;
+    using System;
+    using Accord.Statistics.Links;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass()]
-    public class SparsePolynomialTest
+    public class ProbitLinkFunctionTest
     {
-
 
         private TestContext testContextInstance;
 
@@ -77,61 +76,59 @@ namespace Accord.Tests.Statistics
 
 
         [TestMethod()]
-        public void FunctionTest()
+        public void ProbitLinkFunctionConstructorTest()
         {
-            Polynomial dense = new Polynomial(3);
-            SparsePolynomial target = new SparsePolynomial(3);
+            ProbitLinkFunction target = new ProbitLinkFunction();
 
-            double[] sx = { 1, -0.555556, 2, +0.250000, 3, -0.864407, 4, -0.916667 };
-            double[] sy = { 1, -0.666667, 2, -0.166667, 3, -0.864407, 4, -0.916667 };
-            double[] sz = { 1, -0.944444, 3, -0.898305, 4, -0.916667 };
+            double[] expected = 
+            {
+                Double.NegativeInfinity, -1.28155, -0.841621, -0.524401, -0.253347,
+                0, 0.253347, 0.524401, 0.841621, 1.28155, Double.PositiveInfinity
+            };
 
-            double[] dx = { -0.555556, +0.250000, -0.864407, -0.916667 };
-            double[] dy = { -0.666667, -0.166667, -0.864407, -0.916667 };
-            double[] dz = { -0.944444, +0.000000, -0.898305, -0.916667 };
+            for (int i = 0; i < 11; i++)
+            {
+                double x = i / 10.0;
+                double y = expected[i];
 
-            double expected, actual;
+                double fx = target.Function(x);
+                double iy = target.Inverse(y);
 
-            expected = dense.Function(dx, dy);
-            actual = target.Function(sx, sy);
-            Assert.AreEqual(expected, actual);
+                Assert.AreEqual(y, fx, 1e-5);
+                Assert.AreEqual(x, iy, 1e-5);
 
-            expected = dense.Function(dx, dz);
-            actual = target.Function(sx, sz);
-            Assert.AreEqual(expected, actual);
-
-            expected = dense.Function(dy, dz);
-            actual = target.Function(sy, sz);
-            Assert.AreEqual(expected, actual);
+                Assert.IsFalse(Double.IsNaN(fx));
+                Assert.IsFalse(Double.IsNaN(iy));
+            }
         }
 
+      
         [TestMethod()]
-        public void DistanceTest()
+        public void DerivativeTest()
         {
-            Polynomial dense = new Polynomial(3);
-            SparsePolynomial target = new SparsePolynomial(3);
+            ProbitLinkFunction target = new ProbitLinkFunction();
 
-            double[] sx = { 1, -0.555556, 2, +0.250000, 3, -0.864407, 4, -0.916667 };
-            double[] sy = { 1, -0.666667, 2, -0.166667, 3, -0.864407, 4, -0.916667 };
-            double[] sz = { 1, -0.944444, 3, -0.898305, 4, -0.916667 };
+            double[] expected = 
+            {
+                0.398942, 0.396953, 0.391043, 0.381388, 0.36827, 0.352065,
+                0.333225, 0.312254, 0.289692, 0.266085, 0.241971
+            };
 
-            double[] dx = { -0.555556, +0.250000, -0.864407, -0.916667 };
-            double[] dy = { -0.666667, -0.166667, -0.864407, -0.916667 };
-            double[] dz = { -0.944444, +0.000000, -0.898305, -0.916667 };
+            for (int i = 0; i < 11; i++)
+            {
+                double x = i / 10.0;
+                double y = target.Inverse(x);
 
-            double expected, actual;
+                double d1 = target.Derivative(x);
+                double d2 = target.Derivative2(y);
 
-            expected = dense.Distance(dx, dy);
-            actual = target.Distance(sx, sy);
-            Assert.AreEqual(expected, actual);
+                Assert.AreEqual(expected[i], d1, 1e-5);
+                Assert.AreEqual(expected[i], d2, 1e-5);
 
-            expected = dense.Distance(dx, dz);
-            actual = target.Distance(sx, sz);
-            Assert.AreEqual(expected, actual);
-
-            expected = dense.Distance(dy, dz);
-            actual = target.Distance(sy, sz);
-            Assert.AreEqual(expected, actual);
+                Assert.IsFalse(Double.IsNaN(d1));
+                Assert.IsFalse(Double.IsNaN(d2));
+            }
         }
+
     }
 }
