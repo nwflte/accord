@@ -37,15 +37,25 @@ namespace Accord.Math
         /// </remarks>
         public static double[,] Solve(this double[,] matrix, double[,] rightSide)
         {
-            if (matrix.GetLength(0) == matrix.GetLength(1))
+            int rows = matrix.GetLength(0);
+            int cols = matrix.GetLength(1);
+
+            if (rows == cols)
             {
                 // Solve by LU Decomposition if matrix is square.
                 return new LuDecomposition(matrix).Solve(rightSide);
             }
             else
             {
-                // Solve by QR Decomposition if not.
-                return new QrDecomposition(matrix).Solve(rightSide);
+                if (rows > cols)
+                {
+                    // Solve by QR Decomposition if not.
+                    return new QrDecomposition(matrix).Solve(rightSide);
+                }
+                else
+                {
+                    return new LuDecomposition(matrix).Solve(rightSide);
+                }
             }
         }
 
@@ -63,16 +73,25 @@ namespace Accord.Math
             if (rightSide == null)
                 throw new ArgumentNullException("rightSide");
 
+            int rows = matrix.GetLength(0);
+            int cols = matrix.GetLength(1);
 
-            if (matrix.GetLength(0) == matrix.GetLength(1))
+            if (rows == cols)
             {
                 // Solve by LU Decomposition if matrix is square.
                 return new LuDecomposition(matrix).Solve(rightSide);
             }
             else
             {
-                // Solve by QR Decomposition if not.
-                return new QrDecomposition(matrix).Solve(rightSide);
+                if (rows > cols)
+                {
+                    // Solve by QR Decomposition if not.
+                    return new QrDecomposition(matrix).Solve(rightSide);
+                }
+                else
+                {
+                    return new LuDecomposition(matrix).Solve(rightSide);
+                }
             }
         }
 

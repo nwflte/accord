@@ -824,6 +824,15 @@ namespace Accord.Math
         /// <summary>
         ///   Gets the maximum values accross one dimension of a matrix.
         /// </summary>
+        public static T[] Max<T>(this T[,] matrix, int dimension) where T : IComparable
+        {
+            int[] imax;
+            return Max(matrix, dimension, out imax);
+        }
+
+        /// <summary>
+        ///   Gets the maximum values accross one dimension of a matrix.
+        /// </summary>
         public static T[] Max<T>(this T[,] matrix, int dimension, out int[] imax) where T : IComparable
         {
             int rows = matrix.GetLength(0);
@@ -867,6 +876,15 @@ namespace Accord.Math
             }
 
             return max;
+        }
+
+        /// <summary>
+        ///   Gets the minimum values across one dimension of a matrix.
+        /// </summary>
+        public static T[] Min<T>(this T[,] matrix, int dimension) where T : IComparable
+        {
+            int[] imin;
+            return Min(matrix, dimension, out imin);
         }
 
         /// <summary>

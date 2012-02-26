@@ -158,6 +158,7 @@
     <Compile Include="Formats\DefaultMatrixFormatProvider.cs" />
     <Compile Include="Formats\Base\MatrixFormatter.cs" />
     <Compile Include="Formats\OctaveMatrixFormatProvider.cs" />
+    <Compile Include="Functions\Normal.cs" />
     <Compile Include="Geometry\ConvexHullDefects.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -184,6 +185,10 @@
     <Compile Include="Special.cs" />
     <Compile Include="HilbertTransform.cs" />
     <Compile Include="Matrix\Matrix.Common.cs" />
+    <Compile Include="Functions\Beta.cs" />
+    <Compile Include="Functions\Gamma.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="Functions\Bessel.cs" />
     <Compile Include="Tools.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Wavelets\CDF97.cs" />

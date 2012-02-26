@@ -592,7 +592,7 @@ namespace Accord.Math.Optimization
                 // and compute the directional derivative.
                 // We return to main program to obtain F and G.
 
-                for (int j = 0; j < n; j++)
+                for (int j = 0; j < x.Length; j++)
                     x[j] = wa[j] + stp * s[j];
 
                 // Reevaluate function and gradient
@@ -602,7 +602,7 @@ namespace Accord.Math.Optimization
                 nfev++;
                 dg = 0;
 
-                for (int j = 0; j < n; j++)
+                for (int j = 0; j < g.Length; j++)
                     dg = dg + g[j] * s[j];
 
                 ftest1 = finit + stp * dgtest;

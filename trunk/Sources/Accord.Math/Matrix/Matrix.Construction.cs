@@ -576,6 +576,43 @@ namespace Accord.Math
             return matrix.InsertColumn(vector);
         }
 
+        /// <summary>
+        ///   Combines a matrix and a vector horizontally.
+        /// </summary>
+        /// 
+        public static T[,] Concatenate<T>(params T[][,] matrices)
+        {
+            int rows = 0;
+            int cols = 0;
+
+            for (int i = 0; i < matrices.Length; i++)
+            {
+                cols += matrices[i].GetLength(1);
+                if (matrices[i].GetLength(0) > rows)
+                    rows = matrices[i].GetLength(0);
+            }
+
+            T[,] r = new T[rows, cols];
+
+
+            int c = 0;
+            for (int k = 0; k < matrices.Length; k++)
+            {
+                int currentRows = matrices[k].GetLength(0);
+                int currentCols = matrices[k].GetLength(1);
+                
+                for (int j = 0; j < currentCols; j++)
+                {
+                    for (int i = 0; i < currentRows; i++)
+                    {
+                        r[i, c] = matrices[k][i, j];
+                    }
+                    c++;
+                }
+            }
+
+            return r;
+        }
 
 
         /// <summary>
@@ -608,6 +645,24 @@ namespace Accord.Math
         }
 
         /// <summary>
+        ///   Combines vectors vertically.
+        /// </summary>
+        /// 
+        public static T[,] Stack<T>(params T[] elements)
+        {
+            return elements.Transpose();
+        }
+
+        /// <summary>
+        ///   Combines vectors vertically.
+        /// </summary>
+        /// 
+        public static T[,] Stack<T>(T[] vector, T element)
+        {
+            return vector.Concatenate(element).Transpose();
+        }
+
+        /// <summary>
         ///   Combines matrices vertically.
         /// </summary>
         /// 
@@ -637,6 +692,27 @@ namespace Accord.Math
                     c++;
                 }
             }
+
+            return r;
+        }
+
+        /// <summary>
+        ///   Combines matrices vertically.
+        /// </summary>
+        /// 
+        public static T[,] Stack<T>(T[,] matrix, T[] vector)
+        {
+            // TODO: Rename to "Stack<T>" or similar
+
+            int rows = matrix.GetLength(0);
+            int cols = matrix.GetLength(1);
+
+            T[,] r = new T[rows + 1, cols];
+
+            Array.Copy(matrix, r, matrix.Length);
+
+            for (int i = 0; i < vector.Length; i++)
+                r[rows, i] = vector[i];
 
             return r;
         }

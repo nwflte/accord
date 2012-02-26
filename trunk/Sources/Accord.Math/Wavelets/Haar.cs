@@ -42,7 +42,7 @@ namespace Accord.Math.Wavelets
     /// 
     public class Haar : IWavelet
     {
-        private const double SQRT2 = Accord.Math.Special.Sqrt2;
+        private const double SQRT2 = Accord.Math.Constants.Sqrt2;
 
         /*
         private const double w0 = 1.0 / SQRT2;
