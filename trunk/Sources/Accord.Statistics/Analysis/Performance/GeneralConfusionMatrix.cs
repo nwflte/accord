@@ -46,12 +46,23 @@ namespace Accord.Statistics.Analysis
     ///     </list></para>  
     /// </remarks>
     /// 
+    [Serializable]
     public class GeneralConfusionMatrix
     {
 
-        int[,] matrix;
-        int samples;
-        int classes;
+        private int[,] matrix;
+        private int samples;
+        private int classes;
+
+        // Association measures
+        private double? kappa;
+        private double? kappaVariance;
+        private double? kappaStdError;
+        private double? tau;
+        private double? phi;
+
+        private int[] rowSum;
+        private int[] colSum;
 
         /// <summary>
         ///   Gets the confusion matrix, in which each element e_ij 
@@ -131,6 +142,35 @@ namespace Accord.Statistics.Analysis
         }
 
         /// <summary>
+        ///   Gets the row totals.
+        /// </summary>
+        /// 
+        public int[] RowTotals
+        {
+            get
+            {
+                if (rowSum == null)
+                    rowSum = matrix.Sum(1);
+                return rowSum;
+            }
+        }
+
+        /// <summary>
+        ///   Gets the column totals.
+        /// </summary>
+        /// 
+        public int[] ColumnTotals
+        {
+            get
+            {
+                if (colSum == null)
+                    colSum = matrix.Sum(0);
+                return colSum;
+            }
+        }
+
+
+        /// <summary>
         ///   Gets the Kappa coefficient of performance.
         /// </summary>
         /// 
@@ -149,34 +189,106 @@ namespace Accord.Statistics.Analysis
         {
             get
             {
-                int N = samples;
-                int C = classes;
-
-                int diagonalSum = 0;
-                for (int i = 0; i < classes; i++)
-                    diagonalSum += matrix[i, i];
-
-                int directionSum = 0;
-                for (int i = 0; i < classes; i++)
+                if (kappa == null)
                 {
-                    int rowSum = 0;
-                    int colSum = 0;
+                    int diagonalSum = matrix.Trace();
 
-                    // Compute the sum of elements in row i
-                    for (int j = 0; j < classes; j++)
-                        rowSum += matrix[i, j];
+                    int directionSum = 0;
+                    for (int i = 0; i < classes; i++)
+                        directionSum += RowTotals[i] * ColumnTotals[i];
 
-                    // Compute the sum of elements in column i
-                    for (int j = 0; j < classes; j++)
-                        colSum += matrix[j, i];
+                    double p0 = diagonalSum / (double)samples;
+                    double pr = directionSum / (double)(samples * samples);
 
-                    directionSum += rowSum * colSum;
+                    kappa = (p0 - pr) / (1.0 - pr);
                 }
 
-
-                return (double)(N * diagonalSum - directionSum) / ((N * N) - directionSum);
+                return kappa.Value;
             }
         }
+
+        /// <summary>
+        ///   Gets the standard error of the <see cref="Kappa"/>
+        ///   coefficient of performance. 
+        /// </summary>
+        /// 
+        public double StandardError
+        {
+            get
+            {
+                if (kappaStdError == null)
+                {
+                    computeKappaVariance();
+                }
+
+                return kappaStdError.Value;
+            }
+        }
+
+        /// <summary>
+        ///   Gets the variance of the <see cref="Kappa"/>
+        ///   coefficient of performance. 
+        /// </summary>
+        /// 
+        public double Variance
+        {
+            get
+            {
+                if (kappaVariance == null)
+                {
+                    computeKappaVariance();
+                }
+
+                return kappaVariance.Value;
+            }
+        }
+
+        private void computeKappaVariance()
+        {
+            // References: Statistical Methods for Rates and Proportions
+
+            int[,] m = matrix;
+            double k = Kappa;
+
+            double[] colMarginal = ColumnTotals.Divide((double)samples);
+            double[] rowMarginal = RowTotals.Divide((double)samples);
+
+
+            double directionSum = 0;
+            for (int i = 0; i < classes; i++)
+                directionSum += rowMarginal[i] * colMarginal[i];
+
+            double pe = directionSum;
+
+
+            // Compute A (eq. 18.16)
+            double A = 0;
+            for (int i = 0; i < classes; i++)
+            {
+                double u = 1 - (rowMarginal[i] + colMarginal[i]) * (1 - k);
+                A += (m[i, i] / (double)samples) * u * u;
+            }
+
+            // Compute B (eq. 18.17)
+            double sum = 0;
+            for (int i = 0; i < rowMarginal.Length; i++)
+                for (int j = 0; j < colMarginal.Length; j++)
+                    if (i != j)
+                        sum += (m[i, j] / (double)samples) * (colMarginal[i] + rowMarginal[j]);
+
+            double B = (1 - k) * (1 - k) * sum;
+
+            // Compute C
+            double v = k - pe * (1 - k);
+            double C = v * v;
+
+            // Compute variance using A, B and C
+            kappaVariance = (A + B - C) / ((1 - pe) * (1 - pe) * samples);
+
+            // Compute standard error directly
+            kappaStdError = Math.Sqrt(A + B - C) / ((1 - pe) * Math.Sqrt(samples));
+        }
+
 
         /// <summary>
         ///   Gets the Tau coefficient of performance.
@@ -196,29 +308,181 @@ namespace Accord.Statistics.Analysis
         {
             get
             {
-                int N = samples;
-
-                int diagonalSum = 0;
-                for (int i = 0; i < classes; i++)
-                    diagonalSum += matrix[i, i];
-                
-
-                int directionSum = 0;
-                for (int i = 0; i < classes; i++)
+                if (tau == null)
                 {
-                    // Compute the row sum for the class
-                    int rowSum = 0;
-                    for (int j = 0; j < classes; j++)
-                        rowSum += matrix[i, j];
+                    int N = samples;
 
-                    directionSum += matrix[i, i] * rowSum;
+                    int diagonalSum = 0;
+                    for (int i = 0; i < classes; i++)
+                        diagonalSum += matrix[i, i];
+
+
+                    int directionSum = 0;
+                    for (int i = 0; i < classes; i++)
+                    {
+                        // Compute the row sum for the class
+                        int rowSum = 0;
+                        for (int j = 0; j < classes; j++)
+                            rowSum += matrix[i, j];
+
+                        directionSum += matrix[i, i] * rowSum;
+                    }
+
+                    double p0 = diagonalSum / (double)N;
+                    double pr = directionSum / (double)(N * N);
+
+                    tau = (p0 - pr) / (1.0 - pr);
                 }
-
-                double p0 = (1.0 / N) * diagonalSum;
-                double pr = (1.0 / (N * N)) * directionSum;
-
-                return (double)(p0 - pr) / (1 - pr);
+                return tau.Value;
             }
         }
+
+        /// <summary>
+        ///   Phi coefficient.
+        /// </summary>
+        /// <remarks>
+        ///   The Pearson correlation coefficient ranges from −1 to +1, where ±1 indicates
+        ///   perfect agreement or disagreement, and 0 indicates no relationship. 
+        ///   
+        ///   References:
+        ///     http://en.wikipedia.org/wiki/Phi_coefficient
+        ///     http://www.psychstat.missouristate.edu/introbook/sbk28m.htm
+        /// </remarks>
+        /// 
+        public double Phi
+        {
+            get
+            {
+                if (phi == null)
+                {
+                    double x = 0;
+                    for (int i = 0; i < Classes; i++)
+                    {
+                        for (int j = 0; j < Classes; j++)
+                        {
+                            double e = (RowTotals[i] * ColumnTotals[j]) / (double)samples;
+                            double o = matrix[i, j];
+
+                            x += ((o - e) * (o - e)) / e;
+                        }
+                    }
+
+                    phi = x;
+                }
+
+                return phi.Value;
+            }
+        }
+
+        /// <summary>
+        ///   Tschuprow's T association measure.
+        /// </summary>
+        /// <remarks>
+        ///   Tschuprow's T is a measure of association between two nominal variables, giving 
+        ///   a value between 0 and 1 (inclusive). It is closely related to <see cref="Cramer">
+        ///   Cramér's V</see>, coinciding with it for square contingency tables. 
+        ///   
+        ///   References:
+        ///     http://en.wikipedia.org/wiki/Tschuprow's_T
+        /// </remarks>
+        /// 
+        public double Tschuprow
+        {
+            get { return Math.Sqrt(Phi / (samples * (classes - 1))); }
+        }
+
+        /// <summary>
+        ///   Pearson's contingency coefficient C.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   Pearson's C measures the degree of association between the two variables. However,
+        ///   C suffers from the disadvantage that it does not reach a maximum of 1 or the minimum 
+        ///   of -1; the highest it can reach in a 2 x 2 table is .707; the maximum it can reach in
+        ///   a 4 × 4 table is 0.870. It can reach values closer to 1 in contingency tables with more
+        ///   categories. It should, therefore, not be used to compare associations among tables with
+        ///   different numbers of categories. For a improved version of C, see <see cref="Sakoda"/>.
+        ///   
+        ///   References:
+        ///     http://en.wikipedia.org/wiki/Contingency_table
+        /// </remarks>
+        /// 
+        public double Pearson
+        {
+            get { return Math.Sqrt(Phi / (Phi + samples)); }
+        }
+
+        /// <summary>
+        ///   Sakoda's contingency coefficient V.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   Sakoda's V is an adjusted version of <see cref="Pearson">Pearson's C</see>
+        ///   so it reaches a maximum of 1 when there is complete association in a table
+        ///   of any number of rows and columns. 
+        ///   
+        ///   References:
+        ///     http://en.wikipedia.org/wiki/Contingency_table
+        /// </remarks>
+        /// 
+        public double Sakoda
+        {
+            get { return Pearson / Math.Sqrt((classes - 1) / classes); }
+        }
+
+        /// <summary>
+        ///   Cramer's V association measure.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   Cramér's V varies from 0 (corresponding to no association between the variables)
+        ///   to 1 (complete association) and can reach 1 only when the two variables are equal
+        ///   to each other. In practice, a value of 0.1 already provides a good indication that
+        ///   there is substantive relationship between the two variables.
+        ///   
+        ///   References:
+        ///    http://en.wikipedia.org/wiki/Cram%C3%A9r%27s_V
+        ///    http://www.acastat.com/Statbook/chisqassoc.htm
+        /// </remarks>
+        /// 
+        public double Cramer
+        {
+            get { return Math.Sqrt(Phi / (classes - 1)); }
+        }
+
+        /// <summary>
+        ///   Overall agreement.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   The overall agreement is the sum of the diagonal elements
+        ///   of the contigency table divided by the number of samples.
+        /// </remarks>
+        /// 
+        public double OverralAgreement
+        {
+            get { return matrix.Trace() / (double)samples; }
+        }
+
+        /// <summary>
+        ///   Chance agreement.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   The chance agreement tells how many samples
+        ///   were correctly classified by chance alone.
+        /// </remarks>
+        /// 
+        public double ChanceAgreement
+        {
+            get
+            {
+                double chance = 0;
+                for (int i = 0; i < classes; i++)
+                    chance += RowTotals[i] * ColumnTotals[i];
+                return 1.0 / (samples * samples) * chance;
+            }
+        }
+
     }
 }
