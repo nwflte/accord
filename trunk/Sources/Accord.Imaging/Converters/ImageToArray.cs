@@ -59,6 +59,48 @@ namespace Accord.Imaging.Converters
         public int Channel { get; set; }
 
         /// <summary>
+        ///   Initializes a new instance of the <see cref="ImageToArray"/> class.
+        /// </summary>
+        /// 
+        /// <param name="min">
+        ///   The minimum double value in the double array
+        ///   associated with the darkest color. Default is 0.
+        /// </param>
+        /// <param name="max">
+        ///   The maximum double value in the double array
+        ///   associated with the brightest color. Default is 1.
+        /// </param>
+        /// <param name="channel">The channel to extract. Default is 0.</param>
+        ///   
+        public ImageToArray(double min, double max, int channel)
+        {
+            this.Min = min;
+            this.Max = max;
+            this.Channel = channel;
+        }
+
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="ImageToArray"/> class.
+        /// </summary>
+        /// 
+        public ImageToArray() : this(0, 1) { }
+
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="ImageToArray"/> class.
+        /// </summary>
+        /// 
+        /// <param name="min">
+        ///   The minimum double value in the double array
+        ///   associated with the darkest color. Default is 0.
+        /// </param>
+        /// <param name="max">
+        ///   The maximum double value in the double array
+        ///   associated with the brightest color. Default is 1.
+        /// </param>
+        ///   
+        public ImageToArray(double min, double max) : this(min, max, 0) { }
+
+        /// <summary>
         ///   Converts an image from one representation to another.
         /// </summary>
         /// 

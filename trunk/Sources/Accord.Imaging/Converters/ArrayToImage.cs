@@ -67,6 +67,44 @@ namespace Accord.Imaging.Converters
         public int Width { get; set; }
 
         /// <summary>
+        ///   Initializes a new instance of the <see cref="ArrayToImage"/> class.
+        /// </summary>
+        /// 
+        /// <param name="width">The width of the image to be created.</param>
+        /// <param name="height">The height of the image to be created.</param>
+        /// 
+        public ArrayToImage(int width, int height)
+        {
+            this.Width = width;
+            this.Height = height;
+            this.Min = 0;
+            this.Max = 1;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ArrayToImage"/> class.
+        /// </summary>
+        /// 
+        /// <param name="width">The width of the image to be created.</param>
+        /// <param name="height">The height of the image to be created.</param>
+        /// <param name="min">
+        ///   The minimum double value in the double array
+        ///   associated with the darkest color. Default is 0.
+        /// </param>
+        /// <param name="max">
+        ///   The maximum double value in the double array
+        ///   associated with the brightest color. Default is 1.
+        /// </param>
+        /// 
+        public ArrayToImage(int width, int height, double min, double max)
+        {
+            this.Width = width;
+            this.Height = height;
+            this.Min = min;
+            this.Max = max;
+        }
+
+        /// <summary>
         ///   Converts an image from one representation to another.
         /// </summary>
         /// 
