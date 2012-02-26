@@ -24,58 +24,58 @@ namespace Accord.Statistics.Distributions.Univariate
 {
     using System;
     using Accord.Math;
-    using Accord.Statistics.Distributions.Fitting;
 
     /// <summary>
-    ///   Poisson probability distribution.
+    ///   Discrete uniform distribution.
     /// </summary>
     /// 
-    /// <remarks>
-    ///   <para>The Poisson distribution is a discrete probability distribution that
-    ///   expresses the probability of a number of events occurring in a fixed
-    ///   period of time if these events occur with a known average rate and
-    ///   independently of the time since the last event.</para>
-    ///   
-    /// <para>    
-    ///   References:
-    ///   <list type="bullet">
-    ///     <item><description><a href="http://en.wikipedia.org/wiki/Poisson_distribution">
-    ///       Wikipedia, The Free Encyclopedia. Poisson distribution. Available on:
-    ///       http://en.wikipedia.org/wiki/Poisson_distribution </a></description></item>
-    ///   </list></para>
-    /// </remarks>
-    /// 
     [Serializable]
-    public class PoissonDistribution : UnivariateDiscreteDistribution
+    public class DiscreteUniformDistribution : UnivariateDiscreteDistribution
     {
+
         // Distribution parameters
-        private double lambda;
+        private int a;
+        private int b;
 
-        // Derived values
-        private double epml;
-
-        // Distribution measures
-        private double? entropy;
-
+        // Derived measures
+        private int n;
 
         /// <summary>
-        ///   Creates a new Poisson distribution with the given lambda.
+        ///   Creates a discrete uniform distribution defined in the interval [a;b].
         /// </summary>
         /// 
-        /// <param name="lambda">The Poisson's lambda parameter.</param>
+        /// <param name="a">The starting (minimum) value a.</param>
+        /// <param name="b">The ending (maximum) value b.</param>
         /// 
-        public PoissonDistribution(double lambda)
+        public DiscreteUniformDistribution(int a, int b)
         {
-            initialize(lambda);
+            if (a > b)
+                throw new ArgumentOutOfRangeException("b", 
+                    "The starting number a must be lower than b.");
+
+            this.a = a;
+            this.b = b;
+            this.n = b - a + 1;
         }
 
-        private void initialize(double lm)
-        {
-            this.lambda = lm;
-            this.epml = Math.Exp(-lm);
+        /// <summary>
+        ///   Gets the minimum value of the distribution (a).
+        /// </summary>
+        /// 
+        public double Minimum { get { return a; } }
 
-            this.entropy = null;
-        }
+        /// <summary>
+        ///   Gets the maximum value of the distribution (b).
+        /// </summary>
+        /// 
+        public double Maximum { get { return b; } }
+
+        /// <summary>
+        ///   Gets the length of the distribution (b - a + 1).
+        /// </summary>
+        /// 
+        public double Length { get { return n; } }
+
 
         /// <summary>
         ///   Gets the mean for this distribution.
@@ -83,7 +83,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override double Mean
         {
-            get { return lambda; }
+            get { return (a + b) / 2.0; }
         }
 
         /// <summary>
@@ -92,105 +92,94 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override double Variance
         {
-            get { return lambda; }
+            get { return ((b - a) * (b - a)) / 12.0; }
         }
 
         /// <summary>
         ///   Gets the entropy for this distribution.
         /// </summary>
         /// 
-        /// <remarks>
-        ///   A closed form expression for the entropy of a Poisson
-        ///   distribution is unknown. This property returns an approximation
-        ///   for large lambda.
-        /// </remarks>
-        /// 
         public override double Entropy
         {
-            get
-            {
-                if (entropy == null)
-                {
-                    entropy = 0.5 * System.Math.Log(2.0 * System.Math.PI * lambda)
-                        - 1 / (12 * lambda)
-                        - 1 / (24 * lambda * lambda)
-                        - 19 / (360 * lambda * lambda * lambda);
-                }
-
-                return entropy.Value;
-            }
+            get { return Math.Log(b - a); }
         }
 
         /// <summary>
         ///   Gets the cumulative distribution function (cdf) for
-        ///   the this distribution evaluated at point <c>x</c>.
+        ///   this distribution evaluated at point <c>k</c>.
         /// </summary>
         /// 
-        /// <param name="x">
-        ///   A single point in the distribution range.</param>
-        ///   
+        /// <param name="k">A single point in the distribution range.</param>
+        /// 
         /// <remarks>
         ///   The Cumulative Distribution Function (CDF) describes the cumulative
         ///   probability that a given value or any value smaller than it will occur.
         /// </remarks>
         /// 
-        public override double DistributionFunction(int x)
+        public override double DistributionFunction(int k)
         {
-            return Special.IGamma(x + 1, lambda) / Special.Factorial(x);
+            if (k < a)
+                return 0;
+            if (k >= b)
+                return 1;
+            return (k - a + 1.0) / n;
         }
 
         /// <summary>
-        ///   Gets the probability mass function (pmf) for
+        ///    Gets the probability mass function (pmf) for
         ///   this distribution evaluated at point <c>x</c>.
         /// </summary>
         /// 
-        /// <param name="x">
-        ///   A single point in the distribution range.</param>
-        ///   
-        /// <remarks>
-        ///   The Probability Mass Function (PMF) describes the
-        ///   probability that a given value <c>x</c> will occur.
-        /// </remarks>
+        /// <param name="k">A single point in the distribution range.</param>
         /// 
         /// <returns>
-        ///   The probability of <c>x</c> occurring
-        ///   in the current distribution.</returns>
-        ///   
-        public override double ProbabilityMassFunction(int x)
+        ///   The probability of <c>k</c> occurring
+        ///   in the current distribution.
+        /// </returns>
+        /// 
+        /// <remarks>
+        ///   The Probability Mass Function (PMF) describes the
+        ///   probability that a given value <c>k</c> will occur.
+        /// </remarks>
+        /// 
+        public override double ProbabilityMassFunction(int k)
         {
-            return (Math.Pow(lambda, x) / Special.Factorial(x)) * epml;
+            if (k >= a && k <= b)
+                return 1.0 / n;
+            else return 0;
         }
 
         /// <summary>
         /// Gets the log-probability mass function (pmf) for
         /// this distribution evaluated at point <c>x</c>.
         /// </summary>
-        /// <param name="x">A single point in the distribution range.</param>
+        /// <param name="k">A single point in the distribution range.</param>
         /// <returns>
-        /// The logarithm of the probability of <c>x</c>
+        /// The logarithm of the probability of <c>k</c>
         /// occurring in the current distribution.
         /// </returns>
         /// <remarks>
         /// The Probability Mass Function (PMF) describes the
-        /// probability that a given value <c>x</c> will occur.
+        /// probability that a given value <c>k</c> will occur.
         /// </remarks>
-        public override double LogProbabilityMassFunction(int x)
+        public override double LogProbabilityMassFunction(int k)
         {
-            return (x * Math.Log(lambda) - Special.LogFactorial(x)) - lambda;
+            if (k >= a && k <= b)
+                return -Math.Log(n);
+            else return double.NegativeInfinity;
         }
-
 
         /// <summary>
         ///   Fits the underlying distribution to a given set of observations.
         /// </summary>
         /// 
         /// <param name="observations">The array of observations to fit the model against. The array
-        ///   elements can be either of type double (for univariate data) or
-        ///   type double[] (for multivariate data).</param>
+        /// elements can be either of type double (for univariate data) or
+        /// type double[] (for multivariate data).</param>
         /// <param name="weights">The weight vector containing the weight for each of the samples.</param>
         /// <param name="options">Optional arguments which may be used during fitting, such
-        ///   as regularization constants and additional parameters.</param>
-        ///   
+        /// as regularization constants and additional parameters.</param>
+        /// 
         /// <remarks>
         ///   Although both double[] and double[][] arrays are supported,
         ///   providing a double[] for a multivariate distribution or a
@@ -198,22 +187,31 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   impact in performance.
         /// </remarks>
         /// 
-        public override void Fit(double[] observations, double[] weights, IFittingOptions options)
+        public override void Fit(double[] observations, double[] weights, Fitting.IFittingOptions options)
         {
-            double mean = Accord.Statistics.Tools.WeightedMean(observations, weights);
-            initialize(mean);
+            if (options != null)
+                throw new ArgumentException("No options may be specified.");
+
+            if (weights != null)
+                throw new ArgumentException("This distribution does not support weighted samples.");
+
+            a = (int)observations.Min();
+            b = (int)observations.Max();
         }
 
         /// <summary>
         ///   Creates a new object that is a copy of the current instance.
         /// </summary>
+        /// 
         /// <returns>
         ///   A new object that is a copy of this instance.
         /// </returns>
         /// 
         public override object Clone()
         {
-            return new PoissonDistribution(lambda);
+            return new DiscreteUniformDistribution(a, b);
         }
+
+
     }
 }

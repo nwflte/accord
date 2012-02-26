@@ -24,91 +24,70 @@ namespace Accord.Statistics.Distributions.Univariate
 {
     using System;
     using Accord.Math;
+    using Accord.Statistics.Distributions.Fitting;
 
     /// <summary>
-    ///   Student's t-distribution.
+    ///   Weibull distribution.
     /// </summary>
     /// 
-    /// <remarks>
-    /// <para>    
-    ///   References:
-    ///   <list type="bullet">
-    ///     <item><description><a href="http://en.wikipedia.org/wiki/Student's_t-distribution">
-    ///       Wikipedia, The Free Encyclopedia. Student's t-distribution. Available on:
-    ///       http://en.wikipedia.org/wiki/Student's_t-distribution </a></description></item>
-    ///   </list></para>
-    /// </remarks>
-    /// 
     [Serializable]
-    public class TDistribution : UnivariateContinuousDistribution
+    public class WeibullDistribution : UnivariateContinuousDistribution
     {
-        private double constant;
+
+        // Distribution parameters
+        private double b;
+        private double a;
 
 
         /// <summary>
-        ///   Gets the degrees of freedom for the distribution.
+        ///   Initializes a new instance of the <see cref="WeibullDistribution"/> class.
         /// </summary>
         /// 
-        public double DegreesOfFreedom { get; private set; }
-
-
-        /// <summary>
-        ///   Initializes a new instance of the <see cref="TDistribution"/> class.
-        /// </summary>
+        /// <param name="scale">The scale parameter lambda.</param>
+        /// <param name="shape">The shape parameter k.</param>
         /// 
-        /// <param name="degreesOfFreedom">The degrees of freedom.</param>
-        /// 
-        public TDistribution(double degreesOfFreedom)
+        public WeibullDistribution(double shape, double scale)
         {
-            if (degreesOfFreedom < 1)
-                throw new ArgumentOutOfRangeException("degreesOfFreedom");
-
-            this.DegreesOfFreedom = degreesOfFreedom;
-
-            double v = degreesOfFreedom;
-
-            // TODO: Use LogGamma instead.
-            this.constant = Special.Gamma((v + 1) / 2.0) / (Math.Sqrt(v * Math.PI) * Special.Gamma(v / 2.0));
+            this.b = scale;
+            this.a = shape;
         }
-
 
         /// <summary>
         ///   Gets the mean for this distribution.
         /// </summary>
         /// 
+        /// <value>The distribution's mean value.</value>
+        /// 
         public override double Mean
         {
-            get { return (DegreesOfFreedom > 1) ? 0 : Double.NaN; }
+            get { return b * Gamma.Function(1 + 1 / a); }
         }
 
         /// <summary>
         ///   Gets the variance for this distribution.
         /// </summary>
         /// 
+        /// <value>The distribution's variance.</value>
+        /// 
         public override double Variance
         {
-            get
-            {
-                if (DegreesOfFreedom > 2)
-                    return DegreesOfFreedom / (DegreesOfFreedom - 2);
-                else if (DegreesOfFreedom > 1)
-                    return Double.PositiveInfinity;
-                return Double.NaN;
-            }
+            get { return b * b * Gamma.Function(1 + 2 / a) - Mean * Mean; }
         }
 
         /// <summary>
         ///   Gets the entropy for this distribution.
         /// </summary>
         /// 
+        /// <value>The distribution's entropy.</value>
+        /// 
         public override double Entropy
         {
-            get { throw new NotSupportedException(); }
+            get { return Constants.EulerGamma * (1 - 1 / a) + Math.Log(b / a) + 1; }
         }
 
         /// <summary>
         ///   Gets the cumulative distribution function (cdf) for
-        ///   the this distribution evaluated at point <c>x</c>.
+        ///   this distribution evaluated at point <c>x</c>.
         /// </summary>
         /// 
         /// <param name="x">A single point in the distribution range.</param>
@@ -120,20 +99,11 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override double DistributionFunction(double x)
         {
-            double v = DegreesOfFreedom;
-            double sqrt = Math.Sqrt(x * x + v);
-            double u = (x + sqrt) / (2 * sqrt);
-            return Special.Ibeta(v / 2.0, v / 2.0, u);
-        }
-
-        /// <summary>
-        ///   Gets the survival function, also known as
-        ///   the complementary distribution function.
-        /// </summary>
-        /// 
-        public double SurvivalFunction(double x)
-        {
-            return 1.0 - DistributionFunction(x);
+            if (x > 0)
+                return 1.0 - Math.Exp(-Math.Pow(x / b, a));
+            if (x == 0)
+                return Double.PositiveInfinity;
+            else return 0;
         }
 
         /// <summary>
@@ -144,47 +114,67 @@ namespace Accord.Statistics.Distributions.Univariate
         /// <param name="x">A single point in the distribution range.</param>
         /// 
         /// <returns>
-        /// The probability of <c>x</c> occurring
-        /// in the current distribution.
+        ///   The probability of <c>x</c> occurring
+        ///   in the current distribution.
         /// </returns>
         /// 
         /// <remarks>
-        /// The Probability Density Function (PDF) describes the
-        /// probability that a given value <c>x</c> will occur.
+        ///   The Probability Density Function (PDF) describes the
+        ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
         /// 
         public override double ProbabilityDensityFunction(double x)
         {
-            double v = DegreesOfFreedom;
-            return constant * Math.Pow(1 + (x * x) / DegreesOfFreedom, -(v + 1) / 2.0);
+            if (x > 0)
+                return (a / b) * Math.Pow(x / b, a - 1) * Math.Exp(-Math.Pow(x / b, a));
+            else return 0;
         }
 
         /// <summary>
-        /// Gets the log-probability density function (pdf) for
-        /// this distribution evaluated at point <c>x</c>.
-        /// </summary>
-        /// <param name="x">A single point in the distribution range.</param>
-        /// <returns>
-        /// The logarithm of the probability of <c>x</c>
-        /// occurring in the current distribution.
-        /// </returns>
-        /// <remarks>
-        /// The Probability Density Function (PDF) describes the
-        /// probability that a given value <c>x</c> will occur.
-        /// </remarks>
-        public override double LogProbabilityDensityFunction(double x)
-        {
-            double v = DegreesOfFreedom;
-            return Math.Log(constant) - ((v + 1) / 2.0) * Math.Log(1 + (x * x) / DegreesOfFreedom);
-        }
-
-        /// <summary>
-        ///  Not supported.
+        ///   Gets the log-probability density function (pdf) for
+        ///   this distribution evaluated at point <c>x</c>.
         /// </summary>
         /// 
-        public override void Fit(double[] observations, double[] weights, Fitting.IFittingOptions options)
+        /// <param name="x">A single point in the distribution range.</param>
+        /// 
+        /// <returns>
+        ///   The logarithm of the probability of <c>x</c>
+        ///   occurring in the current distribution.
+        /// </returns>
+        /// 
+        /// <remarks>
+        ///   The Probability Density Function (PDF) describes the
+        ///   probability that a given value <c>x</c> will occur.
+        /// </remarks>
+        /// 
+        public override double LogProbabilityDensityFunction(double x)
         {
-            throw new NotSupportedException();
+            if (x >= 0)
+                return Math.Log(a / b) + (a - 1) * Math.Log(x / b) - Math.Pow(x / b, a);
+            else return Double.NegativeInfinity;
+        }
+
+        /// <summary>
+        ///   Fits the underlying distribution to a given set of observations.
+        /// </summary>
+        /// 
+        /// <param name="observations">The array of observations to fit the model against. The array
+        ///   elements can be either of type double (for univariate data) or
+        ///   type double[] (for multivariate data).</param>
+        /// <param name="weights">The weight vector containing the weight for each of the samples.</param>
+        /// <param name="options">Optional arguments which may be used during fitting, such
+        ///   as regularization constants and additional parameters.</param>
+        ///   
+        /// <remarks>
+        ///   Although both double[] and double[][] arrays are supported,
+        ///   providing a double[] for a multivariate distribution or a
+        ///   double[][] for a univariate distribution may have a negative
+        ///   impact in performance.
+        /// </remarks>
+        /// 
+        public override void Fit(double[] observations, double[] weights, IFittingOptions options)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -197,7 +187,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override object Clone()
         {
-            return new TDistribution(DegreesOfFreedom);
+            return new WeibullDistribution(b, a);
         }
 
     }

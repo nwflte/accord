@@ -22,8 +22,8 @@
 
 namespace Accord.Statistics.Distributions.Multivariate
 {
-    using Accord.Math;
     using System;
+    using Accord.Math;
     using Accord.Statistics.Distributions.Fitting;
 
     /// <summary>
@@ -82,6 +82,7 @@ namespace Accord.Statistics.Distributions.Multivariate
         /// <summary>
         ///   Gets the mean for this distribution.
         /// </summary>
+        /// 
         /// <value>
         ///   An array of double-precision values containing
         ///   the mean values for this distribution.
@@ -143,7 +144,7 @@ namespace Accord.Statistics.Distributions.Multivariate
 
         /// <summary>
         /// Gets the cumulative distribution function (cdf) for
-        /// the this distribution evaluated at point <c>x</c>.
+        /// this distribution evaluated at point <c>x</c>.
         /// </summary>
         /// 
         /// <remarks>
@@ -204,6 +205,23 @@ namespace Accord.Statistics.Distributions.Multivariate
         double IDistribution.LogProbabilityFunction(params double[] x)
         {
             return LogProbabilityMassFunction(Array.ConvertAll<double, int>(x, Convert.ToInt32));
+        }
+
+        /// <summary>
+        ///   Gets the complementary cumulative distribution function
+        ///   (ccdf) for this distribution evaluated at point <c>x</c>.
+        ///   This function is also known as the Survival function.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   The Complementary Cumulative Distribution Function (CCDF) is
+        ///   the complement of the Cumulative Distribution Function, or 1
+        ///   minus the CDF.
+        /// </remarks>
+        /// 
+        double IDistribution.ComplementaryDistributionFunction(params double[] x)
+        {
+            return ComplementaryDistributionFunction(Array.ConvertAll<double, int>(x, Convert.ToInt32));
         }
 
         /// <summary>
@@ -320,7 +338,7 @@ namespace Accord.Statistics.Distributions.Multivariate
 
         /// <summary>
         ///   Gets the cumulative distribution function (cdf) for
-        ///   the this distribution evaluated at point <c>x</c>.
+        ///   this distribution evaluated at point <c>x</c>.
         /// </summary>
         /// 
         /// <param name="x">
@@ -370,6 +388,40 @@ namespace Accord.Statistics.Distributions.Multivariate
         ///   occurring in the current distribution.</returns>
         ///   
         public abstract double LogProbabilityMassFunction(int[] x);
+
+        /// <summary>
+        ///   Gets the inverse of the cumulative distribution function (icdf) for
+        ///   this distribution evaluated at probability <c>p</c>. This function 
+        ///   is also known as the Quantile function.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   The Inverse Cumulative Distribution Function (ICDF) specifies, for
+        ///   a given probability, the value which the random variable will be at,
+        ///   or below, with that probability.
+        /// </remarks>
+        /// 
+        public virtual int[] InverseDistributionFunction(double p)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        ///   Gets the complementary cumulative distribution function
+        ///   (ccdf) for this distribution evaluated at point <c>x</c>.
+        ///   This function is also known as the Survival function.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   The Complementary Cumulative Distribution Function (CCDF) is
+        ///   the complement of the Cumulative Distribution Function, or 1
+        ///   minus the CDF.
+        /// </remarks>
+        /// 
+        public virtual double ComplementaryDistributionFunction(int[] x)
+        {
+            return 1.0 - DistributionFunction(x);
+        }
 
         /// <summary>
         ///   Fits the underlying distribution to a given set of observations.

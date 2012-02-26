@@ -23,90 +23,100 @@
 namespace Accord.Statistics.Distributions.Univariate
 {
     using System;
-    using System.Linq;
+    using Accord.Statistics.Distributions.Fitting;
 
     /// <summary>
-    ///   Discrete uniform distribution.
+    ///   Exponential distribution.
     /// </summary>
     /// 
     [Serializable]
-    public class DiscreteUniformDistribution : UnivariateDiscreteDistribution
+    public class ExponentialDistribution : UnivariateContinuousDistribution,
+        IFittableDistribution<double, IFittingOptions>
     {
 
         // Distribution parameters
-        private int a;
-        private int b;
+        double lambda;
 
         // Derived measures
-        private int n;
+        double lnlambda;
+
 
         /// <summary>
-        ///   Creates a discrete uniform distribution defined in the interval [a;b].
+        ///   Creates a new Exponential distribution with the given rate.
         /// </summary>
         /// 
-        /// <param name="a">The starting (minimum) value a.</param>
-        /// <param name="b">The ending (maximum) value b.</param>
+        /// <param name="rate">The rate parameter lambda.</param>
         /// 
-        public DiscreteUniformDistribution(int a, int b)
+        public ExponentialDistribution(double rate)
         {
-            if (a > b)
-                throw new ArgumentOutOfRangeException("b", 
-                    "The starting number a must be lower than b.");
-
-            this.a = a;
-            this.b = b;
-            this.n = b - a + 1;
+            init(rate);
         }
 
-        /// <summary>
-        ///   Gets the minimum value of the distribution (a).
-        /// </summary>
-        /// 
-        public double Minimum { get { return a; } }
+        private void init(double rate)
+        {
+            this.lambda = rate;
 
-        /// <summary>
-        ///   Gets the maximum value of the distribution (b).
-        /// </summary>
-        /// 
-        public double Maximum { get { return b; } }
-
-        /// <summary>
-        ///   Gets the length of the distribution (b - a + 1).
-        /// </summary>
-        /// 
-        public double Length { get { return n; } }
-
+            this.lnlambda = Math.Log(rate);
+        }
 
         /// <summary>
         ///   Gets the mean for this distribution.
         /// </summary>
         /// 
+        /// <value>The distribution's mean value.</value>
+        /// 
         public override double Mean
         {
-            get { return (a + b) / 2; }
+            get { return 1 / lambda; }
         }
 
         /// <summary>
         ///   Gets the variance for this distribution.
         /// </summary>
         /// 
+        /// <value>The distribution's variance.</value>
+        /// 
         public override double Variance
         {
-            get { return ((b - a) * (b - a)) / 12.0; }
+            get { return 1 / (lambda * lambda); }
+        }
+
+        /// <summary>
+        ///   Gets the median for this distribution.
+        /// </summary>
+        /// 
+        /// <value>The distribution's median value.</value>
+        /// 
+        public override double Median
+        {
+            get { return Math.Log(2) / lambda; }
+        }
+
+        /// <summary>
+        ///   Gets the mode for this distribution.
+        /// </summary>
+        /// 
+        /// <value>The distribution's mode value.</value>
+        /// 
+        public override double Mode
+        {
+            get { return 0; }
         }
 
         /// <summary>
         ///   Gets the entropy for this distribution.
         /// </summary>
         /// 
+        /// <value>The distribution's entropy.</value>
+        /// 
         public override double Entropy
         {
-            get { return Math.Log(b - a); }
+            get { return 1 - Math.Log(lambda); }
         }
 
         /// <summary>
-        ///   Gets the cumulative distribution function (cdf) for
-        ///   the this distribution evaluated at point <c>x</c>.
+        ///  Gets the cumulative distribution function (cdf) for
+        ///  this distribution evaluated at point <c>x</c>.
         /// </summary>
         /// 
         /// <param name="x">A single point in the distribution range.</param>
@@ -116,17 +126,13 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   probability that a given value or any value smaller than it will occur.
         /// </remarks>
         /// 
-        public override double DistributionFunction(int x)
+        public override double DistributionFunction(double x)
         {
-            if (x < a)
-                return 0;
-            if (x >= b)
-                return 1;
-            return (x - a + 1) / n;
+            return 1.0 - Math.Exp(-lambda * x);
         }
 
         /// <summary>
-        ///    Gets the probability mass function (pmf) for
+        ///   Gets the probability density function (pdf) for
         ///   this distribution evaluated at point <c>x</c>.
         /// </summary>
         /// 
@@ -138,35 +144,52 @@ namespace Accord.Statistics.Distributions.Univariate
         /// </returns>
         /// 
         /// <remarks>
-        ///   The Probability Mass Function (PMF) describes the
+        ///   The Probability Density Function (PDF) describes the
         ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
         /// 
-        public override double ProbabilityMassFunction(int x)
+        public override double ProbabilityDensityFunction(double x)
         {
-            if (x >= a && x <= b)
-                return 1.0 / n;
-            else return 0;
+            return lambda * Math.Exp(-lambda * x);
         }
 
         /// <summary>
-        /// Gets the log-probability mass function (pmf) for
-        /// this distribution evaluated at point <c>x</c>.
+        ///   Gets the log-probability density function (pdf) for
+        ///   this distribution evaluated at point <c>x</c>.
         /// </summary>
+        /// 
         /// <param name="x">A single point in the distribution range.</param>
+        /// 
         /// <returns>
-        /// The logarithm of the probability of <c>x</c>
-        /// occurring in the current distribution.
+        ///   The logarithm of the probability of <c>x</c>
+        ///   occurring in the current distribution.
         /// </returns>
+        /// 
         /// <remarks>
-        /// The Probability Mass Function (PMF) describes the
-        /// probability that a given value <c>x</c> will occur.
+        ///   The Probability Density Function (PDF) describes the
+        ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
-        public override double LogProbabilityMassFunction(int x)
+        /// 
+        public override double LogProbabilityDensityFunction(double x)
         {
-            if (x >= a && x <= b)
-                return -Math.Log(n);
-            else return double.NegativeInfinity;
+            return lnlambda - lambda * x;
+        }
+
+        /// <summary>
+        ///   Gets the inverse of the cumulative distribution function (icdf) for
+        ///   this distribution evaluated at probability <c>p</c>. This function
+        ///   is also known as the Quantile function.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   The Inverse Cumulative Distribution Function (ICDF) specifies, for
+        ///   a given probability, the value which the random variable will be at,
+        ///   or below, with that probability.
+        /// </remarks>
+        /// 
+        public override double InverseDistributionFunction(double p)
+        {
+            return -Math.Log(1 - p) / lambda;
         }
 
         /// <summary>
@@ -174,8 +197,8 @@ namespace Accord.Statistics.Distributions.Univariate
         /// </summary>
         /// 
         /// <param name="observations">The array of observations to fit the model against. The array
-        /// elements can be either of type double (for univariate data) or
-        /// type double[] (for multivariate data).</param>
+        ///   elements can be either of type double (for univariate data) or
+        ///   type double[] (for multivariate data).</param>
         /// <param name="weights">The weight vector containing the weight for each of the samples.</param>
         /// <param name="options">Optional arguments which may be used during fitting, such
         /// as regularization constants and additional parameters.</param>
@@ -187,13 +210,24 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   impact in performance.
         /// </remarks>
         /// 
-        public override void Fit(double[] observations, double[] weights, Fitting.IFittingOptions options)
+        public override void Fit(double[] observations, double[] weights, IFittingOptions options)
         {
             if (options != null)
                 throw new ArgumentException("No options may be specified.");
 
-            a = (int)observations.Min();
-            b = (int)observations.Max();
+
+            double lambda;
+
+            if (weights == null)
+            {
+                lambda = 1.0 / Accord.Statistics.Tools.Mean(observations);
+            }
+            else
+            {
+                lambda = 1.0 / Accord.Statistics.Tools.WeightedMean(observations, weights);
+            }
+
+            init(lambda);
         }
 
         /// <summary>
@@ -206,9 +240,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override object Clone()
         {
-            return new DiscreteUniformDistribution(a, b);
+            return new ExponentialDistribution(lambda);
         }
-
-
     }
 }

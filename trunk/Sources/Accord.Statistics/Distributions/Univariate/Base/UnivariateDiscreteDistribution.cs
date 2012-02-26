@@ -22,8 +22,8 @@
 
 namespace Accord.Statistics.Distributions.Univariate
 {
-    using Accord.Math;
     using System;
+    using Accord.Math;
     using Accord.Statistics.Distributions.Fitting;
 
     /// <summary>
@@ -58,7 +58,8 @@ namespace Accord.Statistics.Distributions.Univariate
     /// </remarks>
     /// 
     [Serializable]
-    public abstract class UnivariateDiscreteDistribution : DistributionBase, IDistribution, IUnivariateDistribution
+    public abstract class UnivariateDiscreteDistribution : DistributionBase,
+        IDistribution, IUnivariateDistribution
     {
 
         /// <summary>
@@ -73,11 +74,15 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   Gets the mean for this distribution.
         /// </summary>
         /// 
+        /// <value>The distribution's mean value.</value>
+        /// 
         public abstract double Mean { get; }
 
         /// <summary>
         ///   Gets the variance for this distribution.
         /// </summary>
+        /// 
+        /// <value>The distribution's variance.</value>
         /// 
         public abstract double Variance { get; }
 
@@ -85,12 +90,15 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   Gets the entropy for this distribution.
         /// </summary>
         /// 
+        /// <value>The distribution's entropy.</value>
+        /// 
         public abstract double Entropy { get; }
-
 
         /// <summary>
         ///   Gets the mode for this distribution.
         /// </summary>
+        /// 
+        /// <value>The distribution's mode value.</value>
         /// 
         public virtual double Mode
         {
@@ -101,6 +109,8 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   Gets the median for this distribution.
         /// </summary>
         /// 
+        /// <value>The distribution's median value.</value>
+        /// 
         public virtual double Median
         {
             get { return Mean; }
@@ -110,6 +120,8 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   Gets the Standard Deviation (the square root of
         ///   the variance) for the current distribution.
         /// </summary>
+        /// 
+        /// <value>The distribution's standard deviation.</value>
         /// 
         public virtual double StandardDeviation
         {
@@ -165,6 +177,40 @@ namespace Accord.Statistics.Distributions.Univariate
         double IUnivariateDistribution.DistributionFunction(double x)
         {
             return DistributionFunction((int)x);
+        }
+
+        /// <summary>
+        ///   Gets the inverse of the cumulative distribution function (icdf) for
+        ///   this distribution evaluated at probability <c>p</c>. This function 
+        ///   is also known as the Quantile function.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   The Inverse Cumulative Distribution Function (ICDF) specifies, for
+        ///   a given probability, the value which the random variable will be at,
+        ///   or below, with that probability.
+        /// </remarks>
+        /// 
+        double IUnivariateDistribution.InverseDistributionFunction(double p)
+        {
+            return InverseDistributionFunction(p);
+        }
+
+        /// <summary>
+        ///   Gets the complementary cumulative distribution function
+        ///   (ccdf) for this distribution evaluated at point <c>x</c>.
+        ///   This function is also known as the Survival function.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   The Complementary Cumulative Distribution Function (CCDF) is
+        ///   the complement of the Cumulative Distribution Function, or 1
+        ///   minus the CDF.
+        /// </remarks>
+        /// 
+        double IDistribution.ComplementaryDistributionFunction(double[] x)
+        {
+            return ComplementaryDistributionFunction((int)x[0]);
         }
 
         /// <summary>
@@ -260,10 +306,12 @@ namespace Accord.Statistics.Distributions.Univariate
         /// <summary>
         ///   Fits the underlying distribution to a given set of observations.
         /// </summary>
+        /// 
         /// <param name="observations">
         ///   The array of observations to fit the model against. The array
         ///   elements can be either of type double (for univariate data) or
         ///   type double[] (for multivariate data).</param>
+        ///   
         /// <remarks>
         ///   Although both double[] and double[][] arrays are supported,
         ///   providing a double[] for a multivariate distribution or a
@@ -279,6 +327,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// <summary>
         ///   Fits the underlying distribution to a given set of observations.
         /// </summary>
+        /// 
         /// <param name="observations">
         ///   The array of observations to fit the model against. The array
         ///   elements can be either of type double (for univariate data) or
@@ -286,6 +335,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// <param name="weights">
         ///   The weight vector containing the weight for each of the samples.</param>
         /// <remarks>
+        /// 
         ///   Although both double[] and double[][] arrays are supported,
         ///   providing a double[] for a multivariate distribution or a
         ///   double[][] for a univariate distribution may have a negative
@@ -300,6 +350,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// <summary>
         ///   Fits the underlying distribution to a given set of observations.
         /// </summary>
+        /// 
         /// <param name="observations">
         ///   The array of observations to fit the model against. The array
         ///   elements can be either of type double (for univariate data) or
@@ -307,6 +358,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// <param name="options">
         ///   Optional arguments which may be used during fitting, such
         ///   as regularization constants and additional parameters.</param>
+        ///   
         /// <remarks>
         ///   Although both double[] and double[][] arrays are supported,
         ///   providing a double[] for a multivariate distribution or a
@@ -316,18 +368,13 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         void IDistribution.Fit(Array observations, IFittingOptions options)
         {
-            double[] weights = new double[observations.Length];
-
-            // Create equal weights for the observations
-            for (int i = 0; i < weights.Length; i++)
-                weights[i] = 1.0 / observations.Length;
-
-            (this as IDistribution).Fit(observations, weights, options);
+            (this as IDistribution).Fit(observations, null, options);
         }
 
         /// <summary>
         ///   Fits the underlying distribution to a given set of observations.
         /// </summary>
+        /// 
         /// <param name="observations">
         ///   The array of observations to fit the model against. The array
         ///   elements can be either of type double (for univariate data) or
@@ -338,6 +385,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// <param name="options">
         ///   Optional arguments which may be used during fitting, such
         ///   as regularization constants and additional parameters.</param>
+        ///   
         /// <remarks>
         ///   Although both double[] and double[][] arrays are supported,
         ///   providing a double[] for a multivariate distribution or a
@@ -368,61 +416,99 @@ namespace Accord.Statistics.Distributions.Univariate
 
         /// <summary>
         ///   Gets the cumulative distribution function (cdf) for
-        ///   the this distribution evaluated at point <c>x</c>.
+        ///   this distribution evaluated at point <c>k</c>.
         /// </summary>
-        /// <param name="x">
+        /// 
+        /// <param name="k">
         ///   A single point in the distribution range.</param>
+        ///   
         /// <remarks>
         ///   The Cumulative Distribution Function (CDF) describes the cumulative
         ///   probability that a given value or any value smaller than it will occur.
         /// </remarks>
-        public abstract double DistributionFunction(int x);
+        /// 
+        public abstract double DistributionFunction(int k);
+
+        /// <summary>
+        ///   Gets the inverse of the cumulative distribution function (icdf) for
+        ///   this distribution evaluated at probability <c>p</c>. This function 
+        ///   is also known as the Quantile function.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   The Inverse Cumulative Distribution Function (ICDF) specifies, for
+        ///   a given probability, the value which the random variable will be at,
+        ///   or below, with that probability.
+        /// </remarks>
+        /// 
+        public virtual int InverseDistributionFunction(double p)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        ///   Gets the complementary cumulative distribution function
+        ///   (ccdf) for this distribution evaluated at point <c>k</c>.
+        ///   This function is also known as the Survival function.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   The Complementary Cumulative Distribution Function (CCDF) is
+        ///   the complement of the Cumulative Distribution Function, or 1
+        ///   minus the CDF.
+        /// </remarks>
+        /// 
+        public virtual double ComplementaryDistributionFunction(int k)
+        {
+            return 1.0 - DistributionFunction(k);
+        }
 
         /// <summary>
         ///   Gets the probability mass function (pmf) for
         ///   this distribution evaluated at point <c>x</c>.
         /// </summary>
-        /// <param name="x">
+        /// 
+        /// <param name="k">
         ///   A single point in the distribution range.</param>
+        ///   
         /// <remarks>
         ///   The Probability Mass Function (PMF) describes the
         ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
+        /// 
         /// <returns>
-        ///   The probability of <c>x</c> occurring
+        ///   The probability of <c>k</c> occurring
         ///   in the current distribution.</returns>
         ///   
-        public abstract double ProbabilityMassFunction(int x);
+        public abstract double ProbabilityMassFunction(int k);
 
         /// <summary>
         ///   Gets the log-probability mass function (pmf) for
         ///   this distribution evaluated at point <c>x</c>.
         /// </summary>
-        /// <param name="x">
+        /// 
+        /// <param name="k">
         ///   A single point in the distribution range.</param>
+        ///   
         /// <remarks>
         ///   The Probability Mass Function (PMF) describes the
-        ///   probability that a given value <c>x</c> will occur.
+        ///   probability that a given value <c>k</c> will occur.
         /// </remarks>
+        /// 
         /// <returns>
         ///   The logarithm of the probability of <c>x</c>
         ///   occurring in the current distribution.</returns>
         ///   
-        public abstract double LogProbabilityMassFunction(int x);
+        public abstract double LogProbabilityMassFunction(int k);
 
         /// <summary>
         ///   Fits the underlying distribution to a given set of observations.
         /// </summary>
+        /// 
         /// <param name="observations">
         ///   The array of observations to fit the model against. The array
         ///   elements can be either of type double (for univariate data) or
         ///   type double[] (for multivariate data).</param>
-        /// <remarks>
-        ///   Although both double[] and double[][] arrays are supported,
-        ///   providing a double[] for a multivariate distribution or a
-        ///   double[][] for a univariate distribution may have a negative
-        ///   impact in performance.
-        /// </remarks>
         ///   
         public virtual void Fit(double[] observations)
         {
@@ -432,19 +518,15 @@ namespace Accord.Statistics.Distributions.Univariate
         /// <summary>
         ///   Fits the underlying distribution to a given set of observations.
         /// </summary>
+        /// 
         /// <param name="observations">
         ///   The array of observations to fit the model against. The array
         ///   elements can be either of type double (for univariate data) or
         ///   type double[] (for multivariate data).</param>
+        ///   
         /// <param name="weights">
         ///   The weight vector containing the weight for each of the samples.</param>
-        /// <remarks>
-        ///   Although both double[] and double[][] arrays are supported,
-        ///   providing a double[] for a multivariate distribution or a
-        ///   double[][] for a univariate distribution may have a negative
-        ///   impact in performance.
-        /// </remarks>
-        /// 
+        ///   
         public virtual void Fit(double[] observations, double[] weights)
         {
             Fit(observations, weights, (IFittingOptions)null);
@@ -453,60 +535,48 @@ namespace Accord.Statistics.Distributions.Univariate
         /// <summary>
         ///   Fits the underlying distribution to a given set of observations.
         /// </summary>
+        /// 
         /// <param name="observations">
         ///   The array of observations to fit the model against. The array
         ///   elements can be either of type double (for univariate data) or
         ///   type double[] (for multivariate data).</param>
+        ///   
         /// <param name="options">
         ///   Optional arguments which may be used during fitting, such
         ///   as regularization constants and additional parameters.</param>
-        /// <remarks>
-        ///   Although both double[] and double[][] arrays are supported,
-        ///   providing a double[] for a multivariate distribution or a
-        ///   double[][] for a univariate distribution may have a negative
-        ///   impact in performance.
-        /// </remarks>
-        /// 
+        ///   
         public virtual void Fit(double[] observations, IFittingOptions options)
         {
-            double[] weights = new double[observations.Length];
-
-            // Create equal weights for the observations
-            double w = 1.0 / observations.Length;
-            for (int i = 0; i < weights.Length; i++)
-                weights[i] = w;
-
-            Fit(observations, weights, options);
+            Fit(observations, null, options);
         }
 
         /// <summary>
         ///   Fits the underlying distribution to a given set of observations.
         /// </summary>
+        /// 
         /// <param name="observations">
         ///   The array of observations to fit the model against. The array
         ///   elements can be either of type double (for univariate data) or
         ///   type double[] (for multivariate data).
         /// </param>
+        /// 
         /// <param name="weights">
         ///   The weight vector containing the weight for each of the samples.</param>
+        ///   
         /// <param name="options">
         ///   Optional arguments which may be used during fitting, such
         ///   as regularization constants and additional parameters.</param>
-        /// <remarks>
-        ///   Although both double[] and double[][] arrays are supported,
-        ///   providing a double[] for a multivariate distribution or a
-        ///   double[][] for a univariate distribution may have a negative
-        ///   impact in performance.
-        /// </remarks>
-        /// 
+        ///   
         public abstract void Fit(double[] observations, double[] weights, IFittingOptions options);
 
         /// <summary>
         ///   Creates a new object that is a copy of the current instance.
         /// </summary>
+        /// 
         /// <returns>
         ///   A new object that is a copy of this instance.
         /// </returns>
+        /// 
         public abstract object Clone();
 
     }

@@ -23,59 +23,58 @@
 namespace Accord.Statistics.Distributions.Univariate
 {
     using System;
+    using Accord.Math;
     using Accord.Statistics.Distributions.Fitting;
 
     /// <summary>
-    ///   Bernoulli probability distribution.
+    ///   Poisson probability distribution.
     /// </summary>
     /// 
     /// <remarks>
-    /// <para>
-    ///   The Bernoulli distribution is a distribution for a single
-    ///   binary variable x E {0,1}, representing, for example, the
-    ///   flipping of a coin. It is governed by a single continuous
-    ///   parameter representing the probability of an observation
-    ///   to be equal to 1.</para>
+    ///   <para>The Poisson distribution is a discrete probability distribution that
+    ///   expresses the probability of a number of events occurring in a fixed
+    ///   period of time if these events occur with a known average rate and
+    ///   independently of the time since the last event.</para>
     ///   
     /// <para>    
     ///   References:
     ///   <list type="bullet">
-    ///     <item><description><a href="http://en.wikipedia.org/wiki/Bernoulli_distribution">
-    ///       Wikipedia, The Free Encyclopedia. Bernoulli distribution. Available on:
-    ///       http://en.wikipedia.org/wiki/Bernoulli_distribution </a></description></item>
-    ///     <item><description>
-    ///       C. Bishop. “Pattern Recognition and Machine Learning”. Springer. 2006.</description></item>
+    ///     <item><description><a href="http://en.wikipedia.org/wiki/Poisson_distribution">
+    ///       Wikipedia, The Free Encyclopedia. Poisson distribution. Available on:
+    ///       http://en.wikipedia.org/wiki/Poisson_distribution </a></description></item>
     ///   </list></para>
     /// </remarks>
     /// 
     [Serializable]
-    public class BernoulliDistribution : UnivariateDiscreteDistribution
+    public class PoissonDistribution : UnivariateDiscreteDistribution,
+        IFittableDistribution<double, IFittingOptions>
     {
-        // Distribution parameters
-        private double probability;
 
-        // Derived parameter values
-        private double complement;
+        // Distribution parameters
+        private double lambda;
+
+        // Derived values
+        private double epml;
 
         // Distribution measures
         private double? entropy;
 
 
         /// <summary>
-        ///   Creates a new <see cref="BernoulliDistribution">Bernoulli</see> distribution.
+        ///   Creates a new Poisson distribution with the given lambda.
         /// </summary>
         /// 
-        /// <param name="mean">The probability of an observation being equal to 1.</param>
+        /// <param name="lambda">The Poisson's lambda parameter.</param>
         /// 
-        public BernoulliDistribution(double mean)
+        public PoissonDistribution(double lambda)
         {
-            this.initialize(mean);
+            initialize(lambda);
         }
 
-        private void initialize(double mean)
+        private void initialize(double lm)
         {
-            this.probability = mean;
-            this.complement = 1.0 - mean;
+            this.lambda = lm;
+            this.epml = Math.Exp(-lm);
 
             this.entropy = null;
         }
@@ -86,7 +85,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override double Mean
         {
-            get { return probability; }
+            get { return lambda; }
         }
 
         /// <summary>
@@ -95,21 +94,29 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override double Variance
         {
-            get { return probability * complement; }
+            get { return lambda; }
         }
 
         /// <summary>
         ///   Gets the entropy for this distribution.
         /// </summary>
         /// 
+        /// <remarks>
+        ///   A closed form expression for the entropy of a Poisson
+        ///   distribution is unknown. This property returns an approximation
+        ///   for large lambda.
+        /// </remarks>
+        /// 
         public override double Entropy
         {
             get
             {
-                if (!entropy.HasValue)
+                if (entropy == null)
                 {
-                    entropy = -probability * System.Math.Log(probability) -
-                                complement * System.Math.Log(complement);
+                    entropy = 0.5 * System.Math.Log(2.0 * System.Math.PI * lambda)
+                        - 1 / (12 * lambda)
+                        - 1 / (24 * lambda * lambda)
+                        - 19 / (360 * lambda * lambda * lambda);
                 }
 
                 return entropy.Value;
@@ -118,21 +125,20 @@ namespace Accord.Statistics.Distributions.Univariate
 
         /// <summary>
         ///   Gets the cumulative distribution function (cdf) for
-        ///   the this distribution evaluated at point <c>x</c>.
+        ///   this distribution evaluated at point <c>k</c>.
         /// </summary>
         /// 
-        /// <param name="x">A single point in the distribution range.</param>
-        /// 
+        /// <param name="k">
+        ///   A single point in the distribution range.</param>
+        ///   
         /// <remarks>
         ///   The Cumulative Distribution Function (CDF) describes the cumulative
         ///   probability that a given value or any value smaller than it will occur.
         /// </remarks>
         /// 
-        public override double DistributionFunction(int x)
+        public override double DistributionFunction(int k)
         {
-            if (x < 0) return 0;
-            if (x >= 1) return 1;
-            return complement;
+            return Gamma.Incomplete(k + 1, lambda) / Special.Factorial(k);
         }
 
         /// <summary>
@@ -140,43 +146,41 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   this distribution evaluated at point <c>x</c>.
         /// </summary>
         /// 
-        /// <param name="x">A single point in the distribution range.</param>
+        /// <param name="k">
+        ///   A single point in the distribution range.</param>
+        ///   
+        /// <remarks>
+        ///   The Probability Mass Function (PMF) describes the
+        ///   probability that a given value <c>k</c> will occur.
+        /// </remarks>
         /// 
         /// <returns>
         ///   The probability of <c>x</c> occurring
-        ///   in the current distribution.
-        /// </returns>
-        /// <remarks>
-        ///   The Probability Mass Function (PMF) describes the
-        ///   probability that a given value <c>x</c> will occur.
-        /// </remarks>
-        /// 
-        public override double ProbabilityMassFunction(int x)
+        ///   in the current distribution.</returns>
+        ///   
+        public override double ProbabilityMassFunction(int k)
         {
-            if (x == 1) return probability;
-            if (x == 0) return complement;
-            return 0;
+            return (Math.Pow(lambda, k) / Special.Factorial(k)) * epml;
         }
 
         /// <summary>
         /// Gets the log-probability mass function (pmf) for
-        /// this distribution evaluated at point <c>x</c>.
+        /// this distribution evaluated at point <c>k</c>.
         /// </summary>
-        /// <param name="x">A single point in the distribution range.</param>
+        /// <param name="k">A single point in the distribution range.</param>
         /// <returns>
-        /// The logarithm of the probability of <c>x</c>
+        /// The logarithm of the probability of <c>k</c>
         /// occurring in the current distribution.
         /// </returns>
         /// <remarks>
         /// The Probability Mass Function (PMF) describes the
-        /// probability that a given value <c>x</c> will occur.
+        /// probability that a given value <c>k</c> will occur.
         /// </remarks>
-        public override double LogProbabilityMassFunction(int x)
+        public override double LogProbabilityMassFunction(int k)
         {
-            if (x == 1) return Math.Log(probability);
-            if (x == 0) return Math.Log(complement);
-            return double.NegativeInfinity;
+            return (k * Math.Log(lambda) - Special.LogFactorial(k)) - lambda;
         }
+
 
         /// <summary>
         ///   Fits the underlying distribution to a given set of observations.
@@ -198,7 +202,16 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override void Fit(double[] observations, double[] weights, IFittingOptions options)
         {
-            double mean = Statistics.Tools.WeightedMean(observations, weights);
+            if (options != null)
+                throw new ArgumentException("No options may be specified.");
+
+            double mean;
+
+            if (weights == null)
+                mean = observations.Mean();
+            else
+                mean = observations.WeightedMean(weights);
+
             initialize(mean);
         }
 
@@ -211,7 +224,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override object Clone()
         {
-            return new BernoulliDistribution(probability);
+            return new PoissonDistribution(lambda);
         }
     }
 }

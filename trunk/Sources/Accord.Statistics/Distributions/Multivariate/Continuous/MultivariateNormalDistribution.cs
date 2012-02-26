@@ -22,9 +22,9 @@
 
 namespace Accord.Statistics.Distributions.Multivariate
 {
+    using System;
     using Accord.Math;
     using Accord.Math.Decompositions;
-    using System;
     using Accord.Statistics.Distributions.Fitting;
     using Accord.Statistics.Distributions.Univariate;
 
@@ -54,7 +54,8 @@ namespace Accord.Statistics.Distributions.Multivariate
     /// </remarks>
     /// 
     [Serializable]
-    public class MultivariateNormalDistribution : MultivariateContinuousDistribution
+    public class MultivariateNormalDistribution : MultivariateContinuousDistribution,
+        IFittableDistribution<double[], NormalOptions>
     {
 
         // Distribution parameters
@@ -174,7 +175,7 @@ namespace Accord.Statistics.Distributions.Multivariate
             //
 
             // So the log(constant) could be computed as:
-            lnconstant = -(Special.Log2PI * k + lndet) * 0.5;
+            lnconstant = -(Constants.Log2PI * k + lndet) * 0.5;
         }
 
         /// <summary>
@@ -297,25 +298,32 @@ namespace Accord.Statistics.Distributions.Multivariate
         /// </summary>
         /// 
         /// <param name="observations">The array of observations to fit the model against. The array
-        /// elements can be either of type double (for univariate data) or
-        /// type double[] (for multivariate data).</param>
+        ///   elements can be either of type double (for univariate data) or
+        ///   type double[] (for multivariate data).</param>
         /// <param name="weights">The weight vector containing the weight for each of the samples.</param>
         /// <param name="options">Optional arguments which may be used during fitting, such
-        /// as regularization constants and additional parameters.</param>
-        /// 
-        /// <remarks>
-        ///   Although both double[] and double[][] arrays are supported,
-        ///   providing a double[] for a multivariate distribution or a
-        ///   double[][] for a univariate distribution may have a negative
-        ///   impact in performance.
-        /// </remarks>
+        ///   as regularization constants and additional parameters.</param>
         /// 
         public override void Fit(double[][] observations, double[] weights, IFittingOptions options)
         {
+            Fit(observations, weights, options as NormalOptions);
+        }
+
+        /// <summary>
+        ///   Fits the underlying distribution to a given set of observations.
+        /// </summary>
+        /// 
+        /// <param name="observations">The array of observations to fit the model against. The array
+        ///   elements can be either of type double (for univariate data) or
+        ///   type double[] (for multivariate data).</param>
+        /// <param name="weights">The weight vector containing the weight for each of the samples.</param>
+        /// <param name="options">Optional arguments which may be used during fitting, such
+        ///   as regularization constants and additional parameters.</param>
+        /// 
+        public void Fit(double[][] observations, double[] weights, NormalOptions options)
+        {
             double[] means;
             double[,] cov;
-
-            NormalOptions opt = options as NormalOptions;
 
 
             if (weights != null)
@@ -336,7 +344,7 @@ namespace Accord.Statistics.Distributions.Multivariate
                 means = Statistics.Tools.Mean(observations, weights);
 
                 // Compute weighted covariance matrix
-                if (opt != null && opt.Diagonal)
+                if (options != null && options.Diagonal)
                     cov = Matrix.Diagonal(Statistics.Tools.WeightedVariance(observations, weights, means));
                 else cov = Statistics.Tools.WeightedCovariance(observations, weights, means);
             }
@@ -346,17 +354,17 @@ namespace Accord.Statistics.Distributions.Multivariate
                 means = Statistics.Tools.Mean(observations);
 
                 // Compute covariance matrix
-                if (opt != null && opt.Diagonal)
+                if (options != null && options.Diagonal)
                     cov = Matrix.Diagonal(Statistics.Tools.Variance(observations, means));
                 cov = Statistics.Tools.Covariance(observations, means);
             }
 
             CholeskyDecomposition chol = new CholeskyDecomposition(cov, false, true);
 
-            if (opt != null)
+            if (options != null)
             {
                 // Parse optional estimation options
-                double regularization = opt.Regularization;
+                double regularization = options.Regularization;
 
                 if (regularization > 0)
                 {

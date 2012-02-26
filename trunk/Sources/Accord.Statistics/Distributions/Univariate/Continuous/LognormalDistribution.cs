@@ -50,7 +50,8 @@ namespace Accord.Statistics.Distributions.Univariate
     /// </remarks>
     /// 
     [Serializable]
-    public class LognormalDistribution : UnivariateContinuousDistribution
+    public class LognormalDistribution : UnivariateContinuousDistribution,
+        IFittableDistribution<double, NormalOptions>
     {
 
         // Distribution parameters
@@ -192,7 +193,7 @@ namespace Accord.Statistics.Distributions.Univariate
         public override double DistributionFunction(double x)
         {
             double z = (Math.Log(x) - location) / shape;
-            return 0.5 * Special.Erfc(-z / Special.Sqrt2);
+            return 0.5 * Special.Erfc(-z / Constants.Sqrt2);
         }
 
         /// <summary>
@@ -252,26 +253,37 @@ namespace Accord.Statistics.Distributions.Univariate
         /// <summary>
         ///   Fits the underlying distribution to a given set of observations.
         /// </summary>
+        /// 
         /// <param name="observations">The array of observations to fit the model against. The array
         ///   elements can be either of type double (for univariate data) or
         ///   type double[] (for multivariate data).</param>
         /// <param name="weights">The weight vector containing the weight for each of the samples.</param>
         /// <param name="options">Optional arguments which may be used during fitting, such
         ///   as regularization constants and additional parameters.</param>
-        /// <remarks>
-        ///   Although both double[] and double[][] arrays are supported,
-        ///   providing a double[] for a multivariate distribution or a
-        ///   double[][] for a univariate distribution may have a negative
-        ///   impact in performance.
-        /// </remarks>
         /// 
         public override void Fit(double[] observations, double[] weights, IFittingOptions options)
+        {
+            Fit(observations, weights, options as NormalOptions);
+        }
+
+        /// <summary>
+        ///   Fits the underlying distribution to a given set of observations.
+        /// </summary>
+        /// 
+        /// <param name="observations">The array of observations to fit the model against. The array
+        ///   elements can be either of type double (for univariate data) or
+        ///   type double[] (for multivariate data).</param>
+        /// <param name="weights">The weight vector containing the weight for each of the samples.</param>
+        /// <param name="options">Optional arguments which may be used during fitting, such
+        ///   as regularization constants and additional parameters.</param>
+        /// 
+        public void Fit(double[] observations, double[] weights, NormalOptions options)
         {
             if (immutable) throw new InvalidOperationException();
 
             double mu, var;
 
-            observations = observations.Apply(Math.Log);
+            observations = observations.Log();
 
             if (weights != null)
             {
@@ -299,8 +311,7 @@ namespace Accord.Statistics.Distributions.Univariate
             if (options != null)
             {
                 // Parse optional estimation options
-                NormalOptions o = (NormalOptions)options;
-                double regularization = o.Regularization;
+                double regularization = options.Regularization;
 
                 if (var == 0 || Double.IsNaN(var) || Double.IsInfinity(var))
                     var = regularization;
@@ -330,7 +341,7 @@ namespace Accord.Statistics.Distributions.Univariate
             this.shape2 = var;
 
             // Compute derived values
-            this.constant = 1.0 / (Special.Sqrt2PI * dev);
+            this.constant = 1.0 / (Constants.Sqrt2PI * dev);
         }
 
 

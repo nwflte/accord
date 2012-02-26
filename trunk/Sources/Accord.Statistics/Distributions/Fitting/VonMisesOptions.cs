@@ -25,7 +25,8 @@ namespace Accord.Statistics.Distributions.Fitting
     using System;
 
     /// <summary>
-    ///   Von-Mises distribution estimation options.
+    ///   Estimation options for <see cref="Accord.Statistics.Distributions.Univariate.VonMisesDistribution">
+    ///   Von-Mises distributions</see>.
     /// </summary>
     /// 
     [Serializable]

@@ -25,7 +25,8 @@ namespace Accord.Statistics.Distributions.Fitting
     using System;
 
     /// <summary>
-    ///   Fitting options for general discrete distributions.
+    ///   Estimation options for <see cref="Accord.Statistics.Distributions.Univariate.
+    ///   GeneralDiscreteDistribution">general discrete (categorical) distributions</see>.
     /// </summary>
     /// 
     [Serializable]

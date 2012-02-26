@@ -24,6 +24,7 @@ namespace Accord.Statistics.Distributions.Univariate
 {
     using System;
     using Accord.Math;
+    using Accord.Statistics.Distributions.Fitting;
 
     /// <summary>
     ///   Rayleigh distribution.
@@ -53,7 +54,8 @@ namespace Accord.Statistics.Distributions.Univariate
     [Serializable]
     public class RayleighDistribution : UnivariateContinuousDistribution
     {
-        // distribution parameters
+
+        // Distribution parameters
         private double sigma;
 
 
@@ -70,100 +72,125 @@ namespace Accord.Statistics.Distributions.Univariate
 
 
         /// <summary>
-        /// Gets the mean for this distribution.
+        ///   Gets the mean for this distribution.
         /// </summary>
+        /// 
         /// <value>The distribution's mean value.</value>
+        /// 
         public override double Mean
         {
             get { return sigma * Math.Sqrt(Math.PI / 2.0); }
         }
 
         /// <summary>
-        /// Gets the variance for this distribution.
+        ///   Gets the variance for this distribution.
         /// </summary>
+        /// 
         /// <value>The distribution's variance.</value>
+        /// 
         public override double Variance
         {
             get { return (4.0 - Math.PI) / 2.0 * sigma * sigma; }
         }
 
         /// <summary>
-        /// Gets the entropy for this distribution.
+        ///   Gets the entropy for this distribution.
         /// </summary>
+        /// 
         /// <value>The distribution's entropy.</value>
+        /// 
         public override double Entropy
         {
-            get { return 1 + Math.Log(sigma / Math.Sqrt(2)) + Special.EulerGamma / 2.0; ; }
+            get { return 1 + Math.Log(sigma / Math.Sqrt(2)) + Constants.EulerGamma / 2.0; ; }
         }
 
         /// <summary>
-        /// Gets the cumulative distribution function (cdf) for
-        /// the this distribution evaluated at point <c>x</c>.
+        ///   Gets the cumulative distribution function (cdf) for
+        ///   this distribution evaluated at point <c>x</c>.
         /// </summary>
+        /// 
         /// <param name="x">A single point in the distribution range.</param>
-        /// <returns></returns>
+        /// 
         /// <remarks>
-        /// The Cumulative Distribution Function (CDF) describes the cumulative
-        /// probability that a given value or any value smaller than it will occur.
+        ///   The Cumulative Distribution Function (CDF) describes the cumulative
+        ///   probability that a given value or any value smaller than it will occur.
         /// </remarks>
+        /// 
         public override double DistributionFunction(double x)
         {
             return 1.0 - Math.Exp(-x * x / (2 * sigma * sigma));
         }
 
         /// <summary>
-        /// Gets the probability density function (pdf) for
-        /// this distribution evaluated at point <c>x</c>.
+        ///   Gets the probability density function (pdf) for
+        ///   this distribution evaluated at point <c>x</c>.
         /// </summary>
+        /// 
         /// <param name="x">A single point in the distribution range.</param>
+        /// 
         /// <returns>
-        /// The probability of <c>x</c> occurring
-        /// in the current distribution.
+        ///   The probability of <c>x</c> occurring
+        ///   in the current distribution.
         /// </returns>
+        /// 
         /// <remarks>
-        /// The Probability Density Function (PDF) describes the
-        /// probability that a given value <c>x</c> will occur.
+        ///   The Probability Density Function (PDF) describes the
+        ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
+        /// 
         public override double ProbabilityDensityFunction(double x)
         {
             return x / (sigma * sigma) * Math.Exp(-x * x / (2 * sigma * sigma));
         }
 
         /// <summary>
-        /// Gets the log-probability density function (pdf) for
-        /// this distribution evaluated at point <c>x</c>.
+        ///   Gets the log-probability density function (pdf) for
+        ///   this distribution evaluated at point <c>x</c>.
         /// </summary>
+        /// 
         /// <param name="x">A single point in the distribution range.</param>
+        /// 
         /// <returns>
-        /// The logarithm of the probability of <c>x</c>
-        /// occurring in the current distribution.
+        ///   The logarithm of the probability of <c>x</c>
+        ///   occurring in the current distribution.
         /// </returns>
+        /// 
         /// <remarks>
-        /// The Probability Density Function (PDF) describes the
-        /// probability that a given value <c>x</c> will occur.
+        ///   The Probability Density Function (PDF) describes the
+        ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
+        /// 
         public override double LogProbabilityDensityFunction(double x)
         {
             return Math.Log(x / (sigma * sigma)) + (-x * x / (2 * sigma * sigma));
         }
 
         /// <summary>
-        /// Fits the underlying distribution to a given set of observations.
+        ///   Fits the underlying distribution to a given set of observations.
         /// </summary>
+        /// 
         /// <param name="observations">The array of observations to fit the model against. The array
-        /// elements can be either of type double (for univariate data) or
-        /// type double[] (for multivariate data).</param>
+        ///   elements can be either of type double (for univariate data) or
+        ///   type double[] (for multivariate data).</param>
         /// <param name="weights">The weight vector containing the weight for each of the samples.</param>
         /// <param name="options">Optional arguments which may be used during fitting, such
-        /// as regularization constants and additional parameters.</param>
+        ///   as regularization constants and additional parameters.</param>
+        ///   
         /// <remarks>
-        /// Although both double[] and double[][] arrays are supported,
-        /// providing a double[] for a multivariate distribution or a
-        /// double[][] for a univariate distribution may have a negative
-        /// impact in performance.
+        ///   Although both double[] and double[][] arrays are supported,
+        ///   providing a double[] for a multivariate distribution or a
+        ///   double[][] for a univariate distribution may have a negative
+        ///   impact in performance.
         /// </remarks>
-        public override void Fit(double[] observations, double[] weights, Fitting.IFittingOptions options)
+        /// 
+        public override void Fit(double[] observations, double[] weights, IFittingOptions options)
         {
+            if (options != null)
+                throw new ArgumentException("No options may be specified.");
+
+            if (weights != null)
+                throw new ArgumentException("This distribution does not support weighted samples.");
+
             double sum = 0;
             for (int i = 0; i < observations.Length; i++)
                 sum += observations[i] * observations[i];
@@ -172,11 +199,13 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
-        /// Creates a new object that is a copy of the current instance.
+        ///   Creates a new object that is a copy of the current instance.
         /// </summary>
+        /// 
         /// <returns>
-        /// A new object that is a copy of this instance.
+        ///   A new object that is a copy of this instance.
         /// </returns>
+        /// 
         public override object Clone()
         {
             return new RayleighDistribution(sigma);

@@ -22,8 +22,8 @@
 
 namespace Accord.Statistics.Distributions.Univariate
 {
-    using Accord.Math;
     using System;
+    using Accord.Math;
     using Accord.Statistics.Distributions.Fitting;
 
     /// <summary>
@@ -59,7 +59,8 @@ namespace Accord.Statistics.Distributions.Univariate
     /// </remarks>
     /// 
     [Serializable]
-    public abstract class UnivariateContinuousDistribution : DistributionBase, IDistribution, IUnivariateDistribution
+    public abstract class UnivariateContinuousDistribution : DistributionBase,
+        IDistribution, IUnivariateDistribution
     {
 
         /// <summary>
@@ -155,6 +156,23 @@ namespace Accord.Statistics.Distributions.Univariate
         double IDistribution.DistributionFunction(params double[] x)
         {
             return DistributionFunction(x[0]);
+        }
+
+        /// <summary>
+        ///   Gets the complementary cumulative distribution function
+        ///   (ccdf) for this distribution evaluated at point <c>x</c>.
+        ///   This function is also known as the Survival function.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   The Complementary Cumulative Distribution Function (CCDF) is
+        ///   the complement of the Cumulative Distribution Function, or 1
+        ///   minus the CDF.
+        /// </remarks>
+        /// 
+        double IDistribution.ComplementaryDistributionFunction(params double[] x)
+        {
+            return ComplementaryDistributionFunction(x[0]);
         }
 
         /// <summary>
@@ -376,7 +394,7 @@ namespace Accord.Statistics.Distributions.Univariate
 
         /// <summary>
         ///   Gets the cumulative distribution function (cdf) for
-        ///   the this distribution evaluated at point <c>x</c>.
+        ///   this distribution evaluated at point <c>x</c>.
         /// </summary>
         /// 
         /// <param name="x">
@@ -388,6 +406,40 @@ namespace Accord.Statistics.Distributions.Univariate
         /// </remarks>
         /// 
         public abstract double DistributionFunction(double x);
+
+        /// <summary>
+        ///   Gets the complementary cumulative distribution function
+        ///   (ccdf) for this distribution evaluated at point <c>x</c>.
+        ///   This function is also known as the Survival function.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   The Complementary Cumulative Distribution Function (CCDF) is
+        ///   the complement of the Cumulative Distribution Function, or 1
+        ///   minus the CDF.
+        /// </remarks>
+        /// 
+        public virtual double ComplementaryDistributionFunction(double x)
+        {
+            return 1.0 - DistributionFunction(x);
+        }
+
+        /// <summary>
+        ///   Gets the inverse of the cumulative distribution function (icdf) for
+        ///   this distribution evaluated at probability <c>p</c>. This function 
+        ///   is also known as the Quantile function.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   The Inverse Cumulative Distribution Function (ICDF) specifies, for
+        ///   a given probability, the value which the random variable will be at,
+        ///   or below, with that probability.
+        /// </remarks>
+        /// 
+        public virtual double InverseDistributionFunction(double p)
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         ///   Gets the probability density function (pdf) for
@@ -492,14 +544,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public virtual void Fit(double[] observations, IFittingOptions options)
         {
-            double[] weights = new double[observations.Length];
-
-            // Create equal weights for the observations
-            double w = 1.0 / observations.Length;
-            for (int i = 0; i < weights.Length; i++)
-                weights[i] = w;
-
-            Fit(observations, weights, options);
+            Fit(observations, null, options);
         }
 
         /// <summary>

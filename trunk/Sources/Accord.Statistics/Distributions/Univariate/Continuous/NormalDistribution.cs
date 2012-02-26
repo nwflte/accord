@@ -22,8 +22,8 @@
 
 namespace Accord.Statistics.Distributions.Univariate
 {
-    using Accord.Math;
     using System;
+    using Accord.Math;
     using Accord.Statistics.Distributions.Fitting;
 
     /// <summary>
@@ -37,7 +37,8 @@ namespace Accord.Statistics.Distributions.Univariate
     /// </remarks>
     /// 
     [Serializable]
-    public class NormalDistribution : UnivariateContinuousDistribution, IFormattable
+    public class NormalDistribution : UnivariateContinuousDistribution,
+        IFormattable, IFittableDistribution<double, NormalOptions>
     {
 
         // Distribution parameters
@@ -53,6 +54,8 @@ namespace Accord.Statistics.Distributions.Univariate
 
         private bool immutable;
 
+        // 97.5 percentile of standard normal distribution
+        private const double p95 = 1.95996398454005423552;
 
         /// <summary>
         ///   Constructs a Normal (Gaussian) distribution
@@ -171,13 +174,31 @@ namespace Accord.Statistics.Distributions.Univariate
         public override double DistributionFunction(double x)
         {
             double z = (x - mean) / stdDev;
-            return Special.Erfc(-z / Special.Sqrt2) * 0.5;
+            return Special.Erfc(-z / Constants.Sqrt2) * 0.5;
 
             /*
                 // For a normal distribution with zero variance, the cdf is the Heaviside
                 // step function (Wipedia, http://en.wikipedia.org/wiki/Normal_distribution)
                 return (x >= mean) ? 1.0 : 0.0;
             */
+        }
+
+
+        /// <summary>
+        ///   Gets the inverse of the cumulative distribution function (icdf) for
+        ///   this distribution evaluated at probability <c>p</c>. This function
+        ///   is also known as the Quantile function.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   The Inverse Cumulative Distribution Function (ICDF) specifies, for
+        ///   a given probability, the value which the random variable will be at,
+        ///   or below, with that probability.
+        /// </remarks>
+        /// 
+        public override double InverseDistributionFunction(double p)
+        {
+            return mean + stdDev * Normal.Inverse(p);
         }
 
         /// <summary>
@@ -203,7 +224,7 @@ namespace Accord.Statistics.Distributions.Univariate
         public override double ProbabilityDensityFunction(double x)
         {
             double z = (x - mean) / stdDev;
-            double lnp = lnconstant + ((-z * z) * 0.5);
+            double lnp = lnconstant - z * z * 0.5;
 
             return Math.Exp(lnp);
 
@@ -241,7 +262,7 @@ namespace Accord.Statistics.Distributions.Univariate
         public override double LogProbabilityDensityFunction(double x)
         {
             double z = (x - mean) / stdDev;
-            double lnp = lnconstant + ((-z * z) * 0.5);
+            double lnp = lnconstant - z * z * 0.5;
 
             return lnp;
         }
@@ -266,6 +287,21 @@ namespace Accord.Statistics.Distributions.Univariate
 
         private static readonly NormalDistribution standard = new NormalDistribution() { immutable = true };
 
+        /// <summary>
+        ///   Fits the underlying distribution to a given set of observations.
+        /// </summary>
+        /// 
+        /// <param name="observations">The array of observations to fit the model against. The array
+        ///   elements can be either of type double (for univariate data) or
+        ///   type double[] (for multivariate data).</param>
+        /// <param name="weights">The weight vector containing the weight for each of the samples.</param>
+        /// <param name="options">Optional arguments which may be used during fitting, such
+        ///   as regularization constants and additional parameters.</param>
+        ///   
+        public override void Fit(double[] observations, double[] weights, IFittingOptions options)
+        {
+            Fit(observations, weights, options as NormalOptions);
+        }
 
         /// <summary>
         ///   Fits the underlying distribution to a given set of observations.
@@ -278,14 +314,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// <param name="options">Optional arguments which may be used during fitting, such
         ///   as regularization constants and additional parameters.</param>
         ///   
-        /// <remarks>
-        ///   Although both double[] and double[][] arrays are supported,
-        ///   providing a double[] for a multivariate distribution or a
-        ///   double[][] for a univariate distribution may have a negative
-        ///   impact in performance.
-        /// </remarks>
-        /// 
-        public override void Fit(double[] observations, double[] weights, IFittingOptions options)
+        public void Fit(double[] observations, double[] weights, NormalOptions options)
         {
             if (immutable) throw new InvalidOperationException();
 
@@ -317,8 +346,7 @@ namespace Accord.Statistics.Distributions.Univariate
             if (options != null)
             {
                 // Parse optional estimation options
-                NormalOptions o = (NormalOptions)options;
-                double regularization = o.Regularization;
+                double regularization = options.Regularization;
 
                 if (var == 0 || Double.IsNaN(var) || Double.IsInfinity(var))
                     var = regularization;
@@ -354,7 +382,7 @@ namespace Accord.Statistics.Distributions.Univariate
             this.variance = var;
 
             // Compute derived values
-            this.lnconstant = -Math.Log(Special.Sqrt2PI * dev);
+            this.lnconstant = -Math.Log(Constants.Sqrt2PI * dev);
         }
 
 

@@ -22,6 +22,7 @@
 
 namespace Accord.Statistics.Distributions
 {
+    using System;
 
     /// <summary>
     ///   Base class for probability distributions. See remarks for details.
@@ -37,11 +38,14 @@ namespace Accord.Statistics.Distributions
     /// 
     public class DistributionBase 
     {
+
         // This class serves only as a workaround for
         // a bug in Code Analysis, in which a generic
         // method can not be constrained by more than
         // two interfaces and no concrete class.
 
         // http://connect.microsoft.com/VisualStudio/feedback/details/542097/ca0001-errors
+
     }
+
 }

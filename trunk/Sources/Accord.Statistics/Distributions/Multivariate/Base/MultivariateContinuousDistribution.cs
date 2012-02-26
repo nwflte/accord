@@ -22,13 +22,14 @@
 
 namespace Accord.Statistics.Distributions.Multivariate
 {
-    using Accord.Math;
     using System;
+    using Accord.Math;
     using Accord.Statistics.Distributions.Fitting;
 
     /// <summary>
     ///   Abstract class for Multivariate Probability Distributions.
     /// </summary>
+    /// 
     /// <remarks>
     /// <para>
     ///   A probability distribution identifies either the probability of each value of an
@@ -58,7 +59,8 @@ namespace Accord.Statistics.Distributions.Multivariate
     /// </remarks>
     /// 
     [Serializable]
-    public abstract class MultivariateContinuousDistribution : DistributionBase, IDistribution, IMultivariateDistribution
+    public abstract class MultivariateContinuousDistribution : DistributionBase,
+        IDistribution, IMultivariateDistribution
     {
 
         private int dimension;
@@ -105,7 +107,6 @@ namespace Accord.Statistics.Distributions.Multivariate
         /// 
         public abstract double[,] Covariance { get; }
 
-
         /// <summary>
         ///   Gets the mode for this distribution.
         /// </summary>
@@ -130,6 +131,7 @@ namespace Accord.Statistics.Distributions.Multivariate
 
 
         #region IDistribution explicit members
+
         /// <summary>
         ///   Gets the probability density function (pdf) for
         ///   this distribution evaluated at point <c>x</c>.
@@ -159,11 +161,13 @@ namespace Accord.Statistics.Distributions.Multivariate
         ///   Gets the log-probability density function (pdf)
         ///   for this distribution evaluated at point <c>x</c>.
         /// </summary>
+        /// 
         /// <param name="x">
         ///   A single point in the distribution range. For a 
         ///   univariate distribution, this should be a single
         ///   double value. For a multivariate distribution,
         ///   this should be a double array.</param>
+        ///   
         /// <returns>
         ///   The logarithm of the probability of <c>x</c>
         ///   occurring in the current distribution.</returns>
@@ -202,7 +206,6 @@ namespace Accord.Statistics.Distributions.Multivariate
         ///   The array of observations to fit the model against. The array
         ///   elements can be either of type double (for univariate data) or
         ///   type double[] (for multivariate data).</param>
-        ///   
         /// <param name="weights">
         ///   The weight vector containing the weight for each of the samples.</param>
         ///   
@@ -226,7 +229,6 @@ namespace Accord.Statistics.Distributions.Multivariate
         ///   The array of observations to fit the model against. The array
         ///   elements can be either of type double (for univariate data) or
         ///   type double[] (for multivariate data).</param>
-        ///   
         /// <param name="options">
         ///   Optional arguments which may be used during fitting, such
         ///   as regularization constants and additional parameters.</param>
@@ -240,14 +242,7 @@ namespace Accord.Statistics.Distributions.Multivariate
         /// 
         void IDistribution.Fit(Array observations, IFittingOptions options)
         {
-            double[] weights = new double[observations.Length];
-
-            // Create equal weights for the observations
-            double w = 1.0 / observations.Length;
-            for (int i = 0; i < weights.Length; i++)
-                weights[i] = w;
-
-            (this as IDistribution).Fit(observations, weights, options);
+            (this as IDistribution).Fit(observations, null, options);
         }
 
         /// <summary>
@@ -257,8 +252,7 @@ namespace Accord.Statistics.Distributions.Multivariate
         /// <param name="observations">
         ///   The array of observations to fit the model against. The array
         ///   elements can be either of type double (for univariate data) or
-        ///   type double[] (for multivariate data).
-        /// </param>
+        ///   type double[] (for multivariate data).</param>
         /// <param name="weights">
         ///   The weight vector containing the weight for each of the samples.</param>
         /// <param name="options">
@@ -341,16 +335,35 @@ namespace Accord.Statistics.Distributions.Multivariate
         ///   Gets the log-probability density function (pdf)
         ///   for this distribution evaluated at point <c>x</c>.
         /// </summary>
+        /// 
         /// <param name="x">
         ///   A single point in the distribution range. For a 
         ///   univariate distribution, this should be a single
         ///   double value. For a multivariate distribution,
         ///   this should be a double array.</param>
+        ///   
         /// <returns>
         ///   The logarithm of the probability of <c>x</c>
         ///   occurring in the current distribution.</returns>
         ///   
         public abstract double LogProbabilityDensityFunction(params double[] x);
+
+        /// <summary>
+        ///   Gets the complementary cumulative distribution function
+        ///   (ccdf) for this distribution evaluated at point <c>x</c>.
+        ///   This function is also known as the Survival function.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   The Complementary Cumulative Distribution Function (CCDF) is
+        ///   the complement of the Cumulative Distribution Function, or 1
+        ///   minus the CDF.
+        /// </remarks>
+        /// 
+        public virtual double ComplementaryDistributionFunction(params double[] x)
+        {
+            return 1.0 - DistributionFunction(x);
+        }
 
         /// 
         /// <summary>
@@ -361,13 +374,6 @@ namespace Accord.Statistics.Distributions.Multivariate
         ///   The array of observations to fit the model against. The array
         ///   elements can be either of type double (for univariate data) or
         ///   type double[] (for multivariate data).</param>
-        ///   
-        /// <remarks>
-        ///   Although both double[] and double[][] arrays are supported,
-        ///   providing a double[] for a multivariate distribution or a
-        ///   double[][] for a univariate distribution may have a negative
-        ///   impact in performance.
-        /// </remarks>
         ///   
         public virtual void Fit(double[][] observations)
         {
@@ -382,17 +388,9 @@ namespace Accord.Statistics.Distributions.Multivariate
         ///   The array of observations to fit the model against. The array
         ///   elements can be either of type double (for univariate data) or
         ///   type double[] (for multivariate data).</param>
-        ///   
         /// <param name="weights">
         ///   The weight vector containing the weight for each of the samples.</param>
         ///   
-        /// <remarks>
-        ///   Although both double[] and double[][] arrays are supported,
-        ///   providing a double[] for a multivariate distribution or a
-        ///   double[][] for a univariate distribution may have a negative
-        ///   impact in performance.
-        /// </remarks>
-        /// 
         public virtual void Fit(double[][] observations, double[] weights)
         {
             Fit(observations, weights, (IFittingOptions)null);
@@ -406,28 +404,13 @@ namespace Accord.Statistics.Distributions.Multivariate
         ///   The array of observations to fit the model against. The array
         ///   elements can be either of type double (for univariate data) or
         ///   type double[] (for multivariate data).</param>
-        ///   
         /// <param name="options">
         ///   Optional arguments which may be used during fitting, such
         ///   as regularization constants and additional parameters.</param>
         ///   
-        /// <remarks>
-        ///   Although both double[] and double[][] arrays are supported,
-        ///   providing a double[] for a multivariate distribution or a
-        ///   double[][] for a univariate distribution may have a negative
-        ///   impact in performance.
-        /// </remarks>
-        /// 
         public virtual void Fit(double[][] observations, IFittingOptions options)
         {
-            double[] weights = new double[observations.Length];
-
-            // Create equal weights for the observations
-            double w = 1.0 / observations.Length;
-            for (int i = 0; i < weights.Length; i++)
-                weights[i] = w;
-
-            Fit(observations, weights, options);
+            Fit(observations, null, options);
         }
 
         /// <summary>
@@ -437,23 +420,13 @@ namespace Accord.Statistics.Distributions.Multivariate
         /// <param name="observations">
         ///   The array of observations to fit the model against. The array
         ///   elements can be either of type double (for univariate data) or
-        ///   type double[] (for multivariate data).
-        /// </param>
-        /// 
+        ///   type double[] (for multivariate data). </param>
         /// <param name="weights">
         ///   The weight vector containing the weight for each of the samples.</param>
-        ///   
         /// <param name="options">
         ///   Optional arguments which may be used during fitting, such
         ///   as regularization constants and additional parameters.</param>
         ///   
-        /// <remarks>
-        ///   Although both double[] and double[][] arrays are supported,
-        ///   providing a double[] for a multivariate distribution or a
-        ///   double[][] for a univariate distribution may have a negative
-        ///   impact in performance.
-        /// </remarks>
-        /// 
         public abstract void Fit(double[][] observations, double[] weights, IFittingOptions options);
 
         /// <summary>

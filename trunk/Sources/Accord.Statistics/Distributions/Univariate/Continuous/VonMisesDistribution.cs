@@ -59,8 +59,10 @@ namespace Accord.Statistics.Distributions.Univariate
     /// </remarks>
     /// 
     [Serializable]
-    public class VonMisesDistribution : UnivariateContinuousDistribution
+    public class VonMisesDistribution : UnivariateContinuousDistribution,
+        IFittableDistribution<double, VonMisesOptions>
     {
+
         // Distribution parameters
         private double mean;
         private double kappa;
@@ -96,7 +98,7 @@ namespace Accord.Statistics.Distributions.Univariate
             this.kappa = k;
 
             this.variance = null;
-            this.constant = 1.0 / (2.0 * Math.PI * Special.BesselI0(kappa));
+            this.constant = 1.0 / (2.0 * Math.PI * Bessel.I0(kappa));
         }
 
         /// <summary>
@@ -129,8 +131,8 @@ namespace Accord.Statistics.Distributions.Univariate
             {
                 if (!variance.HasValue)
                 {
-                    double i1 = Special.BesselI(1, kappa);
-                    double i0 = Special.BesselI0(kappa);
+                    double i1 = Bessel.I(1, kappa);
+                    double i0 = Bessel.I0(kappa);
                     double a = i1 / i0;
                     variance = 1.0 - a;
                 }
@@ -149,8 +151,8 @@ namespace Accord.Statistics.Distributions.Univariate
             {
                 if (!entropy.HasValue)
                 {
-                    double i1 = Special.BesselI(1, kappa);
-                    double i0 = Special.BesselI0(kappa);
+                    double i1 = Bessel.I(1, kappa);
+                    double i0 = Bessel.I0(kappa);
                     double a = i1 / i0;
                     entropy = -kappa * a + Math.Log(2 * Math.PI * i0);
                 }
@@ -234,6 +236,29 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override void Fit(double[] observations, double[] weights, IFittingOptions options)
         {
+            Fit(observations, weights, options as VonMisesOptions);
+        }
+        /// <summary>
+        ///   Fits the underlying distribution to a given set of observations.
+        /// </summary>
+        /// 
+        /// <param name="observations">The array of observations to fit the model against. The array
+        ///   elements can be either of type double (for univariate data) or
+        ///   type double[] (for multivariate data).</param>
+        /// 
+        /// <param name="weights">The weight vector containing the weight for each of the samples.</param>
+        /// <param name="options">Optional arguments which may be used during fitting, such
+        /// as regularization constants and additional parameters.</param>
+        /// 
+        /// <remarks>
+        ///   Although both double[] and double[][] arrays are supported,
+        ///   providing a double[] for a multivariate distribution or a
+        ///   double[][] for a univariate distribution may have a negative
+        ///   impact in performance.
+        /// </remarks>
+        /// 
+        public void Fit(double[] observations, double[] weights, VonMisesOptions options)
+        {
             double m, k;
 
             if (weights != null)
@@ -250,8 +275,7 @@ namespace Accord.Statistics.Distributions.Univariate
             if (options != null)
             {
                 // Parse optional estimation options
-                VonMisesOptions o = (VonMisesOptions)options;
-                if (o.UseBiasCorrection)
+                if (options.UseBiasCorrection)
                 {
                     double N = observations.Length;
                     if (k < 2)

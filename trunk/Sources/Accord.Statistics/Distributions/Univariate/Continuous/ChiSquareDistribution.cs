@@ -99,7 +99,7 @@ namespace Accord.Statistics.Distributions.Univariate
             double v = degreesOfFreedom;
             double m1 = Math.Pow(x, (v - 2.0) / 2.0);
             double m2 = Math.Exp(-x / 2.0);
-            double m3 = Math.Pow(2, v / 2.0) * Special.Gamma(v / 2.0);
+            double m3 = Math.Pow(2, v / 2.0) * Gamma.Function(v / 2.0);
             return (m1 * m2) / m3;
         }
 
@@ -121,7 +121,7 @@ namespace Accord.Statistics.Distributions.Univariate
             double v = degreesOfFreedom;
             double m1 = ((v - 2.0) / 2.0) * Math.Log(x);
             double m2 = (-x / 2.0);
-            double m3 = (v / 2.0) * Math.Log(2) + Special.LogGamma(v / 2.0);
+            double m3 = (v / 2.0) * Math.Log(2) + Gamma.Log(v / 2.0);
             return (m1 + m2) - m3;
         }
 
@@ -138,17 +138,24 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override double DistributionFunction(double x)
         {
-            return Special.ChiSq(degreesOfFreedom, x);
+            return Gamma.Incomplete(degreesOfFreedom / 2.0, x / 2.0);
         }
 
         /// <summary>
-        ///   Gets the complementary cumulative distribution
-        ///   function for the χ² evaluated at point <c>x</c>.
+        ///   Gets the complementary cumulative distribution function
+        ///   (ccdf) for the χ² distribution evaluated at point <c>x</c>.
+        ///   This function is also known as the Survival function.
         /// </summary>
+        ///
+        /// <remarks>
+        ///   The Complementary Cumulative Distribution Function (CCDF) is
+        ///   the complement of the Cumulative Distribution Function, or 1
+        ///   minus the CDF.
+        /// </remarks>
         /// 
-        public double SurvivalFunction(double x)
+        public override double ComplementaryDistributionFunction(double x)
         {
-            return Special.ChiSqc(degreesOfFreedom, x);
+            return Gamma.ComplementedIncomplete(degreesOfFreedom / 2.0, x / 2.0);
         }
 
 
@@ -181,8 +188,8 @@ namespace Accord.Statistics.Distributions.Univariate
                 if (!entropy.HasValue)
                 {
                     double kd2 = degreesOfFreedom / 2.0;
-                    double m1 = Math.Log(2.0 * Special.Gamma(kd2));
-                    double m2 = (1.0 - kd2) * Special.Digamma(kd2);
+                    double m1 = Math.Log(2.0 * Gamma.Function(kd2));
+                    double m2 = (1.0 - kd2) * Gamma.Digamma(kd2);
                     entropy = kd2 + m1 + m2;
                 }
 
@@ -196,7 +203,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override void Fit(double[] observations, double[] weights, IFittingOptions options)
         {
-            throw new System.NotSupportedException();
+            throw new NotSupportedException();
         }
 
         /// <summary>

@@ -23,154 +23,155 @@
 namespace Accord.Statistics.Distributions.Univariate
 {
     using System;
-    using System.Linq;
+    using Accord.Statistics.Distributions.Fitting;
 
     /// <summary>
-    ///   Continuous Uniform Distribution.
+    ///    (Shifted) Geometric Distribution.
     /// </summary>
     /// 
+    /// <remarks>
+    /// <para>
+    ///   This class represents the shifted version of the Geometric distribution
+    ///   with support on { 0, 1, 2, 3, ... }. This is the probability distribution
+    ///   of the number Y = X − 1 of failures before the first success, supported
+    ///   on the set { 0, 1, 2, 3, ... }.</para>
+    ///   
+    /// <para>    
+    ///   References:
+    ///   <list type="bullet">
+    ///     <item><description><a href="http://en.wikipedia.org/wiki/Geometric_distribution">
+    ///       Wikipedia, The Free Encyclopedia. Geometric distribution. Available on:
+    ///       http://en.wikipedia.org/wiki/Geometric_distribution </a></description></item>
+    ///   </list></para>
+    /// </remarks>
+    /// 
     [Serializable]
-    public class ContinuousUniformDistribution : UnivariateContinuousDistribution
+    public class GeometricDistribution : UnivariateDiscreteDistribution,
+        IFittableDistribution<double, IFittingOptions>
     {
-        private double a;
-        private double b;
 
-        private bool immutable;
+        // Distribution parameters
+        private double p;
+
 
         /// <summary>
-        ///   Creates a new uniform distribution defined in the interval [0;1].
+        ///   Gets the success probability for the distribution.
         /// </summary>
         /// 
-        public ContinuousUniformDistribution()
-            : this(0, 1)
+        public double ProbabilityOfSuccess
         {
+            get { return p; }
         }
 
         /// <summary>
-        ///   Creates a new uniform distribution defined in the interval [a;b].
+        ///   Creates a new (shifted) geometric distribution.
         /// </summary>
         /// 
-        /// <param name="a">The starting number a.</param>
-        /// <param name="b">The ending number b.</param>
+        /// <param name="probabilityOfSuccess">The success probability.</param>
         /// 
-        public ContinuousUniformDistribution(double a, double b)
+        public GeometricDistribution(double probabilityOfSuccess)
         {
-            if (a > b)
-                throw new ArgumentOutOfRangeException("b", 
-                    "The starting number a must be lower than b.");
+            if (probabilityOfSuccess < 0 || probabilityOfSuccess > 1)
+                throw new ArgumentOutOfRangeException("probabilityOfSuccess", "A probability must be between 0 and 1.");
 
-            this.a = a;
-            this.b = b;
+            this.p = probabilityOfSuccess;
         }
 
-        /// <summary>
-        ///   Gets the minimum value of the distribution (a).
-        /// </summary>
-        /// 
-        public double Minimum { get { return a; } }
 
-        /// <summary>
-        ///   Gets the maximum value of the distribution (b).
-        /// </summary>
-        /// 
-        public double Maximum { get { return b; } }
-
-        /// <summary>
-        ///   Gets the length of the distribution (b-a).
-        /// </summary>
-        /// 
-        public double Length { get { return b - a; } }
 
         /// <summary>
         ///   Gets the mean for this distribution.
         /// </summary>
         /// 
+        /// <value>The distribution's mean value.</value>
+        /// 
         public override double Mean
         {
-            get { return (a + b) / 2; }
+            get { return (1 - p) / p; }
         }
 
         /// <summary>
         ///   Gets the variance for this distribution.
         /// </summary>
         /// 
+        /// <value>The distribution's variance.</value>
+        /// 
         public override double Variance
         {
-            get { return ((b - a) * (b - a)) / 12.0; }
+            get { return (1 - p) / (p * p); }
         }
 
         /// <summary>
         ///   Gets the entropy for this distribution.
         /// </summary>
         /// 
+        /// <value>The distribution's entropy.</value>
+        /// 
         public override double Entropy
         {
-            get { return Math.Log(b - a); }
+            get { return (-(1 - p) * Math.Log(1 - p, 2) - p * Math.Log(p, 2)) / p; }
         }
 
         /// <summary>
         ///   Gets the cumulative distribution function (cdf) for
-        ///   the this distribution evaluated at point <c>x</c>.
+        ///   this distribution evaluated at point <c>k</c>.
         /// </summary>
         /// 
-        /// <param name="x">A single point in the distribution range.</param>
+        /// <param name="k">A single point in the distribution range.</param>
         /// 
         /// <remarks>
         ///   The Cumulative Distribution Function (CDF) describes the cumulative
         ///   probability that a given value or any value smaller than it will occur.
         /// </remarks>
         /// 
-        public override double DistributionFunction(double x)
+        public override double DistributionFunction(int k)
         {
-            if (x < a)
-                return 0;
-            if (x >= b)
-                return 1;
-            return (x - a) / (b - a);
+            return 1 - Math.Pow(1 - p, k + 1);
         }
 
         /// <summary>
-        ///   Gets the probability density function (pdf) for
+        ///   Gets the probability mass function (pmf) for
         ///   this distribution evaluated at point <c>x</c>.
         /// </summary>
         /// 
-        /// <param name="x">A single point in the distribution range.</param>
+        /// <param name="k">A single point in the distribution range.</param>
         /// 
         /// <returns>
-        ///   The probability of <c>x</c> occurring
+        ///   The probability of <c>k</c> occurring
         ///   in the current distribution.
         /// </returns>
         /// 
         /// <remarks>
-        ///   The Probability Density Function (PDF) describes the
+        ///   The Probability Mass Function (PMF) describes the
         ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
         /// 
-        public override double ProbabilityDensityFunction(double x)
+        public override double ProbabilityMassFunction(int k)
         {
-            if (x >= a && x <= b)
-                return 1.0 / (b - a);
-            else return 0;
+            if (k < 0) return 0;
+            return Math.Pow(1 - p, k) * p;
         }
 
         /// <summary>
-        /// Gets the log-probability density function (pdf) for
-        /// this distribution evaluated at point <c>x</c>.
+        ///   Gets the log-probability mass function (pmf) for
+        ///   this distribution evaluated at point <c>x</c>.
         /// </summary>
-        /// <param name="x">A single point in the distribution range.</param>
+        /// 
+        /// <param name="k">A single point in the distribution range.</param>
+        /// 
         /// <returns>
-        /// The logarithm of the probability of <c>x</c>
-        /// occurring in the current distribution.
+        ///   The logarithm of the probability of <c>x</c>
+        ///   occurring in the current distribution.
         /// </returns>
+        /// 
         /// <remarks>
-        /// The Probability Density Function (PDF) describes the
-        /// probability that a given value <c>x</c> will occur.
+        ///   The Probability Mass Function (PMF) describes the
+        ///   probability that a given value <c>k</c> will occur.
         /// </remarks>
-        public override double LogProbabilityDensityFunction(double x)
+        /// 
+        public override double LogProbabilityMassFunction(int k)
         {
-            if (x >= a && x <= b)
-                return -Math.Log(b - a);
-            else return double.NegativeInfinity;
+            return k * Math.Log(1 - p) + Math.Log(p);
         }
 
         /// <summary>
@@ -178,11 +179,11 @@ namespace Accord.Statistics.Distributions.Univariate
         /// </summary>
         /// 
         /// <param name="observations">The array of observations to fit the model against. The array
-        /// elements can be either of type double (for univariate data) or
-        /// type double[] (for multivariate data).</param>
+        ///   elements can be either of type double (for univariate data) or
+        ///   type double[] (for multivariate data).</param>
         /// <param name="weights">The weight vector containing the weight for each of the samples.</param>
         /// <param name="options">Optional arguments which may be used during fitting, such
-        /// as regularization constants and additional parameters.</param>
+        ///   as regularization constants and additional parameters.</param>
         /// 
         /// <remarks>
         ///   Although both double[] and double[][] arrays are supported,
@@ -191,16 +192,19 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   impact in performance.
         /// </remarks>
         /// 
-        public override void Fit(double[] observations, double[] weights, Fitting.IFittingOptions options)
+        public override void Fit(double[] observations, double[] weights, IFittingOptions options)
         {
-            if (immutable)
-                throw new InvalidOperationException("This object can not be modified.");
-
             if (options != null)
                 throw new ArgumentException("No options may be specified.");
 
-            a = observations.Min();
-            b = observations.Max();
+            double mean;
+
+            if (weights == null)
+                mean = Accord.Statistics.Tools.Mean(observations);
+            else
+                mean = Accord.Statistics.Tools.WeightedMean(observations, weights);
+
+            p = 1.0 / (1.0 - mean);
         }
 
         /// <summary>
@@ -213,19 +217,8 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override object Clone()
         {
-            return new ContinuousUniformDistribution(a, b);
+            return new GeometricDistribution(p);
         }
-
-
-        /// <summary>
-        ///   Gets the Standard Uniform Distribution,
-        ///   starting at zero and ending at one (a=0, b=1).
-        /// </summary>
-        /// 
-        public static ContinuousUniformDistribution Standard { get { return standard; } }
-
-        private static readonly ContinuousUniformDistribution standard = new ContinuousUniformDistribution() { immutable = true };
-
 
     }
 }
