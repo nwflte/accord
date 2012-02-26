@@ -38,10 +38,10 @@ namespace Accord.Statistics.Kernels.Sparse
         private double constant;
 
         /// <summary>
-        ///   Constructs a new Sparse Linear kernel.
+        ///   Constructs a new Linear kernel.
         /// </summary>
         /// 
-        /// <param name="constant">A constant intercept term.</param>
+        /// <param name="constant">A constant intercept term. Default is 1.</param>
         /// 
         public SparseLinear(double constant)
         {
@@ -49,13 +49,10 @@ namespace Accord.Statistics.Kernels.Sparse
         }
 
         /// <summary>
-        ///   Constructs a new Sparse Linear Kernel.
+        ///   Constructs a new Linear Kernel.
         /// </summary>
         /// 
-        public SparseLinear()
-            : this(0)
-        {
-        }
+        public SparseLinear() : this(1) { }
 
         /// <summary>
         ///   Gets or sets the kernel's intercept term.
@@ -77,7 +74,7 @@ namespace Accord.Statistics.Kernels.Sparse
         /// 
         public double Function(double[] x, double[] y)
         {
-            double sum = 0.0;
+            double sum = constant;
 
             int i = 0, j = 0;
             double posx, posy;
@@ -102,7 +99,7 @@ namespace Accord.Statistics.Kernels.Sparse
                 }
             }
 
-            return sum + Constant;
+            return sum;
         }
 
         /// <summary>

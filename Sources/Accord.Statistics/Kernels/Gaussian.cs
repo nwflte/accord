@@ -23,6 +23,7 @@
 namespace Accord.Statistics.Kernels
 {
     using System;
+    using AForge;
 
     /// <summary>
     ///   Gaussian Kernel.
@@ -49,11 +50,12 @@ namespace Accord.Statistics.Kernels
         private double sigma;
         private double gamma;
 
+
         /// <summary>
         ///   Constructs a new Gaussian Kernel
         /// </summary>
         /// 
-        public Gaussian() : this(0) { }
+        public Gaussian() : this(1) { }
 
         /// <summary>
         ///   Constructs a new Gaussian Kernel
@@ -68,7 +70,7 @@ namespace Accord.Statistics.Kernels
 
         /// <summary>
         ///   Gets or sets the sigma value for the kernel. When setting
-        ///   sigma, gamma gets updated accordingly (gamma = 0.5*/sigma^2).
+        ///   sigma, gamma gets updated accordingly (gamma = 0.5/sigma^2).
         /// </summary>
         /// 
         public double Sigma
@@ -83,7 +85,7 @@ namespace Accord.Statistics.Kernels
 
         /// <summary>
         ///   Gets or sets the gamma value for the kernel. When setting
-        ///   gamma, sigma gets updated accordingly (gamma = 0.5*/sigma^2).
+        ///   gamma, sigma gets updated accordingly (gamma = 0.5/sigma^2).
         /// </summary>
         /// 
         public double Gamma
@@ -92,7 +94,7 @@ namespace Accord.Statistics.Kernels
             set
             {
                 gamma = value;
-                sigma = System.Math.Sqrt(1.0 / (gamma * 2.0));
+                sigma = Math.Sqrt(1.0 / (gamma * 2.0));
             }
         }
 
@@ -117,7 +119,7 @@ namespace Accord.Statistics.Kernels
                 norm += d * d;
             }
 
-            return System.Math.Exp(norm * -gamma);
+            return Math.Exp(-gamma * norm);
         }
 
         /// <summary>
@@ -141,7 +143,7 @@ namespace Accord.Statistics.Kernels
             }
 
             // TODO: Verify the use of log1p instead
-            return (1.0 / -gamma) * System.Math.Log(1.0 - 0.5 * norm);
+            return (1.0 / -gamma) * Math.Log(1.0 - 0.5 * norm);
         }
 
         /// <summary>
@@ -154,7 +156,80 @@ namespace Accord.Statistics.Kernels
         /// 
         public double Distance(double df)
         {
-            return (1.0 / -gamma) * System.Math.Log(1.0 - 0.5 * df);
+            return (1.0 / -gamma) * Math.Log(1.0 - 0.5 * df);
+        }
+
+
+        /// <summary>
+        ///   Estimate appropriate values for sigma given a data set.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   This method uses a simple heuristic to obtain appropriate values
+        ///   for sigma in a radial basis function kernel. The heristic is shown
+        ///   by Caputo, Sim, Furesjo and Smola, "Appearance-based object
+        ///   recognition using SVMs: which kernel should I use?", 2002.
+        /// </remarks>
+        /// 
+        /// <param name="inputs">The data set.</param>
+        /// <param name="samples">The number of random samples to analyze.</param>
+        /// <param name="range">The range of suitable values for sigma.</param>
+        /// 
+        /// <returns>A Gaussian kernel initialized with an appropriate sigma value.</returns>
+        /// 
+        public static Gaussian Estimate(double[][] inputs, int samples, out DoubleRange range)
+        {
+            if (samples > inputs.Length)
+                throw new ArgumentOutOfRangeException("samples");
+
+            double[] distances = Distances(inputs, samples);
+
+            double q1 = Math.Sqrt(distances[(int)Math.Ceiling(0.15 * distances.Length)] / 2.0);
+            double q9 = Math.Sqrt(distances[(int)Math.Ceiling(0.85 * distances.Length)] / 2.0);
+            double qm = Math.Sqrt(Accord.Statistics.Tools.Median(distances, alreadySorted: true) / 2.0);
+
+            range = new DoubleRange(q1, q9);
+
+            return new Gaussian(sigma: qm);
+        }
+
+        /// <summary>
+        ///   Computes the set of all distances between 
+        ///   all points in a random subset of the data.
+        /// </summary>
+        /// 
+        /// <param name="inputs">The inputs points.</param>
+        /// <param name="samples">The number of samples.</param>
+        /// 
+        public static double[] Distances(double[][] inputs, int samples)
+        {
+            int[] idx = Accord.Statistics.Tools.Random(inputs.Length, samples);
+            int[] idy = Accord.Statistics.Tools.Random(inputs.Length, samples);
+
+            double[] distances = new double[samples * samples];
+
+            for (int i = 0; i < idx.Length; i++)
+            {
+                double[] x = inputs[idx[i]];
+
+                for (int j = 0; j < idy.Length; j++)
+                {
+                    double[] y = inputs[idy[j]];
+
+                    double norm = 0.0, d;
+                    for (int k = 0; k < x.Length; k++)
+                    {
+                        d = x[k] - y[k];
+                        norm += d * d;
+                    }
+
+                    distances[i * samples + j] = norm;
+                }
+            }
+
+            Array.Sort(distances);
+
+            return distances;
         }
 
 

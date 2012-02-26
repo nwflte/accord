@@ -25,43 +25,45 @@ namespace Accord.Statistics.Kernels
     using System;
 
     /// <summary>
-    ///   Linear Kernel.
+    ///   Dirichlet Kernel.
     /// </summary>
     /// 
+    /// <remarks>
+    /// <para>
+    ///   References:
+    ///   <list type="bullet">
+    ///     <item><description>
+    ///      A Tutorial on Support Vector Machines (1998). Available on: http://www.umiacs.umd.edu/~joseph/support-vector-machines4.pdf </description></item>
+    ///    </list></para>
+    /// </remarks>
+    /// 
     [Serializable]
-    public sealed class Linear : IKernel, IDistance
+    public sealed class Dirichlet : IKernel
     {
-        private double constant;
+        private int N;
 
         /// <summary>
-        ///   Constructs a new Linear kernel.
+        ///   Constructs a new Dirichlet Kernel
         /// </summary>
         /// 
-        /// <param name="constant">A constant intercept term. Default is 1.</param>
-        /// 
-        public Linear(double constant)
+        public Dirichlet(int dimension)
         {
-            this.constant = constant;
+            this.N = dimension;
+        }
+
+
+        /// <summary>
+        ///   Gets or sets the dimension for the kernel. 
+        /// </summary>
+        /// 
+        public int Dimension
+        {
+            get { return N; }
+            set { N = value; }
         }
 
         /// <summary>
-        ///   Constructs a new Linear Kernel.
-        /// </summary>
-        /// 
-        public Linear() : this(1) { }
-
-        /// <summary>
-        ///   Gets or sets the kernel's intercept term.
-        /// </summary>
-        /// 
-        public double Constant
-        {
-            get { return constant; }
-            set { constant = value; }
-        }
-
-        /// <summary>
-        ///   Linear kernel function.
+        ///   Dirichlet Kernel function.
         /// </summary>
         /// 
         /// <param name="x">Vector <c>x</c> in input space.</param>
@@ -70,26 +72,21 @@ namespace Accord.Statistics.Kernels
         /// 
         public double Function(double[] x, double[] y)
         {
-            double sum = constant;
+            // Optimization in case x and y are
+            // exactly the same object reference.
+
+            double prod = 1;
             for (int i = 0; i < x.Length; i++)
-                sum += x[i] * y[i];
+            {
+                double delta = x[i] - y[i];
+                double num = Math.Sin((N + 0.5) * (delta));
+                double den = 2.0 * Math.Sin(delta / 2.0);
+                prod *= num / den;
+            }
 
-            return sum;
+            return prod;
         }
 
-        /// <summary>
-        ///   Computes the distance in input space
-        ///   between two points given in feature space.
-        /// </summary>
-        /// 
-        /// <param name="x">Vector <c>x</c> in feature (kernel) space.</param>
-        /// <param name="y">Vector <c>y</c> in feature (kernel) space.</param>
-        /// <returns>Distance between <c>x</c> and <c>y</c> in input space.</returns>
-        /// 
-        public double Distance(double[] x, double[] y)
-        {
-            return Function(x, x) + Function(y, y) - 2.0 * Function(x, y);
-        }
 
     }
 }
