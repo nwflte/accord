@@ -773,6 +773,27 @@ namespace Accord.Math
             return new LuDecomposition(matrix).Determinant;
         }
 
+
+        /// <summary>
+        ///   Gets the determinant of a matrix.
+        /// </summary>
+        public static int Rank(this double[,] matrix)
+        {
+            return new SingularValueDecomposition(matrix,
+                computeLeftSingularVectors: false, computeRightSingularVectors: false,
+                autoTranspose: true, inPlace: false).Rank;
+        }
+
+        /// <summary>
+        ///   Gets the determinant of a matrix.
+        /// </summary>
+        public static int Rank(this float[,] matrix)
+        {
+            return new SingularValueDecompositionF(matrix,
+                computeLeftSingularVectors: false, computeRightSingularVectors: false,
+                autoTranspose: true, inPlace: false).Rank;
+        }
+
         /// <summary>
         ///    Gets whether a matrix is positive definite.
         /// </summary>
@@ -781,6 +802,16 @@ namespace Accord.Math
             if (matrix == null) throw new ArgumentNullException("matrix");
 
             return new CholeskyDecomposition(matrix).PositiveDefinite;
+        }
+
+        /// <summary>
+        ///    Gets whether a matrix is positive definite.
+        /// </summary>
+        public static bool IsPositiveDefinite(this double[][] matrix)
+        {
+            if (matrix == null) throw new ArgumentNullException("matrix");
+
+            return new JaggedCholeskyDecomposition(matrix).PositiveDefinite;
         }
         #endregion
 

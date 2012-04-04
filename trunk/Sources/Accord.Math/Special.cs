@@ -349,6 +349,23 @@ namespace Accord.Math
         #region Utility functions
 
         /// <summary>
+        ///   Computes log(1-x) without losing precision for small values of x.
+        /// </summary>
+        /// 
+        public static double Log1m(double x)
+        {
+            if (x >= 1.0)
+                return Double.NaN;
+
+            if (Math.Abs(x) > 1e-4)
+                return Math.Log(1.0 - x);
+
+            // Use Taylor approx. log(1 + x) = x - x^2/2 with error roughly x^3/3
+            // Since |x| < 10^-4, |x|^3 < 10^-12, relative error less than 10^-8
+            return -(0.5 * x + 1.0) * x;
+        }
+
+        /// <summary>
         ///   Computes log(1+x) without losing precision for small values of x.
         /// </summary>
         /// 
@@ -424,34 +441,46 @@ namespace Accord.Math
         ///   Computes x + y without losing precision using ln(x) and ln(y).
         /// </summary>
         /// 
-        public static double LogSum(double lnx, double lny)
+        public static double LogDiff(double lna, double lnc)
         {
-            if (lnx == Double.NegativeInfinity)
-                return lny;
-            if (lny == Double.NegativeInfinity)
-                return lnx;
+            if (lna > lnc)
+                return lna + Math.Exp(1.0 - Math.Exp(lnc - lna));
 
-            if (lnx > lny)
-                return lnx + Math.Log(1.0 + Math.Exp(lny - lnx));
-
-            return lny + Math.Log(1.0 + Math.Exp(lnx - lny));
+            return Double.NegativeInfinity;
         }
 
         /// <summary>
         ///   Computes x + y without losing precision using ln(x) and ln(y).
         /// </summary>
         /// 
-        public static double LogSum(float lnx, float lny)
+        public static double LogSum(double lna, double lnc)
         {
-            if (lnx == Single.NegativeInfinity)
-                return lny;
-            if (lny == Single.NegativeInfinity)
-                return lnx;
+            if (lna == Double.NegativeInfinity)
+                return lnc;
+            if (lnc == Double.NegativeInfinity)
+                return lna;
 
-            if (lnx > lny)
-                return lnx + Math.Log(1.0 + Math.Exp(lny - lnx));
+            if (lna > lnc)
+                return lna + Special.Log1p(Math.Exp(lnc - lna));
 
-            return lny + Math.Log(1.0 + Math.Exp(lnx - lny));
+            return lnc + Special.Log1p(Math.Exp(lna - lnc));
+        }
+
+        /// <summary>
+        ///   Computes x + y without losing precision using ln(x) and ln(y).
+        /// </summary>
+        /// 
+        public static double LogSum(float lna, float lnc)
+        {
+            if (lna == Single.NegativeInfinity)
+                return lnc;
+            if (lnc == Single.NegativeInfinity)
+                return lna;
+
+            if (lna > lnc)
+                return lna + Special.Log1p(Math.Exp(lnc - lna));
+
+            return lnc + Special.Log1p(Math.Exp(lna - lnc));
         }
 
 

@@ -230,6 +230,22 @@ namespace Accord.Math
         /// <summary>Returns a subvector extracted from the current vector.</summary>
         /// <param name="data">The vector to return the subvector from.</param>
         /// <param name="indexes">Array of indices.</param>
+        /// <remarks>
+        ///   Routine adapted from Lutz Roeder's Mapack for .NET, September 2000.
+        /// </remarks>
+        public static List<T> Submatrix<T>(this List<T> data, int[] indexes)
+        {
+            T[] X = new T[indexes.Length];
+
+            for (int i = 0; i < indexes.Length; i++)
+                X[i] = data[indexes[i]];
+
+            return X.ToList();
+        }
+
+        /// <summary>Returns a subvector extracted from the current vector.</summary>
+        /// <param name="data">The vector to return the subvector from.</param>
+        /// <param name="indexes">Array of indices.</param>
         /// <param name="transpose">True to return a transposed matrix; false otherwise.</param>
         /// <remarks>
         ///   Routine adapted from Lutz Roeder's Mapack for .NET, September 2000.
@@ -283,8 +299,11 @@ namespace Accord.Math
         /// </remarks>
         public static T[] Submatrix<T>(this T[] data, int first)
         {
-            if (first < 1 || first > data.Length)
+            if (first < 0 || first > data.Length)
                 throw new ArgumentOutOfRangeException("first");
+
+            if (first == 0)
+                return new T[0];
 
             return Submatrix<T>(data, 0, first - 1);
         }

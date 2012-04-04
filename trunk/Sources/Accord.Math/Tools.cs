@@ -82,13 +82,13 @@ namespace Accord.Math
             {
                 if (x >= 0)
                     return Math.Atan2(y, x);
-                return Math.PI - Math.Atan(-y/ x);
+                return Math.PI - Math.Atan(-y / x);
             }
             else
             {
                 if (x >= 0)
                     return 2.0 * Math.PI - Math.Atan2(-y, x);
-                return Math.PI + Math.Atan(y/ x);
+                return Math.PI + Math.Atan(y / x);
             }
         }
 
@@ -535,6 +535,18 @@ namespace Accord.Math
 
             return sequences;
         }
+
+        /// <summary>
+        ///   Sorts the elements of an entire one-dimensional array using the given comparison.
+        /// </summary>
+        /// 
+        public static void StableSort<T>(this T[] values, Comparison<T> comparison)
+        {
+            var keys = new KeyValuePair<int, T>[values.Length];
+            for (var i = 0; i < values.Length; i++)
+                keys[i] = new KeyValuePair<int, T>(i, values[i]);
+            Array.Sort(keys, values, new StableComparer<T>(comparison));
+        }
     }
 
     /// <summary>
@@ -556,6 +568,46 @@ namespace Accord.Math
         Descending
     };
 
+
+    /// <summary>
+    ///   Stable comparer for stable sorting algorithm.
+    /// </summary>
+    /// 
+    /// <typeparam name="T">The type of objects to compare.</typeparam>
+    /// 
+    public class StableComparer<T> : IComparer<KeyValuePair<int, T>>
+    {
+        private readonly Comparison<T> comparison;
+
+        /// <summary>
+        ///   Constructs a new instance of the <see cref="StableComparer&lt;T&gt;"/> class.
+        /// </summary>
+        /// 
+        /// <param name="comparison">The comparison function.</param>
+        /// 
+        public StableComparer(Comparison<T> comparison)
+        {
+            this.comparison = comparison;
+        }
+
+        /// <summary>
+        ///   Compares two objects and returns a value indicating
+        ///   whether one is less than, equal to, or greater than
+        ///   the other.
+        /// </summary>
+        /// 
+        /// <param name="x">The first object to compare.</param>
+        /// <param name="y">The second object to compare.</param>
+        /// 
+        /// <returns>A signed integer that indicates the relative values of x and y.</returns>
+        /// 
+        public int Compare(KeyValuePair<int, T> x, KeyValuePair<int, T> y)
+        {
+            int result = comparison(x.Value, y.Value);
+            return result != 0 ? result : x.Key.CompareTo(y.Key);
+        }
+    }
+
     /// <summary>
     ///   Custom comparer which accepts any delegate or
     ///   anonymous function to perform comparison of values.
@@ -565,7 +617,7 @@ namespace Accord.Math
     /// 
     public class CustomComparer<T> : IComparer<T>
     {
-        
+
         private Func<T, T, int> comparer;
 
 
@@ -575,7 +627,7 @@ namespace Accord.Math
         /// 
         /// <param name="comparer">The comparer function.</param>
         /// 
-        public CustomComparer(Func<T,T,int> comparer)
+        public CustomComparer(Func<T, T, int> comparer)
         {
             this.comparer = comparer;
         }

@@ -568,6 +568,22 @@ namespace Accord.Math
         }
 
         /// <summary>
+        ///   Combines a vector and a element horizontally.
+        /// </summary>
+        /// 
+        public static T[] Concatenate<T>(this T element, T[] vector)
+        {
+            T[] r = new T[vector.Length + 1];
+
+            r[0] = element;
+
+            for (int i = 0; i < vector.Length; i++)
+                r[i + 1] = vector[i];
+
+            return r;
+        }
+
+        /// <summary>
         ///   Combines a matrix and a vector horizontally.
         /// </summary>
         /// 
@@ -600,7 +616,7 @@ namespace Accord.Math
             {
                 int currentRows = matrices[k].GetLength(0);
                 int currentCols = matrices[k].GetLength(1);
-                
+
                 for (int j = 0; j < currentCols; j++)
                 {
                     for (int i = 0; i < currentRows; i++)

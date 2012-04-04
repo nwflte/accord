@@ -8,6 +8,12 @@
 // "In Project Suppression File".
 // You do not need to add suppressions to this file manually.
 
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly", MessageId = "m", Scope = "member", Target = "Accord.Math.Special.#Log1m(System.Double)")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1708:IdentifiersShouldDifferByMoreThanCase", Scope = "member", Target = "Accord.Math.Optimization.GoldfarbIdnaniQuadraticSolver.#Minimize(System.Double[,],System.Double[])")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly", MessageId = "A", Scope = "member", Target = "Accord.Math.Optimization.GoldfarbIdnaniQuadraticSolver.#.ctor(System.Int32,System.Double[,],System.Double[],System.Int32)")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly", MessageId = "D", Scope = "member", Target = "Accord.Math.Optimization.GoldfarbIdnaniQuadraticSolver.#Minimize(System.Double[,],System.Double[])")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1726:UsePreferredTerms", MessageId = "Indices", Scope = "member", Target = "Accord.Math.Optimization.IObjectiveFunction.#Indices")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1726:UsePreferredTerms", MessageId = "Indices", Scope = "member", Target = "Accord.Math.Optimization.LinearConstraint.#VariablesAtIndices")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Scope = "member", Target = "Accord.Math.Decompositions.SingularValueDecomposition.#.ctor(System.Double[,],System.Boolean,System.Boolean,System.Boolean,System.Boolean)")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1809:AvoidExcessiveLocals", Scope = "member", Target = "Accord.Math.Decompositions.SingularValueDecomposition.#.ctor(System.Double[,],System.Boolean,System.Boolean,System.Boolean,System.Boolean)")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1505:AvoidUnmaintainableCode", Scope = "member", Target = "Accord.Math.Decompositions.SingularValueDecomposition.#.ctor(System.Double[,],System.Boolean,System.Boolean,System.Boolean,System.Boolean)")]
