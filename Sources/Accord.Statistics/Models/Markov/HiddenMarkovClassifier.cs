@@ -5,6 +5,20 @@
 // Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
+//    This library is free software; you can redistribute it and/or
+//    modify it under the terms of the GNU Lesser General Public
+//    License as published by the Free Software Foundation; either
+//    version 2.1 of the License, or (at your option) any later version.
+//
+//    This library is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+//    Lesser General Public License for more details.
+//
+//    You should have received a copy of the GNU Lesser General Public
+//    License along with this library; if not, write to the Free Software
+//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+//
 
 namespace Accord.Statistics.Models.Markov
 {
@@ -88,6 +102,9 @@ namespace Accord.Statistics.Models.Markov
             get { return this[0].Symbols; }
         }
 
+
+        #region Constructors
+
         /// <summary>
         ///   Creates a new Sequence Classifier with the given number of classes.
         /// </summary>
@@ -114,9 +131,40 @@ namespace Accord.Statistics.Models.Markov
         ///   Creates a new Sequence Classifier with the given number of classes.
         /// </summary>
         /// 
+        public HiddenMarkovClassifier(int classes, ITopology[] topology, int symbols)
+            : base(classes)
+        {
+            if (topology.Length != classes)
+                throw new ArgumentException("The number of topology especifications should equal the number of classes", "classes");
+
+            for (int i = 0; i < classes; i++)
+                Models[i] = new HiddenMarkovModel(topology[i], symbols);
+        }
+
+        /// <summary>
+        ///   Creates a new Sequence Classifier with the given number of classes.
+        /// </summary>
+        /// 
+        public HiddenMarkovClassifier(int classes, ITopology[] topology, int symbols, string[] names)
+            : base(classes)
+        {
+            if (topology.Length != classes)
+                throw new ArgumentException("The number of topology especifications should equal the number of classes", "classes");
+
+            for (int i = 0; i < classes; i++)
+                Models[i] = new HiddenMarkovModel(topology[i], symbols) { Tag = names[i] };
+        }
+
+        /// <summary>
+        ///   Creates a new Sequence Classifier with the given number of classes.
+        /// </summary>
+        /// 
         public HiddenMarkovClassifier(int classes, int[] states, int symbols, string[] names)
             : base(classes)
         {
+            if (states.Length != classes)
+                throw new ArgumentException("The number of state specifications should equal the number of classes.", "classes");
+
             for (int i = 0; i < classes; i++)
                 Models[i] = new HiddenMarkovModel(new Ergodic(states[i]), symbols) { Tag = names[i] };
         }
@@ -128,9 +176,13 @@ namespace Accord.Statistics.Models.Markov
         public HiddenMarkovClassifier(int classes, int[] states, int symbols)
             : base(classes)
         {
+            if (states.Length != classes)
+                throw new ArgumentException("The number of state specifications should equal the number of classes.", "classes");
+
             for (int i = 0; i < classes; i++)
                 Models[i] = new HiddenMarkovModel(new Ergodic(states[i]), symbols);
         }
+        #endregion
 
 
         /// <summary>

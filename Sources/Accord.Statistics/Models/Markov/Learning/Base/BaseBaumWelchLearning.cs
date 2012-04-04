@@ -5,6 +5,20 @@
 // Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
+//    This library is free software; you can redistribute it and/or
+//    modify it under the terms of the GNU Lesser General Public
+//    License as published by the Free Software Foundation; either
+//    version 2.1 of the License, or (at your option) any later version.
+//
+//    This library is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+//    Lesser General Public License for more details.
+//
+//    You should have received a copy of the GNU Lesser General Public
+//    License along with this library; if not, write to the Free Software
+//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+//
 
 namespace Accord.Statistics.Models.Markov.Learning
 {
@@ -172,6 +186,11 @@ namespace Accord.Statistics.Models.Markov.Learning
         /// 
         protected double Run(Array[] observations)
         {
+            if (observations == null)
+                throw new ArgumentNullException("observations");
+
+            if (observations.Length == 0)
+                throw new ArgumentException("Observations vector must contain at least one observation", "observations");
 
             // Baum-Welch algorithm.
 
@@ -209,7 +228,7 @@ namespace Accord.Statistics.Models.Markov.Learning
                 LogKsi[i] = new double[T][,];
                 LogGamma[i] = new double[T, states];
 
-                for (int t = 0; t < T; t++)
+                for (int t = 0; t < LogKsi[i].Length; t++)
                     LogKsi[i][t] = new double[states, states];
             }
 
@@ -245,15 +264,17 @@ namespace Accord.Statistics.Models.Markov.Learning
                     // Calculate gamma values for next computations
                     for (int t = 0; t < T; t++)
                     {
-                        double sum = Double.NegativeInfinity;
+                        double lnsum = Double.NegativeInfinity;
                         for (int k = 0; k < states; k++)
                         {
                             logGamma[t, k] = lnFwd[t, k] + lnBwd[t, k];
-                            sum = Special.LogSum(sum, logGamma[t, k]);
+                            lnsum = Special.LogSum(lnsum, logGamma[t, k]);
                         }
 
-                        for (int k = 0; k < states; k++)
-                            logGamma[t, k] = logGamma[t, k] - sum;
+                        // Normalize if different from zero
+                        if (lnsum != Double.NegativeInfinity)
+                            for (int k = 0; k < states; k++)
+                                logGamma[t, k] = logGamma[t, k] - lnsum;
                     }
 
                     // Calculate ksi values for next computations
@@ -294,8 +315,8 @@ namespace Accord.Statistics.Models.Markov.Learning
                     {
                         for (int j = 0; j < states; j++)
                         {
-                            double num = Double.NegativeInfinity;
-                            double den = Double.NegativeInfinity;
+                            double lnnum = Double.NegativeInfinity;
+                            double lnden = Double.NegativeInfinity;
 
                             for (int k = 0; k < LogGamma.Length; k++)
                             {
@@ -303,12 +324,12 @@ namespace Accord.Statistics.Models.Markov.Learning
 
                                 for (int t = 0; t < T - 1; t++)
                                 {
-                                    num = Special.LogSum(num, LogKsi[k][t][i, j]);
-                                    den = Special.LogSum(den, LogGamma[k][t, i]);
+                                    lnnum = Special.LogSum(lnnum, LogKsi[k][t][i, j]);
+                                    lnden = Special.LogSum(lnden, LogGamma[k][t, i]);
                                 }
                             }
 
-                            logA[i, j] = num - den;
+                            logA[i, j] = (lnnum == lnden) ? 0 : lnnum - lnden;
                         }
                     }
 
