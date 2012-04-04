@@ -85,7 +85,7 @@
     <Compile Include="Activation Functions\LinearFunction.cs" />
     <Compile Include="Properties\GlobalSuppressions.cs" />
     <Compile Include="Learning\LevenbergMarquardtLearning.cs" />
-    <Compile Include="Learning\ResilientBackPropagationLearning.cs" />
+    <Compile Include="Learning\ParallelResilientBackPropagationLearning.cs" />
     <Compile Include="NguyenWidrow.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

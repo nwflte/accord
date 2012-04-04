@@ -306,7 +306,7 @@ namespace Accord.Neuro.Learning
         {
             this.network = network;
             this.numberOfParameters = getNumberOfParameters(network);
-            this.outputCount = network[network.LayersCount - 1].NeuronsCount;
+            this.outputCount = network.Layers[network.Layers.Length - 1].Neurons.Length;
 
             this.useBayesianRegularization = useRegularization;
             this.method = method;
@@ -324,18 +324,18 @@ namespace Accord.Neuro.Learning
             if (method == JacobianMethod.ByBackpropagation)
             {
                 // create weight derivatives arrays
-                this.weightDerivatives = new float[network.LayersCount][][];
-                this.thresholdsDerivatives = new float[network.LayersCount][];
+                this.weightDerivatives = new float[network.Layers.Length][][];
+                this.thresholdsDerivatives = new float[network.Layers.Length][];
 
                 // initialize arrays
-                for (int i = 0; i < network.LayersCount; i++)
+                for (int i = 0; i < network.Layers.Length; i++)
                 {
-                    ActivationLayer layer = network[i];
+                    ActivationLayer layer = (ActivationLayer)network.Layers[i];
 
-                    this.weightDerivatives[i] = new float[layer.NeuronsCount][];
-                    this.thresholdsDerivatives[i] = new float[layer.NeuronsCount];
+                    this.weightDerivatives[i] = new float[layer.Neurons.Length][];
+                    this.thresholdsDerivatives[i] = new float[layer.Neurons.Length];
 
-                    for (int j = 0; j < layer.NeuronsCount; j++)
+                    for (int j = 0; j < layer.Neurons.Length; j++)
                         this.weightDerivatives[i][j] = new float[layer.InputsCount];
                 }
             }
@@ -641,19 +641,19 @@ namespace Accord.Neuro.Learning
             double w, sumOfSquaredWeights = 0.0;
 
             // For each layer in the network
-            for (int li = 0, cur = 0; li < network.LayersCount; li++)
+            for (int li = 0, cur = 0; li < network.Layers.Length; li++)
             {
-                ActivationLayer layer = network[li];
+                ActivationLayer layer = network.Layers[li] as ActivationLayer;
 
                 // for each neuron in the layer
-                for (int ni = 0; ni < layer.NeuronsCount; ni++, cur++)
+                for (int ni = 0; ni < layer.Neurons.Length; ni++, cur++)
                 {
-                    ActivationNeuron neuron = layer[ni];
+                    ActivationNeuron neuron = layer.Neurons[ni] as ActivationNeuron;
 
                     // for each weight in the neuron
-                    for (int wi = 0; wi < neuron.InputsCount; wi++, cur++)
+                    for (int wi = 0; wi < neuron.Weights.Length; wi++, cur++)
                     {
-                        neuron[wi] = w = weights[cur] + deltas[cur];
+                        neuron.Weights[wi] = w = weights[cur] + deltas[cur];
                         sumOfSquaredWeights += w * w;
                     }
 
@@ -677,20 +677,20 @@ namespace Accord.Neuro.Learning
             double w, sumOfSquaredWeights = 0.0;
 
             // for each layer in the network
-            for (int li = 0, cur = 0; li < network.LayersCount; li++)
+            for (int li = 0, cur = 0; li < network.Layers.Length; li++)
             {
-                ActivationLayer layer = network[li];
+                ActivationLayer layer = network.Layers[li] as ActivationLayer;
 
                 // for each neuron in the layer
-                for (int ni = 0; ni < network[li].NeuronsCount; ni++, cur++)
+                for (int ni = 0; ni < network.Layers[li].Neurons.Length; ni++, cur++)
                 {
-                    ActivationNeuron neuron = layer[ni];
+                    ActivationNeuron neuron = layer.Neurons[ni] as ActivationNeuron;
 
                     // for each weight in the neuron
                     for (int wi = 0; wi < neuron.InputsCount; wi++, cur++)
                     {
                         // We copy it to the starting weights vector
-                        w = weights[cur] = (float)neuron[wi];
+                        w = weights[cur] = (float)neuron.Weights[wi];
                         sumOfSquaredWeights += w * w;
                     }
 
@@ -710,12 +710,12 @@ namespace Accord.Neuro.Learning
         {
             int sum = 0;
 
-            for (int i = 0; i < network.LayersCount; i++)
+            for (int i = 0; i < network.Layers.Length; i++)
             {
-                for (int j = 0; j < network[i].NeuronsCount; j++)
+                for (int j = 0; j < network.Layers[i].Neurons.Length; j++)
                 {
                     // number of weights plus the bias value
-                    sum += network[i][j].InputsCount + 1;
+                    sum += network.Layers[i].Neurons[j].InputsCount + 1;
                 }
             }
             return sum;
@@ -790,19 +790,19 @@ namespace Accord.Neuro.Learning
         private double CalculateDerivatives(double[] input, double[] desiredOutput, int outputIndex)
         {
             // Assume all network neurons have the same activation function
-            IActivationFunction function = network[0][0].ActivationFunction;
+            var function = (network.Layers[0].Neurons[0] as ActivationNeuron).ActivationFunction;
 
             
             // Start by the output layer first
-            int outputLayerIndex = network.LayersCount - 1;
-            ActivationLayer outputLayer = network[outputLayerIndex];
+            int outputLayerIndex = network.Layers.Length - 1;
+            ActivationLayer outputLayer = network.Layers[outputLayerIndex] as ActivationLayer;
             double[] previousLayerOutput;
 
             // If we have only one single layer, the previous layer outputs is given by the input layer
-            previousLayerOutput = (outputLayerIndex == 0) ? input : network[outputLayerIndex - 1].Output;
+            previousLayerOutput = (outputLayerIndex == 0) ? input : network.Layers[outputLayerIndex - 1].Output;
 
             // Retrieve current desired output neuron
-            ActivationNeuron outputNeuron = outputLayer[outputIndex];
+            ActivationNeuron outputNeuron = outputLayer.Neurons[outputIndex] as ActivationNeuron;
             float[] neuronWeightDerivatives = weightDerivatives[outputLayerIndex][outputIndex];
 
             double output = outputNeuron.Output;
@@ -818,24 +818,24 @@ namespace Accord.Neuro.Learning
 
 
             // Now, proceed to the next hidden layers
-            for (int li = network.LayersCount - 2; li >= 0; li--)
+            for (int li = network.Layers.Length - 2; li >= 0; li--)
             {
                 int nextLayerIndex = li + 1;
 
-                ActivationLayer layer = network[li];
-                ActivationLayer nextLayer = network[nextLayerIndex];
+                ActivationLayer layer = network.Layers[li] as ActivationLayer;
+                ActivationLayer nextLayer = network.Layers[nextLayerIndex] as ActivationLayer;
 
                 // If we are in the first layer, the previous layer is just the input layer
-                previousLayerOutput = (li == 0) ? input : network[li - 1].Output;
+                previousLayerOutput = (li == 0) ? input : network.Layers[li - 1].Output;
 
                 // Now, we will compute the derivatives for the current layer applying the chain
                 //  rule. To apply the chain-rule, we will make use of the previous derivatives
                 //  computed for the inner layers (forming a calculation chain, hence the name).
 
                 // So, for each neuron in the current layer:
-                for (int ni = 0; ni < layer.NeuronsCount; ni++)
+                for (int ni = 0; ni < layer.Neurons.Length; ni++)
                 {
-                    ActivationNeuron neuron = layer[ni];
+                    ActivationNeuron neuron = layer.Neurons[ni] as ActivationNeuron;
 
                     neuronWeightDerivatives = weightDerivatives[li][ni];
 
@@ -856,7 +856,7 @@ namespace Accord.Neuro.Learning
                     {
                         // retrieve the weight connecting the output of the current
                         //   neuron and the activation function of the next neuron.
-                        double weight = nextLayer[nj][ni];
+                        double weight = nextLayer.Neurons[nj].Weights[ni];
 
                         // accumulate the sinapse weight * next layer derivative
                         sum += weight * nextLayerDerivatives[nj];
@@ -921,14 +921,14 @@ namespace Accord.Neuro.Learning
                     // to build the jacobian matrix.
 
                     // So, for each layer:
-                    for (int li = 0, col = 0; li < network.LayersCount; li++)
+                    for (int li = 0, col = 0; li < network.Layers.Length; li++)
                     {
-                        ActivationLayer layer = network[li];
+                        ActivationLayer layer = network.Layers[li] as ActivationLayer;
 
                         // for each neuron:
-                        for (int ni = 0; ni < layer.NeuronsCount; ni++, col++)
+                        for (int ni = 0; ni < layer.Neurons.Length; ni++, col++)
                         {
-                            ActivationNeuron neuron = layer[ni];
+                            ActivationNeuron neuron = layer.Neurons[ni] as ActivationNeuron;
 
                             // for each weight:
                             for (int wi = 0; wi < neuron.InputsCount; wi++, col++)
@@ -1001,8 +1001,8 @@ namespace Accord.Neuro.Learning
             double originalValue;
 
             // Saves a copy of the original value in the neuron
-            if (weight >= 0) originalValue = network[layer][neuron][weight];
-            else originalValue = network[layer][neuron].Threshold;
+            if (weight >= 0) originalValue = network.Layers[layer].Neurons[neuron].Weights[weight];
+            else originalValue = (network.Layers[layer].Neurons[neuron] as ActivationNeuron).Threshold;
 
             double[] points = new double[numPoints];
 
@@ -1018,8 +1018,8 @@ namespace Accord.Neuro.Learning
                 {
                     double newValue = originalValue + ((double)(i - centerPoint)) * stepSize;
 
-                    if (weight >= 0) network[layer][neuron][weight] = newValue;
-                    else network[layer][neuron].Threshold = newValue;
+                    if (weight >= 0) network.Layers[layer].Neurons[neuron].Weights[weight] = newValue;
+                    else (network.Layers[layer].Neurons[neuron] as ActivationNeuron).Threshold = newValue;
 
                     points[i] = network.Compute(inputs)[outputIndex];
                 }
@@ -1036,8 +1036,8 @@ namespace Accord.Neuro.Learning
 
 
             // Changes back the modified value
-            if (weight >= 0) network[layer][neuron][weight] = originalValue;
-            else network[layer][neuron].Threshold = originalValue;
+            if (weight >= 0) network.Layers[layer].Neurons[neuron].Weights[weight] = originalValue;
+            else (network.Layers[layer].Neurons[neuron] as ActivationNeuron).Threshold = originalValue;
 
             return ret;
         }

@@ -55,8 +55,8 @@ namespace Accord.Neuro
         {
             this.network = network;
 
-            int hiddenNodes = network[0].NeuronsCount;
-            int inputNodes = network[0].InputsCount;
+            int hiddenNodes = network.Layers[0].Neurons.Length;
+            int inputNodes = network.Layers[0].InputsCount;
 
             randRange = new Range(-0.5f, 0.5f);
             beta = 0.7 * Math.Pow(hiddenNodes, 1.0 / inputNodes);
@@ -69,27 +69,28 @@ namespace Accord.Neuro
         /// 
         public void Randomize()
         {
-            Neuron.RandGenerator = Accord.Math.Tools.Random;
             Neuron.RandRange = randRange;
 
-            for (int i = 0; i < network.LayersCount; i++)
+            for (int i = 0; i < network.Layers.Length; i++)
             {
-                for (int j = 0; j < network[i].NeuronsCount; j++)
+                for (int j = 0; j < network.Layers[i].Neurons.Length; j++)
                 {
-                    ActivationNeuron neuron = network[i][j];
+                    ActivationNeuron neuron = network.Layers[i].Neurons[j] as ActivationNeuron;
+                    
                     neuron.Randomize();
+
                     double norm = 0.0;
 
                     // Calculate the Euclidean Norm for the weights
-                    for (int k = 0; k < neuron.InputsCount; k++)
-                        norm += neuron[k] * neuron[k];
+                    for (int k = 0; k < neuron.Weights.Length; k++)
+                        norm += neuron.Weights[k] * neuron.Weights[k];
                     norm += neuron.Threshold * neuron.Threshold;
 
                     norm = System.Math.Sqrt(norm);
 
                     // Rescale the weights using beta and the norm
                     for (int k = 0; k < neuron.InputsCount; k++)
-                        neuron[k] = beta * neuron[k] / norm;
+                        neuron.Weights[k] = beta * neuron.Weights[k] / norm;
                     neuron.Threshold = beta * neuron.Threshold / norm;
                 }
             }
