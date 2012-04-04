@@ -186,15 +186,31 @@ namespace Accord.Imaging.Converters
 
             unsafe
             {
-                byte* src = (byte*)image.ImageData.ToPointer();
-                int dst = 0;
-
-                for (int y = 0; y < height; y++)
+                if (image.PixelFormat == PixelFormat.Format16bppGrayScale)
                 {
-                    for (int x = 0; x < width; x++, dst++)
-                        pixels[dst] = Accord.Math.Tools.Scale(0, 255, Min, Max, *src);
+                    short* src = (short*)image.ImageData.ToPointer();
+                    int dst = 0;
 
-                    src += offset;
+                    for (int y = 0; y < height; y++)
+                    {
+                        for (int x = 0; x < width; x++, dst++, src ++)
+                            pixels[dst] = Accord.Math.Tools.Scale(0, 65535, Min, Max, *src);
+
+                        src += offset;
+                    }
+                }
+                else
+                {
+                    byte* src = (byte*)image.ImageData.ToPointer();
+                    int dst = 0;
+
+                    for (int y = 0; y < height; y++)
+                    {
+                        for (int x = 0; x < width; x++, dst++, src += pixelSize)
+                            pixels[dst] = Accord.Math.Tools.Scale(0, 255, Min, Max, *src);
+
+                        src += offset;
+                    }
                 }
             }
         }

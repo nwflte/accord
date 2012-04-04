@@ -103,11 +103,33 @@ namespace Accord.Imaging
         ///   Creates a new point.
         /// </summary>
         /// 
+        public PointH(double x, double y)
+        {
+            px = (float)x;
+            py = (float)y;
+            pw = 1;
+        }
+
+        /// <summary>
+        ///   Creates a new point.
+        /// </summary>
+        /// 
         public PointH(float x, float y, float w)
         {
             px = x;
             py = y;
             pw = w;
+        }
+
+        /// <summary>
+        ///   Creates a new point.
+        /// </summary>
+        /// 
+        public PointH(double x, double y, double w)
+        {
+            px = (float)x;
+            py = (float)y;
+            pw = (float)w;
         }
 
         /// <summary>

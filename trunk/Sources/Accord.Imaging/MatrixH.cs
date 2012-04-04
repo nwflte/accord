@@ -80,7 +80,7 @@ namespace Accord.Imaging
                        float m31, float m32, float m33)
             : this(m11, m12, m13, m21, m22, m23, m31, m32)
         {
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < elements.Length; i++)
                 elements[i] /= m33;
         }
 
@@ -97,7 +97,7 @@ namespace Accord.Imaging
             else if (elements.Length == 9)
             {
                 this.elements = new float[8];
-                for (int i = 0; i < 8; i++)
+                for (int i = 0; i < elements.Length; i++)
                     this.elements[i] = (float)(elements[i] / elements[8]);
             }
             else
@@ -175,7 +175,8 @@ namespace Accord.Imaging
         {
             get
             {
-                float det = elements[0] * (elements[4] - elements[5] * elements[7])
+                float det =
+                      elements[0] * (elements[4] - elements[5] * elements[7])
                     - elements[1] * (elements[3] - elements[5] * elements[6])
                     + elements[2] * (elements[3] * elements[7] - elements[4] * elements[6]);
 
@@ -247,6 +248,18 @@ namespace Accord.Imaging
             float nj = m * (a * e - b * d);
 
             return new MatrixH(na, nb, nc, nd, ne, nf, ng, nh, nj);
+        }
+
+        /// <summary>
+        ///   Gets the transpose of this transformation matrix.
+        /// </summary>
+        /// 
+        /// <returns>The transposed version of this matrix, given by <c>H'</c>.</returns>
+        public MatrixH Transpose()
+        {
+            return new MatrixH(elements[0], elements[3], elements[6],
+                               elements[1], elements[4], elements[7],
+                               elements[2], elements[5]);
         }
 
         /// <summary>
@@ -381,32 +394,6 @@ namespace Accord.Imaging
         public static MatrixH operator *(MatrixH left, MatrixH right)
         {
             return left.Multiply(right);
-        }
-
-        /// <summary>
-        ///   Equality operator.
-        /// </summary>
-        /// 
-        public static bool operator ==(MatrixH left, MatrixH right)
-        {
-            for (int i = 0; i < 8; i++)
-                if (left.elements[i] != right.elements[i])
-                    return false;
-
-            return true;
-        }
-
-        /// <summary>
-        ///   Inequality operator.
-        /// </summary>
-        /// 
-        public static bool operator !=(MatrixH left, MatrixH right)
-        {
-            for (int i = 0; i < 8; i++)
-                if (left.elements[i] == right.elements[i])
-                    return true;
-
-            return false;
         }
 
     }
