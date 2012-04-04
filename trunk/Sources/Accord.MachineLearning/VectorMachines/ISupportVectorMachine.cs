@@ -22,7 +22,6 @@
 
 namespace Accord.MachineLearning.VectorMachines
 {
-    using Accord.Statistics.Links;
 
     /// <summary>
     ///   Common interface for Support Vector Machines
@@ -43,5 +42,4 @@ namespace Accord.MachineLearning.VectorMachines
         int Compute(double[] inputs, out double output);
 
     }
-
 }

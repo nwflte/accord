@@ -160,6 +160,16 @@ namespace Accord.MachineLearning.VectorMachines
         }
 
         /// <summary>
+        ///   Gets whether this machine is in compact mode. Compact
+        ///   machines do not need to keep storing their support vectors.
+        /// </summary>
+        /// 
+        public bool IsCompact
+        {
+            get { return supportVectors == null; }
+        }
+
+        /// <summary>
         ///   Gets or sets the collection of weights used by this machine.
         /// </summary>
         /// 
@@ -202,21 +212,29 @@ namespace Accord.MachineLearning.VectorMachines
         {
             output = threshold;
 
-            for (int i = 0; i < supportVectors.Length; i++)
+            if (supportVectors == null)
             {
-                double sum = 0;
-                for (int j = 0; j < inputs.Length; j++)
-                    sum += supportVectors[i][j] * inputs[j];
-                output += weights[i] * sum;
+                for (int i = 0; i < weights.Length; i++)
+                    output += weights[i] * inputs[i];
+            }
+            else
+            {
+                for (int i = 0; i < supportVectors.Length; i++)
+                {
+                    double sum = 0;
+                    for (int j = 0; j < inputs.Length; j++)
+                        sum += supportVectors[i][j] * inputs[j];
+                    output += weights[i] * sum;
+                }
             }
 
             if (IsProbabilistic)
             {
                 output = linkFunction.Inverse(output);
-                return output >= 0.5 ? 1 : -1;
+                return output >= 0.5 ? +1 : -1;
             }
 
-            return output >= 0 ? 1 : -1;
+            return output >= 0 ? +1 : -1;
         }
 
         /// <summary>
@@ -309,5 +327,6 @@ namespace Accord.MachineLearning.VectorMachines
         {
             return Load(new FileStream(path, FileMode.Open));
         }
+
     }
 }

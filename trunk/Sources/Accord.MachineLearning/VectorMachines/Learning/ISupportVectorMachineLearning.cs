@@ -28,6 +28,7 @@ namespace Accord.MachineLearning.VectorMachines.Learning
     /// 
     public interface ISupportVectorMachineLearning
     {
+
         /// <summary>
         ///   Runs the learning algorithm.
         /// </summary>
@@ -44,5 +45,6 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         /// </param>
         /// 
         double Run(bool computeError);
+
     }
 }

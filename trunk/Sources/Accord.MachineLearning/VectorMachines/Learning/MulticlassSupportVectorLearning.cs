@@ -25,6 +25,7 @@ namespace Accord.MachineLearning.VectorMachines.Learning
     using System;
     using Accord.Math;
     using System.Threading.Tasks;
+    using System.Threading;
 
     /// <summary>
     ///   Configuration function to configure the learning algorithms
@@ -48,6 +49,50 @@ namespace Accord.MachineLearning.VectorMachines.Learning
     public delegate ISupportVectorMachineLearning SupportVectorMachineLearningConfigurationFunction(
       KernelSupportVectorMachine machine, double[][] inputs, int[] outputs, int class1, int class2);
 
+    /// <summary>
+    ///   Subproblem progress event argument.
+    /// </summary>
+    /// 
+    public class SubproblemEventArgs : EventArgs
+    {
+        /// <summary>
+        ///   One of the classes belonging to the subproblem.
+        /// </summary>
+        /// 
+        public int Class1 { get; set; }
+
+        /// <summary>
+        ///  One of the classes belonging to the subproblem.
+        /// </summary>
+        /// 
+        public int Class2 { get; set; }
+
+        /// <summary>
+        ///   Gets the progress of the overall problem,
+        ///   ranging from zero up to <see cref="Maximum"/>.
+        /// </summary>
+        /// 
+        public int Progress { get; set; }
+
+        /// <summary>
+        ///   Gets the maximum value for the current <see cref="Progress"/>.
+        /// </summary>
+        public int Maximum { get; set; }
+
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="SubproblemEventArgs"/> class.
+        /// </summary>
+        /// 
+        /// <param name="class1">One of the classes in the subproblem.</param>
+        /// <param name="class2">The other class in the subproblem.</param>
+        /// 
+        public SubproblemEventArgs(int class1, int class2)
+        {
+            this.Class1 = class1;
+            this.Class2 = class2;
+        }
+
+    }
 
     /// <summary>
     ///   One-against-one Multi-class Support Vector Machine Learning Algorithm
@@ -111,6 +156,18 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         // Training configuration function
         private SupportVectorMachineLearningConfigurationFunction configure;
 
+
+        /// <summary>
+        ///   Occurs when the learning of a subproblem has started.
+        /// </summary>
+        /// 
+        public event EventHandler<SubproblemEventArgs> SubproblemStarted;
+
+        /// <summary>
+        ///   Occurs when the learning of a subproblem has finished.
+        /// </summary>
+        /// 
+        public event EventHandler<SubproblemEventArgs> SubproblemFinished;
 
         /// <summary>
         ///   Constructs a new Multi-class Support Vector Learning algorithm.
@@ -197,14 +254,22 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         /// 
         public double Run(bool computeError)
         {
+            int classes = msvm.Classes;
+            int total = (classes * (classes - 1)) / 2;
+            int progress = 0;
+
             // For each class i
             Parallel.For(0, msvm.Classes, i =>
             {
                 // For each class j
-                for (int j = 0; j < i; j++)
+                Parallel.For(0, i, j =>
                 {
+                    // We will start the binary sub-problem
+                    var args = new SubproblemEventArgs(i, j);
+                    OnSubproblemStarted(args);
+
                     // Retrieve the associated machine
-                    var machine = msvm[i, j];
+                    KernelSupportVectorMachine machine = msvm[i, j];
 
                     // Retrieve the associated classes
                     int[] idx = outputs.Find(x => x == i || x == j);
@@ -218,9 +283,15 @@ namespace Accord.MachineLearning.VectorMachines.Learning
 
                     // Train the machine on the two-class problem.
                     configure(machine, subInputs, subOutputs, i, j).Run(false);
-                }
-            });
 
+
+                    // Update and report progress
+                    args.Progress = Interlocked.Increment(ref progress);
+                    args.Maximum = total;
+
+                    OnSubproblemFinished(args);
+                });
+            });
 
             // Compute error if required.
             return (computeError) ? ComputeError(inputs, outputs) : 0.0;
@@ -236,16 +307,41 @@ namespace Accord.MachineLearning.VectorMachines.Learning
             int count = 0;
             for (int i = 0; i < inputs.Length; i++)
             {
-                int y = msvm.Compute(inputs[i]);
+                int actual = msvm.Compute(inputs[i]);
+                int expected = expectedOutputs[i];
 
-                if (y != expectedOutputs[i])
-                    count++;
+                if (actual != expected) 
+                    Interlocked.Increment(ref count);
             }
 
             // Return misclassification error ratio
-            return (double)count / inputs.Length;
+            return count / (double)inputs.Length;
+        }
+
+
+        /// <summary>
+        ///   Raises the <see cref="E:SubproblemFinished"/> event.
+        /// </summary>
+        /// 
+        /// <param name="args">The <see cref="Accord.MachineLearning.VectorMachines.Learning.SubproblemEventArgs"/> instance containing the event data.</param>
+        /// 
+        protected void OnSubproblemFinished(SubproblemEventArgs args)
+        {
+            if (SubproblemFinished != null)
+                SubproblemFinished(this, args);
+        }
+
+        /// <summary>
+        ///   Raises the <see cref="E:SubproblemStarted"/> event.
+        /// </summary>
+        /// 
+        /// <param name="args">The <see cref="Accord.MachineLearning.VectorMachines.Learning.SubproblemEventArgs"/> instance containing the event data.</param>
+        /// 
+        protected void OnSubproblemStarted(SubproblemEventArgs args)
+        {
+            if (SubproblemStarted != null)
+                SubproblemStarted(this, args);
         }
 
     }
-
 }
