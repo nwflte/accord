@@ -23,6 +23,7 @@
 namespace Accord.Statistics.Models.Fields.Learning
 {
     using System;
+    using System.ComponentModel;
     using Accord.Math.Optimization;
 
     /// <summary>
@@ -30,7 +31,8 @@ namespace Accord.Statistics.Models.Fields.Learning
     ///   Hidden Conditional Hidden Fields</see>.
     /// </summary>
     /// 
-    public class ConjugateGradientHiddenLearning<T> : BaseHiddenConditionalRandomFieldLearning<T>, IHiddenConditionalRandomFieldLearning<T>
+    public class ConjugateGradientHiddenLearning<T> : BaseHiddenConditionalRandomFieldLearning<T>,
+        IHiddenConditionalRandomFieldLearning<T>
     {
 
         private ConjugateGradient cg;
@@ -38,7 +40,7 @@ namespace Accord.Statistics.Models.Fields.Learning
         /// <summary>
         ///   Gets or sets the tolerance threshold to detect convergence
         ///   of the log-likelihood function between two iterations. The
-        ///   default value is 1e-3.
+        ///   default value is 0 (run until convergence).
         /// </summary>
         /// 
         public double Tolerance
@@ -48,6 +50,41 @@ namespace Accord.Statistics.Models.Fields.Learning
         }
 
         /// <summary>
+        ///   Gets or sets the maximum number of iterations which
+        ///   should be performed. The default is 0 (iterate until
+        ///   convergence).
+        /// </summary>
+        /// 
+        public int MaxIterations
+        {
+            get { return cg.MaxIterations; }
+            set { cg.MaxIterations = value; }
+        }
+
+        /// <summary>
+        ///   Gets the total number of iterations performed
+        ///   by the conjugate gradient algorithm.
+        /// </summary>
+        /// 
+        public int Iterations
+        {
+            get { return cg.Iterations; }
+        }
+
+        /// <summary>
+        ///   Gets whether the model has converged
+        ///   or if the line search has failed.
+        /// </summary>
+        /// 
+        public bool Converged { get; private set; }
+
+        /// <summary>
+        ///   Occurs when the current learning progress has changed.
+        /// </summary>
+        /// 
+        public event EventHandler<ProgressChangedEventArgs> ProgressChanged;
+
+        /// <summary>
         ///   Constructs a new Conjugate Gradient learning algorithm.
         /// </summary>
         /// 
@@ -55,9 +92,23 @@ namespace Accord.Statistics.Models.Fields.Learning
             : base(model)
         {
             cg = new ConjugateGradient(model.Function.Weights.Length);
-            cg.Tolerance = 1e-3;
+            cg.Progress += new EventHandler<OptimizationProgressEventArgs>(cg_Progress);
             cg.Function = base.Objective;
             cg.Gradient = base.Gradient;
+        }
+
+        private void cg_Progress(object sender, OptimizationProgressEventArgs e)
+        {
+            int percentage;
+
+            double ratio = e.GradientNorm / e.SolutionNorm;
+            if (Double.IsNaN(ratio))
+                percentage = 100;
+            else
+                percentage = (int)Math.Max(0, Math.Min(100, (1.0 - ratio) * 100));
+
+            if (ProgressChanged != null)
+                ProgressChanged(this, new ProgressChangedEventArgs(percentage, e));
         }
 
         /// <summary>
@@ -73,6 +124,8 @@ namespace Accord.Statistics.Models.Fields.Learning
             this.Inputs = observations;
             this.Outputs = outputs;
 
+            Converged = true;
+
             try
             {
                 cg.Minimize(Model.Function.Weights);
@@ -80,11 +133,13 @@ namespace Accord.Statistics.Models.Fields.Learning
             catch (LineSearchFailedException)
             {
                 // TODO: Restructure CG to avoid exceptions.
+                Converged = false;
             }
 
             Model.Function.Weights = cg.Solution;
 
-            return Model.LogLikelihood(observations, outputs);
+            // Return negative log-likelihood as error function
+            return -Model.LogLikelihood(observations, outputs);
         }
 
         /// <summary>
