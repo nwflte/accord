@@ -24,8 +24,31 @@ namespace Accord.MachineLearning.VectorMachines.Learning
 {
     using System;
     using System.Collections.Generic;
-    using Accord.Statistics.Kernels;
     using Accord.Math;
+    using Accord.Statistics.Kernels;
+
+    /// <summary>
+    ///   Gets the selection strategy to be used in SMO.
+    /// </summary>
+    /// 
+    public enum SelectionStrategy
+    {
+
+        /// <summary>
+        ///   Uses the sequential selection strategy as
+        ///    suggested by Keerthi et al's algorithm 1.
+        /// </summary>
+        /// 
+        Sequential,
+
+        /// <summary>
+        ///   Always select the worst violation pair
+        ///   to be optimized first, as suggested in
+        ///   Keerthy et al's algorithm 2.
+        /// </summary>
+        /// 
+        WorstPair
+    };
 
     /// <summary>
     ///   Sequential Minimal Optimization (SMO) Algorithm
@@ -38,7 +61,8 @@ namespace Accord.MachineLearning.VectorMachines.Learning
     ///   First developed by John C. Platt in 1998, SMO breaks up large QP problems into
     ///   a series of smallest possible QP problems, which are then solved analytically.</para>
     /// <para>
-    ///   This class follows the original algorithm by Platt as strictly as possible.</para>
+    ///   This class follows the original algorithm by Platt with additional modifications
+    ///   by Keerthi et al.</para>
     ///  
     /// <para>
     ///   References:
@@ -51,6 +75,10 @@ namespace Accord.MachineLearning.VectorMachines.Learning
     ///       <a href="http://research.microsoft.com/en-us/um/people/jplatt/smoTR.pdf">
     ///       John C. Platt, Sequential Minimal Optimization: A Fast Algorithm for Training Support
     ///       Vector Machines. 1998. Available on: http://research.microsoft.com/en-us/um/people/jplatt/smoTR.pdf </a></description></item>
+    ///     <item><description>
+    ///       <a href="http://www.cs.iastate.edu/~honavar/keerthi-svm.pdf">
+    ///       S. S. Keerthi et al. Improvements to Platt's SMO Algorithm for SVM Classifier Design.
+    ///       Technical Report CD-99-14. Available on: http://www.cs.iastate.edu/~honavar/keerthi-svm.pdf </a></description></item>
     ///     <item><description>
     ///       <a href="http://www.idiom.com/~zilla/Work/Notes/svmtutorial.pdf">
     ///       J. P. Lewis. A Short SVM (Support Vector Machine) Tutorial. Available on:
@@ -101,23 +129,36 @@ namespace Accord.MachineLearning.VectorMachines.Learning
 
         // Learning algorithm parameters
         private double c = 1.0;
-        private double tolerance = 1e-3;
-        private double epsilon = 1e-12;
+        private double tolerance = 1e-2;
+        private double epsilon = 1e-6;
         private bool useComplexityHeuristic;
 
         // Support Vector Machine parameters
         private SupportVectorMachine machine;
         private IKernel kernel;
         private double[] alpha;
-        private double bias;
 
+        private bool isLinear;
+        private bool isCompact;
+        private double[] weights;
+
+        private HashSet<int> activeExamples;   // alpha[i] > 0
         private HashSet<int> nonBoundExamples; // alpha[i] > 0 && alpha[i] < c
-        private HashSet<int> allOtherExamples;  // otherwise
+        private HashSet<int> atBoundsExamples;  // alpha[i] = c
+
+        // Keerthi's improvements
+        private int i_lower;
+        private int i_upper;
+        private double b_upper;
+        private double b_lower;
 
         // Error cache to speed up computations
         private double[] errors;
-        private double[] diagonal;
 
+        private int cacheSize = 500;
+        private KernelFunctionCache kernelCache;
+
+        private SelectionStrategy strategy = SelectionStrategy.WorstPair;
 
 
         /// <summary>
@@ -165,7 +206,19 @@ namespace Accord.MachineLearning.VectorMachines.Learning
 
             // Kernel (if applicable)
             KernelSupportVectorMachine ksvm = machine as KernelSupportVectorMachine;
-            this.kernel = (ksvm != null) ? ksvm.Kernel : new Linear();
+
+            if (ksvm == null)
+            {
+                isLinear = true;
+                Linear linear = new Linear();
+                kernel = linear;
+            }
+            else
+            {
+                Linear linear = ksvm.Kernel as Linear;
+                isLinear = linear != null;
+                kernel = ksvm.Kernel;
+            }
 
 
             // Learning data
@@ -235,11 +288,11 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         }
 
         /// <summary>
-        ///   Convergence tolerance. Default value is 1e-3.
+        ///   Convergence tolerance. Default value is 1e-2.
         /// </summary>
         /// 
         /// <remarks>
-        ///   The criterion for completing the model training process. The default is 0.001.
+        ///   The criterion for completing the model training process. The default is 0.01.
         /// </remarks>
         /// 
         public double Tolerance
@@ -252,6 +305,75 @@ namespace Accord.MachineLearning.VectorMachines.Learning
                 this.tolerance = value;
             }
         }
+
+        /// <summary>
+        ///   Gets or sets the <see cref="SelectionStrategy">pair selection 
+        ///   streategy</see> to be used during optimization.
+        /// </summary>
+        /// 
+        public SelectionStrategy Strategy
+        {
+            get { return strategy; }
+            set { strategy = value; }
+        }
+
+        /// <summary>
+        ///   Gets or sets the cache size to partially
+        ///   stored the kernel matrix. Default is 500.
+        /// </summary>
+        /// 
+        public int CacheSize
+        {
+            get { return cacheSize; }
+            set { this.cacheSize = value; }
+        }
+
+        /// <summary>
+        ///   Gets or sets whether to produce compact models. Compact
+        ///   formulation is currently limited to linear models.
+        /// </summary>
+        /// 
+        public bool Compact
+        {
+            get { return isCompact; }
+            set
+            {
+                if (!isLinear)
+                    throw new InvalidOperationException("Only linear machines can be created in compact form.");
+                isCompact = value;
+            }
+        }
+
+        /// <summary>
+        ///   Gets the indices of the active examples (examples which have
+        ///   the corresponding Lagrange multiplier different than zero).
+        /// </summary>
+        /// 
+        public HashSet<int> ActiveExamples
+        {
+            get { return activeExamples; }
+        }
+
+        /// <summary>
+        ///   Gets the indices of the non-bounded examples (examples which
+        ///   have the corresponding Lagrange multipliers between 0 and C).
+        /// </summary>
+        /// 
+        public HashSet<int> NonBoundExamples
+        {
+            get { return nonBoundExamples; }
+        }
+
+        /// <summary>
+        ///   Gets the indices of the examples at the boundary (examples
+        ///   which have the corresponding Lagrange multipliers equal to C).
+        /// </summary>
+        /// 
+        public HashSet<int> BoundedExamples
+        {
+            get { return atBoundsExamples; }
+        }
+
         #endregion
 
 
@@ -278,84 +400,140 @@ namespace Accord.MachineLearning.VectorMachines.Learning
             // The SMO algorithm chooses to solve the smallest possible optimization problem
             // at every step. At every step, SMO chooses two Lagrange multipliers to jointly
             // optimize, finds the optimal values for these multipliers, and updates the SVM
-            // to reflect the new optimal values
+            // to reflect the new optimal values.
             //
             // Reference: http://research.microsoft.com/en-us/um/people/jplatt/smoTR.pdf
 
+            // The algorithm has been updated to implement the improvements suggested
+            // by Keerthi et al. The code has been based on the pseudo-code available
+            // on the author's technical report.
+            //
+            // Reference: http://www.cs.iastate.edu/~honavar/keerthi-svm.pdf
+
 
             // Initialize variables
-            int N = inputs.Length;
+            int samples = inputs.Length;
+            int dimension = inputs[0].Length;
 
             if (useComplexityHeuristic)
                 c = EstimateComplexity(kernel, inputs);
 
             // Lagrange multipliers
-            this.alpha = new double[N];
-            this.bias = 0;
+            this.alpha = new double[samples];
+
+            if (isLinear) // Hyperplane weights
+                this.weights = new double[dimension];
 
             // Error cache
-            this.errors = new double[N];
+            this.errors = new double[samples];
 
-            // Diagonal cache
-            this.diagonal = new double[N];
-            for (int i = 0; i < inputs.Length; i++)
-                diagonal[i] = kernel.Function(inputs[i], inputs[i]);
+            // Kernel evaluations cache
+            this.kernelCache = new KernelFunctionCache(kernel, inputs, cacheSize);
+
+            // [Keerthi] Initialize b_up to -1 and 
+            //   i_up to any one index of class 1:
+            this.b_upper = -1;
+            this.i_upper = outputs.Find(x => x == +1)[0];
+
+            // [Keerthi] Initialize b_low to +1 and 
+            //   i_low to any one index of class 2:
+            this.b_lower = +1;
+            this.i_lower = outputs.Find(x => x == -1)[0];
+
+            // [Keerthi] Set error cache for i_low and i_up:
+            this.errors[i_lower] = +1;
+            this.errors[i_upper] = -1;
+
 
             // Prepare indice sets
-            int[] indices = Matrix.Indices(0, N);
-            Accord.Statistics.Tools.Shuffle(indices);
-
+            activeExamples = new HashSet<int>();
             nonBoundExamples = new HashSet<int>();
-            allOtherExamples = new HashSet<int>(indices);
+            atBoundsExamples = new HashSet<int>();
 
 
             // Algorithm:
             int numChanged = 0;
-            int examineAll = 1;
+            bool examineAll = true;
 
-            while (numChanged > 0 || examineAll > 0)
+            while (numChanged > 0 || examineAll)
             {
                 numChanged = 0;
-                if (examineAll > 0)
+                if (examineAll)
                 {
                     // loop I over all training examples
-                    for (int i = 0; i < N; i++)
-                        numChanged += examineExample(i);
+                    for (int i = 0; i < samples; i++)
+                        if (examineExample(i)) numChanged++;
                 }
                 else
                 {
-                    // loop I over examples where alpha is not 0 and not C
-                    for (int i = 0; i < alpha.Length; i++)
-                        if (alpha[i] != 0 && alpha[i] != c)
-                            numChanged += examineExample(i);
+                    if (strategy == SelectionStrategy.Sequential)
+                    {
+                        // loop I over examples not at bounds
+                        for (int i = 0; i < alpha.Length; i++)
+                        {
+                            if (alpha[i] != 0 && alpha[i] != c)
+                            {
+                                if (examineExample(i)) numChanged++;
+
+                                if (b_upper > b_lower - 2.0 * tolerance)
+                                {
+                                    numChanged = 0; break;
+                                }
+                            }
+                        }
+                    }
+                    else // strategy == Strategy.WorstPair
+                    {
+                        bool success;
+                        do { success = takeStep(i_upper, i_lower); }
+                        while ((b_upper <= b_lower - 2.0 * tolerance) && success);
+
+                        numChanged = 0;
+                    }
                 }
 
-                if (examineAll == 1)
-                    examineAll = 0;
+                if (examineAll)
+                    examineAll = false;
+
                 else if (numChanged == 0)
-                    examineAll = 1;
+                    examineAll = true;
             }
 
 
-            // Store Support Vectors in the SV Machine. Only vectors which have lagrange multipliers
-            // greater than zero will be stored as only those are actually required during evaluation.
-            List<int> support = new List<int>();
+            // Store information about bounded examples
             for (int i = 0; i < alpha.Length; i++)
+                if (alpha[i] == c) atBoundsExamples.Add(i);
+
+            if (isCompact)
             {
-                // Only store vectors with multipliers > 0
-                if (alpha[i] > 0) support.Add(i);
+                // Store the hyperplane directly
+                machine.SupportVectors = null;
+                machine.Weights = weights;
+                machine.Threshold = -(b_lower + b_upper) / 2.0;
+            }
+            else
+            {
+                // Store Support Vectors in the SV Machine. Only vectors which have lagrange multipliers
+                // greater than zero will be stored as only those are actually required during evaluation.
+
+                int activeCount = activeExamples.Count;
+
+                int[] idx = new int[activeCount];
+                activeExamples.CopyTo(idx);
+
+                machine.SupportVectors = new double[activeCount][];
+                machine.Weights = new double[activeCount];
+                for (int i = 0; i < idx.Length; i++)
+                {
+                    int j = idx[i];
+                    machine.SupportVectors[i] = inputs[j];
+                    machine.Weights[i] = alpha[j] * outputs[j];
+                }
+                machine.Threshold = -(b_lower + b_upper) / 2;
             }
 
-            machine.SupportVectors = new double[support.Count][];
-            machine.Weights = new double[support.Count];
-            for (int i = 0; i < support.Count; i++)
-            {
-                int j = support[i];
-                machine.SupportVectors[i] = inputs[j];
-                machine.Weights[i] = alpha[j] * outputs[j];
-            }
-            machine.Threshold = -bias;
-
+            // Clear function cache
+            this.kernelCache.Clear();
 
             // Compute error if required.
             return (computeError) ? ComputeError(inputs, outputs) : 0.0;
@@ -385,12 +563,14 @@ namespace Accord.MachineLearning.VectorMachines.Learning
             int count = 0;
             for (int i = 0; i < inputs.Length; i++)
             {
-                if ((compute(inputs[i]) >= 0) != (expectedOutputs[i] >= 0))
-                    count++;
+                bool actual = compute(inputs[i]) >= 0;
+                bool expected = expectedOutputs[i] >= 0;
+
+                if (actual != expected) count++;
             }
 
             // Return misclassification error ratio
-            return (double)count / inputs.Length;
+            return count / (double)inputs.Length;
         }
 
         //---------------------------------------------
@@ -400,70 +580,104 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         ///  Chooses which multipliers to optimize using heuristics.
         /// </summary>
         /// 
-        private int examineExample(int i2)
+        private bool examineExample(int i2)
         {
             double[] p2 = inputs[i2]; // Input point at index i2
             double y2 = outputs[i2];  // Classification label for p2
             double alph2 = alpha[i2]; // Lagrange multiplier for p2
 
-            // SVM output on p2 - y2. Check if it has already been computed
-            double e2 = (alph2 > 0 && alph2 < c) ? errors[i2] : compute(p2) - y2;
+            double e2; // SVM output on p2 - y2. Check if it has already been computed
 
-            double r2 = y2 * e2;
+            int set = I(i2);
 
-
-            // Heuristic 01 (for the first multiplier choice):
-            //  - Testing for KKT conditions within the tolerance margin
-            if (!(r2 < -tolerance && alph2 < c) && !(r2 > tolerance && alph2 > 0))
-                return 0;
-
-
-            // Heuristic 02 (for the second multiplier choice):
-            //  - Once a first Lagrange multiplier is chosen, SMO chooses the second Lagrange multiplier to
-            //    maximize the size of the step taken during joint optimization. Now, evaluating the kernel
-            //    function is time consuming, so SMO approximates the step size by the absolute value of the
-            //    absolute error difference.
-            int i1 = -1; double max = 0;
-            foreach (int i in nonBoundExamples) // (alpha[i] > 0 && alpha[i] < c)
+            if (set == 0)
             {
-                double aux = Math.Abs(e2 - errors[i]);
+                // i2 is in I0
+                e2 = errors[i2];
+            }
+            else
+            {
+                // Compute error and update
+                e2 = errors[i2] = computeNoBias(i2) - y2;
 
-                if (aux > max)
+                if ((set == 1 || set == 2) && e2 < b_upper)
                 {
-                    max = aux;
-                    i1 = i;
+                    // i2 is in I1 or I2
+                    b_upper = e2; i_upper = i2;
+                }
+                else if ((set == 3 || set == 4) && (e2 > b_lower))
+                {
+                    // i2 is in I3 or I4
+                    b_lower = e2; i_lower = i2;
                 }
             }
 
-            if (i1 >= 0 && takeStep(i1, i2)) return 1;
 
+            int i1 = -1;
 
-            // Heuristic 03:
-            //  - Under unusual circumstances, SMO cannot make positive progress using the second
-            //    choice heuristic above. If it is the case, then SMO starts iterating through the
-            //    non-bound examples, searching for an second example that can make positive progress.
-            foreach (int i in nonBoundExamples) // (alpha[i1] > 0 && alpha[i1] < c)
+            // [Keerthi] Check optimality using current b_low
+            // and b_up and, if violated, find an index i1 to
+            // do a joint optimization with i2.
+
+            bool optimality = true;
+            if (set == 0 || set == 1 || set == 2)
             {
-                if (takeStep(i, i2)) return 1;
+                // i2 is in I0, I1 or I2
+                if (b_lower - e2 > 2 * tolerance)
+                {
+                    optimality = false;
+                    i1 = i_lower;
+                }
             }
 
-
-            // Heuristic 04:
-            //  - If none of the non-bound examples make positive progress, then SMO starts iterating
-            //    through the entire training set until an example is found that makes positive progress.
-            //    Both the iteration through the non-bound examples and the iteration through the entire
-            //    training set are started at random locations, in order not to bias SMO towards the
-            //    examples at the beginning of the training set. 
-            foreach (int i in allOtherExamples) // (alpha[i1] <= 0 || alpha[i1] >= c)
+            if (set == 0 || set == 3 || set == 4)
             {
-                if (takeStep(i, i2)) return 1;
+                // i2 is in I0, I3 or I4
+                if (e2 - b_upper > 2 * tolerance)
+                {
+                    optimality = false;
+                    i1 = i_upper;
+                }
             }
 
+            if (optimality)
+                return false; // no need to take step
 
-            // In extremely degenerate circumstances, none of the examples will make an adequate second
-            // example. When this happens, the first example is skipped and SMO continues with another
-            // chosen first example.
-            return 0;
+            if (set == 0)
+            {
+                // [Keerthi] for i2 in I0, select the best i1
+                i1 = (b_lower - e2 > e2 - b_upper) ? i_lower : i_upper;
+            }
+
+            return takeStep(i1, i2);
+        }
+
+        private int I(int i)
+        {
+            double a = alpha[i];
+            double y = outputs[i];
+
+            // From Keerthi's technical report, define:
+            //
+            //   I0 = { 0 < a[i] < c }
+            //   I1 = { y[i] = +1, a[i] = 0 }
+            //   I2 = { y[i] = -1, a[i] = c }
+            //   I3 = { y[i] = +1, a[i] = c }
+            //   I4 = { y[i] = -1, a[i] = 0 }
+            //
+
+            if (0 < a && a < c)
+                return 0; // I0
+            else if (y == 1 && a == 0)
+                return 1; // I1
+            else if (y == -1 && a == c)
+                return 2; // I2
+            else if (y == 1 && a == c)
+                return 3; // I3
+            else if (y == -1 && a == 0)
+                return 4; // I4
+
+            throw new InvalidOperationException("Execution should not reach this state.");
         }
 
         /// <summary>
@@ -478,15 +692,15 @@ namespace Accord.MachineLearning.VectorMachines.Learning
             double alph1 = alpha[i1]; // Lagrange multiplier for p1
             double y1 = outputs[i1];  // Classification label for p1
 
-            // SVM output on p1 - y1. Check if it has already been computed
-            double e1 = (alph1 > 0 && alph1 < c) ? errors[i1] : compute(p1) - y1;
+            // SVM output on p1 - y1 [without bias threshold]. Check if it has already been computed
+            double e1 = (alph1 > 0 && alph1 < c) ? errors[i1] : errors[i1] = computeNoBias(i1) - y1;
 
             double[] p2 = inputs[i2]; // Input point at index i2
             double alph2 = alpha[i2]; // Lagrange multiplier for p2
             double y2 = outputs[i2];  // Classification label for p2
 
-            // SVM output on p2 - y2. Check if it has already been computed
-            double e2 = (alph2 > 0 && alph2 < c) ? errors[i2] : compute(p2) - y2;
+            // SVM output on p2 - y2. Should have been computed already.
+            double e2 = errors[i2];
 
 
             double s = y1 * y2;
@@ -511,40 +725,57 @@ namespace Accord.MachineLearning.VectorMachines.Learning
 
             if (L == H) return false;
 
-            double k11 = diagonal[i1]; // kernel.Function(p1, p1);
-            double k12 = kernel.Function(p1, p2);
-            double k22 = diagonal[i2]; // kernel.Function(p2, p2);
-            double eta = k11 + k22 - 2.0 * k12;
+
+            double k11 = kernelCache.GetOrCompute(i1);
+            double k22 = kernelCache.GetOrCompute(i2);
+            double k12 = kernelCache.GetOrCompute(i1, i2);
+
+            double eta = 2.0 * k12 - k11 - k22;
+
 
             double a1, a2;
 
-            if (eta > 0)
+            if (eta < 0)
             {
-                a2 = alph2 - y2 * (e2 - e1) / eta;
+                // Under usual circumstances, eta will be negative.
+                // Compute as indicated in Platt's SMO book (eq 12.6).
+
+                a2 = alph2 - y2 * (e1 - e2) / eta;
 
                 if (a2 < L) a2 = L;
                 else if (a2 > H) a2 = H;
             }
             else
             {
-                // Compute objective function Lobj and Hobj at
-                //  a2=L and a2=H respectively, using (eq. 19)
+                // Under unusual circumstances, eta could be zero. 
+                // In this case, compute the objetive function as 
+                // suggested in "A Practical SMO Algorithm" by J.
+                // Dong, A. Krzyzak and C. Y. Suen.
 
+                //*
+                double Lobj = y2 * (e1 - e2) * L;
+                double Hobj = y2 * (e1 - e2) * H;
+
+                /*/
                 double L1 = alph1 + s * (alph2 - L);
                 double H1 = alph1 + s * (alph2 - H);
-                double f1 = y1 * (e1 + bias) - alph1 * k11 - s * alph2 * k12;
-                double f2 = y2 * (e2 + bias) - alph2 * k22 - s * alph1 * k12;
+                double f1 = y1 * e1 - alph1 * k11 - s * alph2 * k12;
+                double f2 = y2 * e2 - alph2 * k22 - s * alph1 * k12;
                 double Lobj = -0.5 * L1 * L1 * k11 - 0.5 * L * L * k22 - s * L * L1 * k12 - L1 * f1 - L * f2;
                 double Hobj = -0.5 * H1 * H1 * k11 - 0.5 * H * H * k22 - s * H * H1 * k12 - H1 * f1 - H * f2;
+                //*/
 
                 if (Lobj > Hobj + epsilon) a2 = L;
                 else if (Lobj < Hobj - epsilon) a2 = H;
                 else a2 = alph2;
+
+                System.Diagnostics.Trace.WriteLine("SMO: eta is zero.");
             }
 
             if (Math.Abs(a2 - alph2) < epsilon * (a2 + alph2 + epsilon))
                 return false; // no step need to be taken
 
+            // Compute update step
             a1 = alph1 + s * (alph2 - a2);
 
             if (a1 < 0)
@@ -558,89 +789,86 @@ namespace Accord.MachineLearning.VectorMachines.Learning
                 a1 = c;
             }
 
-            // Approximate precision
-            double roundoff = c * 1e-10;
-            if (a1 > c - roundoff) a1 = c;
-            else if (a1 < roundoff) a1 = 0;
+            // Approximate precision as
+            // suggested in Platt's errata
+            double roundoff = c * 1e-8;
             if (a2 > c - roundoff) a2 = c;
             else if (a2 < roundoff) a2 = 0;
-
-
-            // Update threshold (bias) to reflect change in Lagrange multipliers
-            double b1 = 0, b2 = 0;
-            double new_b = 0, delta_b;
-
-            if (a1 > 0 && a1 < c)
-            {
-                // a1 is not at bounds
-                new_b = e1 + y1 * (a1 - alph1) * k11 + y2 * (a2 - alph2) * k12 + bias;
-            }
-            else
-            {
-                if (a2 > 0 && a2 < c)
-                {
-                    // a1 is at bounds but a2 is not.
-                    new_b = e2 + y1 * (a1 - alph1) * k12 + y2 * (a2 - alph2) * k22 + bias;
-                }
-                else
-                {
-                    // Both new Lagrange multipliers are at bound. SMO algorithm
-                    // chooses the threshold to be halfway in between b1 and b2.
-                    b1 = e1 + y1 * (a1 - alph1) * k11 + y2 * (a2 - alph2) * k12 + bias;
-                    b2 = e2 + y1 * (a1 - alph1) * k12 + y2 * (a2 - alph2) * k22 + bias;
-                    new_b = (b1 + b2) / 2.0;
-                }
-            }
-
-            delta_b = new_b - bias;
-            bias = new_b;
-
+            if (a1 > c - roundoff) a1 = c;
+            else if (a1 < roundoff) a1 = 0;
 
             // Update error cache using new Lagrange multipliers
             double t1 = y1 * (a1 - alph1);
             double t2 = y2 * (a2 - alph2);
-
-            foreach (var i in nonBoundExamples) // (alpha[i] > 0 && alpha[i] < c)
+            foreach (int i in nonBoundExamples) // (alpha[i] > 0 && alpha[i] < c)
             {
-                if (i == i1)
-                    errors[i] += t1 * k11 + t2 * k12 - delta_b;
-
-                else if (i == i2)
-                    errors[i] += t1 * k12 + t2 * k22 - delta_b;
-
-                else
-                    errors[i] += t1 * kernel.Function(p1, inputs[i]) +
-                                 t2 * kernel.Function(p2, inputs[i]) -
-                                 delta_b;
+                if (i != i1 && i != i2)
+                {
+                    errors[i] += t1 * kernelCache.GetOrCompute(i1, i) +
+                                 t2 * kernelCache.GetOrCompute(i2, i);
+                }
             }
 
-           
+            errors[i1] += t1 * k11 + t2 * k12;
+            errors[i2] += t1 * k12 + t2 * k22;
+
+
             // Update lagrange multipliers
             alpha[i1] = a1;
             alpha[i2] = a2;
 
-
-            // Update indices sets
-            if (a1 > 0 && a1 < c)
+            // If linear, update weights
+            if (isLinear)
             {
-                nonBoundExamples.Add(i1); allOtherExamples.Remove(i1);
-            }
-            else
-            {
-                nonBoundExamples.Remove(i1); allOtherExamples.Add(i1);
+                // (eq 22 of Platt, 1998)
+                for (int i = 0; i < weights.Length; i++)
+                    weights[i] += t1 * p1[i] + t2 * p2[i];
             }
 
-            if (a2 > 0 && a2 < c)
+
+            // Update indices 
+            updateSets(i1, a1);
+            updateSets(i2, a2);
+
+
+            // Update threshold (bias) to reflect change in Lagrange multipliers
+            // [Keerthi] This should be done by computing (i_low, b_low) and (i_up, b_up)
+            //   by applying equations (11a) and (11b), using only i1, i2 and indices in
+            //   I0 according to item 3 of section 5 from Keerthi's technical report.
+
+            i_lower = i1; b_lower = errors[i1];
+            i_upper = i1; b_upper = errors[i1];
+
+            if (errors[i2] > b_lower) { i_lower = i2; b_lower = errors[i2]; }
+            if (errors[i2] < b_upper) { i_upper = i2; b_upper = errors[i2]; }
+
+            foreach (int i in nonBoundExamples)
             {
-                nonBoundExamples.Add(i2); allOtherExamples.Remove(i2);
-            }
-            else
-            {
-                nonBoundExamples.Remove(i2); allOtherExamples.Add(i2);
+                if (errors[i] > b_lower) { i_lower = i; b_lower = errors[i]; }
+                if (errors[i] < b_upper) { i_upper = i; b_upper = errors[i]; }
             }
 
             // step taken
             return true;
+        }
+
+
+        private void updateSets(int index, double value)
+        {
+            if (value > 0)
+                activeExamples.Add(index);
+            else
+                activeExamples.Remove(index);
+
+            if (value == 0 || value == c)
+            {
+                // Value is at boundaries
+                nonBoundExamples.Remove(index);
+            }
+            else
+            {
+                nonBoundExamples.Add(index);
+            }
         }
 
         /// <summary>
@@ -649,11 +877,41 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         /// 
         private double compute(double[] point)
         {
-            double sum = -bias;
-            for (int i = 0; i < alpha.Length; i++)
+            double sum = -(b_lower + b_upper) / 2;
+
+            if (isLinear)
             {
-                if (alpha[i] > 0)
+                for (int i = 0; i < weights.Length; i++)
+                    sum += weights[i] * point[i];
+            }
+            else
+            {
+                foreach (int i in activeExamples)
                     sum += alpha[i] * outputs[i] * kernel.Function(inputs[i], point);
+            }
+
+            return sum;
+        }
+
+        /// <summary>
+        ///   Computes the SVM output for a given point.
+        /// </summary>
+        /// 
+        private double computeNoBias(int j)
+        {
+            double sum = 0;
+
+            double[] point = inputs[j];
+
+            if (isLinear)
+            {
+                for (int i = 0; i < weights.Length; i++)
+                    sum += weights[i] * point[i];
+            }
+            else
+            {
+                foreach (int i in activeExamples)
+                    sum += alpha[i] * outputs[i] * kernelCache.GetOrCompute(i, j);
             }
 
             return sum;
@@ -679,5 +937,6 @@ namespace Accord.MachineLearning.VectorMachines.Learning
                 sum += kernel.Function(inputs[i], inputs[i]);
             return inputs.Length / sum;
         }
+
     }
 }

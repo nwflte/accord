@@ -148,16 +148,24 @@ namespace Accord.MachineLearning.VectorMachines
         {
             output = Threshold;
 
-            for (int i = 0; i < SupportVectors.Length; i++)
-                output += Weights[i] * kernel.Function(SupportVectors[i], inputs);
+            if (IsCompact)
+            {
+                for (int i = 0; i < Weights.Length; i++)
+                    output += Weights[i] * inputs[i];
+            }
+            else
+            {
+                for (int i = 0; i < SupportVectors.Length; i++)
+                    output += Weights[i] * kernel.Function(SupportVectors[i], inputs);
+            }
 
             if (IsProbabilistic)
             {
                 output = Link.Inverse(output);
-                return output >= 0.5 ? 1 : -1;
+                return output >= 0.5 ? +1 : -1;
             }
 
-            return output >= 0 ? 1 : -1;
+            return output >= 0 ? +1 : -1;
         }
 
         /// <summary>

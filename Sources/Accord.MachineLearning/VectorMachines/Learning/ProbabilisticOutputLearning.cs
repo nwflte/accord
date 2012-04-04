@@ -69,9 +69,9 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         private SupportVectorMachine machine;
 
         // Parameter setting
-        private int maxIterations = 100;      // Maximum number of iterations
-        private double minStepSize = 1e-10; // Minimum step taken in line search
-        private double sigma = 1e-12;   // Set to any value > 0
+        private int maxIterations = 100;     // Maximum number of iterations
+        private double minStepSize = 1e-10;  // Minimum step taken in line search
+        private double sigma = 1e-12;        // Set to any value > 0
         private double tolerance = 1e-5;
 
         private int negatives;
@@ -119,7 +119,7 @@ namespace Accord.MachineLearning.VectorMachines.Learning
                         throw new ArgumentException("The size of the input vectors does not match the expected number of inputs of the machine");
             }
 
-            if (machine.SupportVectors == null || machine.Weights == null)
+            if (machine.Weights == null)
                 throw new ArgumentException("The machine should have been trained by another method first.", "machine");
 
             // Machine

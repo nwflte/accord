@@ -127,10 +127,19 @@ namespace Accord.MachineLearning.VectorMachines
     {
 
         // Underlying classifiers
-        private KernelSupportVectorMachine[][] machines;
+        private KernelSupportVectorMachine[][] machineMatrix;
 
         private int? totalVectors;
         private int? uniqueVectors;
+
+        [NonSerialized]
+        private int[][][] sharedVectors;
+
+        [NonSerialized]
+        private double[] sharedVectorCache;
+
+        [NonSerialized]
+        private SpinLock[] syncObjects;
 
 
         /// <summary>
@@ -152,13 +161,13 @@ namespace Accord.MachineLearning.VectorMachines
                 throw new ArgumentException("The machine must have at least two classes.", "classes");
 
             // Create the kernel machines
-            machines = new KernelSupportVectorMachine[classes - 1][];
-            for (int i = 0; i < machines.Length; i++)
+            machineMatrix = new KernelSupportVectorMachine[classes - 1][];
+            for (int i = 0; i < machineMatrix.Length; i++)
             {
-                machines[i] = new KernelSupportVectorMachine[i + 1];
+                machineMatrix[i] = new KernelSupportVectorMachine[i + 1];
 
                 for (int j = 0; j <= i; j++)
-                    machines[i][j] = new KernelSupportVectorMachine(kernel, inputs);
+                    machineMatrix[i][j] = new KernelSupportVectorMachine(kernel, inputs);
             }
         }
 
@@ -174,7 +183,7 @@ namespace Accord.MachineLearning.VectorMachines
         {
             if (machines == null) throw new ArgumentNullException("machines");
 
-            this.machines = machines;
+            this.machineMatrix = machines;
         }
 
         /// <summary>
@@ -195,10 +204,20 @@ namespace Accord.MachineLearning.VectorMachines
                 if (class1 == class2)
                     return null;
                 if (class1 > class2)
-                    return machines[class1 - 1][class2];
+                    return machineMatrix[class1 - 1][class2];
                 else
-                    return machines[class2 - 1][class1];
+                    return machineMatrix[class2 - 1][class1];
             }
+        }
+
+        /// <summary>
+        ///   Gets the total number of machines
+        ///   in this multi-class classifier.
+        /// </summary>
+        /// 
+        public int MachinesCount
+        {
+            get { return ((machineMatrix.Length + 1) * machineMatrix.Length) / 2; }
         }
 
         /// <summary>
@@ -206,16 +225,16 @@ namespace Accord.MachineLearning.VectorMachines
         ///   in the entire multi-class machine.
         /// </summary>
         /// 
-        public int SupportVectorTotal
+        public int SupportVectorCount
         {
             get
             {
                 if (totalVectors == null)
                 {
                     int count = 0;
-                    for (int i = 0; i < machines.Length; i++)
-                        for (int j = 0; j < machines[i].Length; j++)
-                            count += machines[i][j].SupportVectors.Length;
+                    for (int i = 0; i < machineMatrix.Length; i++)
+                        for (int j = 0; j < machineMatrix[i].Length; j++)
+                            count += machineMatrix[i][j].SupportVectors.Length;
                     totalVectors = count;
                 }
 
@@ -228,17 +247,25 @@ namespace Accord.MachineLearning.VectorMachines
         ///   vectors in the multi-class machine.
         /// </summary>
         /// 
-        public int SupportVectorUnique
+        public int SupportVectorUniqueCount
         {
             get
             {
                 if (uniqueVectors == null)
                 {
                     HashSet<double[]> unique = new HashSet<double[]>();
-                    for (int i = 0; i < machines.Length; i++)
-                        for (int j = 0; j < machines[i].Length; j++)
-                            for (int k = 0; k < machines[i][j].SupportVectors.Length; k++)
-                                unique.Add(machines[i][j].SupportVectors[k]);
+                    for (int i = 0; i < machineMatrix.Length; i++)
+                    {
+                        for (int j = 0; j < machineMatrix[i].Length; j++)
+                        {
+                            if (machineMatrix[i][j].SupportVectors != null)
+                            {
+                                for (int k = 0; k < machineMatrix[i][j].SupportVectors.Length; k++)
+                                    unique.Add(machineMatrix[i][j].SupportVectors[k]);
+                            }
+                        }
+                    }
+
                     uniqueVectors = unique.Count;
                 }
 
@@ -246,13 +273,14 @@ namespace Accord.MachineLearning.VectorMachines
             }
         }
 
+
         /// <summary>
         ///   Gets the number of classes.
         /// </summary>
         /// 
         public int Classes
         {
-            get { return machines.Length + 1; }
+            get { return machineMatrix.Length + 1; }
         }
 
         /// <summary>
@@ -261,7 +289,7 @@ namespace Accord.MachineLearning.VectorMachines
         /// 
         public int Inputs
         {
-            get { return machines[0][0].Inputs; }
+            get { return machineMatrix[0][0].Inputs; }
         }
 
         /// <summary>
@@ -274,7 +302,7 @@ namespace Accord.MachineLearning.VectorMachines
         /// 
         public bool IsProbabilistic
         {
-            get { return machines[0][0].IsProbabilistic; }
+            get { return machineMatrix[0][0].IsProbabilistic; }
         }
 
         /// <summary>
@@ -283,7 +311,7 @@ namespace Accord.MachineLearning.VectorMachines
         /// 
         public KernelSupportVectorMachine[][] Machines
         {
-            get { return machines; }
+            get { return machineMatrix; }
         }
 
         /// <summary>
@@ -448,30 +476,39 @@ namespace Accord.MachineLearning.VectorMachines
         /// 
         private int computeVoting(double[] inputs, out int[] votes, out double output)
         {
+            if (sharedVectorCache == null)
+                createCache();
+            else resetCache();
+
             // out variables cannot be passed into delegates,
             // so will be creating a copy for the vote array.
-            int[] voting = new int[this.Classes];
-            var cache = new ConcurrentDictionary<double[], double>(Environment.ProcessorCount, (int)(SupportVectorUnique * 1.5));
+            int[] voting = new int[Classes];
 
             // For each class
+#if DEBUG
+            for (int i = 0; i < Classes; i++)
+#else
             Parallel.For(0, Classes, i =>
+#endif
             {
                 // For each other class
                 for (int j = 0; j < i; j++)
                 {
-                    // Retrieve and compute the two-class problem
-                    KernelSupportVectorMachine machine = this[i, j];
+                    double machineOutput;
 
-                    // Decide between class 0 and class 1
-                    double answer = compute(cache, machine, inputs);
+                    // Retrieve and compute the two-class problem for classes i x j
+                    int answer = computeSequential(i, j, inputs, out machineOutput);
 
                     // Determine the winner class
-                    int y = (answer < 0) ? i : j;
+                    int y = (answer == -1) ? i : j;
 
                     // Increment votes for the winner
                     Interlocked.Increment(ref voting[y]);
                 }
-            });
+            }
+#if !DEBUG
+            );
+#endif
 
             // Voting finished.
             votes = voting;
@@ -509,95 +546,100 @@ namespace Accord.MachineLearning.VectorMachines
         private int computeElimination(double[] inputs, out double[] responses, out double output)
         {
             // Acyclic Directed Graph decision
-            var cache = new Dictionary<double[], double>((int)(SupportVectorUnique * 1.5));
 
+            if (sharedVectorCache == null)
+                createCache();
+            else resetCache();
+
+            // Initialize metrics
+            output = 0;
             responses = new double[Classes];
-            bool[] losers = new bool[Classes];
             bool probabilistic = IsProbabilistic;
 
             if (probabilistic)
+            {
                 for (int i = 0; i < responses.Length; i++)
                     responses[i] = 1.0;
+            }
 
-            // Start on first machine
-            int currentWinner = 0;
-            int adversary = -1;
-            double y = 0;
+            // Start with first and last classes
+            int classA = Classes - 1, classB = 0;
 
 
-            for (int t = 0; t < Classes - 1; t++)
+            // Navigate decision path
+            while (classA != classB)
             {
-                // Get a class which hasn't lost yet
-                for (int i = 0; i < losers.Length; i++)
-                    if (!losers[i] && i != currentWinner) { adversary = i; break; }
-
-                // Get the machine for this problem
-                KernelSupportVectorMachine machine = this[currentWinner, adversary];
-
-                // Compute the two-class decision problem
-                double answer = compute(cache, machine, inputs, out y);
+                // Compute the two-class decision problem to decide for A x B
+                int answer = computeParallel(classA, classB, inputs, out output);
 
                 // Check who won and update
-                int lastWinner = currentWinner;
-                if ((currentWinner > adversary && answer < 0) ||
-                    (currentWinner < adversary && answer > 0))
-                {
-                    // The adversary has lost
-                    losers[adversary] = true;
 
-                    if (probabilistic)
-                    {
-                        // Decrease adversary likelihood
-                        responses[adversary] *= 1.0 - y;
-
-                        // Increase for all other classes
-                        for (int i = 0; i < responses.Length; i++)
-                            if (i != adversary) responses[i] *= y;
-                    }
-                    else
-                    {
-                        responses[adversary] = -y;
-                    }
-                }
-                else
+                if (answer == -1)
                 {
-                    // The adversary has won
-                    losers[lastWinner] = true;
-                    currentWinner = adversary;
+                    // The class A has won and class B has lost
 
                     if (probabilistic)
                     {
                         // Decrease loser likelihood
-                        responses[lastWinner] *= y;
+                        responses[classB] *= output;
 
                         // Increase for all other classes
                         for (int i = 0; i < responses.Length; i++)
-                            if (i != lastWinner) responses[i] *= 1.0 - y;
+                            if (i != classB) responses[i] *= 1.0 - output;
                     }
                     else
                     {
-                        responses[lastWinner] = y;
+                        // Store the distance to the
+                        // answer for the loser class
+                        responses[classB] = -output;
                     }
+
+                    // Advance classB towards
+                    // the middle of the list
+                    classB++;
+                }
+
+                else // answer == +1
+                {
+                    // The class A has lost and class B has won
+
+                    if (probabilistic)
+                    {
+                        // Decrease loser likelihood
+                        responses[classA] *= 1.0 - output;
+
+                        // Increase for all other classes
+                        for (int i = 0; i < responses.Length; i++)
+                            if (i != classA) responses[i] *= output;
+                    }
+                    else
+                    {
+                        // Store the distance to the
+                        // answer for the loser class
+                        responses[classA] = output;
+                    }
+
+                    // Advance classA towards
+                    // the middle of the list
+                    classA--;
                 }
             }
 
-
-            if (!probabilistic)
-                responses[currentWinner] = y;
+            // At this point, classA = classB is the winner
+            if (!probabilistic) responses[classA] = output;
 
 #if DEBUG
             else
             {
                 int imax; responses.Max(out imax);
-                if (imax != currentWinner)
-                    throw new Exception();
+                if (imax != classA) throw new Exception();
             }
 #endif
 
             // Return output for winner class
-            output = responses[currentWinner];
+            output = responses[classA];
 
-            return currentWinner;
+            return classA;
         }
 
 
@@ -605,64 +647,232 @@ namespace Accord.MachineLearning.VectorMachines
         ///   Compute SVM output with support vector sharing.
         /// </summary>
         /// 
-        private static double compute(Dictionary<double[], double> cache,
-            KernelSupportVectorMachine machine, double[] input, out double output)
+        private int computeSequential(int classA, int classB, double[] input, out double output)
         {
-            output = machine.Threshold;
+            // Get the machine for this problem
+            var machine = machineMatrix[classA - 1][classB];
+            var vectors = sharedVectors[classA - 1][classB];
 
-            for (int i = 0; i < machine.SupportVectors.Length; i++)
+            double sum = machine.Threshold;
+
+            if (machine.IsCompact)
             {
-                double value;
-                if (!cache.TryGetValue(machine.SupportVectors[i], out value))
+                // For linear machines, computation is simpler
+                for (int i = 0; i < machine.Weights.Length; i++)
+                    sum += machine.Weights[i] * input[i];
+            }
+            else
+            {
+                // For each support vector in the machine
+                for (int i = 0; i < vectors.Length; i++)
                 {
-                    value = machine.Kernel.Function(machine.SupportVectors[i], input);
-                    cache.Add(machine.SupportVectors[i], value);
-                }
+                    double value;
 
-                output += machine.Weights[i] * value;
+                    // Check if it is a shared vector
+                    int j = vectors[i];
+
+                    if (j >= 0)
+                    {
+                        // This is a shared vector. Check
+                        // if it has already been computed
+
+                        if (!Double.IsNaN(sharedVectorCache[j]))
+                        {
+                            // Yes, it has. Retrieve the value from the cache
+                            value = sharedVectorCache[j];
+                        }
+                        else
+                        {
+                            // No, it has not. Compute and store the computed value in the cache
+                            value = sharedVectorCache[j] = machine.Kernel.Function(machine.SupportVectors[i], input);
+                        }
+                    }
+                    else
+                    {
+                        // This vector is not shared by any other machine. No need to cache
+                        value = machine.Kernel.Function(machine.SupportVectors[i], input);
+                    }
+
+                    sum += machine.Weights[i] * value;
+                }
             }
 
+
+            // Produce probabilities if required
             if (machine.IsProbabilistic)
             {
-                output = machine.Link.Inverse(output);
-                return output >= 0.5 ? 1 : -1;
+                output = machine.Link.Inverse(sum);
+                return output >= 0.5 ? +1 : -1;
             }
-
-            return output >= 0 ? 1 : -1;
+            else
+            {
+                output = sum;
+                return output >= 0 ? +1 : -1;
+            }
         }
 
         /// <summary>
-        ///   Compute SVM output with concurrent support vector sharing.
+        ///   Compute SVM output with support vector sharing.
         /// </summary>
         /// 
-        private static double compute(ConcurrentDictionary<double[], double> cache,
-           KernelSupportVectorMachine machine, double[] input)
+        private int computeParallel(int classA, int classB, double[] input, out double output)
         {
-            double output = machine.Threshold;
+            // Get the machine for this problem
+            var machine = machineMatrix[classA - 1][classB];
+            var vectors = sharedVectors[classA - 1][classB];
 
-            for (int i = 0; i < machine.SupportVectors.Length; i++)
+            double sum = machine.Threshold;
+
+            if (machine.IsCompact)
             {
-                double value;
+                // For linear machines, computation is simpler
+                for (int i = 0; i < machine.Weights.Length; i++)
+                    sum += machine.Weights[i] * input[i];
+            }
+            else
+            {
+                // For each support vector in the machine
+                Parallel.For<double>(0, vectors.Length,
 
-                lock (machine.SupportVectors[i])
-                {
-                    if (!cache.TryGetValue(machine.SupportVectors[i], out value))
+                    // Init
+                    () => 0.0,
+
+                    // Map
+                    (i, state, partialSum) =>
                     {
-                        value = machine.Kernel.Function(machine.SupportVectors[i], input);
-                        cache.TryAdd(machine.SupportVectors[i], value);
-                    }
-                }
+                        double value;
 
-                output += machine.Weights[i] * value;
+                        // Check if it is a shared vector
+                        int j = vectors[i];
+
+                        if (j >= 0)
+                        {
+                            // This is a shared vector. Check
+                            // if it has already been computed
+
+                            bool taken = false;
+                            syncObjects[j].Enter(ref taken);
+
+                            if (!Double.IsNaN(sharedVectorCache[j]))
+                            {
+                                // Yes, it has. Retrieve the value from the cache
+                                value = sharedVectorCache[j];
+                            }
+                            else
+                            {
+                                // No, it has not. Compute and store the computed value in the cache
+                                value = sharedVectorCache[j] = machine.Kernel.Function(machine.SupportVectors[i], input);
+                            }
+
+                            syncObjects[j].Exit();
+                        }
+                        else
+                        {
+                            // This vector is not shared by any other machine. No need to cache
+                            value = machine.Kernel.Function(machine.SupportVectors[i], input);
+                        }
+
+                        return partialSum + machine.Weights[i] * value;
+                    },
+
+                    // Reduce
+                    (partialSum) => { lock (syncObjects) sum += partialSum; }
+                );
             }
 
+            // Produce probabilities if required
             if (machine.IsProbabilistic)
             {
-                output = machine.Link.Inverse(output);
-                return output >= 0.5 ? 1 : -1;
+                output = machine.Link.Inverse(sum);
+                return output >= 0.5 ? +1 : -1;
+            }
+            else
+            {
+                output = sum;
+                return output >= 0 ? +1 : -1;
+            }
+        }
+
+
+        private void createCache()
+        {
+            // Detect all vectors which are being shared along the machines
+            var shared = new Dictionary<double[], List<Tuple<int, int, int>>>();
+
+            for (int i = 0; i < machineMatrix.Length; i++)
+            {
+                for (int j = 0; j < machineMatrix[i].Length; j++)
+                {
+                    if (machineMatrix[i][j].SupportVectors != null)
+                    {
+                        for (int k = 0; k < machineMatrix[i][j].SupportVectors.Length; k++)
+                        {
+                            double[] sv = machineMatrix[i][j].SupportVectors[k];
+
+                            List<Tuple<int, int, int>> count;
+                            bool success = shared.TryGetValue(sv, out count);
+
+                            if (success)
+                            {
+                                // Value is already in the dictionary
+                                count.Add(Tuple.Create(i, j, k));
+                            }
+                            else
+                            {
+                                count = new List<Tuple<int, int, int>>();
+                                count.Add(Tuple.Create(i, j, k));
+                                shared[sv] = count;
+                            }
+                        }
+                    }
+                }
             }
 
-            return output >= 0 ? 1 : -1;
+            // Create a cache for the shared values
+            sharedVectorCache = new double[shared.Count];
+            for (int i = 0; i < sharedVectorCache.Length; i++)
+                sharedVectorCache[i] = Double.NaN;
+
+            // Create a table of indices for shared vectors
+            int idx = 0;
+
+            var indices = new Dictionary<double[], int>();
+            foreach (double[] sv in shared.Keys)
+                indices[sv] = idx++;
+
+            // Create a lookup table for the machines
+            sharedVectors = new int[machineMatrix.Length][][];
+            for (int i = 0; i < sharedVectors.Length; i++)
+            {
+                sharedVectors[i] = new int[machineMatrix[i].Length][];
+                for (int j = 0; j < sharedVectors[i].Length; j++)
+                {
+                    if (machineMatrix[i][j].SupportVectors != null)
+                    {
+                        sharedVectors[i][j] = new int[machineMatrix[i][j].SupportVectors.Length];
+
+                        for (int k = 0; k < machineMatrix[i][j].SupportVectors.Length; k++)
+                        {
+                            double[] sv = machineMatrix[i][j].SupportVectors[k];
+                            if (shared.ContainsKey(sv))
+                                sharedVectors[i][j][k] = indices[sv];
+                            else
+                                sharedVectors[i][j][k] = -1;
+                        }
+                    }
+                }
+            }
+
+            // Create synchronization objects
+            syncObjects = new SpinLock[shared.Count];
+            for (int i = 0; i < syncObjects.Length; i++)
+                syncObjects[i] = new SpinLock();
+        }
+
+        private void resetCache()
+        {
+            for (int i = 0; i < sharedVectorCache.Length; i++)
+                sharedVectorCache[i] = Double.NaN;
         }
 
 
@@ -715,5 +925,6 @@ namespace Accord.MachineLearning.VectorMachines
         {
             return Load(new FileStream(path, FileMode.Open));
         }
+
     }
 }
