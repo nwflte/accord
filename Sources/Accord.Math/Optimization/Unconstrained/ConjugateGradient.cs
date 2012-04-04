@@ -246,7 +246,7 @@ namespace Accord.Math.Optimization
         ///   Gets the output of the function at the current solution.
         /// </summary>
         /// 
-        public double Output
+        public double Value
         {
             get { return f; }
         }
@@ -325,6 +325,7 @@ namespace Accord.Math.Optimization
                 d[i] = -g[i];
 
             double gnorm = Norm.Euclidean(g);
+            double xnorm = Math.Max(1.0, Norm.Euclidean(x));
             double stp1 = 1.0 / gnorm;
             double f_old = f;
 
@@ -333,7 +334,7 @@ namespace Accord.Math.Optimization
 
             // Make initial progress report with initialization parameters
             if (Progress != null) Progress(this, new OptimizationProgressEventArgs
-                (iterations, evaluations, g, gnorm, x, f, stp1, finish));
+                (iterations, evaluations, g, gnorm, x, xnorm, f, stp1, finish));
 
 
 
@@ -448,7 +449,7 @@ namespace Accord.Math.Optimization
 
                 // Check for termination
                 gnorm = Norm.Euclidean(g);
-                double xnorm = Math.Max(1.0, Norm.Euclidean(x));
+                xnorm = Math.Max(1.0, Norm.Euclidean(x));
 
                 // Convergence test
                 if (gnorm / xnorm <= epsilon)
@@ -472,7 +473,7 @@ namespace Accord.Math.Optimization
                 }
 
                 if (Progress != null) Progress(this, new OptimizationProgressEventArgs
-                            (iterations, evaluations, g, gnorm, x, f, stp, finish));
+                            (iterations, evaluations, g, gnorm, x, xnorm, f, stp, finish));
             }
 
             return f;
