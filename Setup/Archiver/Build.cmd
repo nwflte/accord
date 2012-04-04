@@ -1,5 +1,6 @@
 @echo off
 
+echo.
 echo Accord.NET Framework compressed archive builder
 echo =========================================================
 echo. 
@@ -8,10 +9,10 @@ echo build the compressed archive version of the framework.
 echo. 
 
 
-REM Settings for complete and (libs-only) package creation
-REM ---------------------------------------------------------
+:: Settings for complete and (libs-only) package creation
+:: ---------------------------------------------------------
 
-set version=2.5.0
+set version=2.6.0
 set rar="C:\Program Files\WinRAR\rar"
 set fullname="Accord.NET Framework-%version%.rar" 
 set libsname="Accord.NET Framework-%version%-(libs only).rar"
@@ -35,7 +36,7 @@ echo Creating Accord.NET %fullname% archive
 echo ---------------------------------------------------------
 
 timeout /T 5
-set output=Output\%fullname%
+set output=..\bin\%fullname%
 del %output%
 
 %rar% %opts%    %output% "..\..\Copyright.txt"
@@ -43,9 +44,10 @@ del %output%
 %rar% %opts%    %output% "..\..\Release notes.txt"
 %rar% %opts%    %output% "..\..\Docs\*.chm"        -x*\.svn*
 %rar% %opts% -r %output% "..\..\Release\*"         -x*\.svn* -x*.lastcodeanalysissucceeded -x*.CodeAnalysisLog.xml -x*SlimDX.pdb
-%rar% %opts% -r %output% "..\..\Sources\*"         -x*\.svn* -x*\obj  -x*\bin      -x*\TestResults -x*\Accord.Setup\Output -x*.sdf -x*.suo
-%rar% %opts% -r %output% "..\..\Samples\*"         -x*\.svn* -x*\obj  -x*\bin\x64\ -x*\bin\Debug   -x*\bin\Release -x*\bin\x86\Debug -x*.pdb
+%rar% %opts% -r %output% "..\..\Sources\*"         -x*\.svn* -x*\obj  -x*\bin      -x*\TestResults -x*.sdf -x*.suo -x*.user -x*.shfbproj_*
+%rar% %opts% -r %output% "..\..\Samples\*"         -x*\.svn* -x*\obj  -x*\bin\x64\ -x*\bin\Debug   -x*\bin\Release -x*\bin\x86\Debug -x*.pdb -x*.user
 %rar% %opts% -r %output% "..\..\Externals\*"       -x*\.svn* -x*.pdb
+%rar% %opts% -r %output% "..\..\Setup\*"           -x*\.svn* -x*\obj  -x*\bin -x*.user
 %rar% t         %output%
 
 
@@ -56,7 +58,7 @@ echo Creating Accord.NET %libsname% archive
 echo ---------------------------------------------------------
 
 timeout /T 5
-set output=Output\%libsname%
+set output=..\bin\%libsname%
 del %output%
 
 %rar% %opts%    %output% "..\..\Copyright.txt"
