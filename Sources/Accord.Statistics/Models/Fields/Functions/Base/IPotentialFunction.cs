@@ -22,13 +22,14 @@
 
 namespace Accord.Statistics.Models.Fields.Functions
 {
+    using System;
     using Accord.Statistics.Models.Fields.Features;
 
     /// <summary>
     ///   Common interface for CRF's Potential functions.
     /// </summary>
     /// 
-    public interface IPotentialFunction<T>
+    public interface IPotentialFunction<T> : ICloneable
     {
 
         /// <summary>
@@ -58,6 +59,11 @@ namespace Accord.Statistics.Models.Fields.Functions
         /// 
         IFeature<T>[] Features { get; }
 
+        /// <summary>
+        ///   Gets the feature vector for a given input and sequence of states.
+        /// </summary>
+        /// 
+        double[] GetFeatureVector(int[] states, T[] observations, int output = 0);
 
     }
 }
