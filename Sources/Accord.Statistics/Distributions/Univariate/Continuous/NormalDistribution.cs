@@ -300,7 +300,11 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   
         public override void Fit(double[] observations, double[] weights, IFittingOptions options)
         {
-            Fit(observations, weights, options as NormalOptions);
+            NormalOptions normalOptions = options as NormalOptions;
+            if (options != null && normalOptions == null)
+                throw new ArgumentException("The specified options' type is invalid.", "options");
+
+            Fit(observations, weights, normalOptions);
         }
 
         /// <summary>

@@ -154,6 +154,9 @@ namespace Accord.Statistics.Distributions.Multivariate
         ///   
         public override void Fit(double[][] observations, double[] weights, IFittingOptions options)
         {
+            if (options != null)
+                throw new ArgumentException("This method does not accept fitting options.");
+
             if (observations.Length != weights.Length)
                 throw new ArgumentException("The weight vector should have the same size as the observations", "weights");
 

@@ -239,7 +239,11 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override void Fit(double[] observations, double[] weights, IFittingOptions options)
         {
-            Fit(observations, weights, options as CauchyOptions);
+            CauchyOptions cauchyOptions = options as CauchyOptions;
+            if (options != null && cauchyOptions == null)
+                throw new ArgumentException("The specified options' type is invalid.", "options");
+
+            Fit(observations, weights, cauchyOptions);
         }
 
         /// <summary>

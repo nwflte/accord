@@ -205,7 +205,7 @@ namespace Accord.Statistics.Distributions.Univariate
                 throw new InvalidOperationException("This object can not be modified.");
 
             if (options != null)
-                throw new ArgumentException("No options may be specified.");
+                throw new ArgumentException("This method does not accept fitting options.");
 
             if (weights != null)
                 throw new ArgumentException("This distribution does not support weighted samples.");

@@ -248,7 +248,11 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override void Fit(double[] observations, double[] weights, IFittingOptions options)
         {
-            Fit(observations, weights, options as HypergeometricOptions);
+            HypergeometricOptions geometricOptions = options as HypergeometricOptions;
+            if (options != null && geometricOptions == null)
+                throw new ArgumentException("The specified options' type is invalid.", "options");
+
+            Fit(observations, weights, geometricOptions);
         }
 
         /// <summary>

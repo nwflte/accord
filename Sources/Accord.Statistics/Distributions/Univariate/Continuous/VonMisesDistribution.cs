@@ -236,7 +236,11 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override void Fit(double[] observations, double[] weights, IFittingOptions options)
         {
-            Fit(observations, weights, options as VonMisesOptions);
+            VonMisesOptions misesOptions = options as VonMisesOptions;
+            if (options != null && misesOptions == null)
+                throw new ArgumentException("The specified options' type is invalid.", "options");
+
+            Fit(observations, weights, misesOptions);
         }
         /// <summary>
         ///   Fits the underlying distribution to a given set of observations.
