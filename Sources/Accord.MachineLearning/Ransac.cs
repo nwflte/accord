@@ -19,6 +19,31 @@
 //    License along with this library; if not, write to the Free Software
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
+// This work has been inspired by the original work of Peter Kovesi,
+// shared under a permissive MIT license. Details are given below:
+//
+//   Copyright (c) 1995-2010 Peter Kovesi
+//   Centre for Exploration Targeting
+//   School of Earth and Environment
+//   The University of Western Australia
+//
+//   Permission is hereby granted, free of charge, to any person obtaining a copy
+//   of this software and associated documentation files (the "Software"), to deal
+//   in the Software without restriction, including without limitation the rights 
+//   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+//   of the Software, and to permit persons to whom the Software is furnished to do
+//   so, subject to the following conditions:
+//   
+//   The above copyright notice and this permission notice shall be included in all
+//   copies or substantial portions of the Software.
+//   
+//   The software is provided "as is", without warranty of any kind, express or
+//   implied, including but not limited to the warranties of merchantability, 
+//   fitness for a particular purpose and noninfringement. In no event shall the
+//   authors or copyright holders be liable for any claim, damages or other liability,
+//   whether in an action of contract, tort or otherwise, arising from, out of or in
+//   connection with the software or the use or other dealings in the software.
+//   
 
 namespace Accord.MachineLearning
 {
@@ -254,6 +279,8 @@ namespace Accord.MachineLearning
             int[] bestInliers = null;
             int maxInliers = 0;
 
+            int r = Math.Min(size, s);
+
             // For this we are going to search for random samples
             //  of the original points which contains no outliers.
 
@@ -273,10 +300,10 @@ namespace Accord.MachineLearning
                 while (samplings < maxSamplings)
                 {
                     // Select at random s datapoints to form a trial model.
-                    sample = Statistics.Tools.Random(size, s);
+                    sample = Statistics.Tools.Random(size, r);
 
                     // If the sampled points are not in a degenerate configuration,
-                    if (!degenerate(sample)) 
+                    if (degenerate == null || !degenerate(sample)) 
                     {
                         // Fit model using the random selection of points
                         model = fitting(sample);

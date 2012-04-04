@@ -8,6 +8,13 @@
 // "In Project Suppression File". 
 // You do not need to add suppressions to this file manually. 
 
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1726:UsePreferredTerms", MessageId = "Indices", Scope = "member", Target = "Accord.MachineLearning.CrossValidation`1.#Indices")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1726:UsePreferredTerms", MessageId = "indices", Scope = "member", Target = "Accord.MachineLearning.CrossValidation.#.ctor(System.Int32[],System.Int32)")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1000:DoNotDeclareStaticMembersOnGenericTypes", Scope = "member", Target = "Accord.MachineLearning.CrossValidationResult`1.#Load(System.String)")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1726:UsePreferredTerms", MessageId = "indices", Scope = "member", Target = "Accord.MachineLearning.CrossValidation`1.#.ctor(System.Int32[],System.Int32)")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1000:DoNotDeclareStaticMembersOnGenericTypes", Scope = "member", Target = "Accord.MachineLearning.CrossValidationResult`1.#Load(System.IO.Stream)")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1726:UsePreferredTerms", MessageId = "indices", Scope = "member", Target = "Accord.MachineLearning.Crossvalidation`1.#.ctor(System.Int32[],System.Int32)")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1726:UsePreferredTerms", MessageId = "Indices", Scope = "member", Target = "Accord.MachineLearning.Crossvalidation`1.#Indices")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2002:DoNotLockOnObjectsWithWeakIdentity", Scope = "member", Target = "Accord.MachineLearning.VectorMachines.MulticlassSupportVectorMachine.#compute(System.Collections.Concurrent.ConcurrentDictionary`2<System.Double[],System.Double>,Accord.MachineLearning.VectorMachines.KernelSupportVectorMachine,System.Double[])")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "kmeans", Scope = "member", Target = "Accord.MachineLearning.GaussianMixtureModel.#Initialize(Accord.MachineLearning.KMeans)")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate", Scope = "member", Target = "Accord.MachineLearning.GaussianCluster.#GetDistribution()")]
