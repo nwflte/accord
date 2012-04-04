@@ -8,4 +8,4 @@
 // "In Project Suppression File".
 // You do not need to add suppressions to this file manually.
 
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2002:DoNotLockOnObjectsWithWeakIdentity", Scope = "member", Target = "Accord.Neuro.Learning.ResilientBackpropagationLearning.#CalculateGradient(System.Double[])")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2002:DoNotLockOnObjectsWithWeakIdentity", Scope = "member", Target = "Accord.Neuro.Learning.ParallelResilientBackpropagationLearning.#CalculateGradient(System.Double[])")]

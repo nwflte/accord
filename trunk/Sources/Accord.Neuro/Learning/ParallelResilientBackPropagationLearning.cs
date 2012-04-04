@@ -30,10 +30,10 @@
 namespace Accord.Neuro.Learning
 {
     using System;
-    using AForge.Neuro.Learning;
-    using AForge.Neuro;
-    using System.Threading.Tasks;
     using System.Threading;
+    using System.Threading.Tasks;
+    using AForge.Neuro;
+    using AForge.Neuro.Learning;
 
     /// <summary>
     ///   Resilient Backpropagation learning algorithm.
@@ -76,7 +76,7 @@ namespace Accord.Neuro.Learning
     /// 
     /// <seealso cref="LevenbergMarquardtLearning"/>
     /// 
-    public class ResilientBackpropagationLearning : ISupervisedLearning, IDisposable
+    public class ParallelResilientBackpropagationLearning : ISupervisedLearning, IDisposable
     {
         private ActivationNetwork network;
 
@@ -159,55 +159,55 @@ namespace Accord.Neuro.Learning
 
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref="ResilientBackpropagationLearning"/> class.
+        ///   Initializes a new instance of the <see cref="ParallelResilientBackpropagationLearning"/> class.
         /// </summary>
         /// 
         /// <param name="network">Network to teach.</param>
         /// 
-        public ResilientBackpropagationLearning(ActivationNetwork network)
+        public ParallelResilientBackpropagationLearning(ActivationNetwork network)
         {
             this.network = network;
 
-            networkOutputs = new ThreadLocal<double[][]>(() => new double[network.LayersCount][]);
+            networkOutputs = new ThreadLocal<double[][]>(() => new double[network.Layers.Length][]);
 
             networkErrors = new ThreadLocal<double[][]>(() =>
             {
-                var e = new double[network.LayersCount][];
+                var e = new double[network.Layers.Length][];
                 for (int i = 0; i < e.Length; i++)
-                    e[i] = new double[network[i].NeuronsCount];
+                    e[i] = new double[network.Layers[i].Neurons.Length];
                 return e;
             });
 
 
-            weightsDerivatives = new double[network.LayersCount][][];
-            thresholdsDerivatives = new double[network.LayersCount][];
+            weightsDerivatives = new double[network.Layers.Length][][];
+            thresholdsDerivatives = new double[network.Layers.Length][];
 
-            weightsPreviousDerivatives = new double[network.LayersCount][][];
-            thresholdsPreviousDerivatives = new double[network.LayersCount][];
+            weightsPreviousDerivatives = new double[network.Layers.Length][][];
+            thresholdsPreviousDerivatives = new double[network.Layers.Length][];
 
-            weightsUpdates = new double[network.LayersCount][][];
-            thresholdsUpdates = new double[network.LayersCount][];
+            weightsUpdates = new double[network.Layers.Length][][];
+            thresholdsUpdates = new double[network.Layers.Length][];
 
             // Initialize layer derivatives and updates
-            for (int i = 0; i < network.LayersCount; i++)
+            for (int i = 0; i < network.Layers.Length; i++)
             {
-                Layer layer = network[i];
+                Layer layer = network.Layers[i];
 
-                weightsDerivatives[i] = new double[layer.NeuronsCount][];
-                weightsPreviousDerivatives[i] = new double[layer.NeuronsCount][];
-                weightsUpdates[i] = new double[layer.NeuronsCount][];
+                weightsDerivatives[i] = new double[layer.Neurons.Length][];
+                weightsPreviousDerivatives[i] = new double[layer.Neurons.Length][];
+                weightsUpdates[i] = new double[layer.Neurons.Length][];
 
                 // for each neuron
-                for (int j = 0; j < layer.NeuronsCount; j++)
+                for (int j = 0; j < layer.Neurons.Length; j++)
                 {
                     weightsDerivatives[i][j] = new double[layer.InputsCount];
                     weightsPreviousDerivatives[i][j] = new double[layer.InputsCount];
                     weightsUpdates[i][j] = new double[layer.InputsCount];
                 }
 
-                thresholdsDerivatives[i] = new double[layer.NeuronsCount];
-                thresholdsPreviousDerivatives[i] = new double[layer.NeuronsCount];
-                thresholdsUpdates[i] = new double[layer.NeuronsCount];
+                thresholdsDerivatives[i] = new double[layer.Neurons.Length];
+                thresholdsPreviousDerivatives[i] = new double[layer.Neurons.Length];
+                thresholdsUpdates[i] = new double[layer.Neurons.Length];
             }
 
             // Intialize steps
@@ -240,7 +240,7 @@ namespace Accord.Neuro.Learning
             // Copy network outputs to local thread
             var networkOutputs = this.networkOutputs.Value;
             for (int j = 0; j < networkOutputs.Length; j++)
-                networkOutputs[j] = network[j].Output;
+                networkOutputs[j] = network.Layers[j].Output;
 
             // Calculate network error
             double error = CalculateError(output);
@@ -285,7 +285,7 @@ namespace Accord.Neuro.Learning
                 // Map
                 (i, loopState, partialSum) =>
                 {
-                    
+
                     lock (lockNetwork)
                     {
                         // Compute a forward pass
@@ -294,7 +294,7 @@ namespace Accord.Neuro.Learning
                         // Copy network outputs to local thread
                         var networkOutputs = this.networkOutputs.Value;
                         for (int j = 0; j < networkOutputs.Length; j++)
-                            networkOutputs[j] = network[j].Output;
+                            networkOutputs[j] = network.Layers[j].Output;
                     }
 
                     // Calculate and accumulate network error
@@ -330,7 +330,7 @@ namespace Accord.Neuro.Learning
             // For each layer of the network
             for (int i = 0; i < weightsUpdates.Length; i++)
             {
-                ActivationLayer layer = this.network[i];
+                ActivationLayer layer = this.network.Layers[i] as ActivationLayer;
                 double[][] layerWeightsUpdates = weightsUpdates[i];
                 double[] layerThresholdUpdates = thresholdsUpdates[i];
 
@@ -343,7 +343,7 @@ namespace Accord.Neuro.Learning
                 // For each neuron in the current layer
                 for (int j = 0; j < layerWeightsUpdates.Length; j++)
                 {
-                    ActivationNeuron neuron = layer[j];
+                    ActivationNeuron neuron = layer.Neurons[j] as ActivationNeuron;
 
                     double[] neuronWeightUpdates = layerWeightsUpdates[j];
                     double[] neuronWeightDerivatives = layerWeightsDerivatives[j];
@@ -359,21 +359,18 @@ namespace Accord.Neuro.Learning
                         if (S > 0.0)
                         {
                             neuronWeightUpdates[k] = Math.Min(neuronWeightUpdates[k] * etaPlus, deltaMax);
-                            neuron[k] -= Math.Sign(neuronWeightDerivatives[k]) * neuronWeightUpdates[k];
+                            neuron.Weights[k] -= Math.Sign(neuronWeightDerivatives[k]) * neuronWeightUpdates[k];
                             neuronPreviousWeightDerivatives[k] = neuronWeightDerivatives[k];
+                        }
+                        else if (S < 0.0)
+                        {
+                            neuronWeightUpdates[k] = Math.Max(neuronWeightUpdates[k] * etaMinus, deltaMin);
+                            neuronPreviousWeightDerivatives[k] = 0.0;
                         }
                         else
                         {
-                            if (S < 0.0)
-                            {
-                                neuronWeightUpdates[k] = Math.Max(neuronWeightUpdates[k] * etaMinus, deltaMin);
-                                neuronPreviousWeightDerivatives[k] = 0.0;
-                            }
-                            else
-                            {
-                                neuron[k] -= Math.Sign(neuronWeightDerivatives[k]) * neuronWeightUpdates[k];
-                                neuronPreviousWeightDerivatives[k] = neuronWeightDerivatives[k];
-                            }
+                            neuron.Weights[k] -= Math.Sign(neuronWeightDerivatives[k]) * neuronWeightUpdates[k];
+                            neuronPreviousWeightDerivatives[k] = neuronWeightDerivatives[k];
                         }
                     }
 
@@ -385,18 +382,15 @@ namespace Accord.Neuro.Learning
                         neuron.Threshold -= Math.Sign(layerThresholdDerivatives[j]) * layerThresholdUpdates[j];
                         layerPreviousThresholdDerivatives[j] = layerThresholdDerivatives[j];
                     }
+                    else if (S < 0.0)
+                    {
+                        layerThresholdUpdates[j] = Math.Max(layerThresholdUpdates[j] * etaMinus, deltaMin);
+                        layerThresholdDerivatives[j] = 0.0;
+                    }
                     else
                     {
-                        if (S < 0.0)
-                        {
-                            layerThresholdUpdates[j] = Math.Max(layerThresholdUpdates[j] * etaMinus, deltaMin);
-                            layerThresholdDerivatives[j] = 0.0;
-                        }
-                        else
-                        {
-                            neuron.Threshold -= Math.Sign(layerThresholdDerivatives[j]) * layerThresholdUpdates[j];
-                            layerPreviousThresholdDerivatives[j] = layerThresholdDerivatives[j];
-                        }
+                        neuron.Threshold -= Math.Sign(layerThresholdDerivatives[j]) * layerThresholdUpdates[j];
+                        layerPreviousThresholdDerivatives[j] = layerThresholdDerivatives[j];
                     }
                 }
             }
@@ -489,13 +483,14 @@ namespace Accord.Neuro.Learning
         private double CalculateError(double[] desiredOutput)
         {
             double sumOfSquaredErrors = 0.0;
-            int layersCount = network.LayersCount;
+            int layersCount = network.Layers.Length;
 
             double[][] networkErrors = this.networkErrors.Value;
             double[][] networkOutputs = this.networkOutputs.Value;
 
             // Assume that all network neurons have the same activation function
-            IActivationFunction function = this.network[0][0].ActivationFunction;
+            var function = (this.network.Layers[0].Neurons[0] as ActivationNeuron)
+                .ActivationFunction;
 
             // 1. Calculate error values for last layer first.
             double[] layerOutputs = networkOutputs[layersCount - 1];
@@ -515,7 +510,7 @@ namespace Accord.Neuro.Learning
                 errors = networkErrors[j];
                 layerOutputs = networkOutputs[j];
 
-                ActivationLayer nextLayer = network[j + 1];
+                ActivationLayer nextLayer = network.Layers[j + 1] as ActivationLayer;
                 double[] nextErrors = networkErrors[j + 1];
 
                 // For all neurons of this layer
@@ -525,7 +520,7 @@ namespace Accord.Neuro.Learning
 
                     // For all neurons of the next layer
                     for (int k = 0; k < nextErrors.Length; k++)
-                        sum += nextErrors[k] * nextLayer[k][i];
+                        sum += nextErrors[k] * nextLayer.Neurons[k].Weights[i];
 
                     errors[i] = sum * function.Derivative2(layerOutputs[i]);
                 }
@@ -607,11 +602,11 @@ namespace Accord.Neuro.Learning
 
         /// <summary>
         ///   Releases unmanaged resources and performs other cleanup operations before
-        ///   the <see cref="ResilientBackpropagationLearning"/> is reclaimed by garbage
+        ///   the <see cref="ParallelResilientBackpropagationLearning"/> is reclaimed by garbage
         ///   collection.
         /// </summary>
         /// 
-        ~ResilientBackpropagationLearning()
+        ~ParallelResilientBackpropagationLearning()
         {
             Dispose(false);
         }
