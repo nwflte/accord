@@ -660,7 +660,7 @@ namespace Approximation
             }
 
             // create teacher
-            ResilientBackpropagationLearning teacher = new ResilientBackpropagationLearning(network);
+            var teacher = new ParallelResilientBackpropagationLearning(network);
 
             // iterations
             int iteration = 1;

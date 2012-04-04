@@ -28,8 +28,6 @@ using System.Windows.Forms;
 using System.Xml.Serialization;
 using Accord.Controls;
 using Accord.Math;
-using Accord.Statistics.Distributions.Fitting;
-using Accord.Statistics.Distributions.Multivariate;
 using Accord.Statistics.Formats;
 using Accord.Statistics.Models.Markov;
 using Accord.Statistics.Models.Markov.Learning;

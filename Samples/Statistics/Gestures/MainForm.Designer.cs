@@ -654,8 +654,8 @@
             // splitContainer6.Panel2
             // 
             this.splitContainer6.Panel2.Controls.Add(this.groupBox25);
-            this.splitContainer6.Size = new System.Drawing.Size(570, 336);
-            this.splitContainer6.SplitterDistance = 240;
+            this.splitContainer6.Size = new System.Drawing.Size(608, 306);
+            this.splitContainer6.SplitterDistance = 256;
             this.splitContainer6.TabIndex = 2;
             // 
             // groupBox24
@@ -664,7 +664,7 @@
             this.groupBox24.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox24.Location = new System.Drawing.Point(0, 0);
             this.groupBox24.Name = "groupBox24";
-            this.groupBox24.Size = new System.Drawing.Size(240, 336);
+            this.groupBox24.Size = new System.Drawing.Size(256, 306);
             this.groupBox24.TabIndex = 0;
             this.groupBox24.TabStop = false;
             this.groupBox24.Text = "Models";
@@ -679,7 +679,7 @@
             this.dgvModels.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvModels.Location = new System.Drawing.Point(3, 16);
             this.dgvModels.Name = "dgvModels";
-            this.dgvModels.Size = new System.Drawing.Size(234, 317);
+            this.dgvModels.Size = new System.Drawing.Size(250, 287);
             this.dgvModels.TabIndex = 1;
             this.dgvModels.CurrentCellChanged += new System.EventHandler(this.dgvModels_CurrentCellChanged);
             // 
@@ -701,7 +701,7 @@
             this.groupBox25.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox25.Location = new System.Drawing.Point(0, 0);
             this.groupBox25.Name = "groupBox25";
-            this.groupBox25.Size = new System.Drawing.Size(326, 336);
+            this.groupBox25.Size = new System.Drawing.Size(348, 306);
             this.groupBox25.TabIndex = 1;
             this.groupBox25.TabStop = false;
             this.groupBox25.Text = "Transitions";
@@ -712,16 +712,16 @@
             this.dgvTransitions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvTransitions.Location = new System.Drawing.Point(3, 16);
             this.dgvTransitions.Name = "dgvTransitions";
-            this.dgvTransitions.Size = new System.Drawing.Size(320, 317);
+            this.dgvTransitions.Size = new System.Drawing.Size(342, 287);
             this.dgvTransitions.TabIndex = 1;
             // 
             // groupBox23
             // 
             this.groupBox23.Controls.Add(this.dgvProbabilities);
             this.groupBox23.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.groupBox23.Location = new System.Drawing.Point(3, 339);
+            this.groupBox23.Location = new System.Drawing.Point(3, 309);
             this.groupBox23.Name = "groupBox23";
-            this.groupBox23.Size = new System.Drawing.Size(570, 67);
+            this.groupBox23.Size = new System.Drawing.Size(608, 97);
             this.groupBox23.TabIndex = 0;
             this.groupBox23.TabStop = false;
             this.groupBox23.Text = "State Probabilities";
@@ -732,7 +732,7 @@
             this.dgvProbabilities.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvProbabilities.Location = new System.Drawing.Point(3, 16);
             this.dgvProbabilities.Name = "dgvProbabilities";
-            this.dgvProbabilities.Size = new System.Drawing.Size(564, 48);
+            this.dgvProbabilities.Size = new System.Drawing.Size(602, 78);
             this.dgvProbabilities.TabIndex = 1;
             // 
             // tabPage6
@@ -760,7 +760,7 @@
             // splitContainer12.Panel2
             // 
             this.splitContainer12.Panel2.Controls.Add(this.groupBox20);
-            this.splitContainer12.Size = new System.Drawing.Size(570, 403);
+            this.splitContainer12.Size = new System.Drawing.Size(608, 403);
             this.splitContainer12.SplitterDistance = 141;
             this.splitContainer12.TabIndex = 15;
             // 
@@ -857,7 +857,7 @@
             this.groupBox20.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox20.Location = new System.Drawing.Point(0, 0);
             this.groupBox20.Name = "groupBox20";
-            this.groupBox20.Size = new System.Drawing.Size(425, 403);
+            this.groupBox20.Size = new System.Drawing.Size(463, 403);
             this.groupBox20.TabIndex = 10;
             this.groupBox20.TabStop = false;
             this.groupBox20.Text = "Models relative response";
@@ -874,7 +874,7 @@
             this.graphClassification.ScrollMinX = 0D;
             this.graphClassification.ScrollMinY = 0D;
             this.graphClassification.ScrollMinY2 = 0D;
-            this.graphClassification.Size = new System.Drawing.Size(419, 384);
+            this.graphClassification.Size = new System.Drawing.Size(457, 384);
             this.graphClassification.TabIndex = 7;
             // 
             // tabPage2
