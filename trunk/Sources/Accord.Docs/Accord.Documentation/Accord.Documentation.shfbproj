@@ -153,21 +153,48 @@
           <logoFile filename="D:\Projects\Accord.NET\Sources\Accord.Docs\Accord.Documentation\Resources\Accord.NET.png" height="0" width="0" altText="" placement="right" alignment="left" />
         </component>
       </ComponentConfig>
-      <ComponentConfig id="Code Block Component" enabled="True">
-        <component id="Code Block Component" type="SandcastleBuilder.Components.CodeBlockComponent" assembly="{@SHFBFolder}SandcastleBuilder.Components.dll">
-          <basePath value="{@HtmlEncProjectFolder}" />
-          <languageFilter value="true" />
-          <allowMissingSource value="false" />
-          <removeRegionMarkers value="false" />
-          <colorizer syntaxFile="{@SHFBFolder}Colorizer\highlight.xml" styleFile="{@SHFBFolder}Colorizer\highlight.xsl" copyImageUrl="../icons/CopyCode.gif" language="cs" tabSize="2" numberLines="true" outlining="false" keepSeeTags="false" defaultTitle="true" />
-        </component>
-      </ComponentConfig>
-    </ComponentConfigurations>
+<ComponentConfig id="Code Block Component" enabled="True"><component id="Code Block Component" type="SandcastleBuilder.Components.CodeBlockComponent" assembly="{@SHFBFolder}SandcastleBuilder.Components.dll"><basePath value="{@HtmlEncProjectFolder}" /><languageFilter value="true" /><allowMissingSource value="false" /><removeRegionMarkers value="false" /><colorizer syntaxFile="{@SHFBFolder}Colorizer\highlight.xml" styleFile="{@SHFBFolder}Colorizer\highlight.xsl" copyImageUrl="../icons/CopyCode.gif" language="cs" tabSize="2" numberLines="true" outlining="false" keepSeeTags="false" defaultTitle="true" /></component></ComponentConfig>
+<ComponentConfig id="Cached MSDN URL References" enabled="True"><component id="Cached MSDN URL References" type="SandcastleBuilder.Components.CachedResolveReferenceLinksComponent" assembly="{@SHFBFolder}SandcastleBuilder.Components.dll" locale="{@Locale}" linkTarget="{@SdkLinkTarget}">
+<helpOutput format="HtmlHelp1">
+  <cache filename="{@LocalDataFolder}Cache\MsdnUrl.cache" />
+  <targets base="{@SandcastlePath}Data\Reflection" recurse="true" files="*.xml" type="{@HtmlSdkLinkType}" />
+  <targets files="reflection.xml" type="Local" />
+</helpOutput>
+<helpOutput format="MSHelp2">
+  <cache filename="{@LocalDataFolder}Cache\MsdnUrl.cache" />
+  <targets base="{@SandcastlePath}Data\Reflection" recurse="true" files="*.xml" type="{@MSHelp2SdkLinkType}" />
+  <targets files="reflection.xml" type="Index" />
+</helpOutput>
+<helpOutput format="MSHelpViewer">
+  <cache filename="{@LocalDataFolder}Cache\MsdnUrl.cache" />
+  <targets base="{@SandcastlePath}Data\Reflection" recurse="true" files="*.xml" type="{@MSHelpViewerSdkLinkType}" />
+  <targets files="reflection.xml" type="Id" />
+</helpOutput>
+<helpOutput format="Website">
+  <cache filename="{@LocalDataFolder}Cache\MsdnUrl.cache" />
+  <targets base="{@SandcastlePath}Data\Reflection" recurse="true" files="*.xml" type="{@WebsiteSdkLinkType}" />
+  <targets files="reflection.xml" type="Local" />
+</helpOutput>
+</component></ComponentConfig>
+<ComponentConfig id="Cached Framework Comments Index Data" enabled="True"><component id="Cached Framework Comments Index Data" type="SandcastleBuilder.Components.CachedCopyFromIndexComponent" assembly="{@SHFBFolder}SandcastleBuilder.Components.dll">
+<index name="comments" value="/doc/members/member" key="@name" cache="100">
+{@CachedFrameworkCommentList}
+{@CommentFileList}
+            </index>
+<copy name="comments" source="*" target="/document/comments" />
+</component></ComponentConfig>
+<ComponentConfig id="Cached Reflection Index Data" enabled="True"><component id="Cached Reflection Index Data" type="SandcastleBuilder.Components.CachedCopyFromIndexComponent" assembly="{@SHFBFolder}SandcastleBuilder.Components.dll">
+<index name="reflection" value="/reflection/apis/api" key="@id" cache="10">
+  <cache base="{@SandcastlePath}Data\Reflection" recurse="true" files="*.xml" cacheFile="{@LocalDataFolder}Cache\Reflection.cache" />
+  <data files="reflection.xml" />
+</index>
+<copy name="reflection" source="*" target="/document/reference" />
+</component></ComponentConfig></ComponentConfigurations>
     <CleanIntermediates>True</CleanIntermediates>
     <PresentationStyle>vs2005</PresentationStyle>
     <SyntaxFilters>CSharp, VisualBasic</SyntaxFilters>
     <NamingMethod>MemberName</NamingMethod>
-    <HelpFileVersion>2.5.0.0</HelpFileVersion>
+    <HelpFileVersion>2.6.0.0</HelpFileVersion>
     <FrameworkVersion>.NET 4.0.30319</FrameworkVersion>
     <VisibleItems>Attributes, InheritedMembers, InheritedFrameworkMembers, Protected, SealedProtected</VisibleItems>
     <PlugInNamespaces>ms.vsipcc+, ms.vsexpresscc+</PlugInNamespaces>
@@ -194,87 +221,101 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="Diagrams\Classes\" />
-    <Folder Include="Diagrams\Modules\" />
-    <Folder Include="Resources\" />
-    <Folder Include="Diagrams\" />
+    <Folder Include="diagrams\classes\" />
+    <Folder Include="resources\" />
+    <Folder Include="diagrams\" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Diagrams\Classes\Accord.Audio.Formats.png">
+    <Content Include="resources\Accord.NET (icon).png">
+      <ImageId>Accord.NET (icon origo)</ImageId>
+      <AlternateText>Accord.NET (icon origo)</AlternateText>
+      <CopyToMedia>True</CopyToMedia>
+      <ExcludeFromToc>True</ExcludeFromToc>
+    </Content>
+    <Content Include="diagrams\classes\Accord.Audio.Formats.png">
       <ImageId>Accord.Audio.Formats</ImageId>
       <AlternateText>Accord.Audio.Formats</AlternateText>
-    </Image>
-    <Image Include="Diagrams\Classes\Accord.Audio.png">
+      <CopyToMedia>True</CopyToMedia>
+    </Content>
+    <Content Include="diagrams\classes\Accord.Audio.png">
       <ImageId>Accord.Audio</ImageId>
       <AlternateText>Accord.Audio</AlternateText>
-    </Image>
-    <Image Include="Diagrams\Classes\Accord.Audition.png">
+      <CopyToMedia>True</CopyToMedia>
+    </Content>
+    <Content Include="diagrams\classes\Accord.Audition.png">
       <ImageId>Accord.Audition</ImageId>
       <AlternateText>Accord.Audition</AlternateText>
-    </Image>
-    <Image Include="Diagrams\Classes\Accord.Controls.png">
+      <CopyToMedia>True</CopyToMedia>
+    </Content>
+    <Content Include="diagrams\classes\Accord.Controls.png">
       <ImageId>Accord.Controls</ImageId>
       <AlternateText>Accord.Controls</AlternateText>
-    </Image>
-    <Image Include="Diagrams\Classes\Accord.Controls.Vision.png">
+      <CopyToMedia>True</CopyToMedia>
+    </Content>
+    <Content Include="diagrams\classes\Accord.Controls.Vision.png">
       <ImageId>Accord.Controls.Vision</ImageId>
       <AlternateText>Accord.Controls.Vision</AlternateText>
-    </Image>
-    <Image Include="Diagrams\Classes\Accord.Core.png">
+      <CopyToMedia>True</CopyToMedia>
+    </Content>
+    <Content Include="diagrams\classes\Accord.Core.png">
       <ImageId>Accord.Core</ImageId>
       <AlternateText>Accord.Core</AlternateText>
-    </Image>
-    <Image Include="Diagrams\Classes\Accord.DirectSound.png">
+      <CopyToMedia>True</CopyToMedia>
+    </Content>
+    <Content Include="diagrams\classes\Accord.DirectSound.png">
       <ImageId>Accord.DirectSound</ImageId>
       <AlternateText>Accord.Direct Sound</AlternateText>
-    </Image>
-    <Image Include="Diagrams\Classes\Accord.Imaging.png">
+      <CopyToMedia>True</CopyToMedia>
+    </Content>
+    <Content Include="diagrams\classes\Accord.Imaging.png">
       <ImageId>Accord.Imaging</ImageId>
       <AlternateText>Accord.Imaging</AlternateText>
-    </Image>
-    <Image Include="Diagrams\Classes\Accord.MachineLearning.png">
+      <CopyToMedia>True</CopyToMedia>
+    </Content>
+    <Content Include="diagrams\classes\Accord.MachineLearning.png">
       <ImageId>Accord.MachineLearning</ImageId>
       <AlternateText>Accord.Machine Learning</AlternateText>
-    </Image>
-    <Image Include="Diagrams\Classes\Accord.Math.png">
+      <CopyToMedia>True</CopyToMedia>
+    </Content>
+    <Content Include="diagrams\classes\Accord.Math.png">
       <ImageId>Accord.Math</ImageId>
       <AlternateText>Accord.Math</AlternateText>
-    </Image>
-    <Image Include="Diagrams\Classes\Accord.Music.png">
-      <ImageId>Accord.Music</ImageId>
-      <AlternateText>Accord.Music</AlternateText>
-    </Image>
-    <Image Include="Diagrams\Classes\Accord.Neuro.png">
+      <CopyToMedia>True</CopyToMedia>
+    </Content>
+    <Content Include="diagrams\classes\Accord.Neuro.png">
       <ImageId>Accord.Neuro</ImageId>
       <AlternateText>Accord.Neuro</AlternateText>
-    </Image>
-    <Image Include="Diagrams\Classes\Accord.Statistics.png">
+      <CopyToMedia>True</CopyToMedia>
+    </Content>
+    <Content Include="diagrams\classes\Accord.Statistics.png">
       <ImageId>Accord.Statistics</ImageId>
       <AlternateText>Accord.Statistics</AlternateText>
-    </Image>
-    <Image Include="Diagrams\Classes\Accord.Vision.png">
+      <CopyToMedia>True</CopyToMedia>
+    </Content>
+    <Content Include="diagrams\classes\Accord.Vision.png">
       <ImageId>Accord.Vision</ImageId>
       <AlternateText>Accord.Vision</AlternateText>
-    </Image>
-    <Image Include="Diagrams\Modules\Graph - Accord-AForge.png">
-      <ImageId>Graph - Accord-AForge</ImageId>
-      <AlternateText>Graph - Accord-AForge</AlternateText>
-    </Image>
-    <Image Include="Diagrams\Modules\Graph - Accord.png">
-      <ImageId>Graph - Accord</ImageId>
-      <AlternateText>Graph - Accord</AlternateText>
-    </Image>
-    <Image Include="Diagrams\Modules\Matrix - Accord-AForge.png">
-      <ImageId>Matrix - Accord-AForge</ImageId>
-      <AlternateText>Matrix - Accord-AForge</AlternateText>
-    </Image>
-    <Image Include="Diagrams\Modules\Matrix - Accord.png">
-      <ImageId>Matrix - Accord</ImageId>
-      <AlternateText>Matrix - Accord</AlternateText>
-    </Image>
-    <Image Include="Resources\Accord.NET.png">
       <CopyToMedia>True</CopyToMedia>
-      <AlternateText>Accord.NET logo</AlternateText>
+    </Content>
+    <Content Include="Resources\Accord.NET (logo small).png">
+      <ImageId>Accord.NET (logo small)</ImageId>
+      <AlternateText>Accord.NET (logo small)</AlternateText>
+    </Content>
+    <Content Include="resources\Accord.NET (logo large).png">
+      <ImageId>Accord.NET (logo large)</ImageId>
+      <AlternateText>Accord.NET (logo large)</AlternateText>
+    </Content>
+    <Content Include="resources\Accord.NET (icon small).png">
+      <ImageId>Accord.NET (icon small)</ImageId>
+      <AlternateText>Accord.NET (icon small)</AlternateText>
+    </Content>
+    <Content Include="resources\Accord.NET (icon large).png">
+      <ImageId>Accord.NET (icon large)</ImageId>
+      <AlternateText>Accord.NET (icon large)</AlternateText>
+    </Content>
+    <Image Include="resources\Accord.NET.png">
+      <CopyToMedia>True</CopyToMedia>
+      <AlternateText>Accord.NET</AlternateText>
     </Image>
   </ItemGroup>
   <ItemGroup>
@@ -419,11 +460,6 @@
       <Project>{f718e9a8-db62-4785-8c49-4333a60d256a}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\Accord.Music\Accord.Music.csproj">
-      <Name>Accord.Music</Name>
-      <Project>{b2146369-734b-457b-b663-98e49587c988}</Project>
-      <Private>True</Private>
-    </ProjectReference>
     <ProjectReference Include="..\..\Accord.Neuro\Accord.Neuro.csproj">
       <Name>Accord.Neuro</Name>
       <Project>{179f3045-8757-4f4b-9508-f48327ba11e3}</Project>
@@ -443,6 +479,11 @@
   <ItemGroup>
     <Content Include="Copyright.txt" />
     <Content Include="License.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="resources\Accord.NET (icon).ico">
+      <ExcludeFromToc>True</ExcludeFromToc>
+    </Content>
   </ItemGroup>
   <!-- Import the SHFB build targets -->
   <Import Project="$(SHFBROOT)\SandcastleHelpFileBuilder.targets" />

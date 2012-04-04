@@ -60,10 +60,6 @@
       <Name>Accord.Math</Name>
       <Project>{f718e9a8-db62-4785-8c49-4333a60d256a}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\..\Accord.Music\Accord.Music.csproj">
-      <Name>Accord.Music</Name>
-      <Project>{b2146369-734b-457b-b663-98e49587c988}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\..\Accord.Neuro\Accord.Neuro.csproj">
       <Name>Accord.Neuro</Name>
       <Project>{179f3045-8757-4f4b-9508-f48327ba11e3}</Project>
