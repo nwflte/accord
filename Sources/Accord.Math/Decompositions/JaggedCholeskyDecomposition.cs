@@ -288,20 +288,26 @@ namespace Accord.Math.Decompositions
 
             this.positiveDefinite = true;
 
-            for (int i = 0; i < L.Length; i++)
+            for (int j = 0; j < L.Length; j++)
             {
-                double d = Math.Sqrt((double)L[i][i]);
+                double s = 0;
+                for (int k = 0; k < j; k++)
+                {
+                    double t = L[j][k];
+                    for (int i = 0; i < k; i++)
+                        t -= L[j][i] * L[k][i];
+                    t = t / L[k][k];
 
-                L[i][i] = (double)d;
-                for (int j = i + 1; j < L[i].Length; j++)
-                    L[j][i] /= L[i][i];
+                    L[j][k] = t;
+                    s += t * t;
+                }
 
-                for (int j = i + 1; j < L.Length; j++)
-                    for (int k = i + 1; k <= j; k++)
-                        L[j][k] -= L[j][i] * L[k][i];
+                s = L[j][j] - s;
 
-                if (positiveDefinite && d <= 0.0)
-                    positiveDefinite = false;
+                // Use a tolerance for positive-definiteness
+                this.positiveDefinite &= (s > (double)1e-14 * Math.Abs(L[j][j]));
+
+                L[j][j] = (double)Math.Sqrt((double)s);
             }
         }
 
@@ -331,9 +337,9 @@ namespace Accord.Math.Decompositions
                 // decomposition (without pivoting) is undefined.
                 if (v[i] == 0) { undefined = true; return; }
 
-                if (positiveDefinite && v[i] <= 0)
-                    positiveDefinite = false;
-
+                // Use a tolerance for positive-definiteness
+                this.positiveDefinite &= (v[i] > (double)1e-14 * Math.Abs(L[i][i]));
+				
                 Parallel.For(i + 1, L.Length, k =>
                 {
                      double sum2 = 0;

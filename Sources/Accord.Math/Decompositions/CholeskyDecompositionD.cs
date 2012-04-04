@@ -294,7 +294,9 @@ namespace Accord.Math.Decompositions
 
                     d = a[j, j] - d;
 
-                    this.positiveDefinite = this.positiveDefinite & (d > 0);
+                    // Use a tolerance for positive-definiteness
+                    this.positiveDefinite &= (d > (decimal)1e-14 * Math.Abs(a[j, j]));
+					
                     Lrowj[j] = (decimal)System.Math.Sqrt((double)System.Math.Max(d, 0));
 
                     for (int k = j + 1; k < n; k++)
@@ -332,7 +334,9 @@ namespace Accord.Math.Decompositions
 
                 d = D[j] = v[j] = a[j, j] - d;
                 if (d == 0) throw new ArithmeticException("The matrix does not have a LU decomposition");
-                this.positiveDefinite = this.positiveDefinite & (d > 0);
+				
+                // Use a tolerance for positive-definiteness
+                this.positiveDefinite &= (d > (decimal)1e-14 * Math.Abs(a[j, j]));
 
                 for (int k = j + 1; k < n; k++)
                 {
