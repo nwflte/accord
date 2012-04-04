@@ -59,7 +59,7 @@ namespace Accord.Statistics.Analysis
         private double? kappaVariance;
         private double? kappaStdError;
         private double? tau;
-        private double? phi;
+        private double? chiSquare;
 
         private int[] rowSum;
         private int[] colSum;
@@ -351,9 +351,18 @@ namespace Accord.Statistics.Analysis
         /// 
         public double Phi
         {
+            get { return Math.Sqrt(ChiSquare / samples); }
+        }
+
+        /// <summary>
+        ///   Gets the Chi-Square statistic for the contingency table.
+        /// </summary>
+        /// 
+        public double ChiSquare
+        {
             get
             {
-                if (phi == null)
+                if (chiSquare == null)
                 {
                     double x = 0;
                     for (int i = 0; i < Classes; i++)
@@ -367,10 +376,10 @@ namespace Accord.Statistics.Analysis
                         }
                     }
 
-                    phi = x;
+                    chiSquare = x;
                 }
 
-                return phi.Value;
+                return chiSquare.Value;
             }
         }
 
@@ -409,7 +418,7 @@ namespace Accord.Statistics.Analysis
         /// 
         public double Pearson
         {
-            get { return Math.Sqrt(Phi / (Phi + samples)); }
+            get { return Math.Sqrt(ChiSquare / (ChiSquare + samples)); }
         }
 
         /// <summary>
@@ -427,7 +436,7 @@ namespace Accord.Statistics.Analysis
         /// 
         public double Sakoda
         {
-            get { return Pearson / Math.Sqrt((classes - 1) / classes); }
+            get { return Pearson / Math.Sqrt((classes - 1) / (double)classes); }
         }
 
         /// <summary>
@@ -447,7 +456,7 @@ namespace Accord.Statistics.Analysis
         /// 
         public double Cramer
         {
-            get { return Math.Sqrt(Phi / (classes - 1)); }
+            get { return Math.Sqrt(ChiSquare / (samples * (classes - 1))); }
         }
 
         /// <summary>
