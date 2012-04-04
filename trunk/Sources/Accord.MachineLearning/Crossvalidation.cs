@@ -23,28 +23,6 @@
 namespace Accord.MachineLearning
 {
     using System;
-    using System.Collections.Generic;
-    using Accord.Math;
-    using System.Threading.Tasks;
-
-    /// <summary>
-    ///   Fitting function delegate.
-    /// </summary>
-    /// <param name="trainingSamples">
-    ///   The sample indexes to be used as training samples in
-    ///   the model fitting procedure.
-    /// </param>
-    /// <param name="validationSamples">
-    ///   The sample indexes to be used as validation samples in
-    ///   the model fitting procedure.
-    /// </param>
-    /// <remarks>
-    ///   The fitting function is called during the Cross-validation
-    ///   procedure to fit a model with the given set of samples for
-    ///   training and validation.
-    /// </remarks>
-    /// 
-    public delegate CrossvalidationInfo<TModel> CrossvalidationFittingFunction<TModel>(int[] trainingSamples, int[] validationSamples);
 
     /// <summary>
     ///   k-Fold Cross-Validation.
@@ -105,7 +83,7 @@ namespace Accord.MachineLearning
     ///    var crossvalidation = new Crossvalidation&lt;KernelSupportVectorMachine>(data.Length, 3);
     ///
     ///    // Define a fitting function using Support Vector Machines
-    ///    crossvalidation.Fitting = delegate(int[] trainingSet, int[] validationSet)
+    ///    crossvalidation.Fitting = delegate(int k, int[] trainingSet, int[] validationSet)
     ///    {
     ///        // The trainingSet and validationSet arguments specifies the
     ///        // indices of the original data set to be used as training and
@@ -139,55 +117,16 @@ namespace Accord.MachineLearning
     ///   </code>
     /// </example>
     /// 
-    public class Crossvalidation<TModel>
+    [Serializable]
+    public class CrossValidation : CrossValidation<object>
     {
-
-        private int[][] folds;
-        private CrossvalidationInfo<TModel>[] models;
-
-
-
-        /// <summary>
-        ///   Gets or sets the model fitting function.
-        /// </summary>
-        /// <remarks>
-        ///   The fitting function should accept an array of integers containing the
-        ///   indexes for the training samples, an array of integers containing the
-        ///   indexes for the validation samples and should return information about
-        ///   the model fitted using those two subsets of the available data.
-        /// </remarks>
-        /// 
-        public CrossvalidationFittingFunction<TModel> Fitting { get; set; }
-
-        /// <summary>
-        ///   Gets the models created for each fold of the cross validation.
-        /// </summary>
-        /// 
-        public CrossvalidationInfo<TModel>[] Models { get { return models; } }
-
-        /// <summary>
-        ///   Gets the array of indexes contained in each fold.
-        /// </summary>
-        /// 
-        public int[][] Folds { get { return folds; } }
-
-        /// <summary>
-        ///   Gets the number of folds in the k-fold cross validation.
-        /// </summary>
-        /// 
-        public int K { get { return folds.Length; } }
-
-
         /// <summary>
         ///   Creates a new k-fold cross-validation algorithm.
         /// </summary>
         /// 
         /// <param name="size">The complete dataset for training and testing.</param>
         /// 
-        public Crossvalidation(int size)
-            : this(size, 10)
-        {
-        }
+        public CrossValidation(int size) : base(size) { }
 
         /// <summary>
         ///   Creates a new k-fold cross-validation algorithm.
@@ -196,14 +135,29 @@ namespace Accord.MachineLearning
         /// <param name="size">The complete dataset for training and testing.</param>
         /// <param name="folds">The number of folds, usually denoted as <c>k</c> (default is 10).</param>
         /// 
-        public Crossvalidation(int size, int folds)
+        public CrossValidation(int size, int folds) : base(size, folds) { }
+
+        /// <summary>
+        ///   Creates a new k-fold cross-validation algorithm.
+        /// </summary>
+        /// 
+        /// <param name="indices">An already created set of fold indices for each sample in a dataset.</param>
+        /// <param name="folds">The total number of folds referenced in the <paramref name="indices"/> param.</param>
+        /// 
+        public CrossValidation(int[] indices, int folds) : base(indices, folds) { }
+
+        /// <summary>
+        ///   Create cross-validation folds by generating
+        ///   a vector of random fold indices.
+        /// </summary>
+        /// 
+        /// <param name="size">The number of points in the data set.</param>
+        /// <param name="folds">The number of folds in the cross-validation.</param>
+        /// 
+        /// <returns>A vector of indices defining the a fold for each point in the data set.</returns>
+        /// 
+        public static int[] Splittings(int size, int folds)
         {
-            if (folds > size)
-                throw new ArgumentException("The number of folds can not exceed the total number of samples in the data set", "folds");
-
-
-            this.folds = new int[folds][];
-
             // Create the index vector
             int[] idx = new int[size];
 
@@ -214,148 +168,7 @@ namespace Accord.MachineLearning
             // Shuffle the indices vector
             Statistics.Tools.Shuffle(idx);
 
-            // Create foldings
-            for (int i = 0; i < folds; i++)
-                this.folds[i] = idx.Find(x => x == i);
-
-            // Create the k nested models structures
-            models = new CrossvalidationInfo<TModel>[folds];
-        }
-
-
-        /// <summary>
-        ///   Computes the cross validation algorithm.
-        /// </summary>
-        /// 
-        public CrossvalidationSummary Compute()
-        {
-            double[] trainingErrors = new double[models.Length];
-            double[] validationErrors = new double[models.Length];
-
-#if DEBUG
-            for (int i = 0; i < folds.Length; i++)
-#else
-            Parallel.For(0, folds.Length, i =>
-#endif
-            {
-                // Create indices for the foldings
-                List<int[]> list = new List<int[]>();
-                for (int j = 0; j < folds.Length; j++)
-                    if (i != j) list.Add(folds[j]);
-
-                // Create training set
-                int[] trainingSet = Matrix.Concatenate(list.ToArray());
-
-                // Select validation set
-                int[] validationSet = folds[i];
-
-                // Fit and evaluate the model
-                models[i] = Fitting(trainingSet, validationSet);
-                trainingErrors[i] = models[i].TrainingError;
-                validationErrors[i] = models[i].ValidationError;
-            }
-#if !DEBUG
-            );
-#endif
-
-            // Return average training and validation error
-            double trainMean = Statistics.Tools.Mean(trainingErrors);
-            double trainStdDev = Statistics.Tools.StandardDeviation(trainingErrors, trainMean);
-
-            double valMean = Statistics.Tools.Mean(validationErrors);
-            double valStdDev = Statistics.Tools.StandardDeviation(validationErrors, valMean);
-
-            return new CrossvalidationSummary(trainMean, trainStdDev, valMean, valStdDev);
-        }
-
-    }
-
-    /// <summary>
-    ///   Summary statistics for a Cross-validation trial.
-    /// </summary>
-    /// 
-    public class CrossvalidationSummary
-    {
-        /// <summary>
-        ///   Gets the average training error.
-        /// </summary>
-        /// 
-        public double TrainingMean { get; private set; }
-
-        /// <summary>
-        ///   Gets the standard deviation of the training error.
-        /// </summary>
-        /// 
-        public double TrainingDeviation { get; private set; }
-
-        /// <summary>
-        ///   Gets the average validation error.
-        /// </summary>
-        /// 
-        public double ValidationMean { get; private set; }
-
-        /// <summary>
-        ///   Gets the standard deviation of the validation error.
-        /// </summary>
-        /// 
-        public double ValidationDeviation { get; private set; }
-
-        internal CrossvalidationSummary(double trainMean, double trainStdDev, double validationMean, double validationStdDev)
-        {
-            this.TrainingMean = trainMean;
-            this.ValidationMean = validationMean;
-
-            this.TrainingDeviation = trainStdDev;
-            this.ValidationDeviation = validationStdDev;
-        }
-    }
-
-    /// <summary>
-    ///   Information class to store the training and validation errors of a model. 
-    /// </summary>
-    /// 
-    /// <typeparam name="TModel">The type of the model.</typeparam>
-    /// 
-    public class CrossvalidationInfo<TModel>
-    {
-        /// <summary>
-        ///   Gets the model.
-        /// </summary>
-        /// 
-        public TModel Model { get; private set; }
-
-        /// <summary>
-        ///   Gets the validation error for the model.
-        /// </summary>
-        /// 
-        public double ValidationError { get; private set; }
-
-        /// <summary>
-        ///   Gets the training error for the model.
-        /// </summary>
-        /// 
-        public double TrainingError { get; private set; }
-
-        /// <summary>
-        ///   Gets or sets a tag for user-defined information.
-        /// </summary>
-        /// 
-        private object Tag { get; set; }
-
-
-        /// <summary>
-        ///   Creates a new CrossvalidationInfo class.
-        /// </summary>
-        /// 
-        /// <param name="model">The fitted model.</param>
-        /// <param name="trainingError">The training error for the model.</param>
-        /// <param name="validationError">The validation error for the model.</param>
-        /// 
-        public CrossvalidationInfo(TModel model, double trainingError, double validationError)
-        {
-            this.Model = model;
-            this.TrainingError = trainingError;
-            this.ValidationError = validationError;
+            return idx;
         }
 
     }
