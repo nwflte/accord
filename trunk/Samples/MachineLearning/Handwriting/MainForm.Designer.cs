@@ -66,15 +66,19 @@
             this.colTestingOutput = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colTestingFeatures = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.cbStrategy = new System.Windows.Forms.ComboBox();
             this.btnEstimateC = new System.Windows.Forms.Button();
             this.btnEstimate = new System.Windows.Forms.Button();
             this.numTolerance = new System.Windows.Forms.NumericUpDown();
             this.numComplexity = new System.Windows.Forms.NumericUpDown();
             this.numConstant = new System.Windows.Forms.NumericUpDown();
+            this.numCache = new System.Windows.Forms.NumericUpDown();
             this.numDegree = new System.Windows.Forms.NumericUpDown();
             this.numSigma = new System.Windows.Forms.NumericUpDown();
             this.rbPolynomial = new System.Windows.Forms.RadioButton();
             this.rbGaussian = new System.Windows.Forms.RadioButton();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
@@ -130,6 +134,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numTolerance)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numComplexity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numConstant)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numCache)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numDegree)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numSigma)).BeginInit();
             this.tabControl.SuspendLayout();
@@ -210,7 +215,7 @@
             this.tabSamples.Location = new System.Drawing.Point(4, 22);
             this.tabSamples.Name = "tabSamples";
             this.tabSamples.Padding = new System.Windows.Forms.Padding(3);
-            this.tabSamples.Size = new System.Drawing.Size(658, 370);
+            this.tabSamples.Size = new System.Drawing.Size(658, 422);
             this.tabSamples.TabIndex = 0;
             this.tabSamples.Text = "Samples (Input)";
             this.tabSamples.UseVisualStyleBackColor = true;
@@ -229,7 +234,7 @@
             // splitContainer3.Panel2
             // 
             this.splitContainer3.Panel2.Controls.Add(this.groupBox6);
-            this.splitContainer3.Size = new System.Drawing.Size(652, 364);
+            this.splitContainer3.Size = new System.Drawing.Size(652, 416);
             this.splitContainer3.SplitterDistance = 454;
             this.splitContainer3.TabIndex = 8;
             // 
@@ -246,7 +251,7 @@
             // splitContainer7.Panel2
             // 
             this.splitContainer7.Panel2.Controls.Add(this.groupBox7);
-            this.splitContainer7.Size = new System.Drawing.Size(454, 364);
+            this.splitContainer7.Size = new System.Drawing.Size(454, 416);
             this.splitContainer7.SplitterDistance = 158;
             this.splitContainer7.TabIndex = 9;
             // 
@@ -256,7 +261,7 @@
             this.groupBox15.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox15.Location = new System.Drawing.Point(0, 0);
             this.groupBox15.Name = "groupBox15";
-            this.groupBox15.Size = new System.Drawing.Size(158, 364);
+            this.groupBox15.Size = new System.Drawing.Size(158, 416);
             this.groupBox15.TabIndex = 8;
             this.groupBox15.TabStop = false;
             this.groupBox15.Text = "Training";
@@ -287,7 +292,7 @@
             this.dgvTrainingSource.Name = "dgvTrainingSource";
             this.dgvTrainingSource.ReadOnly = true;
             this.dgvTrainingSource.RowHeadersVisible = false;
-            this.dgvTrainingSource.Size = new System.Drawing.Size(152, 345);
+            this.dgvTrainingSource.Size = new System.Drawing.Size(152, 397);
             this.dgvTrainingSource.TabIndex = 6;
             // 
             // colTrainingImage
@@ -325,7 +330,7 @@
             this.groupBox7.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox7.Location = new System.Drawing.Point(0, 0);
             this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(292, 364);
+            this.groupBox7.Size = new System.Drawing.Size(292, 416);
             this.groupBox7.TabIndex = 9;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Testing";
@@ -357,7 +362,7 @@
             this.dgvAnalysisTesting.Name = "dgvAnalysisTesting";
             this.dgvAnalysisTesting.ReadOnly = true;
             this.dgvAnalysisTesting.RowHeadersVisible = false;
-            this.dgvAnalysisTesting.Size = new System.Drawing.Size(286, 345);
+            this.dgvAnalysisTesting.Size = new System.Drawing.Size(286, 397);
             this.dgvAnalysisTesting.TabIndex = 6;
             // 
             // colTestingImage
@@ -397,15 +402,19 @@
             // 
             // groupBox6
             // 
+            this.groupBox6.Controls.Add(this.cbStrategy);
             this.groupBox6.Controls.Add(this.btnEstimateC);
             this.groupBox6.Controls.Add(this.btnEstimate);
             this.groupBox6.Controls.Add(this.numTolerance);
             this.groupBox6.Controls.Add(this.numComplexity);
             this.groupBox6.Controls.Add(this.numConstant);
+            this.groupBox6.Controls.Add(this.numCache);
             this.groupBox6.Controls.Add(this.numDegree);
             this.groupBox6.Controls.Add(this.numSigma);
             this.groupBox6.Controls.Add(this.rbPolynomial);
             this.groupBox6.Controls.Add(this.rbGaussian);
+            this.groupBox6.Controls.Add(this.label8);
+            this.groupBox6.Controls.Add(this.label6);
             this.groupBox6.Controls.Add(this.label1);
             this.groupBox6.Controls.Add(this.label3);
             this.groupBox6.Controls.Add(this.label5);
@@ -418,15 +427,24 @@
             this.groupBox6.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox6.Location = new System.Drawing.Point(0, 0);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(194, 364);
+            this.groupBox6.Size = new System.Drawing.Size(194, 416);
             this.groupBox6.TabIndex = 6;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Settings";
             // 
+            // cbStrategy
+            // 
+            this.cbStrategy.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbStrategy.FormattingEnabled = true;
+            this.cbStrategy.Location = new System.Drawing.Point(67, 248);
+            this.cbStrategy.Name = "cbStrategy";
+            this.cbStrategy.Size = new System.Drawing.Size(121, 21);
+            this.cbStrategy.TabIndex = 9;
+            // 
             // btnEstimateC
             // 
             this.btnEstimateC.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnEstimateC.Location = new System.Drawing.Point(69, 168);
+            this.btnEstimateC.Location = new System.Drawing.Point(69, 169);
             this.btnEstimateC.Name = "btnEstimateC";
             this.btnEstimateC.Size = new System.Drawing.Size(50, 20);
             this.btnEstimateC.TabIndex = 8;
@@ -450,7 +468,7 @@
             this.numTolerance.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.numTolerance.DecimalPlaces = 5;
-            this.numTolerance.Location = new System.Drawing.Point(125, 194);
+            this.numTolerance.Location = new System.Drawing.Point(125, 196);
             this.numTolerance.Maximum = new decimal(new int[] {
             10,
             0,
@@ -471,7 +489,7 @@
             this.numComplexity.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.numComplexity.DecimalPlaces = 5;
-            this.numComplexity.Location = new System.Drawing.Point(125, 168);
+            this.numComplexity.Location = new System.Drawing.Point(125, 170);
             this.numComplexity.Name = "numComplexity";
             this.numComplexity.Size = new System.Drawing.Size(62, 20);
             this.numComplexity.TabIndex = 7;
@@ -494,6 +512,31 @@
             this.numConstant.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.numConstant.Value = new decimal(new int[] {
             1,
+            0,
+            0,
+            0});
+            // 
+            // numCache
+            // 
+            this.numCache.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.numCache.Location = new System.Drawing.Point(125, 222);
+            this.numCache.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.numCache.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+            this.numCache.Name = "numCache";
+            this.numCache.Size = new System.Drawing.Size(62, 20);
+            this.numCache.TabIndex = 7;
+            this.numCache.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.numCache.Value = new decimal(new int[] {
+            500,
             0,
             0,
             0});
@@ -556,11 +599,31 @@
             this.rbGaussian.Text = "Gaussian Kernel";
             this.rbGaussian.UseVisualStyleBackColor = true;
             // 
+            // label8
+            // 
+            this.label8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(6, 251);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(49, 13);
+            this.label8.TabIndex = 3;
+            this.label8.Text = "Strategy:";
+            // 
+            // label6
+            // 
+            this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(6, 224);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(62, 13);
+            this.label6.TabIndex = 3;
+            this.label6.Text = "Cache size:";
+            // 
             // label1
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 196);
+            this.label1.Location = new System.Drawing.Point(6, 198);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(58, 13);
             this.label1.TabIndex = 3;
@@ -570,7 +633,7 @@
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 172);
+            this.label3.Location = new System.Drawing.Point(6, 174);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(60, 13);
             this.label3.TabIndex = 3;
@@ -608,7 +671,7 @@
             this.btnClassifyElimination.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.btnClassifyElimination.Enabled = false;
-            this.btnClassifyElimination.Location = new System.Drawing.Point(95, 310);
+            this.btnClassifyElimination.Location = new System.Drawing.Point(95, 362);
             this.btnClassifyElimination.Name = "btnClassifyElimination";
             this.btnClassifyElimination.Size = new System.Drawing.Size(92, 48);
             this.btnClassifyElimination.TabIndex = 1;
@@ -622,7 +685,7 @@
             this.btnClassifyVoting.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.btnClassifyVoting.Enabled = false;
-            this.btnClassifyVoting.Location = new System.Drawing.Point(7, 310);
+            this.btnClassifyVoting.Location = new System.Drawing.Point(7, 362);
             this.btnClassifyVoting.Name = "btnClassifyVoting";
             this.btnClassifyVoting.Size = new System.Drawing.Size(82, 48);
             this.btnClassifyVoting.TabIndex = 1;
@@ -636,7 +699,7 @@
             this.btnCalibration.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCalibration.Enabled = false;
-            this.btnCalibration.Location = new System.Drawing.Point(7, 269);
+            this.btnCalibration.Location = new System.Drawing.Point(7, 321);
             this.btnCalibration.Name = "btnCalibration";
             this.btnCalibration.Size = new System.Drawing.Size(181, 35);
             this.btnCalibration.TabIndex = 1;
@@ -650,7 +713,7 @@
             this.btnSampleRunAnalysis.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSampleRunAnalysis.Enabled = false;
-            this.btnSampleRunAnalysis.Location = new System.Drawing.Point(7, 228);
+            this.btnSampleRunAnalysis.Location = new System.Drawing.Point(7, 280);
             this.btnSampleRunAnalysis.Name = "btnSampleRunAnalysis";
             this.btnSampleRunAnalysis.Size = new System.Drawing.Size(181, 35);
             this.btnSampleRunAnalysis.TabIndex = 1;
@@ -668,7 +731,7 @@
             this.tabControl.Location = new System.Drawing.Point(0, 24);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(666, 396);
+            this.tabControl.Size = new System.Drawing.Size(666, 448);
             this.tabControl.TabIndex = 16;
             // 
             // tabPage2
@@ -680,7 +743,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(658, 370);
+            this.tabPage2.Size = new System.Drawing.Size(658, 422);
             this.tabPage2.TabIndex = 11;
             this.tabPage2.Text = "Machines";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -688,7 +751,7 @@
             // lbSize
             // 
             this.lbSize.AutoSize = true;
-            this.lbSize.Location = new System.Drawing.Point(174, 349);
+            this.lbSize.Location = new System.Drawing.Point(174, 341);
             this.lbSize.Name = "lbSize";
             this.lbSize.Size = new System.Drawing.Size(47, 13);
             this.lbSize.TabIndex = 9;
@@ -697,7 +760,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(8, 349);
+            this.label7.Location = new System.Drawing.Point(8, 341);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(160, 13);
             this.label7.TabIndex = 9;
@@ -723,11 +786,11 @@
             this.dgvVectors.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.dataGridViewImageColumn1,
             this.dataGridViewTextBoxColumn3});
-            this.dgvVectors.Location = new System.Drawing.Point(369, 6);
+            this.dgvVectors.Location = new System.Drawing.Point(393, 6);
             this.dgvVectors.Name = "dgvVectors";
             this.dgvVectors.ReadOnly = true;
             this.dgvVectors.RowHeadersVisible = false;
-            this.dgvVectors.Size = new System.Drawing.Size(259, 345);
+            this.dgvVectors.Size = new System.Drawing.Size(259, 332);
             this.dgvVectors.TabIndex = 8;
             // 
             // dataGridViewImageColumn1
@@ -776,7 +839,7 @@
             this.dgvMachines.Name = "dgvMachines";
             this.dgvMachines.ReadOnly = true;
             this.dgvMachines.RowHeadersVisible = false;
-            this.dgvMachines.Size = new System.Drawing.Size(355, 332);
+            this.dgvMachines.Size = new System.Drawing.Size(379, 332);
             this.dgvMachines.TabIndex = 7;
             this.dgvMachines.CurrentCellChanged += new System.EventHandler(this.dgvMachines_CurrentCellChanged);
             // 
@@ -820,7 +883,7 @@
             this.tabPage1.Controls.Add(this.groupBox3);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Size = new System.Drawing.Size(658, 370);
+            this.tabPage1.Size = new System.Drawing.Size(658, 422);
             this.tabPage1.TabIndex = 10;
             this.tabPage1.Text = "Classification";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -832,7 +895,7 @@
             this.groupBox8.Controls.Add(this.lbCanvasClassification);
             this.groupBox8.Location = new System.Drawing.Point(14, 3);
             this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Size = new System.Drawing.Size(198, 167);
+            this.groupBox8.Size = new System.Drawing.Size(198, 210);
             this.groupBox8.TabIndex = 9;
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "Classification";
@@ -843,7 +906,7 @@
             this.lbCanvasClassification.Font = new System.Drawing.Font("Microsoft Sans Serif", 99.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbCanvasClassification.Location = new System.Drawing.Point(3, 16);
             this.lbCanvasClassification.Name = "lbCanvasClassification";
-            this.lbCanvasClassification.Size = new System.Drawing.Size(192, 148);
+            this.lbCanvasClassification.Size = new System.Drawing.Size(192, 191);
             this.lbCanvasClassification.TabIndex = 3;
             this.lbCanvasClassification.Text = "0";
             this.lbCanvasClassification.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -856,9 +919,9 @@
             this.groupBox4.Controls.Add(this.tbPenWidth);
             this.groupBox4.Controls.Add(this.button3);
             this.groupBox4.Controls.Add(this.cbContinuous);
-            this.groupBox4.Location = new System.Drawing.Point(8, 176);
+            this.groupBox4.Location = new System.Drawing.Point(8, 219);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(204, 191);
+            this.groupBox4.Size = new System.Drawing.Size(204, 197);
             this.groupBox4.TabIndex = 8;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Drawing Canvas";
@@ -926,7 +989,7 @@
             this.groupBox3.Controls.Add(this.graphClassification);
             this.groupBox3.Location = new System.Drawing.Point(218, 0);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(418, 370);
+            this.groupBox3.Size = new System.Drawing.Size(418, 419);
             this.groupBox3.TabIndex = 7;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Discriminant functions relative response";
@@ -943,7 +1006,7 @@
             this.graphClassification.ScrollMinX = 0D;
             this.graphClassification.ScrollMinY = 0D;
             this.graphClassification.ScrollMinY2 = 0D;
-            this.graphClassification.Size = new System.Drawing.Size(412, 351);
+            this.graphClassification.Size = new System.Drawing.Size(412, 400);
             this.graphClassification.TabIndex = 6;
             // 
             // groupBox20
@@ -969,7 +1032,7 @@
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.lbStatus,
             this.progressBar});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 420);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 472);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(666, 22);
             this.statusStrip1.TabIndex = 17;
@@ -994,7 +1057,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(666, 442);
+            this.ClientSize = new System.Drawing.Size(666, 494);
             this.Controls.Add(this.tabControl);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.statusStrip1);
@@ -1022,6 +1085,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numTolerance)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numComplexity)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numConstant)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numCache)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numDegree)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numSigma)).EndInit();
             this.tabControl.ResumeLayout(false);
@@ -1113,6 +1177,10 @@
         private System.Windows.Forms.Button btnClassifyElimination;
         private System.Windows.Forms.Button btnEstimate;
         private System.Windows.Forms.Button btnEstimateC;
+        private System.Windows.Forms.NumericUpDown numCache;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.ComboBox cbStrategy;
+        private System.Windows.Forms.Label label8;
 
     }
 }

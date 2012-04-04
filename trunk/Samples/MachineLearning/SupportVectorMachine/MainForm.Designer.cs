@@ -60,19 +60,16 @@
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.btnSampleRunAnalysis = new System.Windows.Forms.Button();
             this.numT = new System.Windows.Forms.NumericUpDown();
             this.rbGaussian = new System.Windows.Forms.RadioButton();
             this.label2 = new System.Windows.Forms.Label();
-            this.numConstant = new System.Windows.Forms.NumericUpDown();
+            this.numSigAlpha = new System.Windows.Forms.NumericUpDown();
             this.label4 = new System.Windows.Forms.Label();
             this.numC = new System.Windows.Forms.NumericUpDown();
-            this.numE = new System.Windows.Forms.NumericUpDown();
             this.numDegree = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
             this.rbPolynomial = new System.Windows.Forms.RadioButton();
             this.label9 = new System.Windows.Forms.Label();
             this.numSigma = new System.Windows.Forms.NumericUpDown();
@@ -103,6 +100,19 @@
             this.Column8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column10 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.btnEstimateC = new System.Windows.Forms.Button();
+            this.btnEstimateGaussian = new System.Windows.Forms.Button();
+            this.rbLaplacian = new System.Windows.Forms.RadioButton();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.numSigB = new System.Windows.Forms.NumericUpDown();
+            this.numLaplacianSigma = new System.Windows.Forms.NumericUpDown();
+            this.label7 = new System.Windows.Forms.Label();
+            this.btnEstimateLaplacian = new System.Windows.Forms.Button();
+            this.rbSigmoid = new System.Windows.Forms.RadioButton();
+            this.btnEstimateSig = new System.Windows.Forms.Button();
+            this.numPolyConstant = new System.Windows.Forms.NumericUpDown();
+            this.label8 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.tabSamples.SuspendLayout();
@@ -120,9 +130,8 @@
             this.splitContainer3.SuspendLayout();
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numT)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numConstant)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numSigAlpha)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numC)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numE)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numDegree)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numSigma)).BeginInit();
             this.groupBox4.SuspendLayout();
@@ -144,6 +153,9 @@
             this.groupBox11.SuspendLayout();
             this.groupBox6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPerformance)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numSigB)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numLaplacianSigma)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numPolyConstant)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -240,7 +252,7 @@
             this.tabControl.Location = new System.Drawing.Point(0, 24);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(763, 414);
+            this.tabControl.Size = new System.Drawing.Size(763, 436);
             this.tabControl.TabIndex = 14;
             // 
             // tabSamples
@@ -333,7 +345,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(755, 388);
+            this.tabPage2.Size = new System.Drawing.Size(755, 410);
             this.tabPage2.TabIndex = 13;
             this.tabPage2.Text = "Machine Creation";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -351,52 +363,51 @@
             // splitContainer3.Panel2
             // 
             this.splitContainer3.Panel2.Controls.Add(this.groupBox4);
-            this.splitContainer3.Size = new System.Drawing.Size(749, 382);
+            this.splitContainer3.Size = new System.Drawing.Size(749, 404);
             this.splitContainer3.SplitterDistance = 240;
             this.splitContainer3.TabIndex = 13;
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.checkBox1);
+            this.groupBox3.Controls.Add(this.btnEstimateSig);
+            this.groupBox3.Controls.Add(this.btnEstimateLaplacian);
+            this.groupBox3.Controls.Add(this.btnEstimateGaussian);
+            this.groupBox3.Controls.Add(this.btnEstimateC);
             this.groupBox3.Controls.Add(this.btnSampleRunAnalysis);
             this.groupBox3.Controls.Add(this.numT);
             this.groupBox3.Controls.Add(this.rbGaussian);
+            this.groupBox3.Controls.Add(this.label7);
             this.groupBox3.Controls.Add(this.label2);
-            this.groupBox3.Controls.Add(this.numConstant);
+            this.groupBox3.Controls.Add(this.numSigB);
+            this.groupBox3.Controls.Add(this.label6);
+            this.groupBox3.Controls.Add(this.numSigAlpha);
+            this.groupBox3.Controls.Add(this.label8);
             this.groupBox3.Controls.Add(this.label4);
             this.groupBox3.Controls.Add(this.numC);
-            this.groupBox3.Controls.Add(this.numE);
+            this.groupBox3.Controls.Add(this.numPolyConstant);
             this.groupBox3.Controls.Add(this.numDegree);
-            this.groupBox3.Controls.Add(this.label1);
-            this.groupBox3.Controls.Add(this.label5);
             this.groupBox3.Controls.Add(this.label3);
+            this.groupBox3.Controls.Add(this.label1);
+            this.groupBox3.Controls.Add(this.rbSigmoid);
+            this.groupBox3.Controls.Add(this.rbLaplacian);
+            this.groupBox3.Controls.Add(this.label5);
             this.groupBox3.Controls.Add(this.rbPolynomial);
             this.groupBox3.Controls.Add(this.label9);
+            this.groupBox3.Controls.Add(this.numLaplacianSigma);
             this.groupBox3.Controls.Add(this.numSigma);
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox3.Location = new System.Drawing.Point(0, 0);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(240, 382);
+            this.groupBox3.Size = new System.Drawing.Size(240, 404);
             this.groupBox3.TabIndex = 8;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Settings";
-            // 
-            // checkBox1
-            // 
-            this.checkBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(184, 183);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(48, 17);
-            this.checkBox1.TabIndex = 8;
-            this.checkBox1.Text = "Auto";
-            this.checkBox1.UseVisualStyleBackColor = true;
             // 
             // btnSampleRunAnalysis
             // 
             this.btnSampleRunAnalysis.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSampleRunAnalysis.Location = new System.Drawing.Point(6, 311);
+            this.btnSampleRunAnalysis.Location = new System.Drawing.Point(6, 333);
             this.btnSampleRunAnalysis.Name = "btnSampleRunAnalysis";
             this.btnSampleRunAnalysis.Size = new System.Drawing.Size(228, 65);
             this.btnSampleRunAnalysis.TabIndex = 1;
@@ -409,13 +420,13 @@
             // 
             this.numT.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.numT.DecimalPlaces = 4;
+            this.numT.DecimalPlaces = 7;
             this.numT.Increment = new decimal(new int[] {
             1,
             0,
             0,
             65536});
-            this.numT.Location = new System.Drawing.Point(95, 234);
+            this.numT.Location = new System.Drawing.Point(94, 307);
             this.numT.Name = "numT";
             this.numT.Size = new System.Drawing.Size(139, 20);
             this.numT.TabIndex = 7;
@@ -447,21 +458,21 @@
             this.label2.TabIndex = 3;
             this.label2.Text = "Sigma:";
             // 
-            // numConstant
+            // numSigAlpha
             // 
-            this.numConstant.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.numSigAlpha.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.numConstant.DecimalPlaces = 4;
-            this.numConstant.Location = new System.Drawing.Point(96, 120);
-            this.numConstant.Name = "numConstant";
-            this.numConstant.Size = new System.Drawing.Size(137, 20);
-            this.numConstant.TabIndex = 7;
-            this.numConstant.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.numSigAlpha.DecimalPlaces = 7;
+            this.numSigAlpha.Location = new System.Drawing.Point(96, 214);
+            this.numSigAlpha.Name = "numSigAlpha";
+            this.numSigAlpha.Size = new System.Drawing.Size(78, 20);
+            this.numSigAlpha.TabIndex = 7;
+            this.numSigAlpha.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(19, 96);
+            this.label4.Location = new System.Drawing.Point(19, 93);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(45, 13);
             this.label4.TabIndex = 3;
@@ -471,13 +482,13 @@
             // 
             this.numC.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.numC.DecimalPlaces = 4;
+            this.numC.DecimalPlaces = 7;
             this.numC.Increment = new decimal(new int[] {
             1,
             0,
             0,
             65536});
-            this.numC.Location = new System.Drawing.Point(98, 182);
+            this.numC.Location = new System.Drawing.Point(94, 281);
             this.numC.Name = "numC";
             this.numC.Size = new System.Drawing.Size(80, 20);
             this.numC.TabIndex = 7;
@@ -488,32 +499,11 @@
             0,
             0});
             // 
-            // numE
-            // 
-            this.numE.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.numE.DecimalPlaces = 4;
-            this.numE.Increment = new decimal(new int[] {
-            1,
-            0,
-            0,
-            65536});
-            this.numE.Location = new System.Drawing.Point(98, 208);
-            this.numE.Name = "numE";
-            this.numE.Size = new System.Drawing.Size(134, 20);
-            this.numE.TabIndex = 7;
-            this.numE.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.numE.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            196608});
-            // 
             // numDegree
             // 
             this.numDegree.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.numDegree.Location = new System.Drawing.Point(96, 94);
+            this.numDegree.Location = new System.Drawing.Point(96, 91);
             this.numDegree.Name = "numDegree";
             this.numDegree.Size = new System.Drawing.Size(137, 20);
             this.numDegree.TabIndex = 7;
@@ -527,7 +517,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(21, 184);
+            this.label1.Location = new System.Drawing.Point(20, 283);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(57, 13);
             this.label1.TabIndex = 3;
@@ -536,25 +526,16 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(19, 122);
+            this.label5.Location = new System.Drawing.Point(19, 216);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(52, 13);
             this.label5.TabIndex = 3;
             this.label5.Text = "Constant:";
             // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(19, 210);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(70, 13);
-            this.label3.TabIndex = 3;
-            this.label3.Text = "ε-Insensitivity";
-            // 
             // rbPolynomial
             // 
             this.rbPolynomial.AutoSize = true;
-            this.rbPolynomial.Location = new System.Drawing.Point(19, 71);
+            this.rbPolynomial.Location = new System.Drawing.Point(19, 68);
             this.rbPolynomial.Name = "rbPolynomial";
             this.rbPolynomial.Size = new System.Drawing.Size(108, 17);
             this.rbPolynomial.TabIndex = 6;
@@ -565,7 +546,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(19, 236);
+            this.label9.Location = new System.Drawing.Point(18, 309);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(55, 13);
             this.label9.TabIndex = 3;
@@ -575,7 +556,7 @@
             // 
             this.numSigma.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.numSigma.DecimalPlaces = 4;
+            this.numSigma.DecimalPlaces = 7;
             this.numSigma.Location = new System.Drawing.Point(95, 42);
             this.numSigma.Maximum = new decimal(new int[] {
             1000,
@@ -583,7 +564,7 @@
             0,
             0});
             this.numSigma.Name = "numSigma";
-            this.numSigma.Size = new System.Drawing.Size(137, 20);
+            this.numSigma.Size = new System.Drawing.Size(84, 20);
             this.numSigma.TabIndex = 7;
             this.numSigma.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.numSigma.Value = new decimal(new int[] {
@@ -598,7 +579,7 @@
             this.groupBox4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox4.Location = new System.Drawing.Point(0, 0);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(505, 382);
+            this.groupBox4.Size = new System.Drawing.Size(505, 404);
             this.groupBox4.TabIndex = 8;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Visualization";
@@ -615,7 +596,7 @@
             this.zedGraphControl2.ScrollMinX = 0D;
             this.zedGraphControl2.ScrollMinY = 0D;
             this.zedGraphControl2.ScrollMinY2 = 0D;
-            this.zedGraphControl2.Size = new System.Drawing.Size(499, 363);
+            this.zedGraphControl2.Size = new System.Drawing.Size(499, 385);
             this.zedGraphControl2.TabIndex = 3;
             // 
             // tabOverview
@@ -971,11 +952,178 @@
             this.Column9.ReadOnly = true;
             this.Column9.Visible = false;
             // 
+            // btnEstimateC
+            // 
+            this.btnEstimateC.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnEstimateC.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnEstimateC.Location = new System.Drawing.Point(181, 281);
+            this.btnEstimateC.Name = "btnEstimateC";
+            this.btnEstimateC.Size = new System.Drawing.Size(53, 20);
+            this.btnEstimateC.TabIndex = 1;
+            this.btnEstimateC.Text = "Estimate";
+            this.btnEstimateC.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.btnEstimateC.UseVisualStyleBackColor = true;
+            this.btnEstimateC.Click += new System.EventHandler(this.btnEstimateC_Click);
+            // 
+            // btnEstimateGaussian
+            // 
+            this.btnEstimateGaussian.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnEstimateGaussian.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnEstimateGaussian.Location = new System.Drawing.Point(185, 41);
+            this.btnEstimateGaussian.Name = "btnEstimateGaussian";
+            this.btnEstimateGaussian.Size = new System.Drawing.Size(53, 20);
+            this.btnEstimateGaussian.TabIndex = 1;
+            this.btnEstimateGaussian.Text = "Estimate";
+            this.btnEstimateGaussian.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.btnEstimateGaussian.UseVisualStyleBackColor = true;
+            this.btnEstimateGaussian.Click += new System.EventHandler(this.btnEstimateGaussian_Click);
+            // 
+            // rbLaplacian
+            // 
+            this.rbLaplacian.AutoSize = true;
+            this.rbLaplacian.Location = new System.Drawing.Point(19, 145);
+            this.rbLaplacian.Name = "rbLaplacian";
+            this.rbLaplacian.Size = new System.Drawing.Size(104, 17);
+            this.rbLaplacian.TabIndex = 6;
+            this.rbLaplacian.TabStop = true;
+            this.rbLaplacian.Text = "Laplacian Kernel";
+            this.rbLaplacian.UseVisualStyleBackColor = true;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(19, 242);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(52, 13);
+            this.label3.TabIndex = 3;
+            this.label3.Text = "Constant:";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(19, 216);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(34, 13);
+            this.label6.TabIndex = 3;
+            this.label6.Text = "Alpha";
+            // 
+            // numSigB
+            // 
+            this.numSigB.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.numSigB.DecimalPlaces = 6;
+            this.numSigB.Location = new System.Drawing.Point(96, 240);
+            this.numSigB.Minimum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            -2147483648});
+            this.numSigB.Name = "numSigB";
+            this.numSigB.Size = new System.Drawing.Size(78, 20);
+            this.numSigB.TabIndex = 7;
+            this.numSigB.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // numLaplacianSigma
+            // 
+            this.numLaplacianSigma.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.numLaplacianSigma.DecimalPlaces = 7;
+            this.numLaplacianSigma.Location = new System.Drawing.Point(90, 165);
+            this.numLaplacianSigma.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.numLaplacianSigma.Name = "numLaplacianSigma";
+            this.numLaplacianSigma.Size = new System.Drawing.Size(84, 20);
+            this.numLaplacianSigma.TabIndex = 7;
+            this.numLaplacianSigma.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.numLaplacianSigma.Value = new decimal(new int[] {
+            12236,
+            0,
+            0,
+            262144});
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(16, 167);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(39, 13);
+            this.label7.TabIndex = 3;
+            this.label7.Text = "Sigma:";
+            // 
+            // btnEstimateLaplacian
+            // 
+            this.btnEstimateLaplacian.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnEstimateLaplacian.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnEstimateLaplacian.Location = new System.Drawing.Point(180, 164);
+            this.btnEstimateLaplacian.Name = "btnEstimateLaplacian";
+            this.btnEstimateLaplacian.Size = new System.Drawing.Size(53, 20);
+            this.btnEstimateLaplacian.TabIndex = 1;
+            this.btnEstimateLaplacian.Text = "Estimate";
+            this.btnEstimateLaplacian.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.btnEstimateLaplacian.UseVisualStyleBackColor = true;
+            this.btnEstimateLaplacian.Click += new System.EventHandler(this.btnEstimateLaplacian_Click);
+            // 
+            // rbSigmoid
+            // 
+            this.rbSigmoid.AutoSize = true;
+            this.rbSigmoid.Location = new System.Drawing.Point(19, 191);
+            this.rbSigmoid.Name = "rbSigmoid";
+            this.rbSigmoid.Size = new System.Drawing.Size(95, 17);
+            this.rbSigmoid.TabIndex = 6;
+            this.rbSigmoid.TabStop = true;
+            this.rbSigmoid.Text = "Sigmoid Kernel";
+            this.rbSigmoid.UseVisualStyleBackColor = true;
+            // 
+            // btnEstimateSig
+            // 
+            this.btnEstimateSig.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnEstimateSig.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnEstimateSig.Location = new System.Drawing.Point(181, 214);
+            this.btnEstimateSig.Name = "btnEstimateSig";
+            this.btnEstimateSig.Size = new System.Drawing.Size(53, 47);
+            this.btnEstimateSig.TabIndex = 1;
+            this.btnEstimateSig.Text = "Estimate";
+            this.btnEstimateSig.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.btnEstimateSig.UseVisualStyleBackColor = true;
+            this.btnEstimateSig.Click += new System.EventHandler(this.btnEstimateSig_Click);
+            // 
+            // numPolyConstant
+            // 
+            this.numPolyConstant.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.numPolyConstant.DecimalPlaces = 7;
+            this.numPolyConstant.Location = new System.Drawing.Point(96, 117);
+            this.numPolyConstant.Name = "numPolyConstant";
+            this.numPolyConstant.Size = new System.Drawing.Size(137, 20);
+            this.numPolyConstant.TabIndex = 7;
+            this.numPolyConstant.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.numPolyConstant.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(18, 119);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(52, 13);
+            this.label8.TabIndex = 3;
+            this.label8.Text = "Constant:";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(763, 438);
+            this.ClientSize = new System.Drawing.Size(763, 460);
             this.Controls.Add(this.tabControl);
             this.Controls.Add(this.menuStrip1);
             this.Name = "MainForm";
@@ -999,9 +1147,8 @@
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numT)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numConstant)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numSigAlpha)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numC)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numE)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numDegree)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numSigma)).EndInit();
             this.groupBox4.ResumeLayout(false);
@@ -1023,6 +1170,9 @@
             this.groupBox11.ResumeLayout(false);
             this.groupBox6.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvPerformance)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numSigB)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numLaplacianSigma)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numPolyConstant)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1062,14 +1212,12 @@
         private System.Windows.Forms.Button btnSampleRunAnalysis;
         private System.Windows.Forms.NumericUpDown numT;
         private System.Windows.Forms.NumericUpDown numC;
-        private System.Windows.Forms.NumericUpDown numE;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.RadioButton rbGaussian;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.NumericUpDown numConstant;
+        private System.Windows.Forms.NumericUpDown numSigAlpha;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.NumericUpDown numDegree;
         private System.Windows.Forms.Label label5;
@@ -1090,10 +1238,22 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column8;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column10;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column9;
-        private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.SplitContainer splitContainer3;
         private System.Windows.Forms.GroupBox groupBox4;
         private ZedGraph.ZedGraphControl zedGraphControl2;
+        private System.Windows.Forms.Button btnEstimateSig;
+        private System.Windows.Forms.Button btnEstimateLaplacian;
+        private System.Windows.Forms.Button btnEstimateGaussian;
+        private System.Windows.Forms.Button btnEstimateC;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.NumericUpDown numSigB;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.RadioButton rbSigmoid;
+        private System.Windows.Forms.RadioButton rbLaplacian;
+        private System.Windows.Forms.NumericUpDown numLaplacianSigma;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.NumericUpDown numPolyConstant;
     }
 }
 

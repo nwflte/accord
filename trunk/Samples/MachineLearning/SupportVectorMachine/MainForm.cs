@@ -36,6 +36,7 @@ using Components;
 using ZedGraph;
 using Accord.Statistics.Formats;
 using Accord.MachineLearning;
+using AForge;
 
 
 namespace SVMs
@@ -109,51 +110,31 @@ namespace SVMs
             // Finishes and save any pending changes to the given data
             dgvLearningSource.EndEdit();
 
-            // Creates a matrix from the source data table
-            double[,] sourceMatrix = (dgvLearningSource.DataSource as DataTable).ToMatrix(out sourceColumns);
-
-
             // Create the specified Kernel
-            IKernel kernel;
-            if (rbGaussian.Checked)
-            {
-                kernel = new Gaussian((double)numSigma.Value);
-            }
-            else
-            {
-                kernel = new Polynomial((int)numDegree.Value, (double)numConstant.Value);
-            }
+            IKernel kernel = getKernel();
 
+            double[,] sourceMatrix;
+            double[,] inputs;
+            int[] labels;
+            getData(out sourceMatrix, out inputs, out labels);
 
             // Perform classification
             SequentialMinimalOptimization smo;
 
-            // Get only the input vector values
-            double[,] inputs = sourceMatrix.Submatrix(0, sourceMatrix.GetLength(0) - 1, 0, 1);
-
             // Creates the Support Vector Machine using the selected kernel
             svm = new KernelSupportVectorMachine(kernel, 2);
-
-            // Get only the label outputs
-            int[] labels = new int[sourceMatrix.GetLength(0)];
-            for (int i = 0; i < labels.Length; i++)
-                labels[i] = (int)sourceMatrix[i, 2];
 
             // Creates a new instance of the SMO Learning Algortihm
             smo = new SequentialMinimalOptimization(svm, inputs.ToArray(), labels);
 
             // Set learning parameters
-            if (!checkBox1.Checked)
-                smo.Complexity = (double)numC.Value;
-            else smo.UseComplexityHeuristic = true;
-            smo.Epsilon = (double)numE.Value;
+            smo.Complexity = (double)numC.Value;
             smo.Tolerance = (double)numT.Value;
 
             // Run
             double error = smo.Run();
 
-            if (checkBox1.Checked)
-                numC.Value = (decimal)smo.Complexity;
+            numC.Value = (decimal)smo.Complexity;
 
             // Show support vectors
             double[,] supportVectors = svm.SupportVectors.ToMatrix();
@@ -192,6 +173,20 @@ namespace SVMs
             var graph2 = map.ToMatrix().InsertColumn(result.ToDouble());
 
             CreateScatterplot(zedGraphControl2, graph2);
+        }
+
+        private void getData(out double[,] sourceMatrix, out double[,] inputs, out int[] labels)
+        {
+            // Creates a matrix from the source data table
+            sourceMatrix = (dgvLearningSource.DataSource as DataTable).ToMatrix(out sourceColumns);
+
+            // Get only the input vector values
+            inputs = sourceMatrix.Submatrix(0, sourceMatrix.GetLength(0) - 1, 0, 1);
+
+            // Get only the label outputs
+            labels = new int[sourceMatrix.GetLength(0)];
+            for (int i = 0; i < labels.Length; i++)
+                labels[i] = (int)sourceMatrix[i, 2];
         }
 
 
@@ -362,15 +357,15 @@ namespace SVMs
             double[,] sourceMatrix = (dgvLearningSource.DataSource as DataTable).ToMatrix(out sourceColumns);
 
             // Get only the input vector values
-            double[][] inputs = sourceMatrix.Submatrix(0, sourceMatrix.GetLength(0) - 1, 0, 1).ToArray();
+            var inputs = sourceMatrix.Submatrix(0, sourceMatrix.GetLength(0) - 1, 0, 1).ToArray();
 
             // Get only the label outputs
-            int[] outputs = new int[sourceMatrix.GetLength(0)];
+            var outputs = new int[sourceMatrix.GetLength(0)];
             for (int i = 0; i < outputs.Length; i++)
                 outputs[i] = (int)sourceMatrix[i, 2];
 
-            var cv = new Crossvalidation<KernelSupportVectorMachine>(inputs.Length, 10);
-            cv.Fitting = (int[] training, int[] testing) =>
+            var cv = new CrossValidation<KernelSupportVectorMachine>(inputs.Length, 10);
+            cv.Fitting = (int k, int[] training, int[] testing) =>
             {
                 var trainingInputs = inputs.Submatrix(training);
                 var trainingOutputs = outputs.Submatrix(training);
@@ -378,15 +373,7 @@ namespace SVMs
                 var testingOutputs = outputs.Submatrix(testing);
 
                 // Create the specified Kernel
-                IKernel kernel;
-                if (rbGaussian.Checked)
-                {
-                    kernel = new Gaussian((double)numSigma.Value);
-                }
-                else 
-                {
-                    kernel = new Polynomial((int)numDegree.Value, (double)numConstant.Value);
-                }
+                IKernel kernel = getKernel();
 
 
                 // Creates the Support Vector Machine using the selected kernel
@@ -396,23 +383,95 @@ namespace SVMs
                 var smo = new SequentialMinimalOptimization(svm, trainingInputs, trainingOutputs);
 
                 // Set learning parameters
-                if (!checkBox1.Checked)
-                    smo.Complexity = (double)numC.Value;
-                else smo.UseComplexityHeuristic = true;
-                smo.Epsilon = (double)numE.Value;
+                smo.Complexity = (double)numC.Value;
                 smo.Tolerance = (double)numT.Value;
 
                 // Run
                 double trainingError = smo.Run();
                 double validationError = smo.ComputeError(testingInputs, testingOutputs);
 
-                return new CrossvalidationInfo<KernelSupportVectorMachine>(svm, trainingError, validationError);
+                return new CrossValidationValues<KernelSupportVectorMachine>(svm, trainingError, validationError);
 
             };
 
             var result = cv.Compute();
 
-         //   dataGridView2.DataSource = new[] { result };
+        }
+
+
+        private IKernel getKernel()
+        {
+            IKernel kernel;
+            if (rbGaussian.Checked)
+            {
+                kernel = new Gaussian((double)numSigma.Value);
+            }
+            else if (rbPolynomial.Checked)
+            {
+                kernel = new Polynomial((int)numDegree.Value, (double)numSigAlpha.Value);
+            }
+            else if (rbLaplacian.Checked)
+            {
+                kernel = new Laplacian((double)numLaplacianSigma.Value);
+            }
+            else if (rbSigmoid.Checked)
+            {
+                kernel = new Sigmoid((double)numSigAlpha.Value, (double)numSigB.Value);
+            }
+            else throw new Exception();
+
+            return kernel;
+        }
+
+        private void btnEstimateGaussian_Click(object sender, EventArgs e)
+        {
+            double[,] sourceMatrix;
+            double[,] inputs;
+            int[] labels;
+            getData(out sourceMatrix, out inputs, out labels);
+            DoubleRange range;
+
+            var g = Gaussian.Estimate(inputs.ToArray(), labels.Length, out range);
+
+            numSigma.Value = (decimal)g.Sigma;
+        }
+
+        private void btnEstimateLaplacian_Click(object sender, EventArgs e)
+        {
+            double[,] sourceMatrix;
+            double[,] inputs;
+            int[] labels;
+            getData(out sourceMatrix, out inputs, out labels);
+            DoubleRange range;
+
+            var g = Laplacian.Estimate(inputs.ToArray(), labels.Length, out range);
+
+            numLaplacianSigma.Value = (decimal)g.Sigma;
+        }
+
+        private void btnEstimateSig_Click(object sender, EventArgs e)
+        {
+            double[,] sourceMatrix;
+            double[,] inputs;
+            int[] labels;
+            getData(out sourceMatrix, out inputs, out labels);
+            DoubleRange range;
+
+            var g = Sigmoid.Estimate(inputs.ToArray(), labels.Length, out range);
+
+            numSigAlpha.Value = (decimal)g.Alpha;
+            numSigB.Value = (decimal)g.Constant;
+        }
+
+        private void btnEstimateC_Click(object sender, EventArgs e)
+        {
+            double[,] sourceMatrix;
+            double[,] inputs;
+            int[] labels;
+            getData(out sourceMatrix, out inputs, out labels);
+
+            IKernel kernel = getKernel();
+            numC.Value = (decimal)SequentialMinimalOptimization.EstimateComplexity(kernel, inputs.ToArray());
         }
     }
 }

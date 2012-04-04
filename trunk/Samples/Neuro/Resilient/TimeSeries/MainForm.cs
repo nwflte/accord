@@ -804,7 +804,7 @@ namespace TimeSeries
                 windowSize, windowSize * 2, 1);
 
             // create teacher
-            ResilientBackpropagationLearning teacher = new ResilientBackpropagationLearning(network);
+            var teacher = new ParallelResilientBackpropagationLearning(network);
 
             teacher.Reset(initialStep);
 

@@ -136,6 +136,8 @@ namespace Handwriting
         private void MainForm_Load(object sender, EventArgs e)
         {
             lbStatus.Text = "Click File->Open to load data.";
+
+            cbStrategy.DataSource = Enum.GetValues(typeof(SelectionStrategy));
         }
 
         private void btnRunTraining_Click(object sender, EventArgs e)
@@ -164,9 +166,16 @@ namespace Handwriting
             // Create the chosen Kernel with given parameters
             IKernel kernel;
             if (rbGaussian.Checked)
+            {
                 kernel = new Gaussian((double)numSigma.Value);
+            }
             else
-                kernel = new Polynomial((int)numDegree.Value, (double)numConstant.Value);
+            {
+                if (numDegree.Value == 1)
+                    kernel = new Linear((double)numConstant.Value);
+                else
+                    kernel = new Polynomial((int)numDegree.Value, (double)numConstant.Value);
+            }
 
             // Create the Multi-class Support Vector Machine using the selected Kernel
             ksvm = new MulticlassSupportVectorMachine(1024, kernel, 10);
@@ -177,6 +186,8 @@ namespace Handwriting
             // Extract training parameters from the interface
             double complexity = (double)numComplexity.Value;
             double tolerance = (double)numTolerance.Value;
+            int cacheSize = (int)numCache.Value;
+            SelectionStrategy strategy = (SelectionStrategy)cbStrategy.SelectedItem;
 
             // Configure the learning algorithm
             ml.Algorithm = (svm, classInputs, classOutputs, i, j) =>
@@ -184,6 +195,9 @@ namespace Handwriting
                 var smo = new SequentialMinimalOptimization(svm, classInputs, classOutputs);
                 smo.Complexity = complexity;
                 smo.Tolerance = tolerance;
+                smo.CacheSize = cacheSize;
+                smo.Strategy = strategy;
+                if (kernel is Linear) smo.Compact = true;
                 return smo;
             };
 
@@ -216,7 +230,9 @@ namespace Handwriting
                 {
                     var machine = ksvm[i, j];
 
-                    int c = dgvMachines.Rows.Add(k, i + "-vs-" + j, machine.SupportVectors.Length, machine.Threshold);
+                    int sv = machine.SupportVectors == null ? 0 : machine.SupportVectors.Length;
+
+                    int c = dgvMachines.Rows.Add(k, i + "-vs-" + j, sv, machine.Threshold);
                     dgvMachines.Rows[c].Tag = machine;
                 }
             }
@@ -225,9 +241,9 @@ namespace Handwriting
             //   number of support vectors *
             //   number of doubles in a support vector *
             //   size of double
-            int bytes = ksvm.SupportVectorUnique * 1024 * sizeof(double);
+            int bytes = ksvm.SupportVectorUniqueCount * 1024 * sizeof(double);
             float megabytes = bytes / (1024 * 1024);
-            lbSize.Text = String.Format("{0} ({1} MB)", ksvm.SupportVectorUnique, megabytes);
+            lbSize.Text = String.Format("{0} ({1} MB)", ksvm.SupportVectorUniqueCount, megabytes);
         }
 
 
