@@ -36,7 +36,7 @@ namespace Accord.Statistics.Models.Fields
     /// <typeparam name="T">The type of the observations modeled by the field.</typeparam>
     /// 
     [Serializable]
-    public class HiddenConditionalRandomField<T>
+    public class HiddenConditionalRandomField<T> : ICloneable
     {
 
         /// <summary>
@@ -91,8 +91,7 @@ namespace Accord.Statistics.Models.Fields
 
             // Compute the marginal log-likelihood
             for (int i = 0; i < logLikelihoods.Length; i++)
-                sum += Math.Exp(logLikelihoods[i]);
-            sum = Math.Log(sum);
+                sum = Special.LogSum(sum, logLikelihoods[i]);
 
             // Normalize all log-likelihoods
             for (int i = 0; i < logLikelihoods.Length; i++)
@@ -104,8 +103,6 @@ namespace Accord.Statistics.Models.Fields
             return imax;
         }
 
-
-
         /// <summary>
         ///   Computes the most likely output for the given observations.
         /// </summary>
@@ -116,6 +113,95 @@ namespace Accord.Statistics.Models.Fields
             int i = Compute(observations, out logLikelihoods);
             logLikelihood = logLikelihoods[i];
             return i;
+        }
+
+        /// <summary>
+        ///   Computes the most likely state labels for the given observations,
+        ///   returning the overall sequence probability for this model.
+        /// </summary>
+        /// 
+        public int[] Decode(T[] observations, int output)
+        {
+            double logLikelihood;
+            return Decode(observations, output, out logLikelihood);
+        }
+
+        /// <summary>
+        ///   Computes the most likely state labels for the given observations,
+        ///   returning the overall sequence probability for this model.
+        /// </summary>
+        /// 
+        public int[] Decode(T[] observations, int output, out double logLikelihood)
+        {
+            // Viterbi-forward algorithm.
+            var factor = Function.Factors[output];
+            int states = factor.States;
+            int maxState;
+            double maxWeight;
+            double weight;
+
+            int[,] s = new int[states, observations.Length];
+            double[,] lnFwd = new double[states, observations.Length];
+
+
+            // Base
+            for (int i = 0; i < states; i++)
+                lnFwd[i, 0] = factor.Compute(-1, i, observations, 0, output);
+
+            // Induction
+            for (int t = 1; t < observations.Length; t++)
+            {
+                T observation = observations[t];
+
+                for (int j = 0; j < states; j++)
+                {
+                    maxState = 0;
+                    maxWeight = lnFwd[0, t - 1] + factor.Compute(0, j, observations, t, output);
+
+                    for (int i = 1; i < states; i++)
+                    {
+                        weight = lnFwd[i, t - 1] + factor.Compute(i, j, observations, t, output);
+
+                        if (weight > maxWeight)
+                        {
+                            maxState = i;
+                            maxWeight = weight;
+                        }
+                    }
+
+                    lnFwd[j, t] = maxWeight;
+                    s[j, t] = maxState;
+                }
+            }
+
+
+            // Find maximum value for time T-1
+            maxState = 0;
+            maxWeight = lnFwd[0, observations.Length - 1];
+
+            for (int i = 1; i < states; i++)
+            {
+                if (lnFwd[i, observations.Length - 1] > maxWeight)
+                {
+                    maxState = i;
+                    maxWeight = lnFwd[i, observations.Length - 1];
+                }
+            }
+
+
+            // Trackback
+            int[] path = new int[observations.Length];
+            path[path.Length - 1] = maxState;
+
+            for (int t = path.Length - 2; t >= 0; t--)
+                path[t] = s[path[t + 1], t + 1];
+
+
+            // Returns the sequence probability as an out parameter
+            logLikelihood = maxWeight;
+
+            // Returns the most likely (Viterbi path) for the given sequence
+            return path;
         }
 
         /// <summary>
@@ -159,7 +245,7 @@ namespace Accord.Statistics.Models.Fields
                 throw new Exception();
 
             if (Double.IsInfinity(logZx))
-                throw new Exception(); 
+                throw new Exception();
 #endif
 
 
@@ -295,7 +381,11 @@ namespace Accord.Statistics.Models.Fields
             double[] logLikelihoods = new double[Outputs];
 
             // For all possible outputs for the model,
+#if DEBUG
+            for (int y = 0; y < logLikelihoods.Length; y++)
+#else
             Parallel.For(0, logLikelihoods.Length, y =>
+#endif
             {
                 double logLikelihood;
 
@@ -310,7 +400,10 @@ namespace Accord.Statistics.Models.Fields
                 if (Double.IsNaN(logLikelihood))
                     throw new Exception();
 #endif
-            });
+            }
+#if !DEBUG
+            );
+#endif
 
             return logLikelihoods;
         }
@@ -365,5 +458,22 @@ namespace Accord.Statistics.Models.Fields
         {
             return Load(new FileStream(path, FileMode.Open));
         }
+
+        #region ICloneable Members
+
+        /// <summary>
+        ///   Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A new object that is a copy of this instance.
+        /// </returns>
+        /// 
+        public object Clone()
+        {
+            return new HiddenConditionalRandomField<T>((IPotentialFunction<T>)Function.Clone());
+        }
+
+        #endregion
     }
 }

@@ -99,5 +99,15 @@ namespace Accord.Statistics.Models.Fields.Features
         /// 
         double LogMarginal(double[,] lnFwd, double[,] lnBwd, TObservation[] x, int y);
 
+        /// <summary>
+        ///   Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A new object that is a copy of this instance.
+        /// </returns>
+        /// 
+        IFeature<TObservation> Clone(IPotentialFunction<TObservation> newOwner);
+
     }
 }

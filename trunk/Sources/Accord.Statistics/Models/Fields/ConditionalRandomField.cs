@@ -40,7 +40,7 @@ namespace Accord.Statistics.Models.Fields
     /// </remarks>
     /// 
     [Serializable]
-    public class ConditionalRandomField<T>
+    public class ConditionalRandomField<T> : ICloneable
     {
         
 
@@ -133,8 +133,13 @@ namespace Accord.Statistics.Models.Fields
         /// 
         public int[] Compute(T[] observations, out double logLikelihood)
         {
+            return viterbi(Function.Factors[0], observations, out logLikelihood);
+        }
+
+        private int[] viterbi(FactorPotential<T> factor, T[] observations, out double logLikelihood)
+        {
             // Viterbi-forward algorithm.
-            int states = States;
+            int states = factor.States;
             int maxState;
             double maxWeight;
             double weight;
@@ -274,6 +279,23 @@ namespace Accord.Statistics.Models.Fields
         {
             return Load(new FileStream(path, FileMode.Open));
         }
+
+        #region ICloneable Members
+
+        /// <summary>
+        ///   Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A new object that is a copy of this instance.
+        /// </returns>
+
+        public object Clone()
+        {
+            return new ConditionalRandomField<T>(States, (IPotentialFunction<T>)Function.Clone());
+        }
+
+        #endregion
     }
 
 }

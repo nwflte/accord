@@ -24,6 +24,7 @@ namespace Accord.Statistics.Models.Fields.Features
 {
     using System;
     using Accord.Statistics.Models.Fields.Functions;
+    using Accord.Math;
 
     /// <summary>
     ///   State feature for Hidden Markov Model output class symbol probabilities.
@@ -62,7 +63,7 @@ namespace Accord.Statistics.Models.Fields.Features
         public override double Compute(int previousState, int currentState, T[] observations,
             int observationIndex, int outputClass)
         {
-           return (outputClass == classSymbol) ? 1: 0;
+            return (outputClass == classSymbol) ? 1 : 0;
         }
 
         /// <summary>
@@ -79,7 +80,13 @@ namespace Accord.Statistics.Models.Fields.Features
         /// 
         public override double Marginal(double[,] fwd, double[,] bwd, T[] x, int y)
         {
-            return (y == classSymbol) ? 1 : 0;
+            double likelihood = 0;
+
+            int states = fwd.GetLength(1);
+            for (int j = 0; j < states; j++)
+                likelihood += fwd[x.Length - 1, j];
+
+            return likelihood;
         }
 
         /// <summary>
@@ -96,7 +103,29 @@ namespace Accord.Statistics.Models.Fields.Features
         /// 
         public override double LogMarginal(double[,] lnFwd, double[,] lnBwd, T[] x, int y)
         {
-            return (y == classSymbol) ? 0 : double.NegativeInfinity;
+            double logLikelihood = Double.NegativeInfinity;
+
+            int states = lnFwd.GetLength(1);
+            for (int j = 0; j < states; j++)
+                logLikelihood = Special.LogSum(logLikelihood, lnFwd[x.Length - 1, j]);
+
+            return logLikelihood;
         }
+
+        /// <summary>
+        ///   Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A new object that is a copy of this instance.
+        /// </returns>
+        /// 
+        public IFeature<T> Clone(IPotentialFunction<T> newOwner)
+        {
+            var clone = (OutputFeature<T>)MemberwiseClone();
+            clone.Owner = newOwner;
+            return clone;
+        }
+
     }
 }

@@ -33,13 +33,13 @@ namespace Accord.Statistics.Models.Fields.Features
     /// <typeparam name="T">The type of the observations being modeled.</typeparam>
     /// 
     [Serializable]
-    public abstract class FeatureBase<T> : IFeature<T>
+    public abstract class FeatureBase<T>
     {
         /// <summary>
         ///   Gets the potential function containing this feature.
         /// </summary>
         /// 
-        public IPotentialFunction<T> Owner { get; private set; }
+        public IPotentialFunction<T> Owner { get; protected set; }
 
         /// <summary>
         ///   Gets the potential factor to which this feature belongs.
