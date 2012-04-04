@@ -51,13 +51,19 @@ namespace Accord.Math.Optimization
         ///   Gets the norm of the current <see cref="Gradient"/>.
         /// </summary>
         /// 
-        public double Norm { get; private set; }
+        public double GradientNorm { get; private set; }
 
         /// <summary>
         ///   Gets the current solution parameters for the problem.
         /// </summary>
         /// 
         public double[] Solution { get; private set; }
+
+        /// <summary>
+        ///   Gets the norm of the current <see cref="Solution"/>.
+        /// </summary>
+        /// 
+        public double SolutionNorm { get; private set; }
 
         /// <summary>
         ///   Gets the value of the function to be optimized
@@ -89,7 +95,8 @@ namespace Accord.Math.Optimization
         /// <param name="iteration">The current iteration of the optimization method.</param>
         /// <param name="evaluations">The number of function evaluations performed.</param>
         /// <param name="gradient">The current gradient of the function.</param>
-        /// <param name="norm">The norm of the current gradient.</param>
+        /// <param name="gnorm">The norm of the current gradient</param>
+        /// <param name="xnorm">The norm of the current parameter vector.</param>
         /// <param name="solution">The current solution parameters.</param>
         /// <param name="value">The value of the function evaluated at the current solution.</param>
         /// <param name="stp">The current step size.</param>
@@ -97,18 +104,19 @@ namespace Accord.Math.Optimization
         /// 
         public OptimizationProgressEventArgs(
             int iteration, int evaluations,
-            double[] gradient, double norm,
-            double[] solution, double value,
-            double stp, bool finished)
+            double[] gradient, double gnorm,
+            double[] solution, double xnorm,
+            double value, double stp, bool finished)
         {
             this.Gradient = (double[])gradient.Clone();
             this.Solution = (double[])solution.Clone();
             this.Value = value;
-            this.Norm = norm;
+            this.GradientNorm = gnorm;
+            this.SolutionNorm = xnorm;
 
             this.Iteration = iteration;
             this.Evaluations = evaluations;
-            
+
             this.Finished = finished;
             this.Step = stp;
         }

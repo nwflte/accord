@@ -65,6 +65,55 @@ namespace Accord.Math.Optimization
     ///    </list></para>
     /// </remarks>
     /// 
+    /// <example>
+    /// <para>
+    ///   The following example shows the basic usage of the L-BFGS solver
+    ///   to find the minimum of a function specifying its function and
+    ///   gradient. </para>
+    ///   
+    /// <code>
+    /// // Suppose we would like to find the minimum of the function
+    /// // 
+    /// //   f(x,y)  =  -exp{-(x-1)²} - exp{-(y-2)²/2}
+    /// //
+    /// 
+    /// // First we need write down the function either as a named
+    /// // method, an anonymous method or as a lambda function:
+    /// 
+    /// Func&lt;double[], double> f = (x) =>
+    ///     -Math.Exp(-Math.Pow(x[0] - 1, 2)) - Math.Exp(-0.5 * Math.Pow(x[1] - 2, 2));
+    /// 
+    /// // Now, we need to write its gradient, which is just the
+    /// // vector of first partial derivatives del_f / del_x, as:
+    /// //
+    /// //   g(x,y)  =  { del f / del x, del f / del y }
+    /// // 
+    /// 
+    /// Func&lt;double[], double[]> g = (x) => new double[] 
+    /// {
+    ///     // df/dx = {-2 e^(-    (x-1)^2) (x-1)}
+    ///     2 * Math.Exp(-Math.Pow(x[0] - 1, 2)) * (x[0] - 1),
+    /// 
+    ///     // df/dy = {-  e^(-1/2 (y-2)^2) (y-2)}
+    ///     Math.Exp(-0.5 * Math.Pow(x[1] - 2, 2)) * (x[1] - 2)
+    /// };
+    /// 
+    /// // Finally, we can create the L-BFGS solver, passing the functions as arguments
+    /// var lbfgs = new BroydenFletcherGoldfarbShanno(numberOfVariables: 2, function: f, gradient: g);
+    /// 
+    /// // And then minimize the function:
+    /// double minValue = lbfgs.Minimize();
+    /// double[] solution = lbfgs.Solution;
+    /// 
+    /// // The resultant minimum value should be -2, and the solution
+    /// // vector should be { 1.0, 2.0 }. The answer can be checked on
+    /// // Wolfram Alpha by clicking the following the link:
+    /// 
+    /// // http://www.wolframalpha.com/input/?i=maximize+%28exp%28-%28x-1%29%C2%B2%29+%2B+exp%28-%28y-2%29%C2%B2%2F2%29%29
+    /// 
+    /// </code>
+    /// </example>
+    /// 
     public class BroydenFletcherGoldfarbShanno : IOptimizationMethod
     {
         // those values need not be modified
@@ -81,7 +130,7 @@ namespace Accord.Math.Optimization
         private int iterations;
         private int evaluations;
 
-        private int parameters;
+        private int numberOfVariables;
         private int corrections = 5;
 
         private double[] x; // current solution x
@@ -135,12 +184,12 @@ namespace Accord.Math.Optimization
         /// 
         public int Parameters
         {
-            get { return parameters; }
+            get { return numberOfVariables; }
         }
 
         /// <summary>
         ///   Gets the number of iterations performed in the last
-        ///   call to <see cref="Minimize"/>.
+        ///   call to <see cref="Minimize()"/>.
         /// </summary>
         /// 
         /// <value>
@@ -160,11 +209,12 @@ namespace Accord.Math.Optimization
         /// 
         public int MaxIterations
         {
-            get; set;
+            get;
+            set;
         }
         /// <summary>
         ///   Gets the number of function evaluations performed
-        ///   in the last call to <see cref="Minimize"/>.
+        ///   in the last call to <see cref="Minimize()"/>.
         /// </summary>
         /// 
         /// <value>
@@ -249,7 +299,7 @@ namespace Accord.Math.Optimization
         ///   Gets the output of the function at the current solution.
         /// </summary>
         /// 
-        public double Output
+        public double Value
         {
             get { return f; }
         }
@@ -260,13 +310,15 @@ namespace Accord.Math.Optimization
         /// <summary>
         ///   Creates a new instance of the L-BFGS optimization algorithm.
         /// </summary>
-        /// <param name="parameters">The number of free parameters in the optimization problem.</param>
-        public BroydenFletcherGoldfarbShanno(int parameters)
+        /// 
+        /// <param name="numberOfVariables">The number of free parameters in the optimization problem.</param>
+        /// 
+        public BroydenFletcherGoldfarbShanno(int numberOfVariables)
         {
-            if (parameters <= 0)
-                throw new ArgumentOutOfRangeException("parameters");
+            if (numberOfVariables <= 0)
+                throw new ArgumentOutOfRangeException("numberOfVariables");
 
-            this.parameters = parameters;
+            this.numberOfVariables = numberOfVariables;
 
             this.createWorkVector();
         }
@@ -274,11 +326,13 @@ namespace Accord.Math.Optimization
         /// <summary>
         ///   Creates a new instance of the L-BFGS optimization algorithm.
         /// </summary>
-        /// <param name="parameters">The number of free parameters in the function to be optimized.</param>
+        /// 
+        /// <param name="numberOfVariables">The number of free parameters in the function to be optimized.</param>
         /// <param name="function">The function to be optimized.</param>
         /// <param name="gradient">The gradient of the function.</param>
-        public BroydenFletcherGoldfarbShanno(int parameters, Func<double[], double> function, Func<double[], double[]> gradient)
-            : this(parameters)
+        /// 
+        public BroydenFletcherGoldfarbShanno(int numberOfVariables, Func<double[], double> function, Func<double[], double[]> gradient)
+            : this(numberOfVariables)
         {
             if (function == null)
                 throw new ArgumentNullException("function");
@@ -293,12 +347,14 @@ namespace Accord.Math.Optimization
         /// <summary>
         ///   Creates a new instance of the L-BFGS optimization algorithm.
         /// </summary>
-        /// <param name="parameters">The number of free parameters in the function to be optimized.</param>
+        /// 
+        /// <param name="numberOfVariables">The number of free parameters in the function to be optimized.</param>
         /// <param name="function">The function to be optimized.</param>
         /// <param name="gradient">The gradient of the function.</param>
         /// <param name="diagonal">The diagonal of the Hessian.</param>
-        public BroydenFletcherGoldfarbShanno(int parameters, Func<double[], double> function, Func<double[], double[]> gradient, Func<double[]> diagonal)
-            : this(parameters, function, gradient)
+        /// 
+        public BroydenFletcherGoldfarbShanno(int numberOfVariables, Func<double[], double> function, Func<double[], double[]> gradient, Func<double[]> diagonal)
+            : this(numberOfVariables, function, gradient)
         {
             this.Diagonal = diagonal;
         }
@@ -309,7 +365,18 @@ namespace Accord.Math.Optimization
         ///   Optimizes the defined function. 
         /// </summary>
         /// 
-        /// <param name="values">The initial guess values for the parameters.</param>
+        /// <returns>The values of the parameters which optimizes the function.</returns>
+        /// 
+        public double Minimize()
+        {
+            return Minimize(new double[numberOfVariables]);
+        }
+
+        /// <summary>
+        ///   Optimizes the defined function. 
+        /// </summary>
+        /// 
+        /// <param name="values">The initial guess values for the parameters. Default is the zero vector.</param>
         /// <returns>The values of the parameters which optimizes the function.</returns>
         /// 
         public unsafe double Minimize(double[] values)
@@ -317,7 +384,7 @@ namespace Accord.Math.Optimization
             if (values == null)
                 throw new ArgumentNullException("values");
 
-            if (values.Length != parameters)
+            if (values.Length != numberOfVariables)
                 throw new DimensionMismatchException("values");
 
             if (Function == null) throw new InvalidOperationException(
@@ -329,7 +396,7 @@ namespace Accord.Math.Optimization
 
             // Initialization
             x = (double[])values.Clone();
-            int n = parameters, m = corrections;
+            int n = numberOfVariables, m = corrections;
 
 
             // Make initial evaluation
@@ -383,7 +450,7 @@ namespace Accord.Math.Optimization
 
                 // Make initial progress report with initialization parameters
                 if (Progress != null) Progress(this, new OptimizationProgressEventArgs
-                    (iterations, evaluations, g, gnorm, x, f, stp, finish));
+                    (iterations, evaluations, g, gnorm, x, xnorm, f, stp, finish));
 
 
                 // Start main
@@ -397,7 +464,9 @@ namespace Accord.Math.Optimization
                         if (iterations > m)
                             bound = m;
 
-                        double ys = ddot(n, &delta[npt], &steps[npt]);
+                        double ys = 0;
+                        for (int i = 0; i < n; i++)
+                            ys += delta[npt + i] * steps[npt + i];
 
                         // Compute the diagonal of the Hessian
                         // or use an approximation by the user.
@@ -408,7 +477,9 @@ namespace Accord.Math.Optimization
                         }
                         else
                         {
-                            double yy = ddot(n, &delta[npt], &delta[npt]);
+                            double yy = 0;
+                            for (int i = 0; i < n; i++)
+                                yy += delta[npt + i] * delta[npt + i];
                             double d = ys / yy;
 
                             for (int i = 0; i < n; i++)
@@ -430,19 +501,27 @@ namespace Accord.Math.Optimization
                         {
                             if (--cp == -1) cp = m - 1;
 
-                            double sq = ddot(n, &steps[cp * n], w);
+                            double sq = 0;
+                            for (int j = 0; j < n; j++)
+                                sq += steps[cp * n + j] * w[j];
+
                             double beta = alpha[cp] = rho[cp] * sq;
-                            daxpy(n, -beta, &delta[cp * n], w);
+                            for (int j = 0; j < n; j++)
+                                w[j] -= beta * delta[cp * n + j];
                         }
 
-                        for (int i = 0; i < n; i++)
+                        for (int i = 0; i < diagonal.Length; i++)
                             w[i] *= diagonal[i];
 
                         for (int i = 1; i <= bound; i += 1)
                         {
-                            double yr = ddot(n, &delta[cp * n], w);
+                            double yr = 0;
+                            for (int j = 0; j < n; j++)
+                                yr += delta[cp * n + j] * w[j];
+
                             double beta = alpha[cp] - rho[cp] * yr;
-                            daxpy(n, beta, &steps[cp * n], w);
+                            for (int j = 0; j < n; j++)
+                                w[j] += beta * steps[cp * n + j];
 
                             if (++cp == m) cp = 0;
                         }
@@ -487,7 +566,7 @@ namespace Accord.Math.Optimization
                         finish = true;
 
                     if (Progress != null) Progress(this, new OptimizationProgressEventArgs
-                        (iterations, evaluations, g, gnorm, x, f, stp, finish));
+                        (iterations, evaluations, g, gnorm, x, xnorm, f, stp, finish));
                 }
             }
 
@@ -504,7 +583,7 @@ namespace Accord.Math.Optimization
         private unsafe void mcsrch(double[] x, ref double f, ref double[] g, double* s,
             ref double stp, out int nfev, double[] wa)
         {
-            int n = parameters;
+            int n = numberOfVariables;
             double ftest1 = 0;
             int infoc = 1;
 
@@ -879,11 +958,10 @@ namespace Accord.Math.Optimization
         #endregion
 
 
-        #region Private methods
         private double[] getDiagonal()
         {
             double[] diag = Diagonal();
-            if (diag.Length != parameters) throw new ArgumentException(
+            if (diag.Length != numberOfVariables) throw new ArgumentException(
                 "The length of the Hessian diagonal vector does not match the" +
                 " number of free parameters in the optimization poblem.");
             for (int i = 0; i < diag.Length; i++)
@@ -896,7 +974,7 @@ namespace Accord.Math.Optimization
         private double[] getGradient(double[] args)
         {
             double[] grad = Gradient(args);
-            if (grad.Length != parameters) throw new ArgumentException(
+            if (grad.Length != numberOfVariables) throw new ArgumentException(
                 "The length of the gradient vector does not match the" +
                 " number of free parameters in the optimization problem.");
             return grad;
@@ -913,28 +991,9 @@ namespace Accord.Math.Optimization
 
         private void createWorkVector()
         {
-            this.work = new double[parameters * (2 * corrections + 1) + 2 * corrections];
-        }
-        #endregion
-
-        #region Static methods
-        private unsafe static void daxpy(int n, double da, double* dx, double* dy)
-        {
-            for (int i = 0; i < n; i++)
-                dy[i] += da * dx[i];
+            this.work = new double[numberOfVariables * (2 * corrections + 1) + 2 * corrections];
         }
 
-
-        private unsafe static double ddot(int n, double* dx, double* dy)
-        {
-            double sum = 0;
-
-            for (int i = 0; i < n; i++)
-                sum += dx[i] * dy[i];
-
-            return sum;
-        }
-        #endregion
 
     }
 }
