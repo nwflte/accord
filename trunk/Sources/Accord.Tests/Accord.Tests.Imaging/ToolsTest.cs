@@ -27,6 +27,7 @@ using System.Drawing;
 
 using Tools = Accord.Imaging.Tools;
 using System.Drawing.Imaging;
+using Accord.Math.Decompositions;
 
 namespace Accord.Tests.Imaging
 {
@@ -185,53 +186,51 @@ namespace Accord.Tests.Imaging
         {
             PointH[] x1 = 
             {
-                new PointH(0,0),
-                new PointH(1,0),
-                new PointH(0,1),
-                new PointH(1,1),
+                new PointH(0, 0),
+                new PointH(1, 0),
+                new PointH(0, 1),
+                new PointH(1, 1),
             };
 
             PointH[] x2 = 
             {
-                new PointH(0,0),
-                new PointH(1,0),
-                new PointH(0,1),
-                new PointH(1,1),
+                new PointH(0, 0),
+                new PointH(1, 0),
+                new PointH(0, 1),
+                new PointH(1, 1),
             };
 
             double[,] expected = Matrix.Identity(3);
 
-            double[,] actual;
-
-            actual = (double[,])Tools.Homography(x1, x2);
+            double[,] actual = (double[,])Tools.Homography(x1, x2);
 
             for (int i = 0; i < 3; i++)
                 for (int j = 0; j < 3; j++)
                     actual[i, j] /= actual[2, 2];
 
-            Assert.IsTrue(Matrix.IsEqual(expected, actual));
+            Assert.IsTrue(Matrix.IsEqual(expected, actual, 1e-4));
 
 
             x1 = new PointH[] 
             {
-                new PointH(2,0),
-                new PointH(1,0),
-                new PointH(5,1),
-                new PointH(1,1),
-                new PointH(7,1),
-                new PointH(1,2),
-                new PointH(1,1),
+                new PointH(2, 0),
+                new PointH(1, 0),
+                new PointH(5, 1),
+                new PointH(1, 1),
+                new PointH(7, 1),
+                new PointH(1, 2),
+                new PointH(1, 1),
             };
 
             x2 = new PointH[] 
             {
-                new PointH(9,1),
-                new PointH(1,5),
-                new PointH(9,1),
-                new PointH(1,7),
-                new PointH(2,7),
-                new PointH(6,5),
-                new PointH(1,7),
+                new PointH(9, 1),
+                new PointH(1, 5),
+                new PointH(9, 1),
+                new PointH(1, 7),
+                new PointH(2, 7),
+                new PointH(6, 5),
+                new PointH(1, 7),
             };
 
             expected = new double[,]
@@ -254,25 +253,23 @@ namespace Accord.Tests.Imaging
         {
             PointF[] x1 = 
             {
-                new PointF(0,0),
-                new PointF(1,0),
-                new PointF(0,1),
-                new PointF(1,1),
+                new PointF(0, 0),
+                new PointF(1, 0),
+                new PointF(0, 1),
+                new PointF(1, 1),
             };
 
             PointF[] x2 = 
             {
-                new PointF(0,0),
-                new PointF(1,0),
-                new PointF(0,1),
-                new PointF(1,1),
+                new PointF(0, 0),
+                new PointF(1, 0),
+                new PointF(0, 1),
+                new PointF(1, 1),
             };
 
             float[,] expected = Matrix.Identity(3).ToSingle();
 
-            float[,] actual;
-
-            actual = (float[,])Tools.Homography(x1, x2);
+            float[,] actual = (float[,])Tools.Homography(x1, x2);
 
             for (int i = 0; i < 3; i++)
                 for (int j = 0; j < 3; j++)
@@ -284,24 +281,24 @@ namespace Accord.Tests.Imaging
 
             x1 = new PointF[]
             {
-                new PointF(2,0),
-                new PointF(1,0),
-                new PointF(5,1),
-                new PointF(1,1),
-                new PointF(7,1),
-                new PointF(1,2),
-                new PointF(1,1),
+                new PointF(2, 0),
+                new PointF(1, 0),
+                new PointF(5, 1),
+                new PointF(1, 1),
+                new PointF(7, 1),
+                new PointF(1, 2),
+                new PointF(1, 1),
             };
 
             x2 = new PointF[]
             {
-                new PointF(9,1),
-                new PointF(1,5),
-                new PointF(9,1),
-                new PointF(1,7),
-                new PointF(2,7),
-                new PointF(6,5),
-                new PointF(1,7),
+                new PointF(9, 1),
+                new PointF(1, 5),
+                new PointF(9, 1),
+                new PointF(1, 7),
+                new PointF(2, 7),
+                new PointF(6, 5),
+                new PointF(1, 7),
             };
 
             expected = new float[,]
@@ -318,7 +315,6 @@ namespace Accord.Tests.Imaging
             Assert.IsTrue(Matrix.IsEqual(expected, actual, 0.01));
 
         }
-
 
         [TestMethod()]
         public void ToDoubleArrayTest()

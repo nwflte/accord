@@ -20,22 +20,18 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-using Accord.Statistics.Distributions.Univariate;
-using Accord.Statistics.Models.Markov;
-using Accord.Statistics.Models.Markov.Learning;
-using Accord.Statistics.Models.Markov.Topology;
-using Accord.Statistics.Distributions.Multivariate;
-
 namespace Accord.Tests.Statistics
 {
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+    using Accord.Statistics.Distributions.Univariate;
+    using Accord.Statistics.Models.Markov;
+    using Accord.Statistics.Models.Markov.Learning;
+    using Accord.Statistics.Models.Markov.Topology;
+    using Accord.Statistics.Distributions.Multivariate;
+    using Accord.Statistics.Distributions.Fitting;
 
 
-    /// <summary>
-    ///This is a test class for HiddenMarkovModelTest and is intended
-    ///to contain all HiddenMarkovModelTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class GenericSequenceClassifierTest
     {
@@ -43,10 +39,6 @@ namespace Accord.Tests.Statistics
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -138,9 +130,9 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(1, c2);
 
 
-            Assert.AreEqual(-13.950270389220542, logLikelihood, 1e-10);
-            Assert.AreEqual(0.998463070315175, likelihood1, 1e-10);
-            Assert.AreEqual(0.998463070315175, likelihood2, 1e-10);
+            Assert.AreEqual(-13.271981026832929, logLikelihood, 1e-10);
+            Assert.AreEqual(0.99999791320102149, likelihood1, 1e-10);
+            Assert.AreEqual(0.99999791320102149, likelihood2, 1e-10);
             Assert.IsFalse(double.IsNaN(logLikelihood));
             Assert.IsFalse(double.IsNaN(likelihood1));
             Assert.IsFalse(double.IsNaN(likelihood2));
@@ -238,9 +230,9 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(0, c1);
             Assert.AreEqual(1, c2);
 
-            Assert.AreEqual(-13.950270389220542, logLikelihood, 1e-14);
-            Assert.AreEqual(0.998463070315175, likelihood1, 1e-15);
-            Assert.AreEqual(0.998463070315175, likelihood2, 1e-15);
+            Assert.AreEqual(-13.271981026832929, logLikelihood, 1e-14);
+            Assert.AreEqual(0.99999791320102149, likelihood1, 1e-15);
+            Assert.AreEqual(0.99999791320102149, likelihood2, 1e-15);
 
             Assert.IsFalse(double.IsNaN(logLikelihood));
             Assert.IsFalse(double.IsNaN(likelihood1));
@@ -321,15 +313,173 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(0, c1);
             Assert.AreEqual(1, c2);
 
-            Assert.AreEqual(-13.950270389220542, logLikelihood, 1e-10);
-            Assert.AreEqual(0.99846307031517456, logLikelihood1, 1e-10);
-            Assert.AreEqual(0.99846307031517456, logLikelihood2, 1e-10);
+            Assert.AreEqual(-13.271981026832933, logLikelihood, 1e-10);
+            Assert.AreEqual(0.99999791320102149, logLikelihood1, 1e-10);
+            Assert.AreEqual(0.99999791320102149, logLikelihood2, 1e-10);
 
             Assert.IsFalse(double.IsNaN(logLikelihood));
             Assert.IsFalse(double.IsNaN(logLikelihood1));
             Assert.IsFalse(double.IsNaN(logLikelihood2));
         }
 
+        [TestMethod()]
+        public void LearnTest5()
+        {
+            // Create a Continuous density Hidden Markov Model Sequence Classifier
+            // to detect a multivariate sequence and the same sequence backwards.
+            double[][][] sequences = new double[][][]
+            {
+                new double[][] 
+                { 
+                    // This is the first  sequence with label = 0
+                    new double[] { 0, 1 },
+                    new double[] { 1, 2 },
+                    new double[] { 2, 3 },
+                    new double[] { 3, 4 },
+                    new double[] { 4, 5 },
+                }, 
+
+                new double[][]
+                {
+                        // This is the second sequence with label = 1
+                    new double[] { 4,  3 },
+                    new double[] { 3,  2 },
+                    new double[] { 2,  1 },
+                    new double[] { 1,  0 },
+                    new double[] { 0, -1 },
+                }
+            };
+
+            // Labels for the sequences
+            int[] labels = { 0, 1 };
+
+
+            var density = new MultivariateNormalDistribution(2);
+
+            // Creates a sequence classifier containing 2 hidden Markov Models with 2 states
+            // and an underlying multivariate mixture of Normal distributions as density.
+            var classifier = new HiddenMarkovClassifier<MultivariateNormalDistribution>(
+                2, new Ergodic(2), density);
+
+            // Configure the learning algorithms to train the sequence classifier
+            var teacher = new HiddenMarkovClassifierLearning<MultivariateNormalDistribution>(
+                classifier,
+
+                // Train each model until the log-likelihood changes less than 0.0001
+                modelIndex => new BaumWelchLearning<MultivariateNormalDistribution>(
+                    classifier.Models[modelIndex])
+                {
+                    Tolerance = 0.0001,
+                    Iterations = 0,
+
+                    FittingOptions = new NormalOptions() { Diagonal = true }
+                }
+            );
+
+            // Train the sequence classifier using the algorithm
+            double logLikelihood = teacher.Run(sequences, labels);
+
+
+            // Calculate the probability that the given
+            //  sequences originated from the model
+            double logLikelihood1, logLikelihood2;
+
+            // Try to classify the 1st sequence (output should be 0)
+            int c1 = classifier.Compute(sequences[0], out logLikelihood1);
+
+            // Try to classify the 2nd sequence (output should be 1)
+            int c2 = classifier.Compute(sequences[1], out logLikelihood2);
+
+
+            Assert.AreEqual(0, c1);
+            Assert.AreEqual(1, c2);
+
+            Assert.AreEqual(-24.560599651649841, logLikelihood, 1e-10);
+            Assert.AreEqual(0.99999999998806466, logLikelihood1, 1e-10);
+            Assert.AreEqual(0.99999999998806466, logLikelihood2, 1e-10);
+
+            Assert.IsFalse(double.IsNaN(logLikelihood));
+            Assert.IsFalse(double.IsNaN(logLikelihood1));
+            Assert.IsFalse(double.IsNaN(logLikelihood2));
+        }
+
+
+        [TestMethod()]
+        public void LearnTest6()
+        {
+            // Create a Continuous density Hidden Markov Model Sequence Classifier
+            // to detect a multivariate sequence and the same sequence backwards.
+            double[][][] sequences = new double[][][]
+            {
+                new double[][] 
+                { 
+                    // This is the first  sequence with label = 0
+                    new double[] { 0, 1 },
+                    new double[] { 1, 2 },
+                    new double[] { 2, 3 },
+                    new double[] { 3, 4 },
+                    new double[] { 4, 5 },
+                }, 
+
+                new double[][]
+                {
+                        // This is the second sequence with label = 1
+                    new double[] { 4,  3 },
+                    new double[] { 3,  2 },
+                    new double[] { 2,  1 },
+                    new double[] { 1,  0 },
+                    new double[] { 0, -1 },
+                }
+            };
+
+            // Labels for the sequences
+            int[] labels = { 0, 1 };
+
+
+            var density = new MultivariateNormalDistribution(2);
+
+            // Creates a sequence classifier containing 2 hidden Markov Models with 2 states
+            // and an underlying multivariate mixture of Normal distributions as density.
+            var classifier = new HiddenMarkovClassifier<MultivariateNormalDistribution>(
+                2, new Custom(new double[2, 2], new double[2]), density);
+
+            // Configure the learning algorithms to train the sequence classifier
+            var teacher = new HiddenMarkovClassifierLearning<MultivariateNormalDistribution>(
+                classifier,
+
+                // Train each model until the log-likelihood changes less than 0.0001
+                modelIndex => new BaumWelchLearning<MultivariateNormalDistribution>(
+                    classifier.Models[modelIndex])
+                {
+                    Tolerance = 0.0001,
+                    Iterations = 0,
+
+                    FittingOptions = new NormalOptions() { Diagonal = true }
+                }
+            );
+
+            // Train the sequence classifier using the algorithm
+            double logLikelihood = teacher.Run(sequences, labels);
+
+
+            // Calculate the probability that the given
+            //  sequences originated from the model
+            double response1, response2;
+
+            // Try to classify the 1st sequence (output should be 0)
+            int c1 = classifier.Compute(sequences[0], out response1);
+
+            // Try to classify the 2nd sequence (output should be 1)
+            int c2 = classifier.Compute(sequences[1], out response2);
+
+            Assert.AreEqual(double.NegativeInfinity, logLikelihood);
+            Assert.AreEqual(0, response1);
+            Assert.AreEqual(0, response2);
+
+            Assert.IsFalse(double.IsNaN(logLikelihood));
+            Assert.IsFalse(double.IsNaN(response1));
+            Assert.IsFalse(double.IsNaN(response2));
+        }
 
     }
 }

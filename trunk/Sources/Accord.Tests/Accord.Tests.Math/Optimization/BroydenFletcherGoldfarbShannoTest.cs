@@ -20,17 +20,12 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Math.Optimization;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 namespace Accord.Tests.Math
 {
+    using Accord.Math.Optimization;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System;
 
-
-    /// <summary>
-    ///This is a test class for LBFGSTest and is intended
-    ///to contain all LBFGSTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class BroydenFletcherGoldfarbShannoTest
     {
@@ -38,10 +33,6 @@ namespace Accord.Tests.Math
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -86,9 +77,6 @@ namespace Accord.Tests.Math
 
 
 
-        /// <summary>
-        ///A test for lbfgs
-        ///</summary>
         [TestMethod()]
         public void lbfgsTest()
         {
@@ -142,6 +130,57 @@ namespace Accord.Tests.Math
             double f1 = 200 * a;
 
             return new[] { f0, f1 };
+        }
+
+
+        [TestMethod()]
+        public void lbfgsTest2()
+        {
+            // Suppose we would like to find the minimum of the function
+            // 
+            //   f(x,y)  =  -exp{-(x-1)²} - exp{-(y-2)²/2}
+            //
+
+            // First we need write down the function either as a named
+            // method, an anonymous method or as a lambda function:
+
+            Func<double[], double> f = (x) =>
+                -Math.Exp(-Math.Pow(x[0] - 1, 2)) - Math.Exp(-0.5 * Math.Pow(x[1] - 2, 2));
+
+            // Now, we need to write its gradient, which is just the
+            // vector of first partial derivatives del_f / del_x, as:
+            //
+            //   g(x,y)  =  { del f / del x, del f / del y }
+            // 
+
+            Func<double[], double[]> g = (x) => new double[] 
+            {
+                // df/dx = {-2 e^(-    (x-1)^2) (x-1)}
+                2 * Math.Exp(-Math.Pow(x[0] - 1, 2)) * (x[0] - 1),
+
+                // df/dy = {-  e^(-1/2 (y-2)^2) (y-2)}
+                Math.Exp(-0.5 * Math.Pow(x[1] - 2, 2)) * (x[1] - 2)
+            };
+
+            // Finally, we can create the L-BFGS solver, passing the functions as arguments
+            var lbfgs = new BroydenFletcherGoldfarbShanno(numberOfVariables: 2, function: f, gradient: g);
+
+            // And then minimize the function:
+            double minValue = lbfgs.Minimize();
+            double[] solution = lbfgs.Solution;
+
+            // The resultant minimum value should be -2, and the solution
+            // vector should be { 1.0, 2.0 }. The answer can be checked on
+            // Wolfram Alpha by clicking the following the link:
+
+            // http://www.wolframalpha.com/input/?i=maximize+%28exp%28-%28x-1%29%C2%B2%29+%2B+exp%28-%28y-2%29%C2%B2%2F2%29%29
+
+            double expected = -2;
+            Assert.AreEqual(expected, minValue, 1e-10);
+
+            Assert.AreEqual(1, solution[0], 1e-6);
+            Assert.AreEqual(2, solution[1], 1e-6);
+
         }
 
     }

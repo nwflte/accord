@@ -22,11 +22,11 @@
 
 namespace Accord.Tests.MachineLearning
 {
-    using Accord.MachineLearning;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Accord.Statistics.Kernels;
+    using System;
     using Accord.MachineLearning.VectorMachines;
     using Accord.MachineLearning.VectorMachines.Learning;
+    using Accord.Statistics.Kernels;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass()]
     public class SupportVectorMachineTest
@@ -109,18 +109,18 @@ namespace Accord.Tests.MachineLearning
             // Run
             double error = smo.Run();
 
-            Assert.AreEqual(-1, System.Math.Sign(machine.Compute(inputs[0])));
-            Assert.AreEqual(-1, System.Math.Sign(machine.Compute(inputs[1])));
-            Assert.AreEqual(-1, System.Math.Sign(machine.Compute(inputs[2])));
-            Assert.AreEqual(+1, System.Math.Sign(machine.Compute(inputs[3])));
+            Assert.AreEqual(-1, Math.Sign(machine.Compute(inputs[0])));
+            Assert.AreEqual(-1, Math.Sign(machine.Compute(inputs[1])));
+            Assert.AreEqual(-1, Math.Sign(machine.Compute(inputs[2])));
+            Assert.AreEqual(+1, Math.Sign(machine.Compute(inputs[3])));
 
             Assert.AreEqual(error, 0);
 
-            Assert.AreEqual(-0.6669921875, machine.Threshold);
-            Assert.AreEqual(-0.3330078125, machine.Weights[0]);
-            Assert.AreEqual(-0.333984375, machine.Weights[1]);
-            Assert.AreEqual(-0.3330078125, machine.Weights[2]);
-            Assert.AreEqual(+1.0, machine.Weights[3]);
+            Assert.AreEqual(-0.6640625, machine.Threshold);
+            Assert.AreEqual(1, machine.Weights[0]);
+            Assert.AreEqual(-0.34375, machine.Weights[1]);
+            Assert.AreEqual(-0.328125, machine.Weights[2]);
+            Assert.AreEqual(-0.328125, machine.Weights[3]);
         }
 
         [TestMethod()]
@@ -149,10 +149,10 @@ namespace Accord.Tests.MachineLearning
             smo.Complexity = 1;
             double error = smo.Run();
 
-            Assert.AreEqual(-1, System.Math.Sign(machine.Compute(inputs[0])));
-            Assert.AreEqual(+1, System.Math.Sign(machine.Compute(inputs[1])));
-            Assert.AreEqual(+1, System.Math.Sign(machine.Compute(inputs[2])));
-            Assert.AreEqual(-1, System.Math.Sign(machine.Compute(inputs[3])));
+            Assert.AreEqual(-1, Math.Sign(machine.Compute(inputs[0])));
+            Assert.AreEqual(+1, Math.Sign(machine.Compute(inputs[1])));
+            Assert.AreEqual(+1, Math.Sign(machine.Compute(inputs[2])));
+            Assert.AreEqual(-1, Math.Sign(machine.Compute(inputs[3])));
 
             Assert.AreEqual(error, 0);
         }

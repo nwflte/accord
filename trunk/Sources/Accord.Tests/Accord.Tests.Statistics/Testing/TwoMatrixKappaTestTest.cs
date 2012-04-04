@@ -76,7 +76,7 @@ namespace Accord.Tests.Statistics
         #endregion
 
 
-     
+
 
         [TestMethod()]
         public void KappaTestConstructorTest2()
@@ -122,6 +122,59 @@ namespace Accord.Tests.Statistics
             Assert.IsFalse(target.Significant);
         }
 
+        [TestMethod()]
+        public void KappaTestConstructorTest3()
+        {
+            double k1 = 0.95;
+            double v1 = 6.10e-6;
+
+            double k2 = 0.9241;
+            double v2 = 9.02e-6;
+
+            TwoMatrixKappaTest target = new TwoMatrixKappaTest(k1, v1, k2, v2);
+
+            Assert.AreEqual(Hypothesis.TwoTail, target.Hypothesis);
+            Assert.AreEqual(v1 + v2, target.Variance);
+
+            Assert.AreEqual(6.6607612733636143, target.Statistic);
+            Assert.IsTrue(target.Significant);
+        }
+
+        [TestMethod()]
+        public void KappaTestConstructorTest4()
+        {
+            {
+                double k1 = 0.819223955119253;
+                double v1 = 0.00296025931609249;
+
+                double k2 = 0.833170126346748;
+                double v2 = 0.00278659995785188;
+
+                TwoMatrixKappaTest target = new TwoMatrixKappaTest(k1, v1, k2, v2);
+
+                Assert.AreEqual(Hypothesis.TwoTail, target.Hypothesis);
+                Assert.AreEqual(v1 + v2, target.Variance);
+
+                Assert.AreEqual(0.1839669091631167, target.Statistic);
+                Assert.IsFalse(target.Significant);
+            }
+
+            {
+                double k1 = 0.946859215964404;
+                double v1 = 0.000111244462937448;
+
+                double k2 = 0.98368298182233;
+                double v2 = 0.0000353910186138505;
+
+                TwoMatrixKappaTest target = new TwoMatrixKappaTest(k1, v1, k2, v2);
+
+                Assert.AreEqual(Hypothesis.TwoTail, target.Hypothesis);
+                Assert.AreEqual(v1 + v2, target.Variance);
+
+                Assert.AreEqual(3.0409457018033272, target.Statistic);
+                Assert.IsTrue(target.Significant);
+            }
+        }
 
 
     }

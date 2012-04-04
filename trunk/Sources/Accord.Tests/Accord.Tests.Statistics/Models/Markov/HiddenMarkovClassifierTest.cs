@@ -242,11 +242,11 @@ namespace Accord.Tests.Statistics
             Assert.IsFalse(double.IsNaN(logRejection));
 
             logRejection = threshold.Evaluate(r0);
-            Assert.AreEqual(-6.7949285513628528, logRejection);
+            Assert.AreEqual(-6.7949285513628528, logRejection, 1e-10);
             Assert.IsFalse(double.IsNaN(logRejection));
 
             threshold.Decode(r0, out logRejection);
-            Assert.AreEqual(-8.902077561009957, logRejection);
+            Assert.AreEqual(-8.902077561009957, logRejection, 1e-10);
             Assert.IsFalse(double.IsNaN(logRejection));
         }
     }

@@ -20,7 +20,7 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-namespace Accord.Tests.Statistics
+namespace Accord.Tests.Statistics.Models.Fields
 {
     using Accord.Statistics.Models.Fields.Functions;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -145,17 +145,19 @@ namespace Accord.Tests.Statistics
         {
             HiddenMarkovClassifier model = CreateModel1();
 
-            HiddenMarkovClassifierFunction target = new HiddenMarkovClassifierFunction(model);
+            DiscreteMarkovClassifierFunction target = new DiscreteMarkovClassifierFunction(model);
 
             var features = target.Features;
             double[] weights = target.Weights;
 
-            Assert.AreEqual(features.Length, 20);
-            Assert.AreEqual(weights.Length, 20);
+            Assert.AreEqual(22, features.Length);
+            Assert.AreEqual(22, weights.Length);
 
             int k = 0;
             for (int c = 0; c < model.Classes; c++)
             {
+                Assert.AreEqual(Math.Log(model.Priors[c]), weights[k++]);
+
                 for (int i = 0; i < model[c].States; i++)
                     Assert.AreEqual(model[c].Probabilities[i], weights[k++]);
 
@@ -176,7 +178,7 @@ namespace Accord.Tests.Statistics
         {
             HiddenMarkovClassifier model = CreateModel1();
 
-            HiddenMarkovClassifierFunction target = new HiddenMarkovClassifierFunction(model);
+            DiscreteMarkovClassifierFunction target = new DiscreteMarkovClassifierFunction(model);
 
             double actual;
             double expected;
@@ -188,7 +190,8 @@ namespace Accord.Tests.Statistics
                 for (int i = 0; i < model[c].States; i++)
                 {
                     // Check initial state transitions
-                    expected = Math.Exp(model[c].Probabilities[i]) * Math.Exp(model[c].Emissions[i, x[0]]);
+                    expected = model.Priors[c] *
+                        Math.Exp(model[c].Probabilities[i]) * Math.Exp(model[c].Emissions[i, x[0]]);
                     actual = Math.Exp(target.Factors[c].Compute(-1, i, x, 0, c));
                     Assert.AreEqual(expected, actual, 1e-6);
                     Assert.IsFalse(double.IsNaN(actual));
@@ -201,7 +204,8 @@ namespace Accord.Tests.Statistics
                     {
                         for (int j = 0; j < model[c].States; j++)
                         {
-                            expected = Math.Exp(model[c].Transitions[i, j]) * Math.Exp(model[c].Emissions[j, x[t]]);
+                            expected = model.Priors[c] * 
+                                Math.Exp(model[c].Transitions[i, j]) * Math.Exp(model[c].Emissions[j, x[t]]);
                             actual = Math.Exp(target.Factors[c].Compute(i, j, x, t, c));
                             Assert.AreEqual(expected, actual, 1e-6);
                             Assert.IsFalse(double.IsNaN(actual));

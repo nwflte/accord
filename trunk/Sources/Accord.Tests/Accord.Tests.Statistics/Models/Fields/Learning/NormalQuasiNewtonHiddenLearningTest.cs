@@ -20,36 +20,26 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics.Models.Fields.Learning;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Accord.Statistics.Models.Fields;
-using Accord.Statistics.Models.Markov;
-using Accord.Statistics.Models.Markov.Topology;
-using Accord.Statistics.Models.Fields.Functions;
-using Accord.Statistics.Models.Markov.Learning;
-using Accord.Math;
-using Accord.Math.Differentiation;
-using System;
 
-namespace Accord.Tests.Statistics
+namespace Accord.Tests.Statistics.Models.Fields
 {
+    using Accord.Statistics.Models.Fields.Learning;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Accord.Statistics.Models.Fields;
+    using Accord.Statistics.Models.Markov;
+    using Accord.Statistics.Models.Markov.Topology;
+    using Accord.Statistics.Models.Fields.Functions;
+    using Accord.Statistics.Models.Markov.Learning;
+    using Accord.Math;
+    using Accord.Math.Differentiation;
+    using System;
 
-
-    /// <summary>
-    ///This is a test class for QuasiNewtonLearningTest and is intended
-    ///to contain all QuasiNewtonLearningTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class NormalQuasiNewtonHiddenLearningTest
     {
 
-
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -108,7 +98,7 @@ namespace Accord.Tests.Statistics
         public void RunTest()
         {
             var hmm = NormalHiddenMarkovClassifierPotentialFunctionTest.CreateModel1();
-            var function = new NormalHiddenMarkovClassifierFunction(hmm);
+            var function = new NormalMarkovClassifierFunction(hmm);
 
             var model = new HiddenConditionalRandomField<double>(function);
             var target = new QuasiNewtonHiddenLearning<double>(model);
@@ -133,7 +123,7 @@ namespace Accord.Tests.Statistics
 
             double error = target.RunEpoch(inputs, outputs);
             double ll1 = model.LogLikelihood(inputs, outputs);
-            Assert.AreEqual(ll1, error, 1e-10);
+            Assert.AreEqual(-ll1, error, 1e-10);
             Assert.IsFalse(Double.IsNaN(ll1));
             Assert.IsFalse(Double.IsNaN(error));
 
@@ -143,7 +133,7 @@ namespace Accord.Tests.Statistics
                 expected[i] = outputs[i];
             }
 
-            Assert.AreEqual(-0.0030762239456088025, ll0, 1e-10);
+            Assert.AreEqual(-0.0000041736023099758768, ll0, 1e-10);
             
             for (int i = 0; i < inputs.Length; i++)
                 Assert.AreEqual(expected[i], actual[i]);
@@ -158,7 +148,7 @@ namespace Accord.Tests.Statistics
         public void GradientTest2()
         {
             var hmm = NormalHiddenMarkovClassifierPotentialFunctionTest.CreateModel1();
-            var function = new NormalHiddenMarkovClassifierFunction(hmm);
+            var function = new NormalMarkovClassifierFunction(hmm);
 
             var model = new HiddenConditionalRandomField<double>(function);
             var target = new QuasiNewtonHiddenLearning<double>(model);
@@ -183,7 +173,7 @@ namespace Accord.Tests.Statistics
         public void GradientTest3()
         {
             var hmm = NormalHiddenMarkovClassifierPotentialFunctionTest.CreateModel1();
-            var function = new NormalHiddenMarkovClassifierFunction(hmm);
+            var function = new NormalMarkovClassifierFunction(hmm);
 
             var model = new HiddenConditionalRandomField<double>(function);
             var target = new QuasiNewtonHiddenLearning<double>(model);
@@ -199,7 +189,7 @@ namespace Accord.Tests.Statistics
 
             for (int i = 0; i < actual.Length; i++)
             {
-                Assert.AreEqual(expected[i], actual[i], 1e-3);
+                Assert.AreEqual(expected[i], actual[i], 1e-2);
                 Assert.IsFalse(double.IsNaN(actual[i]));
                 Assert.IsFalse(double.IsNaN(expected[i]));
             }
@@ -223,7 +213,7 @@ namespace Accord.Tests.Statistics
                 for (int i = 0; i < parameters.Length; i++)
                     if (!(Double.IsInfinity(parameters[i]) || Double.IsNaN(parameters[i])))
                         sumSquaredWeights += parameters[i] * parameters[i];
-                sumSquaredWeights = sumSquaredWeights * 0.5 * sigma;
+                sumSquaredWeights = sumSquaredWeights * 0.5 / sigma;
             }
 
             double logLikelihood = model.LogLikelihood(inputs, outputs);

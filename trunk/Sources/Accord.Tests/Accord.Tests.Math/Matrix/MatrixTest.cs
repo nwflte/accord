@@ -1365,6 +1365,64 @@ namespace Accord.Tests.Math
         }
 
         [TestMethod()]
+        public void PositiveDefiniteTest()
+        {
+            double[,] m =
+            {
+                { 2, 2 },
+                { 2, 2 },
+            };
+
+            bool expected = false;
+            bool actual = Matrix.IsPositiveDefinite(m);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod()]
+        public void PositiveDefiniteTest2()
+        {
+            double[,] m =
+            {
+                {  2, -1,  0 },
+                { -1,  2, -1 },
+                {  0, -1,  2 },
+            };
+
+            bool expected = true;
+            bool actual = Matrix.IsPositiveDefinite(m);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod()]
+        public void PositiveDefiniteJaggedTest()
+        {
+            double[][] m =
+            {
+                new double[] { 2, 2 },
+                new double[] { 2, 2 },
+            };
+
+            bool expected = false;
+            bool actual = Matrix.IsPositiveDefinite(m);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod()]
+        public void PositiveDefiniteJaggedTest2()
+        {
+            double[][] m =
+            {
+                new double[] {  2, -1,  0 },
+                new double[] { -1,  2, -1 },
+                new double[] {  0, -1,  2 },
+            };
+
+            bool expected = true;
+            bool actual = Matrix.IsPositiveDefinite(m);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod()]
         public void TraceTest()
         {
             double[,] m =

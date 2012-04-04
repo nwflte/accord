@@ -169,7 +169,7 @@ namespace Accord.Tests.Statistics
         }
 
         [TestMethod()]
-        public void PhiTest()
+        public void ChiSquareTest()
         {
             int[,] matrix =
             {
@@ -182,7 +182,7 @@ namespace Accord.Tests.Statistics
 
             GeneralConfusionMatrix target = new GeneralConfusionMatrix(matrix);
 
-            double actual = target.Phi;
+            double actual = target.ChiSquare;
 
             Assert.AreEqual(19.43,actual , 0.01);
             Assert.IsFalse(Double.IsNaN(actual));

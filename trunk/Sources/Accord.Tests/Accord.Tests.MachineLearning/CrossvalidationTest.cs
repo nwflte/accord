@@ -20,20 +20,15 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.MachineLearning;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Accord.MachineLearning.VectorMachines;
-using Accord.MachineLearning.VectorMachines.Learning;
-using Accord.Math;
-using Accord.Statistics.Kernels;
 namespace Accord.Tests.MachineLearning
 {
+    using Accord.MachineLearning;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Accord.MachineLearning.VectorMachines;
+    using Accord.MachineLearning.VectorMachines.Learning;
+    using Accord.Math;
+    using Accord.Statistics.Kernels;
 
-
-    /// <summary>
-    ///This is a test class for CrossvalidationTest and is intended
-    ///to contain all CrossvalidationTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class CrossvalidationTest
     {
@@ -41,10 +36,6 @@ namespace Accord.Tests.MachineLearning
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -88,9 +79,6 @@ namespace Accord.Tests.MachineLearning
         #endregion
 
 
-        /// <summary>
-        ///A test for Cross-validation Constructor
-        ///</summary>
         [TestMethod()]
         public void CrossvalidationConstructorTest()
         {
@@ -125,10 +113,10 @@ namespace Accord.Tests.MachineLearning
 
 
             // Create a new Cross-validation algorithm passing the data set size and the number of folds
-            var crossvalidation = new Crossvalidation<KernelSupportVectorMachine>(data.Length, 3);
+            var crossvalidation = new CrossValidation<KernelSupportVectorMachine>(data.Length, 3);
 
             // Define a fitting function using Support Vector Machines
-            crossvalidation.Fitting = delegate(int[] trainingSet, int[] validationSet)
+            crossvalidation.Fitting = delegate(int k, int[] trainingSet, int[] validationSet)
             {
                 // The trainingSet and validationSet arguments specifies the
                 // indices of the original data set to be used as training and
@@ -149,7 +137,7 @@ namespace Accord.Tests.MachineLearning
                 double validationError = smo.ComputeError(validationInputs, validationOutputs);
 
                 // Return a new information structure containing the model and the errors achieved.
-                return new CrossvalidationInfo<KernelSupportVectorMachine>(svm, trainingError, validationError);
+                return new CrossValidationValues<KernelSupportVectorMachine>(svm, trainingError, validationError);
             };
 
 
@@ -157,15 +145,15 @@ namespace Accord.Tests.MachineLearning
             var result = crossvalidation.Compute();
 
             // Get the average training and validation errors
-            double errorTraining = result.TrainingMean;
-            double errorValidation = result.ValidationMean;
+            double errorTraining = result.Training.Mean;
+            double errorValidation = result.Validation.Mean;
 
             Assert.AreEqual(3, crossvalidation.K);
-            Assert.AreEqual(0, result.TrainingMean);
-            Assert.AreEqual(0, result.ValidationMean);
+            Assert.AreEqual(0, result.Training.Mean);
+            Assert.AreEqual(0, result.Validation.Mean);
 
             Assert.AreEqual(3, crossvalidation.Folds.Length);
-            Assert.AreEqual(3, crossvalidation.Models.Length);
+            Assert.AreEqual(3, result.Models.Length);
         }
 
     }

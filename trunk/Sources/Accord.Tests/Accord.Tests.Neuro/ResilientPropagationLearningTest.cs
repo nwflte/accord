@@ -22,13 +22,11 @@
 
 namespace Accord.Tests.Neuro
 {
-    using Accord.Neuro.Learning;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using AForge.Neuro;
-    using Accord.Math;
-    using AForge.Neuro.Learning;
-    using Accord.Neuro;
     using System;
+    using Accord.Neuro.Learning;
+    using AForge;
+    using AForge.Neuro;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass()]
     public class ResilientBackPropagationLearningTest
@@ -101,11 +99,11 @@ namespace Accord.Tests.Neuro
 				new double[] { -1 }
 			};
 
-            Neuron.RandGenerator = Accord.Math.Tools.Random;
+            Neuron.RandGenerator = new ThreadSafeRandom(0);
             ActivationNetwork network = new ActivationNetwork(
                    new BipolarSigmoidFunction(2), 2, 2, 1);
 
-            var teacher = new ResilientBackpropagationLearning(network);
+            var teacher = new ParallelResilientBackpropagationLearning(network);
 
             double error = 1.0;
             while (error > 1e-5)

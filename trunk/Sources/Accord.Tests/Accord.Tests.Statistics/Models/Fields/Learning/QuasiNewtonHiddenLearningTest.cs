@@ -20,7 +20,7 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-namespace Accord.Tests.Statistics
+namespace Accord.Tests.Statistics.Models.Fields
 {
     using System;
     using Accord.Math.Differentiation;
@@ -104,7 +104,7 @@ namespace Accord.Tests.Statistics
         public void RunTest()
         {
             HiddenMarkovClassifier hmm = HiddenMarkovClassifierPotentialFunctionTest.CreateModel1();
-            var function = new HiddenMarkovClassifierFunction(hmm);
+            var function = new DiscreteMarkovClassifierFunction(hmm);
 
             var model = new HiddenConditionalRandomField<int>(function);
             var target = new QuasiNewtonHiddenLearning<int>(model);
@@ -134,8 +134,8 @@ namespace Accord.Tests.Statistics
             }
 
             Assert.AreEqual(-0.00046872579976353634, ll0, 1e-10);
-            Assert.AreEqual(-0.00012170806701733428, error, 1e-10);
-            Assert.AreEqual(error, ll1);
+            Assert.AreEqual(0.00012170806701733428, error, 1e-10);
+            Assert.AreEqual(error, -ll1);
             Assert.IsFalse(Double.IsNaN(ll0));
             Assert.IsFalse(Double.IsNaN(error));
 
@@ -150,7 +150,7 @@ namespace Accord.Tests.Statistics
         {
             Accord.Math.Tools.SetupGenerator(0);
 
-            var function = new HiddenMarkovClassifierFunction(2, 2, 2);
+            var function = new DiscreteMarkovClassifierFunction(2, 2, 2);
 
             var model = new HiddenConditionalRandomField<int>(function);
             var target = new QuasiNewtonHiddenLearning<int>(model);
@@ -177,7 +177,7 @@ namespace Accord.Tests.Statistics
 
 
             Assert.AreEqual(-5.5451774444795623, ll0, 1e-10);
-            Assert.AreEqual(-3.0990811490142045, error, 1e-10);
+            Assert.AreEqual(3.0990811490142045, error, 1e-10);
             Assert.IsFalse(double.IsNaN(error));
 
             for (int i = 0; i < inputs.Length; i++)
@@ -192,7 +192,7 @@ namespace Accord.Tests.Statistics
         [TestMethod()]
         public void GradientTest()
         {
-            var function = new HiddenMarkovClassifierFunction(2, 2, 2);
+            var function = new DiscreteMarkovClassifierFunction(2, 2, 2);
             var model = new HiddenConditionalRandomField<int>(function);
             var target = new QuasiNewtonHiddenLearning<int>(model);
 
@@ -216,7 +216,7 @@ namespace Accord.Tests.Statistics
         public void GradientTest2()
         {
             HiddenMarkovClassifier hmm = HiddenMarkovClassifierPotentialFunctionTest.CreateModel1();
-            var function = new HiddenMarkovClassifierFunction(hmm);
+            var function = new DiscreteMarkovClassifierFunction(hmm);
 
             var model = new HiddenConditionalRandomField<int>(function);
             var target = new QuasiNewtonHiddenLearning<int>(model);
@@ -241,7 +241,7 @@ namespace Accord.Tests.Statistics
         public void GradientTest3()
         {
             HiddenMarkovClassifier hmm = HiddenMarkovClassifierPotentialFunctionTest.CreateModel1();
-            var function = new HiddenMarkovClassifierFunction(hmm);
+            var function = new DiscreteMarkovClassifierFunction(hmm);
 
             var model = new HiddenConditionalRandomField<int>(function);
             var target = new QuasiNewtonHiddenLearning<int>(model);
@@ -265,6 +265,7 @@ namespace Accord.Tests.Statistics
         }
 
 
+
         private double func(HiddenConditionalRandomField<int> model, double[] parameters)
         {
             model.Function.Weights = parameters;
@@ -282,7 +283,7 @@ namespace Accord.Tests.Statistics
                 for (int i = 0; i < parameters.Length; i++)
                     if (!(Double.IsInfinity(parameters[i]) || Double.IsNaN(parameters[i])))
                         sumSquaredWeights += parameters[i] * parameters[i];
-                sumSquaredWeights = sumSquaredWeights * 0.5 * beta;
+                sumSquaredWeights = sumSquaredWeights * 0.5 / beta;
             }
 
             double logLikelihood = model.LogLikelihood(inputs, outputs);
