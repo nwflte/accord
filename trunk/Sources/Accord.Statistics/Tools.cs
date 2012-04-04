@@ -28,7 +28,6 @@ namespace Accord.Statistics
     using Accord.Math.Decompositions;
     using AForge;
 
-
     /// <summary>
     ///   Set of statistics functions.
     /// </summary>
@@ -419,6 +418,38 @@ namespace Accord.Statistics
 
                 sum += (values.Length - 1) * var;
                 length += (values.Length - 1);
+            }
+
+            return sum / length;
+        }
+
+        /// <summary>
+        ///   Computes the pooled variance of the given values.
+        /// </summary>
+        /// 
+        /// <param name="sizes">The number of samples used to compute the <paramref name="variances"/>.</param>
+        /// <param name="variances">The variances of the samples.</param>
+        /// 
+        public static double PooledVariance(int[] sizes, double[] variances)
+        {
+            if (sizes == null)
+                throw new ArgumentNullException("sizes");
+
+            if (variances == null)
+                throw new ArgumentNullException("variances");
+
+            if (sizes.Length != variances.Length)
+                throw new DimensionMismatchException("variances");
+
+            double sum = 0;
+            int length = 0;
+
+            for (int i = 0; i < variances.Length; i++)
+            {
+                double var = variances[i];
+
+                sum += (sizes[i] - 1) * var;
+                length += (sizes[i] - 1);
             }
 
             return sum / length;

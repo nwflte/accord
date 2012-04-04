@@ -162,6 +162,8 @@
     <Compile Include="Kernels\Cauchy.cs" />
     <Compile Include="Kernels\ChiSquare.cs" />
     <Compile Include="Kernels\Circular.cs" />
+    <Compile Include="Kernels\InverseMultiquadric.cs" />
+    <Compile Include="Kernels\Structures\KernelFunctionCache.cs" />
     <Compile Include="Kernels\Quadratic.cs" />
     <Compile Include="Kernels\SymmetricTriangle.cs" />
     <Compile Include="Kernels\SquaredSinc.cs" />
@@ -171,8 +173,8 @@
     <Compile Include="Kernels\Gaussian.cs" />
     <Compile Include="Kernels\HistogramIntersection.cs" />
     <Compile Include="Kernels\Hypersecant.cs" />
-    <Compile Include="Kernels\IDistance.cs" />
-    <Compile Include="Kernels\IKernel.cs" />
+    <Compile Include="Kernels\Base\IDistance.cs" />
+    <Compile Include="Kernels\Base\IKernel.cs" />
     <Compile Include="Kernels\Laplacian.cs" />
     <Compile Include="Kernels\Linear.cs" />
     <Compile Include="Kernels\Log.cs" />
@@ -216,13 +218,17 @@
     <Compile Include="Models\Fields\Features\EmissionFeature.cs" />
     <Compile Include="Models\Fields\Features\TransitionFeature.cs" />
     <Compile Include="Models\Fields\ForwardBackwardAlgorithm.cs" />
-    <Compile Include="Models\Fields\Functions\NormalHiddenMarkovClassifierFunction.cs" />
-    <Compile Include="Models\Fields\Functions\MultivariateNormalHiddenMarkovClassifierFunction.cs" />
-    <Compile Include="Models\Fields\Functions\HiddenMarkovClassifierFunction.cs">
+    <Compile Include="Models\Fields\Functions\Clique Potentials\NormalMarkovModelFactor.cs" />
+    <Compile Include="Models\Fields\Functions\Clique Potentials\MultivariateNormalMarkovModelFactor.cs" />
+    <Compile Include="Models\Fields\Functions\Clique Potentials\DiscreteMarkovModelFactor.cs" />
+    <Compile Include="Models\Fields\Functions\MultivariateNormalMarkovModelFunction.cs" />
+    <Compile Include="Models\Fields\Functions\NormalMarkovClassifierFunction.cs" />
+    <Compile Include="Models\Fields\Functions\MultivariateNormalMarkovClassifierFunction.cs" />
+    <Compile Include="Models\Fields\Functions\DiscreteMarkovClassifierFunction.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\Fields\Functions\HiddenMarkovModelFunction.cs" />
-    <Compile Include="Models\Fields\Functions\FactorPotential.cs">
+    <Compile Include="Models\Fields\Functions\DiscreteMarkovModelFunction.cs" />
+    <Compile Include="Models\Fields\Functions\Clique Potentials\FactorPotential.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Models\Fields\Functions\Base\IPotentialFunction.cs" />
@@ -234,11 +240,12 @@
     <Compile Include="Models\Fields\Learning\ConjugateGradientHiddenLearning.cs" />
     <Compile Include="Models\Fields\Learning\QuasiNewtonHiddenLearning.cs" />
     <Compile Include="Models\Fields\Learning\QuasiNewtonLearning.cs" />
-    <Compile Include="Models\Fields\Learning\StochasticGradientDescentHiddenLearning.cs" />
+    <Compile Include="Models\Fields\Learning\GradientDescentHiddenLearning.cs" />
     <Compile Include="Links\ILinkFunction.cs" />
     <Compile Include="Links\IdentityLinkFunction.cs" />
     <Compile Include="Links\LogitLinkFunction.cs" />
     <Compile Include="Links\InverseLinkFunction.cs" />
+    <Compile Include="Models\Fields\Learning\ResilientGradientHiddenLearning.cs" />
     <Compile Include="Models\Regression\Nonlinear\Fitting\Base\IMultipleRegressionFitting.cs" />
     <Compile Include="Models\Regression\Nonlinear\Fitting\Base\IRegressionFitting.cs" />
     <Compile Include="Models\Regression\Nonlinear\Fitting\IterativeReweightedLeastSquares.cs" />
@@ -252,7 +259,7 @@
     <Compile Include="Models\Markov\HiddenMarkovClassifier`1.cs" />
     <Compile Include="Models\Markov\HiddenMarkovModel.cs" />
     <Compile Include="Models\Markov\Learning\HiddenMarkovClassifierLearning.cs" />
-    <Compile Include="Models\Markov\Learning\Base\BaseSequenceClassifierLearning.cs" />
+    <Compile Include="Models\Markov\Learning\Base\BaseHiddenMarkovClassifierLearning.cs" />
     <Compile Include="Models\Markov\Learning\Base\ISupervisedLearning.cs" />
     <Compile Include="Models\Markov\Learning\Base\IUnsupervisedLearning.cs" />
     <Compile Include="Models\Markov\Learning\Base\BaseBaumWelchLearning.cs" />

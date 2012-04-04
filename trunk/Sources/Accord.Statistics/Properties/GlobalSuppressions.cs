@@ -8,6 +8,10 @@
 // "In Project Suppression File". 
 // You do not need to add suppressions to this file manually. 
 
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix", Scope = "type", Target = "Accord.Statistics.Models.Fields.Functions.MarkovModelFactor")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix", Scope = "type", Target = "Accord.Statistics.Models.Fields.Functions.MultivariateNormalMarkovModelFactor")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix", Scope = "type", Target = "Accord.Statistics.Models.Fields.Functions.NormalMarkovModelFactor")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix", Scope = "type", Target = "Accord.Statistics.Models.Fields.Functions.DiscreteMarkovModelFactor")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly", MessageId = "Mc", Scope = "type", Target = "Accord.Statistics.Testing.McNemarTest")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "Function", Scope = "member", Target = "Accord.Statistics.Links.ILinkFunction.#Function(System.Double)")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1000:DoNotDeclareStaticMembersOnGenericTypes", Scope = "member", Target = "Accord.Statistics.Models.Markov.HiddenMarkovClassifier`1.#Load(System.IO.Stream)")]
@@ -42,7 +46,6 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1033:InterfaceMethodsShouldBeCallableByChildTypes", Scope = "member", Target = "Accord.Statistics.Distributions.Multivariate.MultivariateDiscreteDistribution.#Accord.Statistics.Distributions.IDistribution.ProbabilityFunction(System.Double[])")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1033:InterfaceMethodsShouldBeCallableByChildTypes", Scope = "member", Target = "Accord.Statistics.Distributions.Univariate.UnivariateDiscreteDistribution.#Accord.Statistics.Distributions.IDistribution.ProbabilityFunction(System.Double[])")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix", Scope = "type", Target = "Accord.Statistics.Filters.FiltersSequence")]
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Scope = "member", Target = "Accord.Statistics.Models.Markov.ContinuousHiddenMarkovModel.#Learn(System.Array[],System.Int32,System.Double)")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Scope = "member", Target = "Accord.Statistics.Models.Markov.HiddenMarkovModel.#Learn(System.Int32[][],System.Int32,System.Double)")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2233:OperationsShouldNotOverflow", MessageId = "inputs+1", Scope = "member", Target = "Accord.Statistics.Models.Regression.LogisticRegression.#.ctor(System.Int32)")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2233:OperationsShouldNotOverflow", MessageId = "inputs+1", Scope = "member", Target = "Accord.Statistics.Models.Regression.Linear.MultipleLinearRegression.#.ctor(System.Int32,System.Boolean)")]

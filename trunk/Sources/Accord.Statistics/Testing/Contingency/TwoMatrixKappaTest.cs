@@ -105,6 +105,29 @@ namespace Accord.Statistics.Testing
         ///   Creates a new Two-Table Kappa test.
         /// </summary>
         /// 
+        /// <param name="kappa1">The kappa value for the first contingency table to test.</param>
+        /// <param name="kappa2">The kappa value for the second contingency table to test.</param>
+        /// <param name="var1">The variance of the kappa value for the first contingency table to test.</param>
+        /// <param name="var2">The variance of the kappa value for the second contingency table to test.</param>
+        /// <param name="type">The type of hypothesis to test.</param>
+        /// 
+        public TwoMatrixKappaTest(double kappa1, double var1, double kappa2, double var2, Hypothesis type = Hypothesis.TwoTail)
+        {
+            this.k1 = kappa1;
+            this.k2 = kappa2;
+
+            this.variance1 = var1;
+            this.variance2 = var2;
+
+            this.Hypothesis = type;
+
+            compute();
+        }
+
+        /// <summary>
+        ///   Creates a new Two-Table Kappa test.
+        /// </summary>
+        /// 
         /// <param name="matrix1">The first contingency table to test.</param>
         /// <param name="matrix2">The second contingency table to test.</param>
         /// <param name="type">The type of hypothesis to test.</param>
@@ -117,12 +140,18 @@ namespace Accord.Statistics.Testing
             this.variance1 = matrix1.Variance;
             this.variance2 = matrix2.Variance;
 
+            this.Hypothesis = type;
+
+            compute();
+        }
+
+        private void compute()
+        {
             this.k = Math.Abs(k1 - k2);
             this.variance = variance1 + variance2;
             this.stdError = Math.Sqrt(variance1 + variance2);
 
             this.Statistic = k / stdError;
-            this.Hypothesis = type;
 
             confidence = new DoubleRange(k - 1.9599 * stdError, k + 1.9599 * stdError);
 
