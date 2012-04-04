@@ -135,5 +135,21 @@ namespace Accord.Statistics.Models.Fields.Features
 
             return marginal;
         }
+
+        /// <summary>
+        ///   Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A new object that is a copy of this instance.
+        /// </returns>
+        /// 
+        public IFeature<int> Clone(IPotentialFunction<int> newOwner)
+        {
+            var clone = (EmissionFeature)MemberwiseClone();
+            clone.Owner = newOwner;
+            return clone;
+        }
+
     }
 }

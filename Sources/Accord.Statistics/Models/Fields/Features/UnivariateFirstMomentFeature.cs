@@ -121,5 +121,20 @@ namespace Accord.Statistics.Models.Fields.Features
             return Math.Log(marginal);
         }
 
+        /// <summary>
+        ///   Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A new object that is a copy of this instance.
+        /// </returns>
+        /// 
+        public IFeature<double> Clone(IPotentialFunction<double> newOwner)
+        {
+            var clone = (FirstMomentFeature)MemberwiseClone();
+            clone.Owner = newOwner;
+            return clone;
+        }
+
     }
 }

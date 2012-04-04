@@ -62,10 +62,10 @@ namespace Accord.Statistics.Models.Fields.Features
         /// <param name="observationIndex">The index of the current observation.</param>
         /// <param name="outputClass">The output class label for the sequence.</param>
         /// 
-        public override double Compute(int previousState, int currentState, T[] observations, 
+        public override double Compute(int previousState, int currentState, T[] observations,
             int observationIndex, int outputClass = 0)
         {
-            return (this.current == currentState) ? 1:0;
+            return (this.current == currentState) ? 1 : 0;
         }
 
         /// <summary>
@@ -118,5 +118,21 @@ namespace Accord.Statistics.Models.Fields.Features
 
             return marginal;
         }
+
+        /// <summary>
+        ///   Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A new object that is a copy of this instance.
+        /// </returns>
+        /// 
+        public IFeature<T> Clone(IPotentialFunction<T> newOwner)
+        {
+            var clone = (OccupancyFeature<T>)MemberwiseClone();
+            clone.Owner = newOwner;
+            return clone;
+        }
+
     }
 }
