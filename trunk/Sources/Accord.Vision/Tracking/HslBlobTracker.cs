@@ -173,7 +173,7 @@ namespace Accord.Vision.Tracking
 
 
             trackingObject.Rectangle = blob.Rectangle;
-            trackingObject.Center = blob.CenterOfGravity;
+            trackingObject.Center = (IntPoint)blob.CenterOfGravity;
 
             if (rotation)
             {

@@ -31,6 +31,14 @@ namespace Accord.Vision.Tracking
     ///   Template matching object tracker.
     /// </summary>
     /// 
+    /// <remarks>
+    ///   The matching tracker will track the object presented in the search window
+    ///   of the first frame given to the tracker. To reset the tracker and start
+    ///   tracking another object, one can call the Reset method, then set the search
+    ///   window around a new object of interest present the image containing the new
+    ///   object to the tracker.
+    /// </remarks>
+    /// 
     public class MatchingTracker : IObjectTracker
     {
 
