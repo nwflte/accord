@@ -60,7 +60,8 @@ namespace Accord.Imaging.Filters
         private Color fillColor = Color.FromArgb(0, Color.Black);
         private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>();
 
-
+        private bool gradient = true;
+        private bool alphaOnly = false;
 
         /// <summary>
         ///   Format translations dictionary.
@@ -95,6 +96,33 @@ namespace Accord.Imaging.Filters
         {
             get { return fillColor; }
             set { fillColor = value; }
+        }
+
+        /// <summary>
+        ///   Gets or sets a value indicating whether to blend using a linear
+        ///   gradient or just superimpose the two images with equal weights.
+        /// </summary>
+        /// 
+        /// <value><c>true</c> to create a gradient; otherwise, <c>false</c>. Default is true.</value>
+        /// 
+        public bool Gradient
+        {
+            get { return gradient; }
+            set { gradient = value; }
+        }
+
+        /// <summary>
+        ///   Gets or sets a value indicating whether only the alpha channel
+        ///   should be blended. This can be used together with a transparency
+        ///   mask to selectively blend only portions of the image.
+        /// </summary>
+        /// 
+        /// <value><c>true</c> to blend only the alpha channel; otherwise, <c>false</c>. Default is false.</value>
+        /// 
+        public bool AlphaOnly
+        {
+            get { return alphaOnly; }
+            set { alphaOnly = value; }
         }
 
         /// <summary>
@@ -173,6 +201,12 @@ namespace Accord.Imaging.Filters
             if (minY < 0) offsetY = (int)Math.Round(minY);
 
             this.offset = new Point(offsetX, offsetY);
+
+            if (Double.IsNaN(newWidth) || newWidth == 0)
+                newWidth = 1;
+
+            if (Double.IsNaN(newHeight) || newHeight == 0)
+                newHeight = 1;
 
             // Return the final image size
             return new Size((int)Math.Ceiling(newWidth), (int)Math.Ceiling(newHeight));
@@ -301,7 +335,7 @@ namespace Accord.Imaging.Filters
                                 dst[0] = org[c];
                                 dst[1] = org[c];
                                 dst[2] = org[c];
-                                dst[3] = (byte)255;
+                                dst[3] = org[c];
                             }
                         }
                     }
@@ -341,38 +375,70 @@ namespace Accord.Imaging.Filters
                             }
                             else if (dst[3] > 0)
                             {
-                                // there is a pixel from the other image here, blend
-                                float d1 = distance(x, y, center1.X, center1.Y);
-                                float d2 = distance(x, y, center2.X, center2.Y);
-                                float f1 = Accord.Math.Tools.Scale(0, dmax, 0, 1, d1 - d2);
+                                float f1 = 0.5f, f2 = 0.5f;
 
-                                if (f1 < 0) f1 = 0f;
-                                if (f1 > 1) f1 = 1f;
-                                float f2 = (1f - f1);
-
-                                if (srcPixelSize == 3)
+                                if (Gradient)
                                 {
-                                    // 24 bpp
-                                    dst[0] = (byte)(src[c + 0] * f2 + dst[0] * f1);
-                                    dst[1] = (byte)(src[c + 1] * f2 + dst[1] * f1);
-                                    dst[2] = (byte)(src[c + 2] * f2 + dst[2] * f1);
-                                    dst[3] = (byte)255;
+                                    // there is a pixel from the other image here, blend
+                                    float d1 = distance(x, y, center1.X, center1.Y);
+                                    float d2 = distance(x, y, center2.X, center2.Y);
+                                    f1 = Accord.Math.Tools.Scale(0, dmax, 0, 1, d1 - d2);
+
+                                    if (f1 < 0) f1 = 0f;
+                                    if (f1 > 1) f1 = 1f;
+                                    f2 = (1f - f1);
                                 }
-                                else if (srcPixelSize == 4)
+
+                                if (!AlphaOnly)
                                 {
-                                    // 32 bpp
-                                    dst[0] = (byte)(src[c + 0] * f2 + dst[0] * f1);
-                                    dst[1] = (byte)(src[c + 1] * f2 + dst[1] * f1);
-                                    dst[2] = (byte)(src[c + 2] * f2 + dst[2] * f1);
-                                    dst[3] = (byte)(src[c + 3] * f2 + dst[3] * f1);
+                                    if (srcPixelSize == 3)
+                                    {
+                                        // 24 bpp
+                                        dst[0] = (byte)(src[c + 0] * f2 + dst[0] * f1);
+                                        dst[1] = (byte)(src[c + 1] * f2 + dst[1] * f1);
+                                        dst[2] = (byte)(src[c + 2] * f2 + dst[2] * f1);
+                                        dst[3] = (byte)255;
+                                    }
+                                    else if (srcPixelSize == 4)
+                                    {
+                                        // 32 bpp
+                                        dst[0] = (byte)(src[c + 0] * f2 + dst[0] * f1);
+                                        dst[1] = (byte)(src[c + 1] * f2 + dst[1] * f1);
+                                        dst[2] = (byte)(src[c + 2] * f2 + dst[2] * f1);
+                                        dst[3] = (byte)(src[c + 3] * f2 + dst[3] * f1);
+                                    }
+                                    else
+                                    {
+                                        // 8 bpp
+                                        dst[0] = (byte)(src[c] * f2 + dst[0] * f1);
+                                        dst[1] = (byte)(src[c] * f2 + dst[1] * f1);
+                                        dst[2] = (byte)(src[c] * f2 + dst[2] * f1);
+                                        dst[3] = (byte)255;
+                                    }
                                 }
                                 else
                                 {
-                                    // 8 bpp
-                                    dst[0] = (byte)(src[c] * f2 + dst[0] * f1);
-                                    dst[1] = (byte)(src[c] * f2 + dst[1] * f1);
-                                    dst[2] = (byte)(src[c] * f2 + dst[2] * f1);
-                                    dst[3] = (byte)255;
+                                    if (srcPixelSize == 3)
+                                    {
+                                        // 24 bpp
+                                        dst[0] = (byte)(src[c + 0]);
+                                        dst[1] = (byte)(src[c + 1]);
+                                        dst[2] = (byte)(src[c + 2]);
+                                    }
+                                    else if (srcPixelSize == 4)
+                                    {
+                                        // 32 bpp
+                                        dst[0] = (byte)(src[c + 0]);
+                                        dst[1] = (byte)(src[c + 1]);
+                                        dst[2] = (byte)(src[c + 2]);
+                                    }
+                                    else
+                                    {
+                                        // 8 bpp
+                                        dst[0] = (byte)(src[c]);
+                                        dst[1] = (byte)(src[c]);
+                                        dst[2] = (byte)(src[c]);
+                                    }
                                 }
                             }
                             else
@@ -401,7 +467,7 @@ namespace Accord.Imaging.Filters
                                     dst[0] = src[c];
                                     dst[1] = src[c];
                                     dst[2] = src[c];
-                                    dst[3] = (byte)255;
+                                    dst[3] = 0;
                                 }
                             }
                         }

@@ -19,6 +19,31 @@
 //    License along with this library; if not, write to the Free Software
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
+// Some functions adapted from the original work of Peter Kovesi,
+// shared under a permissive MIT license. Details are given below:
+//
+//   Copyright (c) 1995-2010 Peter Kovesi
+//   Centre for Exploration Targeting
+//   School of Earth and Environment
+//   The University of Western Australia
+//
+//   Permission is hereby granted, free of charge, to any person obtaining a copy
+//   of this software and associated documentation files (the "Software"), to deal
+//   in the Software without restriction, including without limitation the rights 
+//   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+//   of the Software, and to permit persons to whom the Software is furnished to do
+//   so, subject to the following conditions:
+//   
+//   The above copyright notice and this permission notice shall be included in all
+//   copies or substantial portions of the Software.
+//   
+//   The software is provided "as is", without warranty of any kind, express or
+//   implied, including but not limited to the warranties of merchantability, 
+//   fitness for a particular purpose and noninfringement. In no event shall the
+//   authors or copyright holders be liable for any claim, damages or other liability,
+//   whether in an action of contract, tort or otherwise, arising from, out of or in
+//   connection with the software or the use or other dealings in the software.
+//   
 
 namespace Accord.Imaging
 {
@@ -32,6 +57,19 @@ namespace Accord.Imaging
     /// <summary>
     ///   Static tool functions for imaging.
     /// </summary>
+    /// 
+    /// <remarks>
+    ///   <para>
+    ///     References:
+    ///     <list type="bullet">
+    ///       <item><description>
+    ///         P. D. Kovesi. MATLAB and Octave Functions for Computer Vision and Image Processing.
+    ///         School of Computer Science and Software Engineering, The University of Western Australia.
+    ///         Available in: <a href="http://www.csse.uwa.edu.au/~pk/Research/MatlabFns/Match/matchbycorrelation.m">
+    ///         http://www.csse.uwa.edu.au/~pk/Research/MatlabFns/Match/matchbycorrelation.m </a>
+    ///       </description></item>
+    ///   </list></para>
+    /// </remarks>
     /// 
     public static class Tools
     {
@@ -62,6 +100,8 @@ namespace Accord.Imaging
                    (Math.Abs(objA.Height - objB.Height) < threshold);
         }
 
+
+        #region Homography Matrix
         /// <summary>
         ///   Creates an homography matrix matching points
         ///   from a set of points to another.
@@ -83,13 +123,13 @@ namespace Accord.Imaging
             points2 = Tools.Normalize(points2, out T2);
 
             // Create the matrix A
-            double[,] A = new double[3 * N, 9];
+            float[,] A = new float[3 * N, 9];
             for (int i = 0; i < N; i++)
             {
                 PointH X = points1[i];
-                double x = points2[i].X;
-                double y = points2[i].Y;
-                double w = points2[i].W;
+                float x = points2[i].X;
+                float y = points2[i].Y;
+                float w = points2[i].W;
                 int r = 3 * i;
 
                 A[r, 0] = 0;
@@ -127,14 +167,17 @@ namespace Accord.Imaging
 
 
             // Create the singular value decomposition
-            SingularValueDecomposition svd = new SingularValueDecomposition(A, false, true);
-            double[,] V = svd.RightSingularVectors;
+            var svd = new SingularValueDecompositionF(A,
+                computeLeftSingularVectors: false, computeRightSingularVectors: true,
+                autoTranspose: false, inPlace: true);
+
+            float[,] V = svd.RightSingularVectors;
 
 
             // Extract the homography matrix
-            MatrixH H = new MatrixH((float)V[0, 8], (float)V[1, 8], (float)V[2, 8],
-                                    (float)V[3, 8], (float)V[4, 8], (float)V[5, 8],
-                                    (float)V[6, 8], (float)V[7, 8], (float)V[8, 8]);
+            MatrixH H = new MatrixH(V[0, 8], V[1, 8], V[2, 8],
+                                    V[3, 8], V[4, 8], V[5, 8],
+                                    V[6, 8], V[7, 8], V[8, 8]);
 
             // Denormalize
             H = T2.Inverse().Multiply(H.Multiply(T1));
@@ -146,6 +189,7 @@ namespace Accord.Imaging
         ///   Creates an homography matrix matching points
         ///   from a set of points to another.
         /// </summary>
+        /// 
         public static MatrixH Homography(PointF[] points1, PointF[] points2)
         {
             // Initial argument checks
@@ -206,7 +250,10 @@ namespace Accord.Imaging
 
 
             // Create the singular value decomposition
-            SingularValueDecompositionF svd = new SingularValueDecompositionF(A, false, true);
+            SingularValueDecompositionF svd = new SingularValueDecompositionF(A,
+                computeLeftSingularVectors: false, computeRightSingularVectors: true,
+                autoTranspose: false, inPlace: true);
+
             float[,] V = svd.RightSingularVectors;
 
 
@@ -220,12 +267,228 @@ namespace Accord.Imaging
 
             return H;
         }
+        #endregion
+
+
+        #region Fundamental Matrix
+        /// <summary>
+        ///   Creates the fundamental matrix between two
+        ///   images from a set of points from each image.
+        /// </summary>
+        /// 
+        public static float[,] Fundamental(PointH[] points1, PointH[] points2, out PointH[] epipoles)
+        {
+            var F = Fundamental(points1, points2);
+
+            SingularValueDecompositionF svd = new SingularValueDecompositionF(F,
+                computeLeftSingularVectors: true, computeRightSingularVectors: true,
+                autoTranspose: true, inPlace: false);
+
+            var U = svd.LeftSingularVectors;
+            var V = svd.RightSingularVectors;
+
+            PointH e1 = new PointH(V[0, 2] / V[2, 2], V[1, 2] / V[2, 2], 1);
+            PointH e2 = new PointH(U[0, 2] / U[2, 2], U[1, 2] / U[2, 2], 1);
+
+            epipoles = new PointH[] { e1, e2 };
+
+            return F;
+        }
+
+        /// <summary>
+        ///   Creates the fundamental matrix between two
+        ///   images from a set of points from each image.
+        /// </summary>
+        /// 
+        public static float[,] Fundamental(PointH[] points1, PointH[] points2)
+        {
+            int N = points1.Length;
+
+            float[,] T1, T2; // Normalize input points
+            points1 = Tools.Normalize(points1, out T1);
+            points2 = Tools.Normalize(points2, out T2);
+
+
+            float[,] A = new float[N, 9];
+            for (int i = 0; i < N; i++)
+            {
+                float x1 = points1[i].X;
+                float y1 = points1[i].Y;
+
+                float x2 = points2[i].X;
+                float y2 = points2[i].Y;
+
+                A[i, 0] = x2 * x1;
+                A[i, 1] = x2 * y1;
+                A[i, 2] = x2;
+
+                A[i, 3] = y2 * x1;
+                A[i, 4] = y2 * y2;
+                A[i, 5] = y2;
+
+                A[i, 6] = x1;
+                A[i, 7] = y1;
+                A[i, 8] = 1;
+            }
+
+            float[,] F = createFundamentalMatrix(A);
+
+            // Denormalize
+            F = T2.Transpose().Multiply(F.Multiply(T1));
+
+            return F;
+        }
+
+        /// <summary>
+        ///   Creates the fundamental matrix between two
+        ///   images from a set of points from each image.
+        /// </summary>
+        /// 
+        public static float[,] Fundamental(PointF[] points1, PointF[] points2)
+        {
+            int N = points1.Length;
+
+            float[,] T1, T2; // Normalize input points
+            points1 = Tools.Normalize(points1, out T1);
+            points2 = Tools.Normalize(points2, out T2);
+
+
+            float[,] A = new float[N, 9];
+            for (int i = 0; i < N; i++)
+            {
+                float x1 = points1[i].X;
+                float y1 = points1[i].Y;
+
+                float x2 = points2[i].X;
+                float y2 = points2[i].Y;
+
+                A[i, 0] = x2 * x1;
+                A[i, 1] = x2 * y1;
+                A[i, 2] = x2;
+
+                A[i, 3] = y2 * x1;
+                A[i, 4] = y2 * y2;
+                A[i, 5] = y2;
+
+                A[i, 6] = x1;
+                A[i, 7] = y1;
+                A[i, 8] = 1;
+            }
+
+            float[,] F = createFundamentalMatrix(A);
+
+            // Denormalize
+            F = T2.Transpose().Multiply(F.Multiply(T1));
+
+            return F;
+        }
+
+        private static float[,] createFundamentalMatrix(float[,] A)
+        {
+            float[,] U, V;
+            float[] D;
+
+            SingularValueDecompositionF svd = new SingularValueDecompositionF(A,
+                computeLeftSingularVectors: false, computeRightSingularVectors: true,
+                autoTranspose: true, inPlace: true);
+
+            V = svd.RightSingularVectors;
+
+            int s = svd.RightSingularVectors.GetLength(1) - 1;
+
+            float[,] F = 
+            {
+                { V[0, s], V[1, s], V[2, s] },
+                { V[3, s], V[4, s], V[5, s] },
+                { V[6, s], V[7, s], V[8, s] },
+            };
+
+            svd = new SingularValueDecompositionF(F,
+                computeLeftSingularVectors: true, computeRightSingularVectors: true,
+                autoTranspose: true, inPlace: false);
+
+            U = svd.LeftSingularVectors;
+            D = svd.Diagonal;
+            V = svd.RightSingularVectors;
+
+            D[2] = 0;
+
+            // Reconstruct with rank 2 approximation
+            var newF = U.MultiplyByDiagonal(D).Multiply(V.Transpose());
+
+            F = newF;
+            return F;
+        }
+        #endregion
+
 
         /// <summary>
         ///   Normalizes a set of homogeneous points so that the origin is located
         ///   at the centroid and the mean distance to the origin is sqrt(2).
         /// </summary>
         public static PointH[] Normalize(this PointH[] points, out MatrixH transformation)
+        {
+            float[,] H;
+            var result = Normalize(points, out H);
+            transformation = new MatrixH(H);
+            return result;
+        }
+
+        /// <summary>
+        ///   Normalizes a set of homogeneous points so that the origin is located
+        ///   at the centroid and the mean distance to the origin is sqrt(2).
+        /// </summary>
+        public static PointF[] Normalize(this PointF[] points, out MatrixH transformation)
+        {
+            float[,] H;
+            var result = Normalize(points, out H);
+            transformation = new MatrixH(H);
+            return result;
+        }
+
+        /// <summary>
+        ///   Normalizes a set of homogeneous points so that the origin is located
+        ///   at the centroid and the mean distance to the origin is sqrt(2).
+        /// </summary>
+        public static PointF[] Normalize(this PointF[] points, out float[,] transformation)
+        {
+            float n = points.Length;
+            float xmean = 0, ymean = 0;
+            for (int i = 0; i < points.Length; i++)
+            {
+                xmean += points[i].X;
+                ymean += points[i].Y;
+            }
+            xmean /= n; ymean /= n;
+
+
+            float scale = 0;
+            for (int i = 0; i < points.Length; i++)
+            {
+                float x = points[i].X - xmean;
+                float y = points[i].Y - ymean;
+
+                scale += (float)System.Math.Sqrt(x * x + y * y);
+            }
+
+            scale = (float)(SQRT2 * n / scale);
+
+
+            transformation = new float[,]
+            {
+               { scale,       0,  -scale * xmean },
+               { 0,       scale,  -scale * ymean },
+               { 0,           0,            1    }
+            };
+
+            return new MatrixH(transformation).TransformPoints(points);
+        }
+
+        /// <summary>
+        ///   Normalizes a set of homogeneous points so that the origin is located
+        ///   at the centroid and the mean distance to the origin is sqrt(2).
+        /// </summary>
+        public static PointH[] Normalize(this PointH[] points, out float[,] transformation)
         {
             float n = points.Length;
             float xmean = 0, ymean = 0;
@@ -253,55 +516,14 @@ namespace Accord.Imaging
             scale = (float)(SQRT2 * n / scale);
 
 
-            transformation = new MatrixH
-                (
-                    scale, 0, -scale * xmean,
-                    0, scale, -scale * ymean,
-                    0, 0, 1
-                );
-
-            return transformation.TransformPoints(points);
-        }
-
-        /// <summary>
-        ///   Normalizes a set of homogeneous points so that the origin is located
-        ///   at the centroid and the mean distance to the origin is sqrt(2).
-        /// </summary>
-        public static PointF[] Normalize(this PointF[] points, out MatrixH transformation)
-        {
-            float n = points.Length;
-            float xmean = 0, ymean = 0;
-            for (int i = 0; i < points.Length; i++)
+            transformation = new float[,]
             {
-                points[i].X = points[i].X;
-                points[i].Y = points[i].Y;
+               { scale,       0,  -scale * xmean },
+               { 0,       scale,  -scale * ymean },
+               { 0,           0,            1    }
+            };
 
-                xmean += points[i].X;
-                ymean += points[i].Y;
-            }
-            xmean /= n; ymean /= n;
-
-
-            float scale = 0;
-            for (int i = 0; i < points.Length; i++)
-            {
-                float x = points[i].X - xmean;
-                float y = points[i].Y - ymean;
-
-                scale += (float)System.Math.Sqrt(x * x + y * y);
-            }
-
-            scale = (float)(SQRT2 * n / scale);
-
-
-            transformation = new MatrixH
-                (
-                    scale, 0, -scale * xmean,
-                    0, scale, -scale * ymean,
-                    0, 0, 1
-                );
-
-            return transformation.TransformPoints(points);
+            return new MatrixH(transformation).TransformPoints(points);
         }
 
         /// <summary>
@@ -1224,6 +1446,54 @@ namespace Accord.Imaging
         #endregion
 
         #endregion
+
+
+        /// <summary>
+        ///   Multiplies a point by a transformation matrix.
+        /// </summary>
+        /// 
+        public static float[] Multiply(this PointF point, float[,] transformationMatrix)
+        {
+            float[] x = new float[] { point.X, point.Y, 1 };
+            return Matrix.Multiply(x, transformationMatrix);
+        }
+
+        /// <summary>
+        ///   Multiplies a transformation matrix and a point.
+        /// </summary>
+        /// 
+        public static float[] Multiply(this  float[,] transformationMatrix, PointF point)
+        {
+            float[] x = new float[] { point.X, point.Y, 1 };
+            return Matrix.Multiply(transformationMatrix, x);
+        }
+
+        /// <summary>
+        ///   Computes the inner product of two points.
+        /// </summary>
+        /// 
+        public static float InnerProduct(this  PointF a, PointF b)
+        {
+            return a.X * b.X + a.Y * b.Y + 1;
+        }
+
+        /// <summary>
+        ///   Transforms the given points using this transformation matrix.
+        /// </summary>
+        /// 
+        public static PointF[] TransformPoints(this float[,] fundamentalMatrix, params PointF[] points)
+        {
+            PointF[] r = new PointF[points.Length];
+
+            for (int j = 0; j < points.Length; j++)
+            {
+                float[] a = new float[] { points[j].X, points[j].Y, 1 };
+                float[] b = fundamentalMatrix.Multiply(a);
+                r[j] = new PointF(b[0] / b[2], b[1] / b[2]);
+            }
+
+            return r;
+        }
 
     }
 }

@@ -5,6 +5,9 @@
 // Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
+// Copyright © Peter Kovesi, 1995-2010
+// Centre for Exploration Targeting
+//
 //    This library is free software; you can redistribute it and/or
 //    modify it under the terms of the GNU Lesser General Public
 //    License as published by the Free Software Foundation; either
@@ -19,6 +22,31 @@
 //    License along with this library; if not, write to the Free Software
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
+// This work has been inspired by the original work of Peter Kovesi,
+// shared under a permissive MIT license. Details are given below:
+//
+//   Copyright (c) 1995-2010 Peter Kovesi
+//   Centre for Exploration Targeting
+//   School of Earth and Environment
+//   The University of Western Australia
+//
+//   Permission is hereby granted, free of charge, to any person obtaining a copy
+//   of this software and associated documentation files (the "Software"), to deal
+//   in the Software without restriction, including without limitation the rights 
+//   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+//   of the Software, and to permit persons to whom the Software is furnished to do
+//   so, subject to the following conditions:
+//   
+//   The above copyright notice and this permission notice shall be included in all
+//   copies or substantial portions of the Software.
+//   
+//   The software is provided "as is", without warranty of any kind, express or
+//   implied, including but not limited to the warranties of merchantability, 
+//   fitness for a particular purpose and noninfringement. In no event shall the
+//   authors or copyright holders be liable for any claim, damages or other liability,
+//   whether in an action of contract, tort or otherwise, arising from, out of or in
+//   connection with the software or the use or other dealings in the software.
+//   
 
 namespace Accord.Imaging
 {
