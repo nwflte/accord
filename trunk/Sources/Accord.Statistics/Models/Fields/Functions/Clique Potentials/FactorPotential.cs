@@ -43,17 +43,37 @@ namespace Accord.Statistics.Models.Fields.Functions
         public int States { get; private set; }
 
         /// <summary>
-        ///   Gets the number of features in the factor potential.
+        ///   Gets the index of this factor in the 
+        ///   <see cref="Owner"/> potential function.
         /// </summary>
         /// 
-        public int FeatureCount { get; private set; }
+        public int Index { get; private set; }
 
         /// <summary>
-        ///   Gets the index of the first parameter/feature function
+        ///   Gets the index of the first edge feature function
         ///   belonging to this factor in the potential function.
         /// </summary>
         /// 
-        public int ParameterIndex { get; private set; }
+        public int EdgeParameterIndex { get; protected set; }
+
+        /// <summary>
+        ///   Gets the number of edge features in the factor potential.
+        /// </summary>
+        /// 
+        public int EdgeParameterCount { get; protected set; }
+
+        /// <summary>
+        ///   Gets the index of the first state feature function
+        ///   belonging to this factor in the potential function.
+        /// </summary>
+        /// 
+        public int StateParameterIndex { get; protected set; }
+
+        /// <summary>
+        ///   Gets the number of state features in the factor potential.
+        /// </summary>
+        /// 
+        public int StateParameterCount { get; protected set; }
 
         /// <summary>
         ///   Gets the <see cref="IPotentialFunction{T}"/> 
@@ -63,20 +83,83 @@ namespace Accord.Statistics.Models.Fields.Functions
         public IPotentialFunction<T> Owner { get; private set; }
 
         /// <summary>
+        ///   Gets the index of the first parameter relative
+        ///   to this factor potential in the parameter vector.
+        /// </summary>
+        /// 
+        public int ParameterIndex { get; protected set; }
+
+        /// <summary>
+        ///   Gets the number of parameters (and features)
+        ///   contained in this factor potential.
+        /// </summary>
+        /// 
+        public int ParameterCount { get; protected set; }
+
+        /// <summary>
+        ///   Gets the index of the last edge parameter for
+        ///   this factor potential in the parameter vector.
+        /// </summary>
+        /// 
+        protected int EdgeParameterEnd { get; private set; }
+
+        /// <summary>
+        ///   Gets the index of the last state parameter for
+        ///   this factor potential in the parameter vector.
+        /// </summary>
+        /// 
+        protected int StateParameterEnd { get; private set; }
+
+        /// <summary>
+        ///   Gets the index of the last edge parameter for
+        ///   this factor potential in the parameter vector.
+        /// </summary>
+        /// 
+        protected int ParameterEnd { get; private set; }
+
+        /// <summary>
         ///   Creates a new factor (clique) potential function.
         /// </summary>
         /// 
         /// <param name="owner">The owner <see cref="IPotentialFunction{T}"/>.</param>
-        /// <param name="index">The index of this factor potential in the <paramref name="owner"/>.</param>
         /// <param name="states">The number of states in this clique potential.</param>
-        /// <param name="features">The number of features in this factor potential.</param>
+        /// <param name="factorIndex">The index of this factor potential in the <paramref name="owner"/>.</param>
+        /// <param name="edgeIndex">The index of the first edge feature in the <paramref name="owner"/>'s parameter vector.</param>
+        /// <param name="edgeCount">The number of edge features in this factor.</param>
+        /// <param name="stateIndex">The index of the first state feature in the <paramref name="owner"/>'s parameter vector.</param>
+        /// <param name="stateCount">The number of state features in this factor.</param>
         /// 
-        public FactorPotential(IPotentialFunction<T> owner, int index, int states, int features)
+        public FactorPotential(IPotentialFunction<T> owner, int states, int factorIndex,
+            int edgeIndex, int edgeCount,
+            int stateIndex, int stateCount)
+            : this(owner, states, factorIndex)
+        {
+            EdgeParameterIndex = edgeIndex;
+            EdgeParameterCount = edgeCount;
+            EdgeParameterEnd = edgeIndex + edgeCount;
+
+            StateParameterIndex = stateIndex;
+            StateParameterCount = stateCount;
+            StateParameterEnd = stateIndex + stateCount;
+
+            ParameterIndex = Math.Min(edgeIndex, stateIndex);
+            ParameterCount = edgeCount + stateCount;
+            ParameterEnd = ParameterIndex + ParameterCount;
+        }
+
+        /// <summary>
+        ///   Creates a new factor (clique) potential function.
+        /// </summary>
+        /// 
+        /// <param name="owner">The owner <see cref="IPotentialFunction{T}"/>.</param>
+        /// <param name="states">The number of states in this clique potential.</param>
+        /// <param name="factorIndex">The index of this factor potential in the <paramref name="owner"/>.</param>
+        /// 
+        protected FactorPotential(IPotentialFunction<T> owner, int states, int factorIndex)
         {
             Owner = owner;
-            ParameterIndex = index;
-            FeatureCount = features;
             States = states;
+            Index = factorIndex;
         }
 
         /// <summary>
@@ -97,6 +180,27 @@ namespace Accord.Statistics.Models.Fields.Functions
             return p;
         }
 
+        /// <summary>
+        ///   Computes the factor potential function for the given parameters.
+        /// </summary>
+        /// 
+        /// <param name="states">A state sequence.</param>
+        /// <param name="observations">A sequence of observations.</param>
+        /// <param name="output">The output class label for the sequence.</param>
+        /// <returns>The value of the factor potential function evaluated for the given parameters.</returns>
+        /// 
+        public virtual double[] GetFeatureVector(int[] states, T[] observations, int output = 0)
+        {
+            double[] featureVector = new double[ParameterCount];
+
+            int start = ParameterIndex;
+            int end = ParameterEnd;
+
+            for (int i = 0, k = start; i < featureVector.Length; i++, k++)
+                featureVector[i] = Owner.Features[k].Compute(states, observations, output);
+
+            return featureVector;
+        }
 
         /// <summary>
         ///   Computes the factor potential function for the given parameters.
@@ -109,10 +213,11 @@ namespace Accord.Statistics.Models.Fields.Functions
         /// <param name="outputClass">The output class label for the sequence.</param>
         /// <returns>The value of the factor potential function evaluated for the given parameters.</returns>
         /// 
-        public double Compute(int previousState, int currentState, T[] observations, int index, int outputClass = 0)
+        public virtual double Compute(int previousState, int currentState, T[] observations, int index,
+            int outputClass = 0)
         {
             int start = ParameterIndex;
-            int end = ParameterIndex + FeatureCount;
+            int end = ParameterEnd;
 
             double sum = 0;
             for (int k = start; k < end; k++)
@@ -139,6 +244,7 @@ namespace Accord.Statistics.Models.Fields.Functions
             return sum;
         }
 
+
         /// <summary>
         ///   Returns an enumerator that iterates through all features in this factor potential function.
         /// </summary>
@@ -148,7 +254,7 @@ namespace Accord.Statistics.Models.Fields.Functions
         public IEnumerator<IFeature<T>> GetEnumerator()
         {
             int start = ParameterIndex;
-            int end = ParameterIndex + FeatureCount;
+            int end = ParameterEnd;
 
             for (int k = start; k < end; k++)
             {
@@ -167,6 +273,21 @@ namespace Accord.Statistics.Models.Fields.Functions
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        /// <summary>
+        ///   Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A new object that is a copy of this instance.
+        /// </returns>
+        /// 
+        public FactorPotential<T> Clone(IPotentialFunction<T> newOwner)
+        {
+            var clone = (FactorPotential<T>)this.MemberwiseClone();
+            clone.Owner = newOwner;
+            return clone;
         }
 
     }

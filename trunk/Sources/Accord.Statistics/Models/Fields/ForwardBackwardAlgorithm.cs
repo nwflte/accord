@@ -48,9 +48,9 @@ namespace Accord.Statistics.Models.Fields
             double s = 0;
 
             // Ensures minimum requirements
-            System.Diagnostics.Trace.Assert(fwd.GetLength(0) >= T);
-            System.Diagnostics.Trace.Assert(fwd.GetLength(1) == states);
-            System.Diagnostics.Trace.Assert(scaling.Length >= T);
+            System.Diagnostics.Debug.Assert(fwd.GetLength(0) >= T);
+            System.Diagnostics.Debug.Assert(fwd.GetLength(1) == states);
+            System.Diagnostics.Debug.Assert(scaling.Length >= T);
             Array.Clear(fwd, 0, fwd.Length);
 
 
@@ -190,8 +190,8 @@ namespace Accord.Statistics.Models.Fields
             int T = observations.Length;
 
             // Ensures minimum requirements
-            System.Diagnostics.Trace.Assert(bwd.GetLength(0) >= T);
-            System.Diagnostics.Trace.Assert(bwd.GetLength(1) == states);
+            System.Diagnostics.Debug.Assert(bwd.GetLength(0) >= T);
+            System.Diagnostics.Debug.Assert(bwd.GetLength(1) == states);
             Array.Clear(bwd, 0, bwd.Length);
 
             // For backward variables, we use the same scale factors
@@ -290,8 +290,8 @@ namespace Accord.Statistics.Models.Fields
             int T = observations.Length;
 
             // Ensures minimum requirements
-            System.Diagnostics.Trace.Assert(lnFwd.GetLength(0) >= T);
-            System.Diagnostics.Trace.Assert(lnFwd.GetLength(1) == states);
+            System.Diagnostics.Debug.Assert(lnFwd.GetLength(0) >= T);
+            System.Diagnostics.Debug.Assert(lnFwd.GetLength(1) == states);
             Array.Clear(lnFwd, 0, lnFwd.Length);
 
 
@@ -358,12 +358,9 @@ namespace Accord.Statistics.Models.Fields
             int T = observations.Length;
 
             // Ensures minimum requirements
-            System.Diagnostics.Trace.Assert(lnBwd.GetLength(0) >= T);
-            System.Diagnostics.Trace.Assert(lnBwd.GetLength(1) == states);
+            System.Diagnostics.Debug.Assert(lnBwd.GetLength(0) >= T);
+            System.Diagnostics.Debug.Assert(lnBwd.GetLength(1) == states);
             Array.Clear(lnBwd, 0, lnBwd.Length);
-
-            // For backward variables, we use the same scale factors
-            //   for each time t as were used for forward variables.
 
             // 1. Initialization
             for (int i = 0; i < states; i++)
@@ -374,7 +371,7 @@ namespace Accord.Statistics.Models.Fields
             {
                 for (int i = 0; i < states; i++)
                 {
-                    double sum = double.NegativeInfinity;
+                    double sum = Double.NegativeInfinity;
                     for (int j = 0; j < states; j++)
                         sum = Special.LogSum(sum, lnBwd[t + 1, j] + function.Compute(i, j, observations, t + 1, output));
                     lnBwd[t, i] += sum;

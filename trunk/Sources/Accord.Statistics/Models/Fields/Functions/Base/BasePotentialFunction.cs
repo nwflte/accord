@@ -32,7 +32,7 @@ namespace Accord.Statistics.Models.Fields.Functions
     /// <typeparam name="T">The type of the observations modeled.</typeparam>
     /// 
     [Serializable]
-    public abstract class BasePotentialFunction<T>
+    public abstract class BasePotentialFunction<T> 
     {
 
         /// <summary>
@@ -49,12 +49,6 @@ namespace Accord.Statistics.Models.Fields.Functions
         public int Outputs { get; protected set; }
 
         /// <summary>
-        ///   Gets the number of symbols assumed by this function.
-        /// </summary>
-        /// 
-        public int Symbols { get; protected set; }
-
-        /// <summary>
         ///   Gets or sets the set of weights for each feature function.
         /// </summary>
         /// 
@@ -68,6 +62,24 @@ namespace Accord.Statistics.Models.Fields.Functions
         /// 
         public IFeature<T>[] Features { get; protected set; }
 
+        /// <summary>
+        ///   Computes the factor potential function for the given parameters.
+        /// </summary>
+        /// 
+        /// <param name="states">A state sequence.</param>
+        /// <param name="observations">A sequence of observations.</param>
+        /// <param name="output">The output class label for the sequence.</param>
+        /// <returns>The value of the factor potential function evaluated for the given parameters.</returns>
+        /// 
+        public virtual double[] GetFeatureVector(int[] states, T[] observations, int output = 0)
+        {
+            double[] featureVector = new double[Weights.Length];
+
+            for (int i = 0; i < featureVector.Length; i++)
+                featureVector[i] = Features[i].Compute(states, observations, output);
+
+            return featureVector;
+        }
 
     }
 }
