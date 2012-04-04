@@ -25,18 +25,19 @@ namespace Accord.Statistics.Kernels
     using System;
 
     /// <summary>
-    ///   Multiquadric Kernel.
+    ///   Inverse Multiquadric Kernel.
     /// </summary>
     /// 
     /// <remarks>
-    ///   The multiquadric kernel is only conditionally positive-definite.
+    ///   The inverse multiquadric kernel is only conditionally positive definite.
     /// </remarks>
     /// 
     [Serializable]
-    public sealed class Multiquadric : IKernel
+    public sealed class InverseMultiquadric : IKernel
     {
 
         private double constant;
+
 
         /// <summary>
         ///   Gets or sets the kernel's constant value.
@@ -49,24 +50,24 @@ namespace Accord.Statistics.Kernels
         }
 
         /// <summary>
-        ///   Constructs a new Multiquadric Kernel.
+        ///   Constructs a new Inverse Multiquadric Kernel.
         /// </summary>
         /// 
         /// <param name="constant">The constant term theta.</param>
         /// 
-        public Multiquadric(double constant)
+        public InverseMultiquadric(double constant)
         {
             this.constant = constant;
         }
 
         /// <summary>
-        ///   Constructs a new Multiquadric Kernel.
+        ///   Constructs a new Inverse Multiquadric Kernel.
         /// </summary>
         /// 
-        public Multiquadric() : this(1) { }
+        public InverseMultiquadric() : this(1) { }
 
         /// <summary>
-        ///   Multiquadric Kernel function.
+        ///   Inverse Multiquadric Kernel function.
         /// </summary>
         /// 
         /// <param name="x">Vector <c>x</c> in input space.</param>
@@ -82,7 +83,7 @@ namespace Accord.Statistics.Kernels
                 norm += d * d;
             }
 
-            return -(norm + constant * constant);
+            return 1.0 / (norm + constant * constant);
         }
 
     }
