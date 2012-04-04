@@ -5,6 +5,20 @@
 // Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
+//    This library is free software; you can redistribute it and/or
+//    modify it under the terms of the GNU Lesser General Public
+//    License as published by the Free Software Foundation; either
+//    version 2.1 of the License, or (at your option) any later version.
+//
+//    This library is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+//    Lesser General Public License for more details.
+//
+//    You should have received a copy of the GNU Lesser General Public
+//    License along with this library; if not, write to the Free Software
+//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+//
 
 namespace Accord.Statistics.Models.Markov
 {
@@ -19,8 +33,6 @@ namespace Accord.Statistics.Models.Markov
     /// 
     public static class ForwardBackwardAlgorithm
     {
-
-
 
         /// <summary>
         ///   Computes Forward probabilities for a given hidden Markov model and a set of observations.
@@ -37,9 +49,9 @@ namespace Accord.Statistics.Models.Markov
             double s = 0;
 
             // Ensures minimum requirements
-            System.Diagnostics.Trace.Assert(fwd.GetLength(0) >= T);
-            System.Diagnostics.Trace.Assert(fwd.GetLength(1) == states);
-            System.Diagnostics.Trace.Assert(scaling.Length >= T);
+            System.Diagnostics.Debug.Assert(fwd.GetLength(0) >= T);
+            System.Diagnostics.Debug.Assert(fwd.GetLength(1) == states);
+            System.Diagnostics.Debug.Assert(scaling.Length >= T);
             Array.Clear(fwd, 0, fwd.Length);
 
 
@@ -80,6 +92,10 @@ namespace Accord.Statistics.Models.Markov
                 }
             }
 
+#if DEBUG
+            foreach (var value in fwd)
+                if (Double.IsNaN(value)) throw new Exception();
+#endif
         }
 
         /// <summary>
@@ -112,6 +128,11 @@ namespace Accord.Statistics.Models.Markov
                     fwd[t, i] = sum * B[i, obs];
                 }
             }
+
+#if DEBUG
+            foreach (var value in fwd)
+                if (Double.IsNaN(value)) throw new Exception();
+#endif
 
             return fwd;
         }
@@ -179,9 +200,9 @@ namespace Accord.Statistics.Models.Markov
             double s = 0;
 
             // Ensures minimum requirements
-            System.Diagnostics.Trace.Assert(fwd.GetLength(0) >= T);
-            System.Diagnostics.Trace.Assert(fwd.GetLength(1) == states);
-            System.Diagnostics.Trace.Assert(scaling.Length >= T);
+            System.Diagnostics.Debug.Assert(fwd.GetLength(0) >= T);
+            System.Diagnostics.Debug.Assert(fwd.GetLength(1) == states);
+            System.Diagnostics.Debug.Assert(scaling.Length >= T);
             Array.Clear(fwd, 0, fwd.Length);
 
 
@@ -222,6 +243,10 @@ namespace Accord.Statistics.Models.Markov
                 }
             }
 
+#if DEBUG
+            foreach (var value in fwd)
+                if (Double.IsNaN(value)) throw new Exception();
+#endif
         }
 
         /// <summary>
@@ -230,15 +255,43 @@ namespace Accord.Statistics.Models.Markov
         public static double[,] Forward<TDistribution>(HiddenMarkovModel<TDistribution> model, double[][] observations, out double logLikelihood)
             where TDistribution : IDistribution
         {
-            int T = observations.Length;
-            double[] coefficients = new double[T];
-            double[,] fwd = new double[T, model.States];
+            double[,] fwd = new double[observations.Length, model.States];
+            double[] scaling = new double[observations.Length];
 
-            ForwardBackwardAlgorithm.Forward<TDistribution>(model, observations, coefficients, fwd);
+            ForwardBackwardAlgorithm.Forward<TDistribution>(model, observations, scaling, fwd);
 
             logLikelihood = 0;
-            for (int i = 0; i < coefficients.Length; i++)
-                logLikelihood += Math.Log(coefficients[i]);
+            for (int i = 0; i < scaling.Length; i++)
+                logLikelihood += Math.Log(scaling[i]);
+
+            return fwd;
+        }
+
+        /// <summary>
+        ///   Computes Forward probabilities for a given hidden Markov model and a set of observations.
+        /// </summary>
+        public static double[,] Forward<TDistribution>(HiddenMarkovModel<TDistribution> model, double[][] observations, out double[] scaling)
+            where TDistribution : IDistribution
+        {
+            double[,] fwd = new double[observations.Length, model.States];
+            scaling = new double[observations.Length];
+            Forward<TDistribution>(model, observations, scaling, fwd);
+            return fwd;
+        }
+
+        /// <summary>
+        ///   Computes Forward probabilities for a given hidden Markov model and a set of observations.
+        /// </summary>
+        public static double[,] Forward<TDistribution>(HiddenMarkovModel<TDistribution> model, double[][] observations, out double[] scaling, out double logLikelihood)
+            where TDistribution : IDistribution
+        {
+            double[,] fwd = new double[observations.Length, model.States];
+            scaling = new double[observations.Length];
+            Forward<TDistribution>(model, observations, scaling, fwd);
+
+            logLikelihood = 0;
+            for (int i = 0; i < scaling.Length; i++)
+                logLikelihood += Math.Log(scaling[i]);
 
             return fwd;
         }
@@ -259,8 +312,8 @@ namespace Accord.Statistics.Models.Markov
             int T = observations.Length;
 
             // Ensures minimum requirements
-            System.Diagnostics.Trace.Assert(bwd.GetLength(0) >= T);
-            System.Diagnostics.Trace.Assert(bwd.GetLength(1) == states);
+            System.Diagnostics.Debug.Assert(bwd.GetLength(0) >= T);
+            System.Diagnostics.Debug.Assert(bwd.GetLength(1) == states);
             Array.Clear(bwd, 0, bwd.Length);
 
             // For backward variables, we use the same scale factors
@@ -282,20 +335,10 @@ namespace Accord.Statistics.Models.Markov
                 }
             }
 
-        }
-
-        /// <summary>
-        ///   Computes Backward probabilities for a given hidden Markov model and a set of observations.
-        /// </summary>
-        /// 
-        public static double[,] Backward(HiddenMarkovModel model, int[] observations, double[] scaling)
-        {
-            int states = model.States;
-
-            int T = observations.Length;
-            double[,] bwd = new double[T, states];
-            Backward(model, observations, scaling, bwd);
-            return bwd;
+#if DEBUG
+            foreach (var value in bwd)
+                if (Double.IsNaN(value)) throw new Exception();
+#endif
         }
 
         /// <summary>
@@ -327,6 +370,25 @@ namespace Accord.Statistics.Models.Markov
                 }
             }
 
+#if DEBUG
+            foreach (var value in bwd)
+                if (Double.IsNaN(value)) throw new Exception();
+#endif
+
+            return bwd;
+        }
+
+        /// <summary>
+        ///   Computes Backward probabilities for a given hidden Markov model and a set of observations.
+        /// </summary>
+        /// 
+        public static double[,] Backward(HiddenMarkovModel model, int[] observations, double[] scaling)
+        {
+            int states = model.States;
+
+            int T = observations.Length;
+            double[,] bwd = new double[T, states];
+            Backward(model, observations, scaling, bwd);
             return bwd;
         }
 
@@ -360,8 +422,8 @@ namespace Accord.Statistics.Models.Markov
             int T = observations.Length;
 
             // Ensures minimum requirements
-            System.Diagnostics.Trace.Assert(bwd.GetLength(0) >= T);
-            System.Diagnostics.Trace.Assert(bwd.GetLength(1) == states);
+            System.Diagnostics.Debug.Assert(bwd.GetLength(0) >= T);
+            System.Diagnostics.Debug.Assert(bwd.GetLength(1) == states);
             Array.Clear(bwd, 0, bwd.Length);
 
             // For backward variables, we use the same scale factors
@@ -383,8 +445,25 @@ namespace Accord.Statistics.Models.Markov
                 }
             }
 
+#if DEBUG
+            foreach (var value in bwd)
+                if (Double.IsNaN(value)) throw new Exception();
+#endif
         }
 
+        /// <summary>
+        ///   Computes Backward probabilities for a given hidden Markov model and a set of observations.
+        /// </summary>
+        /// 
+        public static double[,] Backward<TDistribution>(HiddenMarkovModel<TDistribution> model, double[][] observations, double[] scaling)
+             where TDistribution : IDistribution
+        {
+            int states = model.States;
+            int T = observations.Length;
+            double[,] bwd = new double[T, states];
+            Backward<TDistribution>(model, observations, scaling, bwd);
+            return bwd;
+        }
 
 
         /// <summary>
@@ -401,8 +480,8 @@ namespace Accord.Statistics.Models.Markov
             int T = observations.Length;
 
             // Ensures minimum requirements
-            System.Diagnostics.Trace.Assert(lnFwd.GetLength(0) >= T);
-            System.Diagnostics.Trace.Assert(lnFwd.GetLength(1) == states);
+            System.Diagnostics.Debug.Assert(lnFwd.GetLength(0) >= T);
+            System.Diagnostics.Debug.Assert(lnFwd.GetLength(1) == states);
             Array.Clear(lnFwd, 0, lnFwd.Length);
 
 
@@ -424,6 +503,10 @@ namespace Accord.Statistics.Models.Markov
                 }
             }
 
+#if DEBUG
+            foreach (var value in lnFwd)
+                if (Double.IsNaN(value)) throw new Exception();
+#endif
         }
 
         /// <summary>
@@ -472,8 +555,8 @@ namespace Accord.Statistics.Models.Markov
             int T = observations.Length;
 
             // Ensures minimum requirements
-            System.Diagnostics.Trace.Assert(lnFwd.GetLength(0) >= T);
-            System.Diagnostics.Trace.Assert(lnFwd.GetLength(1) == states);
+            System.Diagnostics.Debug.Assert(lnFwd.GetLength(0) >= T);
+            System.Diagnostics.Debug.Assert(lnFwd.GetLength(1) == states);
             Array.Clear(lnFwd, 0, lnFwd.Length);
 
 
@@ -494,6 +577,11 @@ namespace Accord.Statistics.Models.Markov
                     lnFwd[t, i] = sum + logB[i].LogProbabilityFunction(x);
                 }
             }
+
+#if DEBUG
+            foreach (var value in lnFwd)
+                if (Double.IsNaN(value)) throw new Exception();
+#endif
         }
 
         /// <summary>
@@ -530,8 +618,8 @@ namespace Accord.Statistics.Models.Markov
             int T = observations.Length;
 
             // Ensures minimum requirements
-            System.Diagnostics.Trace.Assert(lnBwd.GetLength(0) >= T);
-            System.Diagnostics.Trace.Assert(lnBwd.GetLength(1) == states);
+            System.Diagnostics.Debug.Assert(lnBwd.GetLength(0) >= T);
+            System.Diagnostics.Debug.Assert(lnBwd.GetLength(1) == states);
             Array.Clear(lnBwd, 0, lnBwd.Length);
 
             // 1. Initialization
@@ -549,6 +637,11 @@ namespace Accord.Statistics.Models.Markov
                     lnBwd[t, i] += sum;
                 }
             }
+
+#if DEBUG
+            foreach (var value in lnBwd)
+                if (Double.IsNaN(value)) throw new Exception();
+#endif
         }
 
         /// <summary>
@@ -599,8 +692,8 @@ namespace Accord.Statistics.Models.Markov
             int T = observations.Length;
 
             // Ensures minimum requirements
-            System.Diagnostics.Trace.Assert(lnBwd.GetLength(0) >= T);
-            System.Diagnostics.Trace.Assert(lnBwd.GetLength(1) == states);
+            System.Diagnostics.Debug.Assert(lnBwd.GetLength(0) >= T);
+            System.Diagnostics.Debug.Assert(lnBwd.GetLength(1) == states);
             Array.Clear(lnBwd, 0, lnBwd.Length);
 
 
@@ -613,13 +706,18 @@ namespace Accord.Statistics.Models.Markov
             {
                 for (int i = 0; i < states; i++)
                 {
-                    double sum = 0;
+                    double sum = Double.NegativeInfinity;
                     for (int j = 0; j < states; j++)
                         sum = Special.LogSum(sum, lnBwd[t + 1, j] + logA[i, j]
                             + logB[j].LogProbabilityFunction(observations[t + 1]));
                     lnBwd[t, i] += sum;
                 }
             }
+
+#if DEBUG
+            foreach (var value in lnBwd)
+                if (Double.IsNaN(value)) throw new Exception();
+#endif
         }
 
         /// <summary>

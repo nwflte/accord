@@ -5,6 +5,20 @@
 // Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
 //
+//    This library is free software; you can redistribute it and/or
+//    modify it under the terms of the GNU Lesser General Public
+//    License as published by the Free Software Foundation; either
+//    version 2.1 of the License, or (at your option) any later version.
+//
+//    This library is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+//    Lesser General Public License for more details.
+//
+//    You should have received a copy of the GNU Lesser General Public
+//    License along with this library; if not, write to the Free Software
+//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+//
 
 namespace Accord.Statistics.Models.Markov
 {
@@ -142,11 +156,11 @@ namespace Accord.Statistics.Models.Markov
     ///   
     ///   // Create a new Hidden Markov Model with 3 states and
     ///   //  a generic discrete distribution with two symbols
-    ///   var hmm = new HiddenMarkovModel&lt;NormalDistribution&gt;.CreateDiscrete(3, 2);
+    ///   var hmm = new HiddenMarkovModel.CreateGeneric(3, 2);
     ///   
     ///   // We will try to fit the model to the data until the difference in
     ///   //  the average log-likelihood changes only by as little as 0.0001
-    ///   var teacher = new BaumWelchLearning&lt;NormalDistribution&gt;(hmm)
+    ///   var teacher = new BaumWelchLearning&lt;DiscreteUniformDistribution&gt;(hmm)
     ///   { 
     ///       Tolerance = 0.0001,
     ///       Iterations = 0 
