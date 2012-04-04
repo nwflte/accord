@@ -40,22 +40,15 @@ namespace Accord.Math
             int rows = matrix.GetLength(0);
             int cols = matrix.GetLength(1);
 
-            if (rows == cols)
+            if (rows <= cols)
             {
                 // Solve by LU Decomposition if matrix is square.
                 return new LuDecomposition(matrix).Solve(rightSide);
             }
             else
             {
-                if (rows > cols)
-                {
-                    // Solve by QR Decomposition if not.
-                    return new QrDecomposition(matrix).Solve(rightSide);
-                }
-                else
-                {
-                    return new LuDecomposition(matrix).Solve(rightSide);
-                }
+                // Solve by QR Decomposition if not.
+                return new QrDecomposition(matrix).Solve(rightSide);
             }
         }
 
@@ -76,22 +69,15 @@ namespace Accord.Math
             int rows = matrix.GetLength(0);
             int cols = matrix.GetLength(1);
 
-            if (rows == cols)
+            if (rows <= cols)
             {
                 // Solve by LU Decomposition if matrix is square.
                 return new LuDecomposition(matrix).Solve(rightSide);
             }
             else
             {
-                if (rows > cols)
-                {
-                    // Solve by QR Decomposition if not.
-                    return new QrDecomposition(matrix).Solve(rightSide);
-                }
-                else
-                {
-                    return new LuDecomposition(matrix).Solve(rightSide);
-                }
+                // Solve by QR Decomposition if not.
+                return new QrDecomposition(matrix).Solve(rightSide);
             }
         }
 

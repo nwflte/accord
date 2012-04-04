@@ -176,11 +176,15 @@
     </Compile>
     <Compile Include="Norm.cs" />
     <Compile Include="Differentiation\FiniteDifferences.cs" />
-    <Compile Include="Optimization\ConjugateGradient.cs" />
-    <Compile Include="Optimization\IOptimizationMethod.cs" />
-    <Compile Include="Optimization\BroydenFletcherGoldfarbShanno.cs" />
-    <Compile Include="Optimization\LineSearchFailedException.cs" />
-    <Compile Include="Optimization\OptimizationProgressEventHandler.cs" />
+    <Compile Include="Optimization\Unconstrained\ConjugateGradient.cs" />
+    <Compile Include="Optimization\Constrained\LinearConstraint.cs" />
+    <Compile Include="Optimization\IObjectiveFunction.cs" />
+    <Compile Include="Optimization\QuadraticObjectiveFunction.cs" />
+    <Compile Include="Optimization\Unconstrained\IOptimizationMethod.cs" />
+    <Compile Include="Optimization\Unconstrained\BroydenFletcherGoldfarbShanno.cs" />
+    <Compile Include="Optimization\Unconstrained\LineSearchFailedException.cs" />
+    <Compile Include="Optimization\Unconstrained\OptimizationProgressEventHandler.cs" />
+    <Compile Include="Optimization\Constrained\GoldfarbIdnaniQuadraticSolver.cs" />
     <Compile Include="Properties\GlobalSuppressions.cs" />
     <Compile Include="Special.cs" />
     <Compile Include="HilbertTransform.cs" />

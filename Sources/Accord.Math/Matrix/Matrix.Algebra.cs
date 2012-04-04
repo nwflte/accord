@@ -286,6 +286,21 @@ namespace Accord.Math
         }
 
         /// <summary>
+        ///   Computes the product <c>A*B'</c> of matrix <c>A</c> and transpose of <c>B</c>.
+        /// </summary>
+        /// 
+        /// <param name="a">The left matrix <c>A</c>.</param>
+        /// <param name="b">The transposed right matrix <c>B</c>.</param>
+        /// <returns>The product <c>A*B'</c> of the given matrices <c>A</c> and <c>B</c>.</returns>
+        /// 
+        public static float[,] MultiplyByTranspose(this float[,] a, float[,] b)
+        {
+            float[,] r = new float[a.GetLength(0), b.GetLength(0)];
+            MultiplyByTranspose(a, b, r);
+            return r;
+        }
+
+        /// <summary>
         ///   Computes the product <c>A*B'</c> of matrix <c>A</c> and
         ///   transpose of <c>B</c>, storing the result in matrix <c>R</c>.
         /// </summary>
@@ -315,6 +330,44 @@ namespace Accord.Math
                         double* aColi = ptrA + n * i;
 
                         double s = 0;
+                        for (int k = 0; k < n; k++)
+                            s += *(aColi++) * *(bColj++);
+                        *(rc++) = s;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///   Computes the product <c>A*B'</c> of matrix <c>A</c> and
+        ///   transpose of <c>B</c>, storing the result in matrix <c>R</c>.
+        /// </summary>
+        /// 
+        /// <param name="a">The left matrix <c>A</c>.</param>
+        /// <param name="b">The transposed right matrix <c>B</c>.</param>
+        /// <param name="result">The matrix <c>R</c> to store the product <c>R = A*B'</c>
+        ///   of the given matrices <c>A</c> and <c>B</c>.</param>
+        ///    
+        public static unsafe void MultiplyByTranspose(this float[,] a, float[,] b, float[,] result)
+        {
+            int n = a.GetLength(1);
+            int m = a.GetLength(0);
+            int p = b.GetLength(0);
+
+            fixed (float* ptrA = a)
+            fixed (float* ptrB = b)
+            fixed (float* ptrR = result)
+            {
+                float* rc = ptrR;
+
+                for (int i = 0; i < m; i++)
+                {
+                    float* bColj = ptrB;
+                    for (int j = 0; j < p; j++)
+                    {
+                        float* aColi = ptrA + n * i;
+
+                        float s = 0;
                         for (int k = 0; k < n; k++)
                             s += *(aColi++) * *(bColj++);
                         *(rc++) = s;
@@ -571,6 +624,34 @@ namespace Accord.Math
                     "Matrix must have the same number of rows as the length of the vector.");
 
             double[] r = new double[cols];
+
+            for (int j = 0; j < cols; j++)
+                for (int k = 0; k < rowVector.Length; k++)
+                    r[j] += rowVector[k] * matrix[k, j];
+
+            return r;
+        }
+
+        /// <summary>
+        ///   Multiplies a row vector <c>v</c> and a matrix <c>A</c>,
+        ///   giving the product <c>v'*A</c>.
+        /// </summary>
+        /// 
+        /// <param name="rowVector">The row vector <c>v</c>.</param>
+        /// <param name="matrix">The matrix <c>A</c>.</param>
+        /// <returns>The product <c>v'*A</c>of the multiplication of the
+        ///   given row vector <c>v</c> and matrix <c>A</c>.</returns>
+        /// 
+        public static float[] Multiply(this float[] rowVector, float[,] matrix)
+        {
+            int rows = matrix.GetLength(0);
+            int cols = matrix.GetLength(1);
+
+            if (rows != rowVector.Length)
+                throw new DimensionMismatchException("matrix",
+                    "Matrix must have the same number of rows as the length of the vector.");
+
+            float[] r = new float[cols];
 
             for (int j = 0; j < cols; j++)
                 for (int k = 0; k < rowVector.Length; k++)
@@ -983,6 +1064,42 @@ namespace Accord.Math
         public static double InnerProduct(this double[] a, double[] b)
         {
             double r = 0.0;
+
+            if (a.Length != b.Length)
+                throw new ArgumentException("Vector dimensions must match", "b");
+
+            for (int i = 0; i < a.Length; i++)
+                r += a[i] * b[i];
+
+            return r;
+        }
+
+        /// <summary>
+        ///   Gets the inner product (scalar product) between two vectors (a'*b).
+        /// </summary>
+        /// 
+        /// <param name="a">A vector.</param>
+        /// <param name="b">A vector.</param>
+        /// 
+        /// <returns>The inner product of the multiplication of the vectors.</returns>
+        /// 
+        /// <remarks>
+        ///  <para>
+        ///    In mathematics, the dot product is an algebraic operation that takes two
+        ///    equal-length sequences of numbers (usually coordinate vectors) and returns
+        ///    a single number obtained by multiplying corresponding entries and adding up
+        ///    those products. The name is derived from the dot that is often used to designate
+        ///    this operation; the alternative name scalar product emphasizes the scalar
+        ///    (rather than vector) nature of the result.</para>
+        ///  <para>
+        ///    The principal use of this product is the inner product in a Euclidean vector space:
+        ///    when two vectors are expressed on an orthonormal basis, the dot product of their 
+        ///    coordinate vectors gives their inner product.</para>  
+        /// </remarks>
+        /// 
+        public static float InnerProduct(this float[] a, float[] b)
+        {
+            float r = 0.0f;
 
             if (a.Length != b.Length)
                 throw new ArgumentException("Vector dimensions must match", "b");

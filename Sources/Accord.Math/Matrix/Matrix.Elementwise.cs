@@ -243,6 +243,25 @@ namespace Accord.Math
             return r;
         }
 
+
+        /// <summary>
+        ///   Elementwise divide operation.
+        /// </summary>
+        /// 
+        public static float[,] ElementwiseDivide(this float[,] a, float[,] b)
+        {
+            int rows = a.GetLength(0);
+            int cols = b.GetLength(1);
+
+            float[,] r = new float[rows, cols];
+
+            for (int i = 0; i < rows; i++)
+                for (int j = 0; j < cols; j++)
+                    r[i, j] = a[i, j] / b[i, j];
+
+            return r;
+        }
+
         /// <summary>
         ///   Elementwise division.
         /// </summary>
