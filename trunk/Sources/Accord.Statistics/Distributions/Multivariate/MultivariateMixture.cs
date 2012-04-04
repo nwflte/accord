@@ -257,7 +257,11 @@ namespace Accord.Statistics.Distributions.Multivariate
         /// 
         public override void Fit(double[][] observations, double[] weights, IFittingOptions options)
         {
-            Fit(observations, weights, options as MixtureOptions);
+            MixtureOptions mixOptions = options as MixtureOptions;
+            if (options != null && mixOptions == null)
+                throw new ArgumentException("The specified options' type is invalid.", "options");
+
+            Fit(observations, weights, mixOptions);
         }
 
         /// <summary>

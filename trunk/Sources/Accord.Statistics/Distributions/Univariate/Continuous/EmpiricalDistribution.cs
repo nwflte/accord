@@ -275,7 +275,7 @@ namespace Accord.Statistics.Distributions.Univariate
                 throw new ArgumentException("This distribution does not support weighted samples.");
 
             if (options != null)
-                throw new ArgumentException("No options may be specified.");
+                throw new ArgumentException("This method does not accept fitting options.");
 
             initialize((double[])observations.Clone(), null);
         }

@@ -249,7 +249,7 @@ namespace Accord.Statistics.Distributions.Univariate
         public override void Fit(double[] observations, double[] weights, IFittingOptions options)
         {
             if (options != null)
-                throw new ArgumentException("No options may be specified.");
+                throw new ArgumentException("This method does not accept fitting options.");
 
             // R. Kolar, R. Jirik, J. Jan (2004) "Estimator Comparison of the
             // Nakagami-m Parameter and Its Application in Echocardiography", 

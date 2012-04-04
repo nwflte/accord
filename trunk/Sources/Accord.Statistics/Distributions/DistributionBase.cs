@@ -36,6 +36,7 @@ namespace Accord.Statistics.Distributions
     ///  http://connect.microsoft.com/VisualStudio/feedback/details/542097/ca0001-errors </para>
     /// </remarks>
     /// 
+    [Serializable]
     public class DistributionBase 
     {
 
