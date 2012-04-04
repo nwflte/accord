@@ -72,6 +72,7 @@
     <Compile Include="Exceptions\NonSymmetricMatrixException.cs" />
     <Compile Include="Exceptions\SingularMatrixException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReadOnlyDictionary.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Accord.snk" />
