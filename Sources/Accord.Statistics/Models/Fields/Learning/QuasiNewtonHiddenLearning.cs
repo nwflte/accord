@@ -72,7 +72,8 @@ namespace Accord.Statistics.Models.Fields.Learning
 
             Model.Function.Weights = lbfgs.Solution;
 
-            return Model.LogLikelihood(observations, outputs);
+            // Return negative log-likelihood as error function
+            return -Model.LogLikelihood(observations, outputs);
         }
 
         /// <summary>
