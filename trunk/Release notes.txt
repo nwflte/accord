@@ -1,3 +1,58 @@
+Accord.NET Framework 2.6.0 release notes
+-----------------------------------------
+05.04.2012.    
+
+Version updates and fixes:
+
+* General
+  - Introducing experimental NuGet packages.
+
+* Accord.Statistics
+  - Adding class features to HCRF potential functions;
+  - Adding resilient gradient (RProp) learning for HCRFs;
+  - Adding notifications for HMM classifier learning;
+  - Adding non-stochastic mode for GradientDescentHiddenLearning;
+  - Adding notifications for stochastic and conjugate gradient learning;
+  - Adding optimizations for HMM-based linear-chain HCRFs;
+  - Implementing ICloneable in all CRF/HCRF related classes;
+  - Updating positive definite checks in Cholesky decompositions;
+  - Correcting HMM computations to normalize probabilities only if required;
+  - Correcting DistributionBase to be marked as serializable;
+  - Correcting catastrophic cancellation in HCRF evaluation;
+  - Correcting output feature marginal probability calculation;
+  - Correcting Phi and ChiSquare calculation in GeneralConfusionMatrix;
+  - Renaming BaseSequenceClassifierLearning to BaseHiddenMarkovClassifierLearning.
+
+* Accord.MachineLearning
+  - Adding pooled variance support for Cross-Validation;
+  - Adding a switch to disable parallel computations in Cross-Validation;
+  - Adding support for external initialization in  Cross-Validation;
+  - Adding support for compact form linear SVMs;
+  - Adding kernel function cache in SVMs and SMO;
+  - Adding notification events to multi-class SVM learning;
+  - Adding Keerthi et al. improvements to the SMO algorithm;
+  - Splitting Cross-Validation and Grid-Search classes in different files;
+  - Splitting Multiquadric and InverseMultiquadric kernels;
+  - Correcting Multiquadric kernel to be positive-definite;
+  - Optimizing multi-class SVM evaluation based on DAGs.
+
+* Accord.Math
+  - Adding the Goldfarb-Idnani solver for constrained QP problems.
+
+* Accord.Imaging
+  - Adding further options to disable gradient blending in Blend filter;
+  - Adding image rectification filter for projective transformations;
+  - Adding specialized RANSAC fundamental matrix estimator.
+
+* Sample applications
+  - Adding Solver sample application for constrained optimization problems.
+
+* AForge Compatibility
+  - Compiled against AForge.NET Framework 2.2.4. May work with newer versions.
+
+
+
+
 Accord.NET Framework 2.5.0 release notes
 -----------------------------------------
 20.01.2012.    
@@ -52,6 +107,9 @@ Version updates and fixes:
   - Updating Handwriting (SVM) sample application to use all samples
     available and to perform automatic estimation of Gaussian kernel;
   - Adding new audio recording sample application.
+
+* AForge Compatibility
+  - Compiled against AForge.NET Framework 2.2.3. May work with newer versions.
 
 
 
