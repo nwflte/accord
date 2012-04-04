@@ -20,7 +20,7 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-namespace Accord.Tests.Statistics
+namespace Accord.Tests.Statistics.Models.Fields
 {
     using Accord.Statistics.Models.Fields.Functions;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -140,7 +140,7 @@ namespace Accord.Tests.Statistics
         {
             HiddenMarkovModel model = CreateModel1();
 
-            HiddenMarkovModelFunction target = new HiddenMarkovModelFunction(model);
+            DiscreteMarkovModelFunction target = new DiscreteMarkovModelFunction(model);
 
             var features = target.Features;
             double[] weights = target.Weights;
@@ -149,6 +149,7 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(weights.Length, 12);
 
             int k = 0;
+
             for (int i = 0; i < model.States; i++)
                 Assert.AreEqual(model.Probabilities[i], weights[k++]);
 
@@ -159,7 +160,6 @@ namespace Accord.Tests.Statistics
             for (int i = 0; i < model.States; i++)
                 for (int j = 0; j < model.Symbols; j++)
                     Assert.AreEqual(model.Emissions[i, j], weights[k++]);
-
         }
 
 
@@ -168,7 +168,7 @@ namespace Accord.Tests.Statistics
         {
             HiddenMarkovModel model = CreateModel1();
 
-            HiddenMarkovModelFunction target = new HiddenMarkovModelFunction(model);
+            DiscreteMarkovModelFunction target = new DiscreteMarkovModelFunction(model);
 
             double actual;
             double expected;

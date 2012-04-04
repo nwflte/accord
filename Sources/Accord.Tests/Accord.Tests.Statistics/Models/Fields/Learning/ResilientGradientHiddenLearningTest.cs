@@ -30,7 +30,7 @@ namespace Accord.Tests.Statistics.Models.Fields
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass()]
-    public class ConjugateGradientHiddenLearningTest
+    public class ResilientGradientHiddenLearningTest
     {
 
         private TestContext testContextInstance;
@@ -88,7 +88,7 @@ namespace Accord.Tests.Statistics.Models.Fields
             var function = new DiscreteMarkovClassifierFunction(hmm);
 
             var model = new HiddenConditionalRandomField<int>(function);
-            var target = new ConjugateGradientHiddenLearning<int>(model);
+            var target = new ResilientGradientHiddenLearning<int>(model);
 
             double[] actual = new double[inputs.Length];
             double[] expected = new double[inputs.Length];
@@ -104,7 +104,9 @@ namespace Accord.Tests.Statistics.Models.Fields
 
             double ll0 = model.LogLikelihood(inputs, outputs);
 
-            double error = target.RunEpoch(inputs, outputs);
+            double error = Double.NegativeInfinity;
+            for (int i = 0; i < 50; i++)
+                error = target.RunEpoch(inputs, outputs);
 
             double ll1 = model.LogLikelihood(inputs, outputs);
 
@@ -115,8 +117,8 @@ namespace Accord.Tests.Statistics.Models.Fields
             }
 
             Assert.AreEqual(-0.00046872579976353634, ll0, 1e-10);
-            Assert.AreEqual(0.0001043282389863176, error, 1e-10);
-            Assert.AreEqual(error, -ll1);
+            Assert.AreEqual(0, error, 1e-10);
+            Assert.AreEqual(error, ll1);
             Assert.IsFalse(Double.IsNaN(ll0));
             Assert.IsFalse(Double.IsNaN(error));
 
@@ -138,7 +140,7 @@ namespace Accord.Tests.Statistics.Models.Fields
             var function = new DiscreteMarkovClassifierFunction(2, 2, 2);
 
             var model = new HiddenConditionalRandomField<int>(function);
-            var target = new ConjugateGradientHiddenLearning<int>(model);
+            var target = new ResilientGradientHiddenLearning<int>(model);
 
             double[] actual = new double[inputs.Length];
             double[] expected = new double[inputs.Length];
@@ -151,7 +153,13 @@ namespace Accord.Tests.Statistics.Models.Fields
 
 
             double ll0 = model.LogLikelihood(inputs, outputs);
-            double error = target.RunEpoch(inputs, outputs);
+
+            double error = Double.PositiveInfinity;
+            for (int i = 0; i < 50; i++)
+            {
+                error = target.RunEpoch(inputs, outputs);
+            }
+
             double ll1 = model.LogLikelihood(inputs, outputs);
 
             for (int i = 0; i < inputs.Length; i++)

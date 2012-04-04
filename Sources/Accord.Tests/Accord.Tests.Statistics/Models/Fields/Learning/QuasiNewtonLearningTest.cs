@@ -20,23 +20,17 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics.Models.Fields.Learning;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Accord.Statistics.Models.Fields;
-using Accord.Statistics.Models.Markov;
-using Accord.Statistics.Models.Markov.Topology;
-using Accord.Statistics.Models.Fields.Functions;
-using Accord.Statistics.Models.Markov.Learning;
-using Accord.Math;
-
 namespace Accord.Tests.Statistics
 {
+    using Accord.Statistics.Models.Fields.Learning;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Accord.Statistics.Models.Fields;
+    using Accord.Statistics.Models.Markov;
+    using Accord.Statistics.Models.Markov.Topology;
+    using Accord.Statistics.Models.Fields.Functions;
+    using Accord.Statistics.Models.Markov.Learning;
+    using Accord.Math;
 
-
-    /// <summary>
-    ///This is a test class for QuasiNewtonLearningTest and is intended
-    ///to contain all QuasiNewtonLearningTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class QuasiNewtonLearningTest
     {
@@ -44,10 +38,6 @@ namespace Accord.Tests.Statistics
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -117,9 +107,6 @@ namespace Accord.Tests.Statistics
             return hmm;
         }
 
-        /// <summary>
-        ///A test for Run
-        ///</summary>
         [TestMethod()]
         public void RunTest()
         {
@@ -140,7 +127,7 @@ namespace Accord.Tests.Statistics
             };
 
          
-            var function = new HiddenMarkovModelFunction(nstates, symbols);
+            var function = new DiscreteMarkovModelFunction(nstates, symbols);
             var model = new ConditionalRandomField<int>(nstates, function);
 
 

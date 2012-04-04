@@ -20,16 +20,12 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Imaging;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Accord.Tests.Imaging
 {
+    using Accord.Imaging;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 
-    /// <summary>
-    ///This is a test class for MatrixHTest and is intended
-    ///to contain all MatrixHTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class MatrixHTest
     {
@@ -37,10 +33,6 @@ namespace Accord.Tests.Imaging
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -84,18 +76,17 @@ namespace Accord.Tests.Imaging
         #endregion
 
 
-        /// <summary>
-        ///A test for Multiply
-        ///</summary>
         [TestMethod()]
         public void MultiplyTest()
         {
             MatrixH A = new MatrixH();
             MatrixH B = new MatrixH();
+
             MatrixH expected = new MatrixH();
-            MatrixH actual;
-            actual = A.Multiply(B);
-            Assert.AreEqual(expected, actual);
+            MatrixH actual = A.Multiply(B);
+
+            Assert.IsTrue(Accord.Math.Matrix.IsEqual(
+                expected.Elements, actual.Elements));
 
 
             double[,] a = 
@@ -119,9 +110,9 @@ namespace Accord.Tests.Imaging
             expected = new MatrixH(Accord.Math.Matrix.Multiply(a, b));
 
             Assert.IsTrue(Accord.Math.Matrix.IsEqual(
-                (double[,])actual,
-                (double[,])expected,
+                (double[,])actual, (double[,])expected,
                 0.001));
         }
+
     }
 }

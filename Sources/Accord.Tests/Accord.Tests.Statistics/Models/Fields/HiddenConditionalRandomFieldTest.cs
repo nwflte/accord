@@ -20,7 +20,7 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-namespace Accord.Tests.Statistics
+namespace Accord.Tests.Statistics.Models.Fields
 {
     using Accord.Statistics.Models.Fields;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -97,7 +97,7 @@ namespace Accord.Tests.Statistics
         {
             HiddenMarkovClassifier hmm = HiddenMarkovClassifierPotentialFunctionTest.CreateModel1();
 
-            var function = new HiddenMarkovClassifierFunction(hmm);
+            var function = new DiscreteMarkovClassifierFunction(hmm);
             var target = new HiddenConditionalRandomField<int>(function);
 
             Assert.AreEqual(function, target.Function);
@@ -130,7 +130,7 @@ namespace Accord.Tests.Statistics
             };
 
 
-            var function = new HiddenMarkovClassifierFunction(hmm);
+            var function = new DiscreteMarkovClassifierFunction(hmm);
             var target = new HiddenConditionalRandomField<int>(function);
 
 
@@ -147,7 +147,7 @@ namespace Accord.Tests.Statistics
                 double c1 = target.LogLikelihood(inputs[i], 1);
 
                 Assert.AreEqual(expected, actual);
-                Assert.AreEqual(h0, c0, 1e-10);
+                Assert.AreEqual(h0, c0, 1e-10); 
                 Assert.AreEqual(h1, c1, 1e-10);
 
                 Assert.IsFalse(double.IsNaN(c0));

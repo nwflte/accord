@@ -20,22 +20,18 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics.Models.Fields;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Accord.Statistics.Models.Fields.Functions;
-using Accord.Statistics.Models.Markov;
-using Accord.Statistics.Models.Markov.Learning;
-using Accord.Math;
-using Accord.Statistics.Models.Markov.Topology;
 
-namespace Accord.Tests.Statistics
+namespace Accord.Tests.Statistics.Models.Fields
 {
+    using Accord.Statistics.Models.Fields;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Accord.Statistics.Models.Fields.Functions;
+    using Accord.Statistics.Models.Markov;
+    using Accord.Statistics.Models.Markov.Learning;
+    using Accord.Math;
+    using Accord.Statistics.Models.Markov.Topology;
 
 
-    /// <summary>
-    ///This is a test class for ConditionalRandomFieldTest and is intended
-    ///to contain all ConditionalRandomFieldTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class ConditionalRandomFieldTest
     {
@@ -43,10 +39,6 @@ namespace Accord.Tests.Statistics
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -119,7 +111,7 @@ namespace Accord.Tests.Statistics
             HiddenMarkovModel hmm = createHMM();
 
             int states = 2;
-            var function = new HiddenMarkovModelFunction(hmm);
+            var function = new DiscreteMarkovModelFunction(hmm);
             var target = new ConditionalRandomField<int>(states, function);
 
 
@@ -136,7 +128,7 @@ namespace Accord.Tests.Statistics
             int states = hmm.States;
 
 
-            var function = new HiddenMarkovModelFunction(hmm);
+            var function = new DiscreteMarkovModelFunction(hmm);
             var target = new ConditionalRandomField<int>(states, function);
             double p1, p2;
 
@@ -167,10 +159,10 @@ namespace Accord.Tests.Statistics
             int symbols = hmm.Symbols;
 
 
-            var function1 = new HiddenMarkovModelFunction(hmm);
+            var function1 = new DiscreteMarkovModelFunction(hmm);
             var target1 = new ConditionalRandomField<int>(states, function1);
 
-            var function2 = new HiddenMarkovModelFunction(states, symbols);
+            var function2 = new DiscreteMarkovModelFunction(states, symbols);
             var target2 = new ConditionalRandomField<int>(states, function2);
 
 

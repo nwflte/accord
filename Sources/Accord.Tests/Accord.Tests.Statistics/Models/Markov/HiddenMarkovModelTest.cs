@@ -457,10 +457,20 @@ namespace Accord.Tests.Statistics
             double l23 = hmm.Evaluate(new int[] { 0, 3, 1, 2 });
             double l24 = hmm.Evaluate(new int[] { 0, 3, 1, 2, 2 });
 
-            Assert.AreEqual(l11, l21);
-            Assert.AreEqual(l12, l22);
-            Assert.AreEqual(l13, l23);
-            Assert.AreEqual(l14, l24);
+            Assert.AreEqual(l11, l21, 1e-10);
+            Assert.AreEqual(l12, l22, 1e-10);
+            Assert.AreEqual(l13, l23, 1e-10);
+            Assert.AreEqual(l14, l24, 1e-10);
+
+            Assert.IsFalse(double.IsNaN(l11));
+            Assert.IsFalse(double.IsNaN(l12));
+            Assert.IsFalse(double.IsNaN(l13));
+            Assert.IsFalse(double.IsNaN(l14));
+
+            Assert.IsFalse(double.IsNaN(l21));
+            Assert.IsFalse(double.IsNaN(l22));
+            Assert.IsFalse(double.IsNaN(l23));
+            Assert.IsFalse(double.IsNaN(l24));
 
             double ln1;
             int[] pn = hmm.Predict(new int[] { 0 }, 4, out ln1);

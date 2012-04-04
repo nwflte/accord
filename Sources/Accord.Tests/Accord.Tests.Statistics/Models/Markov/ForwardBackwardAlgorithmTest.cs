@@ -26,11 +26,8 @@ namespace Accord.Tests.Statistics.Models.Markov
     using Accord.Statistics.Models.Markov;
     using Accord.Math;
     using System;
+    using Accord.Statistics.Distributions.Univariate;
 
-    /// <summary>
-    ///This is a test class for ForwardBackwardAlgorithmTest and is intended
-    ///to contain all ForwardBackwardAlgorithmTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class ForwardBackwardAlgorithmTest
     {
@@ -38,10 +35,6 @@ namespace Accord.Tests.Statistics.Models.Markov
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -160,6 +153,26 @@ namespace Accord.Tests.Statistics.Models.Markov
             };
 
             return new HiddenMarkovModel(transitions, emissions, initial);
+        }
+
+        public static HiddenMarkovModel<GeneralDiscreteDistribution> CreateModel4()
+        {
+            double[] initial = { 0.5, 0.5 };
+
+            double[,] transitions = 
+            {
+                { 0.5, 0.5 },
+                { 0.4, 0.6 },
+            };
+
+            double[,] emissions =
+            {
+                //         A    C    G    T
+                /* H */ { 0.2, 0.3, 0.3, 0.2 },
+                /* L */ { 0.3, 0.2, 0.2, 0.3 },
+            };
+
+            return HiddenMarkovModel.CreateGeneric(transitions, emissions, initial);
         }
 
 
@@ -474,7 +487,47 @@ namespace Accord.Tests.Statistics.Models.Markov
             Assert.AreEqual(fwdLogLikelihood, bwdLogLikelihood, 1e-10); // -5.5614629361549142
         }
 
+        [TestMethod()]
+        public void ForwardBackwardGenericTest()
+        {
+            var discreteModel = CreateModel1();
+            var genericModel = CreateModel4();
 
+            int[] discreteObservations = { 2, 2, 1, 0 };
+            double[][] genericObservations = 
+            {
+                new double[] { 2 }, new double[] { 2 },
+                new double[] { 1 }, new double[] { 0 }
+            };
+
+            double[] scaling = new double[3];
+
+            double discreteFwdLogLikelihood;
+            double[,] discreteFwd = ForwardBackwardAlgorithm.Forward(discreteModel,
+                discreteObservations, out scaling, out discreteFwdLogLikelihood);
+
+            double[,] discreteBwd = ForwardBackwardAlgorithm.Backward(discreteModel,
+                discreteObservations, scaling);
+
+            double genericFwdLogLikelihood;
+            double[,] genericFwd = ForwardBackwardAlgorithm.Forward(genericModel,
+                genericObservations, out scaling, out genericFwdLogLikelihood);
+
+            double[,] genericBwd = ForwardBackwardAlgorithm.Backward(genericModel,
+                genericObservations, scaling);
+
+            Assert.AreEqual(discreteFwdLogLikelihood, genericFwdLogLikelihood);
+
+            for (int i = 0; i < discreteFwd.GetLength(0); i++)
+            {
+                for (int j = 0; j < discreteFwd.GetLength(1); j++)
+                {
+                    Assert.AreEqual(discreteFwd[i, j], genericFwd[i, j]);
+                    Assert.AreEqual(discreteBwd[i, j], genericBwd[i, j]);
+                }
+            }
+
+        }
 
 
         [TestMethod()]
@@ -574,5 +627,50 @@ namespace Accord.Tests.Statistics.Models.Markov
             Assert.AreEqual(0.054814695, p, 1e-8);
             Assert.IsFalse(double.IsNaN(p));
         }
+
+        [TestMethod()]
+        public void LogForwardBackwardGenericTest()
+        {
+            var discreteModel = CreateModel1();
+            var genericModel = CreateModel4();
+
+            int[] discreteObservations = { 2, 2, 1, 0 };
+            double[][] genericObservations = 
+            {
+                new double[] { 2 }, new double[] { 2 },
+                new double[] { 1 }, new double[] { 0 }
+            };
+
+            double discreteFwdLogLikelihood;
+            double[,] discreteFwd = ForwardBackwardAlgorithm.LogForward(discreteModel,
+                discreteObservations, out discreteFwdLogLikelihood);
+
+            double discreteBwdLogLikelihood;
+            double[,] discreteBwd = ForwardBackwardAlgorithm.LogBackward(discreteModel,
+                discreteObservations, out discreteBwdLogLikelihood);
+
+            double genericFwdLogLikelihood;
+            double[,] genericFwd = ForwardBackwardAlgorithm.LogForward(genericModel,
+                genericObservations, out genericFwdLogLikelihood);
+
+            double genericBwdLogLikelihood;
+            double[,] genericBwd = ForwardBackwardAlgorithm.LogBackward(genericModel,
+                genericObservations, out genericBwdLogLikelihood);
+
+            Assert.AreEqual(discreteFwdLogLikelihood, discreteBwdLogLikelihood);
+            Assert.AreEqual(genericFwdLogLikelihood, genericBwdLogLikelihood);
+            Assert.AreEqual(discreteFwdLogLikelihood, genericBwdLogLikelihood);
+
+            for (int i = 0; i < discreteFwd.GetLength(0); i++)
+            {
+                for (int j = 0; j < discreteFwd.GetLength(1); j++)
+                {
+                    Assert.AreEqual(discreteFwd[i, j], genericFwd[i, j]);
+                    Assert.AreEqual(discreteBwd[i, j], genericBwd[i, j]);
+                }
+            }
+
+        }
+
     }
 }

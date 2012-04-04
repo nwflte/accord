@@ -20,21 +20,16 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-namespace Accord.Tests.Statistics
+namespace Accord.Tests.Statistics.Models.Fields
 {
-    using Accord.Statistics.Models.Fields.Functions;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Accord.Statistics.Models.Markov;
-    using Accord.Statistics.Models.Fields.Features;
-    using Accord.Statistics.Models.Markov.Learning;
     using System;
     using Accord.Statistics.Distributions.Univariate;
+    using Accord.Statistics.Models.Fields.Functions;
+    using Accord.Statistics.Models.Markov;
+    using Accord.Statistics.Models.Markov.Learning;
     using Accord.Statistics.Models.Markov.Topology;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-    /// <summary>
-    ///This is a test class for HiddenMarkovModelPotentialFunctionTest and is intended
-    ///to contain all HiddenMarkovModelPotentialFunctionTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class NormalHiddenMarkovClassifierPotentialFunctionTest
     {
@@ -42,10 +37,6 @@ namespace Accord.Tests.Statistics
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -130,17 +121,19 @@ namespace Accord.Tests.Statistics
         {
             HiddenMarkovClassifier<NormalDistribution> model = CreateModel1();
 
-            var target = new NormalHiddenMarkovClassifierFunction(model);
+            var target = new NormalMarkovClassifierFunction(model);
 
             var features = target.Features;
             double[] weights = target.Weights;
 
-            Assert.AreEqual(features.Length, 24);
-            Assert.AreEqual(weights.Length, 24);
+            Assert.AreEqual(26, features.Length);
+            Assert.AreEqual(26, weights.Length);
 
             int k = 0;
             for (int c = 0; c < model.Classes; c++)
             {
+                Assert.AreEqual(Math.Log(model.Priors[c]), weights[k++]);
+
                 for (int i = 0; i < model[c].States; i++)
                     Assert.AreEqual(model[c].Probabilities[i], weights[k++]);
 
@@ -149,6 +142,7 @@ namespace Accord.Tests.Statistics
                         Assert.AreEqual(model[c].Transitions[i, j], weights[k++]);
 
                 for (int i = 0; i < model[c].States; i++)
+                {
                     for (int j = 0; j < model[c].Dimension; j++)
                     {
                         double mean = model[c].Emissions[i].Mean;
@@ -160,6 +154,7 @@ namespace Accord.Tests.Statistics
                         Assert.AreEqual(mean / var, weights[k++]);
                         Assert.AreEqual(-1.0 / (2 * var), weights[k++]);
                     }
+                }
             }
 
         }
@@ -170,7 +165,7 @@ namespace Accord.Tests.Statistics
         {
             var model = CreateModel1();
 
-            var target = new NormalHiddenMarkovClassifierFunction(model);
+            var target = new NormalMarkovClassifierFunction(model);
 
             double actual;
             double expected;
@@ -182,7 +177,7 @@ namespace Accord.Tests.Statistics
                 for (int i = 0; i < model[c].States; i++)
                 {
                     // Check initial state transitions
-                    expected = Math.Exp(model[c].Probabilities[i]) * model[c].Emissions[i].ProbabilityDensityFunction(x[0]);
+                    expected = model.Priors[c] * Math.Exp(model[c].Probabilities[i]) * model[c].Emissions[i].ProbabilityDensityFunction(x[0]);
                     actual = Math.Exp(target.Factors[c].Compute(-1, i, x, 0, c));
                     Assert.AreEqual(expected, actual, 1e-6);
                     Assert.IsFalse(double.IsNaN(actual));
@@ -195,7 +190,7 @@ namespace Accord.Tests.Statistics
                     {
                         for (int j = 0; j < model[c].States; j++)
                         {
-                            expected = Math.Exp(model[c].Transitions[i, j]) * model[c].Emissions[j].ProbabilityDensityFunction(x[t]);
+                            expected = model.Priors[c] * Math.Exp(model[c].Transitions[i, j]) * model[c].Emissions[j].ProbabilityDensityFunction(x[t]);
                             actual = Math.Exp(target.Factors[c].Compute(i, j, x, t, c));
                             Assert.AreEqual(expected, actual, 1e-6);
                             Assert.IsFalse(double.IsNaN(actual));

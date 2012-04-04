@@ -31,6 +31,7 @@ using Accord.Math;
 using Accord.Math.Differentiation;
 using System;
 using Accord.Statistics.Distributions.Multivariate;
+using Accord.Tests.Statistics.Models.Fields;
 
 namespace Accord.Tests.Statistics
 {
@@ -123,7 +124,7 @@ namespace Accord.Tests.Statistics
         public void RunTest()
         {
             var hmm = MultivariateNormalHiddenMarkovClassifierPotentialFunctionTest.CreateModel1();
-            var function = new MultivariateNormalHiddenMarkovClassifierFunction(hmm);
+            var function = new MultivariateNormalMarkovClassifierFunction(hmm);
 
             var model = new HiddenConditionalRandomField<double[]>(function);
             var target = new QuasiNewtonHiddenLearning<double[]>(model);
@@ -151,7 +152,7 @@ namespace Accord.Tests.Statistics
 
             double error = target.RunEpoch(inputs, outputs);
             double ll1 = model.LogLikelihood(inputs, outputs);
-            Assert.AreEqual(ll1, error, 1e-10);
+            Assert.AreEqual(-ll1, error, 1e-10);
             Assert.IsFalse(double.IsNaN(ll1));
             Assert.IsFalse(double.IsNaN(error));
 
@@ -162,9 +163,9 @@ namespace Accord.Tests.Statistics
                 expected[i] = outputs[i];
             }
 
-            Assert.AreEqual(-0.0030762239456088025, ll0, 1e-10);
+            Assert.AreEqual(-0.0000041736023117522336, ll0, 1e-10);
             
-            Assert.AreEqual(error, ll1);
+            Assert.AreEqual(error, -ll1);
             Assert.IsFalse(Double.IsNaN(ll0));
             Assert.IsFalse(Double.IsNaN(error));
 
@@ -195,7 +196,7 @@ namespace Accord.Tests.Statistics
                 0, 0, 1
             };
 
-            var function = new MultivariateNormalHiddenMarkovClassifierFunction(hmm);
+            var function = new MultivariateNormalMarkovClassifierFunction(hmm);
 
             var model = new HiddenConditionalRandomField<double[]>(function);
             var target = new QuasiNewtonHiddenLearning<double[]>(model);
@@ -210,7 +211,7 @@ namespace Accord.Tests.Statistics
 
             for (int i = 0; i < actual.Length; i++)
             {
-                Assert.AreEqual(expected[i], actual[i], 0.5);
+                Assert.AreEqual(expected[i], actual[i], 0.05);
                 Assert.IsFalse(double.IsNaN(actual[i]));
                 Assert.IsFalse(double.IsNaN(expected[i]));
             }
@@ -220,7 +221,7 @@ namespace Accord.Tests.Statistics
         public void GradientTest2()
         {
             var hmm = MultivariateNormalHiddenMarkovClassifierPotentialFunctionTest.CreateModel1();
-            var function = new MultivariateNormalHiddenMarkovClassifierFunction(hmm);
+            var function = new MultivariateNormalMarkovClassifierFunction(hmm);
 
             var model = new HiddenConditionalRandomField<double[]>(function);
             var target = new QuasiNewtonHiddenLearning<double[]>(model);
@@ -248,7 +249,7 @@ namespace Accord.Tests.Statistics
         public void GradientTest3()
         {
             var hmm = MultivariateNormalHiddenMarkovClassifierPotentialFunctionTest.CreateModel1();
-            var function = new MultivariateNormalHiddenMarkovClassifierFunction(hmm);
+            var function = new MultivariateNormalMarkovClassifierFunction(hmm);
 
             var model = new HiddenConditionalRandomField<double[]>(function);
             var target = new QuasiNewtonHiddenLearning<double[]>(model);
@@ -294,7 +295,7 @@ namespace Accord.Tests.Statistics
                 for (int i = 0; i < parameters.Length; i++)
                     if (!(Double.IsInfinity(parameters[i]) || Double.IsNaN(parameters[i])))
                         sumSquaredWeights += parameters[i] * parameters[i];
-                sumSquaredWeights = sumSquaredWeights * 0.5 * beta;
+                sumSquaredWeights = sumSquaredWeights * 0.5 / beta;
             }
 
             double logLikelihood = model.LogLikelihood(inputs, outputs);

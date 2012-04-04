@@ -20,16 +20,11 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Math;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Accord.Tests.Math
 {
+    using Accord.Math;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-
-    /// <summary>
-    ///This is a test class for NormTest and is intended
-    ///to contain all NormTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class NormTest
     {
@@ -37,10 +32,6 @@ namespace Accord.Tests.Math
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -84,9 +75,6 @@ namespace Accord.Tests.Math
         #endregion
 
 
-        /// <summary>
-        ///A test for Euclidean
-        ///</summary>
         [TestMethod()]
         public void EuclideanTest()
         {
@@ -118,9 +106,6 @@ namespace Accord.Tests.Math
             Assert.AreEqual(21.9634, actual3, 0.001);
         }
 
-        /// <summary>
-        ///A test for Norm2
-        ///</summary>
         [TestMethod()]
         public void Norm2Test()
         {
@@ -136,9 +121,6 @@ namespace Accord.Tests.Math
             Assert.AreEqual(expected, actual, 1e-12);
         }
 
-        /// <summary>
-        ///A test for Norm1
-        ///</summary>
         [TestMethod()]
         public void Norm1Test()
         {
@@ -154,9 +136,6 @@ namespace Accord.Tests.Math
             Assert.AreEqual(expected, actual);
         }
 
-        /// <summary>
-        ///A test for Frobenius
-        ///</summary>
         [TestMethod()]
         public void FrobeniusTest()
         {
@@ -169,9 +148,6 @@ namespace Accord.Tests.Math
 
         }
 
-        /// <summary>
-        ///A test for Euclidean
-        ///</summary>
         [TestMethod()]
         public void EuclideanTest1()
         {
@@ -202,5 +178,6 @@ namespace Accord.Tests.Math
             float actual3 = Norm.Euclidean(a.GetRow(0));
             Assert.AreEqual(21.9634f, actual3, 0.001);
         }
+
     }
 }

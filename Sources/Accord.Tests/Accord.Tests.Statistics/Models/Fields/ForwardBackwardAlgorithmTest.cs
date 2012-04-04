@@ -28,11 +28,9 @@ namespace Accord.Tests.Statistics.Models.Fields
     using Accord.Statistics.Models.Markov;
     using Accord.Math;
     using System;
+    using Accord.Statistics.Distributions.Multivariate;
+    using Accord.Statistics.Models.Markov.Topology;
 
-    /// <summary>
-    ///This is a test class for ForwardBackwardAlgorithmTest and is intended
-    ///to contain all ForwardBackwardAlgorithmTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class ForwardBackwardAlgorithmTest
     {
@@ -40,10 +38,6 @@ namespace Accord.Tests.Statistics.Models.Fields
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -93,7 +87,7 @@ namespace Accord.Tests.Statistics.Models.Fields
             HiddenMarkovModel hmm = Accord.Tests.Statistics.Models.Markov.
                 ForwardBackwardAlgorithmTest.CreateModel2();
 
-            HiddenMarkovModelFunction function = new HiddenMarkovModelFunction(hmm);
+            DiscreteMarkovModelFunction function = new DiscreteMarkovModelFunction(hmm);
 
 
             //                     A  B  B  A
@@ -153,7 +147,7 @@ namespace Accord.Tests.Statistics.Models.Fields
             HiddenMarkovModel hmm = Accord.Tests.Statistics.Models.Markov.
                 ForwardBackwardAlgorithmTest.CreateModel3();
 
-            HiddenMarkovModelFunction function = new HiddenMarkovModelFunction(hmm);
+            DiscreteMarkovModelFunction function = new DiscreteMarkovModelFunction(hmm);
 
             //                     L  L  R  R
             int[] observations = { 0, 0, 1, 1 };
@@ -189,7 +183,7 @@ namespace Accord.Tests.Statistics.Models.Fields
             HiddenMarkovModel hmm = Accord.Tests.Statistics.Models.Markov.
                 ForwardBackwardAlgorithmTest.CreateModel1();
 
-            HiddenMarkovModelFunction function = new HiddenMarkovModelFunction(hmm);
+            DiscreteMarkovModelFunction function = new DiscreteMarkovModelFunction(hmm);
 
 
             //                     G  G  C  A
@@ -243,7 +237,7 @@ namespace Accord.Tests.Statistics.Models.Fields
             HiddenMarkovModel hmm = Accord.Tests.Statistics.Models.Markov.
                 ForwardBackwardAlgorithmTest.CreateModel2();
 
-            HiddenMarkovModelFunction function = new HiddenMarkovModelFunction(hmm);
+            DiscreteMarkovModelFunction function = new DiscreteMarkovModelFunction(hmm);
 
 
             //                     A  B  B  A
@@ -298,7 +292,7 @@ namespace Accord.Tests.Statistics.Models.Fields
             HiddenMarkovModel hmm = Accord.Tests.Statistics.Models.Markov.
                 ForwardBackwardAlgorithmTest.CreateModel3();
 
-            HiddenMarkovModelFunction function = new HiddenMarkovModelFunction(hmm);
+            DiscreteMarkovModelFunction function = new DiscreteMarkovModelFunction(hmm);
 
             //                     L  L  R  R
             int[] observations = { 0, 0, 1, 1 };
@@ -334,7 +328,7 @@ namespace Accord.Tests.Statistics.Models.Fields
             HiddenMarkovModel hmm = Accord.Tests.Statistics.Models.Markov.
                 ForwardBackwardAlgorithmTest.CreateModel1();
 
-            HiddenMarkovModelFunction function = new HiddenMarkovModelFunction(hmm);
+            DiscreteMarkovModelFunction function = new DiscreteMarkovModelFunction(hmm);
 
 
             //                     G  G  C  A
@@ -405,7 +399,7 @@ namespace Accord.Tests.Statistics.Models.Fields
             HiddenMarkovModel hmm = Accord.Tests.Statistics.Models.Markov.
                 ForwardBackwardAlgorithmTest.CreateModel2();
 
-            HiddenMarkovModelFunction function = new HiddenMarkovModelFunction(hmm);
+            DiscreteMarkovModelFunction function = new DiscreteMarkovModelFunction(hmm);
 
             //                     A  B  B  A
             int[] observations = { 0, 1, 1, 0 };
@@ -427,7 +421,7 @@ namespace Accord.Tests.Statistics.Models.Fields
             HiddenMarkovModel hmm = Accord.Tests.Statistics.Models.Markov.
                 ForwardBackwardAlgorithmTest.CreateModel1();
 
-            HiddenMarkovModelFunction function = new HiddenMarkovModelFunction(hmm);
+            DiscreteMarkovModelFunction function = new DiscreteMarkovModelFunction(hmm);
 
             //                     G  G  C  A
             int[] observations = { 2, 2, 1, 0 };
@@ -453,7 +447,7 @@ namespace Accord.Tests.Statistics.Models.Fields
             HiddenMarkovModel hmm = Accord.Tests.Statistics.Models.Markov.
                 ForwardBackwardAlgorithmTest.CreateModel2();
 
-            HiddenMarkovModelFunction function = new HiddenMarkovModelFunction(hmm);
+            DiscreteMarkovModelFunction function = new DiscreteMarkovModelFunction(hmm);
 
 
             int[] observations = { 0, 1, 1, 0 };
@@ -482,7 +476,7 @@ namespace Accord.Tests.Statistics.Models.Fields
             HiddenMarkovModel hmm = Accord.Tests.Statistics.Models.Markov.
                 ForwardBackwardAlgorithmTest.CreateModel3();
 
-            HiddenMarkovModelFunction function = new HiddenMarkovModelFunction(hmm);
+            DiscreteMarkovModelFunction function = new DiscreteMarkovModelFunction(hmm);
 
             int[] observations = { 0, 0, 1, 1 };
 
@@ -504,7 +498,7 @@ namespace Accord.Tests.Statistics.Models.Fields
             HiddenMarkovModel hmm = Accord.Tests.Statistics.Models.Markov.
                 ForwardBackwardAlgorithmTest.CreateModel1();
 
-            HiddenMarkovModelFunction function = new HiddenMarkovModelFunction(hmm);
+            DiscreteMarkovModelFunction function = new DiscreteMarkovModelFunction(hmm);
 
 
             int[] observations = { 2, 2, 1, 0 };
@@ -532,7 +526,7 @@ namespace Accord.Tests.Statistics.Models.Fields
             HiddenMarkovModel hmm = Accord.Tests.Statistics.Models.Markov.
                 ForwardBackwardAlgorithmTest.CreateModel2();
 
-            HiddenMarkovModelFunction function = new HiddenMarkovModelFunction(hmm);
+            DiscreteMarkovModelFunction function = new DiscreteMarkovModelFunction(hmm);
 
             int[] observations = { 0, 1, 1, 0 };
 
@@ -553,6 +547,136 @@ namespace Accord.Tests.Statistics.Models.Fields
             Assert.AreEqual(0.054814695, Math.Exp(logLikelihood), 1e-8);
             Assert.IsFalse(double.IsNaN(p));
         }
+
+        [TestMethod()]
+        public void LogForwardTest3()
+        {
+            MultivariateNormalDistribution density = new MultivariateNormalDistribution(3);
+            var hmm = new HiddenMarkovClassifier<MultivariateNormalDistribution>(2, new Ergodic(2), density);
+
+            double[][][] inputs =
+            {
+                new [] { new double[] { 0, 1, 0 }, new double[] { 0, 1, 0 }, new double[] { 0, 1, 0 } },
+                new [] { new double[] { 1, 6, 2 }, new double[] { 2, 1, 6 }, new double[] { 1, 1, 0 } },
+                new [] { new double[] { 9, 1, 0 }, new double[] { 0, 1, 5 }, new double[] { 0, 0, 0 } },
+            };
+
+            int[] outputs = 
+            {
+                0, 0, 1
+            };
+
+            var function = new MultivariateNormalMarkovClassifierFunction(hmm);
+
+            var observations = inputs[0];
+
+            double[,] expected = Matrix.Log(Accord.Statistics.Models.Fields.
+                ForwardBackwardAlgorithm.Forward(function.Factors[0], observations, 0));
+
+            double logLikelihood;
+            double[,] actual = Accord.Statistics.Models.Fields.
+                ForwardBackwardAlgorithm.LogForward(function.Factors[0], observations, 0, out logLikelihood);
+
+            Assert.IsTrue(expected.IsEqual(actual, 1e-10));
+
+            double p = 0;
+            for (int i = 0; i < hmm[0].States; i++)
+                p += Math.Exp(actual[observations.Length - 1, i]);
+
+            Assert.AreEqual(Math.Exp(logLikelihood), p, 1e-8);
+            Assert.IsFalse(double.IsNaN(p));
+        }
+
+        [TestMethod()]
+        public void ForwardTest4()
+        {
+            var hmmc = Accord.Tests.Statistics.Models.Fields.
+                MultivariateNormalHiddenMarkovClassifierPotentialFunctionTest.CreateModel3();
+
+            var hmm = hmmc[0];
+
+            var function = new MultivariateNormalMarkovModelFunction(hmm);
+
+            var observations = Accord.Tests.Statistics.Models.Fields.
+                MultivariateNormalHiddenMarkovClassifierPotentialFunctionTest.inputTest[3];
+
+            double expectedLogLikelihood;
+            double[,] expected = Accord.Statistics.Models.Markov
+                .ForwardBackwardAlgorithm.Forward(hmm, observations, out expectedLogLikelihood);
+
+            double actualLogLikelihood;
+            double[,] actual = Accord.Statistics.Models.Fields.
+                ForwardBackwardAlgorithm.Forward(function.Factors[0], observations, 0, out actualLogLikelihood);
+
+
+            Assert.IsTrue(expected.IsEqual(actual, 1e-10));
+
+
+            Assert.AreEqual(expectedLogLikelihood, actualLogLikelihood, 1e-6);
+            Assert.IsFalse(Double.IsNaN(actualLogLikelihood));
+
+        }
+
+        [TestMethod()]
+        public void LogForwardTest4()
+        {
+            var hmmc = Accord.Tests.Statistics.Models.Fields.
+                MultivariateNormalHiddenMarkovClassifierPotentialFunctionTest.CreateModel3();
+
+            for (int c = 0; c < hmmc.Classes; c++)
+            {
+                var hmm = hmmc[c];
+
+                var function = new MultivariateNormalMarkovModelFunction(hmm);
+
+                var sequences = Accord.Tests.Statistics.Models.Fields.
+                    MultivariateNormalHiddenMarkovClassifierPotentialFunctionTest.inputTest;
+
+                for (int i = 0; i < sequences.Length; i++)
+                {
+                    var observations = sequences[i];
+
+                    double expectedLogLikelihood;
+                    double[,] expected = Accord.Statistics.Models.Markov
+                        .ForwardBackwardAlgorithm.LogForward(hmm, observations, out expectedLogLikelihood);
+
+                    double actualLogLikelihood;
+                    double[,] actual = Accord.Statistics.Models.Fields.
+                        ForwardBackwardAlgorithm.LogForward(function.Factors[0], observations, 0, out actualLogLikelihood);
+
+
+                    Assert.IsTrue(expected.IsEqual(actual, 1e-10));
+
+                    Assert.AreEqual(expectedLogLikelihood, actualLogLikelihood, 1e-6);
+                    Assert.IsFalse(Double.IsNaN(actualLogLikelihood));
+                }
+            }
+        }
+
+        [TestMethod()]
+        public void LogForwardBackwardTest()
+        {
+            HiddenMarkovModel hmm = Accord.Tests.Statistics.Models.Markov.
+                ForwardBackwardAlgorithmTest.CreateModel1();
+
+            DiscreteMarkovModelFunction function = new DiscreteMarkovModelFunction(hmm);
+
+            //                     G  G  C  A
+            int[] observations = { 2, 2, 1, 0 };
+
+            double fwdLogLikelihood;
+            double[,] fwd = Accord.Statistics.Models.Fields.
+                ForwardBackwardAlgorithm.LogForward(function.Factors[0], observations, 0, out fwdLogLikelihood);
+
+            double bwdLogLikelihood;
+            double[,] bwd = Accord.Statistics.Models.Fields.
+                ForwardBackwardAlgorithm.LogBackward(function.Factors[0], observations, 0, out bwdLogLikelihood);
+
+            Assert.AreEqual(fwdLogLikelihood, bwdLogLikelihood, 1e-10); // -5.5614629361549142
+            Assert.AreEqual(-5.5614629361549142, fwdLogLikelihood, 1e-10);
+            Assert.IsFalse(double.IsNaN(fwdLogLikelihood));
+        }
+
 
     }
 }
