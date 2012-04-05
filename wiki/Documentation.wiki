@@ -1,6 +1,0 @@
-#summary Initial wiki page with several links to documentation sources.
-#labels Featured
-
-= Introduction =
-
-Accord.NET used to be hosted on Origo, and is now being gradually migrated to Google Code. [http://accord.googlecode.com/svn/docs/Index.html Complete documentation is already available on this site].
