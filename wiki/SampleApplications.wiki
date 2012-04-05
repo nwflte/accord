@@ -1,0 +1,2 @@
+#summary Sample applications distributed with the framework.
+#labels Featured
