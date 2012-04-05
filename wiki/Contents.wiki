@@ -1,12 +1,12 @@
 =User manuals=
 
- * [http://accord.googlecode.com/svn/docs/Index.html Class reference]
- * [[Getting Started]]
+ * [GettingStarted Getting Started]
+ * [http://accord.googlecode.com/svn/docs/Index.html Class Reference]
 
 =Samples apps=
 
- * [[Sample applications]]
+ * [SampleApplications Sample Applications]
 
 =Development=
 
- * [[Development]]
+ * [DevelopmentGuide Development Guide]
