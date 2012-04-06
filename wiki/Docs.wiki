@@ -6,7 +6,7 @@ Accord.NET used to be hosted on Origo, and is now being gradually migrated to Go
 <table width="800px"><tr><td width="70px">
 <img width="64" height="64" src="http://accord.googlecode.com/svn/wiki/images/start.png"/>
 </td><td width="150">
-<font size="3">[GettingStarted Getting Started]</font>
+<font size="3">[http://code.google.com/p/accord/wiki/GettingStarted?tm=6 Getting Started]</font>
 </td><td>
 How to download, install and develop a simple application using Accord.NET.</td>
 </tr>
@@ -22,7 +22,7 @@ Complete class reference, MSDN-style. Contains example source code and code snip
 <tr><td width="70px">
 <img width="64" height="64" src="http://accord.googlecode.com/svn/wiki/images/samples.png"/>
 </td><td>
-<font size="3">[SampleApplications Sample Apps]</font>
+<font size="3">[http://code.google.com/p/accord/wiki/SampleApplications?tm=6 Sample Apps]</font>
 </td><td>
 A complete list of the more than 25+ sample applications available within the framework. Some have companion articles exposing how they work and details of the techniques involved.</td>
 </tr>
@@ -30,9 +30,9 @@ A complete list of the more than 25+ sample applications available within the fr
 <tr><td width="70px">
 <img width="64" height="64" src="http://accord.googlecode.com/svn/wiki/images/design.png"/>
 </td><td>
-<font size="3">[DevelopmentGuide Development]</font>
+<font size="3">[http://code.google.com/p/accord/wiki/DevelopmentGuide?tm=6 Development]</font>
 </td><td>
-How to contribute and help developing the framework.</td>
+How to contribute and help in development.</td>
 </tr>
 
 </table>
