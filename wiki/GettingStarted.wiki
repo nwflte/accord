@@ -1,1 +1,5 @@
 #summary Getting started guide for using the framework.
+
+The guide has not been moved yet. For the time being, please see the [http://accord-net.origo.ethz.ch/wiki/getting_started original guide at Origo].
+
+There are two ways to quickly get up and running with the framework. The fastest way is through [http://nuget.org/packages?q=Accord.NET NuGet]. However, this is somewhat experimental and source code and sample applications will not be included. The second fastest way is to use the executable installer. This guide will deal with the later.
