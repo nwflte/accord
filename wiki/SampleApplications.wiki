@@ -2,28 +2,44 @@
 #labels sample-applications
 
 
-The framework comes with over 25 sample applications demonstrating the framework features. All sample applications are written in C#.
+The framework comes with over 25 sample applications demonstrating the framework features. All sample applications are written in C#. You are also invited to watch the video demonstrations in the section below in case you are interested in pattern recognition, image processing and computer vision with the framework.
 
-
-
-= Audio =
-
-==== [Sample_App_Fourier Fourier] ==== 
-<table width="100%"><tr><td width="100%">
-A simple audio spectrum analyzer using Fast Fourier Transform (FFT). Can optionally use audio windows (i.e. Hamming) to reduce bin leakage in the spectrum.
-</td><td align="right">
-</td></tr></table>
-
-==== [Sample_App_BeatDetector Beat Detector] ====
-A simple beat detector which listens to the default input device and tries to detect peaks in the audio signal. It is a statistics based beat detector in the sense it searches local energy peaks which may contain a beat. The application also demonstrates the usage of the Metronome class of the framework, which allows one to detect the current tempo by "tapping" the metronome.
-
-==== [Sample_App_Recorder Recorder] ====
-A simple wave recorder able to capture sound from the microphone.
-
+<table align="center"><tr>
+    <td align="center">
+       <wiki:video url="http://www.youtube.com/watch?v=tqAfqJsW2Wo"/></td>
+    <td align="center">
+       <wiki:video url="http://www.youtube.com/watch?v=BesKtH4Qln8"/></td>
+    </tr>
+  <tr>
+    <td align="center">Head tracking with the Accord.Vision namespace.</td>
+    <td align="center">Handwritten digit recognition using the Accord.MachineLearning namespace.</td>
+</tr></table>
 
 
 <br />
-= Imaging =
+= Applications =
+
+== Audio ==
+
+<table width="100%" cellspacing="12px">
+<tr>
+  <td width="87px">[Sample_App_Fourier Fourier]</td>
+  <td>A simple audio spectrum analyzer using Fast Fourier Transform (FFT). Can optionally use audio windows (i.e. Hamming) to reduce bin leakage in the spectrum.</td>
+</tr>
+
+<tr>
+  <td width="87px">[Sample_App_BeatDetector Beat Detector]</td>
+  <td>A simple beat detector which listens to the default input device and tries to detect peaks in the audio signal. It is a statistics based beat detector in the sense it searches local energy peaks which may contain a beat. The application also demonstrates the usage of the Metronome class of the framework, which allows one to detect the current tempo by "tapping" the metronome.</td>
+</tr>
+
+<tr>
+  <td width="87px">[Sample_App_Recorder Recorder]</td>
+  <td>A simple wave recorder able to capture sound from the microphone.</td>
+</tr>
+</table>
+
+<br/>
+== Imaging ==
 
 ==== [Sample_App_Harris Harris Corners Detector] ====
 Demonstration of the Harris corners detector in the world-famous Lena Söderberg's picture.
