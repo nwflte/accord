@@ -1,87 +1,98 @@
 #summary Sample applications distributed with the framework.
 #labels sample-applications
 
+= Sample Applications =
 
 The framework comes with over 25 sample applications demonstrating the framework features. All sample applications are written in C#. You are also invited to watch the video demonstrations in the section below in case you are interested in pattern recognition, image processing and computer vision with the framework.
 
-<table align="center"><tr>
-    <td align="center">
-       <wiki:video url="http://www.youtube.com/watch?v=tqAfqJsW2Wo"/></td>
-    <td align="center">
-       <wiki:video url="http://www.youtube.com/watch?v=BesKtH4Qln8"/></td>
-    </tr>
+<table><tr>
+    <td align="center"><wiki:video url="http://www.youtube.com/watch?v=tqAfqJsW2Wo"/></td>
+    <td align="center"><wiki:video url="http://www.youtube.com/watch?v=BesKtH4Qln8"/></td>
+  </tr>
   <tr>
-    <td align="center">Head tracking with the Accord.Vision namespace.</td>
-    <td align="center">Handwritten digit recognition using the Accord.MachineLearning namespace.</td>
+   <td align="center">Head tracking with the Accord.Vision namespace.</td>
+   <td align="center">Handwritten digit recognition using the Accord.MachineLearning namespace.</td>
 </tr></table>
 
 
 <br />
-= Applications =
 
-== Audio ==
+= Accord.Audio =
 
-<table width="100%" cellspacing="12px">
+<table cellspacing="12px" width="840px">
 <tr>
-  <td width="87px">[Sample_App_Fourier Fourier]</td>
+  <td width="104px">[SampleApp_Fourier Fourier]</td>
   <td>A simple audio spectrum analyzer using Fast Fourier Transform (FFT). Can optionally use audio windows (i.e. Hamming) to reduce bin leakage in the spectrum.</td>
 </tr>
-
 <tr>
-  <td width="87px">[Sample_App_BeatDetector Beat Detector]</td>
+  <td width="104px">[SampleApp_BeatDetector Beat Detector]</td>
   <td>A simple beat detector which listens to the default input device and tries to detect peaks in the audio signal. It is a statistics based beat detector in the sense it searches local energy peaks which may contain a beat. The application also demonstrates the usage of the Metronome class of the framework, which allows one to detect the current tempo by "tapping" the metronome.</td>
 </tr>
-
 <tr>
-  <td width="87px">[Sample_App_Recorder Recorder]</td>
+  <td width="104px">[SampleApp_Recorder Recorder]</td>
   <td>A simple wave recorder able to capture sound from the microphone.</td>
 </tr>
 </table>
 
 <br/>
-== Imaging ==
+= Accord.Imaging =
 
-==== [Sample_App_Harris Harris Corners Detector] ====
-Demonstration of the Harris corners detector in the world-famous Lena Söderberg's picture.
-
-==== [Sample_App_Panorama Panorama (image stitching)] ====
-The Panorama sample application demonstrates how the framework can be used to automatically stitches two images together by using the Harris corners detector, Correlation matching, homography estimation, RANSAC and the image blending filter.
-
-==== [Sample_App_Wavelets Wavelets] ====
-Demonstration of the Haar and CDF9/7 wavelet transform for images.
-
+<table cellspacing="12px" width="840px">
+<tr>
+  <td width="104px">[SampleApp_Harris Harris Corners Detector]</td>
+  <td>Demonstration of the Harris corners detector in the world-famous Lena Söderberg's picture.</td>
+</tr>
+<tr>
+  <td width="104px">[SampleApp_Panorama Panorama (image stitching)]</td>
+  <td>The Panorama sample application demonstrates how the framework can be used to automatically stitches two images together by using the Harris corners detector, Correlation matching, homography estimation, RANSAC and the image blending filter.</td>
+</tr>
+<tr>
+  <td width="104px">[SampleApp_Wavelets Wavelets]</td>
+  <td>Demonstration of the Haar and CDF9/7 wavelet transform for images.</td>
+</tr>
+</table>
 
 
 <br />
-= Machine Learning =
+= Accord.MachineLearning =
 
-==== [http://www.codeproject.com/KB/recipes/handwriting-svm.aspx Handwriting (Multi-class SVM)] ====
-Handwritten digits recognition by using Multi-class Kernel Support Vector Machines.
-
-==== [Sample_App_Ransac RANdom SAmple Consensus (RANSAC)] ====
-The RANSAC sample application demonstrates how to use RANSAC to robustly fit a linear regression, avoiding the negative impact of outliers in the regression data.
-
-==== [Sample_App_KSVM Kernel Support Vector Machines] ====
-A sample application demonstrating how to perform classification and regression using (Kernel) Support Vector Machines. The sample datasets which can be used in the application can be found in the Resources folder in the application main directory. 
-
-==== K-Means Color Clustering ====
-A sample application demonstrating the use of K-Means for color reduction (color clustering) in images.
-
-==== Gaussian Mixture Models (GMM) ====
-Multivariate Gaussian mixture distribution fitting using Expectation-Maximization. The method is first initialized using K-Means clustering.
-
-==== Decision Trees (DT) ====
-Decision tree learning with ID3 and C4.5 algorithms.
-
+<table cellspacing="12px" width="840px">
+<tr>
+  <td width="104px">[http://www.codeproject.com/KB/recipes/handwriting-svm.aspx Handwriting (Multi-class SVM)]</td>
+  <td>Handwritten digits recognition by using Multi-class Kernel Support Vector Machines.</td>
+</tr>
+<tr>
+  <td width="104px">[SampleApp_Ransac RANdom SAmple Consensus (RANSAC)]</td>
+  <td>The RANSAC sample application demonstrates how to use RANSAC to robustly fit a linear regression, avoiding the negative impact of outliers in the regression data.</td>
+</tr>
+<tr>
+  <td width="104px">[SampleApp_KSVM Kernel Support Vector Machines]</td>
+  <td>A sample application demonstrating how to perform classification and regression using (Kernel) Support Vector Machines. The sample datasets which can be used in the application can be found in the Resources folder in the application main directory.</td>
+</tr>
+<tr>
+  <td width="104px">[SampleApp_KMeans K-Means Color Clustering]</td>
+  <td>A sample application demonstrating the use of K-Means for color reduction (color clustering) in images.</td>
+</tr>
+<tr>
+  <td width="104px">[SampleApp_GMM Gaussian Mixture Models (GMM)]</td>
+  <td>Multivariate Gaussian mixture distribution fitting using Expectation-Maximization. The method is first initialized using K-Means clustering.</td>
+</tr>
+<tr>
+  <td width="104px">[SampleApp_DecisionTrees Decision Trees (DT)]</td>
+  <td>Decision tree learning with ID3 and C4.5 algorithms.</td>
+</tr>
+</table>
 
 
 <br />
 = Math =
 
-==== [Sample_App_Solver Quadratic Programming (QP) Solver] ====
-Quadratic Programming (QP) problem solving using the dual method of Goldfarb and Idnani. Translated from the original Fortran code by Berwin A. Turlach.
-
-
+<table cellspacing="12px" width="840px">
+<tr>
+  <td width="104px">[Sample_App_Solver Quadratic Programming (QP) Solver]</td>
+  <td>Quadratic Programming (QP) problem solving using the dual method of Goldfarb and Idnani. Translated from the original Fortran code by Berwin A. Turlach.</td>
+</tr>
+</table>
 
 
 <br />
@@ -105,50 +116,71 @@ Solves the XOR classification problem using Neural Networks trained by the Leven
 <br />
 = Statistics =
 
-==== [http://www.codeproject.com/KB/recipes/handwriting-kda.aspx Handwriting (KDA)] ====
-Handwritten digits recognition by using Non-linear (Multiple) Discriminant Analysis using Kernels (KDA).
-
-==== Hidden Markov Models ====
-Demonstrates how to use Hidden Markov Models (HMMs) and Accord.NET Markov Sequence Classifiers to recognize sequences of discrete observations.
-
-==== Kernel Discriminant Analysis (KDA) ====
-Sample application demonstrating how to use Kernel Discriminant Analysis (also known as KDA, or ''Non-linear (Multiple) Discriminant Analysis using Kernels'') to perform non-linear transformation and classification. The sample datasets which can be used in the application are available under the Resources folder in the main directory of the application.
-
-==== Kernel Principal Component Analysis (KPCA) ====
-Sample application demonstrating how to use Kernel Principal Component Analysis (KPCA) to perform non-linear transformations and dimensionality reduction. The sample datasets which can be used in the application are available under the Resources folder in the main directory of the application.
-
-==== Linear Discriminant Analysis (LDA) ====
-Sample application demonstrating how to use Linear Discriminant Analysis (also known as LDA, or ''Fisher's (Multiple) Linear Discriminant Analysis'') to perform linear transformations and classification. The sample datasets which can be used in the application are available under the Resources folder in the main directory of the application.
-
-==== Principal Component Analysis (PCA) ====
-Sample application demonstrating how to use Principal Component Analysis (PCA) to perform linear transformations and dimensionality reduction. The sample datasets which can be used in the application are available under the Resources folder in the main directory of the application.
-
-==== Independent Component Analysis (ICA) ====
-Sample application demonstrating how to use Independent Component Analysis (ICA) to perform blind source separation of audio signals. The audio is processed using the Accord.Audio modules of the framework.
-
-==== Partial Least Squares (PLS) ====
-Demonstrates how to use Partial Least Squares to fit a (multiple and multivariate) linear regression model from high-dimensionality data.
-
-==== Logistic Regression ====
-Sample application for creating and fitting Logistic Regression models. Also fits a multiple linear regression model for comparison purposes, and performs chi-square tests and computes Wald's statistics for the logistic regression coefficients.
-
-==== Receiver Operating Characteristic (ROC) Curves ====
-Sample application demonstrating how to create and visualize Receiver-Operating Characteristic Curves from a given set of results from a test or a classification process.
-
-==== Mouse Gestures ====
-Learning and recognition of mouse gestures using Continuous density Hidden Markov Models.
-
-
+<table cellspacing="12px" width="840px">
+<tr>
+  <td width="104px">[http://www.codeproject.com/KB/recipes/handwriting-kda.aspx Handwriting (KDA)]</td>
+  <td>Handwritten digits recognition by using Non-linear (Multiple) Discriminant Analysis using Kernels (KDA).</td>
+</tr>
+<tr>
+  <td width="104px">Hidden Markov Models</td>
+  <td>Demonstrates how to use Hidden Markov Models (HMMs) and Accord.NET Markov Sequence Classifiers to recognize sequences of discrete observations.</td>
+</tr>
+<tr>
+  <td width="104px">Kernel Discriminant Analysis (KDA)</td>
+  <td>Sample application demonstrating how to use Kernel Discriminant Analysis (also known as KDA, or ''Non-linear (Multiple) Discriminant Analysis using Kernels'') to perform non-linear transformation and classification. The sample datasets which can be used in the application are available under the Resources folder in the main directory of the application.</td>
+</tr>
+<tr>
+  <td width="104px">Kernel Principal Component Analysis (KPCA)</td>
+  <td>Sample application demonstrating how to use Kernel Principal Component Analysis (KPCA) to perform non-linear transformations and dimensionality reduction. The sample datasets which can be used in the application are available under the Resources folder in the main directory of the application.</td>
+</tr>
+<tr>
+  <td width="104px">Linear Discriminant Analysis (LDA)</td>
+  <td>Sample application demonstrating how to use Linear Discriminant Analysis (also known as LDA, or ''Fisher's (Multiple) Linear Discriminant Analysis'') to perform linear transformations and classification. The sample datasets which can be used in the application are available under the Resources folder in the main directory of the application.</td>
+</tr>
+<tr>
+  <td width="104px">Principal Component Analysis (PCA)</td>
+  <td>Sample application demonstrating how to use Principal Component Analysis (PCA) to perform linear transformations and dimensionality reduction. The sample datasets which can be used in the application are available under the Resources folder in the main directory of the application.</td>
+</tr>
+<tr>
+  <td width="104px">Independent Component Analysis (ICA)</td>
+  <td>Sample application demonstrating how to use Independent Component Analysis (ICA) to perform blind source separation of audio signals. The audio is processed using the Accord.Audio modules of the framework.</td>
+</tr>
+<tr>
+  <td width="104px">Partial Least Squares (PLS)</td>
+  <td>Demonstrates how to use Partial Least Squares to fit a (multiple and multivariate) linear regression model from high-dimensionality data.</td>
+</tr>
+<tr>
+  <td width="104px">Logistic Regression</td>
+  <td>Sample application for creating and fitting Logistic Regression models. Also fits a multiple linear regression model for comparison purposes, and performs chi-square tests and computes Wald's statistics for the logistic regression coefficients.</td>
+</tr>
+<tr>
+  <td width="104px">Independent Component Analysis (ICA)</td>
+  <td>Sample application demonstrating how to use Independent Component Analysis (ICA) to perform blind source separation of audio signals. The audio is processed using the Accord.Audio modules of the framework.</td>
+</tr>
+<tr>
+  <td width="104px">Receiver Operating Characteristic (ROC) Curves</td>
+  <td>Sample application demonstrating how to create and visualize Receiver-Operating Characteristic Curves from a given set of results from a test or a classification process.</td>
+</tr>
+<tr>
+  <td width="104px">Mouse Gestures</td>
+  <td>Learning and recognition of mouse gestures using Hidden Markov Models.</td>
+</tr>
+</table>
 
 
 <br />
 = Vision =
 
-==== Face Detection (Viola-Jones) ====
-Face detection using the Face detection based in Haar-like rectangular features method popularly known as the Viola-Jones method.
-
-==== Face Tracking (Camshift) ====
-Face (or object) tracking using Viola-Jones for face detection and Camshift as the object tracker. Can be used in RGB and HSL color spaces (may require some tuning for HSL).
-
-==== Head-based Controller ====
-Sample application demonstrating how to use the Accord.Vision.Controls.Controller component to provide joystick-like controls for a Windows Form application. Its component design makes adding support for head-based controlling as easy as dragging and dropping a component into a Form.
+<table cellspacing="12px" width="840px">
+<tr>
+  <td width="104px">Face Detection (Viola-Jones)</td>
+  <td>Face detection using the Face detection based in Haar-like rectangular features method popularly known as the Viola-Jones method.</td>
+</tr>
+<tr>
+  <td width="104px">Face Tracking (Camshift)</td>
+  <td>Face (or object) tracking using Viola-Jones for face detection and Camshift as the object tracker. Can be used in RGB and HSL color spaces (may require some tuning for HSL).</td>
+</tr>
+<tr>
+  <td width="104px">Head-based Controller</td>
+  <td>Sample application demonstrating how to use the Accord.Vision.Controls.Controller component to provide joystick-like controls for a Windows Form application. Its component design makes adding support for head-based controlling as easy as dragging and dropping a component into a Form.</td>
+</tr>
