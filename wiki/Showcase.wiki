@@ -1,17 +1,16 @@
 #summary Who is using the framework.
 
 = Project Showcase =
-This page enlists several works which have used Accord.NET in some point of their development. The framework also has been used in a number of academic studies, and the number keeps rising. If you have any interesting application of the framework, feel free to post about it on the [http://groups.google.com/group/accord-net project forums].
+This page enlists several works which have used Accord.NET in some point of their development. The framework also has been used in a number of academic studies, and the number keeps rising. If you have any interesting application of the framework, feel free to post about it on the [http://groups.google.com/group/accord-net project forums].<br />
 
-<br />
+
 == Developer projects ==
 
  * [http://harperia.ru/en/home.html Harperia] - Language agnostic speech recognition. Uses AForge.NET and Accord.NET to process audio signals and recognize specific recordings using Neural Networks.
 
- * GMM-EM - Estimates parameters of a multidimensional Gaussian Mixture Model (GMM) by expectation-Maximization (EM) methods and performs Receiver Operating Characteristics (ROC) analysis based on given true labels of input vectors in medical research. Created in a time where GMMs were not yet available in Accord.NET, this project uses a combination of many libraries to achieve its goals.
+ * GMM-EM - Estimates parameters of a multidimensional Gaussian Mixture Model (GMM) by expectation-Maximization (EM) methods and performs Receiver Operating Characteristics (ROC) analysis based on given true labels of input vectors in medical research. Created in a time where GMMs were not yet available in Accord.NET, this project uses a combination of many libraries to achieve its goals. <br />
 
 
-<br />
 == Academical studies ==
 
 The following papers include at least a citation to the framework, reference material published based on the framework or have used standalone code which now has been incorporated in the framework.
