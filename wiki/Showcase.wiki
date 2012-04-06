@@ -1,0 +1,35 @@
+#summary Who is using the framework.
+
+= Project Showcase =
+This page enlists several works which have used Accord.NET in some point of their development. The framework also has been used in a number of academic studies, and the number keeps rising. If you have any interesting application of the framework, feel free to post about it on the [http://groups.google.com/group/accord-net project forums].
+
+<br />
+== Developer projects ==
+
+ * [http://harperia.ru/en/home.html Harperia] - Language agnostic speech recognition. Uses AForge.NET and Accord.NET to process audio signals and recognize specific recordings using Neural Networks.
+
+ * GMM-EM - Estimates parameters of a multidimensional Gaussian Mixture Model (GMM) by expectation-Maximization (EM) methods and performs Receiver Operating Characteristics (ROC) analysis based on given true labels of input vectors in medical research. Created in a time where GMMs were not yet available in Accord.NET, this project uses a combination of many libraries to achieve its goals.
+
+
+<br />
+== Academical studies ==
+
+The following papers include at least a citation to the framework, reference material published based on the framework or have used standalone code which now has been incorporated in the framework.
+
+ * Alosefer, Y.; Rana, O.F.; "Predicting client-side attacks via behaviour analysis using honeypot data," Next Generation Web Services Practices (NWeSP), 2011 7th International Conference on , vol., no., pp.31-36, 19-21 Oct. 2011
+
+ * Brummitt, L. Scrabble Referee: Word Recognition Component, 2011. Final project report. University of Sheffield, Sheffield, England.
+
+ * Cani, V., 2011. Image Stitching for UAV remote sensing application. Master Degree Thesis. Computer Engineering, School of Castelldefels of Universitat Politècnica de Catalunya. Barcelona, Spain. 
+
+ * Kaplan, K., 2011. ADES: Automatic Driver Evaluation System. PhD Thesis, Boğaziçi University, Istanbul, Turkey.
+
+ * Wright, M., Lin, C.-J., O'Neill, E., Cosker, D. and Johnson, P., 2011. 3D Gesture recognition: An evaluation of user and system performance. In: Pervasive Computing - 9th International Conference, Pervasive 2011, Proceedings. Heidelberg: Springer Verlag, pp. 294-313.
+
+ * Deinhofer, M., Roland L., Baca, A., 2010. Klassifizierung von Schlagtechniken im Badminton mittels Mustererkennung aus Inertialdaten]. 13 Österreichische Sportwissenschaftliche Gesellschaft, Bruch an der Mur.
+
+ * Kungcharoen, K.; Palangsantikul, P.; Premchaiswadi, W. "Development of object detection software for a mobile robot using an AForge.Net framework", 9th International Conference on ICT and Knowledge Engineering (ICT & Knowledge Engineering), pp.201-206, 12-13 Jan. 2012.
+
+ * Lourenço, J., 2010. Wii3D: Extending the Nintendo Wii Remote into 3D. Final course project report, Rhodes University, Grahamstown. 110p.
+
+ * Mendelssohn, T.; 2010. Gestureboard - Entwicklung eines Wiimote-basierten, gestengesteuerten, Whiteboard-Systems für den Bildungsbereich. Final project report. Hochschule Furtwangen University,  Furtwangen im Schwarzwald, Germany.
