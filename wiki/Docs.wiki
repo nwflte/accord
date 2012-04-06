@@ -40,6 +40,6 @@ How to contribute and help in development.</td>
 
 <table align="right"><tr>
 <td><img width="22" height="22" src="http://accord.googlecode.com/svn/wiki/images/uses22.png"/></td>
-<td valign="top">[http://code.google.com/p/accord/wiki/Showcase?tm=6 Where is the framework being used]?</td>
+<td valign="top">[http://code.google.com/p/accord/wiki/Showcase?tm=6 Who is using the framework]?</td>
 </tr>
 </table>
