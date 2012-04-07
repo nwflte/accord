@@ -51,8 +51,8 @@ How to contribute and help in development.</td>
 
 
     </td>
-    <td valign="top" width="240">
-<wiki:gadget url="http://goo.gl/R5bvK" width="120" height="240" border="0" up_ad_client="ca-pub-7710724268302172" up_ad_slot="0253822568" up_ad_width="120" up_ad_height="240" up_ad_project=document.URL />
+    <td valign="top" align="right" width="200">
+<wiki:gadget url="http://goo.gl/R5bvK" width="120" height="240" border="0" up_ad_client="ca-pub-7710724268302172" up_ad_slot="0253822568" up_ad_width="120" up_ad_height="240" up_keywords="dot-net visual studio csharp development programming" up_ad_project=document.URL />
     </td>
   </tr>
 </table>
