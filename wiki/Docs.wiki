@@ -3,11 +3,6 @@
 
 Accord.NET used to be hosted on Origo, and is now being gradually migrated to Google Code. Some of the documentation is still missing, but will be completed once migration is complete.
 
-<table width="100%">
-  <tr>
-    <td align="left" valign="top">
-
-
 <table width="800px"><tr><td width="70px">
 <img width="64" height="64" src="http://accord.googlecode.com/svn/wiki/images/start.png"/>
 </td><td width="150">
@@ -47,12 +42,4 @@ How to contribute and help in development.</td>
 <td><img width="22" height="22" src="http://accord.googlecode.com/svn/wiki/images/uses22.png"/></td>
 <td valign="top">[http://code.google.com/p/accord/wiki/Showcase?tm=6 Who is using the framework]?</td>
 </tr>
-</table>
-
-
-    </td>
-    <td valign="top" align="right" width="200">
-<wiki:gadget url="http://goo.gl/R5bvK" width="120" height="240" border="0" up_ad_client="ca-pub-7710724268302172" up_ad_slot="0253822568" up_ad_width="120" up_ad_height="240" up_keywords="dot-net visual studio csharp development programming" up_ad_project=document.URL />
-    </td>
-  </tr>
 </table>
