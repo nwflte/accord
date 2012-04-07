@@ -5,7 +5,7 @@ Accord.NET used to be hosted on Origo, and is now being gradually migrated to Go
 
 <table width="100%">
   <tr>
-    <td align="left" valign="top" width="80%">
+    <td align="left" valign="top">
 
 
 <table width="800px"><tr><td width="70px">
@@ -51,8 +51,8 @@ How to contribute and help in development.</td>
 
 
     </td>
-    <td valign="top">
-     <wiki:gadget url="https://gcodeadsense.googlecode.com/svn/release/gCodeAdSense/gCodeAdSense.xml" width="160" height="600" border="0" up_ad_client="ca-pub-7710724268302172" up_ad_slot="0253822568" up_ad_width="120" up_ad_height="240" up_ad_project=document.URL />
+    <td valign="top" width="240">
+<wiki:gadget url="http://goo.gl/R5bvK" width="120" height="240" border="0" up_ad_client="ca-pub-7710724268302172" up_ad_slot="0253822568" up_ad_width="120" up_ad_height="240" up_ad_project=document.URL />
     </td>
   </tr>
 </table>
