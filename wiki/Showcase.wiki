@@ -1,4 +1,5 @@
 #summary Who is using the framework.
+#labels Featured
 
 = Project Showcase =
 This page enlists several works which have used Accord.NET in some point of their development. The framework also has been used in a number of academic studies, and the number keeps rising. If you have any interesting application of the framework, feel free to post about it on the [http://groups.google.com/group/accord-net project forums].<br />
@@ -32,3 +33,11 @@ The following papers include at least a citation to the framework, reference mat
  * Lourenço, J., 2010. Wii3D: Extending the Nintendo Wii Remote into 3D. Final course project report, Rhodes University, Grahamstown. 110p.
 
  * Mendelssohn, T.; 2010. Gestureboard - Entwicklung eines Wiimote-basierten, gestengesteuerten, Whiteboard-Systems für den Bildungsbereich. Final project report. Hochschule Furtwangen University,  Furtwangen im Schwarzwald, Germany.
+
+
+<br />
+= Preferred citation style =
+
+If you use Accord.NET Framework in your research, you are invited to cite the project in your publication. There are many advantages in clearly stating all tools used in a research, including the increased reproducibility and transparency which should be the goal of any serious academic publication. If you would like to accept this invitation and cite Accord.NET or any material published together the framework in your work, the preferred style of citation is:
+
+ * C. R. Souza, "The Accord.NET Framework," Apr 2012; http://accord.googlecode.com
