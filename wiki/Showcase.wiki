@@ -22,11 +22,13 @@ The following papers include at least a citation to the framework, reference mat
 
  * Cani, V., 2011. Image Stitching for UAV remote sensing application. Master Degree Thesis. Computer Engineering, School of Castelldefels of Universitat Politècnica de Catalunya. Barcelona, Spain. 
 
+ * Hassani, A. Z.; "Touch versus in-air Hand Gestures: Evaluating the acceptance by seniors of Human-Robot Interaction using Microsoft Kinect," Master Thesis, University of Twente, Enschede, Netherlands, 2011.
+
  * Kaplan, K., 2011. ADES: Automatic Driver Evaluation System. PhD Thesis, Boğaziçi University, Istanbul, Turkey.
 
  * Wright, M., Lin, C.-J., O'Neill, E., Cosker, D. and Johnson, P., 2011. 3D Gesture recognition: An evaluation of user and system performance. In: Pervasive Computing - 9th International Conference, Pervasive 2011, Proceedings. Heidelberg: Springer Verlag, pp. 294-313.
 
- * Deinhofer, M., Roland L., Baca, A., 2010. Klassifizierung von Schlagtechniken im Badminton mittels Mustererkennung aus Inertialdaten]. 13 Österreichische Sportwissenschaftliche Gesellschaft, Bruch an der Mur.
+ * Deinhofer, M., Roland L., Baca, A., 2010. Klassifizierung von Schlagtechniken im Badminton mittels Mustererkennung aus Inertialdaten. 13 Österreichische Sportwissenschaftliche Gesellschaft, Bruch an der Mur.
 
  * Kungcharoen, K.; Palangsantikul, P.; Premchaiswadi, W. "Development of object detection software for a mobile robot using an AForge.Net framework", 9th International Conference on ICT and Knowledge Engineering (ICT & Knowledge Engineering), pp.201-206, 12-13 Jan. 2012.
 
