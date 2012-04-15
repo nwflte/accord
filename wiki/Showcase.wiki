@@ -22,6 +22,8 @@ The following papers include at least a citation to the framework, reference mat
 
  * Cani, V., 2011. Image Stitching for UAV remote sensing application. Master Degree Thesis. Computer Engineering, School of Castelldefels of Universitat Politècnica de Catalunya. Barcelona, Spain. 
 
+ * Feuerstack, S., Colnago, J. H. and Souza, C. R.; Designing and Executing Multimodal Interfaces for the Web based on State Chart XML. Proceedings of 3a. Conferência Web W3C Brasil 2011, The 3rd W3C Brazil Web Conference, 17th-18th November, Rio de Janeiro, Brazil. 2011.
+
  * Hassani, A. Z.; "Touch versus in-air Hand Gestures: Evaluating the acceptance by seniors of Human-Robot Interaction using Microsoft Kinect," Master Thesis, University of Twente, Enschede, Netherlands, 2011.
 
  * Kaplan, K., 2011. ADES: Automatic Driver Evaluation System. PhD Thesis, Boğaziçi University, Istanbul, Turkey.
