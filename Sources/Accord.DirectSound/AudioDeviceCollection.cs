@@ -1,6 +1,6 @@
 ﻿// Accord (Experimental) Audio Library
 // The Accord.NET Framework
-// http://accord-net.origo.ethz.ch
+// http://accord.googlecode.com
 //
 // Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
@@ -48,6 +48,31 @@ namespace Accord.DirectSound
     /// <summary>
     ///   Audio Device Collection
     /// </summary>
+    /// 
+    /// <remarks>
+    ///   Objects of this class may be used to iterate through available audio
+    ///   devices present in the system. For example, by creating a <see cref=
+    ///   "AudioDeviceCollection"/> specifying <see cref="AudioDeviceCategory.Output">
+    ///   AudioDeviceCategory.Output</see> to its constructor, it will be possible
+    ///   to iterate through all available output devices detected by DirectSound.
+    ///   To list capture devices, use <see cref="AudioDeviceCategory.Capture">
+    ///   AudioDeviceCategory.Capture</see> instead.</remarks>
+    ///   
+    ///  <example>
+    ///    <para>The source code below shows a typical usage of AudioDeviceCollection.</para>
+    ///   
+    ///    <code>
+    ///    // Create a new AudioDeviceCollection to list output devices:
+    ///    var collection = new AudioDeviceCollection(AudioDeviceCategory.Output);
+    ///   
+    ///    // Print all devices available in the system
+    ///    foreach (var device in collection)
+    ///       Console.WriteLine(device.ToString());
+    ///     
+    ///    // Get the default audio device in the system
+    ///    var defaultDevice = collection.Default;
+    ///   </code>
+    ///  </example>
     /// 
     public class AudioDeviceCollection : IEnumerable<AudioDeviceInfo>
     {

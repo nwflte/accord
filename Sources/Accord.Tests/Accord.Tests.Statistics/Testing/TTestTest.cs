@@ -1,6 +1,6 @@
 ﻿// Accord Unit Tests
 // The Accord.NET Framework
-// http://accord-net.origo.ethz.ch
+// http://accord.googlecode.com
 //
 // Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
@@ -110,6 +110,54 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(3.1254485381338246, target.Statistic);
             Assert.AreEqual(Hypothesis.OneLower, target.Hypothesis); // left tail
             Assert.AreEqual(0.99389453783865112, target.PValue);
+        }
+
+        [TestMethod()]
+        public void TTestConstructorTest2()
+        {
+
+            // Consider a sample generated from a Gaussian
+            // distribution with mean 0.5 and unit variance.
+
+            double[] sample = 
+            { 
+                -0.849886940156521,	3.53492346633185,  1.22540422494611, 0.436945126810344, 1.21474290382610,
+                 0.295033941700225, 0.375855651783688, 1.98969760778547, 1.90903448980048,	1.91719241342961
+            };
+
+            // One may rise the hypothesis that the mean of the sample is not
+            // significantly different from zero. In other words, the fact that
+            // this particular sample has mean 0.5 may be attributed to chance.
+
+            double hypothesizedMean = 0;
+
+            // Create a T-Test to check this hypothesis
+            TTest test = new TTest(sample, hypothesizedMean,
+                TTestHypotesis.MeanIsDifferentThanHypothesis);
+
+            // Check if the mean is significantly different
+            Assert.AreEqual(true, test.Significant);
+
+            // Now, we would like to test if the sample mean is
+            // significantly greater than the hypothetised zero.
+
+            // Create a T-Test to check this hypothesis
+            TTest greater = new TTest(sample, hypothesizedMean,
+                TTestHypotesis.MeanIsGreaterThanHypothesis);
+
+            // Check if the mean is significantly larger
+            Assert.AreEqual(true, greater.Significant);
+
+            // Now, we would like to test if the sample mean is
+            // significantly smaller than the hypothetised zero.
+
+            // Create a T-Test to check this hypothesis
+            TTest smaller = new TTest(sample, hypothesizedMean,
+                TTestHypotesis.MeanIsSmallerThanHypothesis);
+
+            // Check if the mean is significantly smaller
+            Assert.AreEqual(false, smaller.Significant);
+
         }
 
     }

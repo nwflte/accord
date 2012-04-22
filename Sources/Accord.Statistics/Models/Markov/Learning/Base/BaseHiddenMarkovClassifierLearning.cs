@@ -1,6 +1,6 @@
 ﻿// Accord Statistics Library
 // The Accord.NET Framework
-// http://accord-net.origo.ethz.ch
+// http://accord.googlecode.com
 //
 // Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
@@ -140,6 +140,18 @@ namespace Accord.Statistics.Models.Markov.Learning
         /// 
         protected double Run<T>(T[] inputs, int[] outputs)
         {
+            if (inputs == null) throw new ArgumentNullException("inputs");
+            if (outputs == null) throw new ArgumentNullException("outputs");
+
+            if (inputs.Length != outputs.Length)
+                throw new DimensionMismatchException("outputs", 
+                    "The number of inputs and outputs does not match.");
+
+            for (int i = 0; i < outputs.Length; i++)
+                if (outputs[i] < 0 || outputs[i] >= Classifier.Classes)
+                    throw new ArgumentOutOfRangeException("outputs");
+
+
             int classes = Classifier.Classes;
             double[] logLikelihood = new double[classes];
             int[] classCounts = new int[classes];

@@ -1,6 +1,6 @@
 ﻿// Accord Neural Net Library
 // The Accord.NET Framework
-// http://accord-net.origo.ethz.ch
+// http://accord.googlecode.com
 //
 // Copyright © César Souza, 2009, 2010
 // cesarsouza at gmail.com

@@ -1,6 +1,6 @@
 ﻿// Accord (Experimental) Audio Library
 // The Accord.NET Framework
-// http://accord-net.origo.ethz.ch
+// http://accord.googlecode.com
 //
 // Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
@@ -30,32 +30,46 @@ namespace Accord.DirectSound
     using System.IO;
 
     /// <summary>
-    ///   Wave file audio source.
+    ///   Read audio samples from a Wave file.
     /// </summary>
     /// 
-    /// <remarks><para>The audio source reads Wave files using a WaveFileReader.</para>
-    /// 
-    /// <para>Sample usage:</para>
-    /// <code>
-    /// // create Wave file audio source
-    /// WaveFileAudioSource source = new WaveFileAudioSource( "some file" );
-    /// // set event handlers
-    /// source.NewFrame += new NewFrameEventHandler( audio_NewFrame );
-    /// // start the audio source
-    /// source.Start( );
-    /// // ...
-    /// // signal to stop
-    /// source.SignalToStop( );
-    /// 
-    /// // New frame event handler, which is invoked on each new available audio frame
-    /// private void audio_NewFrame( object sender, NewFrameEventArgs eventArgs )
-    /// {
-    ///     // get new frame
-    ///     float[][] frame = eventArgs.Frame;
-    ///     // process the frame
-    /// }
-    /// </code>
+    /// <remarks>
+    ///   <para>This <see cref="IAudioSource">audio source</see> reads audio samples
+    ///   from Wave files. Internally, it uses the <see cref="WaveDecoder"/> class
+    ///   to automatically decode Wave files into audio signals.</para>
     /// </remarks>
+    /// 
+    /// <example>
+    ///   <para>Sample usage:</para>
+    ///   
+    ///   <code>
+    ///   // Create the Wave file audio source
+    ///   WaveFileAudioSource source = new WaveFileAudioSource("audiofile.wav");
+    ///   
+    ///   // Specify the callback function which will be
+    ///   // called once a sample is completely available
+    ///   source.NewFrame += source_NewFrame;
+    ///
+    ///   // Start capturing
+    ///   source.Start();
+    ///   
+    ///   // ...
+    ///   
+    ///   // The callback function should determine what
+    ///   // should be done with the samples being caught
+    ///   private void source_NewFrame(object sender, NewFrameEventArgs eventArgs)
+    ///   {
+    ///       // Read current frame...
+    ///       Signal s = eventArgs.Signal;
+    ///
+    ///       // Process/play/record it
+    ///       // ...
+    ///   }
+    ///   </code>
+    /// </example>
+    /// 
+    /// <seealso cref="WaveDecoder"/>
+    /// <seealso cref="AudioOutputDevice"/>
     /// 
     public class WaveFileAudioSource : IAudioSource, IDisposable
     {

@@ -1,6 +1,6 @@
 ﻿// Accord (Experimental) Audio Library
 // The Accord.NET Framework
-// http://accord-net.origo.ethz.ch
+// http://accord.googlecode.com
 //
 // Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
@@ -30,35 +30,56 @@ namespace Accord.DirectSound
     using System.Collections.Generic;
 
     /// <summary>
-    ///   Audio source for local audio capture device (for example microphone).
+    ///   Audio source for local audio capture device (i.e. a microphone).
     /// </summary>
     /// 
-    /// <remarks><para>The audio source captures audio data from local audio capture device.
-    /// DirectSound is used for capturing.</para>
-    /// 
-    /// <para>Sample usage:</para>
-    /// <code>
-    /// // enumerate audio devices
-    /// audioDevices = new FilterInfoCollection( FilterCategory.AudioInputDevice );
-    /// // create audio source
-    /// AudioCaptureDevice audioSource = new AudioCaptureDevice( audioDevices[0].MonikerString );
-    /// // set NewFrame event handler
-    /// audioSource.NewFrame += new NewFrameEventHandler( audio_NewFrame );
-    /// // start the audio source
-    /// audioSource.Start( );
-    /// // ...
-    /// // signal to stop
-    /// audioSource.SignalToStop( );
-    /// // ...
-    /// 
-    /// private void audio_NewFrame( object sender, NewFrameEventArgs eventArgs )
-    /// {
-    ///     // get new frame
-    ///     float[][] signal = eventArgs.Frame;
-    ///     // process the frame
-    /// }
-    /// </code>
+    /// <remarks>
+    ///   <para>This <see cref="IAudioSource">audio source</see> captures audio data
+    ///   obtained from a local audio capture device such as the microphone. The audio
+    ///   is captured using DirectSound through SlimDX.</para>
+    ///   
+    ///   <para>For instructions on how to list capture devices, please see
+    ///   the <see cref="AudioDeviceCollection"/> documentation page.</para>
     /// </remarks>
+    /// 
+    /// <example>
+    ///   <para>Sample usage:</para>
+    ///   
+    ///   <code>
+    ///   // Create default capture device
+    ///   AudioCaptureDevice source = new AudioCaptureDevice();
+    ///  
+    ///   // Specify capturing options
+    ///   source.DesiredFrameSize = 4096;
+    ///   source.SampleRate = 22050;
+    ///  
+    ///   // Specify the callback function which will be
+    ///   // called once a sample is completely available
+    ///   source.NewFrame += source_NewFrame;
+    ///
+    ///   // Start capturing
+    ///   source.Start();
+    ///   
+    ///   // ...
+    ///   
+    ///   // The callback function should determine what
+    ///   // should be done with the samples being caught
+    ///   private void source_NewFrame(object sender, NewFrameEventArgs eventArgs)
+    ///   {
+    ///       // Read current frame...
+    ///       Signal s = eventArgs.Signal;
+    ///
+    ///       // Process/play/record it
+    ///       // ...
+    ///   }
+    ///   </code>
+    ///   
+    ///   <para>For more details regarding usage, please check one of 
+    ///   the Audio sample applications accompanying the framework. </para>
+    /// </example>
+    /// 
+    /// <seealso cref="AudioDeviceCollection"/>
+    /// <seealso cref="AudioOutputDevice"/>
     /// 
     public class AudioCaptureDevice : IAudioSource, IDisposable
     {

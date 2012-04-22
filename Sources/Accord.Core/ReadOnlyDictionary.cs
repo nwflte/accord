@@ -1,6 +1,6 @@
 ﻿// Accord Core Library
 // The Accord.NET Framework
-// http://accord-net.origo.ethz.ch
+// http://accord.googlecode.com
 //
 // Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
@@ -28,6 +28,12 @@ namespace Accord
     /// <summary>
     ///   Read-only dictionary wrapper.
     /// </summary>
+    /// 
+    /// <remarks>
+    ///   This collection implements a read-only dictionary. Read-only collections
+    ///   can not be changed once they are created and are useful for presenting
+    ///   information to the user without allowing alteration.
+    /// </remarks>
     /// 
     /// <typeparam name="TKey">The types of the keys in the dictionary.</typeparam>
     /// <typeparam name="TValue">The type of values in the dictionary.</typeparam>

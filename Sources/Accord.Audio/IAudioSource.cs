@@ -1,6 +1,6 @@
 ﻿// Accord (Experimental) Audio Library
 // The Accord.NET Framework
-// http://accord-net.origo.ethz.ch
+// http://accord.googlecode.com
 //
 // Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
@@ -25,10 +25,14 @@ namespace Accord.Audio
     using System;
 
     /// <summary>
-    ///   Audio source interface.
+    ///   Audio Source interface.
     /// </summary>
     /// 
-    /// <remarks>The interface describes common methods for different type of audio sources.</remarks>
+    /// <remarks>This interface is implemented by objects which can
+    /// generate or capture sounds. Examples are soundcard capture
+    /// ports, microphones, wave file decoders and others.</remarks>
+    /// 
+    /// <seealso cref="IAudioOutput"/>
     /// 
     public interface IAudioSource
     {

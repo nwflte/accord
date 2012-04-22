@@ -1,6 +1,6 @@
 ﻿// Accord Unit Tests
 // The Accord.NET Framework
-// http://accord-net.origo.ethz.ch
+// http://accord.googlecode.com
 //
 // Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
@@ -25,6 +25,8 @@ namespace Accord.Tests.Statistics
     using Accord.Statistics;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Accord.Math;
+    using Accord;
+    using System.Data;
 
     [TestClass()]
     public class CircularTest
@@ -88,6 +90,11 @@ namespace Accord.Tests.Statistics
         [TestMethod()]
         public void WeightedKappaTest()
         {
+    DataTable table = new DataTable();
+
+    // Add multiple columns at once:
+    table.Columns.Add("columnName1", "columnName2");
+
             double[] angles = { 0.1242, 1.2425, 0.6712 };
             double[] weights = { 3, 1, 1 };
 
