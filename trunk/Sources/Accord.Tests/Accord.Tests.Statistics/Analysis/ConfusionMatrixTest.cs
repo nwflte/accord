@@ -1,6 +1,6 @@
 ﻿// Accord Unit Tests
 // The Accord.NET Framework
-// http://accord-net.origo.ethz.ch
+// http://accord.googlecode.com
 //
 // Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
@@ -241,6 +241,53 @@ namespace Accord.Tests.Statistics
             Assert.IsFalse(double.IsNaN(matrix.OddsRatio));
             Assert.IsFalse(double.IsNaN(matrix.Kappa));
             Assert.IsFalse(double.IsNaN(matrix.NormalizedMutualInformation));
+        }
+
+        [TestMethod()]
+        public void ConfusionMatrixConstructorTest5()
+        {
+            // The correct and expected output values (as confirmed by a Gold
+            //  standard rule, actual experiment or true verification)
+            int[] expected = { 0, 0, 1, 0, 1, 0, 0, 0, 0, 0 };
+
+            // The values as predicted by the decision system or
+            //  the test whose performance is being measured.
+            int[] predicted = { 0, 0, 0, 1, 1, 0, 0, 0, 0, 1 };
+
+
+            // Create a new confusion matrix using the given parameters
+            ConfusionMatrix matrix = new ConfusionMatrix(predicted, expected);
+
+            // At this point,
+            //   True Positives should be equal to 1;
+            //   True Negatives should be equal to 6;
+            //   False Negatives should be equal to 1;
+            //   False Positives should be equal to 2.
+
+
+            int falseNegatives = 1;
+            int falsePositives = 2;
+            int truePositives = 1;
+            int trueNegatives = 6;
+
+            Assert.AreEqual(predicted.Length, matrix.Observations);
+            Assert.AreEqual(8, matrix.ActualNegatives);
+            Assert.AreEqual(2, matrix.ActualPositives);
+            Assert.AreEqual(7, matrix.PredictedNegatives);
+            Assert.AreEqual(3, matrix.PredictedPositives);
+
+            Assert.AreEqual(falseNegatives, matrix.FalseNegatives);
+            Assert.AreEqual(falsePositives, matrix.FalsePositives);
+            Assert.AreEqual(truePositives, matrix.TruePositives);
+            Assert.AreEqual(trueNegatives, matrix.TrueNegatives);
+
+            Assert.AreEqual(0.7, matrix.Accuracy);
+            Assert.AreEqual(0.5, matrix.Sensitivity);
+            Assert.AreEqual(0.75, matrix.Specificity);
+            Assert.AreEqual((0.5 + 0.75) / 2.0, matrix.Efficiency);
+
+            Assert.AreEqual(0.3273268353539886, matrix.MatthewsCorrelationCoefficient);
+
         }
 
     }

@@ -1,6 +1,6 @@
 ﻿// Accord Statistics Library
 // The Accord.NET Framework
-// http://accord-net.origo.ethz.ch
+// http://accord.googlecode.com
 //
 // Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
@@ -34,11 +34,13 @@ namespace Accord.Statistics.Models.Markov.Learning
         /// <summary>
         ///   Runs the learning algorithm.
         /// </summary>
+        /// 
         /// <remarks>
         ///   Learning problem. Given some training observation sequences O = {o1, o2, ..., oK}
         ///   and general structure of HMM (numbers of hidden and visible states), determine
         ///   HMM parameters M = (A, B, pi) that best fit training data. 
         /// </remarks>
+        /// 
         double Run(Array[] observations);
 
     }

@@ -1,6 +1,6 @@
 ﻿// Accord (Experimental) Audio Library
 // The Accord.NET Framework
-// http://accord-net.origo.ethz.ch
+// http://accord.googlecode.com
 //
 // Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
@@ -26,8 +26,14 @@ namespace Accord.Audio
     using Accord;
 
     /// <summary>
-    ///   Audio Output Device Interface
+    ///   Audio Output Interface
     /// </summary>
+    /// 
+    /// <remarks>This interface is implemented by objects which
+    /// can reproduce sounds. Examples are soundcard outputs, wave
+    /// file encoders/writers and special purpose encoders.</remarks>
+    /// 
+    /// <seealso cref="IAudioSource"/>
     /// 
     public interface IAudioOutput
     {

@@ -1,6 +1,6 @@
 ﻿// Accord (Experimental) Audio Library
 // The Accord.NET Framework
-// http://accord-net.origo.ethz.ch
+// http://accord.googlecode.com
 //
 // Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
@@ -77,12 +77,15 @@ namespace Accord.Audio
     ///   which method to call based on your data types.
     ///   
     ///   <code>
-    ///   int[]   srcPcm16samples = new int[] { 1, 2, 3};
-    ///   float[] destIeeeFloat32samples = new float[3];
+    ///   // Suppose we have a collection of samples in PCM-16 format
+    ///   // and wish to convert it into IEEE-32 floating point format:
+    ///   
+    ///   int[]   pcm16Samples = new int  [3] { 1, 2, 3 }; // source
+    ///   float[] floatSamples = new float[3];             // target
     /// 
-    ///   SampleConverter.Convert(srcPcm16samples, destIeeeFloat32samples);
-    /// 
-    ///   // destIeeeFloat32samples now contains the converted samples.
+    ///   // Call convert passing the source samples. Converted
+    ///   // IEEE samples in will be stored in the target array.
+    ///   SampleConverter.Convert(pcm16samples, floatSamples);
     ///   </code>
     /// </example>
     /// 

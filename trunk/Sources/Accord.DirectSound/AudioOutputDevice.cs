@@ -1,6 +1,6 @@
 ﻿// Accord (Experimental) Audio Library
 // The Accord.NET Framework
-// http://accord-net.origo.ethz.ch
+// http://accord.googlecode.com
 //
 // Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
@@ -31,8 +31,57 @@ namespace Accord.DirectSound
 
 
     /// <summary>
-    ///   System audio output device.
+    ///   Audio output device for local audio playback (i.e. a soundcard port).
     /// </summary>
+    /// 
+    /// <remarks>
+    ///   <para>This <see cref="IAudioOutput">audio output</see> sends audio data
+    ///   to a local output device such as a soundcard. The audio is reproduced
+    ///   using DirectSound through SlimDX.</para>
+    ///   
+    ///   <para>For instructions on how to list output devices, please see
+    ///   the <see cref="AudioDeviceCollection"/> documentation page.</para>
+    /// </remarks>
+    /// 
+    /// <example>
+    ///   <para>Sample usage:</para>
+    ///   
+    ///   <code>
+    ///   // To create an audio output device, DirectSound requires a handle to
+    ///   // the parent form of the application (or other application handle). In
+    ///   // Windows.Forms, this could be achieved by providing the Handle property
+    ///   // of the currently displayed form.
+    ///   
+    ///   int sampleRate = 22000; // 22kHz
+    ///   int channels = 2;       // stereo
+    ///   
+    ///   // Create the audio output device with the desired values
+    ///   AudioOutputDevice output = new AudioOutputDevice(Handle, sampleRate, channels);
+    ///   
+    ///   // The output device works at real time, and as such, forms a queue of audio
+    ///   // samples to be played (more specifically, a buffer). When this buffer starts
+    ///   // to get empty, the output will ask the application for more samples of it
+    ///   // should stop playing. To ask for more samples, the output device will fire
+    ///   // an event which should be handled by the user:
+    ///
+    ///   output.NewFrameRequested += output_NewFrameRequested;
+    ///   
+    ///   // It is also possible to configure an event to be fired when the device
+    ///   // has stopped playing and when it has just started playing a frame. Those
+    ///   // are mainly used for reporting status to GUI controls.
+    ///   output.Stopped += output_Stopped;
+    ///   output.FramePlayingStarted += output_FramePlayingStarted;
+    ///   
+    ///   // Start playing
+    ///   output.Play();
+    ///   </code>
+    ///   
+    ///   <para>For more details regarding usage, please check one of 
+    ///   the Audio sample applications accompanying the framework. </para>
+    /// </example>
+    /// 
+    /// <seealso cref="AudioDeviceCollection"/>
+    /// <seealso cref="AudioCaptureDevice"/>
     /// 
     public class AudioOutputDevice : IAudioOutput, IDisposable
     {
@@ -57,9 +106,11 @@ namespace Accord.DirectSound
         /// <summary>
         ///   Gets a value indicating whether this instance is playing audio.
         /// </summary>
+        /// 
         /// <value>
-        /// 	<c>true</c> if this instance is running; otherwise, <c>false</c>.
+        ///   <c>true</c> if this instance is running; otherwise, <c>false</c>.
         /// </value>
+        /// 
         public bool IsRunning
         {
             get { return isPlaying; }

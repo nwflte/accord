@@ -1,6 +1,6 @@
 ﻿// Accord Vision Library
 // The Accord.NET Framework (LGPL)
-// http://accord-net.origo.ethz.ch
+// http://accord.googlecode.com
 //
 // Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
@@ -69,7 +69,7 @@ namespace Accord.Vision.Detection
             writer.WriteLine("//");
             writer.WriteLine("// Accord Vision Library");
             writer.WriteLine("// The Accord.NET Framework");
-            writer.WriteLine("// http://accord-net.origo.ethz.ch");
+            writer.WriteLine("// http://accord.googlecode.com");
             writer.WriteLine("//");
             writer.WriteLine();
             writer.WriteLine("namespace HaarCascades");

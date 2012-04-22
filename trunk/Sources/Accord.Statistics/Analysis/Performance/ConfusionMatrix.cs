@@ -1,6 +1,6 @@
 ﻿// Accord Statistics Library
 // The Accord.NET Framework
-// http://accord-net.origo.ethz.ch
+// http://accord.googlecode.com
 //
 // Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
@@ -153,7 +153,7 @@ namespace Accord.Statistics.Analysis
         /// <param name="expected">The actual, truth values from the data.</param>
         /// <param name="positiveValue">The integer label which identifies a value as positive.</param>
         /// 
-        public ConfusionMatrix(int[] predicted, int[] expected, int positiveValue)
+        public ConfusionMatrix(int[] predicted, int[] expected, int positiveValue = 1)
         {
             // Initial argument checking
             if (predicted == null) throw new ArgumentNullException("predicted");

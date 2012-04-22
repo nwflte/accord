@@ -1,6 +1,6 @@
 ﻿// Accord (Experimental) Audio Library
 // The Accord.NET Framework
-// http://accord-net.origo.ethz.ch
+// http://accord.googlecode.com
 //
 // Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
@@ -28,8 +28,17 @@ namespace Accord.Audio
     using System.Timers;
 
     /// <summary>
-    ///   Metronome.
+    ///   Virtual Metronome.
     /// </summary>
+    /// 
+    /// <remarks>
+    ///   Objects from this class acts as virtual metronomes. If connected
+    ///   to a beat detector, it can be used to determine the tempo (in
+    ///   beats per minute) of a signal. It can also be used in manual mode
+    ///   by calling <see cref="Tap"/> method. For more details, see the
+    ///   Beat detection sample application which comes together with the
+    ///   framework.
+    /// </remarks>
     /// 
     public sealed class Metronome : IDisposable
     {

@@ -1,6 +1,6 @@
 ﻿// Accord (Experimental) Audio Library
 // The Accord.NET Framework
-// http://accord-net.origo.ethz.ch
+// http://accord.googlecode.com
 //
 // Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
@@ -28,6 +28,16 @@ namespace Accord.DirectSound
     /// <summary>
     ///   Audio device information.
     /// </summary>
+    /// 
+    /// <remarks>
+    ///   This class holds information about a particular audio device,
+    ///   such as a microphone, audio card port or anything else which
+    ///   could be detected by DirectSound. Objects from this class
+    ///   are typically obtained through a <see cref="AudioDeviceCollection"/>
+    ///   collection.
+    /// </remarks>
+    /// 
+    /// <see cref="AudioDeviceCollection"/>
     /// 
     public class AudioDeviceInfo
     {
