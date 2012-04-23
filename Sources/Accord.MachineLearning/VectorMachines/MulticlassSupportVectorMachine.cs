@@ -1,6 +1,6 @@
 ﻿// Accord Machine Learning Library
 // The Accord.NET Framework
-// http://accord-net.origo.ethz.ch
+// http://accord.googlecode.com
 //
 // Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
@@ -31,6 +31,7 @@ namespace Accord.MachineLearning.VectorMachines
     using System.Threading.Tasks;
     using Accord.Math;
     using Accord.Statistics.Kernels;
+    using System.Runtime.Serialization;
 
     /// <summary>
     ///   Decision strategies for <see cref="MulticlassSupportVectorMachine">
@@ -127,7 +128,7 @@ namespace Accord.MachineLearning.VectorMachines
     {
 
         // Underlying classifiers
-        private KernelSupportVectorMachine[][] machineMatrix;
+        private KernelSupportVectorMachine[][] machines;
 
         private int? totalVectors;
         private int? uniqueVectors;
@@ -161,13 +162,13 @@ namespace Accord.MachineLearning.VectorMachines
                 throw new ArgumentException("The machine must have at least two classes.", "classes");
 
             // Create the kernel machines
-            machineMatrix = new KernelSupportVectorMachine[classes - 1][];
-            for (int i = 0; i < machineMatrix.Length; i++)
+            machines = new KernelSupportVectorMachine[classes - 1][];
+            for (int i = 0; i < machines.Length; i++)
             {
-                machineMatrix[i] = new KernelSupportVectorMachine[i + 1];
+                machines[i] = new KernelSupportVectorMachine[i + 1];
 
                 for (int j = 0; j <= i; j++)
-                    machineMatrix[i][j] = new KernelSupportVectorMachine(kernel, inputs);
+                    machines[i][j] = new KernelSupportVectorMachine(kernel, inputs);
             }
         }
 
@@ -183,7 +184,7 @@ namespace Accord.MachineLearning.VectorMachines
         {
             if (machines == null) throw new ArgumentNullException("machines");
 
-            this.machineMatrix = machines;
+            this.machines = machines;
         }
 
         /// <summary>
@@ -204,9 +205,9 @@ namespace Accord.MachineLearning.VectorMachines
                 if (class1 == class2)
                     return null;
                 if (class1 > class2)
-                    return machineMatrix[class1 - 1][class2];
+                    return machines[class1 - 1][class2];
                 else
-                    return machineMatrix[class2 - 1][class1];
+                    return machines[class2 - 1][class1];
             }
         }
 
@@ -217,7 +218,7 @@ namespace Accord.MachineLearning.VectorMachines
         /// 
         public int MachinesCount
         {
-            get { return ((machineMatrix.Length + 1) * machineMatrix.Length) / 2; }
+            get { return ((machines.Length + 1) * machines.Length) / 2; }
         }
 
         /// <summary>
@@ -232,9 +233,9 @@ namespace Accord.MachineLearning.VectorMachines
                 if (totalVectors == null)
                 {
                     int count = 0;
-                    for (int i = 0; i < machineMatrix.Length; i++)
-                        for (int j = 0; j < machineMatrix[i].Length; j++)
-                            count += machineMatrix[i][j].SupportVectors.Length;
+                    for (int i = 0; i < machines.Length; i++)
+                        for (int j = 0; j < machines[i].Length; j++)
+                            count += machines[i][j].SupportVectors.Length;
                     totalVectors = count;
                 }
 
@@ -254,14 +255,14 @@ namespace Accord.MachineLearning.VectorMachines
                 if (uniqueVectors == null)
                 {
                     HashSet<double[]> unique = new HashSet<double[]>();
-                    for (int i = 0; i < machineMatrix.Length; i++)
+                    for (int i = 0; i < machines.Length; i++)
                     {
-                        for (int j = 0; j < machineMatrix[i].Length; j++)
+                        for (int j = 0; j < machines[i].Length; j++)
                         {
-                            if (machineMatrix[i][j].SupportVectors != null)
+                            if (machines[i][j].SupportVectors != null)
                             {
-                                for (int k = 0; k < machineMatrix[i][j].SupportVectors.Length; k++)
-                                    unique.Add(machineMatrix[i][j].SupportVectors[k]);
+                                for (int k = 0; k < machines[i][j].SupportVectors.Length; k++)
+                                    unique.Add(machines[i][j].SupportVectors[k]);
                             }
                         }
                     }
@@ -280,7 +281,7 @@ namespace Accord.MachineLearning.VectorMachines
         /// 
         public int Classes
         {
-            get { return machineMatrix.Length + 1; }
+            get { return machines.Length + 1; }
         }
 
         /// <summary>
@@ -289,7 +290,7 @@ namespace Accord.MachineLearning.VectorMachines
         /// 
         public int Inputs
         {
-            get { return machineMatrix[0][0].Inputs; }
+            get { return machines[0][0].Inputs; }
         }
 
         /// <summary>
@@ -302,7 +303,7 @@ namespace Accord.MachineLearning.VectorMachines
         /// 
         public bool IsProbabilistic
         {
-            get { return machineMatrix[0][0].IsProbabilistic; }
+            get { return machines[0][0].IsProbabilistic; }
         }
 
         /// <summary>
@@ -311,7 +312,7 @@ namespace Accord.MachineLearning.VectorMachines
         /// 
         public KernelSupportVectorMachine[][] Machines
         {
-            get { return machineMatrix; }
+            get { return machines; }
         }
 
         /// <summary>
@@ -650,7 +651,7 @@ namespace Accord.MachineLearning.VectorMachines
         private int computeSequential(int classA, int classB, double[] input, out double output)
         {
             // Get the machine for this problem
-            var machine = machineMatrix[classA - 1][classB];
+            var machine = machines[classA - 1][classB];
             var vectors = sharedVectors[classA - 1][classB];
 
             double sum = machine.Threshold;
@@ -718,7 +719,7 @@ namespace Accord.MachineLearning.VectorMachines
         private int computeParallel(int classA, int classB, double[] input, out double output)
         {
             // Get the machine for this problem
-            var machine = machineMatrix[classA - 1][classB];
+            var machine = machines[classA - 1][classB];
             var vectors = sharedVectors[classA - 1][classB];
 
             double sum = machine.Threshold;
@@ -799,15 +800,15 @@ namespace Accord.MachineLearning.VectorMachines
             // Detect all vectors which are being shared along the machines
             var shared = new Dictionary<double[], List<Tuple<int, int, int>>>();
 
-            for (int i = 0; i < machineMatrix.Length; i++)
+            for (int i = 0; i < machines.Length; i++)
             {
-                for (int j = 0; j < machineMatrix[i].Length; j++)
+                for (int j = 0; j < machines[i].Length; j++)
                 {
-                    if (machineMatrix[i][j].SupportVectors != null)
+                    if (machines[i][j].SupportVectors != null)
                     {
-                        for (int k = 0; k < machineMatrix[i][j].SupportVectors.Length; k++)
+                        for (int k = 0; k < machines[i][j].SupportVectors.Length; k++)
                         {
-                            double[] sv = machineMatrix[i][j].SupportVectors[k];
+                            double[] sv = machines[i][j].SupportVectors[k];
 
                             List<Tuple<int, int, int>> count;
                             bool success = shared.TryGetValue(sv, out count);
@@ -841,19 +842,19 @@ namespace Accord.MachineLearning.VectorMachines
                 indices[sv] = idx++;
 
             // Create a lookup table for the machines
-            sharedVectors = new int[machineMatrix.Length][][];
+            sharedVectors = new int[machines.Length][][];
             for (int i = 0; i < sharedVectors.Length; i++)
             {
-                sharedVectors[i] = new int[machineMatrix[i].Length][];
+                sharedVectors[i] = new int[machines[i].Length][];
                 for (int j = 0; j < sharedVectors[i].Length; j++)
                 {
-                    if (machineMatrix[i][j].SupportVectors != null)
+                    if (machines[i][j].SupportVectors != null)
                     {
-                        sharedVectors[i][j] = new int[machineMatrix[i][j].SupportVectors.Length];
+                        sharedVectors[i][j] = new int[machines[i][j].SupportVectors.Length];
 
-                        for (int k = 0; k < machineMatrix[i][j].SupportVectors.Length; k++)
+                        for (int k = 0; k < machines[i][j].SupportVectors.Length; k++)
                         {
-                            double[] sv = machineMatrix[i][j].SupportVectors[k];
+                            double[] sv = machines[i][j].SupportVectors[k];
                             if (shared.ContainsKey(sv))
                                 sharedVectors[i][j][k] = indices[sv];
                             else
