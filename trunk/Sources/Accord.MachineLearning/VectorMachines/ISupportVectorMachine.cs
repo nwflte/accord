@@ -1,6 +1,6 @@
 ﻿// Accord Machine Learning Library
 // The Accord.NET Framework
-// http://accord-net.origo.ethz.ch
+// http://accord.googlecode.com
 //
 // Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
@@ -26,6 +26,11 @@ namespace Accord.MachineLearning.VectorMachines
     /// <summary>
     ///   Common interface for Support Vector Machines
     /// </summary>
+    /// 
+    /// <seealso cref="SupportVectorMachine"/>
+    /// <seealso cref="KernelSupportVectorMachine"/>
+    /// <seealso cref="MulticlassSupportVectorMachine"/>
+    /// 
     public interface ISupportVectorMachine
     {
 

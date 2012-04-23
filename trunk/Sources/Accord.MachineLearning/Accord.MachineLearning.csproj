@@ -92,10 +92,13 @@
     <Compile Include="DecisionTrees\DecisionNode.cs" />
     <Compile Include="GaussianMixtureModel.cs" />
     <Compile Include="Bayes\NaiveBayes.cs" />
+    <Compile Include="KNearestNeighbor.cs" />
     <Compile Include="Properties\GlobalSuppressions.cs" />
     <Compile Include="GridSearch.cs" />
     <Compile Include="KMeans.cs" />
     <Compile Include="Ransac.cs" />
+    <Compile Include="VectorMachines\Learning\MultilabelSupportVectorLearning.cs" />
+    <Compile Include="VectorMachines\MultilabelSupportVectorMachine.cs" />
     <Compile Include="VectorMachines\ISupportVectorMachine.cs" />
     <Compile Include="VectorMachines\Learning\ISupportVectorMachineLearning.cs" />
     <Compile Include="VectorMachines\Learning\SequentialMinimalOptimization.cs" />

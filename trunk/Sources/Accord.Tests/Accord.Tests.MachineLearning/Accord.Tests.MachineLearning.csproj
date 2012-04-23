@@ -110,7 +110,9 @@
     <Compile Include="DecisionTrees\ID3LearningTest.cs" />
     <Compile Include="Kernels\DynamicalTimeWarpingTest.cs" />
     <Compile Include="KMeansTest.cs" />
+    <Compile Include="KNearestNeighborTest.cs" />
     <Compile Include="NaiveBayesTest.cs" />
+    <Compile Include="VectorMachines\MultilabelSupportVectorLearningTest.cs" />
     <Compile Include="VectorMachines\ProbabilisticOutputLearningTest.cs" />
     <Compile Include="VectorMachines\MulticlassSupportVectorLearningTest.cs" />
     <Compile Include="VectorMachines\MulticlassSupportVectorMachineTest.cs" />
@@ -171,8 +173,9 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Resources\" />
+    <None Include="Resources\SVM-014.svm" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

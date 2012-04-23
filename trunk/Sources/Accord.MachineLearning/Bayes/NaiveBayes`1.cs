@@ -1,6 +1,6 @@
 ﻿// Accord Machine Learning Library
 // The Accord.NET Framework
-// http://accord-net.origo.ethz.ch
+// http://accord.googlecode.com
 //
 // Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
@@ -51,6 +51,99 @@ namespace Accord.MachineLearning.Bayes
     ///   </list>
     /// </para>  
     /// </remarks>
+    /// 
+    /// <example>
+    /// <para>
+    ///   In this example, we will be using a mixed-continuous version of the famous Play Tennis
+    ///   example by Tom Mitchell (1998). In Mitchell's example, one would like to infer if a person
+    ///   would play tennis or not based solely on four input variables. The original variables were
+    ///   categorical, but in this example, two of them will be categorical and two will be continuous.
+    ///   Rhe rows, or instances presented below represent days on which the behavior of the person
+    ///   has been registered and annotated, pretty much building our set of observation instances for
+    ///   learning:</para>
+    /// 
+    /// <code>
+    ///   DataTable data = new DataTable("Mitchell's Tennis Example");
+    /// 
+    ///   data.Columns.Add("Day", "Outlook", "Temperature", "Humidity", "Wind", "PlayTennis");
+    ///
+    ///   // We will set Temperature and Humidity to be continuous
+    ///   data.Columns["Temperature"].DataType = typeof(double); // (degrees celsius)
+    ///   data.Columns["Humidity"].DataType    = typeof(double); // (water percentage)
+    /// 
+    ///   data.Rows.Add(   "D1",   "Sunny",      38.0,         96.0,    "Weak",     "No"  );
+    ///   data.Rows.Add(   "D2",   "Sunny",      39.0,         90.0,   "Strong",    "No"  );
+    ///   data.Rows.Add(   "D3",  "Overcast",    38.0,         75.0,    "Weak",     "Yes" );
+    ///   data.Rows.Add(   "D4",   "Rain",       25.0,         87.0,    "Weak",     "Yes" );
+    ///   data.Rows.Add(   "D5",   "Rain",       12.0,         30.0,    "Weak",     "Yes" );
+    ///   data.Rows.Add(   "D6",   "Rain",       11.0,         35.0,   "Strong",    "No"  );
+    ///   data.Rows.Add(   "D7",  "Overcast",    10.0,         40.0,   "Strong",    "Yes" );
+    ///   data.Rows.Add(   "D8",   "Sunny",      24.0,         90.0,    "Weak",     "No"  );
+    ///   data.Rows.Add(   "D9",   "Sunny",      12.0,         26.0,    "Weak",     "Yes" );
+    ///   data.Rows.Add(   "D10",  "Rain",       25.0,         30.0,    "Weak",     "Yes" );
+    ///   data.Rows.Add(   "D11",  "Sunny",      26.0,         40.0,   "Strong",    "Yes" );
+    ///   data.Rows.Add(   "D12", "Overcast",    27.0,         97.0,   "Strong",    "Yes" );
+    ///   data.Rows.Add(   "D13", "Overcast",    39.0,         41.0,    "Weak",     "Yes" );
+    ///   data.Rows.Add(   "D14",  "Rain",       23.0,         98.0,   "Strong",    "No"  );
+    /// </code>
+    /// <para>
+    ///   <i>Obs: The DataTable representation is not required, and instead the NaiveBayes could
+    ///   also be trained directly on double[] arrays containing the data.</i></para>
+    ///   
+    /// <para>
+    ///   In order to estimate a discrete Naive Bayes, we will first convert this problem to a more simpler
+    ///   representation. Since some variables are categories, it does not matter if they are represented
+    ///   as strings, or numbers, since both are just symbols for the event they represent. Since numbers
+    ///   are more easily representable than text strings, we will convert the problem to use a discrete 
+    ///   alphabet through the use of a <see cref="Accord.Statistics.Filters.Codification">codebook</see>.</para>
+    /// 
+    /// <para>
+    ///   A codebook effectively transforms any distinct possible value for a variable into an integer 
+    ///   symbol. For example, “Sunny” could as well be represented by the integer label 0, “Overcast” 
+    ///   by “1”, Rain by “2”, and the same goes by for the other variables. So:</para>
+    /// 
+    /// <code>
+    ///   // Create a new codification codebook to 
+    ///   // convert strings into integer symbols
+    ///   Codification codebook = new Codification(data);
+    ///   
+    ///   // Translate our training data into integer symbols using our codebook:
+    ///   DataTable symbols = codebook.Apply(data); 
+    ///   double[][] inputs  = symbols.ToArray("Outlook", "Temperature", "Humidity", "Wind"); 
+    ///   int[]      outputs = symbols.ToIntArray("PlayTennis").GetColumn(0);
+    /// </code>
+    /// 
+    /// <para>
+    ///   Now that we already have our learning input/ouput pairs, we should specify our
+    ///   decision tree. We will be trying to build a tree to predict the last column, entitled
+    ///   “PlayTennis”. For this, we will be using the “Outlook”, “Temperature”, “Humidity” and
+    ///   “Wind” as predictors (variables which will we will use for our decision).
+    /// </para>
+    /// 
+    /// <code>
+    ///   // Gather information about decision variables
+    ///   IUnivariateDistribution[] priors =
+    ///   {
+    ///       new GeneralDiscreteDistribution(codebook["Outlook"].Symbols),   // 3 possible values (Sunny, overcast, rain)
+    ///       new NormalDistribution(),                                       // Continuous value (celsius)
+    ///       new NormalDistribution(),                                       // Continuous value (percentage)
+    ///       new GeneralDiscreteDistribution(codebook["Wind"].Symbols)       // 2 possible values (Weak, strong)
+    ///   };
+    ///   
+    ///   int inputCount = 4;       // 4 variables (Outlook, Temperature, Humidity, Wind)
+    ///   int classCount = codebook["PlayTennis"].Symbols; // 2 possible values (yes, no)
+    ///
+    ///   // Create a new Naive Bayes classifiers for the two classes
+    ///   var target = new NaiveBayes&lt;IUnivariateDistribution>(classCount, inputCount, priors);
+    ///
+    ///   // Compute the Naive Bayes model
+    ///   target.Estimate(inputs, outputs);
+    /// </code>
+    /// 
+    /// <para>Now that we have created and estimated our classifier, we 
+    /// can query the classifier for new input samples through the <see
+    /// cref="NaiveBayes{T}.Compute(double[])"/> method.</para>
+    /// </example>
     /// 
     /// <seealso cref="NaiveBayes"/>
     /// 
@@ -140,7 +233,7 @@ namespace Accord.MachineLearning.Bayes
             TDistribution[,] priors = new TDistribution[classes, inputPriors.Length];
             for (int i = 0; i < classes; i++)
                 for (int j = 0; j < inputPriors.Length; j++)
-                    priors[i, j] = (TDistribution)inputPriors[i].Clone();
+                    priors[i, j] = (TDistribution)inputPriors[j].Clone();
 
             initialize(priors, null);
         }

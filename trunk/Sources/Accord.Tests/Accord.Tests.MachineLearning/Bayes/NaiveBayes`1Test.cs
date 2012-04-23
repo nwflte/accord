@@ -1,6 +1,6 @@
 ﻿// Accord Unit Tests
 // The Accord.NET Framework
-// http://accord-net.origo.ethz.ch
+// http://accord.googlecode.com
 //
 // Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
@@ -29,6 +29,7 @@ namespace Accord.Tests.MachineLearning
     using Accord.Statistics.Distributions.Univariate;
     using Accord.Statistics.Filters;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Accord.Statistics.Distributions;
 
 
     [TestClass()]
@@ -192,6 +193,82 @@ namespace Accord.Tests.MachineLearning
             Assert.AreEqual(2, responses.Length);
         }
 
+        [TestMethod()]
+        public void ComputeTest2()
+        {
+            DataTable data = new DataTable("Mitchell's Tennis Example");
+
+            data.Columns.Add("Day", "Outlook", "Temperature", "Humidity", "Wind", "PlayTennis");
+
+            // We will set Temperature and Humidity to be continuous
+            data.Columns["Temperature"].DataType = typeof(double);
+            data.Columns["Humidity"].DataType = typeof(double);
+
+            data.Rows.Add("D1", "Sunny", 38.0, 96.0, "Weak", "No");
+            data.Rows.Add("D2", "Sunny", 39.0, 90.0, "Strong", "No");
+            data.Rows.Add("D3", "Overcast", 38.0, 75.0, "Weak", "Yes");
+            data.Rows.Add("D4", "Rain", 25.0, 87.0, "Weak", "Yes");
+            data.Rows.Add("D5", "Rain", 12.0, 30.0, "Weak", "Yes");
+            data.Rows.Add("D6", "Rain", 11.0, 35.0, "Strong", "No");
+            data.Rows.Add("D7", "Overcast", 10.0, 40.0, "Strong", "Yes");
+            data.Rows.Add("D8", "Sunny", 24.0, 90.0, "Weak", "No");
+            data.Rows.Add("D9", "Sunny", 12.0, 26.0, "Weak", "Yes");
+            data.Rows.Add("D10", "Rain", 25, 30.0, "Weak", "Yes");
+            data.Rows.Add("D11", "Sunny", 26.0, 40.0, "Strong", "Yes");
+            data.Rows.Add("D12", "Overcast", 27.0, 97.0, "Strong", "Yes");
+            data.Rows.Add("D13", "Overcast", 39.0, 41.0, "Weak", "Yes");
+            data.Rows.Add("D14", "Rain", 23.0, 98.0, "Strong", "No");
+
+            // Create a new codification codebook to
+            // convert strings into discrete symbols
+            Codification codebook = new Codification(data);
+
+            int classCount = codebook["PlayTennis"].Symbols; // 2 possible values (yes, no)
+            int inputCount = 4; // 4 variables (Outlook, Temperature, Humidity, Wind)
+
+            IUnivariateDistribution[] priors =
+            {
+                new GeneralDiscreteDistribution(codebook["Outlook"].Symbols),   // 3 possible values (Sunny, overcast, rain)
+                new NormalDistribution(),                                       // Continuous value (celsius)
+                new NormalDistribution(),                                       // Continuous value (percentage)
+                new GeneralDiscreteDistribution(codebook["Wind"].Symbols)       // 2 possible values (Weak, strong)
+            };
+
+            // Create a new Naive Bayes classifiers for the two classes
+            var target = new NaiveBayes<IUnivariateDistribution>(classCount, inputCount, priors);
+
+            // Extract symbols from data and train the classifier
+            DataTable symbols = codebook.Apply(data);
+            double[][] inputs = symbols.ToArray("Outlook", "Temperature", "Humidity", "Wind");
+            int[] outputs = symbols.ToIntArray("PlayTennis").GetColumn(0);
+
+            // Compute the Naive Bayes model
+            target.Estimate(inputs, outputs);
+
+
+            double logLikelihood;
+            double[] responses;
+
+            // Compute the result for a sunny, cool, humid and windy day:
+            double[] instance = new double[] 
+            {
+                codebook.Translate(columnName:"Outlook", value:"Sunny"), 
+                12.0, 
+                90.0,
+                codebook.Translate(columnName:"Wind", value:"Strong")
+            };
+
+            int c = target.Compute(instance, out logLikelihood, out responses);
+
+            string result = codebook.Translate("PlayTennis", c);
+
+            Assert.AreEqual("No", result);
+            Assert.AreEqual(0, c);
+            Assert.AreEqual(0.840, responses[0], 1e-3);
+            Assert.AreEqual(1, responses.Sum(), 1e-10);
+            Assert.IsFalse(double.IsNaN(responses[0]));
+            Assert.AreEqual(2, responses.Length);
+        }
 
         [TestMethod()]
         public void DistributionsTest()

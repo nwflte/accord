@@ -8,6 +8,7 @@
 // "In Project Suppression File".
 // You do not need to add suppressions to this file manually.
 
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1716:IdentifiersShouldNotMatchKeywords", MessageId = "Function", Scope = "member", Target = "Accord.Math.Optimization.IObjectiveFunction.#Function")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly", MessageId = "m", Scope = "member", Target = "Accord.Math.Special.#Log1m(System.Double)")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1708:IdentifiersShouldDifferByMoreThanCase", Scope = "member", Target = "Accord.Math.Optimization.GoldfarbIdnaniQuadraticSolver.#Minimize(System.Double[,],System.Double[])")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly", MessageId = "A", Scope = "member", Target = "Accord.Math.Optimization.GoldfarbIdnaniQuadraticSolver.#.ctor(System.Int32,System.Double[,],System.Double[],System.Int32)")]
