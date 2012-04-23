@@ -1,6 +1,6 @@
 ﻿// Accord Machine Learning Library
 // The Accord.NET Framework
-// http://accord-net.origo.ethz.ch
+// http://accord.googlecode.com
 //
 // Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
@@ -58,7 +58,7 @@ namespace Accord.MachineLearning.Bayes
     ///   based solely on four input variables. Those variables are all categorical, meaning that
     ///   there is no order between the possible values for the variable (i.e. there is no order
     ///   relationship between Sunny and Rain, one is not bigger nor smaller than the other, but are 
-    ///   just distinct). Moreover, the rows, or instances presented above represent days on which the
+    ///   just distinct). Moreover, the rows, or instances presented below represent days on which the
     ///   behavior of the person has been registered and annotated, pretty much building our set of 
     ///   observation instances for learning:</para>
     /// 
@@ -82,12 +82,15 @@ namespace Accord.MachineLearning.Bayes
     ///   data.Rows.Add(   "D13", "Overcast",    "Hot",      "Normal",  "Weak",    "Yes" ); 
     ///   data.Rows.Add(   "D14",  "Rain",       "Mild",      "High",  "Strong",   "No"  );
     /// </code>
-    /// 
+    /// <para>
+    ///   <i>Obs: The DataTable representation is not required, and instead the NaiveBayes could
+    ///   also be trained directly on integer arrays containing the integer codewords.</i></para>
+    ///   
     /// <para>
     ///   In order to estimate a discrete Naive Bayes, we will first convert this problem to a more simpler
     ///   representation. Since all variables are categories, it does not matter if they are represented
     ///   as strings, or numbers, since both are just symbols for the event they represent. Since numbers
-    ///   are more easily representable than text string, we will convert the problem to use a discrete 
+    ///   are more easily representable than text strings, we will convert the problem to use a discrete 
     ///   alphabet through the use of a <see cref="Accord.Statistics.Filters.Codification">codebook</see>.</para>
     /// 
     /// <para>

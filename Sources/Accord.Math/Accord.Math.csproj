@@ -176,6 +176,10 @@
     </Compile>
     <Compile Include="Norm.cs" />
     <Compile Include="Differentiation\FiniteDifferences.cs" />
+    <Compile Include="Optimization\Constrained\AugmentedLagrangianSolver.cs" />
+    <Compile Include="Optimization\Constrained\NonlinearConstraint.cs" />
+    <Compile Include="Optimization\ExpressionParser.cs" />
+    <Compile Include="Optimization\NonlinearObjectiveFunction.cs" />
     <Compile Include="Optimization\Unconstrained\ConjugateGradient.cs" />
     <Compile Include="Optimization\Constrained\LinearConstraint.cs" />
     <Compile Include="Optimization\IObjectiveFunction.cs" />

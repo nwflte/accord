@@ -1,6 +1,6 @@
 ﻿// Accord Machine Learning Library
 // The Accord.NET Framework
-// http://accord-net.origo.ethz.ch
+// http://accord.googlecode.com
 //
 // Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
@@ -188,14 +188,14 @@ namespace Accord.MachineLearning.VectorMachines.Learning
                 throw new ArgumentNullException("outputs");
 
             if (inputs.Length != outputs.Length)
-                throw new ArgumentException("The number of inputs and outputs does not match.", "outputs");
+                throw new DimensionMismatchException("outputs", "The number of inputs and outputs does not match.");
 
             if (machine.Inputs > 0)
             {
                 // This machine has a fixed input vector size
                 for (int i = 0; i < inputs.Length; i++)
                     if (inputs[i].Length != machine.Inputs)
-                        throw new ArgumentException("The size of the input vectors does not match the expected number of inputs of the machine");
+                        throw new DimensionMismatchException("inputs", "The size of the input vectors does not match the expected number of inputs of the machine");
             }
 
             for (int i = 0; i < outputs.Length; i++)

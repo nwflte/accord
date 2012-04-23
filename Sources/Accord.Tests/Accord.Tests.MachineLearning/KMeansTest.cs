@@ -1,6 +1,6 @@
 ﻿// Accord Unit Tests
 // The Accord.NET Framework
-// http://accord-net.origo.ethz.ch
+// http://accord.googlecode.com
 //
 // Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
@@ -121,9 +121,11 @@ namespace Accord.Tests.MachineLearning
             //  happen to the next four observations and to the last three.
 
             Assert.AreEqual(labels[0], labels[1]);
+
             Assert.AreEqual(labels[2], labels[3]);
             Assert.AreEqual(labels[2], labels[4]);
             Assert.AreEqual(labels[2], labels[5]);
+
             Assert.AreEqual(labels[6], labels[7]);
             Assert.AreEqual(labels[6], labels[8]);
 

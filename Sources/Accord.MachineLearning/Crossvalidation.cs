@@ -1,6 +1,6 @@
 ﻿// Accord Machine Learning Library
 // The Accord.NET Framework
-// http://accord-net.origo.ethz.ch
+// http://accord.googlecode.com
 //
 // Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
@@ -53,67 +53,81 @@ namespace Accord.MachineLearning
     /// 
     /// <example>
     ///   <code>
-    ///   //Example binary data
+    ///   // This is a sample code on how to use Cross-Validation
+    ///   // to access the performance of Support Vector Machines.
+    ///
+    ///   // Consider the example binary data. We will be trying
+    ///   // to learn a XOR problem and see how well does SVMs
+    ///   // perform on this data.
+    ///
     ///   double[][] data =
     ///   {
-    ///        new double[] { -1, -1 }, new double[] {  1, -1 },
-    ///        new double[] { -1,  1 }, new double[] {  1,  1 },
-    ///        new double[] { -1, -1 }, new double[] {  1, -1 },
-    ///        new double[] { -1,  1 }, new double[] {  1,  1 },
-    ///        new double[] { -1, -1 }, new double[] {  1, -1 },
-    ///        new double[] { -1,  1 }, new double[] {  1,  1 },
-    ///        new double[] { -1, -1 }, new double[] {  1, -1 },
-    ///        new double[] { -1,  1 }, new double[] {  1,  1 },
-    ///    };
+    ///       new double[] { -1, -1 }, new double[] {  1, -1 },
+    ///       new double[] { -1,  1 }, new double[] {  1,  1 },
+    ///       new double[] { -1, -1 }, new double[] {  1, -1 },
+    ///       new double[] { -1,  1 }, new double[] {  1,  1 },
+    ///       new double[] { -1, -1 }, new double[] {  1, -1 },
+    ///       new double[] { -1,  1 }, new double[] {  1,  1 },
+    ///       new double[] { -1, -1 }, new double[] {  1, -1 },
+    ///       new double[] { -1,  1 }, new double[] {  1,  1 },
+    ///   };
     ///
-    ///    int[] xor = // result of xor
-    ///    {
-    ///        -1,  1,
-    ///         1, -1,
-    ///        -1,  1,
-    ///         1, -1,
-    ///        -1,  1,
-    ///         1, -1,
-    ///        -1,  1,
-    ///         1, -1,
-    ///    };
+    ///   int[] xor = // result of xor for the sample input data
+    ///   {
+    ///       -1,       1,
+    ///        1,      -1,
+    ///       -1,       1,
+    ///        1,      -1,
+    ///       -1,       1,
+    ///        1,      -1,
+    ///       -1,       1,
+    ///        1,      -1,
+    ///   };
     ///
     ///
-    ///    // Create a new Cross-validation algorithm passing the data set size and the number of folds
-    ///    var crossvalidation = new Crossvalidation&lt;KernelSupportVectorMachine>(data.Length, 3);
+    ///   // Create a new Cross-validation algorithm passing the data set size and the number of folds
+    ///   var crossvalidation = new CrossValidation(size: data.Length, folds: 3);
     ///
-    ///    // Define a fitting function using Support Vector Machines
-    ///    crossvalidation.Fitting = delegate(int k, int[] trainingSet, int[] validationSet)
-    ///    {
-    ///        // The trainingSet and validationSet arguments specifies the
-    ///        // indices of the original data set to be used as training and
-    ///        // validation sets, respectively.
-    ///        double[][] trainingInputs = data.Submatrix(trainingSet);
-    ///        int[] trainingOutputs = xor.Submatrix(trainingSet);
+    ///   // Define a fitting function using Support Vector Machines. The objective of this
+    ///   // function is to learn a SVM in the subset of the data dicted by cross-validation.
     ///
-    ///        double[][] validationInputs = data.Submatrix(validationSet);
-    ///        int[] validationOutputs = xor.Submatrix(validationSet);
+    ///   crossvalidation.Fitting = delegate(int k, int[] indicesTrain, int[] indicesValidation)
+    ///   {
+    ///       // The fitting function is passing the indices of the original set which
+    ///       // should be considered training data and the indices of the original set
+    ///       // which should be considered validation data.
     ///
-    ///        // Create a Kernel Support Vector Machine to operate on this set
-    ///        var svm = new KernelSupportVectorMachine(new Polynomial(2), 2);
+    ///       // Lets now grab the training data:
+    ///       var trainingInputs = data.Submatrix(indicesTrain);
+    ///       var trainingOutputs = xor.Submatrix(indicesTrain);
     ///
-    ///        // Create a training algorithm and learn this set
-    ///        var smo = new SequentialMinimalOptimization(svm, trainingInputs, trainingOutputs);
+    ///       // And now the validation data:
+    ///       var validationInputs = data.Submatrix(indicesValidation);
+    ///       var validationOutputs = xor.Submatrix(indicesValidation);
     ///
-    ///        double trainingError = smo.Run();
-    ///        double validationError = smo.ComputeError(validationInputs, validationOutputs);
     ///
-    ///        // Return a new information structure containing the model and the errors achieved.
-    ///        return new CrossvalidationInfo&lt;KernelSupportVectorMachine>(svm, trainingError, validationError);
-    ///    };
+    ///       // Create a Kernel Support Vector Machine to operate on the set
+    ///       var svm = new KernelSupportVectorMachine(new Polynomial(2), 2);
     ///
-    /// 
-    ///    // Compute the cross-validation
-    ///    crossvalidation.Compute();
+    ///       // Create a training algorithm and learn the training data
+    ///       var smo = new SequentialMinimalOptimization(svm, trainingInputs, trainingOutputs);
     ///
-    ///    // Get the average training and validation errors
-    ///    double errorTraining   = crossvalidation.TrainingError;
-    ///    double errorValidation = crossvalidation.ValidationError;
+    ///       double trainingError = smo.Run();
+    ///
+    ///       // Now we can compute the validation error on the validation data:
+    ///       double validationError = smo.ComputeError(validationInputs, validationOutputs);
+    ///
+    ///       // Return a new information structure containing the model and the errors achieved.
+    ///       return new CrossValidationValues(svm, trainingError, validationError);
+    ///   };
+    ///
+    ///
+    ///   // Compute the cross-validation
+    ///   var result = crossvalidation.Compute();
+    ///
+    ///   // Finally, access the measured performance.
+    ///   double trainingErrors = result.Training.Mean;
+    ///   double validationErrors = result.Validation.Mean;
     ///   </code>
     /// </example>
     /// 
