@@ -112,6 +112,7 @@
     <Compile Include="KMeansTest.cs" />
     <Compile Include="KNearestNeighborTest.cs" />
     <Compile Include="NaiveBayesTest.cs" />
+    <Compile Include="VectorMachines\SupportVectorReductionTest.cs" />
     <Compile Include="VectorMachines\MultilabelSupportVectorLearningTest.cs" />
     <Compile Include="VectorMachines\ProbabilisticOutputLearningTest.cs" />
     <Compile Include="VectorMachines\MulticlassSupportVectorLearningTest.cs" />

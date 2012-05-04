@@ -48,6 +48,26 @@ namespace Accord.Tests.Math
 
 
         [TestMethod()]
+        public void ParseTest1()
+        {
+            // Parsing a matrix from Octave format
+            double[,] a = Matrix.Parse("[1 2; 3 4]",
+                OctaveMatrixFormatProvider.InvariantCulture);
+
+            // Creating a 2 x 2 identity matrix
+            double[,] I = Matrix.Identity(size: 2);
+
+            // Matrix multiplication
+            double[,] b = a.Multiply(I);
+
+            Assert.AreEqual(1, b[0, 0]);
+            Assert.AreEqual(2, b[0, 1]);
+            Assert.AreEqual(3, b[1, 0]);
+            Assert.AreEqual(4, b[1, 1]);
+        }
+
+
+        [TestMethod()]
         public void ParseTest()
         {
             string str;

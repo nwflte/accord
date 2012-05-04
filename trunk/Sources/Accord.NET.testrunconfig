@@ -25,21 +25,45 @@
           <Configuration>
             <CodeCoverage keyFile="Accord.snk" xmlns="">
               <Regular>
-                <CodeCoverageItem binaryFile="D:\Projects\Accord.NET\Release\Accord.Audio.dll" pdbFile="D:\Projects\Accord.NET\Release\Accord.Audio.pdb" instrumentInPlace="true" />
-                <CodeCoverageItem binaryFile="D:\Projects\Accord.NET\Release\Accord.Audio.Formats.dll" pdbFile="D:\Projects\Accord.NET\Release\Accord.Audio.Formats.pdb" instrumentInPlace="true" />
-                <CodeCoverageItem binaryFile="D:\Projects\Accord.NET\Release\Accord.Audition.dll" pdbFile="D:\Projects\Accord.NET\Release\Accord.Audition.pdb" instrumentInPlace="true" />
-                <CodeCoverageItem binaryFile="D:\Projects\Accord.NET\Release\Accord.Controls.Audio.dll" pdbFile="D:\Projects\Accord.NET\Release\Accord.Controls.Audio.pdb" instrumentInPlace="true" />
-                <CodeCoverageItem binaryFile="D:\Projects\Accord.NET\Release\Accord.Controls.Imaging.dll" pdbFile="D:\Projects\Accord.NET\Release\Accord.Controls.Imaging.pdb" instrumentInPlace="true" />
+                <CodeCoverageItem binaryFile="D:\Projects\Accord.NET\Release\Accord.Audio.dll" pdbFile="D:\Projects\Accord.NET\Release\Accord.Audio.instr.pdb" instrumentInPlace="true">
+                  <KeyFile path="D:\Projects\Accord.NET\Sources\Accord.snk" />
+                </CodeCoverageItem>
+                <CodeCoverageItem binaryFile="D:\Projects\Accord.NET\Release\Accord.Audio.Formats.dll" pdbFile="D:\Projects\Accord.NET\Release\Accord.Audio.Formats.instr.pdb" instrumentInPlace="true">
+                  <KeyFile path="D:\Projects\Accord.NET\Sources\Accord.snk" />
+                </CodeCoverageItem>
+                <CodeCoverageItem binaryFile="D:\Projects\Accord.NET\Release\Accord.Audition.dll" pdbFile="D:\Projects\Accord.NET\Release\Accord.Audition.instr.pdb" instrumentInPlace="true">
+                  <KeyFile path="D:\Projects\Accord.NET\Sources\Accord.snk" />
+                </CodeCoverageItem>
+                <CodeCoverageItem binaryFile="D:\Projects\Accord.NET\Release\Accord.Controls.Audio.dll" pdbFile="D:\Projects\Accord.NET\Release\Accord.Controls.Audio.instr.pdb" instrumentInPlace="true">
+                  <KeyFile path="D:\Projects\Accord.NET\Sources\Accord.snk" />
+                </CodeCoverageItem>
+                <CodeCoverageItem binaryFile="D:\Projects\Accord.NET\Release\Accord.Controls.Imaging.dll" pdbFile="D:\Projects\Accord.NET\Release\Accord.Controls.Imaging.instr.pdb" instrumentInPlace="true">
+                  <KeyFile path="D:\Projects\Accord.NET\Sources\Accord.snk" />
+                </CodeCoverageItem>
                 <CodeCoverageItem binaryFile="D:\Projects\Accord.NET\Release\Accord.Controls.Statistics.dll" pdbFile="D:\Projects\Accord.NET\Release\Accord.Controls.Statistics.pdb" instrumentInPlace="true" />
-                <CodeCoverageItem binaryFile="D:\Projects\Accord.NET\Release\Accord.DirectSound.dll" pdbFile="D:\Projects\Accord.NET\Release\Accord.DirectSound.pdb" instrumentInPlace="true" />
-                <CodeCoverageItem binaryFile="D:\Projects\Accord.NET\Release\Accord.Imaging.dll" pdbFile="D:\Projects\Accord.NET\Release\Accord.Imaging.pdb" instrumentInPlace="true" />
-                <CodeCoverageItem binaryFile="D:\Projects\Accord.NET\Release\Accord.MachineLearning.dll" pdbFile="D:\Projects\Accord.NET\Release\Accord.MachineLearning.pdb" instrumentInPlace="true" />
+                <CodeCoverageItem binaryFile="D:\Projects\Accord.NET\Release\Accord.DirectSound.dll" pdbFile="D:\Projects\Accord.NET\Release\Accord.DirectSound.instr.pdb" instrumentInPlace="true">
+                  <KeyFile path="D:\Projects\Accord.NET\Sources\Accord.snk" />
+                </CodeCoverageItem>
+                <CodeCoverageItem binaryFile="D:\Projects\Accord.NET\Release\Accord.Imaging.dll" pdbFile="D:\Projects\Accord.NET\Release\Accord.Imaging.instr.pdb" instrumentInPlace="true">
+                  <KeyFile path="D:\Projects\Accord.NET\Sources\Accord.snk" />
+                </CodeCoverageItem>
+                <CodeCoverageItem binaryFile="D:\Projects\Accord.NET\Release\Accord.MachineLearning.dll" pdbFile="D:\Projects\Accord.NET\Release\Accord.MachineLearning.instr.pdb" instrumentInPlace="true">
+                  <KeyFile path="D:\Projects\Accord.NET\Sources\Accord.snk" />
+                </CodeCoverageItem>
                 <CodeCoverageItem binaryFile="D:\Projects\Accord.NET\Release\Accord.Music.dll" pdbFile="D:\Projects\Accord.NET\Release\Accord.Music.pdb" instrumentInPlace="true" />
-                <CodeCoverageItem binaryFile="D:\Projects\Accord.NET\Release\Accord.Neuro.dll" pdbFile="D:\Projects\Accord.NET\Release\Accord.Neuro.pdb" instrumentInPlace="true" />
-                <CodeCoverageItem binaryFile="D:\Projects\Accord.NET\Release\Accord.Statistics.dll" pdbFile="D:\Projects\Accord.NET\Release\Accord.Statistics.pdb" instrumentInPlace="true" />
+                <CodeCoverageItem binaryFile="D:\Projects\Accord.NET\Release\Accord.Neuro.dll" pdbFile="D:\Projects\Accord.NET\Release\Accord.Neuro.instr.pdb" instrumentInPlace="true">
+                  <KeyFile path="D:\Projects\Accord.NET\Sources\Accord.snk" />
+                </CodeCoverageItem>
+                <CodeCoverageItem binaryFile="D:\Projects\Accord.NET\Release\Accord.Statistics.dll" pdbFile="D:\Projects\Accord.NET\Release\Accord.Statistics.instr.pdb" instrumentInPlace="true">
+                  <KeyFile path="D:\Projects\Accord.NET\Sources\Accord.snk" />
+                </CodeCoverageItem>
                 <CodeCoverageItem binaryFile="D:\Projects\Accord.NET\Release\Accord.Wavelets.dll" pdbFile="D:\Projects\Accord.NET\Release\Accord.Wavelets.pdb" instrumentInPlace="true" />
-                <CodeCoverageItem binaryFile="D:\Projects\Accord.NET\Release\Accord.Math.dll" pdbFile="D:\Projects\Accord.NET\Release\Accord.Math.pdb" instrumentInPlace="true" />
-                <CodeCoverageItem binaryFile="D:\Projects\Accord.NET\Release\Accord.Vision.dll" pdbFile="D:\Projects\Accord.NET\Release\Accord.Vision.pdb" instrumentInPlace="true" />
+                <CodeCoverageItem binaryFile="D:\Projects\Accord.NET\Release\Accord.Math.dll" pdbFile="D:\Projects\Accord.NET\Release\Accord.Math.instr.pdb" instrumentInPlace="true">
+                  <KeyFile path="D:\Projects\Accord.NET\Sources\Accord.snk" />
+                </CodeCoverageItem>
+                <CodeCoverageItem binaryFile="D:\Projects\Accord.NET\Release\Accord.Vision.dll" pdbFile="D:\Projects\Accord.NET\Release\Accord.Vision.instr.pdb" instrumentInPlace="true">
+                  <KeyFile path="D:\Projects\Accord.NET\Sources\Accord.snk" />
+                </CodeCoverageItem>
               </Regular>
             </CodeCoverage>
           </Configuration>

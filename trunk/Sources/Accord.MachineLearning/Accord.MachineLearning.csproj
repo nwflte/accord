@@ -98,6 +98,7 @@
     <Compile Include="KMeans.cs" />
     <Compile Include="Ransac.cs" />
     <Compile Include="VectorMachines\Learning\MultilabelSupportVectorLearning.cs" />
+    <Compile Include="VectorMachines\Learning\SupportVectorReduction.cs" />
     <Compile Include="VectorMachines\MultilabelSupportVectorMachine.cs" />
     <Compile Include="VectorMachines\ISupportVectorMachine.cs" />
     <Compile Include="VectorMachines\Learning\ISupportVectorMachineLearning.cs" />

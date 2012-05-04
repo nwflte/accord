@@ -30,7 +30,7 @@ namespace Accord.Tests.MachineLearning
     using System.IO;
 
     [TestClass()]
-    public class SupportVectorMachineTest
+    public class SupportVectorReductionTest
     {
 
 
@@ -99,119 +99,56 @@ namespace Accord.Tests.MachineLearning
             };
 
             // Create a Support Vector Machine for the given inputs
-            KernelSupportVectorMachine machine = new KernelSupportVectorMachine(new Gaussian(0.1), inputs[0].Length);
+            KernelSupportVectorMachine machine = new KernelSupportVectorMachine(new Linear(0), inputs[0].Length);
 
             // Instantiate a new learning algorithm for SVMs
             SequentialMinimalOptimization smo = new SequentialMinimalOptimization(machine, inputs, labels);
 
             // Set up the learning algorithm
-            smo.Complexity = 1.0;
+            smo.Complexity = 100.0;
 
             // Run
             double error = smo.Run();
 
+            Assert.AreEqual(0, error);
             Assert.AreEqual(-1, Math.Sign(machine.Compute(inputs[0])));
             Assert.AreEqual(-1, Math.Sign(machine.Compute(inputs[1])));
             Assert.AreEqual(-1, Math.Sign(machine.Compute(inputs[2])));
             Assert.AreEqual(+1, Math.Sign(machine.Compute(inputs[3])));
 
-            Assert.AreEqual(error, 0);
+            // At this point we have the weighted support vectors
+            //     w        sv        b
+            //   (+4)  *  (1,1)      -3
+            //   (-2)  *  (1,0)
+            //   (-2)  *  (0,1)
+            //
+            // However, it can be seen that the last SV can be written
+            // as a linear combination of the two first vectors:
+            //
+            //   (0,1) = (1,1) - (1,0)
+            //
+            // Since we have a linear space (we are using a linear kernel)
+            // this vector could be removed from the support vector set.
+            //
+            // f(x) = sum(alpha_i * x * x_i) + b
+            //      = 4*(1,1)*x - 2*(1,0)*x - 2*(0,1)*x             - 3
+            //      = 4*(1,1)*x - 2*(1,0)*x - 2*((1,1) - (1,0))*x   - 3
+            //      = 4*(1,1)*x - 2*(1,0)*x - 2*(1,1)*x + 2*(1,0)*x - 3
+            //      = 4*(1,1)*x - 2*(1,0)*x - 2*(1,1)*x + 2*(1,0)*x - 3
+            //      = 2*(1,1)*x - 3
+            //      = 2*x1 + 2*x2 - 3
+            //
 
-            Assert.AreEqual(-0.6640625, machine.Threshold);
-            Assert.AreEqual(1, machine.Weights[0]);
-            Assert.AreEqual(-0.34375, machine.Weights[1]);
-            Assert.AreEqual(-0.328125, machine.Weights[2]);
-            Assert.AreEqual(-0.328125, machine.Weights[3]);
-        }
+            SupportVectorReduction svr = new SupportVectorReduction(machine);
 
-        [TestMethod()]
-        public void ComputeTest3()
-        {
-            // Example AND problem
-            double[][] inputs =
-            {
-                new double[] { 0, 0 }, // 0 and 0: 0 (label -1)
-                new double[] { 0, 1 }, // 0 and 1: 0 (label -1)
-                new double[] { 1, 0 }, // 1 and 0: 0 (label -1)
-                new double[] { 1, 1 }  // 1 and 1: 1 (label +1)
-            };
+            double error2 = svr.Run();
 
-            // Dichotomy SVM outputs should be given as [-1;+1]
-            int[] labels =
-            {
-                // 0,  0,  0, 1
-                  -1, -1, -1, 1
-            };
-
-            // Create a Support Vector Machine for the given inputs
-            KernelSupportVectorMachine machine = new KernelSupportVectorMachine(new Linear(), inputs[0].Length);
-
-            // Instantiate a new learning algorithm for SVMs
-            SequentialMinimalOptimization smo = new SequentialMinimalOptimization(machine, inputs, labels);
-
-            // Set up the learning algorithm
-            smo.Complexity = 100000.0;
-
-            // Run
-            double error = smo.Run();
 
             Assert.AreEqual(-1, Math.Sign(machine.Compute(inputs[0])));
             Assert.AreEqual(-1, Math.Sign(machine.Compute(inputs[1])));
             Assert.AreEqual(-1, Math.Sign(machine.Compute(inputs[2])));
             Assert.AreEqual(+1, Math.Sign(machine.Compute(inputs[3])));
-
-            Assert.AreEqual(error, 0);
-
-            Assert.AreEqual(-3.0, machine.Threshold);
-            Assert.AreEqual(4, machine.Weights[0]);
-            Assert.AreEqual(-2, machine.Weights[1]);
-            Assert.AreEqual(-2, machine.Weights[2]);
         }
 
-
-        [TestMethod()]
-        public void ComputeTest2()
-        {
-            // XOR
-            double[][] inputs =
-            {
-                new double[] { 0, 0 },
-                new double[] { 0, 1 },
-                new double[] { 1, 0 },
-                new double[] { 1, 1 }
-            };
-
-            int[] labels =
-            {
-                -1,
-                 1,
-                 1,
-                -1
-            };
-
-            KernelSupportVectorMachine machine = new KernelSupportVectorMachine(new Gaussian(0.1), inputs[0].Length);
-            SequentialMinimalOptimization smo = new SequentialMinimalOptimization(machine, inputs, labels);
-
-            smo.Complexity = 1;
-            double error = smo.Run();
-
-            Assert.AreEqual(-1, Math.Sign(machine.Compute(inputs[0])));
-            Assert.AreEqual(+1, Math.Sign(machine.Compute(inputs[1])));
-            Assert.AreEqual(+1, Math.Sign(machine.Compute(inputs[2])));
-            Assert.AreEqual(-1, Math.Sign(machine.Compute(inputs[3])));
-
-            Assert.AreEqual(error, 0);
-        }
-
-        [TestMethod()]
-        public void LoadTest1()
-        {
-            MemoryStream stream = new MemoryStream(Properties.Resources.SVM_014);
-            var svm = MulticlassSupportVectorMachine.Load(stream);
-
-            Assert.IsNotNull(svm.Machines);
-            Assert.IsFalse(svm.IsProbabilistic);
-            Assert.AreEqual(351, svm.MachinesCount);
-        }
     }
 }

@@ -228,8 +228,8 @@ namespace Accord.Tests.Statistics
             double[,] weights = pls.Weights;
             double[,] actual = pls.Predictors.Result;
 
-            double[,] X0 = (double[,])pls.Source.Clone(); Tools.Center(X0);
-            double[,] Y0 = (double[,])pls.Output.Clone(); Tools.Center(Y0);
+            double[,] X0 = (double[,])pls.Source.Clone(); Tools.Center(X0, inPlace: true);
+            double[,] Y0 = (double[,])pls.Output.Clone(); Tools.Center(Y0, inPlace: true);
 
             // XSCORES = X0*W
             double[,] expected = X0.Multiply(weights);
