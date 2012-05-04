@@ -164,6 +164,7 @@
     </Compile>
     <Compile Include="Geometry\ConvexityDefect.cs" />
     <Compile Include="Geometry\KCurvature.cs" />
+    <Compile Include="Matrix\ReducedRowEchelonForm.cs" />
     <Compile Include="Matrix\Matrix.Construction.cs" />
     <Compile Include="Matrix\Matrix.Parsing.cs" />
     <Compile Include="Matrix\Matrix.Complex.cs" />

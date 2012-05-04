@@ -112,6 +112,7 @@
     <Compile Include="Decompositions\NonnegativeMatrixFactorization.cs" />
     <Compile Include="FiniteDifferencesTest.cs" />
     <Compile Include="Decompositions\JaggedLuDecompositionFTest.cs" />
+    <Compile Include="ReducedRowEchelonFormTest.cs" />
     <Compile Include="Wavelets\CDF97Test.cs" />
     <Compile Include="Wavelets\HaarTest.cs" />
     <Compile Include="HilbertTransformTest.cs" />

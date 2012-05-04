@@ -470,6 +470,7 @@ namespace Accord.Tests.Math
             // Now we can finally create our optimization problem
             var target = new GoldfarbIdnaniQuadraticSolver(numberOfVariables: 2, constraints: list);
 
+
             Assert.IsTrue(A.IsEqual(target.ConstraintMatrix));
             Assert.IsTrue(b.IsEqual(target.ConstraintValues));
             Assert.AreEqual(numberOfEqualities, target.NumberOfEqualities);
@@ -477,6 +478,7 @@ namespace Accord.Tests.Math
 
             // And attempt to solve it.
             double minimumValue = target.Minimize(Q, d);
+
 
             Assert.AreEqual(170, minimumValue, 1e-10);
             Assert.AreEqual(10, target.Solution[0]);
@@ -500,17 +502,22 @@ namespace Accord.Tests.Math
             //             x  >=  10  (x should be greater than or equal to 10)
             //
 
+            // In this example we will be using some symbolic processing. 
+            // The following variables could be inicialized to any value.
             double x = 0, y = 0;
 
+            // Create our objective function using a lambda expression
             var f = new QuadraticObjectiveFunction(() => 2 * (x * x) - (x * y) + 4 * (y * y) - 5 * x - 6 * y);
 
+            // Now, create the constraints
             List<LinearConstraint> constraints = new List<LinearConstraint>();
             constraints.Add(new LinearConstraint(f, () => x - y == 5));
             constraints.Add(new LinearConstraint(f, () => x >= 10));
 
+            // Now we create the quadratic programming solver for 2 variables, using the constraints.
+            GoldfarbIdnaniQuadraticSolver solver = new GoldfarbIdnaniQuadraticSolver(2, constraints);
 
-            GoldfarbIdnaniQuadraticSolver target = new GoldfarbIdnaniQuadraticSolver(2, constraints);
-
+            
             double[,] A = 
             {
                 { 1, -1 }, 
@@ -523,8 +530,9 @@ namespace Accord.Tests.Math
                 10, 
             };
 
-            Assert.IsTrue(A.IsEqual(target.ConstraintMatrix));
-            Assert.IsTrue(b.IsEqual(target.ConstraintValues));
+            Assert.IsTrue(A.IsEqual(solver.ConstraintMatrix));
+            Assert.IsTrue(b.IsEqual(solver.ConstraintValues));
+
 
             double[,] Q = 
             {   
@@ -540,6 +548,10 @@ namespace Accord.Tests.Math
 
             Assert.IsTrue(Q.IsEqual(actualQ));
             Assert.IsTrue(d.IsEqual(actuald));
+
+
+            // And attempt to solve it.
+            double minimumValue = solver.Minimize(f);
 
         }
 
@@ -802,21 +814,24 @@ namespace Accord.Tests.Math
             //             y  >= 0
             //
 
+            // Create our objective function using a text string
             var f = new QuadraticObjectiveFunction("-2x² + xy - y² + 5y");
 
+            // Now, create the constraints
             List<LinearConstraint> constraints = new List<LinearConstraint>();
             constraints.Add(new LinearConstraint(f, "x + y <= 0"));
             constraints.Add(new LinearConstraint(f, "    y >= 0"));
 
+            // Now we create the quadratic programming solver for 2 variables, using the constraints.
+            GoldfarbIdnaniQuadraticSolver solver = new GoldfarbIdnaniQuadraticSolver(2, constraints);
 
-            GoldfarbIdnaniQuadraticSolver target = new GoldfarbIdnaniQuadraticSolver(2, constraints);
-
-            double maxValue = target.Maximize(f);
+            // And attempt to solve it.
+            double maxValue = solver.Maximize(f);
 
             Assert.AreEqual(25 / 16.0, maxValue);
 
-            Assert.AreEqual(-5 / 8.0, target.Solution[0]);
-            Assert.AreEqual(5 / 8.0, target.Solution[1]);
+            Assert.AreEqual(-5 / 8.0, solver.Solution[0]);
+            Assert.AreEqual(5 / 8.0, solver.Solution[1]);
         }
 
 
