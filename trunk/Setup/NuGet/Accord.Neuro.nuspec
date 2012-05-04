@@ -13,17 +13,17 @@
     <authors>Accord.NET</authors>
     <owners>Accord.NET</owners>
     <licenseUrl>http://accord.googlecode.com/svn/docs/License.txt</licenseUrl>
-    <projectUrl>http://accord-net.origo.ethz.ch/</projectUrl>
+    <projectUrl>http://accord.googlecode.com</projectUrl>
     <iconUrl>http://accord.googlecode.com/svn/docs/resources/Accord.NET%20(logo%20small).png</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>Contains neural learning algorithms such as Levenberg-Marquardt, Parallel Resilient Backpropagation, initialization procedures such as Nguyen-Widrow and other neural network related methods. This package is part of the Accord.NET Framework.</description>
     <summary>Accord.NET Neuro Library from the Accord.NET Framework</summary>
     <tags>accord.net aforge.net framework artificial neural networks levenberd-marquardt nguyen-widrow</tags>
     <dependencies>
-      <dependency id="Accord" version="2.6.0" />
-      <dependency id="Accord.Math" version="2.6.0" />
-      <dependency id="AForge" version="2.2.4" />
-      <dependency id="AForge.Math" version="2.2.4" />
+      <dependency id="Accord"       version="2.6.0" />
+      <dependency id="Accord.Math"  version="2.6.0" />
+      <dependency id="AForge"       version="2.2.4" />
+      <dependency id="AForge.Math"  version="2.2.4" />
       <dependency id="AForge.Neuro" version="2.2.4" />
     </dependencies>
   </metadata>

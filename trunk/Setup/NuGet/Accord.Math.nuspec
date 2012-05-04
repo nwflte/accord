@@ -13,16 +13,16 @@
     <authors>Accord.NET</authors>
     <owners>Accord.NET</owners>
     <licenseUrl>http://accord.googlecode.com/svn/docs/License.txt</licenseUrl>
-    <projectUrl>http://accord-net.origo.ethz.ch/</projectUrl>
+    <projectUrl>http://accord.googlecode.com</projectUrl>
     <iconUrl>http://accord.googlecode.com/svn/docs/resources/Accord.NET%20(logo%20small).png</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <description>Contains a matrix extension library, along with a suite of numerical matrix decomposition methods, numerical optimization algorithms for contrained and uncontrained problems, special functions and other tools for scientific applications. This package is part of the Accord.NET Framework.</description>
+    <description>Contains a matrix extension library, along with a suite of numerical matrix decomposition methods, numerical optimization algorithms for constrained and unconstrained problems, special functions and other tools for scientific applications. This package is part of the Accord.NET Framework.</description>
     <summary>Accord.Math library from the Accord.NET framework</summary>
     <tags>accord.net aforge.net framework math decompositions lu qr constrained optimization differentiation numerical matrix algebra</tags>
     <dependencies>
-      <dependency id="Accord" version="2.6.0" />
-      <dependency id="AForge" version="2.2.4" />
-	  <dependency id="AForge.Math" version="2.2.4" />
+      <dependency id="Accord"      version="2.6.0" />
+      <dependency id="AForge"      version="2.2.4" />
+      <dependency id="AForge.Math" version="2.2.4" />
     </dependencies>
   </metadata>
   <files>
