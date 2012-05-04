@@ -1,6 +1,6 @@
 ﻿// Accord Math Library
 // The Accord.NET Framework
-// http://accord-net.origo.ethz.ch
+// http://accord.googlecode.com
 //
 // Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
@@ -81,6 +81,29 @@ namespace Accord.Math
             for (int i = 0; i < x.Length; i++)
                 sum += System.Math.Abs(x[i] - y[i]);
             return sum;
+        }
+
+        /// <summary>
+        ///   Gets the Chebyshev distance between two points.
+        /// </summary>
+        /// 
+        /// <param name="x">A point in space.</param>
+        /// <param name="y">A point in space.</param>
+        /// 
+        /// <returns>The chebyshev distance between x and y.</returns>
+        /// 
+        public static double Chebyshev(double[] x, double[] y)
+        {
+            double max = System.Math.Abs(x[0] - y[0]);
+
+            for (int i = 1; i < x.Length; i++)
+            {
+                double abs = System.Math.Abs(x[i] - y[i]);
+
+                if (abs > max) max = abs;
+            }
+
+            return max;
         }
 
         /// <summary>
@@ -226,7 +249,6 @@ namespace Accord.Math
             return (1.0 / 8.0) * SquareMahalanobis(meanY, meanX, Matrix.Inverse(P))
                 + (0.5) * System.Math.Log(detP / System.Math.Sqrt(detP1 * detP2));
         }
-
 
 
         #region Private methods
