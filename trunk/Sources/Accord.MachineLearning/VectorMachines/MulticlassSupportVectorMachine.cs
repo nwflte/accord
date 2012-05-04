@@ -235,7 +235,8 @@ namespace Accord.MachineLearning.VectorMachines
                     int count = 0;
                     for (int i = 0; i < machines.Length; i++)
                         for (int j = 0; j < machines[i].Length; j++)
-                            count += machines[i][j].SupportVectors.Length;
+                            if (machines[i][j].SupportVectors != null)
+                                count += machines[i][j].SupportVectors.Length;
                     totalVectors = count;
                 }
 
@@ -794,6 +795,19 @@ namespace Accord.MachineLearning.VectorMachines
             }
         }
 
+        /// <summary>
+        ///   Resets the cache and machine statistics
+        ///   so they can be recomputed on next evaluation.
+        /// </summary>
+        /// 
+        public void Reset()
+        {
+            this.sharedVectorCache = null;
+
+            this.sharedVectors = null;
+            this.totalVectors = null;
+            this.uniqueVectors = null;
+        }
 
         private void createCache()
         {
@@ -869,6 +883,9 @@ namespace Accord.MachineLearning.VectorMachines
             for (int i = 0; i < syncObjects.Length; i++)
                 syncObjects[i] = new SpinLock();
         }
+
+
+
 
         private void resetCache()
         {
