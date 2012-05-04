@@ -2,18 +2,18 @@
 
 [Setup]
 AppName=Accord.NET Framework
-AppVersion=2.6.0
-AppVerName=Accord.NET Framework 2.6.0
+AppVersion=2.6.1
+AppVerName=Accord.NET Framework 2.6.1
 AppPublisher=Accord.NET
-AppPublisherURL=http://accord-net.origo.ethz.ch/
-AppSupportURL=http://accord-net.origo.ethz.ch/
-AppUpdatesURL=http://accord-net.origo.ethz.ch/
+AppPublisherURL=http://accord.googlecode.com
+AppSupportURL=http://accord.googlecode.com
+AppUpdatesURL=http://accord.googlecode.com
 AppCopyright=Copyright (c) 2009-2012 Cesar Souza
-VersionInfoVersion=2.6.0
+VersionInfoVersion=2.6.1
 DefaultDirName={pf}\Accord.NET\Framework
 DefaultGroupName=Accord.NET\Framework
 AllowNoIcons=yes
-OutputBaseFilename=Accord.NET Framework-2.6.0
+OutputBaseFilename=Accord.NET Framework-2.6.1
 OutputDir=..\bin
 
 Compression=lzma
@@ -50,7 +50,7 @@ Root: HKLM; Subkey: "Software\Microsoft\.NETFramework\AssemblyFolders\Accord.NET
 
 [Icons]
 Name: "{group}\Documentation"; Filename: "{app}\Docs\Accord.NET.chm"
-Name: "{group}\Project Home"; Filename: "http://accord-net.origo.ethz.ch/"
+Name: "{group}\Project Home"; Filename: "http://accord.googlecode.com"
 Name: "{group}\Samples"; Filename: "{app}\Samples\"; Components: samples
 Name: "{group}\Release Notes"; Filename: "{app}\Release notes.txt"
 Name: "{group}\{cm:UninstallProgram,Accord.NET Framework}"; Filename: "{uninstallexe}"
