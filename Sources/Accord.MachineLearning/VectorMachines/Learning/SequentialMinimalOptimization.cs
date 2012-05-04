@@ -225,6 +225,17 @@ namespace Accord.MachineLearning.VectorMachines.Learning
             this.inputs = inputs;
             this.outputs = outputs;
 
+            int samples = inputs.Length;
+            int dimension = inputs[0].Length;
+
+            // Lagrange multipliers
+            this.alpha = new double[inputs.Length];
+
+            if (isLinear) // Hyperplane weights
+                this.weights = new double[dimension];
+
+            // Error cache
+            this.errors = new double[samples];
         }
 
 
@@ -329,6 +340,13 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         }
 
         /// <summary>
+        ///   Gets the value for the Lagrange multipliers
+        ///   (alpha) for every observation vector.
+        /// </summary>
+        /// 
+        public double[] Lagrange { get { return alpha; } }
+
+        /// <summary>
         ///   Gets or sets whether to produce compact models. Compact
         ///   formulation is currently limited to linear models.
         /// </summary>
@@ -419,13 +437,13 @@ namespace Accord.MachineLearning.VectorMachines.Learning
                 c = EstimateComplexity(kernel, inputs);
 
             // Lagrange multipliers
-            this.alpha = new double[samples];
+            Array.Clear(alpha, 0, alpha.Length);
 
             if (isLinear) // Hyperplane weights
-                this.weights = new double[dimension];
+                Array.Clear(weights, 0, weights.Length);
 
             // Error cache
-            this.errors = new double[samples];
+            Array.Clear(errors, 0, errors.Length);
 
             // Kernel evaluations cache
             this.kernelCache = new KernelFunctionCache(kernel, inputs, cacheSize);
