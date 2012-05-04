@@ -198,7 +198,9 @@ namespace Accord.Statistics.Models.Markov.Learning
             }
 
             if (Rejection)
+            {
                 Classifier.Threshold = Threshold();
+            }
 
             // Returns the sum log-likelihood for all models.
             return logLikelihood.Sum();

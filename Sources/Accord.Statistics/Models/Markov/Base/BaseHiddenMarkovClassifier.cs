@@ -25,6 +25,7 @@ namespace Accord.Statistics.Models.Markov
     using System;
     using Accord.Math;
     using System.Threading.Tasks;
+    using System.Runtime.Serialization;
 
     /// <summary>
     ///   Base class for (HMM) Sequence Classifiers. This class cannot
@@ -35,9 +36,12 @@ namespace Accord.Statistics.Models.Markov
     public abstract class BaseHiddenMarkovClassifier<TModel> where TModel : IHiddenMarkovModel
     {
 
-        private TModel threshold;
         private TModel[] models;
         private double[] classPriors;
+
+        // Threshold (rejection) model
+        private TModel threshold; 
+        private double weight = 1;
 
 
         /// <summary>
@@ -71,6 +75,7 @@ namespace Accord.Statistics.Models.Markov
         /// <summary>
         ///   Gets or sets the threshold model.
         /// </summary>
+        /// 
         /// <remarks>
         /// <para>
         ///   For gesture spotting, Lee and Kim introduced a threshold model which is
@@ -100,8 +105,21 @@ namespace Accord.Statistics.Models.Markov
         }
 
         /// <summary>
-        ///   Gets the collection of models specialized in each class
-        ///   of the sequence classification problem.
+        ///   Gets or sets a value governing the rejection given by
+        ///   a threshold model (if present). Increasing this value
+        ///   will result in higher rejection rates. Default is 1.
+        /// </summary>
+        /// 
+        public double Sensitivity
+        {
+            get { return weight; }
+            set { weight = value; }
+        }
+
+
+        /// <summary>
+        ///   Gets the collection of models specialized in each 
+        ///   class of the sequence classification problem.
         /// </summary>
         /// 
         public TModel[] Models
@@ -168,7 +186,18 @@ namespace Accord.Statistics.Models.Markov
         {
             double[] likelihoods;
             int label = Compute(sequence, out likelihoods);
-            response = (label >= 0) ? likelihoods[label] : 0;
+
+            if (label == -1)
+            {
+                // The sequence has been rejected
+                response = 1.0 - likelihoods.Sum();
+            }
+            else
+            {
+                // Successful recognition
+                response = likelihoods[label];
+            }
+
             return label;
         }
 
@@ -177,23 +206,18 @@ namespace Accord.Statistics.Models.Markov
         /// </summary>
         /// 
         /// <param name="sequence">The sequence of observations.</param>
-        /// <param name="responsibilities">The class responsibilities (or
-        /// the probability of the sequence to belong to each class). When
-        /// using threshold models, the sum of the probabilities will not
-        /// equal one, and the amount left was the threshold probability.
-        /// If a threshold model is not being used, the array should sum to
-        /// one.</param>
+        /// <param name="responsibilities">The probabilities for each class.</param>
         /// 
         /// <returns>Return the label of the given sequence, or -1 if it has
         /// been rejected by the <see cref="Threshold">threshold model</see>.</returns>
         /// 
         protected int Compute(Array sequence, out double[] responsibilities)
         {
-            double[] response = new double[models.Length + 1];
-            response[models.Length] = Double.NegativeInfinity;
+            double[] logLikelihoods = new double[models.Length];
+            double thresholdValue = Double.NegativeInfinity;
 
 
-            // For every model in the set (including threshold)
+            // For every model in the set (including the threshold model)
 #if !DEBUG
             Parallel.For(0, models.Length + 1, i =>
 #else
@@ -203,12 +227,12 @@ namespace Accord.Statistics.Models.Markov
                 if (i < models.Length)
                 {
                     // Evaluate the probability of the sequence
-                    response[i] = models[i].Evaluate(sequence);
+                    logLikelihoods[i] = models[i].Evaluate(sequence);
                 }
                 else if (threshold != null)
                 {
-                    // Evaluate the current threshold 
-                    response[i] = threshold.Evaluate(sequence);
+                    // Evaluate the current rejection threshold 
+                    thresholdValue = threshold.Evaluate(sequence);
                 }
             }
 #if !DEBUG
@@ -218,28 +242,37 @@ namespace Accord.Statistics.Models.Markov
 
             // Compute posterior likelihoods
             double lnsum = Double.NegativeInfinity;
-            for (int i = 0; i < response.Length; i++)
+            for (int i = 0; i < classPriors.Length; i++)
             {
-                if (i < models.Length)
-                    response[i] = Math.Log(classPriors[i]) + response[i];
-                lnsum = Special.LogSum(lnsum, response[i]);
+                logLikelihoods[i] = Math.Log(classPriors[i]) + logLikelihoods[i];
+                lnsum = Special.LogSum(lnsum, logLikelihoods[i]);
             }
 
-            // Normalize and return class responsabilities
-            responsibilities = (double[])response.Clone();
+            // Compute threshold model posterior likelihood
+            if (threshold != null)
+            {
+                thresholdValue = Math.Log(weight) + thresholdValue;
+                lnsum = Special.LogSum(lnsum, thresholdValue);
+            }
+
+            // Get the index of the most likely model
+            int imax; double max = logLikelihoods.Max(out imax);
 
             // Normalize if different from zero
             if (lnsum != Double.NegativeInfinity)
-                for (int i = 0; i < responsibilities.Length; i++)
-                    responsibilities[i] -=  lnsum;
+            {
+                for (int i = 0; i < logLikelihoods.Length; i++)
+                    logLikelihoods[i] -= lnsum;
+            }
 
-            // Convert to probabilities (class responsibilites)
-            for (int i = 0; i < responsibilities.Length; i++)
-                responsibilities[i] = Math.Exp(responsibilities[i]);
+            // Convert to probabilities
+            responsibilities = logLikelihoods;
+            for (int i = 0; i < logLikelihoods.Length; i++)
+                responsibilities[i] = Math.Exp(logLikelihoods[i]);
 
-            // return the index of the most likely model.
-            int imax; double max = response.Max(out imax);
-            return imax == models.Length ? -1 : imax;
+            // return the index of the most likely model
+            // or -1 if the sequence has been rejected.
+            return (thresholdValue > max) ? -1 : imax;
         }
 
         /// <summary>
@@ -282,6 +315,15 @@ namespace Accord.Statistics.Models.Markov
             return logLikelihood;
         }
 
+
+        [OnDeserializing]
+        private void setSerializationDefaults(StreamingContext sc)
+        {
+            // In case this was an older model which didn't include a
+            // configurable rejection threshold, initialize it with 1.
+
+            this.weight = 1;
+        }
 
     }
 }
