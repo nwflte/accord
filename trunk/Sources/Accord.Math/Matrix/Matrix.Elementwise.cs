@@ -56,6 +56,18 @@ namespace Accord.Math
         ///   Elementwise absolute value.
         /// </summary>
         /// 
+        public static double[] Sign(this double[] value)
+        {
+            double[] r = new double[value.Length];
+            for (int i = 0; i < value.Length; i++)
+                r[i] = System.Math.Sign(value[i]);
+            return r;
+        }
+
+        /// <summary>
+        ///   Elementwise absolute value.
+        /// </summary>
+        /// 
         public static double[,] Abs(this double[,] value)
         {
             int rows = value.GetLength(0);
@@ -309,6 +321,19 @@ namespace Accord.Math
         ///   Elementwise multiply operation.
         /// </summary>
         public static double[] ElementwiseMultiply(this double[] a, double[] b)
+        {
+            double[] r = new double[a.Length];
+
+            for (int i = 0; i < a.Length; i++)
+                r[i] = a[i] * b[i];
+
+            return r;
+        }
+
+        /// <summary>
+        ///   Elementwise multiply operation.
+        /// </summary>
+        public static double[] ElementwiseMultiply(this double[] a, int[] b)
         {
             double[] r = new double[a.Length];
 

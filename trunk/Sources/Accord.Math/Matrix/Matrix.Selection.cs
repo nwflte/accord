@@ -665,6 +665,33 @@ namespace Accord.Math
         }
 
         /// <summary>
+        ///   Returns a new matrix without one of its rows.
+        /// </summary>
+        /// 
+        public static T[,] RemoveRow<T>(this T[,] m, int index)
+        {
+            int rows = m.GetLength(0);
+            int cols = m.GetLength(1);
+            int newRows = rows - 1;
+
+            T[,] X = new T[newRows, cols];
+
+            for (int i = 0; i < cols; i++)
+            {
+                for (int j = 0; j < index; j++)
+                {
+                    X[j, i] = m[j, i];
+                }
+                for (int j = index + 1; j < newRows; j++)
+                {
+                    X[j - 1, i] = m[j, i];
+                }
+            }
+
+            return X;
+        }
+
+        /// <summary>
         ///   Removes an element from a vector.
         /// </summary>
         public static T[] RemoveAt<T>(this T[] array, int index)
