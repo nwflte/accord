@@ -1,6 +1,6 @@
 ﻿// Accord Math Library
 // The Accord.NET Framework
-// http://accord-net.origo.ethz.ch
+// http://accord.googlecode.com
 //
 // Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
@@ -137,6 +137,9 @@ namespace Accord.Math.Optimization
         private double f;   // value at current solution f(x)
         double[] g;         // gradient at current solution
 
+        private double[] lowerBound;
+        private double[] upperBound;
+
         private double[] work;
 
 
@@ -212,6 +215,7 @@ namespace Accord.Math.Optimization
             get;
             set;
         }
+
         /// <summary>
         ///   Gets the number of function evaluations performed
         ///   in the last call to <see cref="Minimize()"/>.
@@ -245,6 +249,26 @@ namespace Accord.Math.Optimization
                     createWorkVector();
                 }
             }
+        }
+
+        /// <summary>
+        ///   Gets or sets the upper bounds of the interval
+        ///   in which the solution must be found.
+        /// </summary>
+        /// 
+        public double[] UpperBounds
+        {
+            get { return upperBound; }
+        }
+
+        /// <summary>
+        ///   Gets or sets the lower bounds of the interval
+        ///   in which the solution must be found.
+        /// </summary>
+        /// 
+        public double[] LowerBounds
+        {
+            get { return lowerBound; }
         }
 
         /// <summary>
@@ -286,8 +310,8 @@ namespace Accord.Math.Optimization
         }
 
         /// <summary>
-        /// Gets the solution found, the values of the parameters which
-        /// optimizes the function.
+        ///   Gets the solution found, the values of the
+        ///   parameters which optimizes the function.
         /// </summary>
         /// 
         public double[] Solution
@@ -307,6 +331,7 @@ namespace Accord.Math.Optimization
         #endregion
 
         #region Constructors
+
         /// <summary>
         ///   Creates a new instance of the L-BFGS optimization algorithm.
         /// </summary>
@@ -321,6 +346,19 @@ namespace Accord.Math.Optimization
             this.numberOfVariables = numberOfVariables;
 
             this.createWorkVector();
+
+            this.upperBound = new double[numberOfVariables];
+            this.lowerBound = new double[numberOfVariables];
+
+            for (int i = 0; i < upperBound.Length; i++)
+                lowerBound[i] = Double.NegativeInfinity;
+
+            for (int i = 0; i < upperBound.Length; i++)
+                upperBound[i] = Double.PositiveInfinity;
+
+            x = new double[numberOfVariables];
+            for (int i = 0; i < x.Length; i++)
+                x[i] = Accord.Math.Tools.Random.NextDouble() * 2 - 1;
         }
 
         /// <summary>
@@ -342,6 +380,7 @@ namespace Accord.Math.Optimization
 
             this.Function = function;
             this.Gradient = gradient;
+
         }
 
         /// <summary>
@@ -362,24 +401,25 @@ namespace Accord.Math.Optimization
 
 
         /// <summary>
-        ///   Optimizes the defined function. 
+        ///   Minimizes the defined function. 
         /// </summary>
         /// 
-        /// <returns>The values of the parameters which optimizes the function.</returns>
+        /// <returns>The minimum value found at the <see cref="Solution"/>.</returns>
         /// 
         public double Minimize()
         {
-            return Minimize(new double[numberOfVariables]);
+            return minimize();
         }
 
         /// <summary>
-        ///   Optimizes the defined function. 
+        ///   Minimizes the defined function. 
         /// </summary>
         /// 
         /// <param name="values">The initial guess values for the parameters. Default is the zero vector.</param>
-        /// <returns>The values of the parameters which optimizes the function.</returns>
         /// 
-        public unsafe double Minimize(double[] values)
+        /// <returns>The minimum value found at the <see cref="Solution"/>.</returns>
+        /// 
+        public double Minimize(double[] values)
         {
             if (values == null)
                 throw new ArgumentNullException("values");
@@ -387,6 +427,15 @@ namespace Accord.Math.Optimization
             if (values.Length != numberOfVariables)
                 throw new DimensionMismatchException("values");
 
+            // Copy initial guess for solution
+            for (int i = 0; i < x.Length; i++)
+                x[i] = values[i];
+
+            return minimize();
+        }
+
+        private unsafe double minimize()
+        {
             if (Function == null) throw new InvalidOperationException(
                 "The function to be minimized has not been defined.");
 
@@ -395,9 +444,7 @@ namespace Accord.Math.Optimization
 
 
             // Initialization
-            x = (double[])values.Clone();
             int n = numberOfVariables, m = corrections;
-
 
             // Make initial evaluation
             f = getFunction(x);
@@ -672,7 +719,15 @@ namespace Accord.Math.Optimization
                 // We return to main program to obtain F and G.
 
                 for (int j = 0; j < x.Length; j++)
+                {
                     x[j] = wa[j] + stp * s[j];
+
+                    if (x[j] > upperBound[j])
+                        x[j] = upperBound[j];
+                    else if (x[j] < lowerBound[j])
+                        x[j] = lowerBound[j];
+                }
+
 
                 // Reevaluate function and gradient
                 f = getFunction(x);

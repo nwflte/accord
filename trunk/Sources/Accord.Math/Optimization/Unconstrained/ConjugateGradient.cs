@@ -1,6 +1,6 @@
 ﻿// Accord Math Library
 // The Accord.NET Framework
-// http://accord-net.origo.ethz.ch
+// http://accord.googlecode.com
 //
 // Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
@@ -103,7 +103,7 @@ namespace Accord.Math.Optimization
     public class ConjugateGradient : IOptimizationMethod
     {
 
-        private int parameters;
+        private int numberOfVariables;
 
         private double[] x; // current solution x
         private double f;   // value at current solution f(x)
@@ -158,8 +158,8 @@ namespace Accord.Math.Optimization
         public ConjugateGradientMethod Method { get; set; }
 
         /// <summary>
-        ///   Gets the number of iterations performed in the last
-        ///   call to <see cref="Minimize"/>.
+        ///   Gets the number of iterations performed 
+        ///   in the last call to <see cref="Minimize()"/>.
         /// </summary>
         /// 
         /// <value>
@@ -173,7 +173,7 @@ namespace Accord.Math.Optimization
 
         /// <summary>
         ///   Gets the number of function evaluations performed
-        ///   in the last call to <see cref="Minimize"/>.
+        ///   in the last call to <see cref="Minimize()"/>.
         /// </summary>
         /// 
         /// <value>
@@ -187,7 +187,7 @@ namespace Accord.Math.Optimization
 
         /// <summary>
         ///   Gets the number of linear searches performed
-        ///   in the last call to <see cref="Minimize"/>.
+        ///   in the last call to <see cref="Minimize()"/>.
         /// </summary>
         /// 
         public int Searches
@@ -228,13 +228,13 @@ namespace Accord.Math.Optimization
         /// 
         public int Parameters
         {
-            get { return parameters; }
+            get { return numberOfVariables; }
         }
 
 
         /// <summary>
-        /// Gets the solution found, the values of the parameters which
-        /// optimizes the function.
+        ///   Gets the solution found, the values of the 
+        ///   parameters which optimizes the function.
         /// </summary>
         /// 
         public double[] Solution
@@ -256,18 +256,22 @@ namespace Accord.Math.Optimization
         ///   Creates a new instance of the CG optimization algorithm.
         /// </summary>
         /// 
-        /// <param name="parameters">The number of free parameters in the optimization problem.</param>
+        /// <param name="numberOfVariables">The number of free parameters in the optimization problem.</param>
         /// 
-        public ConjugateGradient(int parameters)
+        public ConjugateGradient(int numberOfVariables)
         {
-            if (parameters <= 0)
-                throw new ArgumentOutOfRangeException("parameters");
+            if (numberOfVariables <= 0)
+                throw new ArgumentOutOfRangeException("numberOfVariables");
 
-            this.parameters = parameters;
+            this.numberOfVariables = numberOfVariables;
 
-            d = new double[parameters];
-            gold = new double[parameters];
-            w = new double[parameters];
+            d = new double[numberOfVariables];
+            gold = new double[numberOfVariables];
+            w = new double[numberOfVariables];
+
+            x = new double[numberOfVariables];
+            for (int i = 0; i < x.Length; i++)
+                x[i] = Accord.Math.Tools.Random.NextDouble() * 2 - 1;
         }
 
 
@@ -293,7 +297,14 @@ namespace Accord.Math.Optimization
         }
 
 
-
+        /// <summary>
+        ///   Optimizes the defined function.
+        /// </summary>
+        /// 
+        public double Minimize()
+        {
+            return minimize();
+        }
 
         /// <summary>
         ///   Optimizes the defined function.
@@ -303,14 +314,34 @@ namespace Accord.Math.Optimization
         /// 
         public double Minimize(double[] values)
         {
+            if (values == null)
+                throw new ArgumentNullException("values");
+
+            if (values.Length != numberOfVariables)
+                throw new DimensionMismatchException("values");
+
+            // Copy initial guess for solution
+            for (int i = 0; i < x.Length; i++)
+                x[i] = values[i];
+
+            return minimize();
+        }
+
+        private double minimize()
+        {
             // This code has been adapted from the original
             // FORTRAN function CGFAM by Jorge Nocedal, 1992.
 
+            if (Function == null) throw new InvalidOperationException(
+                 "The function to be minimized has not been defined.");
+
+            if (Gradient == null) throw new InvalidOperationException(
+                "The gradient function has not been defined.");
+
             int irest = 1;
-            int n = parameters;
-            x = (double[])values.Clone();
-            f = Function(values);
-            g = Gradient(values);
+            int n = numberOfVariables;
+            f = Function(x);
+            g = Gradient(x);
             int method = (int)Method;
 
             iterations = 0;
@@ -505,7 +536,7 @@ namespace Accord.Math.Optimization
         private unsafe int cvsmod(double[] s, ref double stp, ref int info,
              ref int nfev, double[] wa, ref double dginit, ref double dgout)
         {
-            int n = parameters;
+            int n = numberOfVariables;
 
             if (info == 1)
                 goto L321;
