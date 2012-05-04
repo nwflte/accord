@@ -2108,7 +2108,7 @@ namespace Accord.Statistics
         /// <returns>The Z-Scores for the matrix.</returns>
         public static double[,] ZScores(double[,] matrix, double[] means, double[] standardDeviations)
         {
-            return Center(matrix, means).Standardize(standardDeviations, true);
+            return Center(matrix, means, inPlace: false).Standardize(standardDeviations, inPlace: true);
         }
 
         /// <summary>
@@ -2134,7 +2134,7 @@ namespace Accord.Statistics
         /// 
         public static double[][] ZScores(double[][] matrix, double[] means, double[] standardDeviations)
         {
-            return Center(matrix, means).Standardize(standardDeviations, true);
+            return Center(matrix, means, inPlace: false).Standardize(standardDeviations, inPlace: true);
         }
 
 
@@ -2145,7 +2145,7 @@ namespace Accord.Statistics
         /// <param name="matrix">A matrix where each column represent a variable and each row represent a observation.</param>
         /// <param name="inPlace">True to perform the operation in place, altering the original input matrix.</param>
         /// 
-        public static double[,] Center(this double[,] matrix, bool inPlace = true)
+        public static double[,] Center(this double[,] matrix, bool inPlace = false)
         {
             return Center(matrix, Mean(matrix), inPlace);
         }
@@ -2158,7 +2158,7 @@ namespace Accord.Statistics
         /// <param name="means">The values' mean vector, if already known.</param>
         /// <param name="inPlace">True to perform the operation in place, altering the original input matrix.</param>
         /// 
-        public static double[,] Center(this double[,] matrix, double[] means, bool inPlace = true)
+        public static double[,] Center(this double[,] matrix, double[] means, bool inPlace = false)
         {
             int rows = matrix.GetLength(0);
             int cols = matrix.GetLength(1);
@@ -2175,18 +2175,22 @@ namespace Accord.Statistics
         /// <summary>
         ///   Centers column data, subtracting the empirical mean from each variable.
         /// </summary>
+        /// 
         /// <param name="matrix">A matrix where each column represent a variable and each row represent a observation.</param>
         /// <param name="inPlace">True to perform the operation in place, altering the original input matrix.</param>
-        public static double[][] Center(this double[][] matrix, bool inPlace = true)
+        /// 
+        public static double[][] Center(this double[][] matrix, bool inPlace = false)
         {
             return Center(matrix, Mean(matrix), inPlace);
         }
 
         /// <summary>Centers column data, subtracting the empirical mean from each variable.</summary>
+        /// 
         /// <param name="matrix">A matrix where each column represent a variable and each row represent a observation.</param>
         /// <param name="means">The values' mean vector, if already known.</param>
         /// <param name="inPlace">True to perform the operation in place, altering the original input matrix.</param>
-        public static double[][] Center(this double[][] matrix, double[] means, bool inPlace = true)
+        /// 
+        public static double[][] Center(this double[][] matrix, double[] means, bool inPlace = false)
         {
             double[][] result = matrix;
 
@@ -2211,10 +2215,13 @@ namespace Accord.Statistics
         /// <summary>
         ///   Standardizes column data, removing the empirical standard deviation from each variable.
         /// </summary>
-        /// <param name="matrix">A matrix where each column represent a variable and each row represent a observation.</param>
+        /// 
         /// <remarks>This method does not remove the empirical mean prior to execution.</remarks>
+        /// 
+        /// <param name="matrix">A matrix where each column represent a variable and each row represent a observation.</param>
         /// <param name="inPlace">True to perform the operation in place, altering the original input matrix.</param>
-        public static double[,] Standardize(this double[,] matrix, bool inPlace = true)
+        /// 
+        public static double[,] Standardize(this double[,] matrix, bool inPlace = false)
         {
             return Standardize(matrix, StandardDeviation(matrix), inPlace);
         }
@@ -2229,7 +2236,7 @@ namespace Accord.Statistics
         /// <param name="standardDeviations">The values' standard deviation vector, if already known.</param>
         /// <param name="inPlace">True to perform the operation in place, altering the original input matrix.</param>
         /// 
-        public static double[,] Standardize(this double[,] matrix, double[] standardDeviations, bool inPlace = true)
+        public static double[,] Standardize(this double[,] matrix, double[] standardDeviations, bool inPlace = false)
         {
             int rows = matrix.GetLength(0);
             int cols = matrix.GetLength(1);
@@ -2247,10 +2254,13 @@ namespace Accord.Statistics
         /// <summary>
         ///   Standardizes column data, removing the empirical standard deviation from each variable.
         /// </summary>
-        /// <param name="matrix">A matrix where each column represent a variable and each row represent a observation.</param>
+        /// 
         /// <remarks>This method does not remove the empirical mean prior to execution.</remarks>
+        /// 
+        /// <param name="matrix">A matrix where each column represent a variable and each row represent a observation.</param>
         /// <param name="inPlace">True to perform the operation in place, altering the original input matrix.</param>
-        public static double[][] Standardize(this double[][] matrix, bool inPlace = true)
+        /// 
+        public static double[][] Standardize(this double[][] matrix, bool inPlace = false)
         {
             return Standardize(matrix, StandardDeviation(matrix), inPlace);
         }
@@ -2258,11 +2268,14 @@ namespace Accord.Statistics
         /// <summary>
         ///   Standardizes column data, removing the empirical standard deviation from each variable.
         /// </summary>
-        /// <param name="matrix">A matrix where each column represent a variable and each row represent a observation.</param>
+        ///
         /// <remarks>This method does not remove the empirical mean prior to execution.</remarks>
+        /// 
+        /// <param name="matrix">A matrix where each column represent a variable and each row represent a observation.</param>
         /// <param name="standardDeviations">The values' standard deviation vector, if already known.</param>
         /// <param name="inPlace">True to perform the operation in place, altering the original input matrix.</param>
-        public static double[][] Standardize(this double[][] matrix, double[] standardDeviations, bool inPlace = true)
+        /// 
+        public static double[][] Standardize(this double[][] matrix, double[] standardDeviations, bool inPlace = false)
         {
             double[][] result = matrix;
 
@@ -2283,6 +2296,7 @@ namespace Accord.Statistics
 
             return result;
         }
+
         #endregion
 
         #region Weighted Matrix Measures
