@@ -1,3 +1,38 @@
+Accord.NET Framework 2.6.1 release notes
+-----------------------------------------
+05.05.2012.    
+
+Version updates and fixes:
+
+* General
+  - The project's website has moved. This minor release updates all
+    references to reflect the new project URL and includes only some new
+    additions and fixes. The project is now being hosted at Google Code.
+
+* Accord.MachineLearning
+  - Adding Multi-label Support Vector Machines;
+  - Adding K-Nearest Neighbor (k-NN) classifiers;
+  - Adding linear elimination Support Vector Reduction;
+  - Correcting SVM serialization compatibility.
+
+* Accord.Statistics
+  - Adding named constructors in PCA to create analysis
+    directly from covariance or correlation matrices;
+  - Adding support for adjusting the rejection threshold
+    in Hidden Markov Classifiers with threshold models;
+  - Updating Center, Standardize and ZScores methods so
+    they are not in-place by default.
+
+* Accord.Math
+  - Adding Augmented Lagrangian solver for Non-linear programming problems;
+  - Adding Row-reduced Echelon Form reductor.
+
+* AForge Compatibility
+  - Compiled against AForge.NET Framework 2.2.4. May work with newer versions.
+
+
+
+
 Accord.NET Framework 2.6.0 release notes
 -----------------------------------------
 05.04.2012.    
