@@ -1,6 +1,6 @@
 ﻿// Accord Math Library
 // The Accord.NET Framework
-// http://accord-net.origo.ethz.ch
+// http://accord.googlecode.com
 //
 // Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
@@ -697,6 +697,33 @@ namespace Accord.Math
         /// <returns>The product <c>A*v</c> of the multiplication of the
         ///   given matrix <c>A</c> and column vector <c>v</c>.</returns>
         /// 
+        public static double[] Multiply(this double[][] matrix, double[] columnVector)
+        {
+            int rows = matrix.Length;
+            int cols = matrix[0].Length;
+
+            if (cols != columnVector.Length)
+                throw new DimensionMismatchException("columnVector",
+                    "Vector must have the same length as columns in the matrix.");
+
+            double[] r = new double[rows];
+            for (int i = 0; i < rows; i++)
+                for (int j = 0; j < columnVector.Length; j++)
+                    r[i] += matrix[i][j] * columnVector[j];
+
+            return r;
+        }
+
+        /// <summary>
+        ///   Multiplies a matrix <c>A</c> and a column vector <c>v</c>,
+        ///   giving the product <c>A*v</c>
+        /// </summary>
+        /// 
+        /// <param name="matrix">The matrix <c>A</c>.</param>
+        /// <param name="columnVector">The column vector <c>v</c>.</param>
+        /// <returns>The product <c>A*v</c> of the multiplication of the
+        ///   given matrix <c>A</c> and column vector <c>v</c>.</returns>
+        /// 
         public static float[] Multiply(this float[,] matrix, float[] columnVector)
         {
             int rows = matrix.GetLength(0);
@@ -969,17 +996,19 @@ namespace Accord.Math
         /// 
         /// <param name="matrix">A matrix.</param>
         /// <param name="x">A scalar.</param>
+        /// <param name="inPlace">True to perform the operation in-place,
+        /// overwriting the original matrix; false to return a new matrix.</param>
         /// 
         /// <returns>The division quotient of the given matrix and scalar.</returns>
         /// 
-        public static double[,] Divide(this double[,] matrix, double x)
+        public static double[,] Divide(this double[,] matrix, double x, bool inPlace = false)
         {
             if (matrix == null) throw new ArgumentNullException("matrix");
 
             int rows = matrix.GetLength(0);
             int cols = matrix.GetLength(1);
 
-            double[,] r = new double[rows, cols];
+            double[,] r = inPlace ? matrix : new double[rows, cols];
 
             for (int i = 0; i < rows; i++)
                 for (int j = 0; j < cols; j++)
@@ -1156,6 +1185,7 @@ namespace Accord.Math
         /// <summary>
         ///   Vectorial product.
         /// </summary>
+        /// 
         public static float[] VectorProduct(float[] a, float[] b)
         {
             return new float[]
@@ -1382,6 +1412,30 @@ namespace Accord.Math
         }
 
         /// <summary>
+        ///   Adds a scalar to the diagonal of a matrix.
+        /// </summary>
+        /// 
+        /// <param name="matrix">A matrix.</param>
+        /// <param name="scalar">A scalar.</param>
+        /// <param name="inPlace">True to perform the operation in-place,
+        /// overwriting the original matrix; false to return a new matrix.</param>
+        /// 
+        public static double[,] AddToDiagonal(this double[,] matrix, double scalar, bool inPlace = false)
+        {
+            int rows = matrix.GetLength(0);
+            int cols = matrix.GetLength(1);
+
+            int min = Math.Min(rows, cols);
+
+            double[,] r = inPlace ? matrix : new double[rows, cols];
+
+            for (int i = 0; i < min; i++)
+                r[i, i] += matrix[i, i] + scalar;
+
+            return r;
+        }
+
+        /// <summary>
         ///   Adds a vector to a column or row of a matrix.
         /// </summary>
         /// 
@@ -1471,10 +1525,12 @@ namespace Accord.Math
         /// 
         /// <param name="a">A matrix.</param>
         /// <param name="b">A matrix.</param>
+        /// <param name="inPlace">True to perform the operation in-place,
+        /// overwriting the original matrix; false to return a new matrix.</param>
         /// 
         /// <returns>The subtraction of the given matrices.</returns>
         /// 
-        public unsafe static double[,] Subtract(this double[,] a, double[,] b)
+        public unsafe static double[,] Subtract(this double[,] a, double[,] b, bool inPlace = false)
         {
             if (a == null) throw new ArgumentNullException("a");
             if (b == null) throw new ArgumentNullException("b");
@@ -1486,7 +1542,7 @@ namespace Accord.Math
             int cols = b.GetLength(1);
             int length = a.Length;
 
-            double[,] r = new double[rows, cols];
+            double[,] r = inPlace ? a : new double[rows, cols];
 
             fixed (double* ptrA = a, ptrB = b, ptrR = r)
             {
@@ -1573,15 +1629,17 @@ namespace Accord.Math
         /// 
         /// <param name="a">A vector.</param>
         /// <param name="b">A vector.</param>
+        /// <param name="inPlace">True to perform the operation in-place,
+        /// overwriting the original array; false to return a new array.</param>
         /// 
         /// <returns>The subtraction of vector b from vector a.</returns>
         /// 
-        public static double[] Subtract(this double[] a, double[] b)
+        public static double[] Subtract(this double[] a, double[] b, bool inPlace = false)
         {
             if (a.Length != b.Length)
                 throw new ArgumentException("Vector length must match", "b");
 
-            double[] r = new double[a.Length];
+            double[] r = inPlace ? a : new double[a.Length];
 
             for (int i = 0; i < a.Length; i++)
                 r[i] = a[i] - b[i];
@@ -1596,12 +1654,14 @@ namespace Accord.Math
         /// 
         /// <param name="vector">A vector.</param>
         /// <param name="x">A scalar.</param>
+        /// <param name="inPlace">True to perform the operation in-place,
+        /// overwriting the original array; false to return a new array.</param>
         /// 
         /// <returns>The subtraction of given scalar from all elements in the given vector.</returns>
         /// 
-        public static double[] Subtract(this double[] vector, double x)
+        public static double[] Subtract(this double[] vector, double x, bool inPlace = false)
         {
-            double[] r = new double[vector.Length];
+            double[] r = inPlace ? vector : new double[vector.Length];
 
             for (int i = 0; i < vector.Length; i++)
                 r[i] = vector[i] - x;

@@ -326,6 +326,20 @@ namespace Accord.Math
         /// <summary>
         ///   Creates a vector with uniformly distributed random data.
         /// </summary>
+        public static float[] Random(int size, float minValue, float maxValue)
+        {
+            if (size < 0) throw new ArgumentOutOfRangeException("size", size, "Size must be a positive integer.");
+
+            float[] vector = new float[size];
+            for (int i = 0; i < size; i++)
+                vector[i] = (float)(Accord.Math.Tools.Random.NextDouble() * (maxValue - minValue) + minValue);
+
+            return vector;
+        }
+
+        /// <summary>
+        ///   Creates a vector with uniformly distributed random data.
+        /// </summary>
         public static double[] Random(int size, double minValue, double maxValue)
         {
             if (size < 0) throw new ArgumentOutOfRangeException("size", size, "Size must be a positive integer.");
