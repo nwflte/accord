@@ -1,6 +1,6 @@
 ﻿// Accord Math Library
 // The Accord.NET Framework
-// http://accord-net.origo.ethz.ch
+// http://accord.googlecode.com
 //
 // Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
@@ -22,6 +22,7 @@
 
 namespace Accord.Math.Optimization
 {
+    using System;
     using System.Collections.Generic;
 
     /// <summary>
@@ -48,6 +49,12 @@ namespace Accord.Math.Optimization
         /// </summary>
         /// 
         int NumberOfVariables { get; }
+
+        /// <summary>
+        ///   Gets the objective function.
+        /// </summary>
+        /// 
+        Func<double[], double> Function { get; }
 
     }
 }

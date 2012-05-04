@@ -1,6 +1,6 @@
 ﻿// Accord Math Library
 // The Accord.NET Framework
-// http://accord-net.origo.ethz.ch
+// http://accord.googlecode.com
 //
 // Copyright © César Souza, 2009-2012
 // cesarsouza at gmail.com
@@ -41,6 +41,10 @@ namespace Accord.Math.Optimization
         private Dictionary<string, int> variables;
         private Dictionary<int, string> indices;
 
+        private double[,] Q;
+        private double[] d;
+
+
         /// <summary>
         ///   Gets input variable's labels for the function.
         /// </summary>
@@ -63,6 +67,15 @@ namespace Accord.Math.Optimization
         /// </summary>
         /// 
         public int NumberOfVariables { get { return variables.Count; } }
+
+        /// <summary>
+        ///   Gets the objective function.
+        /// </summary>
+        /// 
+        public Func<double[], double> Function
+        {
+            get { return function; }
+        }
 
         /// <summary>
         ///   Creates a new objective function specified through a string.
@@ -127,13 +140,12 @@ namespace Accord.Math.Optimization
                 indices.Add(i, variable);
                 i++;
             }
+
+            this.Q = createQuadraticTermsMatrix();
+            this.d = createLinearTermsVector();
         }
 
-        /// <summary>
-        ///   Gets the Hessian matrix of quadratic terms.
-        /// </summary>
-        /// 
-        public double[,] GetQuadraticTermsMatrix()
+        private double[,] createQuadraticTermsMatrix()
         {
             int n = variables.Count;
 
@@ -161,11 +173,7 @@ namespace Accord.Math.Optimization
             return Q;
         }
 
-        /// <summary>
-        ///   Gets the vector of linear terms.
-        /// </summary>
-        /// 
-        public double[] GetLinearTermsVector()
+        private double[] createLinearTermsVector()
         {
             int n = variables.Count;
             double[] d = new double[n];
@@ -178,6 +186,29 @@ namespace Accord.Math.Optimization
 
             return d;
         }
+
+
+
+        /// <summary>
+        ///   Gets the Hessian matrix of quadratic terms.
+        /// </summary>
+        /// 
+        public double[,] GetQuadraticTermsMatrix()
+        {
+            return Q;
+        }
+
+        /// <summary>
+        ///   Gets the vector of linear terms.
+        /// </summary>
+        /// 
+        public double[] GetLinearTermsVector()
+        {
+            return d;
+        }
+
+
+
 
 
         /// <summary>
@@ -203,6 +234,14 @@ namespace Accord.Math.Optimization
 
             return sb.ToString();
         }
+
+
+
+        private double function(double[] x)
+        {
+            return x.Multiply(Q).InnerProduct(x) + x.InnerProduct(d);
+        }
+
 
         private static Dictionary<Tuple<string, string>, double> parseString(string f)
         {
