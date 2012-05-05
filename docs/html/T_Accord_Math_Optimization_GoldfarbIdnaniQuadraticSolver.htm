@@ -1,9 +1,276 @@
-﻿<html xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt"><head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" /><META NAME="save" CONTENT="history" /><title>GoldfarbIdnaniQuadraticSolver Class</title><meta name="Language" content="en-us" /><meta name="System.Keywords" content="GoldfarbIdnaniQuadraticSolver class" /><meta name="System.Keywords" content="Accord.Math.Optimization.GoldfarbIdnaniQuadraticSolver class" /><meta name="System.Keywords" content="GoldfarbIdnaniQuadraticSolver class, about GoldfarbIdnaniQuadraticSolver class" /><meta name="Microsoft.Help.F1" content="Accord.Math.Optimization.GoldfarbIdnaniQuadraticSolver" /><meta name="Microsoft.Help.Id" content="T:Accord.Math.Optimization.GoldfarbIdnaniQuadraticSolver" /><meta name="Description" content="Goldfarb-Idnani Quadratic Programming Solver." /><meta name="Microsoft.Help.ContentType" content="Reference" /><link rel="stylesheet" type="text/css" href="../styles/Presentation.css" /><link rel="stylesheet" type="text/css" href="ms-help://Hx/HxRuntime/HxLink.css" /><script type="text/javascript" src="../scripts/EventUtilities.js"> </script><script type="text/javascript" src="../scripts/SplitScreen.js"> </script><script type="text/javascript" src="../scripts/Dropdown.js"> </script><script type="text/javascript" src="../scripts/script_manifold.js"> </script><script type="text/javascript" src="../scripts/script_feedBack.js"> </script><script type="text/javascript" src="../scripts/CheckboxMenu.js"> </script><script type="text/javascript" src="../scripts/CommonUtilities.js"> </script><meta name="container" content="Accord.Math.Optimization" /><meta name="file" content="T_Accord_Math_Optimization_GoldfarbIdnaniQuadraticSolver" /><meta name="guid" content="T_Accord_Math_Optimization_GoldfarbIdnaniQuadraticSolver" /><xml><MSHelp:Attr Name="AssetID" Value="T:Accord.Math.Optimization.GoldfarbIdnaniQuadraticSolver" /><MSHelp:TOCTitle Title="GoldfarbIdnaniQuadraticSolver Class" /><MSHelp:RLTitle Title="GoldfarbIdnaniQuadraticSolver Class (Accord.Math.Optimization)" /><MSHelp:Keyword Index="A" Term="T:Accord.Math.Optimization.GoldfarbIdnaniQuadraticSolver" /><MSHelp:Keyword Index="A" Term="frlrfAccordMathOptimizationGoldfarbIdnaniQuadraticSolverClassTopic" /><MSHelp:Keyword Index="K" Term="GoldfarbIdnaniQuadraticSolver class" /><MSHelp:Keyword Index="K" Term="Accord.Math.Optimization.GoldfarbIdnaniQuadraticSolver class" /><MSHelp:Keyword Index="K" Term="GoldfarbIdnaniQuadraticSolver class, about GoldfarbIdnaniQuadraticSolver class" /><MSHelp:Keyword Index="F" Term="Accord.Math.Optimization.GoldfarbIdnaniQuadraticSolver" /><MSHelp:Attr Name="HelpPriority" Value="2" /><MSHelp:Attr Name="APIType" Value="Managed" /><MSHelp:Attr Name="APILocation" Value="Accord.Math.dll" /><MSHelp:Attr Name="APIName" Value="Accord.Math.Optimization.GoldfarbIdnaniQuadraticSolver" /><MSHelp:Attr Name="DevLang" Value="CSharp" /><MSHelp:Attr Name="DevLang" Value="VB" /><MSHelp:Attr Name="Locale" Value="en-us" /><MSHelp:Attr Name="TopicType" Value="kbSyntax" /><MSHelp:Attr Name="TopicType" Value="apiref" /><MSHelp:Attr Name="Abstract" Value="Goldfarb-Idnani Quadratic Programming Solver." /><MSHelp:Attr Name="AssemblyVersion" Value="2.6.0.0" /></xml></head><body><input type="hidden" id="userDataCache" class="userDataStyle" /><input type="hidden" id="hiddenScrollOffset" /><img id="collapseImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" alt="Collapse image" title="Collapse image" /><img id="expandImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" alt="Expand Image" title="Expand Image" /><img id="collapseAllImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" /><img id="expandAllImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" /><img id="dropDownImage" style="display:none; height:0; width:0;" src="../icons/dropdown.gif" /><img id="dropDownHoverImage" style="display:none; height:0; width:0;" src="../icons/dropdownHover.gif" /><img id="copyImage" style="display:none; height:0; width:0;" src="../icons/copycode.gif" alt="Copy image" title="Copy image" /><img id="copyHoverImage" style="display:none; height:0; width:0;" src="../icons/copycodeHighlight.gif" alt="CopyHover image" title="CopyHover image" /><div id="header"><table cellspacing="0" cellpadding="0"><tr><td><table id="topTable" cellspacing="0" cellpadding="0"><tr><td><span onclick="ExpandCollapseAll(toggleAllImage)" style="cursor:default;" onkeypress="ExpandCollapseAll_CheckKey(toggleAllImage, event)" tabindex="0"><img ID="toggleAllImage" class="toggleAll" src="../icons/collapse_all.gif" /> <label id="collapseAllLabel" for="toggleAllImage" style="display: none;">Collapse All</label><label id="expandAllLabel" for="toggleAllImage" style="display: none;">Expand All</label> </span><span>    </span><span id="devlangsDropdown" class="filter" tabindex="0"><img id="devlangsDropdownImage" src="../icons/dropdown.gif" /> <label id="devlangsMenuAllLabel" for="devlangsDropdownImage" style="display: none;"><nobr>Code: All </nobr></label><label id="devlangsMenuMultipleLabel" for="devlangsDropdownImage" style="display: none;"><nobr>Code: Multiple </nobr></label><label id="devlangsMenuCSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>Code: C# </nobr></label><label id="devlangsMenuVisualBasicLabel" for="devlangsDropdownImage" style="display: none;"><nobr>Code: Visual Basic </nobr></label></span></td></tr></table><div id="devlangsMenu"><input id="CSharpCheckbox" type="checkbox" data="CSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" /><label class="checkboxLabel" for="CSharpCheckbox">C#</label><br /><input id="VisualBasicCheckbox" type="checkbox" data="VisualBasic,vb,'persist'" value="on" onClick="SetLanguage(this)" /><label class="checkboxLabel" for="VisualBasicCheckbox">Visual Basic</label><br /></div><table id="bottomTable" cellpadding="0" cellspacing="0"><tr id="headerTableRow1"><td align="left"><span id="runningHeaderText">Accord.NET Framework</span></td></tr><tr id="headerTableRow2"><td align="left"><span id="nsrTitle">GoldfarbIdnaniQuadraticSolver Class</span></td></tr><tr id="headerTableRow3"><td align="left"><a href="AllMembers_T_Accord_Math_Optimization_GoldfarbIdnaniQuadraticSolver.htm">Members</a> <a href="#seeAlsoToggle" onclick="OpenSection(seeAlsoToggle)">See Also</a> <span id="headfeedbackarea" class="feedbackhead"><a href="javascript:SubmitFeedback('','Accord.NET Framework','','','','%0\dYour%20feedback%20is%20used%20to%20improve%20the%20documentation%20and%20the%20product.%20Your%20e-mail%20address%20will%20not%20be%20used%20for%20any%20other%20purpose%20and%20is%20disposed%20of%20after%20the%20issue%20you%20report%20is%20resolved.%20%20While%20working%20to%20resolve%20the%20issue%20that%20you%20report,%20you%20may%20be%20contacted%20via%20e-mail%20to%20get%20further%20details%20or%20clarification%20on%20the%20feedback%20you%20sent.%20After%20the%20issue%20you%20report%20has%20been%20addressed,%20you%20may%20receive%20an%20e-mail%20to%20let%20you%20know%20that%20your%20feedback%20has%20been%20addressed.%0\A%0\d','Customer%20Feedback');">Send Feedback</a></span></td></tr></table></td><td align="center" style="width: 1px; padding: 0px"><img src="../icons/Accord.NET.png" /></td></tr></table><table id="gradientTable"><tr><td class="nsrBottom" background="../icons/gradient.gif" /></tr></table></div><div id="mainSection"><div id="mainBody"><div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" /><span style="color: DarkGray"></span><div class="summary">
-              Goldfarb-Idnani Quadratic Programming Solver.
-            </div><p /><b>Namespace:</b> <a href="N_Accord_Math_Optimization.htm">Accord.Math.Optimization</a><br /><b>Assembly:</b> <span sdata="assembly">Accord.Math</span> (in Accord.Math.dll) Version: 2.6.0.0 (2.6.0.0)<h1 class="heading"><span onclick="ExpandCollapse(syntaxToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(syntaxToggle, event)" tabindex="0"><img id="syntaxToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />Syntax</span></h1><div id="syntaxSection" class="section" name="collapseableSection" style=""><div id="syntaxCodeBlocks" class="code"><span codeLanguage="CSharp"><table><tr><th>C#</th></tr><tr><td><pre xml:space="preserve"><span class="keyword">public</span> <span class="keyword">class</span> <span class="identifier">GoldfarbIdnaniQuadraticSolver</span></pre></td></tr></table></span><span codeLanguage="VisualBasicDeclaration"><table><tr><th>Visual Basic</th></tr><tr><td><pre xml:space="preserve"><span class="keyword">Public</span> <span class="keyword">Class</span> <span class="identifier">GoldfarbIdnaniQuadraticSolver</span></pre></td></tr></table></span></div></div><h1 class="heading"><span onclick="ExpandCollapse(remarksToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(remarksToggle, event)" tabindex="0"><img id="remarksToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />Remarks</span></h1><div id="remarksSection" class="section" name="collapseableSection" style=""><p>
-              References:
-              <ul><li><a href="http://www.javaquant.net/papers/GoldfarbIdnani.pdf">
-                  Goldfarb D., Idnani A. (1982) Dual and Primal-Dual Methods for Solving Strictly Convex Quadratic Programs.
-                  Available on: http://www.javaquant.net/papers/GoldfarbIdnani.pdf .</a></li><li><a href="http://www.javaquant.net/papers/GoldfarbIdnani.pdf">
-                  Berwin A Turlach. QuadProg, Quadratic Programming Solver (implementation in Fortran).
-                  Available on:  http://school.maths.uwa.edu.au/~berwin/software/quadprog.html .</a></li></ul></p></div><h1 class="heading"><span onclick="ExpandCollapse(familyToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(familyToggle, event)" tabindex="0"><img id="familyToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />Inheritance Hierarchy</span></h1><div id="familySection" class="section" name="collapseableSection" style=""><a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">System<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>Object</a><br />  <span class="selflink">Accord.Math.Optimization<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>GoldfarbIdnaniQuadraticSolver</span><br /></div><h1 class="heading"><span onclick="ExpandCollapse(seeAlsoToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(seeAlsoToggle, event)" tabindex="0"><img id="seeAlsoToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />See Also</span></h1><div id="seeAlsoSection" class="section" name="collapseableSection" style=""><div class="seeAlsoStyle"><a href="AllMembers_T_Accord_Math_Optimization_GoldfarbIdnaniQuadraticSolver.htm">GoldfarbIdnaniQuadraticSolver Members</a></div><div class="seeAlsoStyle"><a href="N_Accord_Math_Optimization.htm">Accord.Math.Optimization Namespace</a></div></div></div><div id="footer"><div class="footerLine"><img width="100%" height="3px" src="../icons/footer.gif" alt="Footer image" title="Footer image" /></div><A NAME="feedback"></A><span id="fb" class="feedbackcss"></span><a href="http://accord-net.origo.ethz.ch" target="_blank">Accord.NET</a> © 2009-2012. All documentation is licensed under the Creative Commons Attribution/Share-Alike License. </div></div></body></html>
+﻿<html xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+  <head>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
+    <META NAME="save" CONTENT="history" />
+    <title>GoldfarbIdnaniQuadraticSolver Class</title>
+    <meta name="Language" content="en-us" />
+    <meta name="System.Keywords" content="GoldfarbIdnaniQuadraticSolver class" />
+    <meta name="System.Keywords" content="Accord.Math.Optimization.GoldfarbIdnaniQuadraticSolver class" />
+    <meta name="System.Keywords" content="GoldfarbIdnaniQuadraticSolver class, about GoldfarbIdnaniQuadraticSolver class" />
+    <meta name="Microsoft.Help.F1" content="Accord.Math.Optimization.GoldfarbIdnaniQuadraticSolver" />
+    <meta name="Microsoft.Help.Id" content="T:Accord.Math.Optimization.GoldfarbIdnaniQuadraticSolver" />
+    <meta name="Description" content="Goldfarb-Idnani Quadratic Programming Solver." />
+    <meta name="Microsoft.Help.ContentType" content="Reference" />
+    <link rel="stylesheet" type="text/css" href="../styles/Presentation.css" />
+    <link rel="stylesheet" type="text/css" href="ms-help://Hx/HxRuntime/HxLink.css" />
+    <script type="text/javascript" src="../scripts/EventUtilities.js"> </script>
+    <script type="text/javascript" src="../scripts/SplitScreen.js"> </script>
+    <script type="text/javascript" src="../scripts/Dropdown.js"> </script>
+    <script type="text/javascript" src="../scripts/script_manifold.js"> </script>
+    <script type="text/javascript" src="../scripts/script_feedBack.js"> </script>
+    <script type="text/javascript" src="../scripts/CheckboxMenu.js"> </script>
+    <script type="text/javascript" src="../scripts/CommonUtilities.js"> </script>
+    <meta name="container" content="Accord.Math.Optimization" />
+    <meta name="file" content="T_Accord_Math_Optimization_GoldfarbIdnaniQuadraticSolver" />
+    <meta name="guid" content="T_Accord_Math_Optimization_GoldfarbIdnaniQuadraticSolver" />
+    <xml>
+      <MSHelp:Attr Name="AssetID" Value="T:Accord.Math.Optimization.GoldfarbIdnaniQuadraticSolver" />
+      <MSHelp:TOCTitle Title="GoldfarbIdnaniQuadraticSolver Class" />
+      <MSHelp:RLTitle Title="GoldfarbIdnaniQuadraticSolver Class (Accord.Math.Optimization)" />
+      <MSHelp:Keyword Index="A" Term="T:Accord.Math.Optimization.GoldfarbIdnaniQuadraticSolver" />
+      <MSHelp:Keyword Index="A" Term="frlrfAccordMathOptimizationGoldfarbIdnaniQuadraticSolverClassTopic" />
+      <MSHelp:Keyword Index="K" Term="GoldfarbIdnaniQuadraticSolver class" />
+      <MSHelp:Keyword Index="K" Term="Accord.Math.Optimization.GoldfarbIdnaniQuadraticSolver class" />
+      <MSHelp:Keyword Index="K" Term="GoldfarbIdnaniQuadraticSolver class, about GoldfarbIdnaniQuadraticSolver class" />
+      <MSHelp:Keyword Index="F" Term="Accord.Math.Optimization.GoldfarbIdnaniQuadraticSolver" />
+      <MSHelp:Attr Name="HelpPriority" Value="2" />
+      <MSHelp:Attr Name="APIType" Value="Managed" />
+      <MSHelp:Attr Name="APILocation" Value="Accord.Math.dll" />
+      <MSHelp:Attr Name="APIName" Value="Accord.Math.Optimization.GoldfarbIdnaniQuadraticSolver" />
+      <MSHelp:Attr Name="DevLang" Value="CSharp" />
+      <MSHelp:Attr Name="DevLang" Value="VB" />
+      <MSHelp:Attr Name="Locale" Value="en-us" />
+      <MSHelp:Attr Name="TopicType" Value="kbSyntax" />
+      <MSHelp:Attr Name="TopicType" Value="apiref" />
+      <MSHelp:Attr Name="Abstract" Value="Goldfarb-Idnani Quadratic Programming Solver." />
+      <MSHelp:Attr Name="AssemblyVersion" Value="2.6.1.0" />
+    </xml>
+    <link type="text/css" rel="stylesheet" href="../styles/highlight.css" />
+    <script type="text/javascript" src="../scripts/highlight.js"> </script>
+  </head>
+  <body>
+    <input type="hidden" id="userDataCache" class="userDataStyle" />
+    <input type="hidden" id="hiddenScrollOffset" />
+    <img id="collapseImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" alt="Collapse image" title="Collapse image" />
+    <img id="expandImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" alt="Expand Image" title="Expand Image" />
+    <img id="collapseAllImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" />
+    <img id="expandAllImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" />
+    <img id="dropDownImage" style="display:none; height:0; width:0;" src="../icons/dropdown.gif" />
+    <img id="dropDownHoverImage" style="display:none; height:0; width:0;" src="../icons/dropdownHover.gif" />
+    <img id="copyImage" style="display:none; height:0; width:0;" src="../icons/copycode.gif" alt="Copy image" title="Copy image" />
+    <img id="copyHoverImage" style="display:none; height:0; width:0;" src="../icons/copycodeHighlight.gif" alt="CopyHover image" title="CopyHover image" />
+    <div id="header">
+      <table cellspacing="0" cellpadding="0">
+        <tr>
+          <td>
+            <table id="topTable" cellspacing="0" cellpadding="0">
+              <tr>
+                <td>
+                  <span onclick="ExpandCollapseAll(toggleAllImage)" style="cursor:default;" onkeypress="ExpandCollapseAll_CheckKey(toggleAllImage, event)" tabindex="0">
+                    <img ID="toggleAllImage" class="toggleAll" src="../icons/collapse_all.gif" /> <label id="collapseAllLabel" for="toggleAllImage" style="display: none;">Collapse All</label><label id="expandAllLabel" for="toggleAllImage" style="display: none;">Expand All</label> </span>
+                  <span>    </span>
+                  <span id="devlangsDropdown" class="filter" tabindex="0">
+                    <img id="devlangsDropdownImage" src="../icons/dropdown.gif" /> <label id="devlangsMenuAllLabel" for="devlangsDropdownImage" style="display: none;"><nobr>Code: All </nobr></label><label id="devlangsMenuMultipleLabel" for="devlangsDropdownImage" style="display: none;"><nobr>Code: Multiple </nobr></label><label id="devlangsMenuCSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>Code: C# </nobr></label><label id="devlangsMenuVisualBasicLabel" for="devlangsDropdownImage" style="display: none;"><nobr>Code: Visual Basic </nobr></label></span>
+                </td>
+              </tr>
+            </table>
+            <div id="devlangsMenu">
+              <input id="CSharpCheckbox" type="checkbox" data="CSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
+              <label class="checkboxLabel" for="CSharpCheckbox">C#</label>
+              <br />
+              <input id="VisualBasicCheckbox" type="checkbox" data="VisualBasic,vb,'persist'" value="on" onClick="SetLanguage(this)" />
+              <label class="checkboxLabel" for="VisualBasicCheckbox">Visual Basic</label>
+              <br />
+            </div>
+            <table id="bottomTable" cellpadding="0" cellspacing="0">
+              <tr id="headerTableRow1">
+                <td align="left">
+                  <span id="runningHeaderText">Accord.NET Framework</span>
+                </td>
+              </tr>
+              <tr id="headerTableRow2">
+                <td align="left">
+                  <span id="nsrTitle">GoldfarbIdnaniQuadraticSolver Class</span>
+                </td>
+              </tr>
+              <tr id="headerTableRow3">
+                <td align="left">
+                  <a href="AllMembers_T_Accord_Math_Optimization_GoldfarbIdnaniQuadraticSolver.htm">Members</a> <a href="#exampleToggle" onclick="OpenSection(exampleToggle)">Example</a> <a href="#seeAlsoToggle" onclick="OpenSection(seeAlsoToggle)">See Also</a> <span id="headfeedbackarea" class="feedbackhead"><a href="javascript:SubmitFeedback('','Accord.NET Framework','','','','%0\dYour%20feedback%20is%20used%20to%20improve%20the%20documentation%20and%20the%20product.%20Your%20e-mail%20address%20will%20not%20be%20used%20for%20any%20other%20purpose%20and%20is%20disposed%20of%20after%20the%20issue%20you%20report%20is%20resolved.%20%20While%20working%20to%20resolve%20the%20issue%20that%20you%20report,%20you%20may%20be%20contacted%20via%20e-mail%20to%20get%20further%20details%20or%20clarification%20on%20the%20feedback%20you%20sent.%20After%20the%20issue%20you%20report%20has%20been%20addressed,%20you%20may%20receive%20an%20e-mail%20to%20let%20you%20know%20that%20your%20feedback%20has%20been%20addressed.%0\A%0\d','Customer%20Feedback');">Send Feedback</a></span></td>
+              </tr>
+            </table>
+          </td>
+          <td align="center" style="width: 1px; padding: 0px">
+            <img src="../icons/Accord.NET.png" />
+          </td>
+        </tr>
+      </table>
+      <table id="gradientTable">
+        <tr>
+          <td class="nsrBottom" background="../icons/gradient.gif" />
+        </tr>
+      </table>
+    </div>
+    <div id="mainSection">
+      <div id="mainBody">
+        <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
+        <span style="color: DarkGray"></span>
+        <div class="summary">
+               Goldfarb-Idnani Quadratic Programming Solver.
+             </div>
+        <p />
+        <b>Namespace:</b> <a href="N_Accord_Math_Optimization.htm">Accord.Math.Optimization</a><br /><b>Assembly:</b> <span sdata="assembly">Accord.Math</span> (in Accord.Math.dll) Version: 2.6.1.0 (2.6.1.0)<h1 class="heading"><span onclick="ExpandCollapse(syntaxToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(syntaxToggle, event)" tabindex="0"><img id="syntaxToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />Syntax</span></h1><div id="syntaxSection" class="section" name="collapseableSection" style=""><div id="syntaxCodeBlocks" class="code"><span codeLanguage="CSharp"><table><tr><th>C#</th></tr><tr><td><pre xml:space="preserve"><span class="keyword">public</span> <span class="keyword">class</span> <span class="identifier">GoldfarbIdnaniQuadraticSolver</span></pre></td></tr></table></span><span codeLanguage="VisualBasicDeclaration"><table><tr><th>Visual Basic</th></tr><tr><td><pre xml:space="preserve"><span class="keyword">Public</span> <span class="keyword">Class</span> <span class="identifier">GoldfarbIdnaniQuadraticSolver</span></pre></td></tr></table></span></div></div><h1 class="heading"><span onclick="ExpandCollapse(remarksToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(remarksToggle, event)" tabindex="0"><img id="remarksToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />Remarks</span></h1><div id="remarksSection" class="section" name="collapseableSection" style=""><p>
+               References:
+               <ul><li><a href="http://www.javaquant.net/papers/GoldfarbIdnani.pdf">
+                   Goldfarb D., Idnani A. (1982) Dual and Primal-Dual Methods for Solving Strictly Convex Quadratic Programs.
+                   Available on: http://www.javaquant.net/papers/GoldfarbIdnani.pdf .</a></li><li><a href="http://www.javaquant.net/papers/GoldfarbIdnani.pdf">
+                   Berwin A Turlach. QuadProg, Quadratic Programming Solver (implementation in Fortran).
+                   Available on:  http://school.maths.uwa.edu.au/~berwin/software/quadprog.html .</a></li></ul></p></div><h1 class="heading"><span onclick="ExpandCollapse(exampleToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(exampleToggle, event)" tabindex="0"><img id="exampleToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />Examples</span></h1><div id="exampleSection" class="section" name="collapseableSection" style=""><p>
+               There are three ways to state a quadratic programming problem in this framework.</p><ul><li>
+               The first is to state the problem in its canonical form, explicitly stating the
+               matrix Q and vector d specifying the quadratic function and the matrices A and
+               vector b specifying the problem constraints.</li><li>
+               The second is to state the problem with lambda expressions using symbolic variables.</li><li>
+               The third is to state the problem using text strings.</li></ul><p>  
+               In the following section we will provide examples for those ways. 
+             </p><p>
+               This is an example stating the problem using lambdas:</p><span id="cbc_1" x-lang="CSharp" codeLanguage="CSharp"><div class="highlight-title"><span class="highlight-copycode" onkeypress="javascript:CopyColorizedCodeCheckKey(this.parentNode, event);" tabindex="0" onmouseover="CopyCodeChangeIcon(this)" onmouseout="CopyCodeChangeIcon(this)" onclick="javascript:CopyColorizedCode(this.parentNode);"><img style="margin-right: 5px;" src="../icons/CopyCode.gif" />Copy</span>C#</div><div class="code"><pre xml:space="preserve"><span class="highlight-lineno"> 1</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// Solve the following optimization problem:</span>
+<span class="highlight-lineno"> 2</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// </span>
+<span class="highlight-lineno"> 3</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">//  min f(x) = 2x² - xy + 4y² - 5x - 6y</span>
+<span class="highlight-lineno"> 4</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// </span>
+<span class="highlight-lineno"> 5</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">//  s.t.   x - y  ==   5  (x minus y should be equal to 5)</span>
+<span class="highlight-lineno"> 6</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">//             x  &gt;=  10  (x should be greater than or equal to 10)</span>
+<span class="highlight-lineno"> 7</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// </span>
+<span class="highlight-lineno"> 8</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>
+<span class="highlight-lineno"> 9</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// In this example we will be using some symbolic processing. </span>
+<span class="highlight-lineno">10</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// The following variables could be inicialized to any value.</span>
+<span class="highlight-lineno">11</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-keyword">double</span> x = <span class="highlight-number">0</span>, y = <span class="highlight-number">0</span>;
+<span class="highlight-lineno">12</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>
+<span class="highlight-lineno">13</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// Create our objective function using a lambda expression</span>
+<span class="highlight-lineno">14</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>var f = <span class="highlight-keyword">new</span> QuadraticObjectiveFunction(() =&gt; <span class="highlight-number">2</span> * (x * x) - (x * y) + <span class="highlight-number">4</span> * (y * y) - <span class="highlight-number">5</span> * x - <span class="highlight-number">6</span> * y);
+<span class="highlight-lineno">15</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>
+<span class="highlight-lineno">16</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// Now, create the constraints</span>
+<span class="highlight-lineno">17</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>List&lt;LinearConstraint&gt; constraints = <span class="highlight-keyword">new</span> List&lt;LinearConstraint&gt;();
+<span class="highlight-lineno">18</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>constraints.Add(<span class="highlight-keyword">new</span> LinearConstraint(f, () =&gt; x - y == <span class="highlight-number">5</span>));
+<span class="highlight-lineno">19</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>constraints.Add(<span class="highlight-keyword">new</span> LinearConstraint(f, () =&gt; x &gt;= <span class="highlight-number">10</span>));
+<span class="highlight-lineno">20</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>
+<span class="highlight-lineno">21</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// Now we create the quadratic programming solver for 2 variables, using the constraints.</span>
+<span class="highlight-lineno">22</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>GoldfarbIdnaniQuadraticSolver solver = <span class="highlight-keyword">new</span> GoldfarbIdnaniQuadraticSolver(<span class="highlight-number">2</span>, constraints);
+<span class="highlight-lineno">23</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>
+<span class="highlight-lineno">24</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// And attempt to solve it.</span>
+<span class="highlight-lineno">25</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-keyword">double</span> minimumValue = solver.Minimize(f);</pre></div></span><p>
+               This is an example stating the problem using strings:</p><span id="cbc_2" x-lang="CSharp" codeLanguage="CSharp"><div class="highlight-title"><span class="highlight-copycode" onkeypress="javascript:CopyColorizedCodeCheckKey(this.parentNode, event);" tabindex="0" onmouseover="CopyCodeChangeIcon(this)" onmouseout="CopyCodeChangeIcon(this)" onclick="javascript:CopyColorizedCode(this.parentNode);"><img style="margin-right: 5px;" src="../icons/CopyCode.gif" />Copy</span>C#</div><div class="code"><pre xml:space="preserve"><span class="highlight-lineno"> 1</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// Solve the following optimization problem:</span>
+<span class="highlight-lineno"> 2</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// </span>
+<span class="highlight-lineno"> 3</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">//  max f(x) = -2x² + xy - y² + 5y</span>
+<span class="highlight-lineno"> 4</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// </span>
+<span class="highlight-lineno"> 5</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">//  s.t.   x - y  ==   5  (x minus y should be equal to 5)</span>
+<span class="highlight-lineno"> 6</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">//             x  &gt;=  10  (x should be greater than or equal to 10)</span>
+<span class="highlight-lineno"> 7</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// </span>
+<span class="highlight-lineno"> 8</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// </span>
+<span class="highlight-lineno"> 9</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>
+<span class="highlight-lineno">10</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// Create our objective function using a text string</span>
+<span class="highlight-lineno">11</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>var f = <span class="highlight-keyword">new</span> QuadraticObjectiveFunction(<span class="highlight-literal">"-2x² + xy - y² + 5y"</span>);
+<span class="highlight-lineno">12</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>
+<span class="highlight-lineno">13</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// Now, create the constraints</span>
+<span class="highlight-lineno">14</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>List&lt;LinearConstraint&gt; constraints = <span class="highlight-keyword">new</span> List&lt;LinearConstraint&gt;();
+<span class="highlight-lineno">15</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>constraints.Add(<span class="highlight-keyword">new</span> LinearConstraint(f, <span class="highlight-literal">"x - y ==  5"</span>));
+<span class="highlight-lineno">16</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>constraints.Add(<span class="highlight-keyword">new</span> LinearConstraint(f, <span class="highlight-literal">"    x &gt;= 10"</span>));
+<span class="highlight-lineno">17</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>
+<span class="highlight-lineno">18</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// Now we create the quadratic programming solver for 2 variables, using the constraints.</span>
+<span class="highlight-lineno">19</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>GoldfarbIdnaniQuadraticSolver solver = <span class="highlight-keyword">new</span> GoldfarbIdnaniQuadraticSolver(<span class="highlight-number">2</span>, constraints);
+<span class="highlight-lineno">20</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>
+<span class="highlight-lineno">21</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// And attempt to solve it.</span>
+<span class="highlight-lineno">22</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-keyword">double</span> maxValue = solver.Maximize(f);</pre></div></span><p>
+               And finally, an example stating the problem using matrices:</p><span id="cbc_3" x-lang="CSharp" codeLanguage="CSharp"><div class="highlight-title"><span class="highlight-copycode" onkeypress="javascript:CopyColorizedCodeCheckKey(this.parentNode, event);" tabindex="0" onmouseover="CopyCodeChangeIcon(this)" onmouseout="CopyCodeChangeIcon(this)" onclick="javascript:CopyColorizedCode(this.parentNode);"><img style="margin-right: 5px;" src="../icons/CopyCode.gif" />Copy</span>C#</div><div class="code"><pre xml:space="preserve"><span class="highlight-lineno"> 1</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// Solve the following optimization problem:</span>
+<span class="highlight-lineno"> 2</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// </span>
+<span class="highlight-lineno"> 3</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">//  min f(x) = 2x² - xy + 4y² - 5x - 6y</span>
+<span class="highlight-lineno"> 4</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// </span>
+<span class="highlight-lineno"> 5</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">//  s.t.   x - y  ==   5  (x minus y should be equal to 5)</span>
+<span class="highlight-lineno"> 6</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">//             x  &gt;=  10  (x should be greater than or equal to 10)</span>
+<span class="highlight-lineno"> 7</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// </span>
+<span class="highlight-lineno"> 8</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>
+<span class="highlight-lineno"> 9</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// Lets first group the quadratic and linear terms. The</span>
+<span class="highlight-lineno">10</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// quadratic terms are +2x², +3y² and -4xy. The linear </span>
+<span class="highlight-lineno">11</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// terms are -2x and +1y. So our matrix of quadratic</span>
+<span class="highlight-lineno">12</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// terms can be expressed as:</span>
+<span class="highlight-lineno">13</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>
+<span class="highlight-lineno">14</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-keyword">double</span>[,] Q = <span class="highlight-comment">// 2x² -1xy +4y²</span>
+<span class="highlight-lineno">15</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>{   
+<span class="highlight-lineno">16</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>    <span class="highlight-comment">/*           x              y      */</span>
+<span class="highlight-lineno">17</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>    <span class="highlight-comment">/*x*/</span> { <span class="highlight-number">+2</span> <span class="highlight-comment">/*xx*/</span> *<span class="highlight-number">2</span>,  <span class="highlight-number">-1</span> <span class="highlight-comment">/*xy*/</span>    }, 
+<span class="highlight-lineno">18</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>    <span class="highlight-comment">/*y*/</span> { <span class="highlight-number">-1</span> <span class="highlight-comment">/*xy*/</span>   ,  <span class="highlight-number">+4</span> <span class="highlight-comment">/*yy*/</span> *<span class="highlight-number">2</span> },
+<span class="highlight-lineno">19</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>};
+<span class="highlight-lineno">20</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>
+<span class="highlight-lineno">21</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// Accordingly, our vector of linear terms is given by:</span>
+<span class="highlight-lineno">22</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>
+<span class="highlight-lineno">23</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-keyword">double</span>[] d = { <span class="highlight-number">-5</span> <span class="highlight-comment">/*x*/</span>, <span class="highlight-number">-6</span> <span class="highlight-comment">/*y*/</span> }; <span class="highlight-comment">// -5x -6y</span>
+<span class="highlight-lineno">24</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>
+<span class="highlight-lineno">25</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// We have now to express our constraints. We can do it</span>
+<span class="highlight-lineno">26</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// either by directly specifying a matrix A in which each</span>
+<span class="highlight-lineno">27</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// line refers to one of the constraints, expressing the</span>
+<span class="highlight-lineno">28</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// relationship between the different variables in the</span>
+<span class="highlight-lineno">29</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// constraint, like this:</span>
+<span class="highlight-lineno">30</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>
+<span class="highlight-lineno">31</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-keyword">double</span>[,] A = 
+<span class="highlight-lineno">32</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>{
+<span class="highlight-lineno">33</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>    { <span class="highlight-number">1</span>, <span class="highlight-number">-1</span> }, <span class="highlight-comment">// This line says that x + (-y) ... (a)</span>
+<span class="highlight-lineno">34</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>    { <span class="highlight-number">1</span>,  <span class="highlight-number">0</span> }, <span class="highlight-comment">// This line says that x alone  ... (b)</span>
+<span class="highlight-lineno">35</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>};
+<span class="highlight-lineno">36</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>
+<span class="highlight-lineno">37</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-keyword">double</span>[] b = 
+<span class="highlight-lineno">38</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>{
+<span class="highlight-lineno">39</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>     <span class="highlight-number">5</span>, <span class="highlight-comment">// (a) ... should be equal to 5.</span>
+<span class="highlight-lineno">40</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>    <span class="highlight-number">10</span>, <span class="highlight-comment">// (b) ... should be greater than or equal to 10.</span>
+<span class="highlight-lineno">41</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>};
+<span class="highlight-lineno">42</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>
+<span class="highlight-lineno">43</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// Equalities must always come first, and in this case</span>
+<span class="highlight-lineno">44</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// we have to specify how many of the contraints are</span>
+<span class="highlight-lineno">45</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// actually equalities:</span>
+<span class="highlight-lineno">46</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>
+<span class="highlight-lineno">47</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-keyword">int</span> numberOfEqualities = <span class="highlight-number">1</span>;
+<span class="highlight-lineno">48</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>
+<span class="highlight-lineno">49</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>
+<span class="highlight-lineno">50</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// Alternatively, we may use a more explicitly form:</span>
+<span class="highlight-lineno">51</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>List&lt;LinearConstraint&gt; list = <span class="highlight-keyword">new</span> List&lt;LinearConstraint&gt;();
+<span class="highlight-lineno">52</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>
+<span class="highlight-lineno">53</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// Define the first constraint, which involves only x</span>
+<span class="highlight-lineno">54</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>list.Add(<span class="highlight-keyword">new</span> LinearConstraint(numberOfVariables: <span class="highlight-number">1</span>)
+<span class="highlight-lineno">55</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>    {
+<span class="highlight-lineno">56</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>        <span class="highlight-comment">// x is the first variable, thus located at</span>
+<span class="highlight-lineno">57</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>        <span class="highlight-comment">// index 0. We are specifying that x &gt;= 10:</span>
+<span class="highlight-lineno">58</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>
+<span class="highlight-lineno">59</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>        VariablesAtIndices = <span class="highlight-keyword">new</span>[] { <span class="highlight-number">0</span> }, <span class="highlight-comment">// index 0 (x)</span>
+<span class="highlight-lineno">60</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>        ShouldBe = ConstraintType.GreaterThanOrEqualTo,
+<span class="highlight-lineno">61</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>        Value = <span class="highlight-number">10</span>
+<span class="highlight-lineno">62</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>    });
+<span class="highlight-lineno">63</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>
+<span class="highlight-lineno">64</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// Define the second constraint, which involves x and y</span>
+<span class="highlight-lineno">65</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>list.Add(<span class="highlight-keyword">new</span> LinearConstraint(numberOfVariables: <span class="highlight-number">2</span>)
+<span class="highlight-lineno">66</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>    {
+<span class="highlight-lineno">67</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>        <span class="highlight-comment">// x is the first variable, located at index 0, and y is</span>
+<span class="highlight-lineno">68</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>        <span class="highlight-comment">// the second, thus located at 1. We are specifying that</span>
+<span class="highlight-lineno">69</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>        <span class="highlight-comment">// x - y = 5 by saying that the variable at position 0 </span>
+<span class="highlight-lineno">70</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>        <span class="highlight-comment">// times 1 plus the variable at position 1 times -1 </span>
+<span class="highlight-lineno">71</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>        <span class="highlight-comment">// should be equal to 5.</span>
+<span class="highlight-lineno">72</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>
+<span class="highlight-lineno">73</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>        VariablesAtIndices = <span class="highlight-keyword">new</span> <span class="highlight-keyword">int</span>[] { <span class="highlight-number">0</span>, <span class="highlight-number">1</span> }, <span class="highlight-comment">// index 0 (x) and index 1 (y)</span>
+<span class="highlight-lineno">74</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>        CombinedAs = <span class="highlight-keyword">new</span> <span class="highlight-keyword">double</span>[] { <span class="highlight-number">1</span>, <span class="highlight-number">-1</span> }, <span class="highlight-comment">// when combined as x - y</span>
+<span class="highlight-lineno">75</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>        ShouldBe = ConstraintType.EqualTo,
+<span class="highlight-lineno">76</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>        Value = <span class="highlight-number">5</span>
+<span class="highlight-lineno">77</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>    });
+<span class="highlight-lineno">78</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>
+<span class="highlight-lineno">79</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>
+<span class="highlight-lineno">80</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// Now we can finally create our optimization problem</span>
+<span class="highlight-lineno">81</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>var target = <span class="highlight-keyword">new</span> GoldfarbIdnaniQuadraticSolver(numberOfVariables: <span class="highlight-number">2</span>, constraints: list);
+<span class="highlight-lineno">82</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span>
+<span class="highlight-lineno">83</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-comment">// And attempt to solve it.</span>
+<span class="highlight-lineno">84</span><span class="highlight-lnborder"></span><span class="highlight-spacerShort"></span><span class="highlight-keyword">double</span> minimumValue = target.Minimize(Q, d);</pre></div></span></div><h1 class="heading"><span onclick="ExpandCollapse(familyToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(familyToggle, event)" tabindex="0"><img id="familyToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />Inheritance Hierarchy</span></h1><div id="familySection" class="section" name="collapseableSection" style=""><a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">System<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>Object</a><br />  <span class="selflink">Accord.Math.Optimization<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>GoldfarbIdnaniQuadraticSolver</span><br /></div><h1 class="heading"><span onclick="ExpandCollapse(seeAlsoToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(seeAlsoToggle, event)" tabindex="0"><img id="seeAlsoToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />See Also</span></h1><div id="seeAlsoSection" class="section" name="collapseableSection" style=""><div class="seeAlsoStyle"><a href="AllMembers_T_Accord_Math_Optimization_GoldfarbIdnaniQuadraticSolver.htm">GoldfarbIdnaniQuadraticSolver Members</a></div><div class="seeAlsoStyle"><a href="N_Accord_Math_Optimization.htm">Accord.Math.Optimization Namespace</a></div></div></div>
+      <div id="footer">
+        <div class="footerLine">
+          <img width="100%" height="3px" src="../icons/footer.gif" alt="Footer image" title="Footer image" />
+        </div>
+        <A NAME="feedback"></A>
+        <span id="fb" class="feedbackcss"></span>
+        <a href="http://accord.googlecode.com" target="_blank">Accord.NET Framework</a> © 2009-2012. All documentation is licensed under the Creative Commons Attribution/Share-Alike License.  <script type="text/javascript">    var _gaq = _gaq || [];   _gaq.push(['_setAccount', 'UA-3114672-4']);   _gaq.push(['_trackPageview']);    (function() {     var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);   })();  </script></div>
+    </div>
+  </body>
+</html>

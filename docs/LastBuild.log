@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shfbBuild product="Sandcastle Help File Builder" version="1.9.3.0" projectFile="D:\Projects\Accord.NET\Sources\Accord.Docs\Accord.Documentation\Accord.Documentation.shfbproj" started="03/04/2012 16:33:42">
+<shfbBuild product="Sandcastle Help File Builder" version="1.9.3.0" projectFile="D:\Projects\Accord.NET\Sources\Accord.Docs\Accord.Documentation\Accord.Documentation.shfbproj" started="05/05/2012 10:53:56">
 <buildStep step="Initializing">
 Loading and initializing plug-ins...
 Hierarchical Table of Contents Version 1.9.3.0
@@ -52,8 +52,9 @@ Source: D:\Projects\Accord.NET\Release\Accord.Math.dll
     Found assembly &#39;D:\Projects\Accord.NET\Release\Accord.Math.dll&#39;
 Source: D:\Projects\Accord.NET\Release\Accord.Math.xml
 Source: D:\Projects\Accord.NET\Release\Accord.Music.dll
-    Found assembly &#39;D:\Projects\Accord.NET\Release\Accord.Music.dll&#39;
+SHFB: Warning BE0006: Unable to locate any documentation sources for &#39;D:\Projects\Accord.NET\Release\Accord.Music.dll&#39;
 Source: D:\Projects\Accord.NET\Release\Accord.Music.xml
+SHFB: Warning BE0006: Unable to locate any documentation sources for &#39;D:\Projects\Accord.NET\Release\Accord.Music.xml&#39;
 Source: D:\Projects\Accord.NET\Release\Accord.Neuro.dll
     Found assembly &#39;D:\Projects\Accord.NET\Release\Accord.Neuro.dll&#39;
 Source: D:\Projects\Accord.NET\Release\Accord.Neuro.xml
@@ -123,7 +124,6 @@ Copying XML comments files
     D:\Projects\Accord.NET\Release\GPL\Accord.MachineLearning.GPL.XML -&gt; D:\Projects\Accord.NET\Docs\Working\Accord.MachineLearning.GPL.XML
     D:\Projects\Accord.NET\Release\Accord.MachineLearning.XML -&gt; D:\Projects\Accord.NET\Docs\Working\Accord.MachineLearning.XML
     D:\Projects\Accord.NET\Release\Accord.Math.XML -&gt; D:\Projects\Accord.NET\Docs\Working\Accord.Math.XML
-    D:\Projects\Accord.NET\Release\Accord.Music.XML -&gt; D:\Projects\Accord.NET\Docs\Working\Accord.Music.XML
     D:\Projects\Accord.NET\Release\Accord.Neuro.XML -&gt; D:\Projects\Accord.NET\Docs\Working\Accord.Neuro.XML
     D:\Projects\Accord.NET\Release\Accord.Statistics.XML -&gt; D:\Projects\Accord.NET\Docs\Working\Accord.Statistics.XML
     D:\Projects\Accord.NET\Release\Accord.Vision.XML -&gt; D:\Projects\Accord.NET\Docs\Working\Accord.Vision.XML
@@ -131,34 +131,34 @@ Copying XML comments files
 </buildStep>
 <buildStep step="GenerateSharedContent">
 Generating shared content files (en-US, English (United States))...
-    Last step completed in 00:00:00.0130
+    Last step completed in 00:00:00.0080
 </buildStep>
 <buildStep step="GenerateApiFilter">
 Generating API filter for MRefBuilder...
-    Last step completed in 00:00:00.1900
+    Last step completed in 00:00:00.1640
 </buildStep>
 <buildStep step="GenerateReflectionInfo">
 Generating reflection information...
 [C:\Windows\Microsoft.NET\Framework64\v4.0.30319\MSBuild.exe]
   MrefBuilder (v2.6.10621.1)
   Copyright &#184; Microsoft 2006
-  Info: Loaded 17 assemblies for reflection and 33 dependency assemblies.
-  Info: Wrote information on 61 namespaces, 519 types, and 4468 members
+  Info: Loaded 16 assemblies for reflection and 32 dependency assemblies.
+  Info: Wrote information on 61 namespaces, 528 types, and 4552 members
   XslTransform (v2.6.10621.1)
   Copyright &#184; Microsoft 2005-2006
   Info: Applying XSL transformation &#39;C:\Program Files (x86)\Sandcastle\ProductionTransforms\MergeDuplicates.xsl&#39;.
   reflection.all -&gt; reflection.org
-    Last step completed in 00:00:26.9237
+    Last step completed in 00:00:24.6864
 </buildStep>
 <buildStep step="GenerateNamespaceSummaries">
 Generating namespace summary information...
-    Last step completed in 00:00:00.3340
+    Last step completed in 00:00:00.4100
 </buildStep>
 <buildStep step="ApplyVisibilityProperties">
 Applying visibility properties to reflection information file
-    56 explicit interface implementations removed
-    777 local and base class EII elements removed
-    Last step completed in 00:00:00.8330
+    57 explicit interface implementations removed
+    778 local and base class EII elements removed
+    Last step completed in 00:00:00.7330
 </buildStep>
 <buildStep step="TransformReflectionInfo">
 Transforming reflection output...
@@ -166,14 +166,14 @@ Transforming reflection output...
   XslTransform (v2.6.10621.1)
   Copyright &#184; Microsoft 2005-2006
   Info: Applying XSL transformation &#39;C:\Program Files (x86)\Sandcastle\ProductionTransforms\ApplyVSDocModel.xsl&#39;.
-  reflection.org -&gt; C:\Users\Cesar\AppData\Local\Temp\tmpE235.tmp
+  reflection.org -&gt; C:\Users\Cesar\AppData\Local\Temp\tmpA12A.tmp
   Info: Applying XSL transformation &#39;C:\Program Files (x86)\Sandcastle\ProductionTransforms\AddGuidFilenames.xsl&#39;.
-  C:\Users\Cesar\AppData\Local\Temp\tmpE235.tmp -&gt; reflection.xml
+  C:\Users\Cesar\AppData\Local\Temp\tmpA12A.tmp -&gt; reflection.xml
   XslTransform (v2.6.10621.1)
   Copyright &#184; Microsoft 2005-2006
   Info: Applying XSL transformation &#39;C:\Program Files (x86)\Sandcastle\ProductionTransforms\ReflectionToManifest.xsl&#39;.
   reflection.xml -&gt; manifest.xml
-    Last step completed in 00:00:16.4223
+    Last step completed in 00:00:17.1260
 </buildStep>
 <buildStep step="ModifyHelpTopicFilenames">
 Modifying help topic filenames in reflection information file
@@ -465,15 +465,21 @@ Modifying help topic filenames in reflection information file
     Unique name M_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine_Compute_6 generated for M:Accord.MachineLearning.VectorMachines.MulticlassSupportVectorMachine.Compute(System.Double[],System.Double[]@)
     Unique name M_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine_Load_1 generated for M:Accord.MachineLearning.VectorMachines.MulticlassSupportVectorMachine.Load(System.String)
     Unique name M_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine_Save_1 generated for M:Accord.MachineLearning.VectorMachines.MulticlassSupportVectorMachine.Save(System.String)
+    Unique name M_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine__ctor_1 generated for M:Accord.MachineLearning.VectorMachines.MultilabelSupportVectorMachine.#ctor(System.Int32,Accord.Statistics.Kernels.IKernel,System.Int32)
+    Unique name M_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine_Compute_1 generated for M:Accord.MachineLearning.VectorMachines.MultilabelSupportVectorMachine.Compute(System.Double[],System.Double[]@)
+    Unique name M_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine_Load_1 generated for M:Accord.MachineLearning.VectorMachines.MultilabelSupportVectorMachine.Load(System.String)
+    Unique name M_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine_Save_1 generated for M:Accord.MachineLearning.VectorMachines.MultilabelSupportVectorMachine.Save(System.String)
     Unique name M_Accord_MachineLearning_VectorMachines_SupportVectorMachine_Compute_1 generated for M:Accord.MachineLearning.VectorMachines.SupportVectorMachine.Compute(System.Double[],System.Double@)
     Unique name M_Accord_MachineLearning_VectorMachines_SupportVectorMachine_Compute_2 generated for M:Accord.MachineLearning.VectorMachines.SupportVectorMachine.Compute(System.Double[][])
     Unique name M_Accord_MachineLearning_VectorMachines_SupportVectorMachine_Load_1 generated for M:Accord.MachineLearning.VectorMachines.SupportVectorMachine.Load(System.String)
     Unique name M_Accord_MachineLearning_VectorMachines_SupportVectorMachine_Save_1 generated for M:Accord.MachineLearning.VectorMachines.SupportVectorMachine.Save(System.String)
     Unique name M_Accord_MachineLearning_VectorMachines_Learning_ISupportVectorMachineLearning_Run_1 generated for M:Accord.MachineLearning.VectorMachines.Learning.ISupportVectorMachineLearning.Run(System.Boolean)
     Unique name M_Accord_MachineLearning_VectorMachines_Learning_MulticlassSupportVectorLearning_Run_1 generated for M:Accord.MachineLearning.VectorMachines.Learning.MulticlassSupportVectorLearning.Run(System.Boolean)
+    Unique name M_Accord_MachineLearning_VectorMachines_Learning_MultilabelSupportVectorLearning_Run_1 generated for M:Accord.MachineLearning.VectorMachines.Learning.MultilabelSupportVectorLearning.Run(System.Boolean)
     Unique name M_Accord_MachineLearning_VectorMachines_Learning_ProbabilisticOutputLearning_Run_1 generated for M:Accord.MachineLearning.VectorMachines.Learning.ProbabilisticOutputLearning.Run(System.Boolean)
     Unique name M_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimization_Run_1 generated for M:Accord.MachineLearning.VectorMachines.Learning.SequentialMinimalOptimization.Run(System.Boolean)
     Unique name M_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimizationRegression_Run_1 generated for M:Accord.MachineLearning.VectorMachines.Learning.SequentialMinimalOptimizationRegression.Run(System.Boolean)
+    Unique name M_Accord_MachineLearning_VectorMachines_Learning_SupportVectorReduction_Run_1 generated for M:Accord.MachineLearning.VectorMachines.Learning.SupportVectorReduction.Run(System.Boolean)
     Unique name M_Accord_Math_Bessel_I_1 generated for M:Accord.Math.Bessel.I(System.Int32,System.Double)
     Unique name M_Accord_Math_Bessel_J_1 generated for M:Accord.Math.Bessel.J(System.Int32,System.Double)
     Unique name M_Accord_Math_Bessel_Y_1 generated for M:Accord.Math.Bessel.Y(System.Int32,System.Double)
@@ -515,7 +521,7 @@ Modifying help topic filenames in reflection information file
     Unique name M_Accord_Math_Matrix_Diagonal__1_6 generated for M:Accord.Math.Matrix.Diagonal``1(``0[][])
     Unique name M_Accord_Math_Matrix_Divide_1 generated for M:Accord.Math.Matrix.Divide(System.Double,System.Double[])
     Unique name M_Accord_Math_Matrix_Divide_2 generated for M:Accord.Math.Matrix.Divide(System.Double,System.Double[],System.Boolean)
-    Unique name M_Accord_Math_Matrix_Divide_3 generated for M:Accord.Math.Matrix.Divide(System.Double[0:,0:],System.Double)
+    Unique name M_Accord_Math_Matrix_Divide_3 generated for M:Accord.Math.Matrix.Divide(System.Double[0:,0:],System.Double,System.Boolean)
     Unique name M_Accord_Math_Matrix_Divide_4 generated for M:Accord.Math.Matrix.Divide(System.Double[0:,0:],System.Double[0:,0:])
     Unique name M_Accord_Math_Matrix_Divide_5 generated for M:Accord.Math.Matrix.Divide(System.Double[],System.Double,System.Boolean)
     Unique name M_Accord_Math_Matrix_Divide_6 generated for M:Accord.Math.Matrix.Divide(System.Int32,System.Double[],System.Boolean)
@@ -530,8 +536,9 @@ Modifying help topic filenames in reflection information file
     Unique name M_Accord_Math_Matrix_ElementwiseMultiply_1 generated for M:Accord.Math.Matrix.ElementwiseMultiply(System.Double[0:,0:],System.Double[],System.Double[0:,0:],System.Int32)
     Unique name M_Accord_Math_Matrix_ElementwiseMultiply_2 generated for M:Accord.Math.Matrix.ElementwiseMultiply(System.Double[0:,0:],System.Double[],System.Int32)
     Unique name M_Accord_Math_Matrix_ElementwiseMultiply_3 generated for M:Accord.Math.Matrix.ElementwiseMultiply(System.Double[],System.Double[])
-    Unique name M_Accord_Math_Matrix_ElementwiseMultiply_4 generated for M:Accord.Math.Matrix.ElementwiseMultiply(System.Int32[0:,0:],System.Int32[0:,0:])
-    Unique name M_Accord_Math_Matrix_ElementwiseMultiply_5 generated for M:Accord.Math.Matrix.ElementwiseMultiply(System.Int32[],System.Int32[])
+    Unique name M_Accord_Math_Matrix_ElementwiseMultiply_4 generated for M:Accord.Math.Matrix.ElementwiseMultiply(System.Double[],System.Int32[])
+    Unique name M_Accord_Math_Matrix_ElementwiseMultiply_5 generated for M:Accord.Math.Matrix.ElementwiseMultiply(System.Int32[0:,0:],System.Int32[0:,0:])
+    Unique name M_Accord_Math_Matrix_ElementwiseMultiply_6 generated for M:Accord.Math.Matrix.ElementwiseMultiply(System.Int32[],System.Int32[])
     Unique name M_Accord_Math_Matrix_ElementwisePower_1 generated for M:Accord.Math.Matrix.ElementwisePower(System.Double[],System.Double)
     Unique name M_Accord_Math_Matrix_Exp_1 generated for M:Accord.Math.Matrix.Exp(System.Double[])
     Unique name M_Accord_Math_Matrix_Expand__1_1 generated for M:Accord.Math.Matrix.Expand``1(``0[],System.Int32[])
@@ -585,15 +592,16 @@ Modifying help topic filenames in reflection information file
     Unique name M_Accord_Math_Matrix_Multiply_6 generated for M:Accord.Math.Matrix.Multiply(System.Double[0:,0:],System.Double[])
     Unique name M_Accord_Math_Matrix_Multiply_7 generated for M:Accord.Math.Matrix.Multiply(System.Double[],System.Double)
     Unique name M_Accord_Math_Matrix_Multiply_8 generated for M:Accord.Math.Matrix.Multiply(System.Double[],System.Double[0:,0:])
-    Unique name M_Accord_Math_Matrix_Multiply_9 generated for M:Accord.Math.Matrix.Multiply(System.Double[][],System.Double[][])
-    Unique name M_Accord_Math_Matrix_Multiply_10 generated for M:Accord.Math.Matrix.Multiply(System.Double[][],System.Double[][],System.Double[][])
-    Unique name M_Accord_Math_Matrix_Multiply_11 generated for M:Accord.Math.Matrix.Multiply(System.Int32,System.Double[])
-    Unique name M_Accord_Math_Matrix_Multiply_12 generated for M:Accord.Math.Matrix.Multiply(System.Single[0:,0:],System.Single[0:,0:])
-    Unique name M_Accord_Math_Matrix_Multiply_13 generated for M:Accord.Math.Matrix.Multiply(System.Single[0:,0:],System.Single[0:,0:],System.Single[0:,0:])
-    Unique name M_Accord_Math_Matrix_Multiply_14 generated for M:Accord.Math.Matrix.Multiply(System.Single[0:,0:],System.Single[])
-    Unique name M_Accord_Math_Matrix_Multiply_15 generated for M:Accord.Math.Matrix.Multiply(System.Single[],System.Single[0:,0:])
-    Unique name M_Accord_Math_Matrix_Multiply_16 generated for M:Accord.Math.Matrix.Multiply(System.Single[][],System.Single[][])
-    Unique name M_Accord_Math_Matrix_Multiply_17 generated for M:Accord.Math.Matrix.Multiply(System.Single[][],System.Single[][],System.Single[][])
+    Unique name M_Accord_Math_Matrix_Multiply_9 generated for M:Accord.Math.Matrix.Multiply(System.Double[][],System.Double[])
+    Unique name M_Accord_Math_Matrix_Multiply_10 generated for M:Accord.Math.Matrix.Multiply(System.Double[][],System.Double[][])
+    Unique name M_Accord_Math_Matrix_Multiply_11 generated for M:Accord.Math.Matrix.Multiply(System.Double[][],System.Double[][],System.Double[][])
+    Unique name M_Accord_Math_Matrix_Multiply_12 generated for M:Accord.Math.Matrix.Multiply(System.Int32,System.Double[])
+    Unique name M_Accord_Math_Matrix_Multiply_13 generated for M:Accord.Math.Matrix.Multiply(System.Single[0:,0:],System.Single[0:,0:])
+    Unique name M_Accord_Math_Matrix_Multiply_14 generated for M:Accord.Math.Matrix.Multiply(System.Single[0:,0:],System.Single[0:,0:],System.Single[0:,0:])
+    Unique name M_Accord_Math_Matrix_Multiply_15 generated for M:Accord.Math.Matrix.Multiply(System.Single[0:,0:],System.Single[])
+    Unique name M_Accord_Math_Matrix_Multiply_16 generated for M:Accord.Math.Matrix.Multiply(System.Single[],System.Single[0:,0:])
+    Unique name M_Accord_Math_Matrix_Multiply_17 generated for M:Accord.Math.Matrix.Multiply(System.Single[][],System.Single[][])
+    Unique name M_Accord_Math_Matrix_Multiply_18 generated for M:Accord.Math.Matrix.Multiply(System.Single[][],System.Single[][],System.Single[][])
     Unique name M_Accord_Math_Matrix_MultiplyByDiagonal_1 generated for M:Accord.Math.Matrix.MultiplyByDiagonal(System.Double[0:,0:],System.Double[],System.Double[0:,0:])
     Unique name M_Accord_Math_Matrix_MultiplyByDiagonal_2 generated for M:Accord.Math.Matrix.MultiplyByDiagonal(System.Single[0:,0:],System.Single[])
     Unique name M_Accord_Math_Matrix_MultiplyByDiagonal_3 generated for M:Accord.Math.Matrix.MultiplyByDiagonal(System.Single[0:,0:],System.Single[],System.Single[0:,0:])
@@ -607,6 +615,7 @@ Modifying help topic filenames in reflection information file
     Unique name M_Accord_Math_Matrix_Random_3 generated for M:Accord.Math.Matrix.Random(System.Int32,System.Int32)
     Unique name M_Accord_Math_Matrix_Random_4 generated for M:Accord.Math.Matrix.Random(System.Int32,System.Int32,AForge.Math.Random.IRandomNumberGenerator)
     Unique name M_Accord_Math_Matrix_Random_5 generated for M:Accord.Math.Matrix.Random(System.Int32,System.Int32,System.Double,System.Double)
+    Unique name M_Accord_Math_Matrix_Random_6 generated for M:Accord.Math.Matrix.Random(System.Int32,System.Single,System.Single)
     Unique name M_Accord_Math_Matrix_Range_1 generated for M:Accord.Math.Matrix.Range(System.Double[])
     Unique name M_Accord_Math_Matrix_Range_2 generated for M:Accord.Math.Matrix.Range(System.Double[][])
     Unique name M_Accord_Math_Matrix_Range_3 generated for M:Accord.Math.Matrix.Range(System.Int32[])
@@ -636,10 +645,10 @@ Modifying help topic filenames in reflection information file
     Unique name M_Accord_Math_Matrix_Submatrix__1_12 generated for M:Accord.Math.Matrix.Submatrix``1(``0[][],System.Int32[],System.Int32[])
     Unique name M_Accord_Math_Matrix_Subtract_1 generated for M:Accord.Math.Matrix.Subtract(System.Double,System.Double[])
     Unique name M_Accord_Math_Matrix_Subtract_2 generated for M:Accord.Math.Matrix.Subtract(System.Double[0:,0:],System.Double)
-    Unique name M_Accord_Math_Matrix_Subtract_3 generated for M:Accord.Math.Matrix.Subtract(System.Double[0:,0:],System.Double[0:,0:])
+    Unique name M_Accord_Math_Matrix_Subtract_3 generated for M:Accord.Math.Matrix.Subtract(System.Double[0:,0:],System.Double[0:,0:],System.Boolean)
     Unique name M_Accord_Math_Matrix_Subtract_4 generated for M:Accord.Math.Matrix.Subtract(System.Double[0:,0:],System.Double[],System.Int32)
-    Unique name M_Accord_Math_Matrix_Subtract_5 generated for M:Accord.Math.Matrix.Subtract(System.Double[],System.Double)
-    Unique name M_Accord_Math_Matrix_Subtract_6 generated for M:Accord.Math.Matrix.Subtract(System.Double[],System.Double[])
+    Unique name M_Accord_Math_Matrix_Subtract_5 generated for M:Accord.Math.Matrix.Subtract(System.Double[],System.Double,System.Boolean)
+    Unique name M_Accord_Math_Matrix_Subtract_6 generated for M:Accord.Math.Matrix.Subtract(System.Double[],System.Double[],System.Boolean)
     Unique name M_Accord_Math_Matrix_Subtract_7 generated for M:Accord.Math.Matrix.Subtract(System.Double[][],System.Double[][])
     Unique name M_Accord_Math_Matrix_Sum_1 generated for M:Accord.Math.Matrix.Sum(System.Double[0:,0:],System.Int32)
     Unique name M_Accord_Math_Matrix_Sum_2 generated for M:Accord.Math.Matrix.Sum(System.Double[])
@@ -770,10 +779,12 @@ Modifying help topic filenames in reflection information file
     Unique name M_Accord_Math_Decompositions_SingularValueDecompositionF__ctor_3 generated for M:Accord.Math.Decompositions.SingularValueDecompositionF.#ctor(System.Single[0:,0:],System.Boolean,System.Boolean,System.Boolean,System.Boolean)
     Unique name M_Accord_Math_Decompositions_SingularValueDecompositionF_Solve_1 generated for M:Accord.Math.Decompositions.SingularValueDecompositionF.Solve(System.Single[])
     Unique name M_Accord_Math_Formats_MatrixFormatter_Format_1 generated for M:Accord.Math.Formats.MatrixFormatter.Format(System.String,System.Object,System.IFormatProvider)
+    Unique name M_Accord_Math_Optimization_AugmentedLagrangianSolver_Minimize_1 generated for M:Accord.Math.Optimization.AugmentedLagrangianSolver.Minimize(System.Func{System.Double[],System.Double},System.Func{System.Double[],System.Double[]})
     Unique name M_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno__ctor_1 generated for M:Accord.Math.Optimization.BroydenFletcherGoldfarbShanno.#ctor(System.Int32,System.Func{System.Double[],System.Double},System.Func{System.Double[],System.Double[]})
     Unique name M_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno__ctor_2 generated for M:Accord.Math.Optimization.BroydenFletcherGoldfarbShanno.#ctor(System.Int32,System.Func{System.Double[],System.Double},System.Func{System.Double[],System.Double[]},System.Func{System.Double[]})
     Unique name M_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno_Minimize_1 generated for M:Accord.Math.Optimization.BroydenFletcherGoldfarbShanno.Minimize(System.Double[])
     Unique name M_Accord_Math_Optimization_ConjugateGradient__ctor_1 generated for M:Accord.Math.Optimization.ConjugateGradient.#ctor(System.Int32,System.Func{System.Double[],System.Double},System.Func{System.Double[],System.Double[]})
+    Unique name M_Accord_Math_Optimization_ConjugateGradient_Minimize_1 generated for M:Accord.Math.Optimization.ConjugateGradient.Minimize(System.Double[])
     Unique name M_Accord_Math_Optimization_GoldfarbIdnaniQuadraticSolver__ctor_1 generated for M:Accord.Math.Optimization.GoldfarbIdnaniQuadraticSolver.#ctor(System.Int32,System.Double[0:,0:],System.Double[],System.Int32)
     Unique name M_Accord_Math_Optimization_GoldfarbIdnaniQuadraticSolver_Maximize_1 generated for M:Accord.Math.Optimization.GoldfarbIdnaniQuadraticSolver.Maximize(System.Double[0:,0:],System.Double[])
     Unique name M_Accord_Math_Optimization_GoldfarbIdnaniQuadraticSolver_Minimize_1 generated for M:Accord.Math.Optimization.GoldfarbIdnaniQuadraticSolver.Minimize(System.Double[0:,0:],System.Double[])
@@ -784,6 +795,8 @@ Modifying help topic filenames in reflection information file
     Unique name M_Accord_Math_Optimization_LineSearchFailedException__ctor_2 generated for M:Accord.Math.Optimization.LineSearchFailedException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)
     Unique name M_Accord_Math_Optimization_LineSearchFailedException__ctor_3 generated for M:Accord.Math.Optimization.LineSearchFailedException.#ctor(System.String)
     Unique name M_Accord_Math_Optimization_LineSearchFailedException__ctor_4 generated for M:Accord.Math.Optimization.LineSearchFailedException.#ctor(System.String,System.Exception)
+    Unique name M_Accord_Math_Optimization_NonlinearConstraint__ctor_1 generated for M:Accord.Math.Optimization.NonlinearConstraint.#ctor(Accord.Math.Optimization.IObjectiveFunction,System.Linq.Expressions.Expression{System.Func{System.Double}},Accord.Math.Optimization.ConstraintType,System.Double,System.Linq.Expressions.Expression{System.Func{System.Double[]}})
+    Unique name M_Accord_Math_Optimization_NonlinearObjectiveFunction__ctor_1 generated for M:Accord.Math.Optimization.NonlinearObjectiveFunction.#ctor(System.Linq.Expressions.Expression{System.Func{System.Double}},System.Linq.Expressions.Expression{System.Func{System.Double[]}})
     Unique name M_Accord_Math_Optimization_QuadraticObjectiveFunction__ctor_1 generated for M:Accord.Math.Optimization.QuadraticObjectiveFunction.#ctor(System.String)
     Unique name M_Accord_Math_Wavelets_CDF97_Backward_1 generated for M:Accord.Math.Wavelets.CDF97.Backward(System.Double[])
     Unique name M_Accord_Math_Wavelets_CDF97_Forward_1 generated for M:Accord.Math.Wavelets.CDF97.Forward(System.Double[])
@@ -921,7 +934,11 @@ Modifying help topic filenames in reflection information file
     Unique name M_Accord_Statistics_Analysis_PartialLeastSquaresAnalysis_TransformOutput_1 generated for M:Accord.Statistics.Analysis.PartialLeastSquaresAnalysis.TransformOutput(System.Double[0:,0:],System.Int32)
     Unique name M_Accord_Statistics_Analysis_PartialLeastSquaresVariables_Transform_1 generated for M:Accord.Statistics.Analysis.PartialLeastSquaresVariables.Transform(System.Double[0:,0:],System.Int32)
     Unique name M_Accord_Statistics_Analysis_PrincipalComponentAnalysis__ctor_1 generated for M:Accord.Statistics.Analysis.PrincipalComponentAnalysis.#ctor(System.Double[0:,0:],Accord.Statistics.Analysis.AnalysisMethod)
+    Unique name M_Accord_Statistics_Analysis_PrincipalComponentAnalysis_Adjust_1 generated for M:Accord.Statistics.Analysis.PrincipalComponentAnalysis.Adjust(System.Double[][],System.Boolean)
     Unique name M_Accord_Statistics_Analysis_PrincipalComponentAnalysis_Transform_1 generated for M:Accord.Statistics.Analysis.PrincipalComponentAnalysis.Transform(System.Double[0:,0:],System.Int32)
+    Unique name M_Accord_Statistics_Analysis_PrincipalComponentAnalysis_Transform_2 generated for M:Accord.Statistics.Analysis.PrincipalComponentAnalysis.Transform(System.Double[],System.Int32)
+    Unique name M_Accord_Statistics_Analysis_PrincipalComponentAnalysis_Transform_3 generated for M:Accord.Statistics.Analysis.PrincipalComponentAnalysis.Transform(System.Double[][])
+    Unique name M_Accord_Statistics_Analysis_PrincipalComponentAnalysis_Transform_4 generated for M:Accord.Statistics.Analysis.PrincipalComponentAnalysis.Transform(System.Double[][],System.Int32)
     Unique name M_Accord_Statistics_Analysis_ReceiverOperatingCharacteristic_Compute_1 generated for M:Accord.Statistics.Analysis.ReceiverOperatingCharacteristic.Compute(System.Double,System.Boolean)
     Unique name M_Accord_Statistics_Analysis_ReceiverOperatingCharacteristic_Compute_2 generated for M:Accord.Statistics.Analysis.ReceiverOperatingCharacteristic.Compute(System.Double[])
     Unique name M_Accord_Statistics_Analysis_ReceiverOperatingCharacteristic_Compute_3 generated for M:Accord.Statistics.Analysis.ReceiverOperatingCharacteristic.Compute(System.Int32)
@@ -1227,7 +1244,7 @@ Modifying help topic filenames in reflection information file
     Unique name M_Accord_Vision_Tracking_TrackingObject__ctor_1 generated for M:Accord.Vision.Tracking.TrackingObject.#ctor(AForge.IntPoint)
     Unique name M_Accord_Vision_Tracking_TrackingObject__ctor_2 generated for M:Accord.Vision.Tracking.TrackingObject.#ctor(System.Drawing.Rectangle,AForge.IntPoint,System.Single)
     Unique name M_Accord_Vision_Tracking_TrackingObject_GetAxis_1 generated for M:Accord.Vision.Tracking.TrackingObject.GetAxis(Accord.Vision.Tracking.AxisOrientation)
-    Last step completed in 00:00:03.8381
+    Last step completed in 00:00:04.1822
 </buildStep>
 <buildStep step="CopyStandardContent">
 Copying standard help content...
@@ -1445,7 +1462,7 @@ C:\Program Files (x86)\Sandcastle\Presentation\vs2005\scripts\script_manifold.js
 C:\Program Files (x86)\Sandcastle\Presentation\vs2005\scripts\SplitScreen.js -&gt; D:\Projects\Accord.NET\Docs\Working\Output\Website\scripts\SplitScreen.js
 C:\Program Files (x86)\Sandcastle\Presentation\vs2005\styles\Presentation.css -&gt; D:\Projects\Accord.NET\Docs\Working\Output\Website\styles\Presentation.css
 C:\Program Files (x86)\Sandcastle\Presentation\vs2005\styles\Whidbey\presentation.css -&gt; D:\Projects\Accord.NET\Docs\Working\Output\Website\styles\Whidbey\presentation.css
-    Last step completed in 00:00:02.0620
+    Last step completed in 00:00:02.0831
 </buildStep>
 <buildStep step="CopyAdditionalContent">
 Copying additional content files...
@@ -1493,11 +1510,11 @@ D:\Projects\Accord.NET\Sources\Accord.Docs\Accord.Documentation\resources\Accord
 D:\Projects\Accord.NET\Sources\Accord.Docs\Accord.Documentation\resources\Accord.NET (logo large).png -&gt; D:\Projects\Accord.NET\Docs\Working\Output\Website\resources\Accord.NET (logo large).png
 D:\Projects\Accord.NET\Sources\Accord.Docs\Accord.Documentation\Resources\Accord.NET (logo small).png -&gt; D:\Projects\Accord.NET\Docs\Working\Output\HtmlHelp1\Resources\Accord.NET (logo small).png
 D:\Projects\Accord.NET\Sources\Accord.Docs\Accord.Documentation\Resources\Accord.NET (logo small).png -&gt; D:\Projects\Accord.NET\Docs\Working\Output\Website\Resources\Accord.NET (logo small).png
-    Last step completed in 00:00:00.2700
+    Last step completed in 00:00:00.7430
 </buildStep>
 <buildStep step="MergeTablesOfContents">
 Merging conceptual and additional tables of contents...
-    Last step completed in 00:00:00.0000
+    Last step completed in 00:00:00.0040
 </buildStep>
 <buildStep step="GenerateIntermediateTableOfContents">
 Generating intermediate table of contents file...
@@ -1510,12 +1527,12 @@ Generating conceptual content intermediate TOC file...
 <plugIn name="Hierarchical Table of Contents" behavior="After" priority="1000">
 Retrieving namespace topic title from shared content...
 Creating namespace hierarchy...
-</plugIn>    Last step completed in 00:00:02.3881
+</plugIn>    Last step completed in 00:00:02.5641
 </buildStep>
 <buildStep step="CreateBuildAssemblerConfigs">
 Creating Sandcastle configuration files...
     sandcastle.config
-    Last step completed in 00:00:00.0400
+    Last step completed in 00:00:00.1240
 </buildStep>
 <buildStep step="MergeCustomConfigs">
 Merging custom build component configurations
@@ -1528,7 +1545,7 @@ D:\Projects\Accord.NET\Docs\Working\sandcastle.config
     Replaced configuration for &#39;Microsoft.Ddue.Tools.ResolveReferenceLinksComponent2&#39; (instance 1) with configuration for &#39;Cached MSDN URL References&#39;
     Replaced configuration for &#39;Microsoft.Ddue.Tools.CopyFromIndexComponent&#39; (instance 3) with configuration for &#39;Cached Framework Comments Index Data&#39;
     Replaced configuration for &#39;Microsoft.Ddue.Tools.CopyFromIndexComponent&#39; (instance 1) with configuration for &#39;Cached Reflection Index Data&#39;
-    Last step completed in 00:00:00.1880
+    Last step completed in 00:00:00.2610
 </buildStep>
 <buildStep step="BuildReferenceTopics">
 Building reference help topics...
@@ -1539,7 +1556,7 @@ Building reference help topics...
   Info: CopyFromFileComponent: Loading data file &#39;C:\Program Files (x86)\Sandcastle\Presentation\vs2005\Transforms\skeleton.xml&#39;.
   Info: CachedCopyFromIndexComponent: Instantiating component.
   Info: CachedCopyFromIndexComponent: Searching for files that match &#39;reflection.xml&#39;.
-  Info: CachedCopyFromIndexComponent: Indexed 7165 elements in 1 files.
+  Info: CachedCopyFromIndexComponent: Indexed 7296 elements in 1 files.
   Info: CachedCopyFromIndexComponent: Loaded 0 copy components.
   Info: CachedCopyFromIndexComponent: 
       [Sandcastle Help File Builder, version 1.9.3.0]
@@ -1599,12 +1616,11 @@ Building reference help topics...
   Info: CachedCopyFromIndexComponent: Searching for files that match &#39;D:\Projects\Accord.NET\Docs\Working\Accord.MachineLearning.GPL.XML&#39;.
   Info: CachedCopyFromIndexComponent: Searching for files that match &#39;D:\Projects\Accord.NET\Docs\Working\Accord.MachineLearning.XML&#39;.
   Info: CachedCopyFromIndexComponent: Searching for files that match &#39;D:\Projects\Accord.NET\Docs\Working\Accord.Math.XML&#39;.
-  Info: CachedCopyFromIndexComponent: Searching for files that match &#39;D:\Projects\Accord.NET\Docs\Working\Accord.Music.XML&#39;.
   Info: CachedCopyFromIndexComponent: Searching for files that match &#39;D:\Projects\Accord.NET\Docs\Working\Accord.Neuro.XML&#39;.
   Info: CachedCopyFromIndexComponent: Searching for files that match &#39;D:\Projects\Accord.NET\Docs\Working\Accord.Statistics.XML&#39;.
   Info: CachedCopyFromIndexComponent: Searching for files that match &#39;D:\Projects\Accord.NET\Docs\Working\Accord.Vision.XML&#39;.
   Info: CachedCopyFromIndexComponent: Searching for files that match &#39;D:\Projects\Accord.NET\Docs\Working\Accord.xml&#39;.
-  Info: CachedCopyFromIndexComponent: Indexed 5278 elements in 17 files.
+  Info: CachedCopyFromIndexComponent: Indexed 5280 elements in 16 files.
   Info: CachedCopyFromIndexComponent: Loaded 0 copy components.
   Info: CachedCopyFromIndexComponent: 
       [Sandcastle Help File Builder, version 1.9.3.0]
@@ -1691,7 +1707,7 @@ Building reference help topics...
   Info: CachedResolveReferenceLinksComponent: Creating MSDN URL resolver.
   Info: CachedResolveReferenceLinksComponent: Searching directory &#39;C:\Program Files (x86)\Sandcastle\Data\Reflection&#39; for targets files of the form &#39;*.xml&#39;.
   Info: CachedResolveReferenceLinksComponent: Searching directory &#39;D:\Projects\Accord.NET\Docs\Working&#39; for targets files of the form &#39;reflection.xml&#39;.
-  Info: CachedResolveReferenceLinksComponent: Loaded 209909 reference targets.
+  Info: CachedResolveReferenceLinksComponent: Loaded 210040 reference targets.
   Info: CachedResolveReferenceLinksComponent: 
       [Sandcastle Help File Builder, version 1.9.3.0]
       Cached Resolve Reference  Links 2 Component.  Copyright &#184; 2006-2011, Eric Woodruff, All Rights Reserved
@@ -1740,7 +1756,7 @@ Building reference help topics...
   Info: CachedResolveReferenceLinksComponent: Creating MSDN URL resolver.
   Info: CachedResolveReferenceLinksComponent: Searching directory &#39;C:\Program Files (x86)\Sandcastle\Data\Reflection&#39; for targets files of the form &#39;*.xml&#39;.
   Info: CachedResolveReferenceLinksComponent: Searching directory &#39;D:\Projects\Accord.NET\Docs\Working&#39; for targets files of the form &#39;reflection.xml&#39;.
-  Info: CachedResolveReferenceLinksComponent: Loaded 209909 reference targets.
+  Info: CachedResolveReferenceLinksComponent: Loaded 210040 reference targets.
   Info: CachedResolveReferenceLinksComponent: 
       [Sandcastle Help File Builder, version 1.9.3.0]
       Cached Resolve Reference  Links 2 Component.  Copyright &#184; 2006-2011, Eric Woodruff, All Rights Reserved
@@ -4465,6 +4481,21 @@ Building reference help topics...
   Info: BuildAssembler: Building topic P:Accord.MachineLearning.KMeansClusterCollection.Centroids
   Info: BuildAssembler: Building topic P:Accord.MachineLearning.KMeansClusterCollection.Covariances
   Info: BuildAssembler: Building topic P:Accord.MachineLearning.KMeansClusterCollection.Proportions
+  Info: BuildAssembler: Building topic T:Accord.MachineLearning.KNearestNeighbor
+  Info: BuildAssembler: Building topic AllMembers.T:Accord.MachineLearning.KNearestNeighbor
+  Info: BuildAssembler: Building topic Methods.T:Accord.MachineLearning.KNearestNeighbor
+  Info: BuildAssembler: Building topic Properties.T:Accord.MachineLearning.KNearestNeighbor
+  Info: BuildAssembler: Building topic M:Accord.MachineLearning.KNearestNeighbor.#ctor(System.Int32,System.Double[][],System.Int32[])
+  Info: BuildAssembler: Building topic T:Accord.MachineLearning.KNearestNeighbor`1
+  Info: BuildAssembler: Building topic AllMembers.T:Accord.MachineLearning.KNearestNeighbor`1
+  Info: BuildAssembler: Building topic Methods.T:Accord.MachineLearning.KNearestNeighbor`1
+  Info: BuildAssembler: Building topic Properties.T:Accord.MachineLearning.KNearestNeighbor`1
+  Info: BuildAssembler: Building topic M:Accord.MachineLearning.KNearestNeighbor`1.#ctor(System.Int32,`0[][],System.Int32[],System.Func{`0[],`0[],System.Double})
+  Info: BuildAssembler: Building topic M:Accord.MachineLearning.KNearestNeighbor`1.Compute(`0[])
+  Info: BuildAssembler: Building topic P:Accord.MachineLearning.KNearestNeighbor`1.Distance
+  Info: BuildAssembler: Building topic P:Accord.MachineLearning.KNearestNeighbor`1.Inputs
+  Info: BuildAssembler: Building topic P:Accord.MachineLearning.KNearestNeighbor`1.K
+  Info: BuildAssembler: Building topic P:Accord.MachineLearning.KNearestNeighbor`1.Outputs
   Info: BuildAssembler: Building topic T:Accord.MachineLearning.ModelStorageMode
   Info: BuildAssembler: Building topic T:Accord.MachineLearning.RANSAC`1
   Info: BuildAssembler: Building topic AllMembers.T:Accord.MachineLearning.RANSAC`1
@@ -4650,10 +4681,31 @@ Building reference help topics...
   Info: BuildAssembler: Building topic M:Accord.MachineLearning.VectorMachines.MulticlassSupportVectorMachine.Load(System.String)
   Info: BuildAssembler: Building topic P:Accord.MachineLearning.VectorMachines.MulticlassSupportVectorMachine.Machines
   Info: BuildAssembler: Building topic P:Accord.MachineLearning.VectorMachines.MulticlassSupportVectorMachine.MachinesCount
+  Info: BuildAssembler: Building topic M:Accord.MachineLearning.VectorMachines.MulticlassSupportVectorMachine.Reset
   Info: BuildAssembler: Building topic M:Accord.MachineLearning.VectorMachines.MulticlassSupportVectorMachine.Save(System.IO.Stream)
   Info: BuildAssembler: Building topic M:Accord.MachineLearning.VectorMachines.MulticlassSupportVectorMachine.Save(System.String)
   Info: BuildAssembler: Building topic P:Accord.MachineLearning.VectorMachines.MulticlassSupportVectorMachine.SupportVectorCount
   Info: BuildAssembler: Building topic P:Accord.MachineLearning.VectorMachines.MulticlassSupportVectorMachine.SupportVectorUniqueCount
+  Info: BuildAssembler: Building topic T:Accord.MachineLearning.VectorMachines.MultilabelSupportVectorMachine
+  Info: BuildAssembler: Building topic AllMembers.T:Accord.MachineLearning.VectorMachines.MultilabelSupportVectorMachine
+  Info: BuildAssembler: Building topic Methods.T:Accord.MachineLearning.VectorMachines.MultilabelSupportVectorMachine
+  Info: BuildAssembler: Building topic Properties.T:Accord.MachineLearning.VectorMachines.MultilabelSupportVectorMachine
+  Info: BuildAssembler: Building topic Overload:Accord.MachineLearning.VectorMachines.MultilabelSupportVectorMachine.#ctor
+  Info: BuildAssembler: Building topic Overload:Accord.MachineLearning.VectorMachines.MultilabelSupportVectorMachine.Compute
+  Info: BuildAssembler: Building topic Overload:Accord.MachineLearning.VectorMachines.MultilabelSupportVectorMachine.Load
+  Info: BuildAssembler: Building topic Overload:Accord.MachineLearning.VectorMachines.MultilabelSupportVectorMachine.Save
+  Info: BuildAssembler: Building topic M:Accord.MachineLearning.VectorMachines.MultilabelSupportVectorMachine.#ctor(Accord.MachineLearning.VectorMachines.KernelSupportVectorMachine[])
+  Info: BuildAssembler: Building topic M:Accord.MachineLearning.VectorMachines.MultilabelSupportVectorMachine.#ctor(System.Int32,Accord.Statistics.Kernels.IKernel,System.Int32)
+  Info: BuildAssembler: Building topic P:Accord.MachineLearning.VectorMachines.MultilabelSupportVectorMachine.Classes
+  Info: BuildAssembler: Building topic M:Accord.MachineLearning.VectorMachines.MultilabelSupportVectorMachine.Compute(System.Double[])
+  Info: BuildAssembler: Building topic M:Accord.MachineLearning.VectorMachines.MultilabelSupportVectorMachine.Compute(System.Double[],System.Double[]@)
+  Info: BuildAssembler: Building topic P:Accord.MachineLearning.VectorMachines.MultilabelSupportVectorMachine.Inputs
+  Info: BuildAssembler: Building topic P:Accord.MachineLearning.VectorMachines.MultilabelSupportVectorMachine.IsProbabilistic
+  Info: BuildAssembler: Building topic M:Accord.MachineLearning.VectorMachines.MultilabelSupportVectorMachine.Load(System.IO.Stream)
+  Info: BuildAssembler: Building topic M:Accord.MachineLearning.VectorMachines.MultilabelSupportVectorMachine.Load(System.String)
+  Info: BuildAssembler: Building topic P:Accord.MachineLearning.VectorMachines.MultilabelSupportVectorMachine.Machines
+  Info: BuildAssembler: Building topic M:Accord.MachineLearning.VectorMachines.MultilabelSupportVectorMachine.Save(System.IO.Stream)
+  Info: BuildAssembler: Building topic M:Accord.MachineLearning.VectorMachines.MultilabelSupportVectorMachine.Save(System.String)
   Info: BuildAssembler: Building topic T:Accord.MachineLearning.VectorMachines.SupportVectorMachine
   Info: BuildAssembler: Building topic AllMembers.T:Accord.MachineLearning.VectorMachines.SupportVectorMachine
   Info: BuildAssembler: Building topic Methods.T:Accord.MachineLearning.VectorMachines.SupportVectorMachine
@@ -4722,6 +4774,45 @@ Building reference help topics...
   Info: BuildAssembler: Building topic M:Accord.MachineLearning.VectorMachines.Learning.MulticlassSupportVectorLearning.Run(System.Boolean)
   Info: BuildAssembler: Building topic E:Accord.MachineLearning.VectorMachines.Learning.MulticlassSupportVectorLearning.SubproblemFinished
   Info: BuildAssembler: Building topic E:Accord.MachineLearning.VectorMachines.Learning.MulticlassSupportVectorLearning.SubproblemStarted
+  Info: BuildAssembler: Building topic T:Accord.MachineLearning.VectorMachines.Learning.MultilabelSupportVectorLearning
+  Info: BuildAssembler: Building topic AllMembers.T:Accord.MachineLearning.VectorMachines.Learning.MultilabelSupportVectorLearning
+  Warn: CachedResolveReferenceLinksComponent: Unknown reference link target &#39;E:SubproblemFinished&#39;.
+  Warn: CachedResolveReferenceLinksComponent: Invalid reference link target &#39;E:SubproblemFinished&#39;.
+  Warn: CachedResolveReferenceLinksComponent: Unknown reference link target &#39;E:SubproblemStarted&#39;.
+  Warn: CachedResolveReferenceLinksComponent: Invalid reference link target &#39;E:SubproblemStarted&#39;.
+  Warn: CachedResolveReferenceLinksComponent: Unknown reference link target &#39;E:SubproblemFinished&#39;.
+  Warn: CachedResolveReferenceLinksComponent: Invalid reference link target &#39;E:SubproblemFinished&#39;.
+  Warn: CachedResolveReferenceLinksComponent: Unknown reference link target &#39;E:SubproblemStarted&#39;.
+  Warn: CachedResolveReferenceLinksComponent: Invalid reference link target &#39;E:SubproblemStarted&#39;.
+  Info: BuildAssembler: Building topic Methods.T:Accord.MachineLearning.VectorMachines.Learning.MultilabelSupportVectorLearning
+  Warn: CachedResolveReferenceLinksComponent: Unknown reference link target &#39;E:SubproblemFinished&#39;.
+  Warn: CachedResolveReferenceLinksComponent: Invalid reference link target &#39;E:SubproblemFinished&#39;.
+  Warn: CachedResolveReferenceLinksComponent: Unknown reference link target &#39;E:SubproblemStarted&#39;.
+  Warn: CachedResolveReferenceLinksComponent: Invalid reference link target &#39;E:SubproblemStarted&#39;.
+  Warn: CachedResolveReferenceLinksComponent: Unknown reference link target &#39;E:SubproblemFinished&#39;.
+  Warn: CachedResolveReferenceLinksComponent: Invalid reference link target &#39;E:SubproblemFinished&#39;.
+  Warn: CachedResolveReferenceLinksComponent: Unknown reference link target &#39;E:SubproblemStarted&#39;.
+  Warn: CachedResolveReferenceLinksComponent: Invalid reference link target &#39;E:SubproblemStarted&#39;.
+  Info: BuildAssembler: Building topic Properties.T:Accord.MachineLearning.VectorMachines.Learning.MultilabelSupportVectorLearning
+  Info: BuildAssembler: Building topic Events.T:Accord.MachineLearning.VectorMachines.Learning.MultilabelSupportVectorLearning
+  Info: BuildAssembler: Building topic Overload:Accord.MachineLearning.VectorMachines.Learning.MultilabelSupportVectorLearning.Run
+  Info: BuildAssembler: Building topic M:Accord.MachineLearning.VectorMachines.Learning.MultilabelSupportVectorLearning.#ctor(Accord.MachineLearning.VectorMachines.MultilabelSupportVectorMachine,System.Double[][],System.Int32[][])
+  Info: BuildAssembler: Building topic P:Accord.MachineLearning.VectorMachines.Learning.MultilabelSupportVectorLearning.Algorithm
+  Info: BuildAssembler: Building topic M:Accord.MachineLearning.VectorMachines.Learning.MultilabelSupportVectorLearning.ComputeError(System.Double[][],System.Int32[][])
+  Info: BuildAssembler: Building topic M:Accord.MachineLearning.VectorMachines.Learning.MultilabelSupportVectorLearning.OnSubproblemFinished(Accord.MachineLearning.VectorMachines.Learning.SubproblemEventArgs)
+  Warn: CachedResolveReferenceLinksComponent: Unknown reference link target &#39;E:SubproblemFinished&#39;.
+  Warn: CachedResolveReferenceLinksComponent: Invalid reference link target &#39;E:SubproblemFinished&#39;.
+  Warn: CachedResolveReferenceLinksComponent: Unknown reference link target &#39;E:SubproblemFinished&#39;.
+  Warn: CachedResolveReferenceLinksComponent: Invalid reference link target &#39;E:SubproblemFinished&#39;.
+  Info: BuildAssembler: Building topic M:Accord.MachineLearning.VectorMachines.Learning.MultilabelSupportVectorLearning.OnSubproblemStarted(Accord.MachineLearning.VectorMachines.Learning.SubproblemEventArgs)
+  Warn: CachedResolveReferenceLinksComponent: Unknown reference link target &#39;E:SubproblemStarted&#39;.
+  Warn: CachedResolveReferenceLinksComponent: Invalid reference link target &#39;E:SubproblemStarted&#39;.
+  Warn: CachedResolveReferenceLinksComponent: Unknown reference link target &#39;E:SubproblemStarted&#39;.
+  Warn: CachedResolveReferenceLinksComponent: Invalid reference link target &#39;E:SubproblemStarted&#39;.
+  Info: BuildAssembler: Building topic M:Accord.MachineLearning.VectorMachines.Learning.MultilabelSupportVectorLearning.Run
+  Info: BuildAssembler: Building topic M:Accord.MachineLearning.VectorMachines.Learning.MultilabelSupportVectorLearning.Run(System.Boolean)
+  Info: BuildAssembler: Building topic E:Accord.MachineLearning.VectorMachines.Learning.MultilabelSupportVectorLearning.SubproblemFinished
+  Info: BuildAssembler: Building topic E:Accord.MachineLearning.VectorMachines.Learning.MultilabelSupportVectorLearning.SubproblemStarted
   Info: BuildAssembler: Building topic T:Accord.MachineLearning.VectorMachines.Learning.ProbabilisticOutputLearning
   Info: BuildAssembler: Building topic AllMembers.T:Accord.MachineLearning.VectorMachines.Learning.ProbabilisticOutputLearning
   Info: BuildAssembler: Building topic Methods.T:Accord.MachineLearning.VectorMachines.Learning.ProbabilisticOutputLearning
@@ -4745,6 +4836,7 @@ Building reference help topics...
   Info: BuildAssembler: Building topic M:Accord.MachineLearning.VectorMachines.Learning.SequentialMinimalOptimization.ComputeError(System.Double[][],System.Int32[])
   Info: BuildAssembler: Building topic P:Accord.MachineLearning.VectorMachines.Learning.SequentialMinimalOptimization.Epsilon
   Info: BuildAssembler: Building topic M:Accord.MachineLearning.VectorMachines.Learning.SequentialMinimalOptimization.EstimateComplexity(Accord.Statistics.Kernels.IKernel,System.Double[][])
+  Info: BuildAssembler: Building topic P:Accord.MachineLearning.VectorMachines.Learning.SequentialMinimalOptimization.Lagrange
   Info: BuildAssembler: Building topic P:Accord.MachineLearning.VectorMachines.Learning.SequentialMinimalOptimization.NonBoundExamples
   Info: BuildAssembler: Building topic M:Accord.MachineLearning.VectorMachines.Learning.SequentialMinimalOptimization.Run
   Info: BuildAssembler: Building topic M:Accord.MachineLearning.VectorMachines.Learning.SequentialMinimalOptimization.Run(System.Boolean)
@@ -4773,6 +4865,14 @@ Building reference help topics...
   Info: BuildAssembler: Building topic P:Accord.MachineLearning.VectorMachines.Learning.SubproblemEventArgs.Maximum
   Info: BuildAssembler: Building topic P:Accord.MachineLearning.VectorMachines.Learning.SubproblemEventArgs.Progress
   Info: BuildAssembler: Building topic T:Accord.MachineLearning.VectorMachines.Learning.SupportVectorMachineLearningConfigurationFunction
+  Info: BuildAssembler: Building topic T:Accord.MachineLearning.VectorMachines.Learning.SupportVectorReduction
+  Info: BuildAssembler: Building topic AllMembers.T:Accord.MachineLearning.VectorMachines.Learning.SupportVectorReduction
+  Info: BuildAssembler: Building topic Methods.T:Accord.MachineLearning.VectorMachines.Learning.SupportVectorReduction
+  Info: BuildAssembler: Building topic Overload:Accord.MachineLearning.VectorMachines.Learning.SupportVectorReduction.Run
+  Info: BuildAssembler: Building topic M:Accord.MachineLearning.VectorMachines.Learning.SupportVectorReduction.#ctor(Accord.MachineLearning.VectorMachines.KernelSupportVectorMachine)
+  Info: BuildAssembler: Building topic M:Accord.MachineLearning.VectorMachines.Learning.SupportVectorReduction.ComputeError(System.Double[][],System.Int32[])
+  Info: BuildAssembler: Building topic M:Accord.MachineLearning.VectorMachines.Learning.SupportVectorReduction.Run
+  Info: BuildAssembler: Building topic M:Accord.MachineLearning.VectorMachines.Learning.SupportVectorReduction.Run(System.Boolean)
   Info: BuildAssembler: Building topic N:Accord.Math
   Info: BuildAssembler: Building topic T:Accord.Math.Bessel
   Info: BuildAssembler: Building topic AllMembers.T:Accord.Math.Bessel
@@ -4832,6 +4932,7 @@ Building reference help topics...
   Info: BuildAssembler: Building topic M:Accord.Math.Distance.Bhattacharyya(System.Double[0:,0:],System.Double[0:,0:])
   Info: BuildAssembler: Building topic M:Accord.Math.Distance.Bhattacharyya(System.Double[],System.Double[0:,0:],System.Double[],System.Double[0:,0:])
   Info: BuildAssembler: Building topic M:Accord.Math.Distance.Bhattacharyya(System.Double[],System.Double[])
+  Info: BuildAssembler: Building topic M:Accord.Math.Distance.Chebyshev(System.Double[],System.Double[])
   Info: BuildAssembler: Building topic M:Accord.Math.Distance.Euclidean(System.Double,System.Double,System.Double,System.Double)
   Info: BuildAssembler: Building topic M:Accord.Math.Distance.Euclidean(System.Double[],System.Double[])
   Info: BuildAssembler: Building topic M:Accord.Math.Distance.Mahalanobis(System.Double[],System.Double[],System.Double[0:,0:])
@@ -4963,6 +5064,7 @@ Building reference help topics...
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Add(System.Double[],System.Double)
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Add(System.Double[],System.Double[])
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Add(System.Double[][],System.Double[][])
+  Info: BuildAssembler: Building topic M:Accord.Math.Matrix.AddToDiagonal(System.Double[0:,0:],System.Double,System.Boolean)
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Apply``2(``0[0:,0:],System.Func{``0,``1})
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Apply``2(``0[],System.Func{``0,``1})
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.ApplyInPlace``1(``0[0:,0:],System.Func{``0,``0})
@@ -5003,7 +5105,7 @@ Building reference help topics...
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Divide(System.Double,System.Double[0:,0:])
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Divide(System.Double,System.Double[])
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Divide(System.Double,System.Double[],System.Boolean)
-  Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Divide(System.Double[0:,0:],System.Double)
+  Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Divide(System.Double[0:,0:],System.Double,System.Boolean)
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Divide(System.Double[0:,0:],System.Double[0:,0:])
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Divide(System.Double[],System.Double,System.Boolean)
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Divide(System.Int32,System.Double[],System.Boolean)
@@ -5021,6 +5123,7 @@ Building reference help topics...
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.ElementwiseMultiply(System.Double[0:,0:],System.Double[],System.Double[0:,0:],System.Int32)
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.ElementwiseMultiply(System.Double[0:,0:],System.Double[],System.Int32)
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.ElementwiseMultiply(System.Double[],System.Double[])
+  Info: BuildAssembler: Building topic M:Accord.Math.Matrix.ElementwiseMultiply(System.Double[],System.Int32[])
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.ElementwiseMultiply(System.Int32[0:,0:],System.Int32[0:,0:])
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.ElementwiseMultiply(System.Int32[],System.Int32[])
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.ElementwisePower(System.Double[0:,0:],System.Double)
@@ -5132,6 +5235,7 @@ Building reference help topics...
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Multiply(System.Double[0:,0:],System.Double[])
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Multiply(System.Double[],System.Double)
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Multiply(System.Double[],System.Double[0:,0:])
+  Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Multiply(System.Double[][],System.Double[])
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Multiply(System.Double[][],System.Double[][])
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Multiply(System.Double[][],System.Double[][],System.Double[][])
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Multiply(System.Int32,System.Double[])
@@ -5175,6 +5279,7 @@ Building reference help topics...
   Warn: CachedResolveReferenceLinksComponent: Unknown reference link target &#39;T:AForge.Math.Random.IRandomNumberGenerator&#39;.
   Warn: CachedResolveReferenceLinksComponent: Unknown reference link target &#39;T:AForge.Math.Random.IRandomNumberGenerator&#39;.
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Random(System.Int32,System.Int32,System.Double,System.Double)
+  Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Random(System.Int32,System.Single,System.Single)
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Range(System.Double[0:,0:])
   Warn: CachedResolveReferenceLinksComponent: Unknown reference link target &#39;T:AForge.DoubleRange&#39;.
   Warn: CachedResolveReferenceLinksComponent: Unknown reference link target &#39;T:AForge.DoubleRange&#39;.
@@ -5201,6 +5306,7 @@ Building reference help topics...
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.RemoveAt``1(``0[],System.Int32)
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.RemoveColumn``1(``0[0:,0:],System.Int32)
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.RemoveColumn``1(``0[][],System.Int32)
+  Info: BuildAssembler: Building topic M:Accord.Math.Matrix.RemoveRow``1(``0[0:,0:],System.Int32)
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Reshape``1(``0[0:,0:],System.Int32)
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Reshape``1(``0[],System.Int32,System.Int32)
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Reshape``1(``0[][],System.Int32)
@@ -5209,6 +5315,7 @@ Building reference help topics...
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.RowVector``1(``0[])
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.SetColumn``1(``0[0:,0:],System.Int32,``0[])
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.SetRow``1(``0[0:,0:],System.Int32,``0[])
+  Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Sign(System.Double[])
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Solve(System.Double[0:,0:],System.Double[0:,0:])
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Solve(System.Double[0:,0:],System.Double[])
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Sort``2(``0[],``1[0:,0:],System.Collections.Generic.IComparer{``0})
@@ -5237,10 +5344,10 @@ Building reference help topics...
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Subtract(System.Double,System.Double[0:,0:])
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Subtract(System.Double,System.Double[])
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Subtract(System.Double[0:,0:],System.Double)
-  Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Subtract(System.Double[0:,0:],System.Double[0:,0:])
+  Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Subtract(System.Double[0:,0:],System.Double[0:,0:],System.Boolean)
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Subtract(System.Double[0:,0:],System.Double[],System.Int32)
-  Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Subtract(System.Double[],System.Double)
-  Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Subtract(System.Double[],System.Double[])
+  Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Subtract(System.Double[],System.Double,System.Boolean)
+  Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Subtract(System.Double[],System.Double[],System.Boolean)
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Subtract(System.Double[][],System.Double[][])
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Sum(System.Double[0:,0:])
   Info: BuildAssembler: Building topic M:Accord.Math.Matrix.Sum(System.Double[0:,0:],System.Int32)
@@ -5327,6 +5434,14 @@ Building reference help topics...
   Info: BuildAssembler: Building topic M:Accord.Math.Normal.HighAccuracyComplemented(System.Double)
   Info: BuildAssembler: Building topic M:Accord.Math.Normal.HighAccuracyFunction(System.Double)
   Info: BuildAssembler: Building topic M:Accord.Math.Normal.Inverse(System.Double)
+  Info: BuildAssembler: Building topic T:Accord.Math.ReducedRowEchelonForm
+  Info: BuildAssembler: Building topic AllMembers.T:Accord.Math.ReducedRowEchelonForm
+  Info: BuildAssembler: Building topic Methods.T:Accord.Math.ReducedRowEchelonForm
+  Info: BuildAssembler: Building topic Properties.T:Accord.Math.ReducedRowEchelonForm
+  Info: BuildAssembler: Building topic M:Accord.Math.ReducedRowEchelonForm.#ctor(System.Double[0:,0:],System.Boolean)
+  Info: BuildAssembler: Building topic P:Accord.Math.ReducedRowEchelonForm.FreeVariables
+  Info: BuildAssembler: Building topic P:Accord.Math.ReducedRowEchelonForm.Pivot
+  Info: BuildAssembler: Building topic P:Accord.Math.ReducedRowEchelonForm.Result
   Info: BuildAssembler: Building topic T:Accord.Math.Special
   Info: BuildAssembler: Building topic AllMembers.T:Accord.Math.Special
   Info: BuildAssembler: Building topic Methods.T:Accord.Math.Special
@@ -6242,6 +6357,21 @@ Building reference help topics...
   Warn: CachedResolveReferenceLinksComponent: Unknown reference link target &#39;T:AForge.DoubleRange&#39;.
   Warn: CachedResolveReferenceLinksComponent: Unknown reference link target &#39;T:AForge.DoubleRange&#39;.
   Info: BuildAssembler: Building topic N:Accord.Math.Optimization
+  Info: BuildAssembler: Building topic T:Accord.Math.Optimization.AugmentedLagrangianSolver
+  Info: BuildAssembler: Building topic AllMembers.T:Accord.Math.Optimization.AugmentedLagrangianSolver
+  Info: BuildAssembler: Building topic Methods.T:Accord.Math.Optimization.AugmentedLagrangianSolver
+  Info: BuildAssembler: Building topic Properties.T:Accord.Math.Optimization.AugmentedLagrangianSolver
+  Info: BuildAssembler: Building topic Overload:Accord.Math.Optimization.AugmentedLagrangianSolver.Minimize
+  Info: BuildAssembler: Building topic M:Accord.Math.Optimization.AugmentedLagrangianSolver.#ctor(System.Int32,System.Collections.Generic.IEnumerable{Accord.Math.Optimization.NonlinearConstraint})
+  Info: BuildAssembler: Building topic P:Accord.Math.Optimization.AugmentedLagrangianSolver.Evaluations
+  Info: BuildAssembler: Building topic P:Accord.Math.Optimization.AugmentedLagrangianSolver.Function
+  Info: BuildAssembler: Building topic P:Accord.Math.Optimization.AugmentedLagrangianSolver.Gradient
+  Info: BuildAssembler: Building topic P:Accord.Math.Optimization.AugmentedLagrangianSolver.Iterations
+  Info: BuildAssembler: Building topic P:Accord.Math.Optimization.AugmentedLagrangianSolver.MaxEvaluations
+  Info: BuildAssembler: Building topic M:Accord.Math.Optimization.AugmentedLagrangianSolver.Minimize(Accord.Math.Optimization.NonlinearObjectiveFunction)
+  Info: BuildAssembler: Building topic M:Accord.Math.Optimization.AugmentedLagrangianSolver.Minimize(System.Func{System.Double[],System.Double},System.Func{System.Double[],System.Double[]})
+  Info: BuildAssembler: Building topic P:Accord.Math.Optimization.AugmentedLagrangianSolver.Parameters
+  Info: BuildAssembler: Building topic P:Accord.Math.Optimization.AugmentedLagrangianSolver.Solution
   Info: BuildAssembler: Building topic T:Accord.Math.Optimization.BroydenFletcherGoldfarbShanno
   Info: BuildAssembler: Building topic AllMembers.T:Accord.Math.Optimization.BroydenFletcherGoldfarbShanno
   Info: BuildAssembler: Building topic Methods.T:Accord.Math.Optimization.BroydenFletcherGoldfarbShanno
@@ -6258,6 +6388,7 @@ Building reference help topics...
   Info: BuildAssembler: Building topic P:Accord.Math.Optimization.BroydenFletcherGoldfarbShanno.Function
   Info: BuildAssembler: Building topic P:Accord.Math.Optimization.BroydenFletcherGoldfarbShanno.Gradient
   Info: BuildAssembler: Building topic P:Accord.Math.Optimization.BroydenFletcherGoldfarbShanno.Iterations
+  Info: BuildAssembler: Building topic P:Accord.Math.Optimization.BroydenFletcherGoldfarbShanno.LowerBounds
   Info: BuildAssembler: Building topic P:Accord.Math.Optimization.BroydenFletcherGoldfarbShanno.MaxIterations
   Info: BuildAssembler: Building topic M:Accord.Math.Optimization.BroydenFletcherGoldfarbShanno.Minimize
   Info: BuildAssembler: Building topic M:Accord.Math.Optimization.BroydenFletcherGoldfarbShanno.Minimize(System.Double[])
@@ -6266,6 +6397,7 @@ Building reference help topics...
   Info: BuildAssembler: Building topic E:Accord.Math.Optimization.BroydenFletcherGoldfarbShanno.Progress
   Info: BuildAssembler: Building topic P:Accord.Math.Optimization.BroydenFletcherGoldfarbShanno.Solution
   Info: BuildAssembler: Building topic P:Accord.Math.Optimization.BroydenFletcherGoldfarbShanno.Tolerance
+  Info: BuildAssembler: Building topic P:Accord.Math.Optimization.BroydenFletcherGoldfarbShanno.UpperBounds
   Info: BuildAssembler: Building topic P:Accord.Math.Optimization.BroydenFletcherGoldfarbShanno.Value
   Info: BuildAssembler: Building topic T:Accord.Math.Optimization.ConjugateGradient
   Info: BuildAssembler: Building topic AllMembers.T:Accord.Math.Optimization.ConjugateGradient
@@ -6273,6 +6405,7 @@ Building reference help topics...
   Info: BuildAssembler: Building topic Properties.T:Accord.Math.Optimization.ConjugateGradient
   Info: BuildAssembler: Building topic Events.T:Accord.Math.Optimization.ConjugateGradient
   Info: BuildAssembler: Building topic Overload:Accord.Math.Optimization.ConjugateGradient.#ctor
+  Info: BuildAssembler: Building topic Overload:Accord.Math.Optimization.ConjugateGradient.Minimize
   Info: BuildAssembler: Building topic M:Accord.Math.Optimization.ConjugateGradient.#ctor(System.Int32)
   Info: BuildAssembler: Building topic M:Accord.Math.Optimization.ConjugateGradient.#ctor(System.Int32,System.Func{System.Double[],System.Double},System.Func{System.Double[],System.Double[]})
   Info: BuildAssembler: Building topic P:Accord.Math.Optimization.ConjugateGradient.Evaluations
@@ -6281,6 +6414,7 @@ Building reference help topics...
   Info: BuildAssembler: Building topic P:Accord.Math.Optimization.ConjugateGradient.Iterations
   Info: BuildAssembler: Building topic P:Accord.Math.Optimization.ConjugateGradient.MaxIterations
   Info: BuildAssembler: Building topic P:Accord.Math.Optimization.ConjugateGradient.Method
+  Info: BuildAssembler: Building topic M:Accord.Math.Optimization.ConjugateGradient.Minimize
   Info: BuildAssembler: Building topic M:Accord.Math.Optimization.ConjugateGradient.Minimize(System.Double[])
   Info: BuildAssembler: Building topic P:Accord.Math.Optimization.ConjugateGradient.Parameters
   Info: BuildAssembler: Building topic E:Accord.Math.Optimization.ConjugateGradient.Progress
@@ -6317,6 +6451,7 @@ Building reference help topics...
   Info: BuildAssembler: Building topic T:Accord.Math.Optimization.IObjectiveFunction
   Info: BuildAssembler: Building topic AllMembers.T:Accord.Math.Optimization.IObjectiveFunction
   Info: BuildAssembler: Building topic Properties.T:Accord.Math.Optimization.IObjectiveFunction
+  Info: BuildAssembler: Building topic P:Accord.Math.Optimization.IObjectiveFunction.Function
   Info: BuildAssembler: Building topic P:Accord.Math.Optimization.IObjectiveFunction.Indices
   Info: BuildAssembler: Building topic P:Accord.Math.Optimization.IObjectiveFunction.NumberOfVariables
   Info: BuildAssembler: Building topic P:Accord.Math.Optimization.IObjectiveFunction.Variables
@@ -6353,6 +6488,32 @@ Building reference help topics...
   Info: BuildAssembler: Building topic M:Accord.Math.Optimization.LineSearchFailedException.#ctor(System.String,System.Exception)
   Info: BuildAssembler: Building topic M:Accord.Math.Optimization.LineSearchFailedException.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)
   Info: BuildAssembler: Building topic P:Accord.Math.Optimization.LineSearchFailedException.Information
+  Info: BuildAssembler: Building topic T:Accord.Math.Optimization.NonlinearConstraint
+  Info: BuildAssembler: Building topic AllMembers.T:Accord.Math.Optimization.NonlinearConstraint
+  Info: BuildAssembler: Building topic Methods.T:Accord.Math.Optimization.NonlinearConstraint
+  Info: BuildAssembler: Building topic Properties.T:Accord.Math.Optimization.NonlinearConstraint
+  Info: BuildAssembler: Building topic Overload:Accord.Math.Optimization.NonlinearConstraint.#ctor
+  Info: BuildAssembler: Building topic M:Accord.Math.Optimization.NonlinearConstraint.#ctor(Accord.Math.Optimization.IObjectiveFunction,System.Func{System.Double[],System.Double},Accord.Math.Optimization.ConstraintType,System.Double,System.Func{System.Double[],System.Double[]})
+  Info: BuildAssembler: Building topic M:Accord.Math.Optimization.NonlinearConstraint.#ctor(Accord.Math.Optimization.IObjectiveFunction,System.Linq.Expressions.Expression{System.Func{System.Double}},Accord.Math.Optimization.ConstraintType,System.Double,System.Linq.Expressions.Expression{System.Func{System.Double[]}})
+  Info: BuildAssembler: Building topic P:Accord.Math.Optimization.NonlinearConstraint.Function
+  Info: BuildAssembler: Building topic M:Accord.Math.Optimization.NonlinearConstraint.GetViolation(System.Double[])
+  Info: BuildAssembler: Building topic P:Accord.Math.Optimization.NonlinearConstraint.Gradient
+  Info: BuildAssembler: Building topic P:Accord.Math.Optimization.NonlinearConstraint.NumberOfVariables
+  Info: BuildAssembler: Building topic P:Accord.Math.Optimization.NonlinearConstraint.ShouldBe
+  Info: BuildAssembler: Building topic P:Accord.Math.Optimization.NonlinearConstraint.Tolerance
+  Info: BuildAssembler: Building topic P:Accord.Math.Optimization.NonlinearConstraint.Value
+  Info: BuildAssembler: Building topic T:Accord.Math.Optimization.NonlinearObjectiveFunction
+  Info: BuildAssembler: Building topic AllMembers.T:Accord.Math.Optimization.NonlinearObjectiveFunction
+  Info: BuildAssembler: Building topic Methods.T:Accord.Math.Optimization.NonlinearObjectiveFunction
+  Info: BuildAssembler: Building topic Properties.T:Accord.Math.Optimization.NonlinearObjectiveFunction
+  Info: BuildAssembler: Building topic Overload:Accord.Math.Optimization.NonlinearObjectiveFunction.#ctor
+  Info: BuildAssembler: Building topic M:Accord.Math.Optimization.NonlinearObjectiveFunction.#ctor(System.Int32,System.Func{System.Double[],System.Double},System.Func{System.Double[],System.Double[]})
+  Info: BuildAssembler: Building topic M:Accord.Math.Optimization.NonlinearObjectiveFunction.#ctor(System.Linq.Expressions.Expression{System.Func{System.Double}},System.Linq.Expressions.Expression{System.Func{System.Double[]}})
+  Info: BuildAssembler: Building topic P:Accord.Math.Optimization.NonlinearObjectiveFunction.Function
+  Info: BuildAssembler: Building topic P:Accord.Math.Optimization.NonlinearObjectiveFunction.Gradient
+  Info: BuildAssembler: Building topic P:Accord.Math.Optimization.NonlinearObjectiveFunction.Indices
+  Info: BuildAssembler: Building topic P:Accord.Math.Optimization.NonlinearObjectiveFunction.NumberOfVariables
+  Info: BuildAssembler: Building topic P:Accord.Math.Optimization.NonlinearObjectiveFunction.Variables
   Info: BuildAssembler: Building topic T:Accord.Math.Optimization.OptimizationProgressEventArgs
   Info: BuildAssembler: Building topic AllMembers.T:Accord.Math.Optimization.OptimizationProgressEventArgs
   Info: BuildAssembler: Building topic Methods.T:Accord.Math.Optimization.OptimizationProgressEventArgs
@@ -6374,6 +6535,7 @@ Building reference help topics...
   Info: BuildAssembler: Building topic Overload:Accord.Math.Optimization.QuadraticObjectiveFunction.#ctor
   Info: BuildAssembler: Building topic M:Accord.Math.Optimization.QuadraticObjectiveFunction.#ctor(System.Linq.Expressions.Expression{System.Func{System.Double}})
   Info: BuildAssembler: Building topic M:Accord.Math.Optimization.QuadraticObjectiveFunction.#ctor(System.String)
+  Info: BuildAssembler: Building topic P:Accord.Math.Optimization.QuadraticObjectiveFunction.Function
   Info: BuildAssembler: Building topic M:Accord.Math.Optimization.QuadraticObjectiveFunction.GetLinearTermsVector
   Info: BuildAssembler: Building topic M:Accord.Math.Optimization.QuadraticObjectiveFunction.GetQuadraticTermsMatrix
   Info: BuildAssembler: Building topic P:Accord.Math.Optimization.QuadraticObjectiveFunction.Indices
@@ -6963,6 +7125,7 @@ Building reference help topics...
   Info: BuildAssembler: Building topic Overload:Accord.Statistics.Analysis.KernelPrincipalComponentAnalysis.Compute
   Info: BuildAssembler: Building topic Overload:Accord.Statistics.Analysis.KernelPrincipalComponentAnalysis.Revert
   Info: BuildAssembler: Building topic Overload:Accord.Statistics.Analysis.KernelPrincipalComponentAnalysis.Transform
+  Info: BuildAssembler: Building topic Overload:Accord.Statistics.Analysis.KernelPrincipalComponentAnalysis.Adjust
   Info: BuildAssembler: Building topic M:Accord.Statistics.Analysis.KernelPrincipalComponentAnalysis.#ctor(System.Double[0:,0:],Accord.Statistics.Kernels.IKernel)
   Info: BuildAssembler: Building topic M:Accord.Statistics.Analysis.KernelPrincipalComponentAnalysis.#ctor(System.Double[0:,0:],Accord.Statistics.Kernels.IKernel,Accord.Statistics.Analysis.AnalysisMethod)
   Info: BuildAssembler: Building topic M:Accord.Statistics.Analysis.KernelPrincipalComponentAnalysis.#ctor(System.Double[0:,0:],Accord.Statistics.Kernels.IKernel,Accord.Statistics.Analysis.AnalysisMethod,System.Boolean)
@@ -7144,10 +7307,12 @@ Building reference help topics...
   Info: BuildAssembler: Building topic Methods.T:Accord.Statistics.Analysis.PrincipalComponentAnalysis
   Info: BuildAssembler: Building topic Properties.T:Accord.Statistics.Analysis.PrincipalComponentAnalysis
   Info: BuildAssembler: Building topic Overload:Accord.Statistics.Analysis.PrincipalComponentAnalysis.#ctor
+  Info: BuildAssembler: Building topic Overload:Accord.Statistics.Analysis.PrincipalComponentAnalysis.Adjust
   Info: BuildAssembler: Building topic Overload:Accord.Statistics.Analysis.PrincipalComponentAnalysis.Transform
   Info: BuildAssembler: Building topic M:Accord.Statistics.Analysis.PrincipalComponentAnalysis.#ctor(System.Double[0:,0:])
   Info: BuildAssembler: Building topic M:Accord.Statistics.Analysis.PrincipalComponentAnalysis.#ctor(System.Double[0:,0:],Accord.Statistics.Analysis.AnalysisMethod)
   Info: BuildAssembler: Building topic M:Accord.Statistics.Analysis.PrincipalComponentAnalysis.Adjust(System.Double[0:,0:],System.Boolean)
+  Info: BuildAssembler: Building topic M:Accord.Statistics.Analysis.PrincipalComponentAnalysis.Adjust(System.Double[][],System.Boolean)
   Info: BuildAssembler: Building topic P:Accord.Statistics.Analysis.PrincipalComponentAnalysis.ComponentMatrix
   Info: BuildAssembler: Building topic P:Accord.Statistics.Analysis.PrincipalComponentAnalysis.ComponentProportions
   Info: BuildAssembler: Building topic P:Accord.Statistics.Analysis.PrincipalComponentAnalysis.Components
@@ -7155,6 +7320,8 @@ Building reference help topics...
   Info: BuildAssembler: Building topic M:Accord.Statistics.Analysis.PrincipalComponentAnalysis.CreateComponents
   Info: BuildAssembler: Building topic P:Accord.Statistics.Analysis.PrincipalComponentAnalysis.CumulativeProportions
   Info: BuildAssembler: Building topic P:Accord.Statistics.Analysis.PrincipalComponentAnalysis.Eigenvalues
+  Info: BuildAssembler: Building topic M:Accord.Statistics.Analysis.PrincipalComponentAnalysis.FromCorrelationMatrix(System.Double[],System.Double[],System.Double[0:,0:])
+  Info: BuildAssembler: Building topic M:Accord.Statistics.Analysis.PrincipalComponentAnalysis.FromCovarianceMatrix(System.Double[],System.Double[0:,0:])
   Info: BuildAssembler: Building topic M:Accord.Statistics.Analysis.PrincipalComponentAnalysis.GetNumberOfComponents(System.Single)
   Info: BuildAssembler: Building topic P:Accord.Statistics.Analysis.PrincipalComponentAnalysis.Means
   Info: BuildAssembler: Building topic P:Accord.Statistics.Analysis.PrincipalComponentAnalysis.Method
@@ -7166,6 +7333,9 @@ Building reference help topics...
   Info: BuildAssembler: Building topic P:Accord.Statistics.Analysis.PrincipalComponentAnalysis.StandardDeviations
   Info: BuildAssembler: Building topic M:Accord.Statistics.Analysis.PrincipalComponentAnalysis.Transform(System.Double[0:,0:])
   Info: BuildAssembler: Building topic M:Accord.Statistics.Analysis.PrincipalComponentAnalysis.Transform(System.Double[0:,0:],System.Int32)
+  Info: BuildAssembler: Building topic M:Accord.Statistics.Analysis.PrincipalComponentAnalysis.Transform(System.Double[],System.Int32)
+  Info: BuildAssembler: Building topic M:Accord.Statistics.Analysis.PrincipalComponentAnalysis.Transform(System.Double[][])
+  Info: BuildAssembler: Building topic M:Accord.Statistics.Analysis.PrincipalComponentAnalysis.Transform(System.Double[][],System.Int32)
   Info: BuildAssembler: Building topic T:Accord.Statistics.Analysis.PrincipalComponentCollection
   Info: BuildAssembler: Building topic AllMembers.T:Accord.Statistics.Analysis.PrincipalComponentCollection
   Info: BuildAssembler: Building topic Methods.T:Accord.Statistics.Analysis.PrincipalComponentCollection
@@ -9196,6 +9366,7 @@ Building reference help topics...
   Info: BuildAssembler: Building topic M:Accord.Statistics.Models.Markov.BaseHiddenMarkovClassifier`1.LogLikelihood(System.Array[],System.Int32[])
   Info: BuildAssembler: Building topic P:Accord.Statistics.Models.Markov.BaseHiddenMarkovClassifier`1.Models
   Info: BuildAssembler: Building topic P:Accord.Statistics.Models.Markov.BaseHiddenMarkovClassifier`1.Priors
+  Info: BuildAssembler: Building topic P:Accord.Statistics.Models.Markov.BaseHiddenMarkovClassifier`1.Sensitivity
   Info: BuildAssembler: Building topic P:Accord.Statistics.Models.Markov.BaseHiddenMarkovClassifier`1.Threshold
   Info: BuildAssembler: Building topic T:Accord.Statistics.Models.Markov.BaseHiddenMarkovModel
   Info: BuildAssembler: Building topic AllMembers.T:Accord.Statistics.Models.Markov.BaseHiddenMarkovModel
@@ -10424,16 +10595,16 @@ Building reference help topics...
   Info: BuildAssembler: Building topic P:Accord.Vision.Tracking.TrackingObject.Rectangle
   Info: BuildAssembler: Building topic M:Accord.Vision.Tracking.TrackingObject.Reset
   Info: BuildAssembler: Building topic P:Accord.Vision.Tracking.TrackingObject.Tag
-  Info: Processed 7070 topics
+  Info: Processed 7201 topics
   Info: CachedCopyFromIndexComponent: Used &quot;reflection&quot; cache entries: 10
   Info: CachedCopyFromIndexComponent: Used &quot;comments&quot; cache entries: 20
-    Last step completed in 00:06:40.5172
+    Last step completed in 00:06:52.6241
 </buildStep>
 <buildStep step="CombiningIntermediateTocFiles">
 Combining conceptual and API intermediate TOC files...
 
 Clearing any prior web output
-    Last step completed in 00:00:03.7042
+    Last step completed in 00:00:04.0092
 </buildStep>
 <buildStep step="ExtractingHtmlInfo">
 Extracting HTML info for HTML Help 1 and/or website...
@@ -10445,21 +10616,21 @@ E-Mail: Eric@EWoodruff.us
 Using LCID &#39;1033&#39;, code page &#39;65001&#39;, encoding charset &#39;UTF-8&#39;.
 
 Processing Help 1 files in D:\Projects\Accord.NET\Docs\Working\Output\HtmlHelp1
-Processed 7070 HTML files
+Processed 7201 HTML files
 Sorting keywords and generating See Also indices
 Saving HTML Help 1 keyword index to D:\Projects\Accord.NET\Docs\Working\Accord.NET.hhk
 Saving HTML Help 1 table of contents to D:\Projects\Accord.NET\Docs\Working\Accord.NET.hhc
 
 Processing website files in D:\Projects\Accord.NET\Docs\Working\Output\Website
-Processed 7070 HTML files
+Processed 7201 HTML files
 Sorting keywords and generating See Also indices
 Saving website keyword index to D:\Projects\Accord.NET\Docs\Working\WebKI.xml
 Saving website table of contents to D:\Projects\Accord.NET\Docs\Working\WebTOC.xml
-    Last step completed in 00:01:07.4661
+    Last step completed in 00:00:08.7204
 </buildStep>
 <buildStep step="GenerateHelpFormatTableOfContents">
 Generating HTML Help 1 table of contents file...
-    Last step completed in 00:00:00.0100
+    Last step completed in 00:00:00.0156
 </buildStep>
 <buildStep step="GenerateHelpFileIndex">
 Generating HTML Help 1 index file...
@@ -10467,7 +10638,7 @@ Generating HTML Help 1 index file...
 </buildStep>
 <buildStep step="GenerateHelpProject">
 Generating HTML Help 1 project file...
-    Last step completed in 00:00:00.1900
+    Last step completed in 00:00:00.2340
 </buildStep>
 <buildStep step="CompilingHelpFile">
 Compiling HTML Help 1 file...
@@ -10482,13 +10653,13 @@ Compiling HTML Help 1 file...
   
   
   
-  Compile time: 2 minutes, 2 seconds
+  Compile time: 2 minutes, 23 seconds
   
-  7,072	Topics
+  7,203	Topics
   
-  87,277	Local links
+  88,914	Local links
   
-  59,842	Internet links
+  60,788	Internet links
   
   0	Graphics
   
@@ -10496,20 +10667,20 @@ Compiling HTML Help 1 file...
   
   
   
-  Created d:\Projects\Accord.NET\Docs\Working\Output\HtmlHelp1\Accord.NET.chm, 14,602,898 bytes
+  Created d:\Projects\Accord.NET\Docs\Working\Output\HtmlHelp1\Accord.NET.chm, 16,296,582 bytes
   
-  Compression decreased file by 95,960,209 bytes.
+  Compression decreased file by 114,132,436 bytes.
   
-    Last step completed in 00:02:04.8782
+    Last step completed in 00:02:26.9367
 </buildStep>
 <buildStep step="GenerateHelpFormatTableOfContents">
 Generating website table of contents file...
-    Last step completed in 00:00:00.0010
+    Last step completed in 00:00:00.0000
 </buildStep>
 <buildStep step="GenerateFullTextIndex">
 Generating full-text index for the website...
 
-    Last step completed in 00:00:47.7462
+    Last step completed in 00:00:57.5953
 </buildStep>
 <buildStep step="CopyingWebsiteFiles">
 Copying website files to output folder...
@@ -10686,16 +10857,21 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_Mach
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_MachineLearning_KMeans.htm -&gt; D:\Projects\Accord.NET\Docs\html\AllMembers_T_Accord_MachineLearning_KMeans.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_MachineLearning_KMeansCluster.htm -&gt; D:\Projects\Accord.NET\Docs\html\AllMembers_T_Accord_MachineLearning_KMeansCluster.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_MachineLearning_KMeansClusterCollection.htm -&gt; D:\Projects\Accord.NET\Docs\html\AllMembers_T_Accord_MachineLearning_KMeansClusterCollection.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_MachineLearning_KNearestNeighbor.htm -&gt; D:\Projects\Accord.NET\Docs\html\AllMembers_T_Accord_MachineLearning_KNearestNeighbor.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_MachineLearning_KNearestNeighbor_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\AllMembers_T_Accord_MachineLearning_KNearestNeighbor_1.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_MachineLearning_RANSAC_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\AllMembers_T_Accord_MachineLearning_RANSAC_1.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_MachineLearning_VectorMachines_ISupportVectorMachine.htm -&gt; D:\Projects\Accord.NET\Docs\html\AllMembers_T_Accord_MachineLearning_VectorMachines_ISupportVectorMachine.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_MachineLearning_VectorMachines_KernelSupportVectorMachine.htm -&gt; D:\Projects\Accord.NET\Docs\html\AllMembers_T_Accord_MachineLearning_VectorMachines_KernelSupportVectorMachine.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_MachineLearning_VectorMachines_Learning_ISupportVectorMachineLearning.htm -&gt; D:\Projects\Accord.NET\Docs\html\AllMembers_T_Accord_MachineLearning_VectorMachines_Learning_ISupportVectorMachineLearning.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_MachineLearning_VectorMachines_Learning_MulticlassSupportVectorLearning.htm -&gt; D:\Projects\Accord.NET\Docs\html\AllMembers_T_Accord_MachineLearning_VectorMachines_Learning_MulticlassSupportVectorLearning.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_MachineLearning_VectorMachines_Learning_MultilabelSupportVectorLearning.htm -&gt; D:\Projects\Accord.NET\Docs\html\AllMembers_T_Accord_MachineLearning_VectorMachines_Learning_MultilabelSupportVectorLearning.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_MachineLearning_VectorMachines_Learning_ProbabilisticOutputLearning.htm -&gt; D:\Projects\Accord.NET\Docs\html\AllMembers_T_Accord_MachineLearning_VectorMachines_Learning_ProbabilisticOutputLearning.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimization.htm -&gt; D:\Projects\Accord.NET\Docs\html\AllMembers_T_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimization.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimizationRegression.htm -&gt; D:\Projects\Accord.NET\Docs\html\AllMembers_T_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimizationRegression.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_MachineLearning_VectorMachines_Learning_SubproblemEventArgs.htm -&gt; D:\Projects\Accord.NET\Docs\html\AllMembers_T_Accord_MachineLearning_VectorMachines_Learning_SubproblemEventArgs.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_MachineLearning_VectorMachines_Learning_SupportVectorReduction.htm -&gt; D:\Projects\Accord.NET\Docs\html\AllMembers_T_Accord_MachineLearning_VectorMachines_Learning_SupportVectorReduction.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine.htm -&gt; D:\Projects\Accord.NET\Docs\html\AllMembers_T_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine.htm -&gt; D:\Projects\Accord.NET\Docs\html\AllMembers_T_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_MachineLearning_VectorMachines_SupportVectorMachine.htm -&gt; D:\Projects\Accord.NET\Docs\html\AllMembers_T_Accord_MachineLearning_VectorMachines_SupportVectorMachine.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_Math_Bessel.htm -&gt; D:\Projects\Accord.NET\Docs\html\AllMembers_T_Accord_Math_Bessel.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_Math_Beta.htm -&gt; D:\Projects\Accord.NET\Docs\html\AllMembers_T_Accord_Math_Beta.htm
@@ -10743,6 +10919,7 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_Math
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_Math_Matrix.htm -&gt; D:\Projects\Accord.NET\Docs\html\AllMembers_T_Accord_Math_Matrix.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_Math_Norm.htm -&gt; D:\Projects\Accord.NET\Docs\html\AllMembers_T_Accord_Math_Norm.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_Math_Normal.htm -&gt; D:\Projects\Accord.NET\Docs\html\AllMembers_T_Accord_Math_Normal.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_Math_Optimization_AugmentedLagrangianSolver.htm -&gt; D:\Projects\Accord.NET\Docs\html\AllMembers_T_Accord_Math_Optimization_AugmentedLagrangianSolver.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno.htm -&gt; D:\Projects\Accord.NET\Docs\html\AllMembers_T_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_Math_Optimization_ConjugateGradient.htm -&gt; D:\Projects\Accord.NET\Docs\html\AllMembers_T_Accord_Math_Optimization_ConjugateGradient.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_Math_Optimization_GoldfarbIdnaniQuadraticSolver.htm -&gt; D:\Projects\Accord.NET\Docs\html\AllMembers_T_Accord_Math_Optimization_GoldfarbIdnaniQuadraticSolver.htm
@@ -10750,8 +10927,11 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_Math
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_Math_Optimization_IOptimizationMethod.htm -&gt; D:\Projects\Accord.NET\Docs\html\AllMembers_T_Accord_Math_Optimization_IOptimizationMethod.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_Math_Optimization_LinearConstraint.htm -&gt; D:\Projects\Accord.NET\Docs\html\AllMembers_T_Accord_Math_Optimization_LinearConstraint.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_Math_Optimization_LineSearchFailedException.htm -&gt; D:\Projects\Accord.NET\Docs\html\AllMembers_T_Accord_Math_Optimization_LineSearchFailedException.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_Math_Optimization_NonlinearConstraint.htm -&gt; D:\Projects\Accord.NET\Docs\html\AllMembers_T_Accord_Math_Optimization_NonlinearConstraint.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_Math_Optimization_NonlinearObjectiveFunction.htm -&gt; D:\Projects\Accord.NET\Docs\html\AllMembers_T_Accord_Math_Optimization_NonlinearObjectiveFunction.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_Math_Optimization_OptimizationProgressEventArgs.htm -&gt; D:\Projects\Accord.NET\Docs\html\AllMembers_T_Accord_Math_Optimization_OptimizationProgressEventArgs.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_Math_Optimization_QuadraticObjectiveFunction.htm -&gt; D:\Projects\Accord.NET\Docs\html\AllMembers_T_Accord_Math_Optimization_QuadraticObjectiveFunction.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_Math_ReducedRowEchelonForm.htm -&gt; D:\Projects\Accord.NET\Docs\html\AllMembers_T_Accord_Math_ReducedRowEchelonForm.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_Math_Special.htm -&gt; D:\Projects\Accord.NET\Docs\html\AllMembers_T_Accord_Math_Special.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_Math_StableComparer_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\AllMembers_T_Accord_Math_StableComparer_1.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\AllMembers_T_Accord_Math_Tools.htm -&gt; D:\Projects\Accord.NET\Docs\html\AllMembers_T_Accord_Math_Tools.htm
@@ -11065,6 +11245,7 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Events_T_Accord_DirectSo
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Events_T_Accord_DirectSound_AudioOutputDevice.htm -&gt; D:\Projects\Accord.NET\Docs\html\Events_T_Accord_DirectSound_AudioOutputDevice.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Events_T_Accord_DirectSound_WaveFileAudioSource.htm -&gt; D:\Projects\Accord.NET\Docs\html\Events_T_Accord_DirectSound_WaveFileAudioSource.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Events_T_Accord_MachineLearning_VectorMachines_Learning_MulticlassSupportVectorLearning.htm -&gt; D:\Projects\Accord.NET\Docs\html\Events_T_Accord_MachineLearning_VectorMachines_Learning_MulticlassSupportVectorLearning.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Events_T_Accord_MachineLearning_VectorMachines_Learning_MultilabelSupportVectorLearning.htm -&gt; D:\Projects\Accord.NET\Docs\html\Events_T_Accord_MachineLearning_VectorMachines_Learning_MultilabelSupportVectorLearning.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Events_T_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno.htm -&gt; D:\Projects\Accord.NET\Docs\html\Events_T_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Events_T_Accord_Math_Optimization_ConjugateGradient.htm -&gt; D:\Projects\Accord.NET\Docs\html\Events_T_Accord_Math_Optimization_ConjugateGradient.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Events_T_Accord_Math_Optimization_LineSearchFailedException.htm -&gt; D:\Projects\Accord.NET\Docs\html\Events_T_Accord_Math_Optimization_LineSearchFailedException.htm
@@ -11109,6 +11290,8 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\E_Accord_DirectSound_Wav
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\E_Accord_DirectSound_WaveFileAudioSource_NewFrame.htm -&gt; D:\Projects\Accord.NET\Docs\html\E_Accord_DirectSound_WaveFileAudioSource_NewFrame.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\E_Accord_MachineLearning_VectorMachines_Learning_MulticlassSupportVectorLearning_SubproblemFinished.htm -&gt; D:\Projects\Accord.NET\Docs\html\E_Accord_MachineLearning_VectorMachines_Learning_MulticlassSupportVectorLearning_SubproblemFinished.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\E_Accord_MachineLearning_VectorMachines_Learning_MulticlassSupportVectorLearning_SubproblemStarted.htm -&gt; D:\Projects\Accord.NET\Docs\html\E_Accord_MachineLearning_VectorMachines_Learning_MulticlassSupportVectorLearning_SubproblemStarted.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\E_Accord_MachineLearning_VectorMachines_Learning_MultilabelSupportVectorLearning_SubproblemFinished.htm -&gt; D:\Projects\Accord.NET\Docs\html\E_Accord_MachineLearning_VectorMachines_Learning_MultilabelSupportVectorLearning_SubproblemFinished.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\E_Accord_MachineLearning_VectorMachines_Learning_MultilabelSupportVectorLearning_SubproblemStarted.htm -&gt; D:\Projects\Accord.NET\Docs\html\E_Accord_MachineLearning_VectorMachines_Learning_MultilabelSupportVectorLearning_SubproblemStarted.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\E_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno_Progress.htm -&gt; D:\Projects\Accord.NET\Docs\html\E_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno_Progress.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\E_Accord_Math_Optimization_ConjugateGradient_Progress.htm -&gt; D:\Projects\Accord.NET\Docs\html\E_Accord_Math_Optimization_ConjugateGradient_Progress.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\E_Accord_Statistics_Models_Fields_Learning_ConjugateGradientHiddenLearning_1_ProgressChanged.htm -&gt; D:\Projects\Accord.NET\Docs\html\E_Accord_Statistics_Models_Fields_Learning_ConjugateGradientHiddenLearning_1_ProgressChanged.htm
@@ -11269,16 +11452,21 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_Machine
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_MachineLearning_KMeans.htm -&gt; D:\Projects\Accord.NET\Docs\html\Methods_T_Accord_MachineLearning_KMeans.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_MachineLearning_KMeansCluster.htm -&gt; D:\Projects\Accord.NET\Docs\html\Methods_T_Accord_MachineLearning_KMeansCluster.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_MachineLearning_KMeansClusterCollection.htm -&gt; D:\Projects\Accord.NET\Docs\html\Methods_T_Accord_MachineLearning_KMeansClusterCollection.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_MachineLearning_KNearestNeighbor.htm -&gt; D:\Projects\Accord.NET\Docs\html\Methods_T_Accord_MachineLearning_KNearestNeighbor.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_MachineLearning_KNearestNeighbor_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\Methods_T_Accord_MachineLearning_KNearestNeighbor_1.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_MachineLearning_RANSAC_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\Methods_T_Accord_MachineLearning_RANSAC_1.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_MachineLearning_VectorMachines_ISupportVectorMachine.htm -&gt; D:\Projects\Accord.NET\Docs\html\Methods_T_Accord_MachineLearning_VectorMachines_ISupportVectorMachine.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_MachineLearning_VectorMachines_KernelSupportVectorMachine.htm -&gt; D:\Projects\Accord.NET\Docs\html\Methods_T_Accord_MachineLearning_VectorMachines_KernelSupportVectorMachine.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_MachineLearning_VectorMachines_Learning_ISupportVectorMachineLearning.htm -&gt; D:\Projects\Accord.NET\Docs\html\Methods_T_Accord_MachineLearning_VectorMachines_Learning_ISupportVectorMachineLearning.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_MachineLearning_VectorMachines_Learning_MulticlassSupportVectorLearning.htm -&gt; D:\Projects\Accord.NET\Docs\html\Methods_T_Accord_MachineLearning_VectorMachines_Learning_MulticlassSupportVectorLearning.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_MachineLearning_VectorMachines_Learning_MultilabelSupportVectorLearning.htm -&gt; D:\Projects\Accord.NET\Docs\html\Methods_T_Accord_MachineLearning_VectorMachines_Learning_MultilabelSupportVectorLearning.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_MachineLearning_VectorMachines_Learning_ProbabilisticOutputLearning.htm -&gt; D:\Projects\Accord.NET\Docs\html\Methods_T_Accord_MachineLearning_VectorMachines_Learning_ProbabilisticOutputLearning.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimization.htm -&gt; D:\Projects\Accord.NET\Docs\html\Methods_T_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimization.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimizationRegression.htm -&gt; D:\Projects\Accord.NET\Docs\html\Methods_T_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimizationRegression.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_MachineLearning_VectorMachines_Learning_SubproblemEventArgs.htm -&gt; D:\Projects\Accord.NET\Docs\html\Methods_T_Accord_MachineLearning_VectorMachines_Learning_SubproblemEventArgs.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_MachineLearning_VectorMachines_Learning_SupportVectorReduction.htm -&gt; D:\Projects\Accord.NET\Docs\html\Methods_T_Accord_MachineLearning_VectorMachines_Learning_SupportVectorReduction.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine.htm -&gt; D:\Projects\Accord.NET\Docs\html\Methods_T_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine.htm -&gt; D:\Projects\Accord.NET\Docs\html\Methods_T_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_MachineLearning_VectorMachines_SupportVectorMachine.htm -&gt; D:\Projects\Accord.NET\Docs\html\Methods_T_Accord_MachineLearning_VectorMachines_SupportVectorMachine.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_Math_Bessel.htm -&gt; D:\Projects\Accord.NET\Docs\html\Methods_T_Accord_Math_Bessel.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_Math_Beta.htm -&gt; D:\Projects\Accord.NET\Docs\html\Methods_T_Accord_Math_Beta.htm
@@ -11325,14 +11513,18 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_Math_Hi
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_Math_Matrix.htm -&gt; D:\Projects\Accord.NET\Docs\html\Methods_T_Accord_Math_Matrix.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_Math_Norm.htm -&gt; D:\Projects\Accord.NET\Docs\html\Methods_T_Accord_Math_Norm.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_Math_Normal.htm -&gt; D:\Projects\Accord.NET\Docs\html\Methods_T_Accord_Math_Normal.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_Math_Optimization_AugmentedLagrangianSolver.htm -&gt; D:\Projects\Accord.NET\Docs\html\Methods_T_Accord_Math_Optimization_AugmentedLagrangianSolver.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno.htm -&gt; D:\Projects\Accord.NET\Docs\html\Methods_T_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_Math_Optimization_ConjugateGradient.htm -&gt; D:\Projects\Accord.NET\Docs\html\Methods_T_Accord_Math_Optimization_ConjugateGradient.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_Math_Optimization_GoldfarbIdnaniQuadraticSolver.htm -&gt; D:\Projects\Accord.NET\Docs\html\Methods_T_Accord_Math_Optimization_GoldfarbIdnaniQuadraticSolver.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_Math_Optimization_IOptimizationMethod.htm -&gt; D:\Projects\Accord.NET\Docs\html\Methods_T_Accord_Math_Optimization_IOptimizationMethod.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_Math_Optimization_LinearConstraint.htm -&gt; D:\Projects\Accord.NET\Docs\html\Methods_T_Accord_Math_Optimization_LinearConstraint.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_Math_Optimization_LineSearchFailedException.htm -&gt; D:\Projects\Accord.NET\Docs\html\Methods_T_Accord_Math_Optimization_LineSearchFailedException.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_Math_Optimization_NonlinearConstraint.htm -&gt; D:\Projects\Accord.NET\Docs\html\Methods_T_Accord_Math_Optimization_NonlinearConstraint.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_Math_Optimization_NonlinearObjectiveFunction.htm -&gt; D:\Projects\Accord.NET\Docs\html\Methods_T_Accord_Math_Optimization_NonlinearObjectiveFunction.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_Math_Optimization_OptimizationProgressEventArgs.htm -&gt; D:\Projects\Accord.NET\Docs\html\Methods_T_Accord_Math_Optimization_OptimizationProgressEventArgs.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_Math_Optimization_QuadraticObjectiveFunction.htm -&gt; D:\Projects\Accord.NET\Docs\html\Methods_T_Accord_Math_Optimization_QuadraticObjectiveFunction.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_Math_ReducedRowEchelonForm.htm -&gt; D:\Projects\Accord.NET\Docs\html\Methods_T_Accord_Math_ReducedRowEchelonForm.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_Math_Special.htm -&gt; D:\Projects\Accord.NET\Docs\html\Methods_T_Accord_Math_Special.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_Math_StableComparer_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\Methods_T_Accord_Math_StableComparer_1.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Methods_T_Accord_Math_Tools.htm -&gt; D:\Projects\Accord.NET\Docs\html\Methods_T_Accord_Math_Tools.htm
@@ -12314,6 +12506,9 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_KMeans_Randomize.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_KMeans_Randomize.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_KMeans__ctor.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_KMeans__ctor.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_KMeans__ctor_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_KMeans__ctor_1.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_KNearestNeighbor_1_Compute.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_KNearestNeighbor_1_Compute.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_KNearestNeighbor_1__ctor.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_KNearestNeighbor_1__ctor.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_KNearestNeighbor__ctor.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_KNearestNeighbor__ctor.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_RANSAC_1_Compute.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_RANSAC_1_Compute.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_RANSAC_1_Compute_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_RANSAC_1_Compute_1.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_RANSAC_1__ctor.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_RANSAC_1__ctor.htm
@@ -12333,6 +12528,12 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_Learning_MulticlassSupportVectorLearning_Run.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_Learning_MulticlassSupportVectorLearning_Run.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_Learning_MulticlassSupportVectorLearning_Run_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_Learning_MulticlassSupportVectorLearning_Run_1.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_Learning_MulticlassSupportVectorLearning__ctor.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_Learning_MulticlassSupportVectorLearning__ctor.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_Learning_MultilabelSupportVectorLearning_ComputeError.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_Learning_MultilabelSupportVectorLearning_ComputeError.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_Learning_MultilabelSupportVectorLearning_OnSubproblemFinished.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_Learning_MultilabelSupportVectorLearning_OnSubproblemFinished.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_Learning_MultilabelSupportVectorLearning_OnSubproblemStarted.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_Learning_MultilabelSupportVectorLearning_OnSubproblemStarted.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_Learning_MultilabelSupportVectorLearning_Run.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_Learning_MultilabelSupportVectorLearning_Run.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_Learning_MultilabelSupportVectorLearning_Run_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_Learning_MultilabelSupportVectorLearning_Run_1.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_Learning_MultilabelSupportVectorLearning__ctor.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_Learning_MultilabelSupportVectorLearning__ctor.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_Learning_ProbabilisticOutputLearning_LogLikelihood.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_Learning_ProbabilisticOutputLearning_LogLikelihood.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_Learning_ProbabilisticOutputLearning_Run.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_Learning_ProbabilisticOutputLearning_Run.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_Learning_ProbabilisticOutputLearning_Run_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_Learning_ProbabilisticOutputLearning_Run_1.htm
@@ -12347,6 +12548,10 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimization_Run_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimization_Run_1.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimization__ctor.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimization__ctor.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_Learning_SubproblemEventArgs__ctor.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_Learning_SubproblemEventArgs__ctor.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_Learning_SupportVectorReduction_ComputeError.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_Learning_SupportVectorReduction_ComputeError.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_Learning_SupportVectorReduction_Run.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_Learning_SupportVectorReduction_Run.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_Learning_SupportVectorReduction_Run_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_Learning_SupportVectorReduction_Run_1.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_Learning_SupportVectorReduction__ctor.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_Learning_SupportVectorReduction__ctor.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine_Compute.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine_Compute.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine_Compute_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine_Compute_1.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine_Compute_2.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine_Compute_2.htm
@@ -12356,10 +12561,19 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine_Compute_6.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine_Compute_6.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine_Load.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine_Load.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine_Load_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine_Load_1.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine_Reset.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine_Reset.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine_Save.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine_Save.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine_Save_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine_Save_1.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine__ctor.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine__ctor.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine__ctor_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine__ctor_1.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine_Compute.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine_Compute.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine_Compute_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine_Compute_1.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine_Load.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine_Load.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine_Load_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine_Load_1.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine_Save.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine_Save.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine_Save_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine_Save_1.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine__ctor.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine__ctor.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine__ctor_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine__ctor_1.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_SupportVectorMachine_Compute.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_SupportVectorMachine_Compute.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_SupportVectorMachine_Compute_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_SupportVectorMachine_Compute_1.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_MachineLearning_VectorMachines_SupportVectorMachine_Compute_2.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_MachineLearning_VectorMachines_SupportVectorMachine_Compute_2.htm
@@ -12566,6 +12780,7 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Differenti
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Distance_Bhattacharyya.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Distance_Bhattacharyya.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Distance_Bhattacharyya_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Distance_Bhattacharyya_1.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Distance_Bhattacharyya_2.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Distance_Bhattacharyya_2.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Distance_Chebyshev.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Distance_Chebyshev.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Distance_Euclidean.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Distance_Euclidean.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Distance_Euclidean_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Distance_Euclidean_1.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Distance_Mahalanobis.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Distance_Mahalanobis.htm
@@ -12608,6 +12823,7 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_Abs
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_Abs_2.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_Abs_2.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_Abs_3.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_Abs_3.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_Add.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_Add.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_AddToDiagonal.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_AddToDiagonal.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_Add_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_Add_1.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_Add_2.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_Add_2.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_Add_3.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_Add_3.htm
@@ -12672,6 +12888,7 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_Ele
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_ElementwiseMultiply_3.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_ElementwiseMultiply_3.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_ElementwiseMultiply_4.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_ElementwiseMultiply_4.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_ElementwiseMultiply_5.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_ElementwiseMultiply_5.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_ElementwiseMultiply_6.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_ElementwiseMultiply_6.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_ElementwisePower.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_ElementwisePower.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_ElementwisePower_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_ElementwisePower_1.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_Equals.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_Equals.htm
@@ -12766,6 +12983,7 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_Mul
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_Multiply_15.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_Multiply_15.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_Multiply_16.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_Multiply_16.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_Multiply_17.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_Multiply_17.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_Multiply_18.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_Multiply_18.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_Multiply_2.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_Multiply_2.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_Multiply_3.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_Multiply_3.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_Multiply_4.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_Multiply_4.htm
@@ -12788,6 +13006,7 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_Ran
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_Random_3.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_Random_3.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_Random_4.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_Random_4.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_Random_5.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_Random_5.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_Random_6.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_Random_6.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_Range.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_Range.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_Range_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_Range_1.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_Range_2.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_Range_2.htm
@@ -12797,6 +13016,7 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_Ran
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_RemoveAt__1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_RemoveAt__1.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_RemoveColumn__1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_RemoveColumn__1.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_RemoveColumn__1_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_RemoveColumn__1_1.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_RemoveRow__1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_RemoveRow__1.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_Remove__1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_Remove__1.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_Reshape__1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_Reshape__1.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_Reshape__1_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_Reshape__1_1.htm
@@ -12806,6 +13026,7 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_Rou
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_RowVector__1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_RowVector__1.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_SetColumn__1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_SetColumn__1.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_SetRow__1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_SetRow__1.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_Sign.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_Sign.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_Solve.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_Solve.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_Solve_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_Solve_1.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Matrix_Sort__2.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Matrix_Sort__2.htm
@@ -12916,12 +13137,16 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Norm_Squar
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Norm_SquareEuclidean_2.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Norm_SquareEuclidean_2.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Norm_SquareEuclidean_3.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Norm_SquareEuclidean_3.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Norm_SquareEuclidean_4.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Norm_SquareEuclidean_4.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Optimization_AugmentedLagrangianSolver_Minimize.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Optimization_AugmentedLagrangianSolver_Minimize.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Optimization_AugmentedLagrangianSolver_Minimize_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Optimization_AugmentedLagrangianSolver_Minimize_1.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Optimization_AugmentedLagrangianSolver__ctor.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Optimization_AugmentedLagrangianSolver__ctor.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno_Minimize.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno_Minimize.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno_Minimize_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno_Minimize_1.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno__ctor.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno__ctor.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno__ctor_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno__ctor_1.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno__ctor_2.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno__ctor_2.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Optimization_ConjugateGradient_Minimize.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Optimization_ConjugateGradient_Minimize.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Optimization_ConjugateGradient_Minimize_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Optimization_ConjugateGradient_Minimize_1.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Optimization_ConjugateGradient__ctor.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Optimization_ConjugateGradient__ctor.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Optimization_ConjugateGradient__ctor_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Optimization_ConjugateGradient__ctor_1.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Optimization_GoldfarbIdnaniQuadraticSolver_Maximize.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Optimization_GoldfarbIdnaniQuadraticSolver_Maximize.htm
@@ -12941,12 +13166,18 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Optimizati
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Optimization_LineSearchFailedException__ctor_2.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Optimization_LineSearchFailedException__ctor_2.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Optimization_LineSearchFailedException__ctor_3.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Optimization_LineSearchFailedException__ctor_3.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Optimization_LineSearchFailedException__ctor_4.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Optimization_LineSearchFailedException__ctor_4.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Optimization_NonlinearConstraint_GetViolation.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Optimization_NonlinearConstraint_GetViolation.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Optimization_NonlinearConstraint__ctor.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Optimization_NonlinearConstraint__ctor.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Optimization_NonlinearConstraint__ctor_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Optimization_NonlinearConstraint__ctor_1.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Optimization_NonlinearObjectiveFunction__ctor.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Optimization_NonlinearObjectiveFunction__ctor.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Optimization_NonlinearObjectiveFunction__ctor_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Optimization_NonlinearObjectiveFunction__ctor_1.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Optimization_OptimizationProgressEventArgs__ctor.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Optimization_OptimizationProgressEventArgs__ctor.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Optimization_QuadraticObjectiveFunction_GetLinearTermsVector.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Optimization_QuadraticObjectiveFunction_GetLinearTermsVector.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Optimization_QuadraticObjectiveFunction_GetQuadraticTermsMatrix.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Optimization_QuadraticObjectiveFunction_GetQuadraticTermsMatrix.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Optimization_QuadraticObjectiveFunction_ToString.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Optimization_QuadraticObjectiveFunction_ToString.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Optimization_QuadraticObjectiveFunction__ctor.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Optimization_QuadraticObjectiveFunction__ctor.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Optimization_QuadraticObjectiveFunction__ctor_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Optimization_QuadraticObjectiveFunction__ctor_1.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_ReducedRowEchelonForm__ctor.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_ReducedRowEchelonForm__ctor.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Special_Binomial.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Special_Binomial.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Special_BSpline.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Special_BSpline.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Math_Special_Epslon.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Math_Special_Epslon.htm
@@ -13147,12 +13378,18 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Statistics_Anal
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Statistics_Analysis_PartialLeastSquaresVariables_Transform.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Statistics_Analysis_PartialLeastSquaresVariables_Transform.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Statistics_Analysis_PartialLeastSquaresVariables_Transform_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Statistics_Analysis_PartialLeastSquaresVariables_Transform_1.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Statistics_Analysis_PrincipalComponentAnalysis_Adjust.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Statistics_Analysis_PrincipalComponentAnalysis_Adjust.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Statistics_Analysis_PrincipalComponentAnalysis_Adjust_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Statistics_Analysis_PrincipalComponentAnalysis_Adjust_1.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Statistics_Analysis_PrincipalComponentAnalysis_Compute.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Statistics_Analysis_PrincipalComponentAnalysis_Compute.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Statistics_Analysis_PrincipalComponentAnalysis_CreateComponents.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Statistics_Analysis_PrincipalComponentAnalysis_CreateComponents.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Statistics_Analysis_PrincipalComponentAnalysis_FromCorrelationMatrix.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Statistics_Analysis_PrincipalComponentAnalysis_FromCorrelationMatrix.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Statistics_Analysis_PrincipalComponentAnalysis_FromCovarianceMatrix.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Statistics_Analysis_PrincipalComponentAnalysis_FromCovarianceMatrix.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Statistics_Analysis_PrincipalComponentAnalysis_GetNumberOfComponents.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Statistics_Analysis_PrincipalComponentAnalysis_GetNumberOfComponents.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Statistics_Analysis_PrincipalComponentAnalysis_Revert.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Statistics_Analysis_PrincipalComponentAnalysis_Revert.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Statistics_Analysis_PrincipalComponentAnalysis_Transform.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Statistics_Analysis_PrincipalComponentAnalysis_Transform.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Statistics_Analysis_PrincipalComponentAnalysis_Transform_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Statistics_Analysis_PrincipalComponentAnalysis_Transform_1.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Statistics_Analysis_PrincipalComponentAnalysis_Transform_2.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Statistics_Analysis_PrincipalComponentAnalysis_Transform_2.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Statistics_Analysis_PrincipalComponentAnalysis_Transform_3.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Statistics_Analysis_PrincipalComponentAnalysis_Transform_3.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Statistics_Analysis_PrincipalComponentAnalysis_Transform_4.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Statistics_Analysis_PrincipalComponentAnalysis_Transform_4.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Statistics_Analysis_PrincipalComponentAnalysis__ctor.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Statistics_Analysis_PrincipalComponentAnalysis__ctor.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Statistics_Analysis_PrincipalComponentAnalysis__ctor_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Statistics_Analysis_PrincipalComponentAnalysis__ctor_1.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\M_Accord_Statistics_Analysis_ReceiverOperatingCharacteristicPoint_ToString.htm -&gt; D:\Projects\Accord.NET\Docs\html\M_Accord_Statistics_Analysis_ReceiverOperatingCharacteristicPoint_ToString.htm
@@ -14708,13 +14945,19 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_MachineL
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_MachineLearning_VectorMachines_KernelSupportVectorMachine_Save.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_MachineLearning_VectorMachines_KernelSupportVectorMachine_Save.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_MachineLearning_VectorMachines_Learning_ISupportVectorMachineLearning_Run.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_MachineLearning_VectorMachines_Learning_ISupportVectorMachineLearning_Run.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_MachineLearning_VectorMachines_Learning_MulticlassSupportVectorLearning_Run.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_MachineLearning_VectorMachines_Learning_MulticlassSupportVectorLearning_Run.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_MachineLearning_VectorMachines_Learning_MultilabelSupportVectorLearning_Run.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_MachineLearning_VectorMachines_Learning_MultilabelSupportVectorLearning_Run.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_MachineLearning_VectorMachines_Learning_ProbabilisticOutputLearning_Run.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_MachineLearning_VectorMachines_Learning_ProbabilisticOutputLearning_Run.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimizationRegression_Run.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimizationRegression_Run.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimization_Run.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimization_Run.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_MachineLearning_VectorMachines_Learning_SupportVectorReduction_Run.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_MachineLearning_VectorMachines_Learning_SupportVectorReduction_Run.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine_Compute.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine_Compute.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine_Load.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine_Load.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine_Save.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine_Save.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine__ctor.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine__ctor.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine_Compute.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine_Compute.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine_Load.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine_Load.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine_Save.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine_Save.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine__ctor.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine__ctor.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_MachineLearning_VectorMachines_SupportVectorMachine_Compute.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_MachineLearning_VectorMachines_SupportVectorMachine_Compute.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_MachineLearning_VectorMachines_SupportVectorMachine_Load.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_MachineLearning_VectorMachines_SupportVectorMachine_Load.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_MachineLearning_VectorMachines_SupportVectorMachine_Save.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_MachineLearning_VectorMachines_SupportVectorMachine_Save.htm
@@ -14834,14 +15077,18 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_Math_Mat
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_Math_Matrix_VectorProduct.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_Math_Matrix_VectorProduct.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_Math_Norm_Euclidean.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_Math_Norm_Euclidean.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_Math_Norm_SquareEuclidean.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_Math_Norm_SquareEuclidean.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_Math_Optimization_AugmentedLagrangianSolver_Minimize.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_Math_Optimization_AugmentedLagrangianSolver_Minimize.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno_Minimize.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno_Minimize.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno__ctor.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno__ctor.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_Math_Optimization_ConjugateGradient_Minimize.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_Math_Optimization_ConjugateGradient_Minimize.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_Math_Optimization_ConjugateGradient__ctor.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_Math_Optimization_ConjugateGradient__ctor.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_Math_Optimization_GoldfarbIdnaniQuadraticSolver_Maximize.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_Math_Optimization_GoldfarbIdnaniQuadraticSolver_Maximize.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_Math_Optimization_GoldfarbIdnaniQuadraticSolver_Minimize.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_Math_Optimization_GoldfarbIdnaniQuadraticSolver_Minimize.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_Math_Optimization_GoldfarbIdnaniQuadraticSolver__ctor.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_Math_Optimization_GoldfarbIdnaniQuadraticSolver__ctor.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_Math_Optimization_LinearConstraint__ctor.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_Math_Optimization_LinearConstraint__ctor.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_Math_Optimization_LineSearchFailedException__ctor.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_Math_Optimization_LineSearchFailedException__ctor.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_Math_Optimization_NonlinearConstraint__ctor.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_Math_Optimization_NonlinearConstraint__ctor.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_Math_Optimization_NonlinearObjectiveFunction__ctor.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_Math_Optimization_NonlinearObjectiveFunction__ctor.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_Math_Optimization_QuadraticObjectiveFunction__ctor.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_Math_Optimization_QuadraticObjectiveFunction__ctor.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_Math_Special_LogSum.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_Math_Special_LogSum.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_Math_Tools_Angle.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_Math_Tools_Angle.htm
@@ -14878,6 +15125,7 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_Statisti
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_Statistics_Analysis_IProjectionAnalysis_Transform.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_Statistics_Analysis_IProjectionAnalysis_Transform.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_Statistics_Analysis_KernelDiscriminantAnalysis_Classify.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_Statistics_Analysis_KernelDiscriminantAnalysis_Classify.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_Statistics_Analysis_KernelDiscriminantAnalysis_Transform.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_Statistics_Analysis_KernelDiscriminantAnalysis_Transform.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_Statistics_Analysis_KernelPrincipalComponentAnalysis_Adjust.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_Statistics_Analysis_KernelPrincipalComponentAnalysis_Adjust.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_Statistics_Analysis_KernelPrincipalComponentAnalysis_Compute.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_Statistics_Analysis_KernelPrincipalComponentAnalysis_Compute.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_Statistics_Analysis_KernelPrincipalComponentAnalysis_Revert.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_Statistics_Analysis_KernelPrincipalComponentAnalysis_Revert.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_Statistics_Analysis_KernelPrincipalComponentAnalysis_Transform.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_Statistics_Analysis_KernelPrincipalComponentAnalysis_Transform.htm
@@ -14892,6 +15140,7 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_Statisti
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_Statistics_Analysis_PartialLeastSquaresAnalysis_TransformOutput.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_Statistics_Analysis_PartialLeastSquaresAnalysis_TransformOutput.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_Statistics_Analysis_PartialLeastSquaresAnalysis__ctor.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_Statistics_Analysis_PartialLeastSquaresAnalysis__ctor.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_Statistics_Analysis_PartialLeastSquaresVariables_Transform.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_Statistics_Analysis_PartialLeastSquaresVariables_Transform.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_Statistics_Analysis_PrincipalComponentAnalysis_Adjust.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_Statistics_Analysis_PrincipalComponentAnalysis_Adjust.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_Statistics_Analysis_PrincipalComponentAnalysis_Transform.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_Statistics_Analysis_PrincipalComponentAnalysis_Transform.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_Statistics_Analysis_PrincipalComponentAnalysis__ctor.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_Statistics_Analysis_PrincipalComponentAnalysis__ctor.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Overload_Accord_Statistics_Analysis_ReceiverOperatingCharacteristic_Compute.htm -&gt; D:\Projects\Accord.NET\Docs\html\Overload_Accord_Statistics_Analysis_ReceiverOperatingCharacteristic_Compute.htm
@@ -15293,13 +15542,17 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Properties_T_Accord_Mach
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Properties_T_Accord_MachineLearning_KMeans.htm -&gt; D:\Projects\Accord.NET\Docs\html\Properties_T_Accord_MachineLearning_KMeans.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Properties_T_Accord_MachineLearning_KMeansCluster.htm -&gt; D:\Projects\Accord.NET\Docs\html\Properties_T_Accord_MachineLearning_KMeansCluster.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Properties_T_Accord_MachineLearning_KMeansClusterCollection.htm -&gt; D:\Projects\Accord.NET\Docs\html\Properties_T_Accord_MachineLearning_KMeansClusterCollection.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Properties_T_Accord_MachineLearning_KNearestNeighbor.htm -&gt; D:\Projects\Accord.NET\Docs\html\Properties_T_Accord_MachineLearning_KNearestNeighbor.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Properties_T_Accord_MachineLearning_KNearestNeighbor_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\Properties_T_Accord_MachineLearning_KNearestNeighbor_1.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Properties_T_Accord_MachineLearning_RANSAC_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\Properties_T_Accord_MachineLearning_RANSAC_1.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Properties_T_Accord_MachineLearning_VectorMachines_KernelSupportVectorMachine.htm -&gt; D:\Projects\Accord.NET\Docs\html\Properties_T_Accord_MachineLearning_VectorMachines_KernelSupportVectorMachine.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Properties_T_Accord_MachineLearning_VectorMachines_Learning_MulticlassSupportVectorLearning.htm -&gt; D:\Projects\Accord.NET\Docs\html\Properties_T_Accord_MachineLearning_VectorMachines_Learning_MulticlassSupportVectorLearning.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Properties_T_Accord_MachineLearning_VectorMachines_Learning_MultilabelSupportVectorLearning.htm -&gt; D:\Projects\Accord.NET\Docs\html\Properties_T_Accord_MachineLearning_VectorMachines_Learning_MultilabelSupportVectorLearning.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Properties_T_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimization.htm -&gt; D:\Projects\Accord.NET\Docs\html\Properties_T_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimization.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Properties_T_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimizationRegression.htm -&gt; D:\Projects\Accord.NET\Docs\html\Properties_T_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimizationRegression.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Properties_T_Accord_MachineLearning_VectorMachines_Learning_SubproblemEventArgs.htm -&gt; D:\Projects\Accord.NET\Docs\html\Properties_T_Accord_MachineLearning_VectorMachines_Learning_SubproblemEventArgs.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Properties_T_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine.htm -&gt; D:\Projects\Accord.NET\Docs\html\Properties_T_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Properties_T_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine.htm -&gt; D:\Projects\Accord.NET\Docs\html\Properties_T_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Properties_T_Accord_MachineLearning_VectorMachines_SupportVectorMachine.htm -&gt; D:\Projects\Accord.NET\Docs\html\Properties_T_Accord_MachineLearning_VectorMachines_SupportVectorMachine.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Properties_T_Accord_Math_Decompositions_CholeskyDecomposition.htm -&gt; D:\Projects\Accord.NET\Docs\html\Properties_T_Accord_Math_Decompositions_CholeskyDecomposition.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Properties_T_Accord_Math_Decompositions_CholeskyDecompositionD.htm -&gt; D:\Projects\Accord.NET\Docs\html\Properties_T_Accord_Math_Decompositions_CholeskyDecompositionD.htm
@@ -15332,6 +15585,7 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Properties_T_Accord_Math
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Properties_T_Accord_Math_Geometry_ConvexHullDefects.htm -&gt; D:\Projects\Accord.NET\Docs\html\Properties_T_Accord_Math_Geometry_ConvexHullDefects.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Properties_T_Accord_Math_Geometry_ConvexityDefect.htm -&gt; D:\Projects\Accord.NET\Docs\html\Properties_T_Accord_Math_Geometry_ConvexityDefect.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Properties_T_Accord_Math_Geometry_KCurvature.htm -&gt; D:\Projects\Accord.NET\Docs\html\Properties_T_Accord_Math_Geometry_KCurvature.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Properties_T_Accord_Math_Optimization_AugmentedLagrangianSolver.htm -&gt; D:\Projects\Accord.NET\Docs\html\Properties_T_Accord_Math_Optimization_AugmentedLagrangianSolver.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Properties_T_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno.htm -&gt; D:\Projects\Accord.NET\Docs\html\Properties_T_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Properties_T_Accord_Math_Optimization_ConjugateGradient.htm -&gt; D:\Projects\Accord.NET\Docs\html\Properties_T_Accord_Math_Optimization_ConjugateGradient.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Properties_T_Accord_Math_Optimization_GoldfarbIdnaniQuadraticSolver.htm -&gt; D:\Projects\Accord.NET\Docs\html\Properties_T_Accord_Math_Optimization_GoldfarbIdnaniQuadraticSolver.htm
@@ -15339,8 +15593,11 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Properties_T_Accord_Math
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Properties_T_Accord_Math_Optimization_IOptimizationMethod.htm -&gt; D:\Projects\Accord.NET\Docs\html\Properties_T_Accord_Math_Optimization_IOptimizationMethod.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Properties_T_Accord_Math_Optimization_LinearConstraint.htm -&gt; D:\Projects\Accord.NET\Docs\html\Properties_T_Accord_Math_Optimization_LinearConstraint.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Properties_T_Accord_Math_Optimization_LineSearchFailedException.htm -&gt; D:\Projects\Accord.NET\Docs\html\Properties_T_Accord_Math_Optimization_LineSearchFailedException.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Properties_T_Accord_Math_Optimization_NonlinearConstraint.htm -&gt; D:\Projects\Accord.NET\Docs\html\Properties_T_Accord_Math_Optimization_NonlinearConstraint.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Properties_T_Accord_Math_Optimization_NonlinearObjectiveFunction.htm -&gt; D:\Projects\Accord.NET\Docs\html\Properties_T_Accord_Math_Optimization_NonlinearObjectiveFunction.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Properties_T_Accord_Math_Optimization_OptimizationProgressEventArgs.htm -&gt; D:\Projects\Accord.NET\Docs\html\Properties_T_Accord_Math_Optimization_OptimizationProgressEventArgs.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Properties_T_Accord_Math_Optimization_QuadraticObjectiveFunction.htm -&gt; D:\Projects\Accord.NET\Docs\html\Properties_T_Accord_Math_Optimization_QuadraticObjectiveFunction.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Properties_T_Accord_Math_ReducedRowEchelonForm.htm -&gt; D:\Projects\Accord.NET\Docs\html\Properties_T_Accord_Math_ReducedRowEchelonForm.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Properties_T_Accord_Math_Tools.htm -&gt; D:\Projects\Accord.NET\Docs\html\Properties_T_Accord_Math_Tools.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Properties_T_Accord_Neuro_Learning_LevenbergMarquardtLearning.htm -&gt; D:\Projects\Accord.NET\Docs\html\Properties_T_Accord_Neuro_Learning_LevenbergMarquardtLearning.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\Properties_T_Accord_Neuro_Learning_ParallelResilientBackpropagationLearning.htm -&gt; D:\Projects\Accord.NET\Docs\html\Properties_T_Accord_Neuro_Learning_ParallelResilientBackpropagationLearning.htm
@@ -15989,6 +16246,10 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_MachineLearning
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_MachineLearning_KMeans_Dimension.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_MachineLearning_KMeans_Dimension.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_MachineLearning_KMeans_Distance.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_MachineLearning_KMeans_Distance.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_MachineLearning_KMeans_K.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_MachineLearning_KMeans_K.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_MachineLearning_KNearestNeighbor_1_Distance.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_MachineLearning_KNearestNeighbor_1_Distance.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_MachineLearning_KNearestNeighbor_1_Inputs.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_MachineLearning_KNearestNeighbor_1_Inputs.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_MachineLearning_KNearestNeighbor_1_K.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_MachineLearning_KNearestNeighbor_1_K.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_MachineLearning_KNearestNeighbor_1_Outputs.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_MachineLearning_KNearestNeighbor_1_Outputs.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_MachineLearning_RANSAC_1_Degenerate.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_MachineLearning_RANSAC_1_Degenerate.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_MachineLearning_RANSAC_1_Distances.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_MachineLearning_RANSAC_1_Distances.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_MachineLearning_RANSAC_1_Fitting.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_MachineLearning_RANSAC_1_Fitting.htm
@@ -15999,6 +16260,7 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_MachineLearning
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_MachineLearning_RANSAC_1_Threshold.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_MachineLearning_RANSAC_1_Threshold.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_MachineLearning_VectorMachines_KernelSupportVectorMachine_Kernel.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_MachineLearning_VectorMachines_KernelSupportVectorMachine_Kernel.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_MachineLearning_VectorMachines_Learning_MulticlassSupportVectorLearning_Algorithm.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_MachineLearning_VectorMachines_Learning_MulticlassSupportVectorLearning_Algorithm.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_MachineLearning_VectorMachines_Learning_MultilabelSupportVectorLearning_Algorithm.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_MachineLearning_VectorMachines_Learning_MultilabelSupportVectorLearning_Algorithm.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimizationRegression_Complexity.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimizationRegression_Complexity.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimizationRegression_Epsilon.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimizationRegression_Epsilon.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimizationRegression_Tolerance.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimizationRegression_Tolerance.htm
@@ -16008,6 +16270,7 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_MachineLearning
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimization_Compact.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimization_Compact.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimization_Complexity.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimization_Complexity.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimization_Epsilon.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimization_Epsilon.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimization_Lagrange.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimization_Lagrange.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimization_NonBoundExamples.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimization_NonBoundExamples.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimization_Strategy.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimization_Strategy.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimization_Tolerance.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimization_Tolerance.htm
@@ -16024,6 +16287,10 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_MachineLearning
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine_MachinesCount.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine_MachinesCount.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine_SupportVectorCount.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine_SupportVectorCount.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine_SupportVectorUniqueCount.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine_SupportVectorUniqueCount.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine_Classes.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine_Classes.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine_Inputs.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine_Inputs.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine_IsProbabilistic.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine_IsProbabilistic.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine_Machines.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine_Machines.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_MachineLearning_VectorMachines_SupportVectorMachine_Inputs.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_MachineLearning_VectorMachines_SupportVectorMachine_Inputs.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_MachineLearning_VectorMachines_SupportVectorMachine_IsCompact.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_MachineLearning_VectorMachines_SupportVectorMachine_IsCompact.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_MachineLearning_VectorMachines_SupportVectorMachine_IsProbabilistic.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_MachineLearning_VectorMachines_SupportVectorMachine_IsProbabilistic.htm
@@ -16215,17 +16482,26 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Geometry_C
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Geometry_KCurvature_K.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Geometry_KCurvature_K.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Geometry_KCurvature_Suppression.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Geometry_KCurvature_Suppression.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Geometry_KCurvature_Theta.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Geometry_KCurvature_Theta.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_AugmentedLagrangianSolver_Evaluations.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_AugmentedLagrangianSolver_Evaluations.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_AugmentedLagrangianSolver_Function.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_AugmentedLagrangianSolver_Function.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_AugmentedLagrangianSolver_Gradient.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_AugmentedLagrangianSolver_Gradient.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_AugmentedLagrangianSolver_Iterations.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_AugmentedLagrangianSolver_Iterations.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_AugmentedLagrangianSolver_MaxEvaluations.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_AugmentedLagrangianSolver_MaxEvaluations.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_AugmentedLagrangianSolver_Parameters.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_AugmentedLagrangianSolver_Parameters.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_AugmentedLagrangianSolver_Solution.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_AugmentedLagrangianSolver_Solution.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno_Corrections.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno_Corrections.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno_Diagonal.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno_Diagonal.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno_Evaluations.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno_Evaluations.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno_Function.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno_Function.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno_Gradient.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno_Gradient.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno_Iterations.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno_Iterations.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno_LowerBounds.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno_LowerBounds.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno_MaxIterations.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno_MaxIterations.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno_Parameters.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno_Parameters.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno_Precision.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno_Precision.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno_Solution.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno_Solution.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno_Tolerance.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno_Tolerance.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno_UpperBounds.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno_UpperBounds.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno_Value.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno_Value.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_ConjugateGradient_Evaluations.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_ConjugateGradient_Evaluations.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_ConjugateGradient_Function.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_ConjugateGradient_Function.htm
@@ -16249,6 +16525,7 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimizati
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_GoldfarbIdnaniQuadraticSolver_NumberOfVariables.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_GoldfarbIdnaniQuadraticSolver_NumberOfVariables.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_GoldfarbIdnaniQuadraticSolver_Solution.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_GoldfarbIdnaniQuadraticSolver_Solution.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_GoldfarbIdnaniQuadraticSolver_Value.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_GoldfarbIdnaniQuadraticSolver_Value.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_IObjectiveFunction_Function.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_IObjectiveFunction_Function.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_IObjectiveFunction_Indices.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_IObjectiveFunction_Indices.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_IObjectiveFunction_NumberOfVariables.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_IObjectiveFunction_NumberOfVariables.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_IObjectiveFunction_Variables.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_IObjectiveFunction_Variables.htm
@@ -16259,6 +16536,17 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimizati
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_LinearConstraint_Value.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_LinearConstraint_Value.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_LinearConstraint_VariablesAtIndices.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_LinearConstraint_VariablesAtIndices.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_LineSearchFailedException_Information.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_LineSearchFailedException_Information.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_NonlinearConstraint_Function.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_NonlinearConstraint_Function.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_NonlinearConstraint_Gradient.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_NonlinearConstraint_Gradient.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_NonlinearConstraint_NumberOfVariables.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_NonlinearConstraint_NumberOfVariables.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_NonlinearConstraint_ShouldBe.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_NonlinearConstraint_ShouldBe.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_NonlinearConstraint_Tolerance.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_NonlinearConstraint_Tolerance.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_NonlinearConstraint_Value.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_NonlinearConstraint_Value.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_NonlinearObjectiveFunction_Function.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_NonlinearObjectiveFunction_Function.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_NonlinearObjectiveFunction_Gradient.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_NonlinearObjectiveFunction_Gradient.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_NonlinearObjectiveFunction_Indices.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_NonlinearObjectiveFunction_Indices.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_NonlinearObjectiveFunction_NumberOfVariables.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_NonlinearObjectiveFunction_NumberOfVariables.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_NonlinearObjectiveFunction_Variables.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_NonlinearObjectiveFunction_Variables.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_OptimizationProgressEventArgs_Evaluations.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_OptimizationProgressEventArgs_Evaluations.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_OptimizationProgressEventArgs_Finished.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_OptimizationProgressEventArgs_Finished.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_OptimizationProgressEventArgs_Gradient.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_OptimizationProgressEventArgs_Gradient.htm
@@ -16268,9 +16556,13 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimizati
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_OptimizationProgressEventArgs_SolutionNorm.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_OptimizationProgressEventArgs_SolutionNorm.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_OptimizationProgressEventArgs_Step.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_OptimizationProgressEventArgs_Step.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_OptimizationProgressEventArgs_Value.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_OptimizationProgressEventArgs_Value.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_QuadraticObjectiveFunction_Function.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_QuadraticObjectiveFunction_Function.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_QuadraticObjectiveFunction_Indices.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_QuadraticObjectiveFunction_Indices.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_QuadraticObjectiveFunction_NumberOfVariables.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_QuadraticObjectiveFunction_NumberOfVariables.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Optimization_QuadraticObjectiveFunction_Variables.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Optimization_QuadraticObjectiveFunction_Variables.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_ReducedRowEchelonForm_FreeVariables.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_ReducedRowEchelonForm_FreeVariables.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_ReducedRowEchelonForm_Pivot.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_ReducedRowEchelonForm_Pivot.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_ReducedRowEchelonForm_Result.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_ReducedRowEchelonForm_Result.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Math_Tools_Random.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Math_Tools_Random.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Neuro_Learning_LevenbergMarquardtLearning_Adjustment.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Neuro_Learning_LevenbergMarquardtLearning_Adjustment.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Neuro_Learning_LevenbergMarquardtLearning_Alpha.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Neuro_Learning_LevenbergMarquardtLearning_Alpha.htm
@@ -16852,6 +17144,7 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Statistics_Mode
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Statistics_Models_Markov_BaseHiddenMarkovClassifier_1_Item.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Statistics_Models_Markov_BaseHiddenMarkovClassifier_1_Item.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Statistics_Models_Markov_BaseHiddenMarkovClassifier_1_Models.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Statistics_Models_Markov_BaseHiddenMarkovClassifier_1_Models.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Statistics_Models_Markov_BaseHiddenMarkovClassifier_1_Priors.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Statistics_Models_Markov_BaseHiddenMarkovClassifier_1_Priors.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Statistics_Models_Markov_BaseHiddenMarkovClassifier_1_Sensitivity.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Statistics_Models_Markov_BaseHiddenMarkovClassifier_1_Sensitivity.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Statistics_Models_Markov_BaseHiddenMarkovClassifier_1_Threshold.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Statistics_Models_Markov_BaseHiddenMarkovClassifier_1_Threshold.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Statistics_Models_Markov_BaseHiddenMarkovModel_Probabilities.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Statistics_Models_Markov_BaseHiddenMarkovModel_Probabilities.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\P_Accord_Statistics_Models_Markov_BaseHiddenMarkovModel_States.htm -&gt; D:\Projects\Accord.NET\Docs\html\P_Accord_Statistics_Models_Markov_BaseHiddenMarkovModel_States.htm
@@ -17248,20 +17541,25 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_MachineLearning
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_MachineLearning_KMeans.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_MachineLearning_KMeans.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_MachineLearning_KMeansCluster.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_MachineLearning_KMeansCluster.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_MachineLearning_KMeansClusterCollection.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_MachineLearning_KMeansClusterCollection.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_MachineLearning_KNearestNeighbor.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_MachineLearning_KNearestNeighbor.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_MachineLearning_KNearestNeighbor_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_MachineLearning_KNearestNeighbor_1.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_MachineLearning_ModelStorageMode.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_MachineLearning_ModelStorageMode.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_MachineLearning_RANSAC_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_MachineLearning_RANSAC_1.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_MachineLearning_VectorMachines_ISupportVectorMachine.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_MachineLearning_VectorMachines_ISupportVectorMachine.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_MachineLearning_VectorMachines_KernelSupportVectorMachine.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_MachineLearning_VectorMachines_KernelSupportVectorMachine.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_MachineLearning_VectorMachines_Learning_ISupportVectorMachineLearning.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_MachineLearning_VectorMachines_Learning_ISupportVectorMachineLearning.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_MachineLearning_VectorMachines_Learning_MulticlassSupportVectorLearning.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_MachineLearning_VectorMachines_Learning_MulticlassSupportVectorLearning.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_MachineLearning_VectorMachines_Learning_MultilabelSupportVectorLearning.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_MachineLearning_VectorMachines_Learning_MultilabelSupportVectorLearning.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_MachineLearning_VectorMachines_Learning_ProbabilisticOutputLearning.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_MachineLearning_VectorMachines_Learning_ProbabilisticOutputLearning.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_MachineLearning_VectorMachines_Learning_SelectionStrategy.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_MachineLearning_VectorMachines_Learning_SelectionStrategy.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimization.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimization.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimizationRegression.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_MachineLearning_VectorMachines_Learning_SequentialMinimalOptimizationRegression.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_MachineLearning_VectorMachines_Learning_SubproblemEventArgs.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_MachineLearning_VectorMachines_Learning_SubproblemEventArgs.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_MachineLearning_VectorMachines_Learning_SupportVectorMachineLearningConfigurationFunction.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_MachineLearning_VectorMachines_Learning_SupportVectorMachineLearningConfigurationFunction.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_MachineLearning_VectorMachines_Learning_SupportVectorReduction.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_MachineLearning_VectorMachines_Learning_SupportVectorReduction.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_MachineLearning_VectorMachines_MulticlassComputeMethod.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_MachineLearning_VectorMachines_MulticlassComputeMethod.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_MachineLearning_VectorMachines_MultilabelSupportVectorMachine.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_MachineLearning_VectorMachines_SupportVectorMachine.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_MachineLearning_VectorMachines_SupportVectorMachine.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_Math_Bessel.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_Math_Bessel.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_Math_Beta.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_Math_Beta.htm
@@ -17310,6 +17608,7 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_Math_HilbertTra
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_Math_Matrix.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_Math_Matrix.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_Math_Norm.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_Math_Norm.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_Math_Normal.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_Math_Normal.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_Math_Optimization_AugmentedLagrangianSolver.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_Math_Optimization_AugmentedLagrangianSolver.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_Math_Optimization_BroydenFletcherGoldfarbShanno.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_Math_Optimization_ConjugateGradient.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_Math_Optimization_ConjugateGradient.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_Math_Optimization_ConjugateGradientMethod.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_Math_Optimization_ConjugateGradientMethod.htm
@@ -17319,8 +17618,11 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_Math_Optimizati
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_Math_Optimization_IOptimizationMethod.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_Math_Optimization_IOptimizationMethod.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_Math_Optimization_LinearConstraint.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_Math_Optimization_LinearConstraint.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_Math_Optimization_LineSearchFailedException.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_Math_Optimization_LineSearchFailedException.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_Math_Optimization_NonlinearConstraint.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_Math_Optimization_NonlinearConstraint.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_Math_Optimization_NonlinearObjectiveFunction.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_Math_Optimization_NonlinearObjectiveFunction.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_Math_Optimization_OptimizationProgressEventArgs.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_Math_Optimization_OptimizationProgressEventArgs.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_Math_Optimization_QuadraticObjectiveFunction.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_Math_Optimization_QuadraticObjectiveFunction.htm
+D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_Math_ReducedRowEchelonForm.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_Math_ReducedRowEchelonForm.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_Math_Special.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_Math_Special.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_Math_StableComparer_1.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_Math_StableComparer_1.htm
 D:\Projects\Accord.NET\Docs\Working\Output\Website\html\T_Accord_Math_Tools.htm -&gt; D:\Projects\Accord.NET\Docs\html\T_Accord_Math_Tools.htm
@@ -17745,15 +18047,15 @@ D:\Projects\Accord.NET\Docs\Working\Output\Website\scripts\SplitScreen.js -&gt; 
 D:\Projects\Accord.NET\Docs\Working\Output\Website\styles\highlight.css -&gt; D:\Projects\Accord.NET\Docs\styles\highlight.css
 D:\Projects\Accord.NET\Docs\Working\Output\Website\styles\Presentation.css -&gt; D:\Projects\Accord.NET\Docs\styles\Presentation.css
 D:\Projects\Accord.NET\Docs\Working\Output\Website\styles\Whidbey\presentation.css -&gt; D:\Projects\Accord.NET\Docs\styles\Whidbey\presentation.css
-    Last step completed in 00:00:26.6925
+    Last step completed in 00:00:56.3785
 </buildStep>
 <buildStep step="CleanIntermediates">
 Removing intermediate files...
-    Last step completed in 00:00:04.2422
+    Last step completed in 00:00:13.9776
 </buildStep>
 <buildStep step="Completed">
 
-Build completed successfully at 04/03/2012 04:45 .  Total time: 00:12:10,0145
+Build completed successfully at 05/05/2012 11:06 .  Total time: 00:12:34,3625
 
 </buildStep>
 </shfbBuild>
