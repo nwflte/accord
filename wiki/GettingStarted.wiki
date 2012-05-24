@@ -7,7 +7,7 @@ There are two ways to quickly get up and running with the framework. The fastest
 
 <br />
 
-* Contents *
+<h2> Contents </h2>
 <wiki:toc max_depth="2" />
 
 <br />
@@ -23,9 +23,9 @@ Framework releases for Accord.NET are available in the [http://code.google.com/p
 
 <p align="center">
 
-|| _Accord.NET Framework-a.b.c-*(libs only).rar*_: || The executable installer for binaries and source code ||
-|| _Accord.NET Framework-a.b.c*.rar*_: || The executable installer for binaries and source code ||
-|| _Accord.NET Framework-a.b.c*.exe*_: || The compressed archive file containing only .dll files ||
+|| _Accord.NET Framework-a.b.c*.exe*_: || Executable installer for binaries and source code ||
+|| _Accord.NET Framework-a.b.c*.rar*_: || Compressed archive with binaries and source code ||
+|| _Accord.NET Framework-a.b.c-*(libs only).rar*_: || Compressed archive file containing only .dll files ||
 
 </p>
 
