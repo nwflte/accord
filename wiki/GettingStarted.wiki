@@ -6,9 +6,12 @@ Accord.NET is an extension to AForge.NET, a popular C# framework for computer vi
 This guide is intended to show new users how to install the Accord.NET and AForge.NET Frameworks and show how to create a simple application making use of both frameworks.
 There are two ways to quickly get up and running with the framework. The fastest way is through [http://nuget.org/packages?q=Accord.NET NuGet]. However, this is somewhat experimental and source code and sample applications will not be included. The second fastest way is to use the executable installer. This guide will deal with the later.
 
+<br />
+
 * Contents *
 <wiki:toc max_depth="2" />
 
+<br />
 
 = Downloading =
 
@@ -36,11 +39,14 @@ The following instructions will assume the user has downloaded the executable in
 
 The official site for the AForge.NET Framework is located at [http://www.aforgenet.com http://www.aforgenet.com], altough its official repository is hosted at Google Code on [http://aforge.googlecode.com http://aforge.googlecode.com]. Its main download page is located on [http://code.google.com/p/aforge/downloads/list http://code.google.com/p/aforge/downloads/list].
 
-As mentioned before, each release of the Accord.NET Framework is built against one particular version of the AForge.NET Framework. Installing the most compatible version of AForge.NET will prevent integration issues between the two frameworks. When issuing new [http://code.google.com/p/accord/issues/list bug reports], one is absolutely required to be using compatible versions.
+As mentioned before, each release of the Accord.NET Framework is built against one particular version of the AForge.NET Framework. Installing the most compatible version of AForge.NET will prevent integration issues between the two frameworks.
 
 
+<br />
 
-= Installation =
+= Installing =
+
+The following sections will assume the user has downloaded the framework's executable installer. To start installation, double-click the downloaded file.
 
 == Accord.NET Framework ==
 
@@ -75,7 +81,7 @@ After the setup is properly configured, the installation will start copying file
 The framework's assemblies will be automatically registered to be available under Visual Studio's Add Reference Dialog but will not be registered at the GAC. If desired, you may manually compile the binaries with [http://en.wikipedia.org/wiki/Native_Image_Generator ngen] for further speedups.
 
 
-== Installing AForge.NET ==
+== AForge.NET Framework ==
 
 There are no special requirements on the installation of the AForge.NET Framework besides using the recommended version. Installation can proceed as usual, and all settings can be left on default or configured as desired. For more details on installing AForge.NET, please refer to the [http://aforgenet.com/ official AForge.NET site].
 
@@ -85,9 +91,11 @@ There are no special requirements on the installation of the AForge.NET Framewor
 
 </p>
 
+<br />
+
 = Obtaining documentation = 
 
-After both frameworks have been installed, Accord.NET will be ready to be used. The framework's documentation will be available in the Start Menu in the form of a Microsoft's Compiled HTML Help file. 
+After both frameworks have been installed, Accord.NET will be ready to be used. The framework's documentation will be available in the Start Menu in the form of a Microsoft's Compiled HTML Help file. The latest version of the [http://accord.googlecode.com/svn/docs/Index.html Accord.NET documentation can also be browsed online].  
 
 <p align="center">
 
@@ -97,4 +105,4 @@ After both frameworks have been installed, Accord.NET will be ready to be used. 
 
 If included documentation is not enough, please take a look on the sample applications accompanying the framework. Most questions related to framework usage can be answered by taking a quick look on how the sample applications instantiate portions of the framework to accomplish their work.
 
-If you further questions regarding the Accord.NET Framework, please refer to [http://groups.google.com/group/accord-net Accord.NET's forums]. If you have questions related to AForge.NET, machine learning, artificial intelligence, imaging or other general topics, please refer to the [http://aforgenet.com/forum/ AForge.NET Forums].
+Finally, if you further questions regarding the Accord.NET Framework, please refer to [http://groups.google.com/group/accord-net Accord.NET's forums]. If you have questions related to AForge.NET, machine learning, artificial intelligence, imaging or other general topics, please refer to the [http://aforgenet.com/forum/ AForge.NET Forums].
