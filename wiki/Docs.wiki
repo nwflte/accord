@@ -1,5 +1,4 @@
 #summary Initial wiki page with several links to documentation sources.
-#labels Featured
 
 Accord.NET used to be hosted on Origo, and is now being gradually migrated to Google Code. Some of the documentation is still missing, but will be completed once migration is complete.
 
