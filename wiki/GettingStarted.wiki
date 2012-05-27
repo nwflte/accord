@@ -105,3 +105,50 @@ After both frameworks have been installed, Accord.NET will be ready to be used. 
 If included documentation is not enough, please take a look on the sample applications accompanying the framework. Most questions related to framework usage can be answered by taking a quick look on how the sample applications instantiate portions of the framework to accomplish their work.
 
 Finally, if you further questions regarding the Accord.NET Framework, please refer to [http://groups.google.com/group/accord-net Accord.NET's forums]. If you have questions related to AForge.NET, machine learning, artificial intelligence, imaging or other general topics, please refer to the [http://aforgenet.com/forum/ AForge.NET Forums].
+
+<br />
+
+= Creating a sample application = 
+
+In the following example we will be creating a new application using Accord.NET. The goal of this section is to show how to add references to the Accord.NET and AForge.NET Frameworks and how to obtain on-the-fly documentation through Intellisense.
+
+In this example we will be using Microsoft's Visual Studio 2008 Team Edition . However any decent IDE, or even command line compilers would suffice. Free versions of Visual Studio, named Express Editions, are available on http://www.microsoft.com/express/ . The open-source IDE SharpDevelop is also available on http://www.sharpdevelop.net . There is also limited support for MonoDevelop on Linux .
+
+We will start this example by opening up Visual Studio.
+
+<img width="700px" src="http://accord.googlecode.com/svn/wiki/guides/starting/vs-1.png"/>
+
+After Visual Studio has finished loading, click the File->New Project menu item to start creating a new project.
+
+<img width="700px" src="http://accord.googlecode.com/svn/wiki/guides/starting/vs-2.png"/>
+
+In the New Project Dialog, select the item "Console Application" under the Visual C# category. Even if we are going to use C# in this example, please keep in mind that Accord.NET supports all .NET compatible languages such as VB.NET or C++/CLI.
+
+<img width="700px" src="http://accord.googlecode.com/svn/wiki/guides/starting/vs-3.png"/>
+
+At this point we can start adding references to our project. Right-click the project name on the Solution Browser and select "Add References"
+
+<img width="700px" src="http://accord.googlecode.com/svn/wiki/guides/starting/vs-4.png"/>
+
+<img width="700px" src="http://accord.googlecode.com/svn/wiki/guides/starting/vs-5.png
+
+We will start by adding references to Accord.NET. Since we are going to develop a sample application which uses Support Vector Machines, we will want to add references to the Accord.MachineLearning, Accord.Statistics, Accord.Math and Accord.Core namespaces.
+
+|| <img width="350px" src="http://accord.googlecode.com/svn/wiki/guides/starting/vs-6.png"/> || <img width="350px" src="http://accord.googlecode.com/svn/wiki/guides/starting/vs-7.png"/> ||
+
+We are now ready to start developing our application. Besides documentation, the project has full Intellisense support to aid in development.
+
+<img width="700px" src="http://accord.googlecode.com/svn/wiki/guides/starting/vs-8.png"/>
+
+
+The following code demonstrates how to create and teach a SVM to recognize the classic XOR problem.
+
+<img width="700px" src="http://accord.googlecode.com/svn/wiki/guides/starting/vs-9.png"/>
+
+<img width="700px" src="http://accord.googlecode.com/svn/wiki/guides/starting/vs-9.png"/>
+
+<img width="700px" src="http://accord.googlecode.com/svn/wiki/guides/starting/vs-10.png"/>
+
+Once the application code is finished, we can run it by hitting F5 (or equivalently, clicking on the Start Debugging button) on Visual Studio. The application will train the aforementioned Support Vector Machine and should display the training error obtained after learning. A training error of zero indicates that the machine has learned the problem perfectly.
+
+<img width="700px" src="http://accord.googlecode.com/svn/wiki/guides/starting/vs-11.png"/>
