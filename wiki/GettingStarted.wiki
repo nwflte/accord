@@ -1,6 +1,8 @@
 #summary Getting started guide for using the framework.
 
-Accord.NET is an extension to AForge.NET, a popular C# framework for computer vision and machine learning. Currently, Accord.NET provides many statistical analysis and processing functions, as well as still experimental sound analysis package.
+Accord.NET is an extension to AForge.NET, a popular C# framework for computer vision and machine learning. Currently, Accord.NET provides many statistical analysis and processing functions, as well as still experimental sound analysis package. 
+
+ <g:plusone size="large"></g:plusone>
 
 This guide is intended to show new users how to install the Accord.NET and AForge.NET Frameworks and show how to create a simple application making use of both frameworks.
 There are two ways to quickly get up and running with the framework. The fastest way is through [http://nuget.org/packages?q=Accord.NET NuGet]. However, this is somewhat experimental and source code and sample applications will not be included. The second fastest way is to use the executable installer. This guide will deal with the later.
@@ -104,51 +106,144 @@ After both frameworks have been installed, Accord.NET will be ready to be used. 
 
 If included documentation is not enough, please take a look on the sample applications accompanying the framework. Most questions related to framework usage can be answered by taking a quick look on how the sample applications instantiate portions of the framework to accomplish their work.
 
-Finally, if you further questions regarding the Accord.NET Framework, please refer to [http://groups.google.com/group/accord-net Accord.NET's forums]. If you have questions related to AForge.NET, machine learning, artificial intelligence, imaging or other general topics, please refer to the [http://aforgenet.com/forum/ AForge.NET Forums].
+If you still have questions regarding the Accord.NET Framework, please refer to [http://groups.google.com/group/accord-net Accord.NET's forums]. If you have questions related to AForge.NET, machine learning, artificial intelligence, imaging or other general topics, please refer to the [http://aforgenet.com/forum/ AForge.NET Forums].
 
 <br />
 
 = Creating a sample application = 
 
-In the following example we will be creating a new application using Accord.NET. The goal of this section is to show how to add references to the Accord.NET and AForge.NET Frameworks and how to obtain on-the-fly documentation through Intellisense.
+In the following example we will be creating a new application using Accord.NET. The goal of this section is to show how to add references to the Accord.NET and AForge.NET Frameworks.
+
+ * Download [http://accord.googlecode.com/svn/wiki/guides/starting/SampleApplication1.zip sample application].
 
 In this example we will be using Microsoft's Visual Studio 2008 Team Edition . However any decent IDE, or even command line compilers would suffice. Free versions of Visual Studio, named Express Editions, are available on http://www.microsoft.com/express/ . The open-source IDE SharpDevelop is also available on http://www.sharpdevelop.net . There is also limited support for MonoDevelop on Linux .
 
 We will start this example by opening up Visual Studio.
 
+<p align="center">
 <img width="700px" src="http://accord.googlecode.com/svn/wiki/guides/starting/vs-1.png"/>
+</p>
 
 After Visual Studio has finished loading, click the File->New Project menu item to start creating a new project.
 
+<p align="center">
 <img width="700px" src="http://accord.googlecode.com/svn/wiki/guides/starting/vs-2.png"/>
+</p>
 
 In the New Project Dialog, select the item "Console Application" under the Visual C# category. Even if we are going to use C# in this example, please keep in mind that Accord.NET supports all .NET compatible languages such as VB.NET or C++/CLI.
 
+<p align="center">
 <img width="700px" src="http://accord.googlecode.com/svn/wiki/guides/starting/vs-3.png"/>
+</p>
 
 At this point we can start adding references to our project. Right-click the project name on the Solution Browser and select "Add References"
 
-<img width="700px" src="http://accord.googlecode.com/svn/wiki/guides/starting/vs-4.png"/>
+<p align="center">
+<img width="700px" src="http://accord.googlecode.com/svn/wiki/guides/starting/vs-5.png"/>
+</p>
 
-<img width="700px" src="http://accord.googlecode.com/svn/wiki/guides/starting/vs-5.png
+We will start by adding references to Accord.NET. Since we are going to develop a sample application which uses Support Vector Machines, we will want to add references to the Accord.MachineLearning, Accord.Statistics, Accord.Math and Accord.Core namespaces. If you wish to report information using visual controls, please add a reference to Accord.Controls and to .NET's System.Windows.Forms dlls.
 
-We will start by adding references to Accord.NET. Since we are going to develop a sample application which uses Support Vector Machines, we will want to add references to the Accord.MachineLearning, Accord.Statistics, Accord.Math and Accord.Core namespaces.
+<p align="center">
 
-|| <img width="350px" src="http://accord.googlecode.com/svn/wiki/guides/starting/vs-6.png"/> || <img width="350px" src="http://accord.googlecode.com/svn/wiki/guides/starting/vs-7.png"/> ||
+|| <img width="400px" src="http://accord.googlecode.com/svn/wiki/guides/starting/vs-6.png"/> || <img width="400px" src="http://accord.googlecode.com/svn/wiki/guides/starting/vs-7.png"/> ||
 
-We are now ready to start developing our application. Besides documentation, the project has full Intellisense support to aid in development.
+</p>
 
-<img width="700px" src="http://accord.googlecode.com/svn/wiki/guides/starting/vs-8.png"/>
+Now we are ready to start developing our application. The following code demonstrates how to create and teach a SVM to recognize the classic XOR problem. The XOR problem is a classical nonlinearly separable problem which can not be solved by a simple linear classifier (such as a Perceptron, or a Linear SVM). The problem consists on learning the following boolean function.
+
+|||| *inputs* || *output* ||
+|| *a* || *b* || *a⊕b* ||
+|| 0 || 0 || 0 ||
+|| 0 || 1 || 1 ||
+|| 1 || 0 || 1 ||
+|| 1 || 1 || 0 ||
+
+The inputs of the problem are given by the *a* and *b* columns. The output is the result on *a⊕b*. To solve it, we will use a Polynomial kernel machine. Support Vector Machines require the outputs to be either -1 or +1, so we will assign -1 to any zero values in the output columns. 
+The code for the sample application is shown below. 
+
+<p align="center">
+
+{{{
+using System;
+using Accord.Controls;
+using Accord.MachineLearning.VectorMachines;
+using Accord.MachineLearning.VectorMachines.Learning;
+using Accord.Math;
+using Accord.Statistics.Kernels;
+
+namespace SampleApplication1
+{
+    class Program
+    {
+        [MTAThread]
+        static void Main(string[] args)
+        {
+            double[][] inputs =
+            {
+                /* 1.*/ new double[] { 0, 0 },
+                /* 2.*/ new double[] { 1, 0 },
+                /* 3.*/ new double[] { 0, 1 },
+                /* 4.*/ new double[] { 1, 1 },
+            };
+
+            int[] outputs =
+            { 
+                /* 1. 0 xor 0 = 0: */ -1,
+                /* 2. 1 xor 0 = 1: */ +1,
+                /* 3. 0 xor 1 = 1: */ +1,
+                /* 4. 1 xor 1 = 0: */ -1,
+            };
 
 
-The following code demonstrates how to create and teach a SVM to recognize the classic XOR problem.
+            // Create a new machine with a polynomial kernel and two inputs
+            KernelSupportVectorMachine ksvm = new KernelSupportVectorMachine(
+                new Gaussian(), 2);
 
-<img width="700px" src="http://accord.googlecode.com/svn/wiki/guides/starting/vs-9.png"/>
+            // Create the learning algorithm with the given inputs and outputs
+            SequentialMinimalOptimization smo = new SequentialMinimalOptimization(
+                machine: ksvm, inputs: inputs, outputs: outputs)
+                {
+                    Complexity = 100  // Create a hard-margin SVM
+                };
 
-<img width="700px" src="http://accord.googlecode.com/svn/wiki/guides/starting/vs-9.png"/>
+            // Teach the machine
+            double error = smo.Run();
 
-<img width="700px" src="http://accord.googlecode.com/svn/wiki/guides/starting/vs-10.png"/>
+            Console.WriteLine("error: " + error);
+
+            // Show results on screen
+            ScatterplotBox.Show("Training data", inputs, outputs);
+
+            ScatterplotBox.Show("SVM results", inputs,
+                inputs.Apply(p => ksvm.Compute(p)));
+
+            Console.ReadKey();
+        }
+    }
+}
+}}}
+
+</p>
+
+In case you need to add any missing namespace references, you can always right-click the name of a class and let Visual Studio complete it for you.
+
+<p align="center">
+<img width="700px" src="http://accord.googlecode.com/svn/wiki/guides/starting/vs-9.png"/> 
+</p>
 
 Once the application code is finished, we can run it by hitting F5 (or equivalently, clicking on the Start Debugging button) on Visual Studio. The application will train the aforementioned Support Vector Machine and should display the training error obtained after learning. A training error of zero indicates that the machine has learned the problem perfectly.
 
+<p align="center">
+<img width="700px" src="http://accord.googlecode.com/svn/wiki/guides/starting/vs-10.png"/>
+</p>
+
+<p align="center">
 <img width="700px" src="http://accord.googlecode.com/svn/wiki/guides/starting/vs-11.png"/>
+</p>
+
+If you have any questions regarding the guide, please leave a comment on the project's [http://groups.google.com/group/accord-net discussion group].
+
+<p align="right">
+<g:plusone size="large"></g:plusone>
+</p>
