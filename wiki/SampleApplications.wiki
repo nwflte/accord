@@ -1,5 +1,5 @@
 #summary Sample applications distributed with the framework.
-#labels sample-applications
+#labels Type-SampleApps
 
 = Sample Applications =
 
@@ -38,6 +38,10 @@ The framework comes with over 25 sample applications demonstrating the framework
 = Accord.Imaging =
 
 <table cellspacing="12px" width="840px">
+<tr>
+  <td width="104px">[SampleApp_ImageClassification Image Classification]</td>
+  <td>Shows how to classify images using the Baf of Visual Words (BoW) model and Support Vector Machines (SVM).</td>
+</tr>
 <tr>
   <td width="104px">[SampleApp_Harris Harris Corners Detector]</td>
   <td>Demonstration of the Harris corners detector in the world-famous Lena Söderberg's picture.</td>
