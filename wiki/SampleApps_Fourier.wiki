@@ -1,4 +1,5 @@
 #summary Sample Application: Fourier Transform Audio Analysis
+#labels Type-SampleApps
 
  * Download [http://accord.googlecode.com/svn/wiki/samples/accord-audio-fourier-bin.rar sample application]
 
