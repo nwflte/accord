@@ -106,7 +106,11 @@
     <div id="mainSection">
       <div id="mainBody">
         <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
-        <span style="color: DarkGray"></span>
+        <span style="color: DarkGray">
+          <div style="float: right; margin-right: 25px; margin-bottom: 25px; margin-left: 25px;">
+            <a href="http://accord.googlecode.com/svn/docs/Index.html" target="_top">&lt;&lt; Table of Contents</a>
+          </div>
+        </span>
         <div class="summary">Contains methods and classes to convert to and from various matrix formats, such as the formats used by Octave (MATLAB-compatible) and Mathematica.</div>
         <h1 class="heading">
           <span onclick="ExpandCollapse(classToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(classToggle, event)" tabindex="0">
@@ -121,6 +125,19 @@
        </th>
               <th class="nameColumn">Class</th>
               <th class="descriptionColumn">Description</th>
+            </tr>
+            <tr data="class; public">
+              <td>
+                <img src="../icons/pubclass.gif" alt="Public class" title="Public class" />
+              </td>
+              <td>
+                <a href="T_Accord_Math_Formats_CSharpArrayFormatProvider.htm">CSharpArrayFormatProvider</a>
+              </td>
+              <td>
+                <div class="summary">
+              Gets the matrix representation used in C# multi-dimensional arrays.
+            </div>
+              </td>
             </tr>
             <tr data="class; public">
               <td>
@@ -145,6 +162,20 @@
               <td>
                 <div class="summary">
               Gets the matrix representation used in C# multi-dimensional arrays.
+            </div>
+              </td>
+            </tr>
+            <tr data="class; public">
+              <td>
+                <img src="../icons/pubclass.gif" alt="Public class" title="Public class" />
+              </td>
+              <td>
+                <a href="T_Accord_Math_Formats_DefaultArrayFormatProvider.htm">DefaultArrayFormatProvider</a>
+              </td>
+              <td>
+                <div class="summary">
+              Gets the default matrix representation, where each row
+              is separated by a new line, and columns are separated by spaces.
             </div>
               </td>
             </tr>
@@ -186,6 +217,19 @@
                 <div class="summary">
               Defines how matrices are formatted and displayed, depending on the
               chosen format representation.
+            </div>
+              </td>
+            </tr>
+            <tr data="class; public">
+              <td>
+                <img src="../icons/pubclass.gif" alt="Public class" title="Public class" />
+              </td>
+              <td>
+                <a href="T_Accord_Math_Formats_OctaveArrayFormatProvider.htm">OctaveArrayFormatProvider</a>
+              </td>
+              <td>
+                <div class="summary">
+              Format provider for the matrix format used by Octave.
             </div>
               </td>
             </tr>

@@ -31,7 +31,7 @@
       <MSHelp:Attr Name="Locale" Value="en-us" />
       <MSHelp:Attr Name="TopicType" Value="kbSyntax" />
       <MSHelp:Attr Name="TopicType" Value="apiref" />
-      <MSHelp:Attr Name="AssemblyVersion" Value="2.6.1.0" />
+      <MSHelp:Attr Name="AssemblyVersion" Value="2.7.0.0" />
     </xml>
   </head>
   <body>
@@ -110,7 +110,11 @@
     <div id="mainSection">
       <div id="mainBody">
         <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
-        <span style="color: DarkGray"></span>
+        <span style="color: DarkGray">
+          <div style="float: right; margin-right: 25px; margin-bottom: 25px; margin-left: 25px;">
+            <a href="http://accord.googlecode.com/svn/docs/Index.html" target="_top">&lt;&lt; Table of Contents</a>
+          </div>
+        </span>
         <p>The <a href="T_Accord_MachineLearning_KMeans.htm">KMeans</a> type exposes the following members.</p>
         <h1 class="heading">
           <span onclick="ExpandCollapse(methodTableToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(methodTableToggle, event)" tabindex="0">
@@ -125,19 +129,6 @@
             </th>
               <th class="nameColumn">Name</th>
               <th class="descriptionColumn">Description</th>
-            </tr>
-            <tr data="public;declared;notNetfw;">
-              <td>
-                <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
-              </td>
-              <td>
-                <a href="M_Accord_MachineLearning_KMeans_Classify.htm">Classify</a>
-              </td>
-              <td>
-                <div class="summary">
-              Returns the closest clusters to an input vector array.
-            </div>
-              </td>
             </tr>
             <tr data="public;declared;notNetfw;">
               <td>
@@ -274,11 +265,24 @@
                 <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
               </td>
               <td>
-                <a href="M_Accord_MachineLearning_KMeans_Nearest.htm">Nearest</a>
+                <a href="M_Accord_MachineLearning_KMeans_Nearest.htm">Nearest(<span class="languageSpecificText"><span class="cpp">array&lt;</span></span>Double<span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span><span class="fs">[]</span></span>)</a>
               </td>
               <td>
                 <div class="summary">
               Returns the closest cluster to an input vector.
+            </div>
+              </td>
+            </tr>
+            <tr data="public;declared;notNetfw;">
+              <td>
+                <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+              </td>
+              <td>
+                <a href="M_Accord_MachineLearning_KMeans_Nearest_1.htm">Nearest(<span class="languageSpecificText"><span class="cpp">array&lt;</span></span><span class="languageSpecificText"><span class="cpp">array&lt;</span></span>Double<span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span><span class="fs">[]</span></span><span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span><span class="fs">[]</span></span>)</a>
+              </td>
+              <td>
+                <div class="summary">
+              Returns the closest clusters to an input vector array.
             </div>
               </td>
             </tr>

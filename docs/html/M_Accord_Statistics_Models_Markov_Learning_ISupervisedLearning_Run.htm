@@ -7,7 +7,7 @@
     <meta name="System.Keywords" content="Run method" />
     <meta name="System.Keywords" content="ISupervisedLearning.Run method" />
     <meta name="Microsoft.Help.F1" content="Accord.Statistics.Models.Markov.Learning.ISupervisedLearning.Run" />
-    <meta name="Microsoft.Help.Id" content="M:Accord.Statistics.Models.Markov.Learning.ISupervisedLearning.Run(System.Array[],System.Int32[])" />
+    <meta name="Microsoft.Help.Id" content="M:Accord.Statistics.Models.Markov.Learning.ISupervisedLearning.Run(System.Array[],System.Int32[][])" />
     <meta name="Description" content="Runs the learning algorithm." />
     <meta name="Microsoft.Help.ContentType" content="Reference" />
     <link rel="stylesheet" type="text/css" href="../styles/Presentation.css" />
@@ -23,10 +23,10 @@
     <meta name="file" content="M_Accord_Statistics_Models_Markov_Learning_ISupervisedLearning_Run" />
     <meta name="guid" content="M_Accord_Statistics_Models_Markov_Learning_ISupervisedLearning_Run" />
     <xml>
-      <MSHelp:Attr Name="AssetID" Value="M:Accord.Statistics.Models.Markov.Learning.ISupervisedLearning.Run(System.Array[],System.Int32[])" />
+      <MSHelp:Attr Name="AssetID" Value="M:Accord.Statistics.Models.Markov.Learning.ISupervisedLearning.Run(System.Array[],System.Int32[][])" />
       <MSHelp:TOCTitle Title="Run Method " />
       <MSHelp:RLTitle Title="ISupervisedLearning.Run Method  (Accord.Statistics.Models.Markov.Learning)" />
-      <MSHelp:Keyword Index="A" Term="M:Accord.Statistics.Models.Markov.Learning.ISupervisedLearning.Run(System.Array[],System.Int32[])" />
+      <MSHelp:Keyword Index="A" Term="M:Accord.Statistics.Models.Markov.Learning.ISupervisedLearning.Run(System.Array[],System.Int32[][])" />
       <MSHelp:Keyword Index="A" Term="frlrfAccordStatisticsModelsMarkovLearningISupervisedLearningClassRunTopic" />
       <MSHelp:Keyword Index="K" Term="Run method" />
       <MSHelp:Keyword Index="K" Term="ISupervisedLearning.Run method" />
@@ -40,7 +40,7 @@
       <MSHelp:Attr Name="TopicType" Value="kbSyntax" />
       <MSHelp:Attr Name="TopicType" Value="apiref" />
       <MSHelp:Attr Name="Abstract" Value="Runs the learning algorithm." />
-      <MSHelp:Attr Name="AssemblyVersion" Value="2.6.1.0" />
+      <MSHelp:Attr Name="AssemblyVersion" Value="2.7.0.0" />
     </xml>
   </head>
   <body>
@@ -108,18 +108,22 @@
     <div id="mainSection">
       <div id="mainBody">
         <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
-        <span style="color: DarkGray"></span>
+        <span style="color: DarkGray">
+          <div style="float: right; margin-right: 25px; margin-bottom: 25px; margin-left: 25px;">
+            <a href="http://accord.googlecode.com/svn/docs/Index.html" target="_top">&lt;&lt; Table of Contents</a>
+          </div>
+        </span>
         <div class="summary">
               Runs the learning algorithm.
             </div>
         <p />
-        <b>Namespace:</b> <a href="N_Accord_Statistics_Models_Markov_Learning.htm">Accord.Statistics.Models.Markov.Learning</a><br /><b>Assembly:</b> <span sdata="assembly">Accord.Statistics</span> (in Accord.Statistics.dll) Version: 2.6.1.0 (2.6.1.0)<h1 class="heading"><span onclick="ExpandCollapse(syntaxToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(syntaxToggle, event)" tabindex="0"><img id="syntaxToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />Syntax</span></h1><div id="syntaxSection" class="section" name="collapseableSection" style=""><div id="syntaxCodeBlocks" class="code"><span codeLanguage="CSharp"><table><tr><th>C#</th></tr><tr><td><pre xml:space="preserve"><a href="http://msdn2.microsoft.com/en-us/library/643eft0t" target="_blank">double</a> <span class="identifier">Run</span>(
+        <b>Namespace:</b> <a href="N_Accord_Statistics_Models_Markov_Learning.htm">Accord.Statistics.Models.Markov.Learning</a><br /><b>Assembly:</b> <span sdata="assembly">Accord.Statistics</span> (in Accord.Statistics.dll) Version: 2.7.0.0 (2.7.0.0)<h1 class="heading"><span onclick="ExpandCollapse(syntaxToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(syntaxToggle, event)" tabindex="0"><img id="syntaxToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />Syntax</span></h1><div id="syntaxSection" class="section" name="collapseableSection" style=""><div id="syntaxCodeBlocks" class="code"><span codeLanguage="CSharp"><table><tr><th>C#</th></tr><tr><td><pre xml:space="preserve"><a href="http://msdn2.microsoft.com/en-us/library/643eft0t" target="_blank">double</a> <span class="identifier">Run</span>(
 	<a href="http://msdn2.microsoft.com/en-us/library/czz5hkty" target="_blank">Array</a>[] <span class="parameter">observations</span>,
-	<a href="http://msdn2.microsoft.com/en-us/library/td2s409d" target="_blank">int</a>[] <span class="parameter">states</span>
+	<a href="http://msdn2.microsoft.com/en-us/library/td2s409d" target="_blank">int</a>[][] <span class="parameter">paths</span>
 )</pre></td></tr></table></span><span codeLanguage="VisualBasicDeclaration"><table><tr><th>Visual Basic</th></tr><tr><td><pre xml:space="preserve"><span class="keyword">Function</span> <span class="identifier">Run</span> ( _
 	<span class="parameter">observations</span> <span class="keyword">As</span> <a href="http://msdn2.microsoft.com/en-us/library/czz5hkty" target="_blank">Array</a>(), _
-	<span class="parameter">states</span> <span class="keyword">As</span> <a href="http://msdn2.microsoft.com/en-us/library/td2s409d" target="_blank">Integer</a>() _
-) <span class="keyword">As</span> <a href="http://msdn2.microsoft.com/en-us/library/643eft0t" target="_blank">Double</a></pre></td></tr></table></span></div><div id="parameters"><h4 class="subHeading">Parameters</h4><dl paramName="observations"><dt><span class="parameter">observations</span></dt><dd>Type: <span class="languageSpecificText"><span class="cpp">array&lt;</span></span><a href="http://msdn2.microsoft.com/en-us/library/czz5hkty" target="_blank">System<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>Array</a><span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span><span class="fs">[]</span></span><br /></dd></dl><dl paramName="states"><dt><span class="parameter">states</span></dt><dd>Type: <span class="languageSpecificText"><span class="cpp">array&lt;</span></span><a href="http://msdn2.microsoft.com/en-us/library/td2s409d" target="_blank">System<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>Int32</a><span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span><span class="fs">[]</span></span><br /></dd></dl></div></div><h1 class="heading"><span onclick="ExpandCollapse(remarksToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(remarksToggle, event)" tabindex="0"><img id="remarksToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />Remarks</span></h1><div id="remarksSection" class="section" name="collapseableSection" style="">
+	<span class="parameter">paths</span> <span class="keyword">As</span> <a href="http://msdn2.microsoft.com/en-us/library/td2s409d" target="_blank">Integer</a>()() _
+) <span class="keyword">As</span> <a href="http://msdn2.microsoft.com/en-us/library/643eft0t" target="_blank">Double</a></pre></td></tr></table></span></div><div id="parameters"><h4 class="subHeading">Parameters</h4><dl paramName="observations"><dt><span class="parameter">observations</span></dt><dd>Type: <span class="languageSpecificText"><span class="cpp">array&lt;</span></span><a href="http://msdn2.microsoft.com/en-us/library/czz5hkty" target="_blank">System<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>Array</a><span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span><span class="fs">[]</span></span><br /></dd></dl><dl paramName="paths"><dt><span class="parameter">paths</span></dt><dd>Type: <span class="languageSpecificText"><span class="cpp">array&lt;</span></span><span class="languageSpecificText"><span class="cpp">array&lt;</span></span><a href="http://msdn2.microsoft.com/en-us/library/td2s409d" target="_blank">System<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>Int32</a><span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span><span class="fs">[]</span></span><span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span><span class="fs">[]</span></span><br /></dd></dl></div></div><h1 class="heading"><span onclick="ExpandCollapse(remarksToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(remarksToggle, event)" tabindex="0"><img id="remarksToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />Remarks</span></h1><div id="remarksSection" class="section" name="collapseableSection" style="">
               Supervised learning problem. Given some training observation sequences 
               O = {o1, o2, ..., oK} and sequence of hidden states H = {h1, h2, ..., hK}
               and general structure of HMM (numbers of hidden and visible states), 

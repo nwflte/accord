@@ -36,7 +36,7 @@
       <MSHelp:Attr Name="Locale" Value="en-us" />
       <MSHelp:Attr Name="TopicType" Value="kbSyntax" />
       <MSHelp:Attr Name="TopicType" Value="apiref" />
-      <MSHelp:Attr Name="AssemblyVersion" Value="2.6.1.0" />
+      <MSHelp:Attr Name="AssemblyVersion" Value="2.7.0.0" />
     </xml>
   </head>
   <body>
@@ -115,7 +115,11 @@
     <div id="mainSection">
       <div id="mainBody">
         <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
-        <span style="color: DarkGray"></span>
+        <span style="color: DarkGray">
+          <div style="float: right; margin-right: 25px; margin-bottom: 25px; margin-left: 25px;">
+            <a href="http://accord.googlecode.com/svn/docs/Index.html" target="_top">&lt;&lt; Table of Contents</a>
+          </div>
+        </span>
         <p />
         <p>The <a href="T_Accord_Statistics_Distributions_Fitting_GeneralDiscreteOptions.htm">GeneralDiscreteOptions</a> type exposes the following members.</p>
         <h1 class="heading">
@@ -249,6 +253,20 @@
               Gets or sets the minimum allowed probability
               in the frequency tables specifying the discrete
               distribution.
+            </div>
+              </td>
+            </tr>
+            <tr data="public;declared;notNetfw;">
+              <td>
+                <img src="../icons/pubproperty.gif" alt="Public property" title="Public property" />
+              </td>
+              <td>
+                <a href="P_Accord_Statistics_Distributions_Fitting_GeneralDiscreteOptions_UseLaplaceRule.htm">UseLaplaceRule</a>
+              </td>
+              <td>
+                <div class="summary">
+              Gets ors sets whether to use Laplace's rule
+              of sucession to avoid zero probabilities.
             </div>
               </td>
             </tr>

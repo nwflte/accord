@@ -36,7 +36,7 @@
       <MSHelp:Attr Name="Locale" Value="en-us" />
       <MSHelp:Attr Name="TopicType" Value="kbSyntax" />
       <MSHelp:Attr Name="TopicType" Value="apiref" />
-      <MSHelp:Attr Name="AssemblyVersion" Value="2.6.1.0" />
+      <MSHelp:Attr Name="AssemblyVersion" Value="2.7.0.0" />
     </xml>
   </head>
   <body>
@@ -115,7 +115,11 @@
     <div id="mainSection">
       <div id="mainBody">
         <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
-        <span style="color: DarkGray"></span>
+        <span style="color: DarkGray">
+          <div style="float: right; margin-right: 25px; margin-bottom: 25px; margin-left: 25px;">
+            <a href="http://accord.googlecode.com/svn/docs/Index.html" target="_top">&lt;&lt; Table of Contents</a>
+          </div>
+        </span>
         <p />
         <p>The <a href="T_Accord_Imaging_SpeededUpRobustFeaturesDetector.htm">SpeededUpRobustFeaturesDetector</a> type exposes the following members.</p>
         <h1 class="heading">
@@ -216,8 +220,8 @@
               </td>
               <td>
                 <div class="summary">
-              Gets the <a href="T_Accord_Imaging_SurfDescriptor.htm">feature descriptor</a>
-              for the last processed image.
+              Gets the <a href="T_Accord_Imaging_SpeededUpRobustFeaturesDescriptor.htm">
+              feature descriptor</a> for the last processed image.
             </div>
               </td>
             </tr>
@@ -321,6 +325,36 @@
                 <img src="../icons/pubproperty.gif" alt="Public property" title="Public property" />
               </td>
               <td>
+                <a href="P_Accord_Imaging_SpeededUpRobustFeaturesDetector_ComputeDescriptors.htm">ComputeDescriptors</a>
+              </td>
+              <td>
+                <div class="summary">
+              Gets or sets a value indicating whether all feature points
+              should have their descriptors computed after being detected.
+              Default is to compute standard descriptors.
+            </div>
+              </td>
+            </tr>
+            <tr data="public;declared;notNetfw;">
+              <td>
+                <img src="../icons/pubproperty.gif" alt="Public property" title="Public property" />
+              </td>
+              <td>
+                <a href="P_Accord_Imaging_SpeededUpRobustFeaturesDetector_ComputeOrientation.htm">ComputeOrientation</a>
+              </td>
+              <td>
+                <div class="summary">
+              Gets or sets a value indicating whether all feature points
+              should have their orientation computed after being detected.
+              Default is true.
+            </div>
+              </td>
+            </tr>
+            <tr data="public;declared;notNetfw;">
+              <td>
+                <img src="../icons/pubproperty.gif" alt="Public property" title="Public property" />
+              </td>
+              <td>
                 <a href="P_Accord_Imaging_SpeededUpRobustFeaturesDetector_Octaves.htm">Octaves</a>
               </td>
               <td>
@@ -357,7 +391,7 @@
               <td>
                 <div class="summary">
               Gets or sets the non-maximum suppression
-              threshold. Default is 0.0002f.
+              threshold. Default is 0.0002.
             </div>
               </td>
             </tr>

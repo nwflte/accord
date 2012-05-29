@@ -31,7 +31,7 @@
       <MSHelp:Attr Name="Locale" Value="en-us" />
       <MSHelp:Attr Name="TopicType" Value="kbSyntax" />
       <MSHelp:Attr Name="TopicType" Value="apiref" />
-      <MSHelp:Attr Name="AssemblyVersion" Value="2.6.1.0" />
+      <MSHelp:Attr Name="AssemblyVersion" Value="2.7.0.0" />
     </xml>
   </head>
   <body>
@@ -110,7 +110,11 @@
     <div id="mainSection">
       <div id="mainBody">
         <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
-        <span style="color: DarkGray"></span>
+        <span style="color: DarkGray">
+          <div style="float: right; margin-right: 25px; margin-bottom: 25px; margin-left: 25px;">
+            <a href="http://accord.googlecode.com/svn/docs/Index.html" target="_top">&lt;&lt; Table of Contents</a>
+          </div>
+        </span>
         <p>The <a href="T_Accord_Statistics_Distributions_Univariate_GeneralDiscreteDistribution.htm">GeneralDiscreteDistribution</a> type exposes the following members.</p>
         <h1 class="heading">
           <span onclick="ExpandCollapse(methodTableToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(methodTableToggle, event)" tabindex="0">
@@ -246,6 +250,32 @@
               Fits the underlying distribution to a given set of observations.
             </div> (Overrides <a href="M_Accord_Statistics_Distributions_Univariate_UnivariateDiscreteDistribution_Fit_3.htm">UnivariateDiscreteDistribution<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>Fit(<span class="languageSpecificText"><span class="cpp">array&lt;</span></span>Double<span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span><span class="fs">[]</span></span>, <span class="languageSpecificText"><span class="cpp">array&lt;</span></span>Double<span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span><span class="fs">[]</span></span>, IFittingOptions)</a>.)</td>
             </tr>
+            <tr data="public;declared;notNetfw;">
+              <td>
+                <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+              </td>
+              <td>
+                <a href="M_Accord_Statistics_Distributions_Univariate_GeneralDiscreteDistribution_Generate.htm">Generate<span class="languageSpecificText"><span class="cs">()</span><span class="cpp">()</span><span class="nu">()</span><span class="fs">()</span></span></a>
+              </td>
+              <td>
+                <div class="summary">
+              Generates a random observation from the current distribution.
+            </div>
+              </td>
+            </tr>
+            <tr data="public;declared;notNetfw;">
+              <td>
+                <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+              </td>
+              <td>
+                <a href="M_Accord_Statistics_Distributions_Univariate_GeneralDiscreteDistribution_Generate_1.htm">Generate(Int32)</a>
+              </td>
+              <td>
+                <div class="summary">
+              Generates a random vector of observations from the current distribution.
+            </div>
+              </td>
+            </tr>
             <tr data="public;inherited;notNetfw;">
               <td>
                 <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
@@ -315,6 +345,34 @@
               Gets the probability mass function (pmf) for
               this distribution evaluated at point <span class="code">x</span>.
             </div> (Overrides <a href="M_Accord_Statistics_Distributions_Univariate_UnivariateDiscreteDistribution_ProbabilityMassFunction.htm">UnivariateDiscreteDistribution<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>ProbabilityMassFunction(Int32)</a>.)</td>
+            </tr>
+            <tr data="public;static;declared;notNetfw;">
+              <td>
+                <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                <img src="../icons/static.gif" alt="Static member" title="Static member" />
+              </td>
+              <td>
+                <a href="M_Accord_Statistics_Distributions_Univariate_GeneralDiscreteDistribution_Random.htm">Random(<span class="languageSpecificText"><span class="cpp">array&lt;</span></span>Double<span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span><span class="fs">[]</span></span>)</a>
+              </td>
+              <td>
+                <div class="summary">
+              Returns a random symbol within the given symbol probabilities.
+            </div>
+              </td>
+            </tr>
+            <tr data="public;static;declared;notNetfw;">
+              <td>
+                <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                <img src="../icons/static.gif" alt="Static member" title="Static member" />
+              </td>
+              <td>
+                <a href="M_Accord_Statistics_Distributions_Univariate_GeneralDiscreteDistribution_Random_1.htm">Random(<span class="languageSpecificText"><span class="cpp">array&lt;</span></span>Double<span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span><span class="fs">[]</span></span>, Int32)</a>
+              </td>
+              <td>
+                <div class="summary">
+              Returns a random sample within the given symbol probabilities.
+            </div>
+              </td>
             </tr>
             <tr data="public;inherited;notNetfw;">
               <td>

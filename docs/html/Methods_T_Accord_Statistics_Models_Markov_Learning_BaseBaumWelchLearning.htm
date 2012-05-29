@@ -31,7 +31,7 @@
       <MSHelp:Attr Name="Locale" Value="en-us" />
       <MSHelp:Attr Name="TopicType" Value="kbSyntax" />
       <MSHelp:Attr Name="TopicType" Value="apiref" />
-      <MSHelp:Attr Name="AssemblyVersion" Value="2.6.1.0" />
+      <MSHelp:Attr Name="AssemblyVersion" Value="2.7.0.0" />
     </xml>
   </head>
   <body>
@@ -110,7 +110,11 @@
     <div id="mainSection">
       <div id="mainBody">
         <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
-        <span style="color: DarkGray"></span>
+        <span style="color: DarkGray">
+          <div style="float: right; margin-right: 25px; margin-bottom: 25px; margin-left: 25px;">
+            <a href="http://accord.googlecode.com/svn/docs/Index.html" target="_top">&lt;&lt; Table of Contents</a>
+          </div>
+        </span>
         <p>The <a href="T_Accord_Statistics_Models_Markov_Learning_BaseBaumWelchLearning.htm">BaseBaumWelchLearning</a> type exposes the following members.</p>
         <h1 class="heading">
           <span onclick="ExpandCollapse(methodTableToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(methodTableToggle, event)" tabindex="0">
@@ -195,19 +199,18 @@
               <td>
                 <div class="summary">Gets the <a href="http://msdn2.microsoft.com/en-us/library/42892f65" target="_blank">Type</a> of the current instance.</div> (Inherited from <a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a>.)</td>
             </tr>
-            <tr data="protected;declared;notNetfw;">
+            <tr data="protected;inherited;notNetfw;">
               <td>
                 <img src="../icons/protmethod.gif" alt="Protected method" title="Protected method" />
               </td>
               <td>
-                <a href="M_Accord_Statistics_Models_Markov_Learning_BaseBaumWelchLearning_HasConverged.htm">HasConverged</a>
+                <a href="M_Accord_Statistics_Models_Markov_Learning_BaseIterativeLearning_HasConverged.htm">HasConverged</a>
               </td>
               <td>
                 <div class="summary">
-              Checks if a model has converged given the likelihoods between two iterations
-              of the Baum-Welch algorithm and a criteria for convergence.
-            </div>
-              </td>
+              Checks if a model has converged given the likelihoods between two 
+              iterations of the learning algorithm and a criteria for convergence.
+            </div> (Inherited from <a href="T_Accord_Statistics_Models_Markov_Learning_BaseIterativeLearning.htm">BaseIterativeLearning</a>.)</td>
             </tr>
             <tr data="protected;inherited;notNetfw;">
               <td>

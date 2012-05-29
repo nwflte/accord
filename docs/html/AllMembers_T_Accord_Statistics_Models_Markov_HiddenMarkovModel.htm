@@ -36,7 +36,7 @@
       <MSHelp:Attr Name="Locale" Value="en-us" />
       <MSHelp:Attr Name="TopicType" Value="kbSyntax" />
       <MSHelp:Attr Name="TopicType" Value="apiref" />
-      <MSHelp:Attr Name="AssemblyVersion" Value="2.6.1.0" />
+      <MSHelp:Attr Name="AssemblyVersion" Value="2.7.0.0" />
     </xml>
   </head>
   <body>
@@ -115,7 +115,11 @@
     <div id="mainSection">
       <div id="mainBody">
         <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
-        <span style="color: DarkGray"></span>
+        <span style="color: DarkGray">
+          <div style="float: right; margin-right: 25px; margin-bottom: 25px; margin-left: 25px;">
+            <a href="http://accord.googlecode.com/svn/docs/Index.html" target="_top">&lt;&lt; Table of Contents</a>
+          </div>
+        </span>
         <p />
         <p>The <a href="T_Accord_Statistics_Models_Markov_HiddenMarkovModel.htm">HiddenMarkovModel</a> type exposes the following members.</p>
         <h1 class="heading">
@@ -247,7 +251,21 @@
                 <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
               </td>
               <td>
-                <a href="M_Accord_Statistics_Models_Markov_HiddenMarkovModel_Decode.htm">Decode</a>
+                <a href="M_Accord_Statistics_Models_Markov_HiddenMarkovModel_Decode.htm">Decode(<span class="languageSpecificText"><span class="cpp">array&lt;</span></span>Int32<span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span><span class="fs">[]</span></span>)</a>
+              </td>
+              <td>
+                <div class="summary">
+              Calculates the most likely sequence of hidden states
+              that produced the given observation sequence.
+            </div>
+              </td>
+            </tr>
+            <tr data="public;declared;notNetfw;">
+              <td>
+                <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+              </td>
+              <td>
+                <a href="M_Accord_Statistics_Models_Markov_HiddenMarkovModel_Decode_1.htm">Decode(<span class="languageSpecificText"><span class="cpp">array&lt;</span></span>Int32<span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span><span class="fs">[]</span></span>, Double<span class="languageSpecificText"><span class="cpp">%</span></span>)</a>
               </td>
               <td>
                 <div class="summary">
@@ -271,11 +289,25 @@
                 <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
               </td>
               <td>
-                <a href="M_Accord_Statistics_Models_Markov_HiddenMarkovModel_Evaluate.htm">Evaluate</a>
+                <a href="M_Accord_Statistics_Models_Markov_HiddenMarkovModel_Evaluate.htm">Evaluate(<span class="languageSpecificText"><span class="cpp">array&lt;</span></span>Int32<span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span><span class="fs">[]</span></span>)</a>
               </td>
               <td>
                 <div class="summary">
               Calculates the log-likelihood that this model has generated the given sequence.
+            </div>
+              </td>
+            </tr>
+            <tr data="public;declared;notNetfw;">
+              <td>
+                <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+              </td>
+              <td>
+                <a href="M_Accord_Statistics_Models_Markov_HiddenMarkovModel_Evaluate_1.htm">Evaluate(<span class="languageSpecificText"><span class="cpp">array&lt;</span></span>Int32<span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span><span class="fs">[]</span></span>, <span class="languageSpecificText"><span class="cpp">array&lt;</span></span>Int32<span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span><span class="fs">[]</span></span>)</a>
+              </td>
+              <td>
+                <div class="summary">
+              Calculates the log-likelihood that this model has generated the
+              given observation sequence along the given state path.
             </div>
               </td>
             </tr>
@@ -288,6 +320,32 @@
               </td>
               <td>
                 <div class="summary">Allows an <a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a> to attempt to free resources and perform other cleanup operations before the <a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a> is reclaimed by garbage collection.</div> (Inherited from <a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a>.)</td>
+            </tr>
+            <tr data="public;declared;notNetfw;">
+              <td>
+                <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+              </td>
+              <td>
+                <a href="M_Accord_Statistics_Models_Markov_HiddenMarkovModel_Generate.htm">Generate(Int32)</a>
+              </td>
+              <td>
+                <div class="summary">
+              Generates a random vector of observations from the model.
+            </div>
+              </td>
+            </tr>
+            <tr data="public;declared;notNetfw;">
+              <td>
+                <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+              </td>
+              <td>
+                <a href="M_Accord_Statistics_Models_Markov_HiddenMarkovModel_Generate_1.htm">Generate(Int32, <span class="languageSpecificText"><span class="cpp">array&lt;</span></span>Int32<span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span><span class="fs">[]</span></span><span class="languageSpecificText"><span class="cpp">%</span></span>, Double<span class="languageSpecificText"><span class="cpp">%</span></span>)</a>
+              </td>
+              <td>
+                <div class="summary">
+              Generates a random vector of observations from the model.
+            </div>
+              </td>
             </tr>
             <tr data="public;inherited;notNetfw;">
               <td>

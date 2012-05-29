@@ -31,7 +31,7 @@
       <MSHelp:Attr Name="Locale" Value="en-us" />
       <MSHelp:Attr Name="TopicType" Value="kbSyntax" />
       <MSHelp:Attr Name="TopicType" Value="apiref" />
-      <MSHelp:Attr Name="AssemblyVersion" Value="2.6.1.0" />
+      <MSHelp:Attr Name="AssemblyVersion" Value="2.7.0.0" />
     </xml>
   </head>
   <body>
@@ -110,7 +110,11 @@
     <div id="mainSection">
       <div id="mainBody">
         <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
-        <span style="color: DarkGray"></span>
+        <span style="color: DarkGray">
+          <div style="float: right; margin-right: 25px; margin-bottom: 25px; margin-left: 25px;">
+            <a href="http://accord.googlecode.com/svn/docs/Index.html" target="_top">&lt;&lt; Table of Contents</a>
+          </div>
+        </span>
         <p>The <a href="T_Accord_Statistics_Models_Markov_Learning_BaseBaumWelchLearning.htm">BaseBaumWelchLearning</a> type exposes the following members.</p>
         <h1 class="heading">
           <span onclick="ExpandCollapse(propertyTableToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(propertyTableToggle, event)" tabindex="0">
@@ -126,19 +130,18 @@
               <th class="nameColumn">Name</th>
               <th class="descriptionColumn">Description</th>
             </tr>
-            <tr data="public;declared;notNetfw;">
+            <tr data="public;inherited;notNetfw;">
               <td>
                 <img src="../icons/pubproperty.gif" alt="Public property" title="Public property" />
               </td>
               <td>
-                <a href="P_Accord_Statistics_Models_Markov_Learning_BaseBaumWelchLearning_Iterations.htm">Iterations</a>
+                <a href="P_Accord_Statistics_Models_Markov_Learning_BaseIterativeLearning_Iterations.htm">Iterations</a>
               </td>
               <td>
                 <div class="summary">
               Gets or sets the maximum number of iterations
               performed by the learning algorithm.
-            </div>
-              </td>
+            </div> (Inherited from <a href="T_Accord_Statistics_Models_Markov_Learning_BaseIterativeLearning.htm">BaseIterativeLearning</a>.)</td>
             </tr>
             <tr data="public;declared;notNetfw;">
               <td>
@@ -168,19 +171,18 @@
             </div>
               </td>
             </tr>
-            <tr data="public;declared;notNetfw;">
+            <tr data="public;inherited;notNetfw;">
               <td>
                 <img src="../icons/pubproperty.gif" alt="Public property" title="Public property" />
               </td>
               <td>
-                <a href="P_Accord_Statistics_Models_Markov_Learning_BaseBaumWelchLearning_Tolerance.htm">Tolerance</a>
+                <a href="P_Accord_Statistics_Models_Markov_Learning_BaseIterativeLearning_Tolerance.htm">Tolerance</a>
               </td>
               <td>
                 <div class="summary">
               Gets or sets the maximum change in the average log-likelihood
               after an iteration of the algorithm used to detect convergence.
-            </div>
-              </td>
+            </div> (Inherited from <a href="T_Accord_Statistics_Models_Markov_Learning_BaseIterativeLearning.htm">BaseIterativeLearning</a>.)</td>
             </tr>
           </table>
         </div>

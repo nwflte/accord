@@ -31,7 +31,7 @@
       <MSHelp:Attr Name="Locale" Value="en-us" />
       <MSHelp:Attr Name="TopicType" Value="kbSyntax" />
       <MSHelp:Attr Name="TopicType" Value="apiref" />
-      <MSHelp:Attr Name="AssemblyVersion" Value="2.6.1.0" />
+      <MSHelp:Attr Name="AssemblyVersion" Value="2.7.0.0" />
     </xml>
   </head>
   <body>
@@ -110,7 +110,11 @@
     <div id="mainSection">
       <div id="mainBody">
         <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
-        <span style="color: DarkGray"></span>
+        <span style="color: DarkGray">
+          <div style="float: right; margin-right: 25px; margin-bottom: 25px; margin-left: 25px;">
+            <a href="http://accord.googlecode.com/svn/docs/Index.html" target="_top">&lt;&lt; Table of Contents</a>
+          </div>
+        </span>
         <p>The <a href="T_Accord_Imaging_Filters_FeaturesMarker.htm">FeaturesMarker</a> type exposes the following members.</p>
         <h1 class="heading">
           <span onclick="ExpandCollapse(methodTableToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(methodTableToggle, event)" tabindex="0">
@@ -125,19 +129,6 @@
             </th>
               <th class="nameColumn">Name</th>
               <th class="descriptionColumn">Description</th>
-            </tr>
-            <tr data="public;declared;notNetfw;">
-              <td>
-                <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
-              </td>
-              <td>
-                <a href="M_Accord_Imaging_Filters_FeaturesMarker_Apply.htm">Apply</a>
-              </td>
-              <td>
-                <div class="summary">
-               Process the filter on the specified image.
-             </div>
-              </td>
             </tr>
             <tr data="public;inherited;notNetfw;">
               <td>
@@ -188,6 +179,18 @@
               </td>
               <td>
                 <div class="summary">Creates a shallow copy of the current <a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a>.</div> (Inherited from <a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a>.)</td>
+            </tr>
+            <tr data="protected;declared;notNetfw;">
+              <td>
+                <img src="../icons/protmethod.gif" alt="Protected method" title="Protected method" />
+              </td>
+              <td>
+                <a href="M_Accord_Imaging_Filters_FeaturesMarker_ProcessFilter.htm">ProcessFilter</a>
+              </td>
+              <td>
+                <div class="summary">
+               Process the filter on the specified image.
+             </div> (Overrides <span class="nolink">BaseInPlaceFilterProcessFilter(UnmanagedImage)</span>.)</td>
             </tr>
             <tr data="public;inherited;notNetfw;">
               <td>
