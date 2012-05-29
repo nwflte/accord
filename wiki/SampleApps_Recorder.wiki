@@ -1,4 +1,4 @@
-#summary Audio recorder sample application
+#summary Sample Application: Audio recorder sample application
 #labels Type-SampleApps
 
  * Download [http://accord.googlecode.com/svn/wiki/samples/accord-audio-fourier-bin.zip application]
