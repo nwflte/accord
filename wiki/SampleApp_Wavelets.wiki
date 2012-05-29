@@ -1,0 +1,12 @@
+#summary Sample Application: Wavelet Image Transform
+#labels Type-SampleApps
+
+ * Download [http://accord.googlecode.com/svn/wiki/samples/accord-audio-fourier-bin.zip application]
+ * Download [http://accord.googlecode.com/svn/wiki/samples/accord-audio-fourier-src.zip source code]
+
+The Wavelet sample application shows how to use the [http://accord.googlecode.com/svn/docs/html/T_Accord_Imaging_Filters_WaveletTransform.htm Wavelet transform filter] to process images using [http://accord.googlecode.com/svn/docs/html/N_Accord_Math_Wavelets.htm wavelet transforms] such as the [http://accord.googlecode.com/svn/docs/html/T_Accord_Math_Wavelets_Haar.htm Haar] and [http://accord.googlecode.com/svn/docs/html/T_Accord_Math_Wavelets_CDF97.htm CDF9/7].
+
+<br /><p align="center">
+http://accord.googlecode.com/svn/wiki/samples/accord-imaging-wavelet-img.png
+<br />Wavelets sample application
+</p><br />
