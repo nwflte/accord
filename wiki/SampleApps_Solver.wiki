@@ -1,13 +1,16 @@
-#summary Sample Application: Fourier Transform Audio Analysis
-#labels Sample-Applications
+#summary Sample Application: Quadratic Programming (QP) Solver
+#labels Type-Sample-Applications
 
- * Download [http://accord.googlecode.com/svn/wiki/samples/accord-audio-fourier-bin.rar sample application]
+ * Download [http://accord.googlecode.com/svn/wiki/samples/accord-solver-source.zip source code]
+ * Download [http://accord.googlecode.com/svn/wiki/samples/accord-solver-demo.zip sample application]
 
-The Fourier sample application shows how to capture sounds from a capture device (such as the soundcard's microphone jack) using the Accord.NET Framework. The sound can then be analyzed using the AForge.NET [http://www.aforgenet.com/framework/docs/html/a233a2c8-37ef-459d-f3dd-4088592f458a.htm FourierTransform functions].
+The Solver sample application demonstrates how to solve constrained quadratic programming (QP) problems using the dual method of Goldfarb and Idnani (1982). The code is based on the original Fortran implementation by Berwin A. Turlach. The solution of the QP problem shown in the picture can be checked against [http://www.wolframalpha.com/input/?i=min+2x%C2%B2%2Bxy%2By%C2%B2-5y%2C+x+%2B+y+%3C%3D+2%2C+x%2By+%3E%3D+1%2C+y+%3E%3D0 WolframAlpha's answer]. The sample can hopefully demonstrate the flexibility on specifying target functions and constraints, which can be specified either using lambda expressions, text strings or constraint matrices. 
 
 <br /><p align="center">
-http://accord.googlecode.com/svn/wiki/samples/accord-audio-fourier-img.png
-<br />Fourier sample application
+http://accord.googlecode.com/svn/wiki/samples/accord-solver.png
+<br />Constrained optimization solver for QP problems
 </p><br />
 
-The sample application can also show how to apply one of the [http://accord.googlecode.com/svn/docs/html/N_Accord_Audio_Windows.htm audio windows] to the [http://accord.googlecode.com/svn/docs/html/T_Accord_Audio_Signal.htm input signal]. In the picture above, the [http://accord.googlecode.com/svn/docs/html/M_Accord_Audio_Windows_RaisedCosineWindow_Hamming.htm Hamming window], a special case of the [http://accord.googlecode.com/svn/docs/html/AllMembers_T_Accord_Audio_Windows_RaisedCosineWindow.htm raised cosine] family of window functions, is being applied.
+
+----
+The source code available in this page may contain a stripped down version of the Accord.NET Framework with only the strictly necessary to support the sample application. Thus it is by no means a production version, nor it is supported, and is mainly intended to provide a better understanding of the code. Anyone downloading the sources below is highly encouraged to download the complete framework in order to obtain the latest version of this code, which may have the latest bug fixes and enhancements.
