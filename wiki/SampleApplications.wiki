@@ -43,7 +43,7 @@ The framework comes with over 25 sample applications demonstrating the framework
   <td>Demonstration of the Harris corners detector in the world-famous Lena Söderberg's picture.</td>
 </tr>
 <tr>
-  <td width="104px">[SampleApp_Panorama Panorama (image stitching)]</td>
+  <td width="104px">[SampleApp_ImageStitching Image Stitching (panorama)]</td>
   <td>The Panorama sample application demonstrates how the framework can be used to automatically stitches two images together by using the Harris corners detector, Correlation matching, homography estimation, RANSAC and the image blending filter.</td>
 </tr>
 <tr>
