@@ -1,0 +1,17 @@
+#summary Sample Application: Harris Corners Detector
+#labels Type-SampleApps
+
+ * Download [http://accord.googlecode.com/svn/wiki/samples/accord-audio-fourier-bin.zip application]
+ * Download [http://accord.googlecode.com/svn/wiki/samples/accord-audio-fourier-src.zip source code]
+
+The Harris sample application demonstrates how to perform corners detection using the [http://crsouza.blogspot.com/2010/05/harris-corners-detector-in-c.html Harris algorithm].
+
+<br /><p align="center">
+http://accord.googlecode.com/svn/wiki/samples/accord-imaging-harris-img.png
+<br />Harris corners detection in the world-famous Lena Söderberg's picture.
+</p><br />
+
+
+The current implementation supports both [http://accord.googlecode.com/svn/docs/html/T_Accord_Imaging_HarrisCornerMeasure.htm Harris and Nobel corner measures]. Harris can be enabled by checking the checkbox next to the ''k'' parameter, which is only needed for Harris. The Nobel measure does not require setting any parameters.
+
+A suitable choice for the threshold parameter when using Harris measure may range around 10,000 to 30,000, while when using Nobel it may range around 20 to 100. Best sigma values are usually higher than 0.3 and lesser than 5.0.
