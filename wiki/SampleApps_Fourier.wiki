@@ -1,7 +1,8 @@
 #summary Sample Application: Fourier Transform Audio Analysis
 #labels Type-SampleApps
 
- * Download [http://accord.googlecode.com/svn/wiki/samples/accord-audio-fourier-bin.rar sample application]
+ * Download [http://accord.googlecode.com/svn/wiki/samples/accord-audio-fourier-bin.zip application]
+ * Download [http://accord.googlecode.com/svn/wiki/samples/accord-audio-fourier-src.zip source code]
 
 The Fourier sample application shows how to capture sounds from a capture device (such as the soundcard's microphone jack) using the Accord.NET Framework. The sound can then be analyzed using the AForge.NET [http://www.aforgenet.com/framework/docs/html/a233a2c8-37ef-459d-f3dd-4088592f458a.htm FourierTransform functions].
 
