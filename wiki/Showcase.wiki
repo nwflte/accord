@@ -1,8 +1,11 @@
 #summary Who is using the framework.
 #labels Featured
 
-= Project Showcase =
-This page enlists several works which have used Accord.NET in some point of their development. The framework also has been used in a number of academic studies, and the number keeps rising. If you have any interesting application of the framework, feel free to post about it on the [http://groups.google.com/group/accord-net project forums].<br />
+=Project Showcase=
+
+ <g:plusone size="large"></g:plusone>
+
+This page enlists several works which have used Accord.NET in some point of their development. The framework also has been used in a number of academic studies, and the number keeps rising. If you have any interesting application of the framework, feel free to post about it on the [http://groups.google.com/group/accord-net project forums]. 
 
 
 == Developer projects ==
