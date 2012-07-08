@@ -22,17 +22,29 @@
 
 namespace Accord.Statistics.Kernels
 {
+    using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
 
     /// <summary>
-    ///   Cache for storing computations
-    ///   of a kernel (Gram) matrix.
+    ///   Value cache for kernel function evaluations.
     /// </summary>
+    /// 
+    /// <remarks>
+    /// <para>
+    ///   This class works as a least-corrently-used cache for elements
+    ///   computed from a the kernel (Gram) matrix. Elements which have
+    ///   not been needed for some time are discarded from the cache;
+    ///   while elements which are constantly requested remains cached.</para>
+    ///   
+    /// <para>
+    ///   The use of cache may speedup learning by a large factor; however
+    ///   the actual speedup may vary according to the choice of cache size.</para>
+    /// </remarks>
     /// 
     public class KernelFunctionCache
     {
 
-        private int cacheSize;
         private int size;
         private int capacity;
 
@@ -49,21 +61,45 @@ namespace Accord.Statistics.Kernels
         private int misses;
         private int hits;
 
-        /// <summary>
-        ///   Gets or sets a value indicating whether this <see cref="KernelFunctionCache"/> is enabled.
-        /// </summary>
-        /// 
-        /// <value><c>true</c> if enabled; otherwise, <c>false</c>.</value>
-        /// 
-        public bool Enabled { get; set; }
+
 
         /// <summary>
-        ///   Gets the size of this cache.
+        ///   Gets the size of the cache,
+        ///   measured in number of samples.
         /// </summary>
         /// 
         /// <value>The size of this cache.</value>
         /// 
-        public int CacheSize { get { return cacheSize; } }
+        public int Size { get { return size; } }
+
+        /// <summary>
+        ///   Gets the total number of cache hits.
+        /// </summary>
+        /// 
+        public int Hits { get { return hits; } }
+
+        /// <summary>
+        ///   Gets the total number of cache misses.
+        /// </summary>
+        /// 
+        public int Misses { get { return misses; } }
+
+        /// <summary>
+        ///   Gets the percentage of the cache currently in use.
+        /// </summary>
+        /// 
+        public double Usage
+        {
+            get
+            {
+                if (data == null)
+                    return 0;
+
+                return data.Count / (double)capacity;
+            }
+        }
+
+
 
         /// <summary>
         ///   Constructs a new <see cref="KernelFunctionCache"/>.
@@ -71,42 +107,52 @@ namespace Accord.Statistics.Kernels
         /// 
         /// <param name="kernel">The kernel function.</param>
         /// <param name="inputs">The inputs values.</param>
-        /// <param name="cacheSize">The size for the cache.</param>
+        /// 
+        public KernelFunctionCache(IKernel kernel, double[][] inputs)
+            : this(kernel, inputs, inputs.Length) { }
+
+        /// <summary>
+        ///   Constructs a new <see cref="KernelFunctionCache"/>.
+        /// </summary>
+        /// 
+        /// <param name="kernel">The kernel function.</param>
+        /// <param name="inputs">The inputs values.</param>
+        /// <param name="cacheSize">
+        ///   The size for the cache, measured in number of 
+        ///   elements from the <paramref name="inputs"/> set.
+        ///   Default is to use all elements.</param>
         /// 
         public KernelFunctionCache(IKernel kernel, double[][] inputs, int cacheSize)
         {
-            this.kernel = kernel;
-            this.inputs = inputs;
-            this.size = inputs.Length;
-
             if (cacheSize < 0)
-            {
-                Enabled = false;
-                return;
-            }
-            else
-            {
-                Enabled = true;
-            }
+                throw new ArgumentOutOfRangeException
+                    ("cacheSize", "The cache size must be non-negative.");
 
-            if (cacheSize == 0)
+            if (cacheSize > inputs.Length)
                 cacheSize = inputs.Length;
 
+            this.kernel = kernel;
+            this.inputs = inputs;
+            this.size = cacheSize;
 
-                this.cacheSize = cacheSize;
-                this.capacity = (size * size) / 2 + 1;
+            if (size > 0)
+            {
+                this.capacity = (size * (size - 1)) / 2;
+                int collectionCapacity = (int)(1.1f * capacity);
 
                 // Create lookup tables
                 this.lruIndices = new LinkedList<int>();
-                this.lruIndicesLookupTable = new Dictionary<int, LinkedListNode<int>>(capacity);
+                this.lruIndicesLookupTable =
+                    new Dictionary<int, LinkedListNode<int>>(collectionCapacity);
 
                 // Create cache for off-diagonal elements
-                this.data = new Dictionary<int, double>(capacity);
+                this.data = new Dictionary<int, double>(collectionCapacity);
+            }
 
-                // Create cache for diagonal elements
-                this.diagonal = new double[inputs.Length];
-                for (int i = 0; i < inputs.Length; i++)
-                    this.diagonal[i] = kernel.Function(inputs[i], inputs[i]);
+            // Create cache for diagonal elements
+            this.diagonal = new double[inputs.Length];
+            for (int i = 0; i < inputs.Length; i++)
+                this.diagonal[i] = kernel.Function(inputs[i], inputs[i]);
         }
 
         /// <summary>
@@ -122,13 +168,9 @@ namespace Accord.Statistics.Kernels
         /// 
         public double GetOrCompute(int i)
         {
-            if (!Enabled)
-                return kernel.Function(inputs[i], inputs[i]);
-
-            hits++; // Diagonal elements are always available
-
             return diagonal[i];
         }
+
 
         /// <summary>
         ///   Attempts to retrieve the kernel function evaluated between point at index i
@@ -142,7 +184,7 @@ namespace Accord.Statistics.Kernels
         /// 
         public double GetOrCompute(int i, int j)
         {
-            if (!Enabled)
+            if (data == null)
                 return kernel.Function(inputs[i], inputs[j]);
 
             if (i == j)
@@ -168,41 +210,89 @@ namespace Accord.Statistics.Kernels
                 // Save evaluation
                 data[key] = value;
 
-                // Register the use of the variable in the LRU list
-                lruIndicesLookupTable[key] = lruIndices.AddLast(key);
-
-                misses++;
-
                 // If we are over capacity,
                 if (data.Count > capacity)
                 {
-                    // Remove the cached item which is
-                    // at the end of the LRU list, and
-                    data.Remove(lruIndices.First.Value);
+                    // The first entry must be removed to leave
+                    // room for the previously computed value
 
-                    // Remove the index for the item from the LRU list.
-                    lruIndicesLookupTable.Remove(lruIndices.First.Value);
+                    var first = lruIndices.First;
+                    int discardedKey = first.Value;
+
+                    // Remove the cached value for
+                    // the least recently used key
+
+                    data.Remove(discardedKey);
+                    lruIndicesLookupTable.Remove(discardedKey);
+
+                    // Avoid allocating memory by reusing the
+                    // previously first node to hold the new
+                    // data value and re-insert it at the end
+
                     lruIndices.RemoveFirst();
+                    first.Value = key;
+                    lruIndices.AddLast(first);
+
+                    // Update the index lookup table
+                    lruIndicesLookupTable[key] = first;
                 }
+                else
+                {
+                    // Register the use of the variable in the LRU list
+                    lruIndicesLookupTable[key] = lruIndices.AddLast(key);
+                }
+
+                misses++;
             }
             else
             {
                 // It is. Update the LRU list to 
                 // indicate the item has been used.
 
-                LinkedListNode<int> node = lruIndicesLookupTable[key];
+                var node = lruIndicesLookupTable[key];
 
-                // Remove from middle
+                // Remove from middle and add to the end
                 lruIndices.Remove(node);
-                lruIndicesLookupTable.Remove(key);
+                lruIndices.AddLast(node);
 
-                // Insert at the and and update the lookup table
-                lruIndicesLookupTable[key] = lruIndices.AddLast(key);
+                // Update the lookup table
+                lruIndicesLookupTable[key] = node;
 
                 hits++;
             }
 
             return value;
+        }
+
+        /// <summary>
+        ///   Attempts to retrieve the value of the kernel function
+        ///   from the diagonal of the kernel matrix. If the value
+        ///   is not available, it is immediatelly computed and inserted
+        ///   in the cache.
+        /// </summary>
+        /// 
+        /// <param name="i">Index of the point to compute.</param>
+        /// 
+        /// <remarks>The result of the kernel function k(p[i], p[i]).</remarks>
+        /// 
+        public double this[int i]
+        {
+            get { return GetOrCompute(i); }
+        }
+
+        /// <summary>
+        ///   Attempts to retrieve the kernel function evaluated between point at index i
+        ///   and j. If it is not cached, it will be computed and the cache will be updated.
+        /// </summary>
+        /// 
+        /// <param name="i">The index of the first point <c>p</c> to compute.</param>
+        /// <param name="j">The index of the second point <c>p</c> to compute.</param>
+        /// 
+        /// <remarks>The result of the kernel function k(p[i], p[j]).</remarks>
+        /// 
+        public double this[int i, int j]
+        {
+            get { return GetOrCompute(i, j); }
         }
 
         /// <summary>
@@ -219,6 +309,104 @@ namespace Accord.Statistics.Kernels
             }
         }
 
+        /// <summary>
+        ///   Resets cache statistics.
+        /// </summary>
+        /// 
+        public void Reset()
+        {
+            hits = 0;
+            misses = 0;
+        }
+
+        /// <summary>
+        ///   Gets the pair of indices associated with a given key.
+        /// </summary>
+        /// 
+        /// <param name="key">The key.</param>
+        /// 
+        /// <returns>A pair of indices of indicating which
+        /// element from the Kernel matrix is associated
+        /// with the given key.</returns>
+        /// 
+        public Tuple<int, int> GetIndexFromKey(int key)
+        {
+            for (int i = 0; i < inputs.Length; i++)
+            {
+                for (int j = 0; j < i; j++)
+                {
+                    if (key == ((i * (i - 1)) / 2 + j))
+                        return Tuple.Create(i, j);
+                }
+            }
+
+            return Tuple.Create(-1, -1);
+        }
+
+        /// <summary>
+        ///   Gets the key from the given indices.
+        /// </summary>
+        /// 
+        /// <param name="i">The index i.</param>
+        /// <param name="j">The index j.</param>
+        /// 
+        /// <returns>The key associated with the given indices.</returns>
+        /// 
+        public int GetKeyFromIndex(int i, int j)
+        {
+            if (i < 0 || i >= inputs.Length)
+                throw new ArgumentOutOfRangeException("i");
+
+            if (j < 0 || j >= inputs.Length)
+                throw new ArgumentOutOfRangeException("j");
+
+            if (j > i)
+            {
+                int t = i;
+                i = j;
+                j = t;
+            }
+
+            return (i * (i - 1)) / 2 + j;
+        }
+
+
+        /// <summary>
+        ///   Gets a copy of the the data cache.
+        /// </summary>
+        /// 
+        /// <returns>A copy of the data cache.</returns>
+        /// 
+        public ReadOnlyDictionary<Tuple<int, int>, double> GetDataCache()
+        {
+            var dict = new Dictionary<Tuple<int, int>, double>();
+
+            foreach (var entry in data)
+                dict.Add(GetIndexFromKey(entry.Key), entry.Value);
+
+            return new ReadOnlyDictionary<Tuple<int, int>, double>(dict);
+        }
+
+        /// <summary>
+        ///   Gets a copy of the Least Recently Used (LRU) List of
+        ///   Kernel Matrix elements. Elements on the start of the
+        ///   list have been used most; elements at the end are
+        ///   about to be discarded from the cache.
+        /// </summary>
+        /// 
+        /// <returns>The Least Recently Used list of kernel matrix elements.</returns>
+        /// 
+        public ReadOnlyCollection<Tuple<int, int>> GetLeastRecentlyUsedList()
+        {
+            var list = new List<Tuple<int, int>>();
+
+            foreach (int key in lruIndices)
+            {
+                list.Add(GetIndexFromKey(key));
+            }
+
+            return new ReadOnlyCollection<Tuple<int, int>>(list);
+        }
     }
 
 }
