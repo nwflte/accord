@@ -25,6 +25,7 @@
 
 namespace Accord.Imaging
 {
+    using System;
     using System.Collections.Generic;
     using AForge.Imaging;
 
@@ -33,9 +34,9 @@ namespace Accord.Imaging
     /// </summary>
     /// 
     /// <seealso cref="SpeededUpRobustFeaturesDetector"/>
-    /// <seealso cref="SurfPoint"/>
+    /// <seealso cref="SpeededUpRobustFeaturePoint"/>
     ///
-    public class SurfDescriptor
+    public class SpeededUpRobustFeaturesDescriptor : ICloneable
     {
 
         private bool invariant = true;
@@ -44,7 +45,7 @@ namespace Accord.Imaging
 
         /// <summary>
         ///   Gets or sets a value indicating whether the features
-        ///   described by this <see cref="SurfDescriptor"/> should
+        ///   described by this <see cref="SpeededUpRobustFeaturesDescriptor"/> should
         ///   be invariant to rotation. Default is true.
         /// </summary>
         /// 
@@ -58,7 +59,7 @@ namespace Accord.Imaging
 
         /// <summary>
         ///   Gets or sets a value indicating whether the features
-        ///   described by this <see cref="SurfDescriptor"/> should
+        ///   described by this <see cref="SpeededUpRobustFeaturesDescriptor"/> should
         ///   be computed in extended form. Default is false.
         /// </summary>
         /// 
@@ -81,18 +82,18 @@ namespace Accord.Imaging
         public IntegralImage Image
         {
             get { return integral; }
+            set { integral = value; }
         }
 
-
         /// <summary>
-        ///   Initializes a new instance of the <see cref="SurfDescriptor"/> class.
+        ///   Initializes a new instance of the <see cref="SpeededUpRobustFeaturesDescriptor"/> class.
         /// </summary>
         /// 
         /// <param name="integralImage">
         ///   The integral image which is the source of the feature points.
         /// </param>
         /// 
-        public SurfDescriptor(IntegralImage integralImage)
+        public SpeededUpRobustFeaturesDescriptor(IntegralImage integralImage)
         {
             this.integral = integralImage;
         }
@@ -101,12 +102,12 @@ namespace Accord.Imaging
         /// <summary>
         ///   Describes the specified point (i.e. computes and
         ///   sets the orientation and descriptor vector fields
-        ///   of the <see cref="SurfPoint"/>.
+        ///   of the <see cref="SpeededUpRobustFeaturePoint"/>.
         /// </summary>
         /// 
         /// <param name="point">The point to be described.</param>
         /// 
-        public void Describe(SurfPoint point)
+        public void Compute(SpeededUpRobustFeaturePoint point)
         {
             // Get rounded feature point data
             int x = (int)System.Math.Round(point.X, 0);
@@ -126,32 +127,46 @@ namespace Accord.Imaging
         /// <summary>
         ///   Describes all specified points (i.e. computes and
         ///   sets the orientation and descriptor vector fields
-        ///   of each <see cref="SurfPoint"/>.
+        ///   of each <see cref="SpeededUpRobustFeaturePoint"/>.
         /// </summary>
         /// 
         /// <param name="points">The list of points to be described.</param>
         /// 
-        public void Describe(IEnumerable<SurfPoint> points)
+        public void Compute(IEnumerable<SpeededUpRobustFeaturePoint> points)
         {
-            foreach (SurfPoint point in points)
+            foreach (SpeededUpRobustFeaturePoint point in points)
             {
-                Describe(point);
+                Compute(point);
             }
         }
 
-
         /// <summary>
-        ///   Determine dominant orientation for InterestPoint
+        ///   Determine dominant orientation for the feature point.
         /// </summary>
         /// 
-        public float GetOrientation(int x, int y, int scale)
+        public double GetOrientation(SpeededUpRobustFeaturePoint point)
         {
-            const byte responses = 109;
-            float[] resX = new float[responses];
-            float[] resY = new float[responses];
-            float[] ang = new float[responses];
-            int[] id = { 6, 5, 4, 3, 2, 1, 0, 1, 2, 3, 4, 5, 6 };
+            // Get rounded feature point data
+            int x = (int)System.Math.Round(point.X, 0);
+            int y = (int)System.Math.Round(point.Y, 0);
+            int s = (int)System.Math.Round(point.Scale, 0);
 
+            // Get the orientation (for rotation invariance)
+            return this.GetOrientation(x, y, s);
+        }
+
+        const byte responses = 109;
+        readonly double[] resX = new double[responses];
+        readonly double[] resY = new double[responses];
+        readonly double[] ang = new double[responses];
+        static int[] id = { 6, 5, 4, 3, 2, 1, 0, 1, 2, 3, 4, 5, 6 };
+
+        /// <summary>
+        ///   Determine dominant orientation for feature point.
+        /// </summary>
+        /// 
+        public double GetOrientation(int x, int y, int scale)
+        {
             // Calculate Haar responses for points within radius of 6*scale
             for (int i = -6, idx = 0; i <= 6; i++)
             {
@@ -159,26 +174,26 @@ namespace Accord.Imaging
                 {
                     if (i * i + j * j < 36)
                     {
-                        float g = gauss25[id[i + 6], id[j + 6]];
+                        double g = gauss25[id[i + 6], id[j + 6]];
                         resX[idx] = g * haarX(y + j * scale, x + i * scale, 4 * scale);
                         resY[idx] = g * haarY(y + j * scale, x + i * scale, 4 * scale);
-                        ang[idx] = Math.Tools.Angle(resX[idx], resY[idx]);
+                        ang[idx] = Accord.Math.Tools.Angle(resX[idx], resY[idx]);
                         idx++;
                     }
                 }
             }
 
             // Calculate the dominant direction 
-            float orientation = 0, max = 0;
+            double orientation = 0, max = 0;
 
             // Loop slides pi/3 window around feature point
-            for (float ang1 = 0; ang1 < 2 * PI; ang1 += 0.15f)
+            for (double ang1 = 0; ang1 < 2.0 * Math.PI; ang1 += 0.15)
             {
-                float ang2 = (ang1 + PI / 3f > 2 * PI ? ang1 - 5 * PI / 3f : ang1 + PI / 3f);
-                float sumX = 0;
-                float sumY = 0;
+                double ang2 = (ang1 + Math.PI / 3 > 2 * Math.PI ? ang1 - 5 * Math.PI / 3 : ang1 + Math.PI / 3);
+                double sumX = 0;
+                double sumY = 0;
 
-                for (int k = 0; k < responses; k++)
+                for (int k = 0; k < ang.Length; k++)
                 {
                     // determine whether the point is within the window
                     if (ang1 < ang2 && ang1 < ang[k] && ang[k] < ang2)
@@ -186,8 +201,7 @@ namespace Accord.Imaging
                         sumX += resX[k];
                         sumY += resY[k];
                     }
-                    else if (ang2 < ang1 && 
-                        ((ang[k] > 0 && ang[k] < ang2) || (ang[k] > ang1 && ang[k] < PI)))
+                    else if (ang2 < ang1 && ((ang[k] > 0 && ang[k] < ang2) || (ang[k] > ang1 && ang[k] < Math.PI)))
                     {
                         sumX += resX[k];
                         sumY += resY[k];
@@ -200,7 +214,7 @@ namespace Accord.Imaging
                 {
                     // store largest orientation
                     max = sumX * sumX + sumY * sumY;
-                    orientation = Math.Tools.Angle(sumX, sumY);
+                    orientation = Accord.Math.Tools.Angle(sumX, sumY);
                 }
             }
 
@@ -213,17 +227,17 @@ namespace Accord.Imaging
         ///   Construct descriptor vector for this interest point
         /// </summary>
         /// 
-        public float[] GetDescriptor(int x, int y, int scale, float orientation)
+        public double[] GetDescriptor(int x, int y, int scale, double orientation)
         {
             // Determine descriptor size
-            float[] descriptor = (this.extended) ? new float[128] : new float[64];
+            double[] descriptor = (this.extended) ? new double[128] : new double[64];
 
             int count = 0;
-            float cos, sin;
-            float length = 0f;
+            double cos, sin;
+            double length = 0;
 
-            float cx = -0.5f; // Subregion centers for the
-            float cy = +0.0f; // 4x4 gaussian weighting.
+            double cx = -0.5; // Subregion centers for the
+            double cy = +0.0; // 4x4 gaussian weighting.
 
             if (!this.invariant)
             {
@@ -232,8 +246,8 @@ namespace Accord.Imaging
             }
             else
             {
-                cos = (float)System.Math.Cos(orientation);
-                sin = (float)System.Math.Sin(orientation);
+                cos = System.Math.Cos(orientation);
+                sin = System.Math.Sin(orientation);
             }
 
             // Calculate descriptor for this interest point
@@ -258,10 +272,10 @@ namespace Accord.Imaging
                     int ys = (int)System.Math.Round(y + (+jx * scale * cos + ix * scale * sin), 0);
 
                     // zero the responses
-                    float dx = 0, dy = 0;
-                    float mdx = 0, mdy = 0;
-                    float dx_yn = 0, dy_xn = 0;
-                    float mdx_yn = 0, mdy_xn = 0;
+                    double dx = 0, dy = 0;
+                    double mdx = 0, mdy = 0;
+                    double dx_yn = 0, dy_xn = 0;
+                    double mdx_yn = 0, mdy_xn = 0;
 
                     for (int k = i; k < i + 9; k++)
                     {
@@ -272,13 +286,13 @@ namespace Accord.Imaging
                             int sample_y = (int)System.Math.Round(y + (+l * scale * cos + k * scale * sin), 0);
 
                             // Get the gaussian weighted x and y responses
-                            float gauss_s1 = gaussian(xs - sample_x, ys - sample_y, 2.5f * scale);
-                            float rx = haarX(sample_y, sample_x, 2 * scale);
-                            float ry = haarY(sample_y, sample_x, 2 * scale);
+                            double gauss_s1 = gaussian(xs - sample_x, ys - sample_y, 2.5f * scale);
+                            double rx = haarX(sample_y, sample_x, 2 * scale);
+                            double ry = haarY(sample_y, sample_x, 2 * scale);
 
                             // Get the gaussian weighted x and y responses on rotated axis
-                            float rrx = gauss_s1 * (-rx * sin + ry * cos);
-                            float rry = gauss_s1 * (rx * cos + ry * sin);
+                            double rrx = gauss_s1 * (-rx * sin + ry * cos);
+                            double rry = gauss_s1 * (rx * cos + ry * sin);
 
 
                             if (this.extended)
@@ -318,7 +332,7 @@ namespace Accord.Imaging
                     }
 
                     // Add the values to the descriptor vector
-                    float gauss_s2 = gaussian(cx - 2f, cy - 2f, 1.5f);
+                    double gauss_s2 = gaussian(cx - 2.0, cy - 2.0, 1.5);
 
                     descriptor[count++] = dx * gauss_s2;
                     descriptor[count++] = dy * gauss_s2;
@@ -343,7 +357,7 @@ namespace Accord.Imaging
             }
 
             // Normalize to obtain an unitary vector
-            length = (float)System.Math.Sqrt(length);
+            length = System.Math.Sqrt(length);
 
             if (length > 0)
             {
@@ -354,70 +368,87 @@ namespace Accord.Imaging
             return descriptor;
         }
 
-        private float haarX(int y, int x, int size)
+        private double haarX(int row, int column, int size)
         {
-            int hsize = size / 2;
-            int y1 = y - hsize;
-            int y2 = y1 + size - 1;
+            double a = integral.GetRectangleSum(column, row - size / 2,
+                column + size / 2 - 1, row - size / 2 + size - 1);
 
-            float a = integral.GetRectangleSum(x, y1, x + hsize - 1, y2);
-            float b = integral.GetRectangleSum(x - hsize, y1, x - 1, y2);
+            double b = integral.GetRectangleSum(column - size / 2, row - size / 2,
+                column - size / 2 + size / 2 - 1, row - size / 2 + size - 1);
 
-            return (a - b) / 255f;
+            return (a - b) / 255.0;
         }
 
-        private float haarY(int y, int x, int size)
+        private double haarY(int row, int column, int size)
         {
-            int hsize = size / 2;
-            int x1 = x - hsize;
-            int x2 = x1 + size - 1;
+            double a = integral.GetRectangleSum(column - size / 2, row,
+                column - size / 2 + size - 1, row + size / 2 - 1);
 
-            float a = integral.GetRectangleSum(x1, y, x2, y + hsize - 1);
-            float b = integral.GetRectangleSum(x1, y - hsize, x2, y - 1);
+            double b = integral.GetRectangleSum(column - size / 2, row - size / 2,
+                column - size / 2 + size - 1, row - size / 2 + size / 2 - 1);
 
-            return (a - b) / 255f;
+            return (a - b) / 255.0;
         }
 
 
 
         #region Gaussian calculation
 
-        private static float PI = (float)System.Math.PI;
-
         /// <summary>
         ///   Get the value of the gaussian with std dev sigma at the point (x,y)
         /// </summary>
         /// 
-        private static float gaussian(int x, int y, float sigma)
+        private static double gaussian(int x, int y, double sigma)
         {
-            return (1f / (2f * PI * sigma * sigma)) * (float)System.Math.Exp(-(x * x + y * y) / (2.0f * sigma * sigma));
+            return (1.0 / (2.0 * Math.PI * sigma * sigma)) * System.Math.Exp(-(x * x + y * y) / (2.0f * sigma * sigma));
         }
 
         /// <summary>
         ///   Get the value of the gaussian with std dev sigma at the point (x,y)
         /// </summary>
-        private static float gaussian(float x, float y, float sigma)
+        private static double gaussian(double x, double y, double sigma)
         {
-            return 1f / (2f * PI * sigma * sigma) * (float)System.Math.Exp(-(x * x + y * y) / (2.0f * sigma * sigma));
+            return 1.0 / (2.0 * Math.PI * sigma * sigma) * System.Math.Exp(-(x * x + y * y) / (2.0f * sigma * sigma));
         }
 
         /// <summary>
         ///   Gaussian look-up table for sigma = 2.5
         /// </summary>
         /// 
-        private static readonly float[,] gauss25 = 
+        private static readonly double[,] gauss25 = 
         {
-            { 0.02350693969273f, 0.01849121369071f, 0.01239503121241f, 0.00708015417522f, 0.00344628101733f, 0.00142945847484f, 0.00050524879060f},
-            { 0.02169964028389f, 0.01706954162243f, 0.01144205592615f, 0.00653580605408f, 0.00318131834134f, 0.00131955648461f, 0.00046640341759f},
-            { 0.01706954162243f, 0.01342737701584f, 0.00900063997939f, 0.00514124713667f, 0.00250251364222f, 0.00103799989504f, 0.00036688592278f},
-            { 0.01144205592615f, 0.00900063997939f, 0.00603330940534f, 0.00344628101733f, 0.00167748505986f, 0.00069579213743f, 0.00024593098864f},
-            { 0.00653580605408f, 0.00514124713667f, 0.00344628101733f, 0.00196854695367f, 0.00095819467066f, 0.00039744277546f, 0.00014047800980f},
-            { 0.00318131834134f, 0.00250251364222f, 0.00167748505986f, 0.00095819467066f, 0.00046640341759f, 0.00019345616757f, 0.00006837798818f},
-            { 0.00131955648461f, 0.00103799989504f, 0.00069579213743f, 0.00039744277546f, 0.00019345616757f, 0.00008024231247f, 0.00002836202103f}
+            { 0.02350693969273, 0.01849121369071, 0.01239503121241, 0.00708015417522, 0.00344628101733, 0.00142945847484, 0.00050524879060 },
+            { 0.02169964028389, 0.01706954162243, 0.01144205592615, 0.00653580605408, 0.00318131834134, 0.00131955648461, 0.00046640341759 },
+            { 0.01706954162243, 0.01342737701584, 0.00900063997939, 0.00514124713667, 0.00250251364222, 0.00103799989504, 0.00036688592278 },
+            { 0.01144205592615, 0.00900063997939, 0.00603330940534, 0.00344628101733, 0.00167748505986, 0.00069579213743, 0.00024593098864 },
+            { 0.00653580605408, 0.00514124713667, 0.00344628101733, 0.00196854695367, 0.00095819467066, 0.00039744277546, 0.00014047800980 },
+            { 0.00318131834134, 0.00250251364222, 0.00167748505986, 0.00095819467066, 0.00046640341759, 0.00019345616757, 0.00006837798818 },
+            { 0.00131955648461, 0.00103799989504, 0.00069579213743, 0.00039744277546, 0.00019345616757, 0.00008024231247, 0.00002836202103 }
         };
 
         #endregion
 
 
+
+        #region ICloneable Members
+
+        /// <summary>
+        ///   Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A new object that is a copy of this instance.
+        /// </returns>
+        /// 
+        public object Clone()
+        {
+            var clone = new SpeededUpRobustFeaturesDescriptor(integral);
+            clone.extended = extended;
+            clone.invariant = invariant;
+
+            return clone;
+        }
+
+        #endregion
     }
 }
