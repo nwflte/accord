@@ -25,10 +25,23 @@ namespace Accord.Statistics.Models.Markov.Learning
     using System.Threading;
     using System.Threading.Tasks;
     using Accord.Math;
+    using System;
 
     /// <summary>
     ///   Discrete-density hidden Markov Sequence Classifier learning algorithm.
     /// </summary>
+    /// 
+    /// <remarks>
+    /// <para>
+    ///   This class acts as a teacher for <see cref="HiddenMarkovClassifier">
+    ///   classifiers based on discrete hidden Markov models</see>. The learning
+    ///   algorithm uses a gerative approach. It works by training each model in
+    ///   the gerative classifier separately.</para>
+    /// <para>
+    ///   For arbitrary density (e.g. continuous) models, please see the generic
+    ///   couterpart of the learning algorithm in 
+    ///   <see cref="HiddenMarkovClassifierLearning{TDistribution}"/>.</para>
+    /// </remarks>
     /// 
     /// <example>
     ///   <code>
@@ -82,6 +95,9 @@ namespace Accord.Statistics.Models.Markov.Learning
     ///   </code>
     /// </example>
     /// 
+    /// <see cref="HiddenMarkovClassifier"/>
+    /// <see cref="HiddenMarkovClassifierLearning{TDistribution}"/>
+    /// 
     public class HiddenMarkovClassifierLearning :
         BaseHiddenMarkovClassifierLearning<HiddenMarkovClassifier, HiddenMarkovModel>
     {
@@ -94,7 +110,9 @@ namespace Accord.Statistics.Models.Markov.Learning
         ///   Gets or sets the smoothing kernel's sigma
         ///   for the threshold model.
         /// </summary>
+        /// 
         /// <value>The smoothing kernel's sigma.</value>
+        /// 
         public double Smoothing
         {
             get { return smoothingSigma; }
@@ -110,6 +128,7 @@ namespace Accord.Statistics.Models.Markov.Learning
         ///   Markov sequence classifier using the specified configuration
         ///   function.
         /// </summary>
+        /// 
         public HiddenMarkovClassifierLearning(HiddenMarkovClassifier classifier,
             ClassifierLearningAlgorithmConfiguration algorithm)
             : base(classifier, algorithm)
@@ -121,7 +140,9 @@ namespace Accord.Statistics.Models.Markov.Learning
         /// <summary>
         ///   Trains each model to recognize each of the output labels.
         /// </summary>
+        /// 
         /// <returns>The sum log-likelihood for all models after training.</returns>
+        /// 
         public double Run(int[][] inputs, int[] outputs)
         {
             return base.Run<int[]>(inputs, outputs);
@@ -156,9 +177,11 @@ namespace Accord.Statistics.Models.Markov.Learning
         ///   Creates a new <see cref="Threshold">threshold model</see>
         ///   for the current set of Markov models in this sequence classifier.
         /// </summary>
+        /// 
         /// <returns>
         ///   A <see cref="Threshold">threshold Markov model</see>.
         /// </returns>
+        /// 
         public override HiddenMarkovModel Threshold()
         {
             HiddenMarkovModel[] Models = base.Classifier.Models;
@@ -179,22 +202,25 @@ namespace Accord.Statistics.Models.Markov.Learning
             {
                 var A = Matrix.Exp(Models[i].Transitions);
                 var B = Matrix.Exp(Models[i].Emissions);
+                int s = Models[i].States;
 
                 for (int j = 0; j < Models[i].States; j++)
                 {
+                    double D = transition[j + m, j + m] = A[j, j];
+
                     for (int k = 0; k < Models[i].States; k++)
-                    {
-                        if (j != k)
-                            transition[j + m, k + m] = (1.0 - A[j, k]) / (states - 1.0);
-                        else transition[j + m, k + m] = A[j, k];
-                    }
+                        if (j != k) transition[j + m, k + m] = (1.0 - D) / (s - 1.0);
+#if DEBUG
+                    double[] row = transition.GetRow(m);
+                    double rowSum = row.Sum();
+                    if (rowSum != 1) throw new Exception();
+#endif
                     emissions.SetRow(j + m, B.GetRow(j));
                 }
 
                 initial[m] = 1.0 / Models.Length;
                 m += Models[i].States;
             }
-
 
             if (smoothingSigma > 0)
             {
@@ -221,5 +247,6 @@ namespace Accord.Statistics.Models.Markov.Learning
             double norm = gaussianKernel.Euclidean();
             gaussianKernel = gaussianKernel.Divide(norm);
         }
+
     }
 }
