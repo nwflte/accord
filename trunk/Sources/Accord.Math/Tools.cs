@@ -374,8 +374,8 @@ namespace Accord.Math
         /// 
         public static double[][] Scale(double[] toMin, double[] toMax, double[][] x)
         {
-            var min = Matrix.Min(x);
-            var max = Matrix.Max(x);
+            var min = Matrix.Min(x, 0);
+            var max = Matrix.Max(x, 0);
             return Scale(min, max, toMin, toMax, x);
         }
 
@@ -386,7 +386,7 @@ namespace Accord.Math
         /// 
         public static double[][] Scale(double toMin, double toMax, double[][] x)
         {
-            return Scale(Matrix.Min(x), Matrix.Max(x), toMin, toMax, x);
+            return Scale(Matrix.Min(x, 0), Matrix.Max(x, 0), toMin, toMax, x);
         }
 
         /// <summary>
@@ -498,43 +498,6 @@ namespace Accord.Math
             return f;
         }
 
-        /// <summary>
-        ///   Generates all possible combinations of a given
-        ///   number of symbols of a given length.
-        /// </summary>
-        /// 
-        /// <param name="symbols">The number of symbols.</param>
-        /// <param name="length">The length of the sequence to generate.</param>
-        ///
-        public static int[][] Combinations(int symbols, int length)
-        {
-            int size = (int)Math.Pow(symbols, length);
-
-            int[][] sequences = new int[size][];
-            for (int i = 0; i < sequences.Length; i++)
-                sequences[i] = new int[length];
-
-
-            for (int i = 0; i < length; i++)
-            {
-                int m1 = (int)Math.Pow(symbols, i);
-                int m2 = (int)Math.Pow(symbols, length - i);
-                int j = 0;
-
-                for (int k2 = 0; k2 < m2; k2++)
-                {
-                    int s = k2 % symbols;
-                    for (int k = 0; k < m1; k++)
-                    {
-                        sequences[j][i] = s;
-                        j++;
-                    }
-                }
-            }
-
-
-            return sequences;
-        }
 
         /// <summary>
         ///   Sorts the elements of an entire one-dimensional array using the given comparison.

@@ -84,6 +84,23 @@ namespace Accord.Math
         }
 
         /// <summary>
+        ///   Gets the Manhattan distance between two points.
+        /// </summary>
+        /// 
+        /// <param name="x">A point in space.</param>
+        /// <param name="y">A point in space.</param>
+        /// 
+        /// <returns>The manhattan distance between x and y.</returns>
+        /// 
+        public static double Manhattan(this int[] x, int[] y)
+        {
+            int sum = 0;
+            for (int i = 0; i < x.Length; i++)
+                sum += System.Math.Abs(x[i] - y[i]);
+            return sum;
+        }
+
+        /// <summary>
         ///   Gets the Chebyshev distance between two points.
         /// </summary>
         /// 

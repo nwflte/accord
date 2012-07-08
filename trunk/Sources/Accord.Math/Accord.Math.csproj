@@ -79,6 +79,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Combinatorics.cs" />
     <Compile Include="Decompositions\Base\ISolverArrayDecomposition.cs" />
     <Compile Include="Decompositions\Base\ISolverMatrixDecomposition.cs" />
     <None Include="Decompositions\CholeskyDecomposition.tt" />
@@ -153,6 +154,9 @@
     <Compile Include="Formats\Base\MatrixFormatProviderBase.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Formats\OctaveArrayFormatProvider.cs" />
+    <Compile Include="Formats\DefaultArrayFormatProvider.cs" />
+    <Compile Include="Formats\CSharpArrayFormatProvider.cs" />
     <Compile Include="Formats\CSharpMatrixFormatProvider.cs" />
     <Compile Include="Formats\CSharpJaggedMatrixFormatProvider.cs" />
     <Compile Include="Formats\DefaultMatrixFormatProvider.cs" />
@@ -178,6 +182,7 @@
     <Compile Include="Norm.cs" />
     <Compile Include="Differentiation\FiniteDifferences.cs" />
     <Compile Include="Optimization\Constrained\AugmentedLagrangianSolver.cs" />
+    <Compile Include="Optimization\Constrained\QuadraticConstraint.cs" />
     <Compile Include="Optimization\Constrained\NonlinearConstraint.cs" />
     <Compile Include="Optimization\ExpressionParser.cs" />
     <Compile Include="Optimization\NonlinearObjectiveFunction.cs" />
@@ -190,6 +195,7 @@
     <Compile Include="Optimization\Unconstrained\LineSearchFailedException.cs" />
     <Compile Include="Optimization\Unconstrained\OptimizationProgressEventHandler.cs" />
     <Compile Include="Optimization\Constrained\GoldfarbIdnaniQuadraticSolver.cs" />
+    <Compile Include="Optimization\BrentSearch.cs" />
     <Compile Include="Properties\GlobalSuppressions.cs" />
     <Compile Include="Special.cs" />
     <Compile Include="HilbertTransform.cs" />
