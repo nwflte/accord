@@ -37,8 +37,10 @@
             this.pictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBox.Image = null;
             this.pictureBox.Location = new System.Drawing.Point(0, 0);
+            this.pictureBox.Margin = new System.Windows.Forms.Padding(0);
             this.pictureBox.Name = "pictureBox";
-            this.pictureBox.Size = new System.Drawing.Size(304, 202);
+            this.pictureBox.Size = new System.Drawing.Size(320, 240);
+            this.pictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox.TabIndex = 0;
             this.pictureBox.TabStop = false;
             // 
@@ -48,8 +50,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.Black;
-            this.ClientSize = new System.Drawing.Size(304, 202);
+            this.ClientSize = new System.Drawing.Size(320, 240);
             this.Controls.Add(this.pictureBox);
+            this.KeyPreview = true;
             this.Name = "ImageBox";
             this.Text = "Image";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
