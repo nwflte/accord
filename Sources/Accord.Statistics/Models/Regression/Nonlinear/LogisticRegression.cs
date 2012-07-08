@@ -332,13 +332,16 @@ namespace Accord.Statistics.Models.Regression
                 double actualOutput = Compute(input[i]);
                 double expectedOutput = output[i];
 
-                if (expectedOutput != 0)
+                if (actualOutput != 0)
                     sum += expectedOutput * Math.Log(actualOutput);
 
-                if (expectedOutput != 1)
+                if (actualOutput != 1)
                     sum += (1 - expectedOutput) * Math.Log(1 - actualOutput);
 
-                System.Diagnostics.Debug.Assert(!Double.IsNaN(sum));
+#if DEBUG
+                if (Double.IsNaN(sum))
+                    throw new Exception();
+#endif
             }
 
             return sum;
