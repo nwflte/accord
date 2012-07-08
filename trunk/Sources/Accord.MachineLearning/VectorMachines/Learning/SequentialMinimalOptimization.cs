@@ -144,7 +144,7 @@ namespace Accord.MachineLearning.VectorMachines.Learning
 
         private HashSet<int> activeExamples;   // alpha[i] > 0
         private HashSet<int> nonBoundExamples; // alpha[i] > 0 && alpha[i] < c
-        private HashSet<int> atBoundsExamples;  // alpha[i] = c
+        private HashSet<int> atBoundsExamples; // alpha[i] = c
 
         // Keerthi's improvements
         private int i_lower;
@@ -155,7 +155,7 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         // Error cache to speed up computations
         private double[] errors;
 
-        private int cacheSize = 500;
+        private int cacheSize;
         private KernelFunctionCache kernelCache;
 
         private SelectionStrategy strategy = SelectionStrategy.WorstPair;
@@ -167,7 +167,7 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         /// 
         /// <param name="machine">A Support Vector Machine.</param>
         /// <param name="inputs">The input data points as row vectors.</param>
-        /// <param name="outputs">The classification label for each data point in the range [-1;+1].</param>
+        /// <param name="outputs">The output label for each input point. Values must be either -1 or +1.</param>
         /// 
         public SequentialMinimalOptimization(SupportVectorMachine machine,
             double[][] inputs, int[] outputs)
@@ -184,20 +184,31 @@ namespace Accord.MachineLearning.VectorMachines.Learning
                 throw new ArgumentNullException("outputs");
 
             if (inputs.Length != outputs.Length)
-                throw new ArgumentException("The number of inputs and outputs does not match.", "outputs");
-
-            for (int i = 0; i < outputs.Length; i++)
-            {
-                if (outputs[i] != 1 && outputs[i] != -1)
-                    throw new ArgumentOutOfRangeException("outputs", "One of the labels in the output vector is neither +1 or -1.");
-            }
+                throw new DimensionMismatchException("outputs",
+                    "The number of input vectors and output labels does not match.");
 
             if (machine.Inputs > 0)
             {
                 // This machine has a fixed input vector size
                 for (int i = 0; i < inputs.Length; i++)
+                {
                     if (inputs[i].Length != machine.Inputs)
-                        throw new ArgumentException("The size of the input vectors does not match the expected number of inputs of the machine");
+                    {
+                        throw new DimensionMismatchException("inputs",
+                            "The size of the input vector at index " + i
+                            + " does not match the expected number of inputs of the machine."
+                            + " All input vectors for this machine must have length " + machine.Inputs);
+                    }
+                }
+            }
+
+            for (int i = 0; i < outputs.Length; i++)
+            {
+                if (outputs[i] != 1 && outputs[i] != -1)
+                {
+                    throw new ArgumentOutOfRangeException("outputs",
+                        "The output label at index " + i + " should be either +1 or -1.");
+                }
             }
 
 
@@ -236,6 +247,14 @@ namespace Accord.MachineLearning.VectorMachines.Learning
 
             // Error cache
             this.errors = new double[samples];
+
+            // Kernel cache
+            this.cacheSize = samples;
+
+            // Index sets
+            activeExamples = new HashSet<int>();
+            nonBoundExamples = new HashSet<int>();
+            atBoundsExamples = new HashSet<int>();
         }
 
 
@@ -330,13 +349,19 @@ namespace Accord.MachineLearning.VectorMachines.Learning
 
         /// <summary>
         ///   Gets or sets the cache size to partially
-        ///   stored the kernel matrix. Default is 500.
+        ///   stored the kernel matrix. Default is the
+        ///   same number of input vectors.
         /// </summary>
         /// 
         public int CacheSize
         {
             get { return cacheSize; }
-            set { this.cacheSize = value; }
+            set
+            {
+                if (cacheSize < 0)
+                    throw new ArgumentOutOfRangeException("value");
+                this.cacheSize = value;
+            }
         }
 
         /// <summary>
@@ -464,9 +489,9 @@ namespace Accord.MachineLearning.VectorMachines.Learning
 
 
             // Prepare indice sets
-            activeExamples = new HashSet<int>();
-            nonBoundExamples = new HashSet<int>();
-            atBoundsExamples = new HashSet<int>();
+            activeExamples.Clear();
+            nonBoundExamples.Clear();
+            atBoundsExamples.Clear();
 
 
             // Algorithm:
@@ -552,6 +577,7 @@ namespace Accord.MachineLearning.VectorMachines.Learning
 
             // Clear function cache
             this.kernelCache.Clear();
+            this.kernelCache = null;
 
             // Compute error if required.
             return (computeError) ? ComputeError(inputs, outputs) : 0.0;
@@ -952,7 +978,12 @@ namespace Accord.MachineLearning.VectorMachines.Learning
 
             double sum = 0.0;
             for (int i = 0; i < inputs.Length; i++)
+            {
                 sum += kernel.Function(inputs[i], inputs[i]);
+
+                if (Double.IsNaN(sum))
+                    throw new OverflowException();
+            }
             return inputs.Length / sum;
         }
 

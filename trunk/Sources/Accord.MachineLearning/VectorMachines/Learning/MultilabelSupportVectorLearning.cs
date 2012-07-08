@@ -112,6 +112,13 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         ///   Constructs a new Multi-label Support Vector Learning algorithm.
         /// </summary>
         /// 
+        /// <param name="inputs">The input learning vectors for the machine learning algorithm.</param>
+        /// <param name="machine">The <see cref="MulticlassSupportVectorMachine"/> to be trained.</param>
+        /// <param name="outputs">The output labels associated with each of the input vectors. The
+        /// class labels should be between 0 and the <see cref="MultilabelSupportVectorMachine.Classes">
+        /// number of classes in the multiclass machine</see>. In a multi-label SVM, multiple classes
+        /// can be associated with a single input vector.</param>
+        /// 
         public MultilabelSupportVectorLearning(MultilabelSupportVectorMachine machine,
             double[][] inputs, int[][] outputs)
         {
@@ -133,18 +140,35 @@ namespace Accord.MachineLearning.VectorMachines.Learning
             {
                 // This machine has a fixed input vector size
                 for (int i = 0; i < inputs.Length; i++)
+                {
                     if (inputs[i].Length != machine.Inputs)
-                        throw new DimensionMismatchException("inputs", "The size of the input vectors does not match the expected number of inputs of the machine");
+                    {
+                        throw new DimensionMismatchException("inputs",
+                            "The size of the input vector at index " + i
+                            + " does not match the expected number of inputs of the machine."
+                            + " All input vectors for this machine must have length " + machine.Inputs);
+                    }
+                }
             }
 
             for (int i = 0; i < outputs.Length; i++)
             {
                 if (outputs[i].Length != machine.Classes)
-                    throw new DimensionMismatchException("outputs", "The number of output values is outside of the expected range of class labels.");
+                {
+                    throw new DimensionMismatchException("outputs",
+                        "Output vectors should have the same length as there are classes in the multi-label" +
+                        " machine. The output vector at position " + i + " has a different length.");
+                }
 
                 for (int j = 0; j < outputs[i].Length; j++)
+                {
                     if (outputs[i][j] != -1 && outputs[i][j] != 1)
-                        throw new ArgumentException("Output values should be either -1 or +1.", "outputs");
+                    {
+                        throw new ArgumentOutOfRangeException("outputs",
+                            "Output values should be either -1 or +1. The output at index " + j +
+                            " of the output vector at position "+ i + " violates this criteria.");
+                    }
+                }
             }
 
 

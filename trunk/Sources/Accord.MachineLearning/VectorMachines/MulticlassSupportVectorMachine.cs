@@ -23,7 +23,6 @@
 namespace Accord.MachineLearning.VectorMachines
 {
     using System;
-    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.IO;
     using System.Runtime.Serialization.Formatters.Binary;
@@ -31,7 +30,6 @@ namespace Accord.MachineLearning.VectorMachines
     using System.Threading.Tasks;
     using Accord.Math;
     using Accord.Statistics.Kernels;
-    using System.Runtime.Serialization;
 
     /// <summary>
     ///   Decision strategies for <see cref="MulticlassSupportVectorMachine">
@@ -141,6 +139,10 @@ namespace Accord.MachineLearning.VectorMachines
 
         [NonSerialized]
         private SpinLock[] syncObjects;
+
+        [NonSerialized]
+        private int kernelEvaluations = 0;
+
 
 
         /// <summary>
@@ -355,6 +357,30 @@ namespace Accord.MachineLearning.VectorMachines
         /// </summary>
         /// 
         /// <param name="inputs">An input vector.</param>
+        /// <param name="output">The output of the machine. If this is a 
+        ///   <see cref="IsProbabilistic">probabilistic</see> machine, the
+        ///   output is the probability of the positive class. If this is
+        ///   a standard machine, the output is the distance to the decision
+        ///   hyperplane in feature space.</param>
+        /// <param name="decisionPath">The decision path followed by the Decision
+        /// Directed Acyclic Graph used by the <see cref="MulticlassComputeMethod.Elimination">
+        /// elimination</see> method.</param>
+        /// 
+        /// <returns>The decision label for the given input.</returns>
+        /// 
+        /// 
+        public int Compute(double[] inputs, out double output, out Tuple<int, int>[] decisionPath)
+        {
+            double[] responses;
+            decisionPath = new Tuple<int, int>[Classes - 1];
+            return computeElimination(inputs, out responses, out output, decisionPath);
+        }
+
+        /// <summary>
+        ///   Computes the given input to produce the corresponding output.
+        /// </summary>
+        /// 
+        /// <param name="inputs">An input vector.</param>
         /// <param name="responses">The model response for each class.</param>
         /// 
         /// <returns>The decision label for the given input.</returns>
@@ -396,7 +422,7 @@ namespace Accord.MachineLearning.VectorMachines
             }
             else
             {
-                return computeElimination(inputs, out responses, out output);
+                return computeElimination(inputs, out responses, out output, null);
             }
         }
 
@@ -442,7 +468,7 @@ namespace Accord.MachineLearning.VectorMachines
             else
             {
                 double[] responses;
-                return computeElimination(inputs, out responses, out output);
+                return computeElimination(inputs, out responses, out output, null);
             }
         }
 
@@ -463,6 +489,38 @@ namespace Accord.MachineLearning.VectorMachines
         }
 
         /// <summary>
+        ///   Resets the cache and machine statistics
+        ///   so they can be recomputed on next evaluation.
+        /// </summary>
+        /// 
+        public void Reset()
+        {
+            this.sharedVectorCache = null;
+
+            this.sharedVectors = null;
+            this.totalVectors = null;
+            this.uniqueVectors = null;
+            this.kernelEvaluations = 0;
+        }
+
+        /// <summary>
+        ///   Gets the total kernel evaluations performed
+        ///   in the last call to any of the <see cref="Compute(double[])"/>
+        ///   functions.
+        /// </summary>
+        /// 
+        /// <returns>The number of total kernel evaluations.</returns>
+        /// 
+        public int GetLastKernelEvaluations()
+        {
+            return kernelEvaluations;
+        }
+
+
+
+
+
+        /// <summary>
         ///   Computes the given input to produce the corresponding output.
         /// </summary>
         /// 
@@ -481,6 +539,8 @@ namespace Accord.MachineLearning.VectorMachines
             if (sharedVectorCache == null)
                 createCache();
             else resetCache();
+
+            kernelEvaluations = 0;
 
             // out variables cannot be passed into delegates,
             // so will be creating a copy for the vote array.
@@ -509,7 +569,7 @@ namespace Accord.MachineLearning.VectorMachines
                 }
             }
 #if !DEBUG
-            );
+);
 #endif
 
             // Voting finished.
@@ -542,10 +602,14 @@ namespace Accord.MachineLearning.VectorMachines
         ///   output is the probability of the positive class. If this is
         ///   a standard machine, the output is the distance to the decision
         ///   hyperplane in feature space.</param>
+        /// <param name="decisionPath">The decision path followed by the Decision
+        /// Directed Acyclic Graph used by the <see cref="MulticlassComputeMethod.Elimination">
+        /// elimination</see> method.</param>
         /// 
         /// <returns>The decision label for the given input.</returns>
         /// 
-        private int computeElimination(double[] inputs, out double[] responses, out double output)
+        private int computeElimination(double[] inputs, out double[] responses,
+            out double output, Tuple<int, int>[] decisionPath)
         {
             // Acyclic Directed Graph decision
 
@@ -553,8 +617,10 @@ namespace Accord.MachineLearning.VectorMachines
                 createCache();
             else resetCache();
 
-            // Initialize metrics
             output = 0;
+
+            // Initialize metrics
+            kernelEvaluations = 0;
             responses = new double[Classes];
             bool probabilistic = IsProbabilistic;
 
@@ -566,13 +632,16 @@ namespace Accord.MachineLearning.VectorMachines
 
             // Start with first and last classes
             int classA = Classes - 1, classB = 0;
-
+            int progress = 0;
 
             // Navigate decision path
             while (classA != classB)
             {
                 // Compute the two-class decision problem to decide for A x B
                 int answer = computeParallel(classA, classB, inputs, out output);
+
+                if (decisionPath != null)
+                    decisionPath[progress++] = new Tuple<int, int>(classA, classB);
 
                 // Check who won and update
 
@@ -687,12 +756,14 @@ namespace Accord.MachineLearning.VectorMachines
                         {
                             // No, it has not. Compute and store the computed value in the cache
                             value = sharedVectorCache[j] = machine.Kernel.Function(machine.SupportVectors[i], input);
+                            Interlocked.Increment(ref kernelEvaluations);
                         }
                     }
                     else
                     {
                         // This vector is not shared by any other machine. No need to cache
                         value = machine.Kernel.Function(machine.SupportVectors[i], input);
+                        Interlocked.Increment(ref kernelEvaluations);
                     }
 
                     sum += machine.Weights[i] * value;
@@ -712,6 +783,7 @@ namespace Accord.MachineLearning.VectorMachines
                 return output >= 0 ? +1 : -1;
             }
         }
+
 
         /// <summary>
         ///   Compute SVM output with support vector sharing.
@@ -764,6 +836,7 @@ namespace Accord.MachineLearning.VectorMachines
                             {
                                 // No, it has not. Compute and store the computed value in the cache
                                 value = sharedVectorCache[j] = machine.Kernel.Function(machine.SupportVectors[i], input);
+                                Interlocked.Increment(ref kernelEvaluations);
                             }
 
                             syncObjects[j].Exit();
@@ -772,6 +845,7 @@ namespace Accord.MachineLearning.VectorMachines
                         {
                             // This vector is not shared by any other machine. No need to cache
                             value = machine.Kernel.Function(machine.SupportVectors[i], input);
+                            Interlocked.Increment(ref kernelEvaluations);
                         }
 
                         return partialSum + machine.Weights[i] * value;
@@ -795,19 +869,7 @@ namespace Accord.MachineLearning.VectorMachines
             }
         }
 
-        /// <summary>
-        ///   Resets the cache and machine statistics
-        ///   so they can be recomputed on next evaluation.
-        /// </summary>
-        /// 
-        public void Reset()
-        {
-            this.sharedVectorCache = null;
-
-            this.sharedVectors = null;
-            this.totalVectors = null;
-            this.uniqueVectors = null;
-        }
+     
 
         private void createCache()
         {
@@ -894,6 +956,11 @@ namespace Accord.MachineLearning.VectorMachines
         }
 
 
+
+
+
+        #region Loading & Saving
+
         /// <summary>
         ///   Saves the machine to a stream.
         /// </summary>
@@ -943,6 +1010,7 @@ namespace Accord.MachineLearning.VectorMachines
         {
             return Load(new FileStream(path, FileMode.Open));
         }
+        #endregion
 
     }
 }

@@ -75,14 +75,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bayes\NaiveBayes`1.cs" />
+    <Compile Include="Performance\Bootstrap\Bootstrap.cs" />
+    <Compile Include="Performance\Bootstrap\BootstrapResult.cs" />
+    <Compile Include="Performance\Bootstrap\BootstrapValues.cs" />
+    <Compile Include="KModes`1.cs" />
     <Compile Include="EarlyStopping.cs" />
     <Compile Include="GridSearchRange.cs" />
     <Compile Include="GridSearchParameter.cs" />
-    <Compile Include="CrossValidationResult.cs" />
-    <Compile Include="CrossValidationValue.cs" />
-    <Compile Include="CrossValidationStatistics.cs" />
-    <Compile Include="CrossValidation.cs" />
-    <Compile Include="CrossValidation`1.cs" />
+    <Compile Include="Performance\CrossValidation\CrossValidationResult`1.cs" />
+    <Compile Include="Performance\CrossValidation\CrossValidationValues.cs" />
+    <Compile Include="Performance\CrossValidation\CrossValidationStatistics.cs" />
+    <Compile Include="Performance\CrossValidation\CrossValidation.cs" />
+    <Compile Include="Performance\CrossValidation\CrossValidation`1.cs" />
     <Compile Include="DecisionTrees\DecisionVariable.cs" />
     <Compile Include="DecisionTrees\Learning\C45Learning.cs" />
     <Compile Include="DecisionTrees\Learning\Measures.cs" />

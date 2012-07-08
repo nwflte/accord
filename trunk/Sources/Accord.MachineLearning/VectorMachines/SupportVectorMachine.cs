@@ -30,6 +30,7 @@ namespace Accord.MachineLearning.VectorMachines
     /// <summary>
     ///   Sparse Linear Support Vector Machine (SVM)
     /// </summary>
+    /// 
     /// <remarks>
     /// <para>
     ///   Support vector machines (SVMs) are a set of related supervised learning methods
@@ -257,26 +258,6 @@ namespace Accord.MachineLearning.VectorMachines
             return Compute(inputs, out output);
         }
 
-
-        /// <summary>
-        ///   Computes the given inputs to produce the corresponding outputs.
-        /// </summary>
-        /// 
-        /// <remarks>
-        ///   For a binary decision problem, the decision for the negative
-        ///   or positive class is typically computed by taking the sign of
-        ///   the machine's output.
-        /// </remarks>
-        /// 
-        public double[] Compute(double[][] inputs)
-        {
-            double[] outputs = new double[inputs.Length];
-
-            for (int i = 0; i < inputs.Length; i++)
-                outputs[i] = Compute(inputs[i]);
-
-            return outputs;
-        }
 
         /// <summary>
         ///   Saves the machine to a stream.
