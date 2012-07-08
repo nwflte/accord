@@ -158,7 +158,7 @@ namespace Accord.Statistics.Analysis
         /// 
         public override void Compute()
         {
-            Compute(Source.GetLength(1));
+            Compute(Source.GetLength(0));
         }
 
         /// <summary>
@@ -167,6 +167,13 @@ namespace Accord.Statistics.Analysis
         /// 
         public void Compute(int components)
         {
+            if (components < 0 || components > Source.GetLength(0))
+            {
+                throw new ArgumentException(
+                    "The number of components must be between 0 and " +
+                    "the number of rows in your source data matrix.");
+            }
+
             int dimension = Source.GetLength(0);
 
             // If needed, center the source matrix
