@@ -84,6 +84,21 @@ namespace Accord.Statistics.Kernels
         }
 
         /// <summary>
+        ///   Gets or sets the sigma² value for the kernel. When setting
+        ///   sigma², gamma gets updated accordingly (gamma = 0.5/sigma²).
+        /// </summary>
+        /// 
+        public double SigmaSquared
+        {
+            get { return sigma * sigma; }
+            set
+            {
+                sigma = Math.Sqrt(value);
+                gamma = 1.0 / (2.0 * value);
+            }
+        }
+
+        /// <summary>
         ///   Gets or sets the gamma value for the kernel. When setting
         ///   gamma, sigma gets updated accordingly (gamma = 0.5/sigma^2).
         /// </summary>
@@ -172,6 +187,48 @@ namespace Accord.Statistics.Kernels
         /// </remarks>
         /// 
         /// <param name="inputs">The data set.</param>
+        /// 
+        /// <returns>A Gaussian kernel initialized with an appropriate sigma value.</returns>
+        /// 
+        public static Gaussian Estimate(double[][] inputs)
+        {
+            DoubleRange range;
+            return Estimate(inputs, inputs.Length, out range);
+        }
+
+        /// <summary>
+        ///   Estimate appropriate values for sigma given a data set.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   This method uses a simple heuristic to obtain appropriate values
+        ///   for sigma in a radial basis function kernel. The heristic is shown
+        ///   by Caputo, Sim, Furesjo and Smola, "Appearance-based object
+        ///   recognition using SVMs: which kernel should I use?", 2002.
+        /// </remarks>
+        /// 
+        /// <param name="inputs">The data set.</param>
+        /// <param name="range">The range of suitable values for sigma.</param>
+        /// 
+        /// <returns>A Gaussian kernel initialized with an appropriate sigma value.</returns>
+        /// 
+        public static Gaussian Estimate(double[][] inputs, out DoubleRange range)
+        {
+            return Estimate(inputs, inputs.Length, out range);
+        }
+
+        /// <summary>
+        ///   Estimate appropriate values for sigma given a data set.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   This method uses a simple heuristic to obtain appropriate values
+        ///   for sigma in a radial basis function kernel. The heristic is shown
+        ///   by Caputo, Sim, Furesjo and Smola, "Appearance-based object
+        ///   recognition using SVMs: which kernel should I use?", 2002.
+        /// </remarks>
+        /// 
+        /// <param name="inputs">The data set.</param>
         /// <param name="samples">The number of random samples to analyze.</param>
         /// <param name="range">The range of suitable values for sigma.</param>
         /// 
@@ -203,8 +260,8 @@ namespace Accord.Statistics.Kernels
         /// 
         public static double[] Distances(double[][] inputs, int samples)
         {
-            int[] idx = Accord.Statistics.Tools.Random(inputs.Length, samples);
-            int[] idy = Accord.Statistics.Tools.Random(inputs.Length, samples);
+            int[] idx = Accord.Statistics.Tools.RandomSample(inputs.Length, samples);
+            int[] idy = Accord.Statistics.Tools.RandomSample(inputs.Length, samples);
 
             double[] distances = new double[samples * samples];
 
