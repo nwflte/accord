@@ -20,21 +20,15 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Vision;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Drawing;
-using Accord.Controls;
-using Accord.Vision.Detection;
-using Accord.Vision.Detection.Cascades;
-
 namespace Accord.Tests.Vision
 {
+    using Accord.Vision;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System.Drawing;
+    using Accord.Controls;
+    using Accord.Vision.Detection;
+    using Accord.Vision.Detection.Cascades;
 
-
-    /// <summary>
-    ///This is a test class for ObjectDetectorTest and is intended
-    ///to contain all ObjectDetectorTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class ObjectDetectorTest
     {
@@ -42,10 +36,7 @@ namespace Accord.Tests.Vision
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
+     
         public TestContext TestContext
         {
             get
@@ -89,9 +80,6 @@ namespace Accord.Tests.Vision
         #endregion
 
 
-        /// <summary>
-        ///A test for detect
-        ///</summary>
         [TestMethod()]
         public void ProcessFrame()
         {
@@ -110,9 +98,6 @@ namespace Accord.Tests.Vision
             Assert.AreEqual(59, target.DetectedObjects[0].Height);
         }
 
-        /// <summary>
-        ///A test for detect
-        ///</summary>
         [TestMethod()]
         public void ProcessFrame2()
         {
@@ -143,9 +128,6 @@ namespace Accord.Tests.Vision
             Assert.AreEqual(123, target.DetectedObjects[0].Height);
         }
 
-        /// <summary>
-        ///A test for detect
-        ///</summary>
         [TestMethod()]
         public void ProcessFrame3()
         {

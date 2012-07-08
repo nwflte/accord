@@ -88,7 +88,7 @@ namespace Accord.Tests.MachineLearning
             int inputs = 0;
             bool thrown = false;
 
-            try { new NaiveBayes<DiscreteUniformDistribution>(classes, inputs, new DiscreteUniformDistribution(0, 3)); }
+            try { new NaiveBayes<UniformDiscreteDistribution>(classes, inputs, new UniformDiscreteDistribution(0, 3)); }
             catch { thrown = true; }
 
             Assert.IsTrue(thrown);
@@ -101,9 +101,9 @@ namespace Accord.Tests.MachineLearning
             int classes = 2;
             int inputCount = 3;
             double[] priors = { 0.4, 0.6 };
-            DiscreteUniformDistribution initial = new DiscreteUniformDistribution(0, 3);
+            UniformDiscreteDistribution initial = new UniformDiscreteDistribution(0, 3);
 
-            var target = new NaiveBayes<DiscreteUniformDistribution>(classes, inputCount, initial, priors);
+            var target = new NaiveBayes<UniformDiscreteDistribution>(classes, inputCount, initial, priors);
 
             Assert.AreEqual(classes, target.ClassCount);
             Assert.AreEqual(inputCount, target.InputCount);

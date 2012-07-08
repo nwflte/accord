@@ -28,6 +28,9 @@ namespace Accord.Tests.Imaging
     using AForge.Imaging;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using AForge.Imaging.Filters;
+    using Accord.Controls.Imaging;
+    using System.Windows.Forms;
+    using System.Drawing.Drawing2D;
 
     [TestClass()]
     public class MatrixToImageTest
@@ -164,6 +167,37 @@ namespace Accord.Tests.Imaging
             for (int i = 0; i < pixels.GetLength(0); i++)
                 for (int j = 0; j < pixels.GetLength(1); j++)
                     Assert.AreEqual(actual[i, j], expected[i, j]);
+        }
+
+        [TestMethod()]
+        public void ConvertTest2()
+        {
+            // Create a matrix representation 
+            // of a 4x4 image with a inner 2x2
+            // square drawn in the middle
+
+            double[,] pixels = 
+            {
+                { 0, 0, 0, 0 },
+                { 0, 1, 1, 0 },
+                { 0, 1, 1, 0 },
+                { 0, 0, 0, 0 },
+            };
+
+            // Create the converter to convert the matrix to a image
+            MatrixToImage conv = new MatrixToImage(min: 0, max: 1);
+
+            // Declare an image and store the pixels on it
+            Bitmap image; conv.Convert(pixels, out image);
+
+            // Show the image on screen
+            image = new ResizeNearestNeighbor(320, 320).Apply(image);
+            // ImageBox.Show(image, PictureBoxSizeMode.Zoom);
+
+            Assert.AreEqual(0, conv.Min);
+            Assert.AreEqual(1, conv.Max);
+            Assert.AreEqual(320, image.Height);
+            Assert.AreEqual(320, image.Width);
         }
 
     }

@@ -20,20 +20,15 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.MachineLearning;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Accord.MachineLearning.VectorMachines;
-using Accord.Statistics.Kernels;
-using Accord.MachineLearning.VectorMachines.Learning;
-using System;
 namespace Accord.Tests.MachineLearning
 {
+    using Accord.MachineLearning;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Accord.MachineLearning.VectorMachines;
+    using Accord.Statistics.Kernels;
+    using Accord.MachineLearning.VectorMachines.Learning;
+    using System;
 
-
-    /// <summary>
-    ///This is a test class for GridsearchTest and is intended
-    ///to contain all GridsearchTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class GridsearchTest
     {
@@ -41,10 +36,6 @@ namespace Accord.Tests.MachineLearning
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get

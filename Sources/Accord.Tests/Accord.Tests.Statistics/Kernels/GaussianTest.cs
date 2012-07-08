@@ -27,10 +27,6 @@ namespace Accord.Tests.Statistics
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System.Diagnostics;
 
-    /// <summary>
-    ///This is a test class for GaussianTest and is intended
-    ///to contain all GaussianTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class GaussianTest
     {
@@ -38,10 +34,6 @@ namespace Accord.Tests.Statistics
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -182,6 +174,30 @@ namespace Accord.Tests.Statistics
         }
 
         [TestMethod]
+        public void GammaSigmaSquaredTest()
+        {
+            Gaussian gaussian = new Gaussian(3.6);
+            Assert.AreEqual(3.6 * 3.6, gaussian.SigmaSquared);
+            Assert.AreEqual(3.6, gaussian.Sigma);
+            Assert.AreEqual(1.0 / (2 * 3.6 * 3.6), gaussian.Gamma);
+
+            gaussian.SigmaSquared = 81;
+            Assert.AreEqual(81, gaussian.SigmaSquared);
+            Assert.AreEqual(9, gaussian.Sigma);
+            Assert.AreEqual(1.0 / (2 * 81), gaussian.Gamma);
+
+            gaussian.Sigma = 6;
+            Assert.AreEqual(36, gaussian.SigmaSquared);
+            Assert.AreEqual(6, gaussian.Sigma);
+            Assert.AreEqual(1.0 / (2 * 36), gaussian.Gamma);
+
+            gaussian.Gamma = 1.0 / (2 * 49);
+            Assert.AreEqual(49, gaussian.SigmaSquared, 1e-10);
+            Assert.AreEqual(7, gaussian.Sigma, 1e-10);
+            Assert.AreEqual(1.0 / (2 * 49), gaussian.Gamma);
+        }
+
+        [TestMethod]
         public void FunctionTest2()
         {
             // Tested against R's kernlab
@@ -196,7 +212,7 @@ namespace Accord.Tests.Statistics
             };
 
             // rbf <- rbfdot(sigma = 1)
-            
+
             // R's sigma is framework's Gaussian's gamma:
             Gaussian kernel = new Gaussian() { Gamma = 1 };
 
@@ -204,7 +220,7 @@ namespace Accord.Tests.Statistics
             double[,] actual = new double[5, 5];
             for (int i = 0; i < 5; i++)
                 for (int j = 0; j < 5; j++)
-                    actual[i,j] = kernel.Function(data[i], data[j]);
+                    actual[i, j] = kernel.Function(data[i], data[j]);
 
             double[,] expected =
             {

@@ -22,18 +22,13 @@
 
 namespace Accord.Tests.Statistics
 {
-    using Accord.Statistics.Models.Markov;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System;
     using Accord.Math;
+    using Accord.Statistics.Models.Markov;
     using Accord.Statistics.Models.Markov.Learning;
     using Accord.Statistics.Models.Markov.Topology;
-    using System;
-    using System.Collections.Generic;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-    /// <summary>
-    ///This is a test class for HiddenMarkovModelTest and is intended
-    ///to contain all HiddenMarkovModelTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class HiddenMarkovModelTest
     {
@@ -41,10 +36,6 @@ namespace Accord.Tests.Statistics
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -86,6 +77,7 @@ namespace Accord.Tests.Statistics
         //}
         //
         #endregion
+
 
         [TestMethod()]
         public void ConstructorTest()
@@ -155,36 +147,52 @@ namespace Accord.Tests.Statistics
         {
             // Example taken from http://en.wikipedia.org/wiki/Viterbi_algorithm
 
+            // Create the transation matrix A
             double[,] transition = 
             {  
                 { 0.7, 0.3 },
                 { 0.4, 0.6 }
             };
 
+            // Create the emission matrix B
             double[,] emission = 
             {  
                 { 0.1, 0.4, 0.5 },
                 { 0.6, 0.3, 0.1 }
             };
 
+            // Create the initial probabilities pi
             double[] initial =
             {
                 0.6, 0.4
             };
 
+            // Create a new hidden Markov model
             HiddenMarkovModel hmm = new HiddenMarkovModel(transition, emission, initial);
 
-            double logLikelihood;
+            // After that, one could, for example, query the probability
+            // of a sequence ocurring. We will consider the sequence
             int[] sequence = new int[] { 0, 1, 2 };
-            int[] path = hmm.Decode(sequence, out logLikelihood);
 
-            double expected = Math.Log(0.01344);
+            // And now we will evaluate its likelihood
+            double logLikelihood = hmm.Evaluate(sequence); 
+            
+            // At this point, the log-likelihood of the sequence
+            // ocurring within the model is -3.3928721329161653.
 
-            Assert.AreEqual(logLikelihood, expected, 1e-10);
+            // We can also get the Viterbi path of the sequence
+            int[] path = hmm.Decode(sequence, out logLikelihood); 
+            
+            // At this point, the state path will be 1-0-0 and the
+            // log-likelihood will be -4.3095199438871337
+
+
+            Assert.AreEqual(logLikelihood, Math.Log(0.01344), 1e-10);
             Assert.AreEqual(path[0], 1);
             Assert.AreEqual(path[1], 0);
             Assert.AreEqual(path[2], 0);
         }
+
 
         [TestMethod()]
         public void LearnTest4()
@@ -300,9 +308,6 @@ namespace Accord.Tests.Statistics
             Assert.IsTrue(Matrix.IsEqual(B, hmmB, 0.1));
             Assert.IsTrue(Matrix.IsEqual(pi, hmmP));
         }
-
-
-
 
         [TestMethod()]
         public void LearnTest3()
@@ -426,6 +431,7 @@ namespace Accord.Tests.Statistics
             Assert.IsTrue(l2 > l3 && l2 > l4);
         }
 
+
         [TestMethod()]
         public void PredictTest()
         {
@@ -485,7 +491,6 @@ namespace Accord.Tests.Statistics
 
             Assert.AreEqual(ln1, ln2, 1e-10);
         }
-
 
         [TestMethod()]
         public void PredictTest2()
@@ -588,6 +593,40 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(probabilities2[1].Length, 6);
 
             Assert.IsTrue(probabilities2[0].IsEqual(logLikelihoods));
+        }
+
+
+        [TestMethod()]
+        public void GenerateTest()
+        {
+            // Example taken from http://en.wikipedia.org/wiki/Viterbi_algorithm
+
+            double[,] transition = 
+            {  
+                { 0.7, 0.3 },
+                { 0.4, 0.6 }
+            };
+
+            double[,] emission = 
+            {  
+                { 0.1, 0.4, 0.5 },
+                { 0.6, 0.3, 0.1 }
+            };
+
+            double[] initial =
+            {
+                0.6, 0.4
+            };
+
+            HiddenMarkovModel hmm = new HiddenMarkovModel(transition, emission, initial);
+
+            double logLikelihood;
+            int[] path;
+            int[] samples = hmm.Generate(10, out path, out logLikelihood);
+
+            double expected = hmm.Evaluate(samples, path);
+
+            Assert.AreEqual(expected, logLikelihood);
         }
 
     }

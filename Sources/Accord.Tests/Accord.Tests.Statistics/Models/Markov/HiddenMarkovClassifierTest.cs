@@ -28,10 +28,7 @@ namespace Accord.Tests.Statistics
     using Accord.Math;
     using System;
 
-    /// <summary>
-    ///This is a test class for HiddenMarkovClassifierTest and is intended
-    ///to contain all HiddenMarkovClassifierTest Unit Tests
-    ///</summary>
+
     [TestClass()]
     public class HiddenMarkovClassifierTest
     {
@@ -39,10 +36,7 @@ namespace Accord.Tests.Statistics
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
+
         public TestContext TestContext
         {
             get
@@ -86,9 +80,6 @@ namespace Accord.Tests.Statistics
         #endregion
 
 
-        /// <summary>
-        ///A test for Learn
-        ///</summary>
         [TestMethod()]
         public void LearnTest()
         {
@@ -151,9 +142,6 @@ namespace Accord.Tests.Statistics
         }
 
 
-        /// <summary>
-        ///A test for Learn
-        ///</summary>
         [TestMethod()]
         public void LearnTest2()
         {
@@ -162,7 +150,7 @@ namespace Accord.Tests.Statistics
             {
                 new int[] { 0,0,1,2 },     // Class 0
                 new int[] { 0,1,1,2 },     // Class 0
-                new int[] { 0,0,0,1,2 }, // Class 0
+                new int[] { 0,0,0,1,2 },   // Class 0
                 new int[] { 0,1,2,2,2 },   // Class 0
 
                 new int[] { 2,2,1,0 },     // Class 1
@@ -238,16 +226,38 @@ namespace Accord.Tests.Statistics
             int c = classifier.Compute(r0, out logRejection);
 
             Assert.AreEqual(-1, c);
-            Assert.AreEqual(0.99569011079012049, logRejection);
+            Assert.AreEqual(0.99843823530192322, logRejection);
             Assert.IsFalse(double.IsNaN(logRejection));
 
             logRejection = threshold.Evaluate(r0);
-            Assert.AreEqual(-6.7949285513628528, logRejection, 1e-10);
+            Assert.AreEqual(-5.7770765335450172, logRejection, 1e-10);
             Assert.IsFalse(double.IsNaN(logRejection));
 
             threshold.Decode(r0, out logRejection);
-            Assert.AreEqual(-8.902077561009957, logRejection, 1e-10);
+            Assert.AreEqual(-8.21169955167614, logRejection, 1e-10);
             Assert.IsFalse(double.IsNaN(logRejection));
+
+            foreach (var model in classifier.Models)
+            {
+                double[,] A = model.Transitions;
+
+                for (int i = 0; i < A.GetLength(0); i++)
+                {
+                    double[] row = A.Exp().GetRow(i);
+                    double sum = row.Sum();
+                    Assert.AreEqual(1, sum, 1e-10);
+                }
+            }
+            {
+                double[,] A = classifier.Threshold.Transitions;
+
+                for (int i = 0; i < A.GetLength(0); i++)
+                {
+                    double[] row = A.GetRow(i);
+                    double sum = row.Exp().Sum();
+                    Assert.AreEqual(1, sum, 1e-6);
+                }
+            }
         }
     }
 }

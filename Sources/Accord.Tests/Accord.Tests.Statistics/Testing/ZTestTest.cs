@@ -20,16 +20,12 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics.Testing;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Accord.Tests.Statistics
 {
+    using Accord.Statistics.Testing;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Accord.Statistics.Testing.Power;    
     
-    
-    /// <summary>
-    ///This is a test class for ZTestTest and is intended
-    ///to contain all ZTestTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class ZTestTest
     {
@@ -37,10 +33,7 @@ namespace Accord.Tests.Statistics
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
+
         public TestContext TestContext
         {
             get
@@ -84,12 +77,11 @@ namespace Accord.Tests.Statistics
         #endregion
 
 
-        /// <summary>
-        ///A test for ZTest Constructor
-        ///</summary>
         [TestMethod()]
         public void ZTestConstructorTest()
         {
+            // Example from: http://en.wikipedia.org/wiki/Z-test
+
             /* Suppose that in a particular geographic region, the mean and standard
              * deviation of scores on a reading test are 100 points, and 12 points, 
              * respectively. Our interest is in the scores of 55 students in a particular
@@ -100,11 +92,15 @@ namespace Accord.Tests.Statistics
              */
 
             ZTest target;
-            
-            target = new ZTest(100, 12, 96, 55, Hypothesis.OneLower);
-            Assert.AreEqual(target.Statistic, -2.47, 0.01);
 
+            double mean = 96;
+            double stdDev = 12;
+            int samples = 55;
+            double hypothesizedMean = 100;
+            target = new ZTest(mean, stdDev, samples, hypothesizedMean,
+                OneSampleHypothesis.ValueIsSmallerThanHypothesis);
             
+            Assert.AreEqual(target.Statistic, -2.47, 0.01);
             Assert.AreEqual(target.PValue, 0.0068, 0.001);
 
             /* This is the one-sided p-value for the null hypothesis that the 55 students 
@@ -112,10 +108,297 @@ namespace Accord.Tests.Statistics
              * The two-sided p-value is approximately 0.014 (twice the one-sided p-value).
              */
 
-            target = new ZTest(100, 12, 96, 55, Hypothesis.TwoTail);
-            Assert.AreEqual(target.PValue, 0.014, 0.005);
+            target = new ZTest(mean, stdDev, samples, hypothesizedMean, 
+                OneSampleHypothesis.ValueIsDifferentFromHypothesis);
 
+            Assert.AreEqual(target.Statistic, -2.47, 0.01);
+            Assert.AreEqual(target.PValue, 0.014, 0.005);
             
+        }
+
+        [TestMethod()]
+        public void ZTestConstructorTest2()
+        {
+            // Example from http://science.kennesaw.edu/~jdemaio/1107/hypothesis_testing.htm
+
+            double mean = 63;
+            double stdDev = 8;
+            int samples = 49;
+
+            double hypothesizedMean = 58;
+
+            // Null Hypothesis: mean = 58
+            // Alternative    : mean > 58
+
+            OneSampleHypothesis hypothesis = OneSampleHypothesis.ValueIsGreaterThanHypothesis;
+            ZTest target = new ZTest(mean, stdDev, samples, hypothesizedMean, hypothesis);
+
+            Assert.AreEqual(4.38, target.Statistic, 0.01);
+            Assert.AreEqual(OneSampleHypothesis.ValueIsGreaterThanHypothesis, target.Hypothesis);
+            Assert.AreEqual(DistributionTail.OneUpper, target.Tail);
+            Assert.IsTrue(target.Significant);
+        }
+
+        [TestMethod()]
+        public void ZTestConstructorTest3()
+        {
+            // Example from http://science.kennesaw.edu/~jdemaio/1107/hypothesis_testing.htm
+
+            double mean = 53;
+            double stdDev = 8;
+            int samples = 49;
+
+            double hypothesizedMean = 58;
+
+            // Null Hypothesis: mean = 58
+            // Alternative    : mean > 58
+
+            OneSampleHypothesis hypothesis = OneSampleHypothesis.ValueIsGreaterThanHypothesis;
+            ZTest target = new ZTest(mean, stdDev, samples, hypothesizedMean, hypothesis);
+
+            Assert.AreEqual(-4.38, target.Statistic, 0.01);
+            Assert.AreEqual(OneSampleHypothesis.ValueIsGreaterThanHypothesis, target.Hypothesis);
+            Assert.AreEqual(DistributionTail.OneUpper, target.Tail);
+            Assert.IsFalse(target.Significant);
+        }
+
+        [TestMethod()]
+        public void ZTestConstructorTest4()
+        {
+            // Example from http://science.kennesaw.edu/~jdemaio/1107/hypothesis_testing.htm
+
+            double mean = 51.5;
+            double stdDev = 10;
+            int samples = 100;
+
+            double hypothesizedMean = 50;
+
+            // Null Hypothesis: mean =  58
+            // Alternative    : mean != 58
+
+            OneSampleHypothesis hypothesis = OneSampleHypothesis.ValueIsDifferentFromHypothesis;
+            ZTest target = new ZTest(mean, stdDev, samples, hypothesizedMean, hypothesis);
+
+            Assert.AreEqual(1.5, target.Statistic, 0.01);
+            Assert.AreEqual(OneSampleHypothesis.ValueIsDifferentFromHypothesis, target.Hypothesis);
+            Assert.AreEqual(DistributionTail.TwoTail, target .Tail);
+            Assert.IsFalse(target.Significant);
+        }
+
+        [TestMethod()]
+        public void PowerTest1()
+        {
+            // Example from http://wise.cgu.edu/powermod/computing.asp
+
+            double mean = 105;
+            double stdDev = 10;
+            int samples = 25;
+            double hypothesizedMean = 100;
+
+            OneSampleHypothesis hypothesis = OneSampleHypothesis.ValueIsGreaterThanHypothesis;
+            ZTest target = new ZTest(mean, stdDev, samples, hypothesizedMean, hypothesis);
+            var power = target.Analysis;
+
+            Assert.AreEqual(0.804, power.Power, 1e-3);
+
+            mean = 90;
+            target = new ZTest(mean, stdDev, samples, hypothesizedMean, hypothesis);
+
+            power = target.Analysis;
+            Assert.AreEqual(0.0, power.Power, 1e-3);
+        }
+
+        [TestMethod()]
+        public void SampleSizeTest1()
+        {
+            // Example from http://wise.cgu.edu/powermod/computing.asp
+
+            double mean = 104;
+            double stdDev = 10;
+            int samples = 25;
+            double hypothesizedMean = 100;
+
+            OneSampleHypothesis hypothesis = OneSampleHypothesis.ValueIsGreaterThanHypothesis;
+            ZTest target = new ZTest(mean, stdDev, samples, hypothesizedMean, hypothesis);
+
+            ZTestPowerAnalysis power = (ZTestPowerAnalysis)target.Analysis;
+
+            power.Size = 0.01;
+            power.Power = 0.90;
+            power.ComputeSamples();
+
+            double sampleSize = System.Math.Ceiling(power.Samples);
+
+            Assert.AreEqual(82, sampleSize, 1e-16);
+        }
+
+        [TestMethod()]
+        public void PowerTest2()
+        {
+            // Example from http://www.cyclismo.org/tutorial/R/power.html
+
+            double mean = 6.5;
+            double stdDev = 2;
+            int samples = 20;
+            double hypothesizedMean = 5;
+
+            OneSampleHypothesis hypothesis = OneSampleHypothesis.ValueIsDifferentFromHypothesis;
+            ZTest target = new ZTest(mean, stdDev, samples, hypothesizedMean, hypothesis);
+
+            IPowerAnalysis power = target.Analysis;
+
+            Assert.AreEqual(0.918362, power.Power, 1e-6);
+        }
+
+        [TestMethod()]
+        public void StatisticToPValueTest()
+        {
+            double z  = 1.96;
+            {
+                ZTest target = new ZTest(z, OneSampleHypothesis.ValueIsDifferentFromHypothesis);
+                Assert.AreEqual(DistributionTail.TwoTail, target.Tail);
+                double actual = target.StatisticToPValue(z);
+                double expected = 0.05;
+                Assert.AreEqual(expected, actual, 1e-5);
+            }
+
+            {
+                ZTest target = new ZTest(z, OneSampleHypothesis.ValueIsSmallerThanHypothesis);
+                Assert.AreEqual(DistributionTail.OneLower, target.Tail);
+                double actual = target.StatisticToPValue(z);
+                double expected = 0.975;
+                Assert.AreEqual(expected, actual, 1e-5);
+            }
+
+            {
+                ZTest target = new ZTest(z, OneSampleHypothesis.ValueIsGreaterThanHypothesis);
+                Assert.AreEqual(DistributionTail.OneUpper, target.Tail);
+                double actual = target.StatisticToPValue(z);
+                double expected = 0.025;
+                Assert.AreEqual(expected, actual, 1e-5);
+            }
+
+            z = -1.96;
+            {
+                ZTest target = new ZTest(z, OneSampleHypothesis.ValueIsDifferentFromHypothesis);
+                Assert.AreEqual(DistributionTail.TwoTail, target.Tail);
+                double actual = target.StatisticToPValue(z);
+                double expected = 0.05;
+                Assert.AreEqual(expected, actual, 1e-5);
+            }
+
+            {
+                ZTest target = new ZTest(z, OneSampleHypothesis.ValueIsSmallerThanHypothesis);
+                Assert.AreEqual(DistributionTail.OneLower, target.Tail);
+                double actual = target.StatisticToPValue(z);
+                double expected = 0.025;
+                Assert.AreEqual(expected, actual, 1e-5);
+            }
+
+            {
+                ZTest target = new ZTest(z, OneSampleHypothesis.ValueIsGreaterThanHypothesis);
+                Assert.AreEqual(DistributionTail.OneUpper, target.Tail);
+                double actual = target.StatisticToPValue(z);
+                double expected = 0.975;
+                Assert.AreEqual(expected, actual, 1e-5);
+            }
+        }
+
+        [TestMethod()]
+        public void PValueToStatisticTest()
+        {
+            double p = 0.05;
+            double z = 0;
+            {
+                ZTest target = new ZTest(z, OneSampleHypothesis.ValueIsDifferentFromHypothesis);
+                Assert.AreEqual(DistributionTail.TwoTail, target.Tail);
+                double actual = target.PValueToStatistic(p);
+                double expected = 1.96;
+                Assert.AreEqual(expected, actual, 0.01);
+            }
+
+            {
+                ZTest target = new ZTest(z, OneSampleHypothesis.ValueIsSmallerThanHypothesis);
+                Assert.AreEqual(DistributionTail.OneLower, target.Tail);
+                double actual = target.PValueToStatistic(p);
+                double expected = -1.6449;
+                Assert.AreEqual(expected, actual, 1e-4);
+            }
+
+            {
+                ZTest target = new ZTest(z, OneSampleHypothesis.ValueIsGreaterThanHypothesis);
+                Assert.AreEqual(DistributionTail.OneUpper, target.Tail);
+                double actual = target.PValueToStatistic(p);
+                double expected = 1.6449;
+                Assert.AreEqual(expected, actual, 1e-4);
+            }
+
+            p = 0.95;
+            {
+                ZTest target = new ZTest(z, OneSampleHypothesis.ValueIsDifferentFromHypothesis);
+                Assert.AreEqual(DistributionTail.TwoTail, target.Tail);
+                double actual = target.PValueToStatistic(p);
+                double expected = 0.0627;
+                Assert.AreEqual(expected, actual, 1e-5);
+            }
+
+            {
+                ZTest target = new ZTest(z, OneSampleHypothesis.ValueIsSmallerThanHypothesis);
+                Assert.AreEqual(DistributionTail.OneLower, target.Tail);
+                double actual = target.PValueToStatistic(p);
+                double expected = 1.6449;
+                Assert.AreEqual(expected, actual, 1e-4);
+            }
+
+            {
+                ZTest target = new ZTest(z, OneSampleHypothesis.ValueIsGreaterThanHypothesis);
+                Assert.AreEqual(DistributionTail.OneUpper, target.Tail);
+                double actual = target.PValueToStatistic(p);
+                double expected = -1.6449;
+                Assert.AreEqual(expected, actual, 1e-4);
+            }
+        }
+
+        [TestMethod()]
+        public void EffectSizeTest1()
+        {
+            // Example from http://wise.cgu.edu/powermod/computing.asp
+
+            double mean = 104;
+            double stdDev = 10;
+            int samples = 25;
+            double hypothesizedMean = 100;
+
+            OneSampleHypothesis hypothesis = OneSampleHypothesis.ValueIsGreaterThanHypothesis;
+            ZTest target = new ZTest(mean, stdDev, samples, hypothesizedMean, hypothesis);
+            ZTestPowerAnalysis power = (ZTestPowerAnalysis)target.Analysis;
+
+            power.Size = 0.05;
+            power.Power = 0.80;
+            power.ComputeEffect();
+
+            Assert.AreEqual(0.50, power.Effect, 0.005);
+        }
+
+        [TestMethod()]
+        public void EffectSizeTest2()
+        {
+            // Example from http://wise.cgu.edu/powermod/computing.asp
+
+            double mean = 104;
+            double stdDev = 10;
+            int samples = 25;
+            double hypothesizedMean = 100;
+
+            OneSampleHypothesis hypothesis = OneSampleHypothesis.ValueIsDifferentFromHypothesis;
+            ZTest target = new ZTest(mean, stdDev, samples, hypothesizedMean, hypothesis);
+            ZTestPowerAnalysis power = (ZTestPowerAnalysis)target.Analysis;
+
+            power.Size = 0.05;
+            power.Power = 0.80;
+            power.ComputeEffect();
+
+            Assert.AreEqual(0.56, power.Effect, 0.001);
         }
 
     }

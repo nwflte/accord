@@ -102,6 +102,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Optimization\BrentSearchTest.cs" />
+    <Compile Include="QuadraticConstraintTest.cs" />
+    <Compile Include="Special\BetaTest.cs" />
+    <Compile Include="Special\GammaTest.cs" />
     <Compile Include="Optimization\AugmentedLagrangianSolverTest.cs" />
     <Compile Include="Optimization\GoldfarbIdnaniTest.cs" />
     <Compile Include="Matrix\Matrix.Complex.cs" />

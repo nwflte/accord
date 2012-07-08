@@ -109,7 +109,7 @@ namespace Accord.Tests.Statistics
             int truePositives = 1;
             int trueNegatives = 6;
 
-            Assert.AreEqual(predicted.Length, matrix.Observations);
+            Assert.AreEqual(predicted.Length, matrix.Samples);
             Assert.AreEqual(8, matrix.ActualNegatives);
             Assert.AreEqual(2, matrix.ActualPositives);
             Assert.AreEqual(7, matrix.PredictedNegatives);
@@ -150,7 +150,7 @@ namespace Accord.Tests.Statistics
             int truePositives = 1;
             int trueNegatives = 6;
 
-            Assert.AreEqual(predicted.Length, matrix.Observations);
+            Assert.AreEqual(predicted.Length, matrix.Samples);
             Assert.AreEqual(8, matrix.ActualNegatives);
             Assert.AreEqual(2, matrix.ActualPositives);
             Assert.AreEqual(7, matrix.PredictedNegatives);
@@ -184,7 +184,7 @@ namespace Accord.Tests.Statistics
             int truePositives = 1;
             int trueNegatives = 2;
 
-            Assert.AreEqual(predicted.Length, target.Observations);
+            Assert.AreEqual(predicted.Length, target.Samples);
             Assert.AreEqual(2, target.ActualNegatives);
             Assert.AreEqual(1, target.ActualPositives);
             Assert.AreEqual(2, target.PredictedNegatives);
@@ -209,7 +209,18 @@ namespace Accord.Tests.Statistics
         {
             // Example from http://www.iph.ufrgs.br/corpodocente/marques/cd/rd/presabs.htm
 
-            ConfusionMatrix matrix = new ConfusionMatrix(70, 95, 5, 30);
+            ConfusionMatrix matrix = new ConfusionMatrix
+            (
+                truePositives:  70,
+                trueNegatives:  95,
+                falsePositives:  5, 
+                falseNegatives: 30
+            );
+
+            Assert.AreEqual(70, matrix.TruePositives);
+            Assert.AreEqual(5, matrix.FalsePositives);
+            Assert.AreEqual(95, matrix.TrueNegatives);
+            Assert.AreEqual(30, matrix.FalseNegatives);
 
             // Prevalence	    0.500	0.100	0.011
             // Overall Power	0.500	0.900	0.989
@@ -270,7 +281,7 @@ namespace Accord.Tests.Statistics
             int truePositives = 1;
             int trueNegatives = 6;
 
-            Assert.AreEqual(predicted.Length, matrix.Observations);
+            Assert.AreEqual(predicted.Length, matrix.Samples);
             Assert.AreEqual(8, matrix.ActualNegatives);
             Assert.AreEqual(2, matrix.ActualPositives);
             Assert.AreEqual(7, matrix.PredictedNegatives);

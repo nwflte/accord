@@ -28,6 +28,8 @@ namespace Accord.Tests.MachineLearning
     using Accord.Statistics.Kernels;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System.IO;
+    using Accord.Math;
+    using Accord.Math.Formats;
 
     [TestClass()]
     public class SupportVectorMachineTest
@@ -204,6 +206,41 @@ namespace Accord.Tests.MachineLearning
         }
 
         [TestMethod()]
+        public void ComputeTest4()
+        {
+            // XOR
+            double[][] inputs = training.Submatrix(null, 0, 3);
+
+            int[] labels = Tools.Scale(0, 1, -1, 1, training.GetColumn(4)).ToInt32();
+
+            KernelSupportVectorMachine machine = new KernelSupportVectorMachine(
+                Gaussian.Estimate(inputs), inputs[0].Length);
+
+            SequentialMinimalOptimization smo = new SequentialMinimalOptimization(machine, inputs, labels);
+
+            smo.Complexity = 10;
+
+            double error = smo.Run();
+
+            Assert.AreEqual(0.19047619047619047, error);
+            Assert.AreEqual(265.78327637381551, (machine.Kernel as Gaussian).Sigma);
+            Assert.AreEqual(29, machine.SupportVectors.Length);
+
+            double[] expectedWeights =
+            {
+                1.65717694716503, 1.20005456611466, -5.70824245415995, 10,
+                10, -2.38755497916487, 10, -8.15723436363058, 10, -10, 10,
+                10, -0.188634936781317, -5.4354281009458, -8.48341139483265,
+                -5.91105702760141, -5.71489190049223, 10, -2.37289205235858,
+                -3.33031262413522, -1.97545116517677, 10, -10, -9.563186799279,
+                -3.917941544845, -0.532584110773336, 4.81951847548326, 0.343668292727091,
+                -4.34159482731336
+            };
+
+            Assert.IsTrue(expectedWeights.IsEqual(machine.Weights, 1e-6));
+        }
+
+        [TestMethod()]
         public void LoadTest1()
         {
             MemoryStream stream = new MemoryStream(Properties.Resources.SVM_014);
@@ -213,5 +250,55 @@ namespace Accord.Tests.MachineLearning
             Assert.IsFalse(svm.IsProbabilistic);
             Assert.AreEqual(351, svm.MachinesCount);
         }
+
+
+        private static double[][] training = new double[][]
+        {
+                #region sample data
+                new double[] { 0567, 0568, 0001, 0002,    0 },
+                new double[] { 0839, 1043, 0204, 0011,    1 },
+                new double[] { 0506, 1400, 0894, 0020,    1 },
+                new double[] { 0066, 0066, 0000, 0001,    0 },
+                new double[] { 0208, 0223, 0015, 0005,    1 },
+                new double[] { 0069, 0069, 0000, 0001,    0 },
+                new double[] { 0417, 0458, 0041, 0008,    1 },
+                new double[] { 0078, 0078, 0000, 0001,    0 },
+                new double[] { 0137, 0150, 0013, 0004,    1 },
+                new double[] { 0108, 0136, 0028, 0002,    0 },
+                new double[] { 0235, 0294, 0059, 0005,    0 },
+                new double[] { 0350, 0511, 0161, 0010,    1 },
+                new double[] { 0271, 0418, 0147, 0003,    0 },
+                new double[] { 0195, 0217, 0022, 0010,    1 },
+                new double[] { 0259, 0267, 0008, 0006,    1 },
+                new double[] { 0298, 0372, 0074, 0007,    1 },
+                new double[] { 0709, 0994, 0285, 0016,    1 },
+                new double[] { 1041, 1348, 0307, 0039,    1 },
+                new double[] { 0075, 0075, 0000, 0001,    0 },
+                new double[] { 0529, 0597, 0068, 0002,    0 },
+                new double[] { 0509, 0584, 0075, 0002,    0 },
+                new double[] { 0289, 0289, 0000, 0001,    0 },
+                new double[] { 0110, 0125, 0015, 0004,    0 },
+                new double[] { 0020, 0020, 0000, 0001,    0 },
+                new double[] { 0295, 0295, 0000, 0001,    0 },
+                new double[] { 0250, 0283, 0033, 0002,    0 },
+                new double[] { 0031, 0044, 0013, 0002,    0 },
+                new double[] { 0178, 0198, 0020, 0003,    0 },
+                new double[] { 0835, 0848, 0013, 0005,    0 },
+                new double[] { 0132, 0178, 0046, 0002,    0 },
+                new double[] { 0429, 0632, 0203, 0004,    0 },
+                new double[] { 0740, 0894, 0154, 0005,    0 },
+                new double[] { 0056, 0065, 0009, 0003,    1 },
+                new double[] { 0071, 0071, 0000, 0001,    0 },
+                new double[] { 0248, 0321, 0073, 0004,    0 },
+                new double[] { 0034, 0034, 0000, 0001,    0 },
+                new double[] { 0589, 0652, 0063, 0004,    0 },
+                new double[] { 0124, 0134, 0010, 0002,    0 },
+                new double[] { 0426, 0427, 0001, 0002,    0 },
+                new double[] { 0030, 0030, 0000, 0001,    0 },
+                new double[] { 0023, 0023, 0000, 0001,    0 },
+                new double[] { 0499, 0499, 0000, 0001,    0 },
+                #endregion
+        };
+
     }
 }

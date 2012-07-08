@@ -136,6 +136,8 @@ namespace Accord.Tests.Math
         [TestMethod()]
         public void lbfgsTest2()
         {
+            Accord.Math.Tools.SetupGenerator(0);
+
             // Suppose we would like to find the minimum of the function
             // 
             //   f(x,y)  =  -exp{-(x-1)²} - exp{-(y-2)²/2}

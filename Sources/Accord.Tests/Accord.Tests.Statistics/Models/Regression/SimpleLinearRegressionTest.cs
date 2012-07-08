@@ -118,7 +118,7 @@ namespace Accord.Tests.Statistics
             double eSlope = -0.264706;
             double eIntercept = 50.588235;
 
-            Assert.AreEqual(28.0882352941192, y);
+            Assert.AreEqual(28.088235294117649, y);
             Assert.AreEqual(eSlope, s, 0.0001);
             Assert.AreEqual(eIntercept, c, 0.0001);
         }

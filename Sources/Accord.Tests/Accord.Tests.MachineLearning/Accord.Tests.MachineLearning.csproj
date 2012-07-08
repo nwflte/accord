@@ -100,6 +100,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BootstrapTest.cs" />
     <Compile Include="DecisionTrees\C45LearningTest.cs" />
     <Compile Include="DecisionTrees\DecisionTreeCompilerTest.cs" />
     <Compile Include="Bayes\NaiveBayes`1Test.cs" />
@@ -110,6 +111,7 @@
     <Compile Include="DecisionTrees\ID3LearningTest.cs" />
     <Compile Include="Kernels\DynamicalTimeWarpingTest.cs" />
     <Compile Include="KMeansTest.cs" />
+    <Compile Include="KModesTest.cs" />
     <Compile Include="KNearestNeighborTest.cs" />
     <Compile Include="NaiveBayesTest.cs" />
     <Compile Include="VectorMachines\SupportVectorReductionTest.cs" />

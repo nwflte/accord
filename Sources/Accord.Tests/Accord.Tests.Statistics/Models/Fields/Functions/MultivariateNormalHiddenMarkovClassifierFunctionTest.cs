@@ -199,10 +199,12 @@ namespace Accord.Tests.Statistics.Models.Fields
 
             MultivariateNormalDistribution density = new MultivariateNormalDistribution(2);
 
-            string[] labels = { "1", "2", "3", "4", "5", "6" };
-            var classifier = new HiddenMarkovClassifier<MultivariateNormalDistribution>(labels.Length,
-            new Forward(states), density, names: labels);
+            var classifier = new HiddenMarkovClassifier<MultivariateNormalDistribution>(6,
+                new Forward(states), density);
 
+            string[] labels = { "1", "2", "3", "4", "5", "6" };
+            for (int i = 0; i < classifier.Models.Length; i++)
+                classifier.Models[i].Tag = labels[i];
 
             // Create the learning algorithm for the ensemble classifier
             var teacher = new HiddenMarkovClassifierLearning<MultivariateNormalDistribution>(classifier,
@@ -378,7 +380,7 @@ namespace Accord.Tests.Statistics.Models.Fields
                     {
                         for (int j = 0; j < model[c].States; j++)
                         {
-                            expected =  Math.Exp(model[c].Transitions[i, j]) * model[c].Emissions[j].ProbabilityDensityFunction(x[t]);
+                            expected = Math.Exp(model[c].Transitions[i, j]) * model[c].Emissions[j].ProbabilityDensityFunction(x[t]);
                             actual = Math.Exp(target.Factors[c].Compute(i, j, x, t, c));
                             Assert.AreEqual(expected, actual, 1e-6);
                             Assert.IsFalse(double.IsNaN(actual));

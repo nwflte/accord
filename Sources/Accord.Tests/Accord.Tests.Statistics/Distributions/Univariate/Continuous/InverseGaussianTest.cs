@@ -24,6 +24,7 @@ namespace Accord.Tests.Statistics
 {
     using Accord.Statistics.Distributions.Univariate;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Accord.Controls;
 
     [TestClass()]
     public class InverseGaussianTest
@@ -149,6 +150,50 @@ namespace Accord.Tests.Statistics
             }
         }
 
+
+        [TestMethod()]
+        public void GenerateTest()
+        {
+            InverseGaussianDistribution target = new InverseGaussianDistribution(1, 1);
+
+            double[] samples = target.Generate(1000000);
+
+            InverseGaussianDistribution actual = new InverseGaussianDistribution(5, 5);
+            actual.Fit(samples);
+
+            Assert.AreEqual(1, actual.Mean, 0.01);
+            Assert.AreEqual(1, actual.Shape, 0.01);
+        }
+
+        [TestMethod()]
+        public void GenerateTest2()
+        {
+            InverseGaussianDistribution target = new InverseGaussianDistribution(5, 2);
+
+            double[] samples = target.Generate(1000000);
+
+            var actual = InverseGaussianDistribution.Estimate(samples);
+            actual.Fit(samples);
+
+            Assert.AreEqual(5, actual.Mean, 0.01);
+            Assert.AreEqual(2, actual.Shape, 0.01);
+        }
+
+        [TestMethod()]
+        public void GenerateTest3()
+        {
+            InverseGaussianDistribution target = new InverseGaussianDistribution(4, 2);
+
+            double[] samples = new double[1000000];
+            for (int i = 0; i < samples.Length; i++)
+                samples[i] = target.Generate();
+
+            var actual = InverseGaussianDistribution.Estimate(samples);
+            actual.Fit(samples);
+
+            Assert.AreEqual(4, actual.Mean, 0.01);
+            Assert.AreEqual(2, actual.Shape, 0.01);
+        }
 
     }
 }

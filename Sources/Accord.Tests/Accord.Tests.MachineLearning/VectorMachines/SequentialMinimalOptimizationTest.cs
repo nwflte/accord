@@ -25,6 +25,7 @@ namespace Accord.Tests.MachineLearning
     using System;
     using Accord.MachineLearning.VectorMachines;
     using Accord.MachineLearning.VectorMachines.Learning;
+    using Accord.Math;
     using Accord.Statistics.Kernels;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -108,7 +109,7 @@ namespace Accord.Tests.MachineLearning
             learn.Run();
 
 
-            double[] output = machine.Compute(inputs);
+            int[] output = inputs.Apply(p => machine.Compute(p));
 
             for (int i = 0; i < output.Length; i++)
                 Assert.AreEqual(System.Math.Sign(xor[i]), System.Math.Sign(output[i]));
@@ -145,7 +146,7 @@ namespace Accord.Tests.MachineLearning
             learn.Run();
 
 
-            double[] output = machine.Compute(inputs);
+            int[] output = inputs.Apply(p => machine.Compute(p));
 
             for (int i = 0; i < output.Length; i++)
             {

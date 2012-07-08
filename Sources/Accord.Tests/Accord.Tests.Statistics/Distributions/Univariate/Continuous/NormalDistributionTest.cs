@@ -293,5 +293,35 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(target.Variance, clone.Variance);
         }
 
+
+        [TestMethod()]
+        public void GenerateTest()
+        {
+            NormalDistribution target = new NormalDistribution(2, 5);
+
+            double[] samples = target.Generate(1000000);
+
+            var actual = NormalDistribution.Estimate(samples);
+            actual.Fit(samples);
+
+            Assert.AreEqual(2, actual.Mean, 0.01);
+            Assert.AreEqual(5, actual.StandardDeviation, 0.01);
+        }
+
+        [TestMethod()]
+        public void GenerateTest2()
+        {
+            NormalDistribution target = new NormalDistribution(4, 2);
+
+            double[] samples = new double[1000000];
+            for (int i = 0; i < samples.Length; i++)
+                samples[i] = target.Generate();
+
+            var actual = NormalDistribution.Estimate(samples);
+            actual.Fit(samples);
+
+            Assert.AreEqual(4, actual.Mean, 0.01);
+            Assert.AreEqual(2, actual.StandardDeviation, 0.01);
+        }
     }
 }

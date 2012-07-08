@@ -82,7 +82,7 @@ namespace Accord.Tests.Statistics
         {
             double a = 1;
             double b = 5;
-            ContinuousUniformDistribution target = new ContinuousUniformDistribution(a, b);
+            UniformContinuousDistribution target = new UniformContinuousDistribution(a, b);
             Assert.AreEqual(target.Minimum, a);
             Assert.AreEqual(target.Maximum, b);
         }
@@ -94,7 +94,7 @@ namespace Accord.Tests.Statistics
             double b = 5;
             
             bool thrown = false;
-            try { ContinuousUniformDistribution target = new ContinuousUniformDistribution(a, b); }
+            try { UniformContinuousDistribution target = new UniformContinuousDistribution(a, b); }
             catch (ArgumentOutOfRangeException) { thrown = true; }
             
             Assert.IsTrue(thrown);
@@ -105,7 +105,7 @@ namespace Accord.Tests.Statistics
         {
             double a = 5;
             double b = 10;
-            ContinuousUniformDistribution target = new ContinuousUniformDistribution(a, b);
+            UniformContinuousDistribution target = new UniformContinuousDistribution(a, b);
             double actual = target.Variance;
             double expected = System.Math.Pow(b - a, 2) / 12.0;
             Assert.AreEqual(expected, actual);
@@ -116,7 +116,7 @@ namespace Accord.Tests.Statistics
         {
             double a = -1;
             double b = 5;
-            ContinuousUniformDistribution target = new ContinuousUniformDistribution(a, b);
+            UniformContinuousDistribution target = new UniformContinuousDistribution(a, b);
             double expected = (a + b) / 2.0;
             double actual = target.Mean;
             Assert.AreEqual(expected, actual);
@@ -127,7 +127,7 @@ namespace Accord.Tests.Statistics
         {
             double a = 1;
             double b = 6;
-            ContinuousUniformDistribution target = new ContinuousUniformDistribution(a, b);
+            UniformContinuousDistribution target = new UniformContinuousDistribution(a, b);
             double expected = System.Math.Log(b - a);
             double actual = target.Entropy;
             Assert.AreEqual(expected, actual);
@@ -138,7 +138,7 @@ namespace Accord.Tests.Statistics
         {
             double a = -5;
             double b = 11;
-            ContinuousUniformDistribution target = new ContinuousUniformDistribution(a, b);
+            UniformContinuousDistribution target = new UniformContinuousDistribution(a, b);
             double x = 4.2;
             double expected = 0.0625;
             double actual = target.ProbabilityDensityFunction(x);
@@ -170,7 +170,7 @@ namespace Accord.Tests.Statistics
         {
             double a = -5;
             double b = 11;
-            ContinuousUniformDistribution target = new ContinuousUniformDistribution(a, b);
+            UniformContinuousDistribution target = new UniformContinuousDistribution(a, b);
             double x = 4.2;
             double expected = System.Math.Log(0.0625);
             double actual = target.LogProbabilityDensityFunction(x);
@@ -200,7 +200,7 @@ namespace Accord.Tests.Statistics
         [TestMethod()]
         public void FitTest()
         {
-            ContinuousUniformDistribution target = new ContinuousUniformDistribution();
+            UniformContinuousDistribution target = new UniformContinuousDistribution();
             double[] observations = { -1, 2, 5, 2, 3, 1, 4 };
             double[] weights = null;
             target.Fit(observations, weights);
@@ -213,7 +213,7 @@ namespace Accord.Tests.Statistics
         {
             double a = -2;
             double b = 2;
-            ContinuousUniformDistribution target = new ContinuousUniformDistribution(a, b);
+            UniformContinuousDistribution target = new UniformContinuousDistribution(a, b);
 
             double actual;
 
@@ -233,17 +233,14 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(1, actual);
         }
 
-        /// <summary>
-        ///A test for Clone
-        ///</summary>
         [TestMethod()]
         public void CloneTest()
         {
             double a = 12; 
             double b = 72; 
-            ContinuousUniformDistribution target = new ContinuousUniformDistribution(a, b);
+            UniformContinuousDistribution target = new UniformContinuousDistribution(a, b);
             
-            ContinuousUniformDistribution clone = (ContinuousUniformDistribution)target.Clone();
+            UniformContinuousDistribution clone = (UniformContinuousDistribution)target.Clone();
 
             Assert.AreNotSame(target, clone);
             Assert.AreEqual(target.Entropy, clone.Entropy);
@@ -252,5 +249,48 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(target.StandardDeviation, clone.StandardDeviation);
             Assert.AreEqual(target.Variance, clone.Variance);
         }
+
+
+        [TestMethod()]
+        public void GenerateTest()
+        {
+            UniformContinuousDistribution target = new UniformContinuousDistribution(0, 2);
+
+            double[] samples = target.Generate(1000000);
+
+            for (int i = 0; i < samples.Length; i++)
+            {
+                Assert.IsTrue(samples[i] >= 0);
+                Assert.IsTrue(samples[i] <= 2);
+            }
+
+            UniformContinuousDistribution newTarget = new UniformContinuousDistribution();
+            newTarget.Fit(samples);
+
+            Assert.AreEqual(0, newTarget.Minimum, 1e-5);
+            Assert.AreEqual(2, newTarget.Maximum, 1e-5);
+        }
+
+        [TestMethod()]
+        public void GenerateTest2()
+        {
+            UniformContinuousDistribution target = new UniformContinuousDistribution(0, 2);
+
+            double[] samples = new double[1000000];
+
+            for (int i = 0; i < samples.Length; i++)
+            {
+                samples[i] = target.Generate();
+                Assert.IsTrue(samples[i] >= 0);
+                Assert.IsTrue(samples[i] <= 2);
+            }
+
+            UniformContinuousDistribution newTarget = new UniformContinuousDistribution();
+            newTarget.Fit(samples);
+
+            Assert.AreEqual(0, newTarget.Minimum, 1e-5);
+            Assert.AreEqual(2, newTarget.Maximum, 1e-5);
+        }
+
     }
 }

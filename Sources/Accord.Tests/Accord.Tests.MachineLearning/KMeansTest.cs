@@ -20,17 +20,12 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.MachineLearning;
-using Accord.Math;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Accord.Tests.MachineLearning
 {
-
-
-    /// <summary>
-    ///This is a test class for KMeansTest and is intended
-    ///to contain all KMeansTest Unit Tests
-    ///</summary>
+    using Accord.MachineLearning;
+    using Accord.Math;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    
     [TestClass()]
     public class KMeansTest
     {
@@ -38,10 +33,6 @@ namespace Accord.Tests.MachineLearning
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -85,9 +76,6 @@ namespace Accord.Tests.MachineLearning
         #endregion
 
 
-        /// <summary>
-        ///A test for KMeans Constructor
-        ///</summary>
         [TestMethod()]
         public void KMeansConstructorTest()
         {
@@ -108,6 +96,8 @@ namespace Accord.Tests.MachineLearning
                 new double[] { 15,  5,  6 },
                 new double[] { 10,  5,  6 },
             };
+
+            double[][] orig = observations.MemberwiseClone();
 
             // Create a new K-Means algorithm with 3 clusters 
             KMeans kmeans = new KMeans(3);
@@ -134,13 +124,13 @@ namespace Accord.Tests.MachineLearning
             Assert.AreNotEqual(labels[0], labels[6]);
 
 
-            int[] labels2 = kmeans.Classify(observations);
+            int[] labels2 = kmeans.Nearest(observations);
             Assert.IsTrue(labels.IsEqual(labels2));
+
+            // the data must not have changed!
+            Assert.IsTrue(orig.IsEqual(observations));
         }
 
-        /// <summary>
-        ///A test for KMeans Constructor
-        ///</summary>
         [TestMethod()]
         public void KMeansConstructorTest2()
         {
@@ -199,9 +189,6 @@ namespace Accord.Tests.MachineLearning
             Assert.IsTrue(differ);
         }
 
-        /// <summary>
-        ///A test for KMeans Constructor
-        ///</summary>
         [TestMethod()]
         public void KMeansConstructorTest3()
         {
