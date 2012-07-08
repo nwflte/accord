@@ -125,8 +125,8 @@
       <NamespaceSummaryItem name="Accord.Statistics.Formats" isDocumented="True">Contains readers for specialized formats, such as LibSVM's sparse format and Microsoft (c) Excel formats.</NamespaceSummaryItem>
       <NamespaceSummaryItem name="Accord.Statistics.Kernels.Sparse" isDocumented="True">Contains kernel function able to deal with sparse data in LibSVM's format.</NamespaceSummaryItem>
       <NamespaceSummaryItem name="Accord.Statistics.Links" isDocumented="True">Contains link functions for generalized linear models, such as the Logit, the Probit and Cauchit link functions.</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="Accord.Statistics.Models.Fields.Features" isDocumented="False">Contains CRF features such as Emission, First and Second Moments</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="Accord.Statistics.Models.Fields.Functions" isDocumented="False" />
+      <NamespaceSummaryItem name="Accord.Statistics.Models.Fields.Features" isDocumented="True">Contains CRF feature functions such as Emission, Transition, First and Second Moments features.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Accord.Statistics.Models.Fields.Functions" isDocumented="True">Contains potential functions for CRFs and HCRFs.</NamespaceSummaryItem>
       <NamespaceSummaryItem name="Accord.Statistics.Models.Fields.Learning" isDocumented="True">Contains learning algorithms for CRFs and HCRFs, such as Conjugate Gradient, L-BFGS and RProp-based learning.</NamespaceSummaryItem>
       <NamespaceSummaryItem name="Accord.Statistics.Models.Markov.Learning" isDocumented="True">Contains learning algorithms such as Baum-Welch.</NamespaceSummaryItem>
       <NamespaceSummaryItem name="Accord.Statistics.Models.Markov.Topology" isDocumented="True">Contains topologies for HMMs, such as Forward-only and Ergodic topologies.</NamespaceSummaryItem>
@@ -235,7 +235,7 @@
     <PresentationStyle>vs2005</PresentationStyle>
     <SyntaxFilters>CSharp, VisualBasic</SyntaxFilters>
     <NamingMethod>MemberName</NamingMethod>
-    <HelpFileVersion>2.6.1.0</HelpFileVersion>
+    <HelpFileVersion>2.7.0.0</HelpFileVersion>
     <FrameworkVersion>.NET 4.0.30319</FrameworkVersion>
     <VisibleItems>Attributes, InheritedMembers, InheritedFrameworkMembers, Protected, SealedProtected</VisibleItems>
     <PlugInNamespaces>ms.vsipcc+, ms.vsexpresscc+</PlugInNamespaces>
@@ -247,14 +247,13 @@
     <Language>en-US</Language>
     <ContentPlacement>AboveNamespaces</ContentPlacement>
     <PlugInConfigurations>
-      <PlugInConfig id="Hierarchical Table of Contents" enabled="True" xmlns="">
+      <PlugInConfig id="Hierarchical Table of Contents" enabled="True">
         <configuration>
           <toc minParts="2" insertBelow="False" />
         </configuration>
       </PlugInConfig>
     </PlugInConfigurations>
-    <HeaderText>
-    </HeaderText>
+    <HeaderText>&amp;lt%3bdiv style=&amp;quot%3bfloat: right%3b margin-right: 25px%3b margin-bottom: 25px%3b margin-left: 25px%3b&amp;quot%3b&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bhttp://accord.googlecode.com/svn/docs/Index.html&amp;quot%3b target=&amp;quot%3b_top&amp;quot%3b&amp;gt%3b&amp;amp%3blt%3b&amp;amp%3blt%3b Table of Contents&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/div&amp;gt%3b</HeaderText>
     <HelpAttributes />
     <IndentHtml>True</IndentHtml>
   </PropertyGroup>
@@ -266,6 +265,8 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
   </PropertyGroup>
   <ItemGroup>
+    <Folder Include="images\" />
+    <Folder Include="images\" />
     <Folder Include="diagrams\classes\" />
     <Folder Include="resources\" />
     <Folder Include="diagrams\" />
@@ -357,6 +358,54 @@
     <Content Include="resources\Accord.NET (icon large).png">
       <ImageId>Accord.NET (icon large)</ImageId>
       <AlternateText>Accord.NET (icon large)</AlternateText>
+    </Content>
+    <Content Include="images\one-way-anova.png">
+      <ImageId>one-way-anova</ImageId>
+      <AlternateText>one-way-anova</AlternateText>
+    </Content>
+    <Content Include="images\scatterplot-box.png">
+      <ImageId>scatterplot-box</ImageId>
+      <AlternateText>scatterplot-box</AlternateText>
+    </Content>
+    <Content Include="images\image-to-matrix-string.png">
+      <ImageId>image-to-matrix-string</ImageId>
+      <AlternateText>image-to-matrix-string</AlternateText>
+    </Content>
+    <Content Include="images\image-to-matrix-table.png">
+      <ImageId>image-to-matrix-table</ImageId>
+      <AlternateText>image-to-matrix-table</AlternateText>
+    </Content>
+    <Content Include="images\image-to-matrix.png">
+      <ImageId>image-to-matrix</ImageId>
+      <AlternateText>image-to-matrix</AlternateText>
+    </Content>
+    <Content Include="images\matrix-to-image.png">
+      <ImageId>matrix-to-image</ImageId>
+      <AlternateText>matrix-to-image</AlternateText>
+    </Content>
+    <Content Include="diagrams\classes\Accord.Imaging.Converters.png">
+      <ImageId>Accord.Imaging.Converters</ImageId>
+      <AlternateText>Accord.Imaging.Converters</AlternateText>
+    </Content>
+    <Content Include="diagrams\classes\Accord.Statistics.Analysis.png">
+      <ImageId>Accord.Statistics.Analysis</ImageId>
+      <AlternateText>Accord.Statistics.Analysis</AlternateText>
+    </Content>
+    <Content Include="diagrams\classes\Accord.Statistics.Distributions.png">
+      <ImageId>Accord.Statistics.Distributions</ImageId>
+      <AlternateText>Accord.Statistics.Distributions</AlternateText>
+    </Content>
+    <Content Include="diagrams\classes\Accord.Statistics.Kernels.png">
+      <ImageId>Accord.Statistics.Kernels</ImageId>
+      <AlternateText>Accord.Statistics.Kernels</AlternateText>
+    </Content>
+    <Content Include="diagrams\classes\Accord.Statistics.Models.png">
+      <ImageId>Accord.Statistics.Models</ImageId>
+      <AlternateText>Accord.Statistics.Models</AlternateText>
+    </Content>
+    <Content Include="diagrams\classes\Accord.Statistics.Testing.png">
+      <ImageId>Accord.Statistics.Testing</ImageId>
+      <AlternateText>Accord.Statistics.Testing</AlternateText>
     </Content>
     <Image Include="resources\Accord.NET.png">
       <CopyToMedia>True</CopyToMedia>
