@@ -2,10 +2,10 @@
   <head>
     <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
     <META NAME="save" CONTENT="history" />
-    <title>Solve Method (Double[,], Double[,])</title>
+    <title>Solve Method (Double[,], Double[,], Boolean)</title>
     <meta name="Language" content="en-us" />
-    <meta name="Microsoft.Help.Id" content="M:Accord.Math.Matrix.Solve(System.Double[0:,0:],System.Double[0:,0:])" />
-    <meta name="Description" content="Returns the LHS solution matrix if the matrix is square or the least squares solution otherwise." />
+    <meta name="Microsoft.Help.Id" content="M:Accord.Math.Matrix.Solve(System.Double[0:,0:],System.Double[0:,0:],System.Boolean)" />
+    <meta name="Description" content="Returns the solution matrix if the matrix is square or the least squares solution otherwise." />
     <meta name="Microsoft.Help.ContentType" content="Reference" />
     <link rel="stylesheet" type="text/css" href="../styles/Presentation.css" />
     <link rel="stylesheet" type="text/css" href="ms-help://Hx/HxRuntime/HxLink.css" />
@@ -20,10 +20,10 @@
     <meta name="file" content="M_Accord_Math_Matrix_Solve" />
     <meta name="guid" content="M_Accord_Math_Matrix_Solve" />
     <xml>
-      <MSHelp:Attr Name="AssetID" Value="M:Accord.Math.Matrix.Solve(System.Double[0:,0:],System.Double[0:,0:])" />
-      <MSHelp:TOCTitle Title="Solve Method (Double[,], Double[,])" />
-      <MSHelp:RLTitle Title="Matrix.Solve Method (Double[,], Double[,]) (Accord.Math)" />
-      <MSHelp:Keyword Index="A" Term="M:Accord.Math.Matrix.Solve(System.Double[0:,0:],System.Double[0:,0:])" />
+      <MSHelp:Attr Name="AssetID" Value="M:Accord.Math.Matrix.Solve(System.Double[0:,0:],System.Double[0:,0:],System.Boolean)" />
+      <MSHelp:TOCTitle Title="Solve Method (Double[,], Double[,], Boolean)" />
+      <MSHelp:RLTitle Title="Matrix.Solve Method (Double[,], Double[,], Boolean) (Accord.Math)" />
+      <MSHelp:Keyword Index="A" Term="M:Accord.Math.Matrix.Solve(System.Double[0:,0:],System.Double[0:,0:],System.Boolean)" />
       <MSHelp:Attr Name="APIType" Value="Managed" />
       <MSHelp:Attr Name="APILocation" Value="Accord.Math.dll" />
       <MSHelp:Attr Name="APIName" Value="Accord.Math.Matrix.Solve" />
@@ -32,7 +32,7 @@
       <MSHelp:Attr Name="Locale" Value="en-us" />
       <MSHelp:Attr Name="TopicType" Value="kbSyntax" />
       <MSHelp:Attr Name="TopicType" Value="apiref" />
-      <MSHelp:Attr Name="Abstract" Value="Returns the LHS solution matrix if the matrix is square or the least squares solution otherwise." />
+      <MSHelp:Attr Name="Abstract" Value="Returns the solution matrix if the matrix is square or the least squares solution otherwise." />
       <MSHelp:Attr Name="AssemblyVersion" Value="2.7.0.0" />
     </xml>
   </head>
@@ -78,7 +78,7 @@
               </tr>
               <tr id="headerTableRow2">
                 <td align="left">
-                  <span id="nsrTitle">Matrix<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>Solve Method (<span class="languageSpecificText"><span class="cpp">array&lt;</span></span>Double<span class="languageSpecificText"><span class="cpp">,2&gt;</span><span class="cs">[,]</span><span class="vb">(,)</span><span class="nu">[,]</span><span class="fs">[,]</span></span>, <span class="languageSpecificText"><span class="cpp">array&lt;</span></span>Double<span class="languageSpecificText"><span class="cpp">,2&gt;</span><span class="cs">[,]</span><span class="vb">(,)</span><span class="nu">[,]</span><span class="fs">[,]</span></span>)</span>
+                  <span id="nsrTitle">Matrix<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>Solve Method (<span class="languageSpecificText"><span class="cpp">array&lt;</span></span>Double<span class="languageSpecificText"><span class="cpp">,2&gt;</span><span class="cs">[,]</span><span class="vb">(,)</span><span class="nu">[,]</span><span class="fs">[,]</span></span>, <span class="languageSpecificText"><span class="cpp">array&lt;</span></span>Double<span class="languageSpecificText"><span class="cpp">,2&gt;</span><span class="cs">[,]</span><span class="vb">(,)</span><span class="nu">[,]</span><span class="fs">[,]</span></span>, Boolean)</span>
                 </td>
               </tr>
               <tr id="headerTableRow3">
@@ -107,18 +107,24 @@
           </div>
         </span>
         <div class="summary">
-              Returns the LHS solution matrix if the matrix is square or the least squares solution otherwise.
+              Returns the solution matrix if the matrix is square or the least squares solution otherwise.
             </div>
         <p />
         <b>Namespace:</b> <a href="N_Accord_Math.htm">Accord.Math</a><br /><b>Assembly:</b> <span sdata="assembly">Accord.Math</span> (in Accord.Math.dll) Version: 2.7.0.0 (2.7.0.0)<h1 class="heading"><span onclick="ExpandCollapse(syntaxToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(syntaxToggle, event)" tabindex="0"><img id="syntaxToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />Syntax</span></h1><div id="syntaxSection" class="section" name="collapseableSection" style=""><div id="syntaxCodeBlocks" class="code"><span codeLanguage="CSharp"><table><tr><th>C#</th></tr><tr><td><pre xml:space="preserve"><span class="keyword">public</span> <span class="keyword">static</span> <a href="http://msdn2.microsoft.com/en-us/library/643eft0t" target="_blank">double</a>[,] <span class="identifier">Solve</span>(
 	<span class="keyword">this</span> <a href="http://msdn2.microsoft.com/en-us/library/643eft0t" target="_blank">double</a>[,] <span class="parameter">matrix</span>,
-	<a href="http://msdn2.microsoft.com/en-us/library/643eft0t" target="_blank">double</a>[,] <span class="parameter">rightSide</span>
+	<a href="http://msdn2.microsoft.com/en-us/library/643eft0t" target="_blank">double</a>[,] <span class="parameter">rightSide</span>,
+	<a href="http://msdn2.microsoft.com/en-us/library/a28wyd50" target="_blank">bool</a> <span class="parameter">leastSquares</span>
 )</pre></td></tr></table></span><span codeLanguage="VisualBasicDeclaration"><table><tr><th>Visual Basic</th></tr><tr><td><pre xml:space="preserve">&lt;<a href="http://msdn2.microsoft.com/en-us/library/bb504090" target="_blank">ExtensionAttribute</a>&gt; _
 <span class="keyword">Public</span> <span class="keyword">Shared</span> <span class="keyword">Function</span> <span class="identifier">Solve</span> ( _
 	<span class="parameter">matrix</span> <span class="keyword">As</span> <a href="http://msdn2.microsoft.com/en-us/library/643eft0t" target="_blank">Double</a>(,), _
-	<span class="parameter">rightSide</span> <span class="keyword">As</span> <a href="http://msdn2.microsoft.com/en-us/library/643eft0t" target="_blank">Double</a>(,) _
-) <span class="keyword">As</span> <a href="http://msdn2.microsoft.com/en-us/library/643eft0t" target="_blank">Double</a>(,)</pre></td></tr></table></span></div><div id="parameters"><h4 class="subHeading">Parameters</h4><dl paramName="matrix"><dt><span class="parameter">matrix</span></dt><dd>Type: <span class="languageSpecificText"><span class="cpp">array&lt;</span></span><a href="http://msdn2.microsoft.com/en-us/library/643eft0t" target="_blank">System<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>Double</a><span class="languageSpecificText"><span class="cpp">,2&gt;</span><span class="cs">[,]</span><span class="vb">(,)</span><span class="nu">[,]</span><span class="fs">[,]</span></span><br /></dd></dl><dl paramName="rightSide"><dt><span class="parameter">rightSide</span></dt><dd>Type: <span class="languageSpecificText"><span class="cpp">array&lt;</span></span><a href="http://msdn2.microsoft.com/en-us/library/643eft0t" target="_blank">System<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>Double</a><span class="languageSpecificText"><span class="cpp">,2&gt;</span><span class="cs">[,]</span><span class="vb">(,)</span><span class="nu">[,]</span><span class="fs">[,]</span></span><br /></dd></dl></div><h4 class="subHeading">Usage Note</h4>In Visual Basic and C#, you can call this method as an instance method on any object of type . When you use instance method syntax to call this method, omit the first parameter. For more information, see <conceptualLink target="b8020aae-374d-46a9-bcb7-8cc2390b93b6" /> or <conceptualLink target="175ce3ff-9bbf-4e64-8421-faeb81a0bb51" />.</div><h1 class="heading"><span onclick="ExpandCollapse(remarksToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(remarksToggle, event)" tabindex="0"><img id="remarksToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />Remarks</span></h1><div id="remarksSection" class="section" name="collapseableSection" style="">
-              Please note that this does not check if the matrix is non-singular before attempting to solve.
+	<span class="parameter">rightSide</span> <span class="keyword">As</span> <a href="http://msdn2.microsoft.com/en-us/library/643eft0t" target="_blank">Double</a>(,), _
+	<span class="parameter">leastSquares</span> <span class="keyword">As</span> <a href="http://msdn2.microsoft.com/en-us/library/a28wyd50" target="_blank">Boolean</a> _
+) <span class="keyword">As</span> <a href="http://msdn2.microsoft.com/en-us/library/643eft0t" target="_blank">Double</a>(,)</pre></td></tr></table></span></div><div id="parameters"><h4 class="subHeading">Parameters</h4><dl paramName="matrix"><dt><span class="parameter">matrix</span></dt><dd>Type: <span class="languageSpecificText"><span class="cpp">array&lt;</span></span><a href="http://msdn2.microsoft.com/en-us/library/643eft0t" target="_blank">System<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>Double</a><span class="languageSpecificText"><span class="cpp">,2&gt;</span><span class="cs">[,]</span><span class="vb">(,)</span><span class="nu">[,]</span><span class="fs">[,]</span></span><br />The matrix for the linear problem.</dd></dl><dl paramName="rightSide"><dt><span class="parameter">rightSide</span></dt><dd>Type: <span class="languageSpecificText"><span class="cpp">array&lt;</span></span><a href="http://msdn2.microsoft.com/en-us/library/643eft0t" target="_blank">System<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>Double</a><span class="languageSpecificText"><span class="cpp">,2&gt;</span><span class="cs">[,]</span><span class="vb">(,)</span><span class="nu">[,]</span><span class="fs">[,]</span></span><br />The right side <span class="code">b</span>.</dd></dl><dl paramName="leastSquares"><dt><span class="parameter">leastSquares</span></dt><dd>Type: <a href="http://msdn2.microsoft.com/en-us/library/a28wyd50" target="_blank">System<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>Boolean</a><br />True to produce a solution even if the 
+              <span class="parameter">matrix</span> is singular; false otherwise. Default is false.</dd></dl></div><h4 class="subHeading">Usage Note</h4>In Visual Basic and C#, you can call this method as an instance method on any object of type . When you use instance method syntax to call this method, omit the first parameter. For more information, see <conceptualLink target="b8020aae-374d-46a9-bcb7-8cc2390b93b6" /> or <conceptualLink target="175ce3ff-9bbf-4e64-8421-faeb81a0bb51" />.</div><h1 class="heading"><span onclick="ExpandCollapse(remarksToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(remarksToggle, event)" tabindex="0"><img id="remarksToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />Remarks</span></h1><div id="remarksSection" class="section" name="collapseableSection" style="">
+              Please note that this does not check if the matrix is non-singular
+              before attempting to solve. If a least squares solution is desired
+              in case the matrix is singular, pass true to the <span class="parameter">leastSquares</span>
+              parameter when calling this function.
             </div><h1 class="heading"><span onclick="ExpandCollapse(seeAlsoToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(seeAlsoToggle, event)" tabindex="0"><img id="seeAlsoToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />See Also</span></h1><div id="seeAlsoSection" class="section" name="collapseableSection" style=""><div class="seeAlsoStyle"><a href="T_Accord_Math_Matrix.htm">Matrix Class</a></div><div class="seeAlsoStyle"><a href="Overload_Accord_Math_Matrix_Solve.htm">Solve Overload</a></div><div class="seeAlsoStyle"><a href="N_Accord_Math.htm">Accord.Math Namespace</a></div></div></div>
       <div id="footer">
         <div class="footerLine">

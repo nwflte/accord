@@ -2,9 +2,9 @@
   <head>
     <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
     <META NAME="save" CONTENT="history" />
-    <title>PooledVariance Method (Double[][])</title>
+    <title>PooledVariance Method (Boolean, Double[][])</title>
     <meta name="Language" content="en-us" />
-    <meta name="Microsoft.Help.Id" content="M:Accord.Statistics.Tools.PooledVariance(System.Double[][])" />
+    <meta name="Microsoft.Help.Id" content="M:Accord.Statistics.Tools.PooledVariance(System.Boolean,System.Double[][])" />
     <meta name="Description" content="Computes the pooled variance of the given values." />
     <meta name="Microsoft.Help.ContentType" content="Reference" />
     <link rel="stylesheet" type="text/css" href="../styles/Presentation.css" />
@@ -20,10 +20,10 @@
     <meta name="file" content="M_Accord_Statistics_Tools_PooledVariance" />
     <meta name="guid" content="M_Accord_Statistics_Tools_PooledVariance" />
     <xml>
-      <MSHelp:Attr Name="AssetID" Value="M:Accord.Statistics.Tools.PooledVariance(System.Double[][])" />
-      <MSHelp:TOCTitle Title="PooledVariance Method (Double[][])" />
-      <MSHelp:RLTitle Title="Tools.PooledVariance Method (Double[][]) (Accord.Statistics)" />
-      <MSHelp:Keyword Index="A" Term="M:Accord.Statistics.Tools.PooledVariance(System.Double[][])" />
+      <MSHelp:Attr Name="AssetID" Value="M:Accord.Statistics.Tools.PooledVariance(System.Boolean,System.Double[][])" />
+      <MSHelp:TOCTitle Title="PooledVariance Method (Boolean, Double[][])" />
+      <MSHelp:RLTitle Title="Tools.PooledVariance Method (Boolean, Double[][]) (Accord.Statistics)" />
+      <MSHelp:Keyword Index="A" Term="M:Accord.Statistics.Tools.PooledVariance(System.Boolean,System.Double[][])" />
       <MSHelp:Attr Name="APIType" Value="Managed" />
       <MSHelp:Attr Name="APILocation" Value="Accord.Statistics.dll" />
       <MSHelp:Attr Name="APIName" Value="Accord.Statistics.Tools.PooledVariance" />
@@ -78,7 +78,7 @@
               </tr>
               <tr id="headerTableRow2">
                 <td align="left">
-                  <span id="nsrTitle">Tools<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>PooledVariance Method (<span class="languageSpecificText"><span class="cpp">array&lt;</span></span><span class="languageSpecificText"><span class="cpp">array&lt;</span></span>Double<span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span><span class="fs">[]</span></span><span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span><span class="fs">[]</span></span>)</span>
+                  <span id="nsrTitle">Tools<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>PooledVariance Method (Boolean, <span class="languageSpecificText"><span class="cpp">array&lt;</span></span><span class="languageSpecificText"><span class="cpp">array&lt;</span></span>Double<span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span><span class="fs">[]</span></span><span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span><span class="fs">[]</span></span>)</span>
                 </td>
               </tr>
               <tr id="headerTableRow3">
@@ -111,10 +111,12 @@
             </div>
         <p />
         <b>Namespace:</b> <a href="N_Accord_Statistics.htm">Accord.Statistics</a><br /><b>Assembly:</b> <span sdata="assembly">Accord.Statistics</span> (in Accord.Statistics.dll) Version: 2.7.0.0 (2.7.0.0)<h1 class="heading"><span onclick="ExpandCollapse(syntaxToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(syntaxToggle, event)" tabindex="0"><img id="syntaxToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />Syntax</span></h1><div id="syntaxSection" class="section" name="collapseableSection" style=""><div id="syntaxCodeBlocks" class="code"><span codeLanguage="CSharp"><table><tr><th>C#</th></tr><tr><td><pre xml:space="preserve"><span class="keyword">public</span> <span class="keyword">static</span> <a href="http://msdn2.microsoft.com/en-us/library/643eft0t" target="_blank">double</a> <span class="identifier">PooledVariance</span>(
+	<a href="http://msdn2.microsoft.com/en-us/library/a28wyd50" target="_blank">bool</a> <span class="parameter">unbiased</span>,
 	<span class="keyword">params</span> <a href="http://msdn2.microsoft.com/en-us/library/643eft0t" target="_blank">double</a>[][] <span class="parameter">samples</span>
 )</pre></td></tr></table></span><span codeLanguage="VisualBasicDeclaration"><table><tr><th>Visual Basic</th></tr><tr><td><pre xml:space="preserve"><span class="keyword">Public</span> <span class="keyword">Shared</span> <span class="keyword">Function</span> <span class="identifier">PooledVariance</span> ( _
+	<span class="parameter">unbiased</span> <span class="keyword">As</span> <a href="http://msdn2.microsoft.com/en-us/library/a28wyd50" target="_blank">Boolean</a>, _
 	<span class="keyword">ParamArray</span> <span class="parameter">samples</span> <span class="keyword">As</span> <a href="http://msdn2.microsoft.com/en-us/library/643eft0t" target="_blank">Double</a>()() _
-) <span class="keyword">As</span> <a href="http://msdn2.microsoft.com/en-us/library/643eft0t" target="_blank">Double</a></pre></td></tr></table></span></div><div id="parameters"><h4 class="subHeading">Parameters</h4><dl paramName="samples"><dt><span class="parameter">samples</span></dt><dd>Type: <span class="languageSpecificText"><span class="cpp">array&lt;</span></span><span class="languageSpecificText"><span class="cpp">array&lt;</span></span><a href="http://msdn2.microsoft.com/en-us/library/643eft0t" target="_blank">System<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>Double</a><span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span><span class="fs">[]</span></span><span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span><span class="fs">[]</span></span><br />The grouped samples.</dd></dl></div></div><h1 class="heading"><span onclick="ExpandCollapse(seeAlsoToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(seeAlsoToggle, event)" tabindex="0"><img id="seeAlsoToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />See Also</span></h1><div id="seeAlsoSection" class="section" name="collapseableSection" style=""><div class="seeAlsoStyle"><a href="T_Accord_Statistics_Tools.htm">Tools Class</a></div><div class="seeAlsoStyle"><a href="Overload_Accord_Statistics_Tools_PooledVariance.htm">PooledVariance Overload</a></div><div class="seeAlsoStyle"><a href="N_Accord_Statistics.htm">Accord.Statistics Namespace</a></div></div></div>
+) <span class="keyword">As</span> <a href="http://msdn2.microsoft.com/en-us/library/643eft0t" target="_blank">Double</a></pre></td></tr></table></span></div><div id="parameters"><h4 class="subHeading">Parameters</h4><dl paramName="unbiased"><dt><span class="parameter">unbiased</span></dt><dd>Type: <a href="http://msdn2.microsoft.com/en-us/library/a28wyd50" target="_blank">System<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>Boolean</a><br />True to obtain an unbiased estimate; false otherwise. Default is true.</dd></dl><dl paramName="samples"><dt><span class="parameter">samples</span></dt><dd>Type: <span class="languageSpecificText"><span class="cpp">array&lt;</span></span><span class="languageSpecificText"><span class="cpp">array&lt;</span></span><a href="http://msdn2.microsoft.com/en-us/library/643eft0t" target="_blank">System<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>Double</a><span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span><span class="fs">[]</span></span><span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span><span class="fs">[]</span></span><br />The grouped samples.</dd></dl></div></div><h1 class="heading"><span onclick="ExpandCollapse(seeAlsoToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(seeAlsoToggle, event)" tabindex="0"><img id="seeAlsoToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />See Also</span></h1><div id="seeAlsoSection" class="section" name="collapseableSection" style=""><div class="seeAlsoStyle"><a href="T_Accord_Statistics_Tools.htm">Tools Class</a></div><div class="seeAlsoStyle"><a href="Overload_Accord_Statistics_Tools_PooledVariance.htm">PooledVariance Overload</a></div><div class="seeAlsoStyle"><a href="N_Accord_Statistics.htm">Accord.Statistics Namespace</a></div></div></div>
       <div id="footer">
         <div class="footerLine">
           <img width="100%" height="3px" src="../icons/footer.gif" alt="Footer image" title="Footer image" />

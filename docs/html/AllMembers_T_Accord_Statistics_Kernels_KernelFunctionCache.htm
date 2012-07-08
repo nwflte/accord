@@ -141,7 +141,20 @@
                 <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
               </td>
               <td>
-                <a href="M_Accord_Statistics_Kernels_KernelFunctionCache__ctor.htm">KernelFunctionCache</a>
+                <a href="M_Accord_Statistics_Kernels_KernelFunctionCache__ctor.htm">KernelFunctionCache(IKernel, <span class="languageSpecificText"><span class="cpp">array&lt;</span></span><span class="languageSpecificText"><span class="cpp">array&lt;</span></span>Double<span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span><span class="fs">[]</span></span><span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span><span class="fs">[]</span></span>)</a>
+              </td>
+              <td>
+                <div class="summary">
+              Constructs a new <a href="T_Accord_Statistics_Kernels_KernelFunctionCache.htm">KernelFunctionCache</a>.
+            </div>
+              </td>
+            </tr>
+            <tr data="public;declared;notNetfw;">
+              <td>
+                <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+              </td>
+              <td>
+                <a href="M_Accord_Statistics_Kernels_KernelFunctionCache__ctor_1.htm">KernelFunctionCache(IKernel, <span class="languageSpecificText"><span class="cpp">array&lt;</span></span><span class="languageSpecificText"><span class="cpp">array&lt;</span></span>Double<span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span><span class="fs">[]</span></span><span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span><span class="fs">[]</span></span>, Int32)</a>
               </td>
               <td>
                 <div class="summary">
@@ -198,6 +211,19 @@
               <td>
                 <div class="summary">Allows an <a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a> to attempt to free resources and perform other cleanup operations before the <a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a> is reclaimed by garbage collection.</div> (Inherited from <a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a>.)</td>
             </tr>
+            <tr data="public;declared;notNetfw;">
+              <td>
+                <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+              </td>
+              <td>
+                <a href="M_Accord_Statistics_Kernels_KernelFunctionCache_GetDataCache.htm">GetDataCache</a>
+              </td>
+              <td>
+                <div class="summary">
+              Gets a copy of the the data cache.
+            </div>
+              </td>
+            </tr>
             <tr data="public;inherited;notNetfw;">
               <td>
                 <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
@@ -207,6 +233,48 @@
               </td>
               <td>
                 <div class="summary">Serves as a hash function for a particular type. </div> (Inherited from <a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a>.)</td>
+            </tr>
+            <tr data="public;declared;notNetfw;">
+              <td>
+                <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+              </td>
+              <td>
+                <a href="M_Accord_Statistics_Kernels_KernelFunctionCache_GetIndexFromKey.htm">GetIndexFromKey</a>
+              </td>
+              <td>
+                <div class="summary">
+              Gets the pair of indices associated with a given key.
+            </div>
+              </td>
+            </tr>
+            <tr data="public;declared;notNetfw;">
+              <td>
+                <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+              </td>
+              <td>
+                <a href="M_Accord_Statistics_Kernels_KernelFunctionCache_GetKeyFromIndex.htm">GetKeyFromIndex</a>
+              </td>
+              <td>
+                <div class="summary">
+              Gets the key from the given indices.
+            </div>
+              </td>
+            </tr>
+            <tr data="public;declared;notNetfw;">
+              <td>
+                <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+              </td>
+              <td>
+                <a href="M_Accord_Statistics_Kernels_KernelFunctionCache_GetLeastRecentlyUsedList.htm">GetLeastRecentlyUsedList</a>
+              </td>
+              <td>
+                <div class="summary">
+              Gets a copy of the Least Recently Used (LRU) List of
+              Kernel Matrix elements. Elements on the start of the
+              list have been used most; elements at the end are
+              about to be discarded from the cache.
+            </div>
+              </td>
             </tr>
             <tr data="public;declared;notNetfw;">
               <td>
@@ -258,6 +326,19 @@
               <td>
                 <div class="summary">Creates a shallow copy of the current <a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a>.</div> (Inherited from <a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a>.)</td>
             </tr>
+            <tr data="public;declared;notNetfw;">
+              <td>
+                <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+              </td>
+              <td>
+                <a href="M_Accord_Statistics_Kernels_KernelFunctionCache_Reset.htm">Reset</a>
+              </td>
+              <td>
+                <div class="summary">
+              Resets cache statistics.
+            </div>
+              </td>
+            </tr>
             <tr data="public;inherited;notNetfw;">
               <td>
                 <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
@@ -289,11 +370,11 @@
                 <img src="../icons/pubproperty.gif" alt="Public property" title="Public property" />
               </td>
               <td>
-                <a href="P_Accord_Statistics_Kernels_KernelFunctionCache_CacheSize.htm">CacheSize</a>
+                <a href="P_Accord_Statistics_Kernels_KernelFunctionCache_Hits.htm">Hits</a>
               </td>
               <td>
                 <div class="summary">
-              Gets the size of this cache.
+              Gets the total number of cache hits.
             </div>
               </td>
             </tr>
@@ -302,11 +383,68 @@
                 <img src="../icons/pubproperty.gif" alt="Public property" title="Public property" />
               </td>
               <td>
-                <a href="P_Accord_Statistics_Kernels_KernelFunctionCache_Enabled.htm">Enabled</a>
+                <a href="P_Accord_Statistics_Kernels_KernelFunctionCache_Item.htm">Item<span class="languageSpecificText"><span class="cs">[</span><span class="vb">(</span><span class="cpp">[</span><span class="nu">(</span><span class="fs"> </span></span>Int32<span class="languageSpecificText"><span class="cs">]</span><span class="vb">)</span><span class="cpp">]</span><span class="nu">)</span><span class="fs"> </span></span></a>
               </td>
               <td>
                 <div class="summary">
-              Gets or sets a value indicating whether this <a href="T_Accord_Statistics_Kernels_KernelFunctionCache.htm">KernelFunctionCache</a> is enabled.
+              Attempts to retrieve the value of the kernel function
+              from the diagonal of the kernel matrix. If the value
+              is not available, it is immediatelly computed and inserted
+              in the cache.
+            </div>
+              </td>
+            </tr>
+            <tr data="public;declared;notNetfw;">
+              <td>
+                <img src="../icons/pubproperty.gif" alt="Public property" title="Public property" />
+              </td>
+              <td>
+                <a href="P_Accord_Statistics_Kernels_KernelFunctionCache_Item_1.htm">Item<span class="languageSpecificText"><span class="cs">[</span><span class="vb">(</span><span class="cpp">[</span><span class="nu">(</span><span class="fs"> </span></span>Int32, Int32<span class="languageSpecificText"><span class="cs">]</span><span class="vb">)</span><span class="cpp">]</span><span class="nu">)</span><span class="fs"> </span></span></a>
+              </td>
+              <td>
+                <div class="summary">
+              Attempts to retrieve the kernel function evaluated between point at index i
+              and j. If it is not cached, it will be computed and the cache will be updated.
+            </div>
+              </td>
+            </tr>
+            <tr data="public;declared;notNetfw;">
+              <td>
+                <img src="../icons/pubproperty.gif" alt="Public property" title="Public property" />
+              </td>
+              <td>
+                <a href="P_Accord_Statistics_Kernels_KernelFunctionCache_Misses.htm">Misses</a>
+              </td>
+              <td>
+                <div class="summary">
+              Gets the total number of cache misses.
+            </div>
+              </td>
+            </tr>
+            <tr data="public;declared;notNetfw;">
+              <td>
+                <img src="../icons/pubproperty.gif" alt="Public property" title="Public property" />
+              </td>
+              <td>
+                <a href="P_Accord_Statistics_Kernels_KernelFunctionCache_Size.htm">Size</a>
+              </td>
+              <td>
+                <div class="summary">
+              Gets the size of the cache,
+              measured in number of samples.
+            </div>
+              </td>
+            </tr>
+            <tr data="public;declared;notNetfw;">
+              <td>
+                <img src="../icons/pubproperty.gif" alt="Public property" title="Public property" />
+              </td>
+              <td>
+                <a href="P_Accord_Statistics_Kernels_KernelFunctionCache_Usage.htm">Usage</a>
+              </td>
+              <td>
+                <div class="summary">
+              Gets the percentage of the cache currently in use.
             </div>
               </td>
             </tr>

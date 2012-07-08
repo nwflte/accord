@@ -130,6 +130,32 @@
               <th class="nameColumn">Name</th>
               <th class="descriptionColumn">Description</th>
             </tr>
+            <tr data="protected;declared;notNetfw;">
+              <td>
+                <img src="../icons/protmethod.gif" alt="Protected method" title="Protected method" />
+              </td>
+              <td>
+                <a href="M_Accord_Statistics_Testing_TTest_Compute.htm">Compute(Double, Double, OneSampleHypothesis)</a>
+              </td>
+              <td>
+                <div class="summary">
+              Computes the T-test.
+            </div>
+              </td>
+            </tr>
+            <tr data="protected;declared;notNetfw;">
+              <td>
+                <img src="../icons/protmethod.gif" alt="Protected method" title="Protected method" />
+              </td>
+              <td>
+                <a href="M_Accord_Statistics_Testing_TTest_Compute_1.htm">Compute(Int32, Double, Double, Double, OneSampleHypothesis)</a>
+              </td>
+              <td>
+                <div class="summary">
+              Computes the T-Test.
+            </div>
+              </td>
+            </tr>
             <tr data="public;inherited;notNetfw;">
               <td>
                 <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
@@ -149,6 +175,20 @@
               </td>
               <td>
                 <div class="summary">Allows an <a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a> to attempt to free resources and perform other cleanup operations before the <a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a> is reclaimed by garbage collection.</div> (Inherited from <a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a>.)</td>
+            </tr>
+            <tr data="public;declared;notNetfw;">
+              <td>
+                <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+              </td>
+              <td>
+                <a href="M_Accord_Statistics_Testing_TTest_GetConfidenceInterval.htm">GetConfidenceInterval</a>
+              </td>
+              <td>
+                <div class="summary">
+              Gets a confidence interval for the estimated value
+              within the given confidence level percentage.
+            </div>
+              </td>
             </tr>
             <tr data="public;inherited;notNetfw;">
               <td>
@@ -180,29 +220,91 @@
               <td>
                 <div class="summary">Creates a shallow copy of the current <a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a>.</div> (Inherited from <a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a>.)</td>
             </tr>
-            <tr data="public;inherited;notNetfw;">
+            <tr data="protected;declared;notNetfw;">
+              <td>
+                <img src="../icons/protmethod.gif" alt="Protected method" title="Protected method" />
+              </td>
+              <td>
+                <a href="M_Accord_Statistics_Testing_TTest_OnSizeChanged.htm">OnSizeChanged</a>
+              </td>
+              <td>
+                <div class="summary">Update event.</div> (Overrides <a href="M_Accord_Statistics_Testing_HypothesisTest_1_OnSizeChanged.htm">HypothesisTest<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span>TDistribution<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span><span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>OnSizeChanged<span class="languageSpecificText"><span class="cs">()</span><span class="cpp">()</span><span class="nu">()</span><span class="fs">()</span></span></a>.)</td>
+            </tr>
+            <tr data="public;declared;notNetfw;">
               <td>
                 <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
               </td>
               <td>
-                <a href="M_Accord_Statistics_Testing_HypothesisTest_ToString.htm">ToString<span class="languageSpecificText"><span class="cs">()</span><span class="cpp">()</span><span class="nu">()</span><span class="fs">()</span></span></a>
+                <a href="M_Accord_Statistics_Testing_TTest_PValueToStatistic.htm">PValueToStatistic(Double)</a>
               </td>
               <td>
                 <div class="summary">
-              Converts the numeric P-Value of this test to its equivalent string representation.
-            </div> (Inherited from <a href="T_Accord_Statistics_Testing_HypothesisTest.htm">HypothesisTest</a>.)</td>
+              Converts a given p-value to a test statistic.
+            </div> (Overrides <a href="M_Accord_Statistics_Testing_HypothesisTest_1_PValueToStatistic.htm">HypothesisTest<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span>TDistribution<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span><span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>PValueToStatistic(Double)</a>.)</td>
+            </tr>
+            <tr data="public;static;declared;notNetfw;">
+              <td>
+                <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                <img src="../icons/static.gif" alt="Static member" title="Static member" />
+              </td>
+              <td>
+                <a href="M_Accord_Statistics_Testing_TTest_PValueToStatistic_1.htm">PValueToStatistic(Double, TDistribution, DistributionTail)</a>
+              </td>
+              <td>
+                <div class="summary">
+              Converts a given p-value to a test statistic.
+            </div>
+              </td>
+            </tr>
+            <tr data="public;declared;notNetfw;">
+              <td>
+                <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+              </td>
+              <td>
+                <a href="M_Accord_Statistics_Testing_TTest_StatisticToPValue.htm">StatisticToPValue(Double)</a>
+              </td>
+              <td>
+                <div class="summary">
+              Converts a given test statistic to a p-value.
+            </div> (Overrides <a href="M_Accord_Statistics_Testing_HypothesisTest_1_StatisticToPValue.htm">HypothesisTest<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span>TDistribution<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span><span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>StatisticToPValue(Double)</a>.)</td>
+            </tr>
+            <tr data="public;static;declared;notNetfw;">
+              <td>
+                <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+                <img src="../icons/static.gif" alt="Static member" title="Static member" />
+              </td>
+              <td>
+                <a href="M_Accord_Statistics_Testing_TTest_StatisticToPValue_1.htm">StatisticToPValue(Double, TDistribution, DistributionTail)</a>
+              </td>
+              <td>
+                <div class="summary">
+              Converts a given test statistic to a p-value.
+            </div>
+              </td>
             </tr>
             <tr data="public;inherited;notNetfw;">
               <td>
                 <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
               </td>
               <td>
-                <a href="M_Accord_Statistics_Testing_HypothesisTest_ToString_1.htm">ToString(String, IFormatProvider)</a>
+                <a href="M_Accord_Statistics_Testing_HypothesisTest_1_ToString.htm">ToString<span class="languageSpecificText"><span class="cs">()</span><span class="cpp">()</span><span class="nu">()</span><span class="fs">()</span></span></a>
               </td>
               <td>
                 <div class="summary">
               Converts the numeric P-Value of this test to its equivalent string representation.
-            </div> (Inherited from <a href="T_Accord_Statistics_Testing_HypothesisTest.htm">HypothesisTest</a>.)</td>
+            </div> (Inherited from <a href="T_Accord_Statistics_Testing_HypothesisTest_1.htm">HypothesisTest<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span>TDistribution<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span></a>.)</td>
+            </tr>
+            <tr data="public;inherited;notNetfw;">
+              <td>
+                <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
+              </td>
+              <td>
+                <a href="M_Accord_Statistics_Testing_HypothesisTest_1_ToString_1.htm">ToString(String, IFormatProvider)</a>
+              </td>
+              <td>
+                <div class="summary">
+              Converts the numeric P-Value of this test to its equivalent string representation.
+            </div> (Inherited from <a href="T_Accord_Statistics_Testing_HypothesisTest_1.htm">HypothesisTest<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span>TDistribution<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span></a>.)</td>
             </tr>
           </table>
         </div>

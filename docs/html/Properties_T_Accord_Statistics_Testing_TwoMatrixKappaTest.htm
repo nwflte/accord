@@ -130,119 +130,216 @@
               <th class="nameColumn">Name</th>
               <th class="descriptionColumn">Description</th>
             </tr>
-            <tr data="public;declared;notNetfw;">
+            <tr data="public;inherited;notNetfw;">
               <td>
                 <img src="../icons/pubproperty.gif" alt="Public property" title="Public property" />
               </td>
               <td>
-                <a href="P_Accord_Statistics_Testing_TwoMatrixKappaTest_Confidence.htm">Confidence</a>
+                <a href="P_Accord_Statistics_Testing_TwoSampleZTest_Analysis.htm">Analysis</a>
               </td>
               <td>
                 <div class="summary">
-              Gets the confidence interval
-              for the test statistic.
-            </div>
-              </td>
+              Gets the power analysis for the test, if available.
+            </div> (Inherited from <a href="T_Accord_Statistics_Testing_TwoSampleZTest.htm">TwoSampleZTest</a>.)</td>
             </tr>
             <tr data="public;inherited;notNetfw;">
               <td>
                 <img src="../icons/pubproperty.gif" alt="Public property" title="Public property" />
               </td>
               <td>
-                <a href="P_Accord_Statistics_Testing_HypothesisTest_Hypothesis.htm">Hypothesis</a>
+                <a href="P_Accord_Statistics_Testing_TwoSampleZTest_Confidence.htm">Confidence</a>
               </td>
               <td>
                 <div class="summary">
-              Gets the test type.
-            </div> (Inherited from <a href="T_Accord_Statistics_Testing_HypothesisTest.htm">HypothesisTest</a>.)</td>
+              Gets the 95% confidence interval for the
+              <a href="P_Accord_Statistics_Testing_TwoSampleZTest_ObservedDifference.htm">ObservedDifference</a> statistic.
+            </div> (Inherited from <a href="T_Accord_Statistics_Testing_TwoSampleZTest.htm">TwoSampleZTest</a>.)</td>
             </tr>
             <tr data="public;inherited;notNetfw;">
               <td>
                 <img src="../icons/pubproperty.gif" alt="Public property" title="Public property" />
               </td>
               <td>
-                <a href="P_Accord_Statistics_Testing_HypothesisTest_PValue.htm">PValue</a>
+                <a href="P_Accord_Statistics_Testing_TwoSampleZTest_EstimatedValue1.htm">EstimatedValue1</a>
               </td>
               <td>
                 <div class="summary">
-              Gets the P-value associated with this test.
-            </div> (Inherited from <a href="T_Accord_Statistics_Testing_HypothesisTest.htm">HypothesisTest</a>.)</td>
+              Gets the estimated value for the first sample.
+            </div> (Inherited from <a href="T_Accord_Statistics_Testing_TwoSampleZTest.htm">TwoSampleZTest</a>.)</td>
             </tr>
             <tr data="public;inherited;notNetfw;">
               <td>
                 <img src="../icons/pubproperty.gif" alt="Public property" title="Public property" />
               </td>
               <td>
-                <a href="P_Accord_Statistics_Testing_HypothesisTest_Significant.htm">Significant</a>
+                <a href="P_Accord_Statistics_Testing_TwoSampleZTest_EstimatedValue2.htm">EstimatedValue2</a>
               </td>
               <td>
                 <div class="summary">
-              Gets whether the null hypothesis can be accepted or should be rejected.
-            </div> (Inherited from <a href="T_Accord_Statistics_Testing_HypothesisTest.htm">HypothesisTest</a>.)</td>
-            </tr>
-            <tr data="public;declared;notNetfw;">
-              <td>
-                <img src="../icons/pubproperty.gif" alt="Public property" title="Public property" />
-              </td>
-              <td>
-                <a href="P_Accord_Statistics_Testing_TwoMatrixKappaTest_StandardError.htm">StandardError</a>
-              </td>
-              <td>
-                <div class="summary">
-              Gets the standard error
-              for the test statistic.
-            </div>
-              </td>
+              Gets the estimated value for the second sample.
+            </div> (Inherited from <a href="T_Accord_Statistics_Testing_TwoSampleZTest.htm">TwoSampleZTest</a>.)</td>
             </tr>
             <tr data="public;inherited;notNetfw;">
               <td>
                 <img src="../icons/pubproperty.gif" alt="Public property" title="Public property" />
               </td>
               <td>
-                <a href="P_Accord_Statistics_Testing_HypothesisTest_Statistic.htm">Statistic</a>
+                <a href="P_Accord_Statistics_Testing_TwoSampleZTest_Hypothesis.htm">Hypothesis</a>
               </td>
               <td>
                 <div class="summary">
-              Gets the test statistic.
-            </div> (Inherited from <a href="T_Accord_Statistics_Testing_HypothesisTest.htm">HypothesisTest</a>.)</td>
-            </tr>
-            <tr data="public;declared;notNetfw;">
-              <td>
-                <img src="../icons/pubproperty.gif" alt="Public property" title="Public property" />
-              </td>
-              <td>
-                <a href="P_Accord_Statistics_Testing_TwoMatrixKappaTest_StatisticDistribution.htm">StatisticDistribution</a>
-              </td>
-              <td>
-                <div class="summary">
-              Gets the distribution associated
-              with the test statistic.
-            </div>
-              </td>
+              Gets the alternative hypothesis under test. If the test is
+              <a href="P_Accord_Statistics_Testing_IHypothesisTest_Significant.htm">Significant</a>, the null hypothesis can be rejected
+              in favor of this alternative hypothesis.
+            </div> (Inherited from <a href="T_Accord_Statistics_Testing_TwoSampleZTest.htm">TwoSampleZTest</a>.)</td>
             </tr>
             <tr data="public;inherited;notNetfw;">
               <td>
                 <img src="../icons/pubproperty.gif" alt="Public property" title="Public property" />
               </td>
               <td>
-                <a href="P_Accord_Statistics_Testing_HypothesisTest_Threshold.htm">Threshold</a>
+                <a href="P_Accord_Statistics_Testing_TwoSampleZTest_HypothesizedDifference.htm">HypothesizedDifference</a>
               </td>
               <td>
                 <div class="summary">
-              Gets the significance threshold. Default value is 0.05 (5%).
-            </div> (Inherited from <a href="T_Accord_Statistics_Testing_HypothesisTest.htm">HypothesisTest</a>.)</td>
+              Gets the hypothesized difference between the two estimated values.
+            </div> (Inherited from <a href="T_Accord_Statistics_Testing_TwoSampleZTest.htm">TwoSampleZTest</a>.)</td>
+            </tr>
+            <tr data="public;inherited;notNetfw;">
+              <td>
+                <img src="../icons/pubproperty.gif" alt="Public property" title="Public property" />
+              </td>
+              <td>
+                <a href="P_Accord_Statistics_Testing_TwoSampleZTest_ObservedDifference.htm">ObservedDifference</a>
+              </td>
+              <td>
+                <div class="summary">
+              Gets the actual difference between the two estimated values.
+            </div> (Inherited from <a href="T_Accord_Statistics_Testing_TwoSampleZTest.htm">TwoSampleZTest</a>.)</td>
             </tr>
             <tr data="public;declared;notNetfw;">
               <td>
                 <img src="../icons/pubproperty.gif" alt="Public property" title="Public property" />
               </td>
               <td>
-                <a href="P_Accord_Statistics_Testing_TwoMatrixKappaTest_Variance.htm">Variance</a>
+                <a href="P_Accord_Statistics_Testing_TwoMatrixKappaTest_OverallVariance.htm">OverallVariance</a>
               </td>
               <td>
                 <div class="summary">
               Gets the summed Kappa variance
               for the two contigency tables.
+            </div>
+              </td>
+            </tr>
+            <tr data="public;inherited;notNetfw;">
+              <td>
+                <img src="../icons/pubproperty.gif" alt="Public property" title="Public property" />
+              </td>
+              <td>
+                <a href="P_Accord_Statistics_Testing_HypothesisTest_1_PValue.htm">PValue</a>
+              </td>
+              <td>
+                <div class="summary">
+              Gets the P-value associated with this test.
+            </div> (Inherited from <a href="T_Accord_Statistics_Testing_HypothesisTest_1.htm">HypothesisTest<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span>TDistribution<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span></a>.)</td>
+            </tr>
+            <tr data="public;inherited;notNetfw;">
+              <td>
+                <img src="../icons/pubproperty.gif" alt="Public property" title="Public property" />
+              </td>
+              <td>
+                <a href="P_Accord_Statistics_Testing_HypothesisTest_1_Significant.htm">Significant</a>
+              </td>
+              <td>
+                <div class="summary">
+              Gets whether the null hypothesis should be rejected.
+            </div> (Inherited from <a href="T_Accord_Statistics_Testing_HypothesisTest_1.htm">HypothesisTest<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span>TDistribution<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span></a>.)</td>
+            </tr>
+            <tr data="public;inherited;notNetfw;">
+              <td>
+                <img src="../icons/pubproperty.gif" alt="Public property" title="Public property" />
+              </td>
+              <td>
+                <a href="P_Accord_Statistics_Testing_HypothesisTest_1_Size.htm">Size</a>
+              </td>
+              <td>
+                <div class="summary">
+              Gets the significance level for the
+              test. Default value is 0.05 (5%).
+            </div> (Inherited from <a href="T_Accord_Statistics_Testing_HypothesisTest_1.htm">HypothesisTest<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span>TDistribution<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span></a>.)</td>
+            </tr>
+            <tr data="public;inherited;notNetfw;">
+              <td>
+                <img src="../icons/pubproperty.gif" alt="Public property" title="Public property" />
+              </td>
+              <td>
+                <a href="P_Accord_Statistics_Testing_TwoSampleZTest_StandardError.htm">StandardError</a>
+              </td>
+              <td>
+                <div class="summary">
+              Gets the standard error for the difference.
+            </div> (Inherited from <a href="T_Accord_Statistics_Testing_TwoSampleZTest.htm">TwoSampleZTest</a>.)</td>
+            </tr>
+            <tr data="public;inherited;notNetfw;">
+              <td>
+                <img src="../icons/pubproperty.gif" alt="Public property" title="Public property" />
+              </td>
+              <td>
+                <a href="P_Accord_Statistics_Testing_HypothesisTest_1_Statistic.htm">Statistic</a>
+              </td>
+              <td>
+                <div class="summary">
+              Gets the test statistic.
+            </div> (Inherited from <a href="T_Accord_Statistics_Testing_HypothesisTest_1.htm">HypothesisTest<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span>TDistribution<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span></a>.)</td>
+            </tr>
+            <tr data="public;inherited;notNetfw;">
+              <td>
+                <img src="../icons/pubproperty.gif" alt="Public property" title="Public property" />
+              </td>
+              <td>
+                <a href="P_Accord_Statistics_Testing_HypothesisTest_1_StatisticDistribution.htm">StatisticDistribution</a>
+              </td>
+              <td>
+                <div class="summary">
+              Gets the distribution associated
+              with the test statistic.
+            </div> (Inherited from <a href="T_Accord_Statistics_Testing_HypothesisTest_1.htm">HypothesisTest<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span>TDistribution<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span></a>.)</td>
+            </tr>
+            <tr data="public;inherited;notNetfw;">
+              <td>
+                <img src="../icons/pubproperty.gif" alt="Public property" title="Public property" />
+              </td>
+              <td>
+                <a href="P_Accord_Statistics_Testing_HypothesisTest_1_Tail.htm">Tail</a>
+              </td>
+              <td>
+                <div class="summary">
+              Gets the test type.
+            </div> (Inherited from <a href="T_Accord_Statistics_Testing_HypothesisTest_1.htm">HypothesisTest<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span>TDistribution<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span></a>.)</td>
+            </tr>
+            <tr data="public;declared;notNetfw;">
+              <td>
+                <img src="../icons/pubproperty.gif" alt="Public property" title="Public property" />
+              </td>
+              <td>
+                <a href="P_Accord_Statistics_Testing_TwoMatrixKappaTest_Variance1.htm">Variance1</a>
+              </td>
+              <td>
+                <div class="summary">
+              Gets the variance for the first Kappa value.
+            </div>
+              </td>
+            </tr>
+            <tr data="public;declared;notNetfw;">
+              <td>
+                <img src="../icons/pubproperty.gif" alt="Public property" title="Public property" />
+              </td>
+              <td>
+                <a href="P_Accord_Statistics_Testing_TwoMatrixKappaTest_Variance2.htm">Variance2</a>
+              </td>
+              <td>
+                <div class="summary">
+              Gets the variance for the second Kappa value.
             </div>
               </td>
             </tr>
