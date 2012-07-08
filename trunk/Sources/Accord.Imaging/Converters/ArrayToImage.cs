@@ -28,14 +28,61 @@ namespace Accord.Imaging.Converters
     using AForge.Imaging;
 
     /// <summary>
-    ///   Array[] to Bitmap converter.
+    ///   Jagged array to Bitmap converter.
     /// </summary>
+    /// 
+    /// <remarks>
+    ///   This class can convert double and float arrays to either Grayscale
+    ///   or color Bitmap images. Color images should be represented as an
+    ///   array of pixel values for the final image. The actual dimensions
+    ///   of the image should be specified in the class constructor.
+    /// </remarks>
+    /// 
+    /// <example>
+    /// <para>
+    ///   This example converts a single array of double-precision floating-
+    ///   point numbers with values from 0 to 1 into a grayscale image.</para>
+    ///   
+    /// <code>
+    /// // Create an array representation 
+    /// // of a 4x4 image with a inner 2x2
+    /// // square drawn in the middle
+    ///
+    /// double[] pixels = 
+    /// {
+    ///     0, 0, 0, 0, 
+    ///     0, 1, 1, 0, 
+    ///     0, 1, 1, 0, 
+    ///     0, 0, 0, 0, 
+    /// };
+    ///
+    /// // Create the converter to create a Bitmap from the array
+    /// ArrayToImage conv = new ArrayToImage(width: 4, height: 4);
+    ///
+    /// // Declare an image and store the pixels on it
+    /// Bitmap image; conv.Convert(pixels, out image);
+    ///
+    /// // Show the image on screen
+    /// image = new ResizeNearestNeighbor(320, 320).Apply(image);
+    /// ImageBox.Show(image, PictureBoxSizeMode.Zoom);
+    /// </code>
+    /// 
+    /// <para>
+    ///   The resulting image is shown below.</para>
+    ///   
+    /// <img src="..\Images\matrix-to-image.png" />
+    /// 
+    /// </example>
     /// 
     public class ArrayToImage :
         IConverter<double[], Bitmap>,
         IConverter<double[], UnmanagedImage>,
         IConverter<double[][], Bitmap>,
-        IConverter<double[][], UnmanagedImage>
+        IConverter<double[][], UnmanagedImage>,
+        IConverter<float[], Bitmap>,
+        IConverter<float[], UnmanagedImage>,
+        IConverter<float[][], Bitmap>,
+        IConverter<float[][], UnmanagedImage>
     {
 
         /// <summary>
@@ -145,7 +192,58 @@ namespace Accord.Imaging.Converters
         /// <param name="pixels">The input image to be converted.</param>
         /// <param name="image">The converted image.</param>
         /// 
+        public void Convert(float[] pixels, out Bitmap image)
+        {
+            image = AForge.Imaging.Image.CreateGrayscaleImage(Width, Height);
+
+            BitmapData data = image.LockBits(new Rectangle(0, 0, Width, Height),
+                ImageLockMode.WriteOnly, image.PixelFormat);
+
+            int offset = data.Stride - Width;
+            int src = 0;
+
+            float min = (float)Min;
+            float max = (float)Max;
+
+            unsafe
+            {
+                byte* dst = (byte*)data.Scan0.ToPointer();
+
+                for (int y = 0; y < Height; y++)
+                {
+                    for (int x = 0; x < Width; x++, src++, dst++)
+                    {
+                        *dst = (byte)Accord.Math.Tools.Scale(min, max, 0, 255, pixels[src]);
+                    }
+                    dst += offset;
+                }
+            }
+
+            image.UnlockBits(data);
+        }
+
+        /// <summary>
+        ///   Converts an image from one representation to another.
+        /// </summary>
+        /// 
+        /// <param name="pixels">The input image to be converted.</param>
+        /// <param name="image">The converted image.</param>
+        /// 
         public void Convert(double[] pixels, out UnmanagedImage image)
+        {
+            Bitmap bitmap;
+            Convert(pixels, out bitmap);
+            image = UnmanagedImage.FromManagedImage(bitmap);
+        }
+
+        /// <summary>
+        ///   Converts an image from one representation to another.
+        /// </summary>
+        /// 
+        /// <param name="pixels">The input image to be converted.</param>
+        /// <param name="image">The converted image.</param>
+        /// 
+        public void Convert(float[] pixels, out UnmanagedImage image)
         {
             Bitmap bitmap;
             Convert(pixels, out bitmap);
@@ -219,7 +317,84 @@ namespace Accord.Imaging.Converters
         /// <param name="pixels">The input image to be converted.</param>
         /// <param name="image">The converted image.</param>
         /// 
+        public void Convert(float[][] pixels, out Bitmap image)
+        {
+            PixelFormat format;
+            int channels = pixels[0].Length;
+
+            switch (channels)
+            {
+                case 1:
+                    format = PixelFormat.Format8bppIndexed;
+                    break;
+
+                case 3:
+                    format = PixelFormat.Format24bppRgb;
+                    break;
+
+                case 4:
+                    format = PixelFormat.Format32bppArgb;
+                    break;
+
+                default:
+                    throw new ArgumentException("Unsupported image pixel format.", "pixels");
+            }
+
+
+            image = new Bitmap(Width, Height, format);
+
+            BitmapData data = image.LockBits(new Rectangle(0, 0, Width, Height),
+                ImageLockMode.WriteOnly, format);
+
+            int pixelSize = System.Drawing.Image.GetPixelFormatSize(format) / 8;
+            int offset = data.Stride - Width * pixelSize;
+            int src = 0;
+
+            float min = (float)Min;
+            float max = (float)Max;
+
+            unsafe
+            {
+                byte* dst = (byte*)data.Scan0.ToPointer();
+
+                for (int y = 0; y < Height; y++)
+                {
+                    for (int x = 0; x < Width; x++, src++)
+                    {
+                        for (int c = channels - 1; c >= 0; c--, dst++)
+                        {
+                            *dst = (byte)Accord.Math.Tools.Scale(min, max, 0, 255, pixels[src][c]);
+                        }
+                    }
+                    dst += offset;
+                }
+            }
+
+            image.UnlockBits(data);
+        }
+
+        /// <summary>
+        ///   Converts an image from one representation to another.
+        /// </summary>
+        /// 
+        /// <param name="pixels">The input image to be converted.</param>
+        /// <param name="image">The converted image.</param>
+        /// 
         public void Convert(double[][] pixels, out UnmanagedImage image)
+        {
+            Bitmap bitmap;
+            Convert(pixels, out bitmap);
+            image = UnmanagedImage.FromManagedImage(bitmap);
+        }
+
+        /// <summary>
+        ///   Converts an image from one representation to another.
+        /// </summary>
+        /// 
+        /// <param name="pixels">The input image to be converted.</param>
+        /// <param name="image">The converted image.</param>
+        /// 
+        public void Convert(float[][] pixels, out UnmanagedImage image)
         {
             Bitmap bitmap;
             Convert(pixels, out bitmap);

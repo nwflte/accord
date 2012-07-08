@@ -27,12 +27,72 @@ namespace Accord.Imaging.Converters
     using AForge.Imaging;
 
     /// <summary>
-    ///   Bitmap to double[,] converter.
+    ///   Bitmap to multidimensional matrix converter.
     /// </summary>
+    /// 
+    /// <remarks>
+    ///   This class converts images to multidimensional matrices of
+    ///   either double-precision or single-precision floating-point
+    ///   values.
+    /// </remarks>
+    /// 
+    /// <example>
+    /// <para>
+    ///   This example converts a 16x16 Bitmap image into
+    ///   a double[,] array with values between 0 and 1.</para>
+    ///   
+    /// <code>
+    /// // Obtain an image
+    /// // Bitmap image = ...
+    ///
+    /// // Show on screen
+    /// ImageBox.Show(image, PictureBoxSizeMode.Zoom);
+    ///
+    /// // Create the converter to convert the image to a
+    /// //  matrix containing only values between 0 and 1 
+    /// ImageToMatrix conv = new ImageToMatrix(min: 0, max: 1);
+    ///
+    /// // Convert the image and store it in the matrix
+    /// double[,] matrix; conv.Convert(image, out matrix);
+    ///
+    /// // Show the matrix on screen as an image
+    /// ImageBox.Show(matrix, PictureBoxSizeMode.Zoom);
+    /// </code>
+    /// <para>
+    ///   The resulting image is shown below.</para>
+    /// 
+    /// <img src="..\Images\image-to-matrix.png" />
+    /// 
+    /// <para>
+    ///   Additionally, the image can also be shown in alternative
+    ///   representations such as text or data tables.
+    /// </para>
+    /// 
+    /// <code>
+    /// // Show the matrix on screen as a .NET multidimensional array
+    /// MessageBox.Show(matrix.ToString(CSharpMatrixFormatProvider.InvariantCulture));
+    ///
+    /// // Show the matrix on screen as a table
+    /// DataGridBox.Show(matrix, nonBlocking: true)
+    ///     .SetAutoSizeColumns(DataGridViewAutoSizeColumnsMode.Fill)
+    ///     .SetAutoSizeRows(DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders)
+    ///     .SetDefaultFontSize(5)
+    ///    .WaitForClose();
+    /// </code>
+    /// 
+    ///  <para>
+    ///   The resulting images are shown below.</para>
+    ///   
+    /// <img src="..\Images\image-to-matrix-string.png" />
+    /// <img src="..\Images\image-to-matrix-table.png" />
+    /// 
+    /// </example>
     /// 
     public class ImageToMatrix :
         IConverter<Bitmap, double[,]>,
-        IConverter<UnmanagedImage, double[,]>
+        IConverter<UnmanagedImage, double[,]>,
+        IConverter<Bitmap, float[,]>,
+        IConverter<UnmanagedImage, float[,]>
     {
 
         /// <summary>
@@ -122,6 +182,23 @@ namespace Accord.Imaging.Converters
         /// <param name="image">The input image to be converted.</param>
         /// <param name="output">The converted image.</param>
         /// 
+        public void Convert(Bitmap image, out float[,] output)
+        {
+            BitmapData bitmapData = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
+                ImageLockMode.ReadOnly, image.PixelFormat);
+
+            Convert(new UnmanagedImage(bitmapData), out output);
+
+            image.UnlockBits(bitmapData);
+        }
+
+        /// <summary>
+        ///   Converts an image from one representation to another.
+        /// </summary>
+        /// 
+        /// <param name="image">The input image to be converted.</param>
+        /// <param name="output">The converted image.</param>
+        /// 
         public void Convert(UnmanagedImage image, out double[,] output)
         {
             int width = image.Width;
@@ -147,7 +224,43 @@ namespace Accord.Imaging.Converters
                     }
                 }
             }
+        }
 
+        /// <summary>
+        ///   Converts an image from one representation to another.
+        /// </summary>
+        /// 
+        /// <param name="image">The input image to be converted.</param>
+        /// <param name="output">The converted image.</param>
+        /// 
+        public void Convert(UnmanagedImage image, out float[,] output)
+        {
+            int width = image.Width;
+            int height = image.Height;
+            int offset = image.Stride - image.Width;
+
+            output = new float[height, width];
+
+            float min = (float)Min;
+            float max = (float)Max;
+
+            unsafe
+            {
+                fixed (float* ptrData = output)
+                {
+                    float* dst = ptrData;
+                    byte* src = (byte*)image.ImageData.ToPointer() + Channel;
+
+                    for (int y = 0; y < height; y++)
+                    {
+                        for (int x = 0; x < width; x++, src++, dst++)
+                        {
+                            *dst = Accord.Math.Tools.Scale(0, 255, min, max, *src);
+                        }
+                        src += offset;
+                    }
+                }
+            }
         }
 
     }
