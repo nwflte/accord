@@ -66,10 +66,22 @@ namespace Accord.MachineLearning
         public double Variance { get; private set; }
 
         /// <summary>
+        ///   Gets the standard deviation of the performance statistics.
+        /// </summary>
+        /// 
+        public double StandardDeviation { get { return Math.Sqrt(Variance); } }
+
+        /// <summary>
         ///   Gets the pooled variance of the performance statistics.
         /// </summary>
         /// 
         public double PooledVariance { get; private set; }
+
+        /// <summary>
+        ///   Gets the pooled standard deviation of the performance statistics.
+        /// </summary>
+        /// 
+        public double PooledStandardDeviation { get { return Math.Sqrt(PooledVariance); } }
 
 
         /// <summary>
@@ -97,7 +109,7 @@ namespace Accord.MachineLearning
             this.Variances = variances;
 
             this.Mean = Statistics.Tools.Mean(statistics);
-            this.Variance = Statistics.Tools.Variance(statistics);
+            this.Variance = Statistics.Tools.Variance(statistics, Mean);
 
             // Compute the pooled variance if the individual variances
             //  for each cross-validation run are available

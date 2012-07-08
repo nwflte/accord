@@ -138,7 +138,7 @@ namespace Accord.MachineLearning
         ///   Creates a new k-fold cross-validation algorithm.
         /// </summary>
         /// 
-        /// <param name="size">The complete dataset for training and testing.</param>
+        /// <param name="size">The total number of available samples.</param>
         /// 
         public CrossValidation(int size) : base(size) { }
 
