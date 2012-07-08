@@ -79,9 +79,10 @@
   <ItemGroup>
     <Compile Include="Analysis\Base\IAnalysis.cs" />
     <Compile Include="Analysis\Base\IProjectionAnalysis.cs" />
-    <Compile Include="Analysis\Base\IMultipleRegressionAnalysis.cs" />
+    <Compile Include="Analysis\Base\IMultivariateRegressionAnalysis.cs" />
     <Compile Include="Analysis\Base\IRegressionAnalysis.cs" />
     <Compile Include="Analysis\Base\IDiscriminantAnalysis.cs" />
+    <Compile Include="Analysis\MultipleLinearRegressionAnalysis.cs" />
     <Compile Include="Analysis\Performance\ConfusionMatrix.cs" />
     <Compile Include="Analysis\Performance\GeneralConfusionMatrix.cs" />
     <Compile Include="Analysis\DescriptiveAnalysis.cs" />
@@ -95,7 +96,8 @@
     <Compile Include="Analysis\Performance\ReceiverOperatingCharacteristic.cs" />
     <Compile Include="Analysis\StepwiseLogisticRegressionAnalysis.cs" />
     <Compile Include="Circular.cs" />
-    <Compile Include="Distributions\Fitting\Base\IFittableDistribution.cs" />
+    <Compile Include="Distributions\IFittableDistribution.cs" />
+    <Compile Include="Distributions\ISampleableDistribution.cs" />
     <Compile Include="Distributions\Multivariate\Base\IMultivariateDistribution.cs" />
     <Compile Include="Distributions\Univariate\Base\IUnivariateDistribution.cs" />
     <Compile Include="Distributions\Fitting\CauchyOptions.cs" />
@@ -112,6 +114,8 @@
     <Compile Include="Distributions\Multivariate\MultivariateMixture.cs" />
     <Compile Include="Distributions\Multivariate\Discrete\MultinomialDistribution.cs" />
     <Compile Include="Distributions\Univariate\Continuous\CauchyDistribution.cs" />
+    <Compile Include="Distributions\Univariate\Continuous\MannWhitneyDistribution.cs" />
+    <Compile Include="Distributions\Univariate\Continuous\NoncentralTDistribution.cs" />
     <Compile Include="Distributions\Univariate\Continuous\ExponentialDistribution.cs" />
     <Compile Include="Distributions\Univariate\Continuous\GammaDistribution.cs" />
     <Compile Include="Distributions\Univariate\Continuous\KolmogorovSmirnovDistribution.cs" />
@@ -122,14 +126,15 @@
     <Compile Include="Distributions\Multivariate\Base\MultivariateContinuousDistribution.cs" />
     <Compile Include="Distributions\Univariate\Base\UnivariateDiscreteDistribution.cs" />
     <Compile Include="Distributions\Multivariate\Discrete\JointDistribution.cs" />
-    <Compile Include="Distributions\Univariate\Discrete\DiscreteUniformDistribution.cs" />
+    <Compile Include="Distributions\Univariate\Continuous\WilcoxonDistribution.cs" />
+    <Compile Include="Distributions\Univariate\Discrete\UniformDiscreteDistribution.cs" />
     <Compile Include="Distributions\Univariate\Discrete\GeometricDistribution.cs" />
     <Compile Include="Distributions\Univariate\Discrete\HypergeometricDistribution.cs" />
     <Compile Include="Distributions\Univariate\Continuous\InverseGaussianDistribution.cs" />
     <Compile Include="Distributions\Univariate\Continuous\NakagamiDistribution.cs" />
     <Compile Include="Distributions\Univariate\Continuous\RayleighDistribution.cs" />
     <Compile Include="Distributions\Univariate\Continuous\TDistribution.cs" />
-    <Compile Include="Distributions\Univariate\Continuous\ContinuousUniformDistribution.cs" />
+    <Compile Include="Distributions\Univariate\Continuous\UniformContinuousDistribution.cs" />
     <Compile Include="Distributions\Univariate\Continuous\LognormalDistribution.cs" />
     <Compile Include="Distributions\Univariate\Continuous\EmpiricalDistribution.cs" />
     <Compile Include="Distributions\Univariate\Continuous\FDistribution.cs" />
@@ -246,6 +251,11 @@
     <Compile Include="Links\LogitLinkFunction.cs" />
     <Compile Include="Links\InverseLinkFunction.cs" />
     <Compile Include="Models\Fields\Learning\ResilientGradientHiddenLearning.cs" />
+    <Compile Include="Models\Markov\Learning\Base\BaseIterativeLearning.cs" />
+    <Compile Include="Models\Markov\Learning\MaximumLikelihoodLearning`1.cs" />
+    <Compile Include="Models\Markov\Learning\MaximumLikelihoodLearning.cs" />
+    <Compile Include="Models\Markov\Learning\ViterbiLearning`1.cs" />
+    <Compile Include="Models\Markov\Learning\ViterbiLearning.cs" />
     <Compile Include="Models\Regression\Nonlinear\Fitting\Base\IMultipleRegressionFitting.cs" />
     <Compile Include="Models\Regression\Nonlinear\Fitting\Base\IRegressionFitting.cs" />
     <Compile Include="Models\Regression\Nonlinear\Fitting\IterativeReweightedLeastSquares.cs" />
@@ -287,6 +297,17 @@
     <Compile Include="Running\RunningNormalStatistics.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Moving\MovingNormalStatistics.cs" />
+    <Compile Include="Testing\Contingency\TwoAverageKappaTest.cs" />
+    <Compile Include="Testing\Contingency\AverageKappaTest.cs" />
+    <Compile Include="Testing\Contingency\FisherExactTest.cs" />
+    <Compile Include="Testing\WilcoxonTest.cs" />
+    <Compile Include="Testing\TwoSample\MannWhitneyWilcoxonTest.cs" />
+    <Compile Include="Testing\Power\Base\IPowerAnalysis.cs" />
+    <Compile Include="Testing\Power\Base\ITwoSamplePowerAnalysis.cs" />
+    <Compile Include="Testing\Power\Base\BaseTwoSamplePowerAnalysis.cs" />
+    <Compile Include="Testing\Power\TwoSample\TwoSampleZTestPowerAnalysis.cs" />
+    <Compile Include="Testing\Power\TwoSample\TwoSampleTTestPowerAnalysis.cs" />
+    <Compile Include="Testing\Power\Base\BaseOneSamplePowerAnalysis.cs" />
     <Compile Include="Testing\Base\HypothesisTest.cs" />
     <Compile Include="Testing\Base\IHypothesisTest.cs" />
     <Compile Include="Testing\Contingency\BhapkarTest.cs" />
@@ -303,11 +324,20 @@
     <Compile Include="Testing\Multiple Samples\OneWayAnova.cs" />
     <Compile Include="Testing\Multiple Samples\TwoWayAnova.cs" />
     <Compile Include="Testing\Contingency\StuartMaxwellTest.cs" />
+    <Compile Include="Testing\Power\TTestPowerAnalysis.cs" />
+    <Compile Include="Testing\Power\ZTestPowerAnalysis.cs" />
+    <Compile Include="Testing\SignTest.cs" />
+    <Compile Include="Testing\WilcoxonSignedRankTest.cs" />
+    <Compile Include="Testing\TwoSample\TwoSampleSignTest.cs" />
+    <Compile Include="Testing\BinomialTest.cs" />
+    <Compile Include="Testing\TwoSample\TwoSampleWilcoxonSignedRankTest.cs" />
     <Compile Include="Testing\TTest.cs" />
     <Compile Include="Testing\TwoSample\TwoSampleKolmogorovSmirnovTest.cs" />
     <Compile Include="Testing\TwoSample\TwoSampleTTest.cs" />
+    <Compile Include="Testing\TwoSample\TwoSampleZTest.cs" />
     <Compile Include="Testing\WaldTest.cs" />
     <Compile Include="Testing\ZTest.cs" />
+    <Compile Include="Testing\Base\HypothesisTypes.cs" />
     <Compile Include="Tools.cs" />
     <Compile Include="Visualizations\Histogram.cs" />
     <Compile Include="Visualizations\Scatterplot.cs" />
@@ -329,6 +359,9 @@
     <None Include="Accord.Statistics.cd" />
     <None Include="Analysis\Accord.Statistics.Analysis.cd" />
     <None Include="Distributions\Accord.Statistics.Distributions.cd" />
+    <None Include="Kernels\Accord.Statistics.Kernels.cd" />
+    <None Include="Models\Accord.Statistics.Models.cd" />
+    <None Include="Testing\Accord.Statistics.Testing.cd" />
   </ItemGroup>
   <ItemGroup>
     <CodeAnalysisDictionary Include="Properties\CustomDictionary.xml" />

@@ -47,25 +47,41 @@ namespace Accord.Statistics.Visualizations
         ///   Gets the title of the scatterplot.
         /// </summary>
         /// 
-        public string Title { get { return title; } }
+        public string Title
+        {
+            get { return title; }
+            set { title = value; }
+        }
 
         /// <summary>
         ///   Gets the name of the X-axis.
         /// </summary>
         /// 
-        public string XAxisTitle { get { return xAxisTitle; } }
+        public string XAxisTitle
+        {
+            get { return xAxisTitle; }
+            set { xAxisTitle = value; }
+        }
 
         /// <summary>
         ///   Gets the name of the Y-axis.
         /// </summary>
         /// 
-        public string YAxisTitle { get { return yAxisTitle; } }
+        public string YAxisTitle
+        {
+            get { return yAxisTitle; }
+            set { yAxisTitle = value; }
+        }
 
         /// <summary>
         ///   Gets the name of the label axis.
         /// </summary>
         /// 
-        public string LabelAxisTitle { get { return labelTitle; } }
+        public string LabelAxisTitle
+        {
+            get { return labelTitle; }
+            set { labelTitle = value; }
+        }
 
 
         /// <summary>
@@ -157,7 +173,15 @@ namespace Accord.Statistics.Visualizations
             this.XAxis = x;
             this.YAxis = y;
             this.LabelAxis = z;
-            LabelValues = LabelAxis.Distinct().ToArray();
+
+            if (z == null)
+            {
+                LabelValues = new int[] { };
+            }
+            else
+            {
+                LabelValues = LabelAxis.Distinct().ToArray();
+            }
 
             ScatterplotClassValueCollection[] classes = new ScatterplotClassValueCollection[LabelValues.Length];
             for (int i = 0; i < classes.Length; i++)
@@ -186,7 +210,7 @@ namespace Accord.Statistics.Visualizations
             if (labels != null && x.Length != labels.Length)
                 throw new DimensionMismatchException("labels", "If provided, the labels array should have the same length as x and y.");
 
-            initialize(x,y,labels);
+            initialize(x, y, labels);
         }
 
         /// <summary>
@@ -236,7 +260,7 @@ namespace Accord.Statistics.Visualizations
             double[] x = new double[rows];
             double[] y = new double[rows];
 
-            for (int i = 0; i < XAxis.Length; i++)
+            for (int i = 0; i < x.Length; i++)
             {
                 x[i] = data[i, 0];
                 y[i] = data[i, 1];
@@ -244,6 +268,7 @@ namespace Accord.Statistics.Visualizations
 
             initialize(x, y, labels);
         }
+
 
     }
 
