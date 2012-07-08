@@ -496,6 +496,65 @@ namespace Accord.Math
         }
 
         /// <summary>
+        ///   Trigamma function.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   This code has been adapted from the FORTRAN77 and subsequent
+        ///   C code by B. E. Schneider and John Burkardt. The code had been
+        ///   made public under the GNU LGPL license.
+        /// </remarks>
+        /// 
+        public static double Trigamma(double x)
+        {
+            double a = 0.0001;
+            double b = 5.0;
+            double b2 = 0.1666666667;
+            double b4 = -0.03333333333;
+            double b6 = 0.02380952381;
+            double b8 = -0.03333333333;
+            double value;
+            double y;
+            double z;
+
+            // Check the input.
+            if (x <= 0.0)
+            {
+                throw new ArgumentException("The input parameter x must be positive.","x");
+            }
+
+            z = x;
+
+            // Use small value approximation if X <= A.
+            if (x <= a)
+            {
+                value = 1.0 / x / x;
+                return value;
+            }
+
+            // Increase argument to ( X + I ) >= B.
+            value = 0.0;
+
+            while (z < b)
+            {
+                value = value + 1.0 / z / z;
+                z = z + 1.0;
+            }
+
+            // Apply asymptotic formula if argument is B or greater.
+            y = 1.0 / z / z;
+
+            value = value + 0.5 *
+                y + (1.0
+              + y * (b2
+              + y * (b4
+              + y * (b6
+              + y * b8)))) / z;
+
+            return value;
+        }
+
+        /// <summary>
         ///   Gamma function as computed by Stirling's formula.
         /// </summary>
         /// 
