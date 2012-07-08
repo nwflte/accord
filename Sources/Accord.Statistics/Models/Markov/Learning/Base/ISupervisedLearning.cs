@@ -25,10 +25,14 @@ namespace Accord.Statistics.Models.Markov.Learning
     using System;
 
     /// <summary>
-    ///   Common interface for supervised learning algorithms for
-    ///   hidden Markov models such as the Viterbi-learning algorithm.
+    ///   Common interface for supervised learning algorithms for hidden
+    ///   Markov models such as the <see cref="MaximumLikelihoodLearning">
+    ///   Maximum Likelihood (MLE)</see> learning algorithm.
     /// </summary>
     ///
+    /// <see cref="MaximumLikelihoodLearning"/>
+    /// <see cref="MaximumLikelihoodLearning{TDistribution}"/>
+    /// 
     public interface ISupervisedLearning
     {
 
@@ -43,7 +47,7 @@ namespace Accord.Statistics.Models.Markov.Learning
         ///   determine HMM parameters M = (A, B, pi) that best fit training data. 
         /// </remarks>
         /// 
-        double Run(Array[] observations, int[] states);
+        double Run(Array[] observations, int[][] paths);
 
     }
 }

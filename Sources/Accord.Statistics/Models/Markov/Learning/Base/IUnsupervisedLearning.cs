@@ -25,9 +25,17 @@ namespace Accord.Statistics.Models.Markov.Learning
     using System;
 
     /// <summary>
-    ///   Common interface for unsupervised learning algorithms for
-    ///   hidden Markov models such as the Baum-Welch learning algorithm.
+    ///   Common interface for unsupervised learning algorithms for hidden
+    ///   Markov models such as the <see cref="BaumWelchLearning">Baum-Welch
+    ///   learning</see> and the <see cref="ViterbiLearning">Viterbi learning
+    ///   </see> algorithms.
     /// </summary>
+    /// 
+    /// <see cref="BaumWelchLearning"/>
+    /// <see cref="BaumWelchLearning{TDistribution}"/>
+    /// <see cref="ViterbiLearning"/>
+    /// <see cref="ViterbiLearning{TDistribution}"/>
+    /// 
     public interface IUnsupervisedLearning
     {
 

@@ -26,70 +26,31 @@ namespace Accord.Statistics.Models.Markov
     using System.IO;
     using System.Runtime.Serialization.Formatters.Binary;
     using Accord.Statistics.Models.Markov.Topology;
+    using Accord.Statistics.Models.Markov.Learning;
+    using Accord.Statistics.Distributions.Univariate;
 
     /// <summary>
     ///   Discrete-density Hidden Markov Model Set for Sequence Classification.
     /// </summary>
     /// 
     /// <remarks>
-    ///   This class uses a set of hidden Markov models to classify integer sequences.
-    ///   Each model will try to learn and recognize each of the different output classes.
+    /// <para>
+    ///   This class uses a set of <see cref="HiddenMarkovModel">discrete hidden Markov models</see>
+    ///   to classify sequences of integer symbols. Each model will try to learn and recognize each 
+    ///   of the different output classes. For examples and details on how to learn such models,
+    ///   please take a look on the documentation for <see cref="HiddenMarkovClassifierLearning"/>.</para>
+    /// <para>
+    ///   For other type of sequences, such as discrete sequences (not necessarily symbols) or even
+    ///   continuous and multivariate variables, please see use the generic classifier counterpart 
+    ///   <see cref="HiddenMarkovClassifier{TDistribution}"/></para>
     /// </remarks>
     /// 
-    /// <example>
-    ///   <code>
-    ///   // Declare some testing data
-    ///   int[][] inputs = new int[][]
-    ///   {
-    ///       new int[] { 0,1,1,0 },   // Class 0
-    ///       new int[] { 0,0,1,0 },   // Class 0
-    ///       new int[] { 0,1,1,1,0 }, // Class 0
-    ///       new int[] { 0,1,0 },     // Class 0
-    ///   
-    ///       new int[] { 1,0,0,1 },   // Class 1
-    ///       new int[] { 1,1,0,1 },   // Class 1
-    ///       new int[] { 1,0,0,0,1 }, // Class 1
-    ///       new int[] { 1,0,1 },     // Class 1
-    ///   };
-    ///   
-    ///   int[] outputs = new int[]
-    ///   {
-    ///       0,0,0,0, // First four sequences are of class 0
-    ///       1,1,1,1, // Last four sequences are of class 1
-    ///   };
-    ///   
-    ///   
-    ///   // We are trying to predict two different classes
-    ///   int classes = 2;
-    ///
-    ///   // Each sequence may have up to two symbols (0 or 1)
-    ///   int symbols = 2;
-    ///
-    ///   // Nested models will have two states each
-    ///   int[] states = new int[] { 2, 2 };
-    ///
-    ///   // Creates a new Hidden Markov Model Sequence Classifier with the given parameters
-    ///   HiddenMarkovClassifier classifier = new HiddenMarkovClassifier(classes, states, symbols);
-    ///   
-    ///   // Create a new learning algorithm to train the sequence classifier
-    ///   var teacher = new HiddenMarkovClassifierLearning(classifier,
-    ///   
-    ///       // Train each model until the log-likelihood changes less than 0.001
-    ///       modelIndex => new BaumWelchLearning(classifier.Models[modelIndex])
-    ///       {
-    ///           Tolerance = 0.001,
-    ///           Iterations = 0
-    ///       }
-    ///   );
-    ///   
-    ///   // Train the sequence classifier using the algorithm
-    ///   double likelihood = teacher.Run(inputs, outputs);
-    ///   
-    ///   </code>
-    /// </example>
+    /// <seealso cref="HiddenMarkovClassifier{TDistribution}"/>
+    /// <seealso cref="HiddenMarkovClassifierLearning"/>
     /// 
     [Serializable]
-    public class HiddenMarkovClassifier : BaseHiddenMarkovClassifier<HiddenMarkovModel>, IHiddenMarkovClassifier
+    public class HiddenMarkovClassifier : BaseHiddenMarkovClassifier<HiddenMarkovModel>,
+        IHiddenMarkovClassifier
     {
 
         /// <summary>
@@ -109,6 +70,12 @@ namespace Accord.Statistics.Models.Markov
         ///   Creates a new Sequence Classifier with the given number of classes.
         /// </summary>
         /// 
+        /// <param name="classes">The number of classes in the classifier.</param>
+        /// <param name="topology">The topology of the hidden states. A forward-only topology
+        /// is indicated to sequence classification problems, such as speech recognition.</param>
+        /// <param name="symbols">The number of symbols in the models' discrete alphabet.</param>
+        /// <param name="names">The optional class names for each of the classifiers.</param>
+        /// 
         public HiddenMarkovClassifier(int classes, ITopology topology, int symbols, string[] names)
             : base(classes)
         {
@@ -120,6 +87,11 @@ namespace Accord.Statistics.Models.Markov
         ///   Creates a new Sequence Classifier with the given number of classes.
         /// </summary>
         /// 
+        /// <param name="classes">The number of classes in the classifier.</param>
+        /// <param name="topology">The topology of the hidden states. A forward-only topology
+        /// is indicated to sequence classification problems, such as speech recognition.</param>
+        /// <param name="symbols">The number of symbols in the models' discrete alphabet.</param>
+        /// 
         public HiddenMarkovClassifier(int classes, ITopology topology, int symbols)
             : base(classes)
         {
@@ -130,6 +102,11 @@ namespace Accord.Statistics.Models.Markov
         /// <summary>
         ///   Creates a new Sequence Classifier with the given number of classes.
         /// </summary>
+        /// 
+        /// <param name="classes">The number of classes in the classifier.</param>
+        /// <param name="topology">The topology of the hidden states. A forward-only topology
+        /// is indicated to sequence classification problems, such as speech recognition.</param>
+        /// <param name="symbols">The number of symbols in the models' discrete alphabet.</param>
         /// 
         public HiddenMarkovClassifier(int classes, ITopology[] topology, int symbols)
             : base(classes)
@@ -145,6 +122,12 @@ namespace Accord.Statistics.Models.Markov
         ///   Creates a new Sequence Classifier with the given number of classes.
         /// </summary>
         /// 
+        /// <param name="classes">The number of classes in the classifier.</param>
+        /// <param name="topology">The topology of the hidden states. A forward-only topology
+        /// is indicated to sequence classification problems, such as speech recognition.</param>
+        /// <param name="symbols">The number of symbols in the models' discrete alphabet.</param>
+        /// <param name="names">The optional class names for each of the classifiers.</param>
+        /// 
         public HiddenMarkovClassifier(int classes, ITopology[] topology, int symbols, string[] names)
             : base(classes)
         {
@@ -159,6 +142,12 @@ namespace Accord.Statistics.Models.Markov
         ///   Creates a new Sequence Classifier with the given number of classes.
         /// </summary>
         /// 
+        /// <param name="classes">The number of classes in the classifier.</param>
+        /// <param name="states">An array specifying the number of hidden states for each
+        /// of the classifiers. By default, and Ergodic topology will be used.</param>
+        /// <param name="symbols">The number of symbols in the models' discrete alphabet.</param>
+        /// <param name="names">The optional class names for each of the classifiers.</param>
+        /// 
         public HiddenMarkovClassifier(int classes, int[] states, int symbols, string[] names)
             : base(classes)
         {
@@ -172,6 +161,11 @@ namespace Accord.Statistics.Models.Markov
         /// <summary>
         ///   Creates a new Sequence Classifier with the given number of classes.
         /// </summary>
+        /// 
+        /// <param name="classes">The number of classes in the classifier.</param>
+        /// <param name="states">An array specifying the number of hidden states for each
+        /// of the classifiers. By default, and Ergodic topology will be used.</param>
+        /// <param name="symbols">The number of symbols in the models' discrete alphabet.</param>
         /// 
         public HiddenMarkovClassifier(int classes, int[] states, int symbols)
             : base(classes)
@@ -270,6 +264,25 @@ namespace Accord.Statistics.Models.Markov
         public double LogLikelihood(int[][] sequences, int[] outputs)
         {
             return base.LogLikelihood(sequences, outputs);
+        }
+
+
+        /// <summary>
+        ///   Creates a new Sequence Classifier with the given number of classes.
+        /// </summary>
+        /// 
+        /// <param name="classes">The number of classes in the classifier.</param>
+        /// <param name="states">An array specifying the number of hidden states for each
+        /// of the classifiers. By default, and Ergodic topology will be used.</param>
+        /// <param name="symbols">The number of symbols in the models' discrete alphabet.</param>
+        /// 
+        public static HiddenMarkovClassifier<GeneralDiscreteDistribution> CreateGeneric(
+            int classes, int[] states, int symbols)
+        {
+            var classifier = new HiddenMarkovClassifier<GeneralDiscreteDistribution>(
+                classes, states, new GeneralDiscreteDistribution(symbols));
+
+            return classifier;
         }
 
         #region ISequenceClassifier implementation

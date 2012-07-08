@@ -23,13 +23,122 @@
 namespace Accord.Statistics.Models.Markov.Learning
 {
     using System;
-    using Accord.Statistics.Distributions.Fitting;
-    using Accord.Statistics.Distributions;
     using Accord.Math;
+    using Accord.Statistics.Distributions;
+    using Accord.Statistics.Distributions.Fitting;
 
     /// <summary>
     ///   Baum-Welch learning algorithm for arbitrary-density Hidden Markov Models.
     /// </summary>
+    /// 
+    /// <remarks>
+    ///   <para>
+    ///   The Baum-Welch algorithm is a kind of Expectation-Maximization algorithm.
+    ///   For continuous models, it estimates the matrix of state transition probabilities
+    ///   A and the vector of initial state probabilities pi. For the state emission 
+    ///   densities, it weights each observation and lets the estimation algorithms
+    ///   for each of the densities to fit the distributions to the observations.</para>
+    /// </remarks>
+    /// 
+    /// <example>
+    ///   In the following example, we will create a Continuous Hidden Markov Model using
+    ///   a univariate Normal distribution to model properly model continuous sequences.
+    ///   <code>
+    ///   // Create continuous sequences. In the sequences below, there
+    ///   //  seems to be two states, one for values between 0 and 1 and
+    ///   //  another for values between 5 and 7. The states seems to be
+    ///   //  switched on every observation.
+    ///   double[][] sequences = new double[][] 
+    ///   {
+    ///       new double[] { 0.1, 5.2, 0.3, 6.7, 0.1, 6.0 },
+    ///       new double[] { 0.2, 6.2, 0.3, 6.3, 0.1, 5.0 },
+    ///       new double[] { 0.1, 7.0, 0.1, 7.0, 0.2, 5.6 },
+    ///   };
+    /// 
+    ///             
+    ///   // Specify a initial normal distribution for the samples.
+    ///   NormalDistribution density = NormalDistribution();
+    /// 
+    ///   // Creates a continuous hidden Markov Model with two states organized in a forward
+    ///   //  topology and an underlying univariate Normal distribution as probability density.
+    ///   var model = new HiddenMarkovModel&lt;NormalDistribution&gt;(new Ergodic(2), density);
+    /// 
+    ///   // Configure the learning algorithms to train the sequence classifier until the
+    ///   // difference in the average log-likelihood changes only by as little as 0.0001
+    ///   var teacher = new BaumWelchLearning&lt;NormalDistribution&gt;(model)
+    ///   {
+    ///       Tolerance = 0.0001,
+    ///       Iterations = 0,
+    ///   };
+    /// 
+    ///   // Fit the model
+    ///   double likelihood = teacher.Run(sequences);
+    /// 
+    ///   // See the probability of the sequences learned
+    ///   double l1 = model.Evaluate(new[] { 0.1, 5.2, 0.3, 6.7, 0.1, 6.0 }); // 0.87
+    ///   double l2 = model.Evaluate(new[] { 0.2, 6.2, 0.3, 6.3, 0.1, 5.0 }); // 1.00
+    /// 
+    ///   // See the probability of an unrelated sequence
+    ///   double l3 = model.Evaluate(new[] { 1.1, 2.2, 1.3, 3.2, 4.2, 1.0 }); // 0.00
+    /// </code>
+    /// </example>
+    /// 
+    /// <example>
+    ///   In the following example, we will create a Discrete Hidden Markov Model
+    ///   using a Generic Discrete Probability Distribution to reproduce the same
+    ///   code example given in <seealso cref="BaumWelchLearning"/> documentation.
+    ///   <code>
+    ///   // Arbitrary-density Markov Models can operate using any
+    ///   // probability distribution, including discrete ones. 
+    ///   
+    ///   // In the follwing example, we will try to create a
+    ///   // Discrete Hidden Markov Model using a discrete
+    ///   // distribution to detect if a given sequence starts
+    ///   // with a zero and has any number of ones after that.
+    ///   
+    ///   double[][] sequences = new double[][] 
+    ///   {
+    ///       new double[] { 0,1,1,1,1,0,1,1,1,1 },
+    ///       new double[] { 0,1,1,1,0,1,1,1,1,1 },
+    ///       new double[] { 0,1,1,1,1,1,1,1,1,1 },
+    ///       new double[] { 0,1,1,1,1,1         },
+    ///       new double[] { 0,1,1,1,1,1,1       },
+    ///       new double[] { 0,1,1,1,1,1,1,1,1,1 },
+    ///       new double[] { 0,1,1,1,1,1,1,1,1,1 },
+    ///   };
+    ///   
+    ///   // Create a new Hidden Markov Model with 3 states and
+    ///   //  a generic discrete distribution with two symbols
+    ///   var hmm = new HiddenMarkovModel.CreateGeneric(3, 2);
+    ///   
+    ///   // We will try to fit the model to the data until the difference in
+    ///   //  the average log-likelihood changes only by as little as 0.0001
+    ///   var teacher = new BaumWelchLearning&lt;UniformDiscreteDistribution&gt;(hmm)
+    ///   { 
+    ///       Tolerance = 0.0001,
+    ///       Iterations = 0 
+    ///   };
+    ///   
+    ///   // Begin model training
+    ///   double ll = teacher.Run(sequences);
+    ///   
+    /// 
+    ///   // Calculate the probability that the given
+    ///   //  sequences originated from the model
+    ///   double l1 = hmm.Evaluate(new double[] { 0, 1 });       // 0.999
+    ///   double l2 = hmm.Evaluate(new double[] { 0, 1, 1, 1 }); // 0.916
+    ///   
+    ///   // Sequences which do not start with zero have much lesser probability.
+    ///   double l3 = hmm.Evaluate(new double[] { 1, 1 });       // 0.000
+    ///   double l4 = hmm.Evaluate(new double[] { 1, 0, 0, 0 }); // 0.000
+    ///   
+    ///   // Sequences which contains few errors have higher probabability
+    ///   //  than the ones which do not start with zero. This shows some
+    ///   //  of the temporal elasticity and error tolerance of the HMMs.
+    ///   double l5 = hmm.Evaluate(new double[] { 0, 1, 0, 1, 1, 1, 1, 1, 1 }); // 0.034
+    ///   double l6 = hmm.Evaluate(new double[] { 0, 1, 1, 1, 1, 1, 1, 0, 1 }); // 0.034
+    ///   </code>
+    /// </example>
     /// 
     public class BaumWelchLearning<TDistribution> : BaseBaumWelchLearning, IUnsupervisedLearning
         where TDistribution : IDistribution
@@ -42,6 +151,15 @@ namespace Accord.Statistics.Models.Markov.Learning
         private double[][][] vectorObservations;
         private Array samples;
         private double[] weights;
+
+        /// <summary>
+        ///   Gets the model being trained.
+        /// </summary>
+        /// 
+        public HiddenMarkovModel<TDistribution> Model
+        {
+            get { return model; }
+        }
 
         /// <summary>
         ///   Gets or sets the distribution fitting options
