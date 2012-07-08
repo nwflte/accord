@@ -293,6 +293,11 @@ namespace Accord.Math.Optimization
         /// 
         public double Minimize(NonlinearObjectiveFunction function)
         {
+            if (function.NumberOfVariables != numberOfVariables)
+                throw new ArgumentOutOfRangeException("function",
+                    "Incorrect number of variables in the objective function. " +
+                    "The number of variables must match the number of variables set in the solver.");
+
             this.Function = function.Function;
             this.Gradient = function.Gradient;
 
@@ -312,6 +317,44 @@ namespace Accord.Math.Optimization
         {
             this.Function = function;
             this.Gradient = gradient;
+
+            return minimize();
+        }
+
+        /// <summary>
+        ///   Maximizes the given function. 
+        /// </summary>
+        /// 
+        /// <param name="function">The function to be maximized.</param>
+        /// 
+        /// <returns>The maximum value found at the <see cref="Solution"/>.</returns>
+        /// 
+        public double Maximize(NonlinearObjectiveFunction function)
+        {
+            if (function.NumberOfVariables != numberOfVariables)
+                throw new ArgumentOutOfRangeException("function", 
+                    "Incorrect number of variables in the objective function. "+
+                    "The number of variables must match the number of variables set in the solver.");
+
+            this.Function = x => -function.Function(x);
+            this.Gradient = x => function.Gradient(x).Multiply(-1);
+
+            return minimize();
+        }
+
+        /// <summary>
+        ///   maximizes the defined function. 
+        /// </summary>
+        /// 
+        /// <param name="function">The function to be maximized.</param>
+        /// <param name="gradient">The gradient of the given <paramref name="function"/>.</param>
+        /// 
+        /// <returns>The maximum value found at the <see cref="Solution"/>.</returns>
+        /// 
+        public double Maximize(Func<double[], double> function, Func<double[], double[]> gradient)
+        {
+            this.Function = x => -function(x);
+            this.Gradient = x => gradient(x).Multiply(-1);
 
             return minimize();
         }
@@ -522,8 +565,12 @@ namespace Accord.Math.Optimization
                     // Minimize the dual problem using current solution
                     currentValue = dualSolver.Minimize(currentSolution);
                 }
-                catch (LineSearchFailedException) { }
-                catch (NotFiniteNumberException) { }
+                catch (LineSearchFailedException)
+                {
+                }
+                catch (NotFiniteNumberException)
+                {
+                }
 
                 // Retrieve the solution found
                 currentSolution = dualSolver.Solution;

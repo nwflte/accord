@@ -31,7 +31,6 @@ namespace Accord.Math.Optimization
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Accord.Math.Decompositions;
 
     /// <summary>
     ///   Goldfarb-Idnani Quadratic Programming Solver.
@@ -223,6 +222,16 @@ namespace Accord.Math.Optimization
         private double[,] constraintMatrix;
         private double[] constraintValues;
 
+        //private double[] work;
+        private int r;
+        private double[] work;
+        private double[] iwrv;
+        private double[] iwzv;
+        private double[] iwuv;
+        private double[] iwrm;
+        private double[] iwsv;
+        private double[] iwnbv;
+
         /// <summary>
         ///   Gets the number of variables in the quadratic problem.
         /// </summary>
@@ -300,8 +309,7 @@ namespace Accord.Math.Optimization
             get { return constraintValues; }
         }
 
-        private double[] work;
-        private int r;
+
 
 
         /// <summary>
@@ -348,16 +356,23 @@ namespace Accord.Math.Optimization
 
             this.constraintMatrix = A;
             this.constraintValues = b;
-            this.NumberOfEqualities = numberOfEqualities;
 
+            this.NumberOfEqualities = numberOfEqualities;
             this.NumberOfConstraints = A.GetLength(0);
+            this.r = Math.Min(NumberOfVariables, NumberOfConstraints);
+
             this.ActiveConstraints = new int[NumberOfConstraints];
             this.Lagrangian = new double[NumberOfConstraints];
-            this.Solution = new double[numberOfVariables];
+            this.Solution = new double[NumberOfVariables];
 
-            this.r = Math.Min(NumberOfVariables, NumberOfConstraints);
-            int workSize = 2 * NumberOfVariables + r * (r + 5) / 2 + 2 * NumberOfConstraints + 1;
-            this.work = new double[workSize];
+            // initialize work vector
+            this.work = new double[NumberOfVariables];
+            this.iwzv = new double[NumberOfVariables];
+            this.iwrv = new double[r];
+            this.iwuv = new double[r + 1];
+            this.iwrm = new double[r * (r + 1) / 2];
+            this.iwsv = new double[NumberOfConstraints];
+            this.iwnbv = new double[NumberOfConstraints];
         }
 
         /// <summary>
@@ -468,9 +483,8 @@ namespace Accord.Math.Optimization
             // Extract lagrange multipliers from the work vector
             ActiveConstraints = activeConstraints.Submatrix(numberOfActiveConstraints);
 
-            int iwrv = 2 * NumberOfVariables + r;
             for (int i = 0; i < ActiveConstraints.Length; i++)
-                Lagrangian[ActiveConstraints[i]] = work[iwrv + i];
+                Lagrangian[ActiveConstraints[i]] = iwuv[i];
         }
 
         private static double[,] createConstraintMatrix(int numberOfVariables,
@@ -576,7 +590,7 @@ namespace Accord.Math.Optimization
         //        deleted after they became active
         //  ierr  int, error code on exit, if
         //          ierr = 0, no problems
-        //           ierr = 1, the minimization problem has no solution
+        //          ierr = 1, the minimization problem has no solution
         //          ierr = 2, problems with decomposing D, in this case sol
         //                     contains garbage!!
         //
@@ -601,21 +615,21 @@ namespace Accord.Math.Optimization
             nact = 0;
 
 
-            int l = (n << 1) + r * (r + 5) / 2 + (q << 1) + 1;
-            System.Diagnostics.Debug.Assert(work.Length >= l);
-
             // Store the initial dvec to calculate below the
             //  unconstrained minima of the critical value.
+
+            Array.Clear(iwzv, 0, iwzv.Length);
+            Array.Clear(iwrv, 0, iwrv.Length);
+            Array.Clear(iwuv, 0, iwuv.Length);
+            Array.Clear(iwrm, 0, iwrm.Length);
+            Array.Clear(iwsv, 0, iwsv.Length);
+            Array.Clear(iwnbv, 0, iwnbv.Length);
 
             for (int i = 0; i < dvec.Length; i++)
                 work[i] = dvec[i];
 
-            for (int i = n; i < l; i++)
-                work[i] = 0.0;
-
             for (int i = 0; i < iact.Length; i++)
                 iact[i] = -1;
-
 
 
             // Get the initial solution
@@ -650,7 +664,7 @@ namespace Accord.Math.Optimization
                         sol[j] += dmat[j, i] * dvec[i];
                 }
 
-                for (int j = 0; j < n; j++)
+                for (int j = 0; j < dvec.Length; j++)
                 {
                     dvec[j] = 0.0;
 
@@ -664,7 +678,9 @@ namespace Accord.Math.Optimization
 
             Value = 0.0;
 
-            System.Diagnostics.Debug.Assert(sol.Length == n);
+
+            // calculate some constants, i.e., from which index on 
+            // the different quantities are stored in the work matrix 
 
             for (int j = 0; j < sol.Length; j++)
             {
@@ -679,35 +695,25 @@ namespace Accord.Math.Optimization
             Value = -Value / 2.0;
             ierr = 0;
 
-            // calculate some constants, i.e., from which index on 
-            // the different quantities are stored in the work matrix 
-
-            int iwzv = n;
-            int iwrv = iwzv + n; // lagrange multipliers
-            int iwuv = iwrv + r;
-            int iwrm = iwuv + r + 1;
-            int iwsv = iwrm + r * (r + 1) / 2;
-            int iwnbv = iwsv + q;
 
             // calculate the norm of each column of the A matrix 
 
-            for (int i = 0; i < q; i++)
+            for (int i = 0; i < iwnbv.Length; i++)
             {
                 sum = 0.0;
 
                 for (int j = 0; j < n; j++)
                     sum += amat[i, j] * amat[i, j];
 
-                work[iwnbv + i] = Math.Sqrt(sum);
+                iwnbv[i] = Math.Sqrt(sum);
             }
 
             nact = 0;
             Iterations = 0;
             Deletions = 0;
 
-        L50:
 
-            // start a new iteration 
+        L50: // start a new iteration 
 
             Iterations++;
 
@@ -715,11 +721,9 @@ namespace Accord.Math.Optimization
             // for the equality constraints we have to check whether the normal 
             // vector has to be negated (as well as bvec in that case) 
 
-            l = iwsv;
+            int l = 0;
 
-            System.Diagnostics.Debug.Assert(bvec.Length == q);
-
-            for (int i = 0; i < bvec.Length; i++, l++)
+            for (int i = 0; i < bvec.Length; i++)
             {
                 sum = -bvec[i];
 
@@ -729,12 +733,12 @@ namespace Accord.Math.Optimization
                 if (i >= meq)
                 {
                     // this is a inequality constraint
-                    work[l] = sum;
+                    iwsv[l] = sum;
                 }
                 else
                 {
                     // this is an equality constraint
-                    work[l] = -Math.Abs(sum);
+                    iwsv[l] = -Math.Abs(sum);
                     if (sum > 0.0)
                     {
                         for (int j = 0; j < n; j++)
@@ -742,13 +746,15 @@ namespace Accord.Math.Optimization
                         bvec[i] = -bvec[i];
                     }
                 }
+
+                l++;
             }
 
             // as safeguard against rounding errors set 
             // already active constraints explicitly to zero 
 
             for (int i = 0; i < nact; i++)
-                work[iwsv + iact[i]] = 0.0;
+                iwsv[iact[i]] = 0.0;
 
             // We weight each violation by the number of non-zero elements in the 
             // corresponding row of A. then we choose the violated constraint which 
@@ -758,12 +764,12 @@ namespace Accord.Math.Optimization
 
             int nvl = -1;
             double temp = 0.0;
-            for (int i = 0; i < q; i++)
+            for (int i = 0; i < iwnbv.Length; i++)
             {
-                if (work[iwsv + i] < temp * work[iwnbv + i])
+                if (iwsv[i] < temp * iwnbv[i])
                 {
                     nvl = i;
-                    temp = work[iwsv + i] / work[iwnbv + i];
+                    temp = iwsv[i] / iwnbv[i];
                 }
 
                 // if (work(iwsv+i) .LT. 0.d0) then 
@@ -782,7 +788,7 @@ namespace Accord.Math.Optimization
             // constraint. J is stored in dmat in this implementation!! 
             // if we drop a constraint, we have to jump back here. 
 
-            for (int i = 0; i < n; i++)
+            for (int i = 0; i < work.Length; i++)
             {
                 sum = 0.0;
 
@@ -794,16 +800,17 @@ namespace Accord.Math.Optimization
 
             // Now calculate z = J_2 d_2 ...
 
-            for (int i = 0; i < n; i++)
-                work[iwzv + i] = 0.0;
+            for (int i = 0; i < iwzv.Length; i++)
+                iwzv[i] = 0.0;
 
-            for (int j = nact; j < n; j++)
-                for (int i = 0; i < n; i++)
-                    work[iwzv + i] += dmat[j, i] * work[j];
+            for (int j = nact; j < work.Length; j++)
+                for (int i = 0; i < iwzv.Length; i++)
+                    iwzv[i] += dmat[j, i] * work[j];
 
             // ... and r = R^{-1} d_1, check also if r has positive elements
             // (among the entries corresponding to inequalities constraints). 
 
+            l1 = 0;
             int it1 = 0;
             double t1 = 0;
             bool t1inf = true;
@@ -811,20 +818,20 @@ namespace Accord.Math.Optimization
             for (int i = nact - 1; i >= 0; i--)
             {
                 sum = work[i];
-                l = iwrm + (i * (i + 3)) / 2 + 1;
-                l1 = l - 1;
+                l = ((i + 1) * (i + 4)) / 2 - 1;
+                l1 = l - i - 1;
 
                 for (int j = i + 1; j < nact; j++)
                 {
-                    sum -= work[l] * work[iwrv + j];
-                    l += j;
+                    sum -= iwrm[l] * iwrv[j];
+                    l += j + 1;
                 }
 
-                sum /= work[l1];
+                sum /= iwrm[l1];
 
-                work[iwrv + i] = sum;
+                iwrv[i] = sum;
 
-                if (iact[i] < meq)
+                if (iact[i] + 1 < meq)
                     continue;
 
                 if (sum <= 0.0)
@@ -843,17 +850,17 @@ namespace Accord.Math.Optimization
 
             if (!t1inf)
             {
-                t1 = work[iwuv + it1] / work[iwrv + it1];
+                t1 = iwuv[it1] / iwrv[it1];
 
                 for (int i = 0; i < nact; i++)
                 {
                     if (iact[i] < meq)
                         continue;
 
-                    if (work[iwrv + i] < 0.0)
+                    if (iwrv[i] < 0.0)
                         continue;
 
-                    temp = work[iwuv + i] / work[iwrv + i];
+                    temp = iwuv[i] / iwrv[i];
 
                     if (temp < t1)
                     {
@@ -863,16 +870,14 @@ namespace Accord.Math.Optimization
                 }
             }
 
+
             // test if the z vector is equal to zero 
 
             sum = 0.0;
-            for (int i = iwzv; i < iwzv + n; i++)
-                sum += work[i] * work[i];
+            for (int i = 0; i < iwzv.Length; i++)
+                sum += iwzv[i] * iwzv[i];
 
-            temp = 1000.0;
-            sum += temp;
-
-            if (temp == sum)
+            if (Math.Abs(sum) < Constants.DoubleEpsilon)
             {
                 // No step in primal space such that the new constraint becomes 
                 // feasible. Take step in dual space and drop a constant. 
@@ -891,9 +896,9 @@ namespace Accord.Math.Optimization
                     // then we continue at step 2(a) (marked by label 55) 
 
                     for (int i = 0; i < nact; i++)
-                        work[iwuv + i] -= t1 * work[iwrv + i];
+                        iwuv[i] -= t1 * iwrv[i];
 
-                    work[iwuv + nact] += t1;
+                    iwuv[nact] += t1;
                     goto L700;
                 }
             }
@@ -904,10 +909,10 @@ namespace Accord.Math.Optimization
                 // keep sum (which is z^Tn^+) to update crval below! 
 
                 sum = 0.0;
-                for (int i = 0; i < n; i++)
-                    sum += work[iwzv + i] * amat[nvl, i];
+                for (int i = 0; i < iwzv.Length; i++)
+                    sum += iwzv[i] * amat[nvl, i];
 
-                tt = -work[iwsv + nvl] / sum;
+                tt = -iwsv[nvl] / sum;
                 bool t2min = true;
 
                 if (!t1inf)
@@ -921,14 +926,14 @@ namespace Accord.Math.Optimization
 
                 // take step in primal and dual space 
                 for (int i = 0; i < sol.Length; i++)
-                    sol[i] += tt * work[iwzv + i];
+                    sol[i] += tt * iwzv[i];
 
-                Value += tt * sum * (tt / 2.0 + work[iwuv + nact]);
+                Value += tt * sum * (tt / 2.0 + iwuv[nact]);
 
                 for (int i = 0; i < nact; i++)
-                    work[iwuv + i] -= tt * work[iwrv + i];
+                    iwuv[i] -= tt * iwrv[i];
 
-                work[iwuv + nact] += tt;
+                iwuv[nact] += tt;
 
                 // if it was a full step, then we check wheter further constraints are 
                 // violated otherwise we can drop the current constraint and iterate once 
@@ -940,16 +945,15 @@ namespace Accord.Math.Optimization
                     // we took a full step. Thus add constraint nvl to the list of active 
                     // constraints and update J and R 
 
-                    nact++;
-                    iact[nact - 1] = nvl;
+                    iact[nact++] = nvl;
 
 
                     // to update R we have to put the first nact-1 components of the d vector 
                     // into column (nact) of R 
 
-                    l = iwrm + ((nact - 1) * (nact)) / 2;
+                    l = ((nact - 1) * (nact)) / 2;
                     for (int i = 0; i < nact - 1; i++, l++)
-                        work[l] = work[i];
+                        iwrm[l] = work[i];
 
                     // if now nact=n, then we just have to add the last element to the new 
                     // row of R. 
@@ -961,7 +965,7 @@ namespace Accord.Math.Optimization
 
                     if (nact == n)
                     {
-                        work[l] = work[n - 1];
+                        iwrm[l] = work[n - 1];
                     }
                     else
                     {
@@ -1019,7 +1023,7 @@ namespace Accord.Math.Optimization
 
                         // l is still pointing to element (nact,nact) of
                         // the matrix R. So store d(nact) in R(nact,nact) 
-                        work[l] = work[nact - 1];
+                        iwrm[l] = work[nact - 1];
                     }
                 }
                 else
@@ -1038,18 +1042,18 @@ namespace Accord.Math.Optimization
 
                     if (nvl >= meq)
                     {
-                        work[iwsv + nvl] = sum;
+                        iwsv[nvl] = sum;
                     }
                     else
                     {
-                        work[iwsv + nvl] = -Math.Abs(sum);
+                        iwsv[nvl] = -Math.Abs(sum);
 
                         if (sum > 0.0)
                         {
                             for (int j = 0; j < n; j++)
                                 amat[nvl, j] = -amat[nvl, j];
 
-                            bvec[nact] = -bvec[nact];
+                            bvec[nvl] = -bvec[nvl];
                         }
                     }
 
@@ -1069,7 +1073,6 @@ namespace Accord.Math.Optimization
                 goto L799;
 
 
-
         L797: // After updating one row of R (column of J) we will also come back here
 
             // We have to find the Givens rotation which will reduce the element
@@ -1078,24 +1081,24 @@ namespace Accord.Math.Optimization
             // of R to column (it1). Then l  will point to element (1,it1+1) of R 
             // and l1 will point to element (it1+1,it1+1) of R.
 
-            l = iwrm + (it1 * (it1 + 1)) / 2;
-            l1 = l + it1;
+            l = ((it1 + 1) * (it1 + 2)) / 2;
+            l1 = l + it1 + 1;
 
-            if (work[l1] == 0.0)
+            if (iwrm[l1 - 1] == 0.0)
                 goto L798;
 
-            gc = Math.Max(Math.Abs(work[l1 - 1]), Math.Abs(work[l1]));
-            gs = Math.Min(Math.Abs(work[l1 - 1]), Math.Abs(work[l1]));
-            temp = Special.Sign(gc * Math.Sqrt(1.0 + gs * gs / (gc * gc)), work[l1 - 1]);
-            gc = work[l1 - 1] / temp;
-            gs = work[l1] / temp;
+            gc = Math.Max(Math.Abs(iwrm[l1 - 1]), Math.Abs(iwrm[l1]));
+            gs = Math.Min(Math.Abs(iwrm[l1 - 1]), Math.Abs(iwrm[l1]));
+            temp = Special.Sign(gc * Math.Sqrt(1.0 + gs * gs / (gc * gc)), iwrm[l1 - 1]);
+            gc = iwrm[l1 - 1] / temp;
+            gs = iwrm[l1] / temp;
 
 
-            // The Givens rotatin is done with the matrix (gc gs, gs -gc). If gc is
+            // The Givens rotation is done with the matrix (gc gs, gs -gc). If gc is
             // one, then element (it1+1,it1+1) of R is zero compared with element 
             // (it1,it1+1). Hence we don't have to do anything. if gc is zero, then
             // we just have to switch row (it1) and row (it1+1) of R and column (it1)
-            // and column (it1+1) of J. Since we swithc rows in R and columns in J,
+            // and column (it1+1) of J. Since we switch rows in R and columns in J,
             // we can ignore the sign of gs. Otherwise we have to apply the Givens 
             // rotation to these rows/columns. 
 
@@ -1104,11 +1107,11 @@ namespace Accord.Math.Optimization
 
             if (gc == 0.0)
             {
-                for (int i = it1; i < nact; i++)
+                for (int i = it1 + 2; i <= nact; i++)
                 {
-                    temp = work[l1 - 1];
-                    work[l1 - 1] = work[l1];
-                    work[l1] = temp;
+                    temp = iwrm[l1 - 1];
+                    iwrm[l1 - 1] = iwrm[l1];
+                    iwrm[l1] = temp;
                     l1 += i;
                 }
 
@@ -1123,11 +1126,11 @@ namespace Accord.Math.Optimization
             {
                 double nu = gs / (gc + 1.0);
 
-                for (int i = it1; i < nact; i++)
+                for (int i = it1 + 2; i <= nact; i++)
                 {
-                    temp = gc * work[l1 - 1] + gs * work[l1];
-                    work[l1] = nu * (work[l1 - 1] + temp) - work[l1];
-                    work[l1 - 1] = temp;
+                    temp = gc * iwrm[l1 - 1] + gs * iwrm[l1];
+                    iwrm[l1] = nu * (iwrm[l1 - 2] + temp) - iwrm[l1];
+                    iwrm[l1 - 1] = temp;
                     l1 += i;
                 }
 
@@ -1142,20 +1145,19 @@ namespace Accord.Math.Optimization
         L798:
 
             // shift column (it1+1) of R to column (it1) (that is, the first it1 
-            // elements). The posit1on of element (1,it1+1) of R was calculated 
+            // elements). The position of element (1,it1+1) of R was calculated 
             // above and stored in l. 
 
             l1 = l - it1;
-            for (int i = 0; i < it1; i++)
+            for (int i = 0; i <= it1; i++, l++, l1++)
             {
-                work[l1] = work[l];
-                l++; l1++;
+                iwrm[l1 - 1] = iwrm[l];
             }
 
             // update vector u and iact as necessary 
             // Continue with updating the matrices J and R 
 
-            work[iwuv + it1] = work[iwuv + it1 + 1];
+            iwuv[it1] = iwuv[it1 + 1];
             iact[it1] = iact[it1 + 1];
             it1++;
 
@@ -1164,16 +1166,14 @@ namespace Accord.Math.Optimization
 
         L799:
 
-            work[iwuv + nact - 1] = work[iwuv + nact];
-            work[iwuv + nact] = 0.0;
-            iact[nact - 1] = 0;
+            iwuv[nact - 1] = iwuv[nact];
+            iwuv[nact] = 0.0;
+            iact[nact - 1] = -1;
 
             nact--;
             Deletions++;
 
             goto L55;
-
-
         }
 
         private void dpori(double[,] a)

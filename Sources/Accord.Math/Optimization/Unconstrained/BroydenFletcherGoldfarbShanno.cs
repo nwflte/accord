@@ -358,7 +358,7 @@ namespace Accord.Math.Optimization
 
             x = new double[numberOfVariables];
             for (int i = 0; i < x.Length; i++)
-                x[i] = Accord.Math.Tools.Random.NextDouble() * 2 - 1;
+                x[i] = Accord.Math.Tools.Random.NextDouble() * 2.0 - 1.0;
         }
 
         /// <summary>
