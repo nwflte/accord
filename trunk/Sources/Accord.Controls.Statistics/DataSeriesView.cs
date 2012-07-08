@@ -30,51 +30,78 @@ namespace Accord.Controls
     using Accord.Math;
     using Accord.Statistics.Visualizations;
     using ZedGraph;
+    using System.Threading;
+    using System.Collections.Specialized;
+using System.Collections.ObjectModel;
+
+    [Serializable]
+    public class DataChartViewSeries
+    {
+        public Color Color { get; set; }
+        public String Label { get; set; }
+        public String DataPropertyName { get; set; }
+    }
 
     /// <summary>
     ///   Scatterplot visualization control.
     /// </summary>
     /// 
-    public partial class ScatterplotView : UserControl
+    public partial class DataChartView : UserControl
     {
 
+        private CurveList series;
         private object dataSource;
-        private Scatterplot scatterplot;
 
+        private string title;
         private string xAxisDataMember;
-        private string yAxisDataMember;
-        private string labelDataMember;
-
-        private CurveList classes;
+        private Collection<DataChartViewSeries> seriesDataMember;
 
 
         #region Constructor
+
         /// <summary>
         ///   Constructs a new instance of the ScatterplotView.
         /// </summary>
-        public ScatterplotView()
+        /// 
+        public DataChartView(Scatterplot scatterplot)
         {
             InitializeComponent();
 
-            scatterplot = new Scatterplot();
+            series = new CurveList();
+            seriesDataMember = new Collection<DataChartViewSeries>();
 
-            classes = new CurveList();
+            zedGraphControl.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            zedGraphControl.GraphPane.Border.IsVisible = false;
+            zedGraphControl.GraphPane.Border.Color = Color.White;
+            zedGraphControl.GraphPane.Border.Width = 0;
 
-            zedGraphControl.GraphPane.Title.Text = "Scatter Plot";
-            zedGraphControl.GraphPane.XAxis.Title.Text = "X";
-            zedGraphControl.GraphPane.YAxis.Title.Text = "Y";
-            zedGraphControl.GraphPane.Fill = new Fill(Color.WhiteSmoke);
-            zedGraphControl.GraphPane.CurveList = classes;
+            // zedGraphControl.IsAntiAlias = true;
+            zedGraphControl.GraphPane.Fill = new Fill(Color.White);
+            zedGraphControl.GraphPane.Chart.Fill = new Fill(Color.GhostWhite);
+            zedGraphControl.GraphPane.CurveList = series;
+
+            zedGraphControl.GraphPane.Legend.IsVisible = true;
+            zedGraphControl.GraphPane.Legend.Position = LegendPos.Right;
+            zedGraphControl.GraphPane.Legend.IsShowLegendSymbols = false;
+
+            zedGraphControl.GraphPane.XAxis.MajorGrid.IsVisible = true;
+            zedGraphControl.GraphPane.XAxis.MinorGrid.IsVisible = false;
+            zedGraphControl.GraphPane.XAxis.MajorGrid.Color = Color.LightGray;
+            zedGraphControl.GraphPane.XAxis.MajorGrid.IsZeroLine = false;
+            zedGraphControl.GraphPane.XAxis.Scale.MaxGrace = 0;
+            zedGraphControl.GraphPane.XAxis.Scale.MinGrace = 0;
+
+            zedGraphControl.GraphPane.YAxis.MinorGrid.IsVisible = false;
+            zedGraphControl.GraphPane.YAxis.MajorGrid.IsVisible = true;
+            zedGraphControl.GraphPane.YAxis.MajorGrid.Color = Color.LightGray;
+            zedGraphControl.GraphPane.YAxis.MajorGrid.IsZeroLine = false;
+            zedGraphControl.GraphPane.YAxis.Scale.MaxGrace = 0;
+            zedGraphControl.GraphPane.YAxis.Scale.MinGrace = 0;
         }
         #endregion
 
 
         #region Properties
-        /// <summary>
-        ///   Gets the underlying scatterplot being shown by this control.
-        /// </summary>
-        /// 
-        public Scatterplot Scatterplot { get { return scatterplot; } }
 
         /// <summary>
         ///   Gets or sets a data source for this control.
@@ -117,45 +144,21 @@ namespace Accord.Controls
         /// </summary>
         /// 
         [DefaultValue(null)]
-        public string DataMemberY
+        public Collection<DataChartViewSeries> DataMemberY
         {
-            get { return yAxisDataMember; }
-            set
-            {
-                yAxisDataMember = value;
-
-                if (!this.DesignMode)
-                    OnDataBind();
-            }
-        }
-
-        /// <summary>
-        ///   Gets or sets the member of the data source 
-        ///   to be shown, if applicable.
-        /// </summary>
-        /// 
-        [DefaultValue(null)]
-        public string DataMemberLabels
-        {
-            get { return labelDataMember; }
-            set
-            {
-                labelDataMember = value;
-
-                if (!this.DesignMode)
-                    OnDataBind();
-            }
+            get { return seriesDataMember; }
         }
 
         /// <summary>
         ///   Gets a reference to the underlying ZedGraph
-        ///   control used to draw the histogram.
+        ///   control used to draw the scatterplot.
         /// </summary>
         /// 
         public ZedGraphControl Graph
         {
             get { return zedGraphControl; }
         }
+
         #endregion
 
 
@@ -165,44 +168,57 @@ namespace Accord.Controls
         /// 
         public void UpdateGraph()
         {
+            zedGraphControl.GraphPane.Title.Text = scatterplot.Title;
+            zedGraphControl.GraphPane.XAxis.Title.Text = Scatterplot.XAxisTitle;
+            zedGraphControl.GraphPane.YAxis.Title.Text = Scatterplot.YAxisTitle;
+
             classes.Clear();
 
-            if (scatterplot.LabelAxis == null)
+            if (scatterplot.Classes != null)
             {
-                // Create space for unlabelled data
-                PointPairList unlabelled = new PointPairList(scatterplot.XAxis, scatterplot.YAxis);
-
-                LineItem item = new LineItem(String.Empty, unlabelled, Color.Black, SymbolType.Diamond);
-
-                item.Line.IsVisible = false;
-                item.Symbol.Border.IsVisible = false;
-                item.Symbol.Fill = new Fill(Color.Black);
-
-                classes.Add(item);
-            }
-            else
-            {
-                ColorSequenceCollection colors = new ColorSequenceCollection(scatterplot.Classes.Count);
-
-                // Create a curve item for each of the labels
-                for (int i = 0; i < scatterplot.Classes.Count; i++)
+                if (scatterplot.Classes.Count == 0)
                 {
-                    // retrieve the x,y pairs for the label
-                    double[] x = scatterplot.Classes[i].XAxis;
-                    double[] y = scatterplot.Classes[i].YAxis;
-                    PointPairList list = new PointPairList(x, y);
+                    zedGraphControl.GraphPane.Legend.IsVisible = false;
 
-                    LineItem item = new LineItem(String.Empty, list, colors[i], SymbolType.Diamond);
+                    // Create space for unlabelled data
+                    PointPairList list = new PointPairList(scatterplot.XAxis, scatterplot.YAxis);
+
+                    LineItem item = new LineItem(String.Empty, list, Color.Black, SymbolType.Default);
 
                     item.Line.IsVisible = false;
                     item.Symbol.Border.IsVisible = false;
-                    item.Symbol.Fill = new Fill(colors[i]);
+                    item.Symbol.Fill = new Fill(Color.Black);
 
                     classes.Add(item);
+                }
+                else
+                {
+                    zedGraphControl.GraphPane.Legend.IsVisible = true;
+                    var colors = new ColorSequenceCollection(scatterplot.Classes.Count);
+
+                    // Create a curve item for each of the labels
+                    for (int i = 0; i < scatterplot.Classes.Count; i++)
+                    {
+                        // retrieve the x,y pairs for the label
+                        double[] x = scatterplot.Classes[i].XAxis;
+                        double[] y = scatterplot.Classes[i].YAxis;
+                        PointPairList list = new PointPairList(x, y);
+
+                        LineItem item = new LineItem(scatterplot.Classes[i].Label.ToString(),
+                            list, colors[i], SymbolType.Default);
+
+                        item.Line.IsVisible = false;
+                        item.Symbol.Border.IsVisible = false;
+                        item.Symbol.Fill = new Fill(colors[i]);
+
+                        classes.Add(item);
+                    }
                 }
 
                 zedGraphControl.AxisChange();
                 zedGraphControl.Invalidate();
+
+                zedGraphControl.ZoomPane(zedGraphControl.GraphPane, 1.1, PointF.Empty, false);
             }
         }
 
@@ -212,9 +228,6 @@ namespace Accord.Controls
         {
             if (dataSource == null)
                 return;
-
-            if (scatterplot == null)
-                scatterplot = new Scatterplot();
 
             double[] x = null;
             double[] y = null;
@@ -284,9 +297,8 @@ namespace Accord.Controls
             this.scatterplot.Compute(x, y, z);
 
             this.UpdateGraph();
-
-
         }
+
 
     }
 }

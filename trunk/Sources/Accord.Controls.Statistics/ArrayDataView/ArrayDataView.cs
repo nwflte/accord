@@ -178,14 +178,16 @@ namespace Accord.Controls
         {
             if (array.Rank == 2)
             {
-                if (columnNames.Length != array.GetLength(1))
-                    throw new ArgumentException("Column names must correspond to array columns.", "columnNames");
-                
-                if (rowNames.Length != array.GetLength(0)) 
-                    throw new ArgumentException("Row names must correspond to array rows.", "rowNames");
-
                 rowCount = array.GetLength(0);
                 colCount = array.GetLength(1);
+
+                if (columnNames != null && columnNames.Length != colCount)
+                    throw new ArgumentException("Column names must correspond to array columns.", "columnNames");
+
+                if (rowNames != null && rowNames.Length != rowCount) 
+                    throw new ArgumentException("Row names must correspond to array rows.", "rowNames");
+
+
                 type = ArrayDataType.Multidimensional;
             }
             else
@@ -217,13 +219,19 @@ namespace Accord.Controls
                 }
             }
 
-            this.columnNames = new string[columnNames.Length];
-            for (int i = 0; i < columnNames.Length; i++)
-                this.columnNames[i] = columnNames[i].ToString();
+            if (columnNames != null)
+            {
+                this.columnNames = new string[columnNames.Length];
+                for (int i = 0; i < columnNames.Length; i++)
+                    this.columnNames[i] = columnNames[i].ToString();
+            }
 
-            this.rowNames = new string[rowNames.Length];
-            for (int i = 0; i < rowNames.Length; i++)
-                this.rowNames[i] = rowNames[i].ToString();
+            if (rowNames != null)
+            {
+                this.rowNames = new string[rowNames.Length];
+                for (int i = 0; i < rowNames.Length; i++)
+                    this.rowNames[i] = rowNames[i].ToString();
+            }
         }
 
 
