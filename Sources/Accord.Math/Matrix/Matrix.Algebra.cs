@@ -1441,10 +1441,9 @@ namespace Accord.Math
         /// 
         /// <param name="a">A matrix.</param>
         /// <param name="b">A vector.</param>
-        /// 
         /// <param name="dimension">The dimension to add the vector to.</param>
         /// 
-        public static double[,] Subtract(this double[,] a, double[] b, int dimension)
+        public static double[,] Subtract(this double[,] a, double[] b, int dimension = 0)
         {
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
@@ -1662,6 +1661,28 @@ namespace Accord.Math
         public static double[] Subtract(this double[] vector, double x, bool inPlace = false)
         {
             double[] r = inPlace ? vector : new double[vector.Length];
+
+            for (int i = 0; i < vector.Length; i++)
+                r[i] = vector[i] - x;
+
+            return r;
+        }
+
+
+        /// <summary>
+        ///   Subtracts a scalar from a vector.
+        /// </summary>
+        /// 
+        /// <param name="vector">A vector.</param>
+        /// <param name="x">A scalar.</param>
+        /// <param name="inPlace">True to perform the operation in-place,
+        /// overwriting the original array; false to return a new array.</param>
+        /// 
+        /// <returns>The subtraction of given scalar from all elements in the given vector.</returns>
+        /// 
+        public static int[] Subtract(this int[] vector, int x, bool inPlace = false)
+        {
+            int[] r = inPlace ? vector : new int[vector.Length];
 
             for (int i = 0; i < vector.Length; i++)
                 r[i] = vector[i] - x;

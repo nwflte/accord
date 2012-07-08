@@ -30,35 +30,79 @@ namespace Accord.Math
     {
 
         /// <summary>
-        ///   Returns the LHS solution matrix if the matrix is square or the least squares solution otherwise.
+        ///   Returns the solution matrix if the matrix is square or the least squares solution otherwise.
         /// </summary>
+        /// 
+        /// <param name="matrix">The matrix for the linear problem.</param>
+        /// <param name="rightSide">The right side <c>b</c>.</param>
+        /// <param name="leastSquares">True to produce a solution even if the 
+        ///   <paramref name="matrix"/> is singular; false otherwise. Default is false.</param>
+        /// 
         /// <remarks>
-        ///   Please note that this does not check if the matrix is non-singular before attempting to solve.
+        ///   Please note that this does not check if the matrix is non-singular
+        ///   before attempting to solve. If a least squares solution is desired
+        ///   in case the matrix is singular, pass true to the <paramref name="leastSquares"/>
+        ///   parameter when calling this function.
         /// </remarks>
-        public static double[,] Solve(this double[,] matrix, double[,] rightSide)
+        /// 
+        public static double[,] Solve(this double[,] matrix, double[,] rightSide, bool leastSquares = false)
         {
             int rows = matrix.GetLength(0);
             int cols = matrix.GetLength(1);
 
-            if (rows <= cols)
+            if (rows != rightSide.GetLength(0))
+                throw new DimensionMismatchException("rightSide",
+                    "The number of rows in the right hand side matrix must be "
+                    + "equal to the number of rows in the problem matrix.");
+
+            if (leastSquares)
+            {
+                return new SingularValueDecomposition(matrix,
+                       computeLeftSingularVectors: true,
+                       computeRightSingularVectors: true,
+                       autoTranspose: true).Solve(rightSide);
+            }
+
+
+            if (rows == cols)
             {
                 // Solve by LU Decomposition if matrix is square.
                 return new LuDecomposition(matrix).Solve(rightSide);
             }
             else
             {
-                // Solve by QR Decomposition if not.
-                return new QrDecomposition(matrix).Solve(rightSide);
+                if (cols < rows)
+                {
+                    // Solve by QR Decomposition if not.
+                    return new QrDecomposition(matrix).Solve(rightSide);
+                }
+                else
+                {
+                    return new SingularValueDecomposition(matrix,
+                        computeLeftSingularVectors: true,
+                        computeRightSingularVectors: true,
+                        autoTranspose: true).Solve(rightSide);
+                }
             }
         }
 
         /// <summary>
-        ///   Returns the LHS solution vector if the matrix is square or the least squares solution otherwise.
+        ///   Returns the solution matrix if the matrix is square or the least squares solution otherwise.
         /// </summary>
+        /// 
+        /// <param name="matrix">The matrix for the linear problem.</param>
+        /// <param name="rightSide">The right side <c>b</c>.</param>
+        /// <param name="leastSquares">True to produce a solution even if the 
+        ///   <paramref name="matrix"/> is singular; false otherwise. Default is false.</param>
+        /// 
         /// <remarks>
-        ///   Please note that this does not check if the matrix is non-singular before attempting to solve.
+        ///   Please note that this does not check if the matrix is non-singular
+        ///   before attempting to solve. If a least squares solution is desired
+        ///   in case the matrix is singular, pass true to the <paramref name="leastSquares"/>
+        ///   parameter when calling this function.
         /// </remarks>
-        public static double[] Solve(this double[,] matrix, double[] rightSide)
+        /// 
+        public static double[] Solve(this double[,] matrix, double[] rightSide, bool leastSquares = false)
         {
             if (matrix == null)
                 throw new ArgumentNullException("matrix");
@@ -69,15 +113,39 @@ namespace Accord.Math
             int rows = matrix.GetLength(0);
             int cols = matrix.GetLength(1);
 
-            if (rows <= cols)
+            if (rows != rightSide.Length)
+                throw new DimensionMismatchException("rightSide",
+                    "The right hand side vector must have the same length"
+                     + "as there are rows of the problem matrix.");
+
+            if (leastSquares)
+            {
+                return new SingularValueDecomposition(matrix,
+                      computeLeftSingularVectors: true,
+                      computeRightSingularVectors: true,
+                      autoTranspose: true).Solve(rightSide);
+            }
+
+
+            if (rows == cols)
             {
                 // Solve by LU Decomposition if matrix is square.
                 return new LuDecomposition(matrix).Solve(rightSide);
             }
             else
             {
-                // Solve by QR Decomposition if not.
-                return new QrDecomposition(matrix).Solve(rightSide);
+                if (cols < rows)
+                {
+                    // Solve by QR Decomposition if not.
+                    return new QrDecomposition(matrix).Solve(rightSide);
+                }
+                else
+                {
+                    return new SingularValueDecomposition(matrix,
+                        computeLeftSingularVectors: true,
+                        computeRightSingularVectors: true,
+                        autoTranspose: true).Solve(rightSide);
+                }
             }
         }
 

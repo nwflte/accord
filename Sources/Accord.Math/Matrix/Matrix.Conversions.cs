@@ -80,7 +80,7 @@ namespace Accord.Math
         }
 
         /// <summary>
-        ///   Converts a multidimensional array into a jagged-array.
+        ///   Converts a multidimensional array into a jagged array.
         /// </summary>
         public static T[][] ToArray<T>(this T[,] matrix)
         {
@@ -88,7 +88,7 @@ namespace Accord.Math
         }
 
         /// <summary>
-        ///   Converts a multidimensional array into a jagged-array.
+        ///   Converts a multidimensional array into a jagged array.
         /// </summary>
         public static T[][] ToArray<T>(this T[,] matrix, bool transpose)
         {
@@ -141,6 +141,22 @@ namespace Accord.Math
 
             return result;
         }
+
+        /// <summary>
+        ///   Converts a double-precision floating point multidimensional
+        ///   array into a single-precision floating point multidimensional
+        ///   array.
+        /// </summary>
+        public static double[] ToDouble(this float[] vector)
+        {
+            double[] result = new double[vector.Length];
+
+            for (int i = 0; i < vector.Length; i++)
+                result[i] = vector[i];
+
+            return result;
+        }
+
 
         /// <summary>
         ///   Converts a double-precision floating point multidimensional
@@ -205,6 +221,32 @@ namespace Accord.Math
         }
 
         /// <summary>
+        ///   Truncates a double matrix to integer values.
+        /// </summary>
+        /// <param name="matrix">The matrix to be truncated.</param>
+        /// 
+        public unsafe static int[,] ToInt32(this double[,] matrix)
+        {
+            int rows = matrix.GetLength(0);
+            int cols = matrix.GetLength(1);
+            int length = matrix.Length;
+
+            int[,] result = new int[rows, cols];
+
+            fixed (double* srcPtr = matrix)
+            fixed (int* dstPtr = result)
+            {
+                double* src = srcPtr;
+                int* dst = dstPtr;
+
+                for (int i = 0; i < length; i++, src++, dst++)
+                    *dst = (int)*src;
+            }
+
+            return result;
+        }
+
+        /// <summary>
         ///   Converts a integer vector into a double vector.
         /// </summary>
         /// <param name="vector">The vector to be converted.</param>
@@ -264,25 +306,6 @@ namespace Accord.Math
         ///   Converts a DataTable to a double[,] array.
         /// </summary>
         /// 
-        public static double[,] ToMatrix(this DataTable table, string[] columnNames)
-        {
-            double[,] m = new double[table.Rows.Count, table.Columns.Count];
-            columnNames = new string[table.Columns.Count];
-
-            for (int j = 0; j < table.Columns.Count; j++)
-            {
-                for (int i = 0; i < table.Rows.Count; i++)
-                    m[i, j] = convertToDouble(table.Rows[i][j]);
-
-                columnNames[j] = table.Columns[j].Caption;
-            }
-            return m;
-        }
-
-        /// <summary>
-        ///   Converts a DataTable to a double[,] array.
-        /// </summary>
-        /// 
         public static DataTable ToTable(this double[,] matrix)
         {
             int cols = matrix.GetLength(1);
@@ -309,7 +332,7 @@ namespace Accord.Math
                 table.Columns.Add(columnNames[i], typeof(double));
 
             for (int i = 0; i < rows; i++)
-                table.Rows.Add(matrix.GetRow(i));
+                table.Rows.Add(matrix.GetRow(i).Convert(x => (object)x));
 
             return table;
         }

@@ -223,7 +223,9 @@ namespace Accord.Math
 
                 for (int j = 0; j < objA[i].Length; j++)
                 {
-                    if (!objA[i][j].Equals(objB[i][j]))
+                    T elemA = objA[i][j];
+                    T elemB = objB[i][j];
+                    if (!elemA.Equals(elemB))
                         return false;
                 }
             }
@@ -795,8 +797,19 @@ namespace Accord.Math
         }
 
         /// <summary>
+        ///    Gets whether a matrix is singular.
+        /// </summary>
+        /// 
+        public static bool IsSingular(this double[,] matrix)
+        {
+            if (matrix == null) throw new ArgumentNullException("matrix");
+            return !(new LuDecomposition(matrix).Nonsingular);
+        }
+
+        /// <summary>
         ///    Gets whether a matrix is positive definite.
         /// </summary>
+        /// 
         public static bool IsPositiveDefinite(this double[,] matrix)
         {
             if (matrix == null) throw new ArgumentNullException("matrix");
@@ -807,6 +820,7 @@ namespace Accord.Math
         /// <summary>
         ///    Gets whether a matrix is positive definite.
         /// </summary>
+        /// 
         public static bool IsPositiveDefinite(this double[][] matrix)
         {
             if (matrix == null) throw new ArgumentNullException("matrix");
@@ -939,7 +953,7 @@ namespace Accord.Math
 
         /// <summary>Calculates the matrix Sum vector.</summary>
         /// <param name="matrix">A matrix whose sums will be calculated.</param>
-        /// <param name="dimension">The dimension in which the sum will be calculated.</param>
+        /// <param name="dimension">The dimension in which the sum will be calculated. Default is 0.</param>
         /// <returns>Returns a vector containing the sums of each variable in the given matrix.</returns>
         public static int[] Sum(this int[,] matrix, int dimension)
         {
