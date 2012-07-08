@@ -24,6 +24,9 @@ namespace Accord.Imaging.Filters
 {
     using System.Drawing;
     using System.Drawing.Imaging;
+    using AForge.Imaging.Filters;
+    using System.Collections.Generic;
+    using AForge.Imaging;
 
     /// <summary>
     ///   Filter to mark (highlight) feature points in a image.
@@ -35,16 +38,28 @@ namespace Accord.Imaging.Filters
     /// <para>The filter accepts 8 bpp grayscale and 24 color images for processing.</para>
     /// </remarks>
     /// 
-    public class FeaturesMarker
+    public class FeaturesMarker : BaseFilter
     {
 
-        private SurfPoint[] points;
+        private IEnumerable<SpeededUpRobustFeaturePoint> points;
+        private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>();
+
+
+        /// <summary>
+        ///   Format translations dictionary.
+        /// </summary>
+        /// 
+        public override Dictionary<PixelFormat, PixelFormat> FormatTranslations
+        {
+            get { return formatTranslations; }
+        }
+
 
         /// <summary>
         ///   Gets or sets the set of points to mark.
         /// </summary>
         /// 
-        public SurfPoint[] Points
+        public IEnumerable<SpeededUpRobustFeaturePoint> Points
         {
             get { return points; }
             set { points = value; }
@@ -54,29 +69,50 @@ namespace Accord.Imaging.Filters
         ///   Initializes a new instance of the <see cref="FeaturesMarker"/> class.
         /// </summary>
         /// 
-        public FeaturesMarker(SurfPoint[] points)
+        public FeaturesMarker()
+            : this(new SpeededUpRobustFeaturePoint[0])
         {
-            this.points = points;
         }
 
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="FeaturesMarker"/> class.
+        /// </summary>
+        /// 
+        public FeaturesMarker(IEnumerable<SpeededUpRobustFeaturePoint> points)
+        {
+            this.points = points;
+
+            formatTranslations[PixelFormat.Format8bppIndexed] = PixelFormat.Format24bppRgb;
+            formatTranslations[PixelFormat.Format24bppRgb] = PixelFormat.Format24bppRgb;
+            formatTranslations[PixelFormat.Format32bppArgb] = PixelFormat.Format32bppArgb;
+        }
+
+        private GrayscaleToRGB toRGB = new GrayscaleToRGB();
 
         /// <summary>
         ///   Process the filter on the specified image.
         /// </summary>
         /// 
-        /// <param name="image">Source image data.</param>
+        /// <param name="sourceData">Source image data.</param>
+        /// <param name="destinationData">Destination image data.</param>
         ///
-        public Bitmap Apply(Bitmap image)
+        protected override void ProcessFilter(UnmanagedImage sourceData, UnmanagedImage destinationData)
         {
-            image = AForge.Imaging.Image.Clone(image, PixelFormat.Format24bppRgb);
+            if (sourceData.PixelFormat == PixelFormat.Format8bppIndexed)
+                sourceData = toRGB.Apply(sourceData);
+            
+            // Copy image contents
+            sourceData.Copy(destinationData);
 
-            using (Graphics g = Graphics.FromImage(image))
+            Bitmap managedImage = destinationData.ToManagedImage(makeCopy: false);
+
+            using (Graphics g = Graphics.FromImage(managedImage))
             using (Pen positive = new Pen(Color.Red))
             using (Pen negative = new Pen(Color.Blue))
             using (Pen line = new Pen(Color.FromArgb(0, 255, 0)))
             {
                 // mark all points
-                foreach (SurfPoint p in points)
+                foreach (SpeededUpRobustFeaturePoint p in points)
                 {
                     int S = 2 * (int)(2.5f * p.Scale);
                     int R = (int)(S / 2f);
@@ -92,7 +128,6 @@ namespace Accord.Imaging.Filters
                 }
             }
 
-            return image;
         }
     }
 }
