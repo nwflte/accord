@@ -46,10 +46,13 @@ namespace Accord.Statistics
         #region Arrays Measures
 
         /// <summary>
-        ///   Computes the Mean of the given values.
+        ///   Computes the mean of the given values.
         /// </summary>
+        /// 
         /// <param name="values">A double array containing the vector members.</param>
+        /// 
         /// <returns>The mean of the given data.</returns>
+        /// 
         public static double Mean(this double[] values)
         {
             double sum = 0.0;
@@ -61,10 +64,85 @@ namespace Accord.Statistics
         }
 
         /// <summary>
-        ///   Computes the Mean of the given values.
+        ///   Computes the Geometric mean of the given values.
         /// </summary>
+        /// 
         /// <param name="values">A double array containing the vector members.</param>
+        /// 
+        /// <returns>The geometric mean of the given data.</returns>
+        /// 
+        public static double GeometricMean(this double[] values)
+        {
+            double sum = 1.0;
+
+            for (int i = 0; i < values.Length; i++)
+                sum *= values[i];
+
+            return Math.Pow(sum, 1.0 / values.Length);
+        }
+
+        /// <summary>
+        ///   Computes the log geometric mean of the given values.
+        /// </summary>
+        /// 
+        /// <param name="values">A double array containing the vector members.</param>
+        /// 
+        /// <returns>The log geometric mean of the given data.</returns>
+        /// 
+        public static double LogGeometricMean(this double[] values)
+        {
+            double lnsum = 0;
+
+            for (int i = 0; i < values.Length; i++)
+                lnsum += Math.Log(values[i]);
+
+            return lnsum / values.Length;
+        }
+
+        /// <summary>
+        ///   Computes the geometric mean of the given values.
+        /// </summary>
+        /// 
+        /// <param name="values">A double array containing the vector members.</param>
+        /// 
+        /// <returns>The geometric mean of the given data.</returns>
+        /// 
+        public static double GeometricMean(this int[] values)
+        {
+            double sum = 1.0;
+
+            for (int i = 0; i < values.Length; i++)
+                sum *= values[i];
+
+            return Math.Pow(sum, 1.0 / values.Length);
+        }
+
+        /// <summary>
+        ///   Computes the log geometric mean of the given values.
+        /// </summary>
+        /// 
+        /// <param name="values">A double array containing the vector members.</param>
+        /// 
+        /// <returns>The log geometric mean of the given data.</returns>
+        /// 
+        public static double LogGeometricMean(this int[] values)
+        {
+            double lnsum = 0;
+
+            for (int i = 0; i < values.Length; i++)
+                lnsum += Math.Log(values[i]);
+
+            return lnsum / values.Length;
+        }
+
+        /// <summary>
+        ///   Computes the mean of the given values.
+        /// </summary>
+        /// 
+        /// <param name="values">A double array containing the vector members.</param>
+        /// 
         /// <returns>The mean of the given data.</returns>
+        /// 
         public static double Mean(this ushort[] values)
         {
             double sum = 0.0;
@@ -76,10 +154,13 @@ namespace Accord.Statistics
         }
 
         /// <summary>
-        ///   Computes the Mean of the given values.
+        ///   Computes the mean of the given values.
         /// </summary>
+        /// 
         /// <param name="values">A float array containing the vector members.</param>
+        /// 
         /// <returns>The mean of the given data.</returns>
+        /// 
         public static float Mean(this float[] values)
         {
             float sum = 0;
@@ -93,8 +174,11 @@ namespace Accord.Statistics
         /// <summary>
         ///   Computes the Standard Deviation of the given values.
         /// </summary>
+        /// 
         /// <param name="values">A double array containing the vector members.</param>
+        /// 
         /// <returns>The standard deviation of the given data.</returns>
+        /// 
         public static double StandardDeviation(this double[] values)
         {
             return StandardDeviation(values, Mean(values));
@@ -103,8 +187,11 @@ namespace Accord.Statistics
         /// <summary>
         ///   Computes the Standard Deviation of the given values.
         /// </summary>
+        /// 
         /// <param name="values">A double array containing the vector members.</param>
+        /// 
         /// <returns>The standard deviation of the given data.</returns>
+        /// 
         public static double StandardDeviation(this float[] values)
         {
             return StandardDeviation(values, Mean(values));
@@ -160,7 +247,7 @@ namespace Accord.Statistics
         /// </summary>
         /// <param name="values">A double array containing the vector members.</param>
         /// <returns>The median of the given data.</returns>
-        public static double Median(double[] values)
+        public static double Median(this double[] values)
         {
             return Median(values, false);
         }
@@ -173,7 +260,7 @@ namespace Accord.Statistics
         /// <param name="alreadySorted">A boolean parameter informing if the given values have already been sorted.</param>
         /// <returns>The median of the given data.</returns>
         /// 
-        public static double Median(double[] values, bool alreadySorted)
+        public static double Median(this double[] values, bool alreadySorted)
         {
             return Median(values, 0, values.Length, alreadySorted);
         }
@@ -189,7 +276,7 @@ namespace Accord.Statistics
         /// 
         /// <returns>The median of the given data.</returns>
         /// 
-        public static double Median(double[] values, int startIndex, int length, bool alreadySorted)
+        public static double Median(this double[] values, int startIndex, int length, bool alreadySorted)
         {
             if (!alreadySorted)
             {
@@ -213,7 +300,7 @@ namespace Accord.Statistics
         /// <param name="range">The inter-quartile range for the values.</param>
         /// <returns>The second quartile, the median of the given data.</returns>
         /// 
-        public static double Quartiles(double[] values, out DoubleRange range, bool alreadySorted)
+        public static double Quartiles(this double[] values, out DoubleRange range, bool alreadySorted)
         {
             double q1, q3;
             double median = Quartiles(values, out q1, out q3, alreadySorted);
@@ -287,7 +374,7 @@ namespace Accord.Statistics
         /// <param name="values">A double precision number array containing the vector members.</param>
         /// <returns>The variance of the given data.</returns>
         /// 
-        public static double Variance(double[] values)
+        public static double Variance(this double[] values)
         {
             return Variance(values, Mean(values));
         }
@@ -303,7 +390,7 @@ namespace Accord.Statistics
         ///
         /// <returns>The variance of the given data.</returns>
         /// 
-        public static double Variance(double[] values, bool unbiased)
+        public static double Variance(this double[] values, bool unbiased)
         {
             return Variance(values, Mean(values), unbiased);
         }
@@ -314,7 +401,7 @@ namespace Accord.Statistics
         /// <param name="values">A single precision number array containing the vector members.</param>
         /// <returns>The variance of the given data.</returns>
         /// 
-        public static double Variance(float[] values)
+        public static double Variance(this float[] values)
         {
             return Variance(values, Mean(values));
         }
@@ -328,7 +415,7 @@ namespace Accord.Statistics
         ///   
         /// <returns>The variance of the given data.</returns>
         /// 
-        public static double Variance(double[] values, double mean)
+        public static double Variance(this double[] values, double mean)
         {
             return Variance(values, mean, true);
         }
@@ -345,7 +432,7 @@ namespace Accord.Statistics
         ///   
         /// <returns>The variance of the given data.</returns>
         /// 
-        public static double Variance(double[] values, double mean, bool unbiased)
+        public static double Variance(this double[] values, double mean, bool unbiased)
         {
             double variance = 0.0;
 
@@ -375,7 +462,7 @@ namespace Accord.Statistics
         /// <param name="mean">The mean of the array, if already known.</param>
         /// <returns>The variance of the given data.</returns>
         /// 
-        public static float Variance(float[] values, float mean)
+        public static float Variance(this float[] values, float mean)
         {
             float variance = 0;
 
@@ -394,10 +481,35 @@ namespace Accord.Statistics
         /// </summary>
         /// 
         /// <param name="samples">The grouped samples.</param>
+        /// <param name="unbiased">True to obtain an unbiased estimate; false otherwise. Default is true.</param>
+        /// 
+        public static double PooledStandardDeviation(bool unbiased, params double[][] samples)
+        {
+            return Math.Sqrt(PooledVariance(unbiased, samples));
+        }
+
+        /// <summary>
+        ///   Computes the pooled standard deviation of the given values.
+        /// </summary>
+        /// 
+        /// <param name="samples">The grouped samples.</param>
         /// 
         public static double PooledStandardDeviation(params double[][] samples)
         {
-            return Math.Sqrt(PooledVariance(samples));
+            return Math.Sqrt(PooledVariance(true, samples));
+        }
+
+        /// <summary>
+        ///   Computes the pooled standard deviation of the given values.
+        /// </summary>
+        /// 
+        /// <param name="sizes">The number of samples used to compute the <paramref name="variances"/>.</param>
+        /// <param name="variances">The unbiased variances for the samples.</param>
+        /// <param name="unbiased">True to obtain an unbiased estimate; false otherwise. Default is true.</param>
+        /// 
+        public static double PooledStandardDeviation(int[] sizes, double[] variances, bool unbiased = true)
+        {
+            return Math.Sqrt(PooledVariance(sizes, variances, unbiased));
         }
 
         /// <summary>
@@ -408,6 +520,21 @@ namespace Accord.Statistics
         /// 
         public static double PooledVariance(params double[][] samples)
         {
+            return PooledVariance(true, samples);
+        }
+
+        /// <summary>
+        ///   Computes the pooled variance of the given values.
+        /// </summary>
+        /// 
+        /// <param name="samples">The grouped samples.</param>
+        /// <param name="unbiased">True to obtain an unbiased estimate; false otherwise. Default is true.</param>
+        /// 
+        public static double PooledVariance(bool unbiased, params double[][] samples)
+        {
+            if (samples == null)
+                throw new ArgumentNullException("samples");
+
             double sum = 0;
             int length = 0;
 
@@ -417,7 +544,15 @@ namespace Accord.Statistics
                 double var = Variance(values);
 
                 sum += (values.Length - 1) * var;
-                length += (values.Length - 1);
+
+                if (unbiased)
+                {
+                    length += values.Length - 1;
+                }
+                else
+                {
+                    length += values.Length;
+                }
             }
 
             return sum / length;
@@ -428,9 +563,10 @@ namespace Accord.Statistics
         /// </summary>
         /// 
         /// <param name="sizes">The number of samples used to compute the <paramref name="variances"/>.</param>
-        /// <param name="variances">The variances of the samples.</param>
+        /// <param name="variances">The unbiased variances for the samples.</param>
+        /// <param name="unbiased">True to obtain an unbiased estimate; false otherwise. Default is true.</param>
         /// 
-        public static double PooledVariance(int[] sizes, double[] variances)
+        public static double PooledVariance(int[] sizes, double[] variances, bool unbiased = true)
         {
             if (sizes == null)
                 throw new ArgumentNullException("sizes");
@@ -449,11 +585,20 @@ namespace Accord.Statistics
                 double var = variances[i];
 
                 sum += (sizes[i] - 1) * var;
-                length += (sizes[i] - 1);
+
+                if (unbiased)
+                {
+                    length += sizes[i] - 1;
+                }
+                else
+                {
+                    length += sizes[i];
+                }
             }
 
-            return sum / length;
+            return sum / (double)length;
         }
+
 
         /// <summary>
         ///   Computes the Mode of the given values.
@@ -462,7 +607,7 @@ namespace Accord.Statistics
         /// <param name="values">A number array containing the vector values.</param>
         /// <returns>The variance of the given data.</returns>
         /// 
-        public static double Mode(double[] values)
+        public static double Mode(this double[] values)
         {
             int[] itemCount = new int[values.Length];
             double[] itemArray = new double[values.Length];
@@ -506,7 +651,7 @@ namespace Accord.Statistics
         /// <param name="values">A number array containing the vector values.</param>
         /// <returns>The variance of the given data.</returns>
         /// 
-        public static int Mode(int[] values)
+        public static int Mode(this int[] values)
         {
             int[] itemCount = new int[values.Length];
             int[] itemArray = new int[values.Length];
@@ -544,17 +689,107 @@ namespace Accord.Statistics
         }
 
         /// <summary>
+        ///   Computes the Mode of the given values.
+        /// </summary>
+        /// 
+        /// <param name="values">A number array containing the vector values.</param>
+        /// <returns>The variance of the given data.</returns>
+        /// 
+        public static T Mode<T>(this T[] values)
+        {
+            int[] itemCount = new int[values.Length];
+            T[] itemArray = new T[values.Length];
+            int count = 0;
+
+            for (int i = 0; i < values.Length; i++)
+            {
+                int index = Array.IndexOf<T>(itemArray, values[i], 0, count);
+
+                if (index >= 0)
+                {
+                    itemCount[index]++;
+                }
+                else
+                {
+                    itemArray[count] = values[i];
+                    itemCount[count] = 1;
+                    count++;
+                }
+            }
+
+            int maxValue = 0;
+            int maxIndex = 0;
+
+            for (int i = 0; i < count; i++)
+            {
+                if (itemCount[i] > maxValue)
+                {
+                    maxValue = itemCount[i];
+                    maxIndex = i;
+                }
+            }
+
+            return itemArray[maxIndex];
+        }
+
+        /// <summary>
         ///   Computes the Covariance between two values arrays.
         /// </summary>
         /// 
         /// <param name="vector1">A number array containing the first vector elements.</param>
         /// <param name="vector2">A number array containing the second vector elements.</param>
+        /// <param name="unbiased">
+        ///   True to compute the unbiased estimate of the population
+        ///   variance, false for the sample variance.</param>
+        /// 
         /// <returns>The variance of the given data.</returns>
         /// 
-        public static double[,] Covariance(double[] vector1, double[] vector2)
+        public static double Covariance(this double[] vector1, double[] vector2, bool unbiased = true)
         {
-            double[][] vectors = new double[][] { vector1, vector2 };
-            return Scatter(vectors, Mean(vectors, 1), vectors.Length, 1);
+            return Covariance(vector1, Mean(vector1), vector2, Mean(vector2), unbiased);
+        }
+
+        /// <summary>
+        ///   Computes the Covariance between two values arrays.
+        /// </summary>
+        /// 
+        /// <param name="vector1">A number array containing the first vector elements.</param>
+        /// <param name="vector2">A number array containing the second vector elements.</param>
+        /// <param name="mean1">The mean value of <paramref name="vector1"/>, if known.</param>
+        /// <param name="mean2">The mean value of <paramref name="vector2"/>, if known.</param>
+        /// <param name="unbiased">
+        ///   True to compute the unbiased estimate of the population
+        ///   variance, false for the sample variance.</param>
+        /// 
+        /// <returns>The variance of the given data.</returns>
+        /// 
+        public static double Covariance(this double[] vector1, double mean1, double[] vector2, double mean2, bool unbiased = true)
+        {
+            if (vector1 == null) throw new ArgumentNullException("vector1");
+            if (vector2 == null) throw new ArgumentNullException("vector2");
+
+            if (vector1.Length != vector2.Length)
+                throw new DimensionMismatchException("vector2");
+
+            double covariance = 0.0;
+
+            for (int i = 0; i < vector1.Length; i++)
+            {
+                double x = vector1[i] - mean1;
+                double y = vector2[i] - mean2;
+                covariance += x * y;
+            }
+
+            if (unbiased)
+            {
+                // Sample variance
+                return covariance / (vector1.Length - 1);
+            }
+            else
+            {
+                // Population variance
+                return covariance / vector1.Length;
+            }
         }
 
         /// <summary>
@@ -572,7 +807,7 @@ namespace Accord.Statistics
         /// <param name="values">A number array containing the vector values.</param>
         /// <returns>The skewness of the given data.</returns>
         /// 
-        public static double Skewness(double[] values)
+        public static double Skewness(this double[] values)
         {
             double mean = Mean(values);
             return Skewness(values, mean, StandardDeviation(values, mean));
@@ -596,7 +831,7 @@ namespace Accord.Statistics
         /// 
         /// <returns>The skewness of the given data.</returns>
         /// 
-        public static double Skewness(double[] values, double mean, double standardDeviation)
+        public static double Skewness(this double[] values, double mean, double standardDeviation)
         {
             int n = values.Length;
             double sum = 0.0;
@@ -614,7 +849,7 @@ namespace Accord.Statistics
         /// </summary>
         /// <param name="values">A number array containing the vector values.</param>
         /// <returns>The kurtosis of the given data.</returns>
-        public static double Kurtosis(double[] values)
+        public static double Kurtosis(this double[] values)
         {
             double mean = Mean(values);
             return Kurtosis(values, mean, StandardDeviation(values, mean));
@@ -627,7 +862,7 @@ namespace Accord.Statistics
         /// <param name="mean">The values' mean, if already known.</param>
         /// <param name="standardDeviation">The values' variance, if already known.</param>
         /// <returns>The kurtosis of the given data.</returns>
-        public static double Kurtosis(double[] values, double mean, double standardDeviation)
+        public static double Kurtosis(this double[] values, double mean, double standardDeviation)
         {
             int n = values.Length;
 
@@ -895,7 +1130,7 @@ namespace Accord.Statistics
         ///   </code>
         /// </example>
         /// 
-        public static double[] Mean(double[,] matrix)
+        public static double[] Mean(this double[,] matrix)
         {
             return Mean(matrix, 0);
         }
@@ -930,7 +1165,7 @@ namespace Accord.Statistics
         ///   </code>
         /// </example>
         /// 
-        public static double[] Mean(double[,] matrix, int dimension)
+        public static double[] Mean(this double[,] matrix, int dimension)
         {
             int rows = matrix.GetLength(0);
             int cols = matrix.GetLength(1);
@@ -1005,7 +1240,7 @@ namespace Accord.Statistics
         ///   </code>
         /// </example>
         /// 
-        public static double[] Mean(double[][] matrix)
+        public static double[] Mean(this double[][] matrix)
         {
             return Mean(matrix, 0);
         }
@@ -1040,7 +1275,7 @@ namespace Accord.Statistics
         ///   </code>
         /// </example>
         /// 
-        public static double[] Mean(double[][] matrix, int dimension)
+        public static double[] Mean(this double[][] matrix, int dimension)
         {
             int rows = matrix.Length;
             if (rows == 0) return new double[0];
@@ -1094,7 +1329,7 @@ namespace Accord.Statistics
         /// 
         /// <returns>Returns a vector containing the means of the given matrix.</returns>
         /// 
-        public static double[] Mean(double[][] matrix, double[] weights)
+        public static double[] Mean(this double[][] matrix, double[] weights)
         {
             return WeightedMean(matrix, weights, 0);
         }
@@ -1130,7 +1365,7 @@ namespace Accord.Statistics
         /// 
         /// <returns>Returns a vector containing the standard deviations of the given matrix.</returns>
         /// 
-        public static double[] StandardDeviation(double[,] matrix)
+        public static double[] StandardDeviation(this double[,] matrix)
         {
             return StandardDeviation(matrix, Mean(matrix));
         }
@@ -1311,7 +1546,7 @@ namespace Accord.Statistics
         /// 
         /// <returns>Returns a vector containing the medians of the given matrix.</returns>
         /// 
-        public static double[] Median(double[,] matrix)
+        public static double[] Median(this double[,] matrix)
         {
             int rows = matrix.GetLength(0);
             int cols = matrix.GetLength(1);
@@ -1345,7 +1580,7 @@ namespace Accord.Statistics
         /// 
         /// <returns>Returns a vector containing the medians of the given matrix.</returns>
         /// 
-        public static double[] Median(double[][] matrix)
+        public static double[] Median(this double[][] matrix)
         {
             if (matrix == null) throw new ArgumentNullException("matrix");
 
@@ -1486,6 +1721,62 @@ namespace Accord.Statistics
             return mode;
         }
 
+        /// <summary>
+        ///   Calculates the matrix Modes vector.
+        /// </summary>
+        /// 
+        /// <param name="matrix">A matrix whose modes will be calculated.</param>
+        /// 
+        /// <returns>Returns a vector containing the modes of the given matrix.</returns>
+        /// 
+        public static T[] Mode<T>(this T[][] matrix)
+        {
+            int rows = matrix.Length;
+            int cols = matrix[0].Length;
+
+            T[] mode = new T[cols];
+
+            for (int i = 0; i < cols; i++)
+            {
+                int[] itemCount = new int[rows];
+                T[] itemArray = new T[rows];
+                int count = 0;
+
+                // for each row
+                for (int j = 0; j < matrix.Length; j++)
+                {
+                    int index = Array.IndexOf<T>(itemArray, matrix[j][i], 0, count);
+
+                    if (index >= 0)
+                    {
+                        itemCount[index]++;
+                    }
+                    else
+                    {
+                        itemArray[count] = matrix[j][i];
+                        itemCount[count] = 1;
+                        count++;
+                    }
+                }
+
+                int maxValue = 0;
+                int maxIndex = 0;
+
+                for (int j = 0; j < count; j++)
+                {
+                    if (itemCount[j] > maxValue)
+                    {
+                        maxValue = itemCount[j];
+                        maxIndex = j;
+                    }
+                }
+
+                mode[i] = itemArray[maxIndex];
+            }
+
+            return mode;
+        }
+
 
         /// <summary>
         ///   Computes the Skewness for the given values.
@@ -1499,7 +1790,7 @@ namespace Accord.Statistics
         /// </remarks>
         /// <param name="matrix">A number matrix containing the matrix values.</param>
         /// <returns>The skewness of the given data.</returns>
-        public static double[] Skewness(double[,] matrix)
+        public static double[] Skewness(this double[,] matrix)
         {
             double[] means = Mean(matrix);
             return Skewness(matrix, means, StandardDeviation(matrix, means));
@@ -1508,6 +1799,7 @@ namespace Accord.Statistics
         /// <summary>
         ///   Computes the Skewness vector for the given matrix.
         /// </summary>
+        /// 
         /// <remarks>
         ///   Skewness characterizes the degree of asymmetry of a distribution
         ///   around its mean. Positive skewness indicates a distribution with
@@ -1515,11 +1807,14 @@ namespace Accord.Statistics
         ///   skewness indicates a distribution with an asymmetric tail extending
         ///   towards more negative values.
         /// </remarks>
+        /// 
         /// <param name="matrix">A number array containing the vector values.</param>
         /// <param name="means">The values' mean, if already known.</param>
         /// <param name="standardDeviations">The values' standard deviations, if already known.</param>
+        /// 
         /// <returns>The skewness of the given data.</returns>
-        public static double[] Skewness(double[,] matrix, double[] means, double[] standardDeviations)
+        /// 
+        public static double[] Skewness(this double[,] matrix, double[] means, double[] standardDeviations)
         {
             int n = matrix.GetLength(0);
             double[] skewness = new double[matrix.GetLength(1)];
@@ -1541,6 +1836,7 @@ namespace Accord.Statistics
         /// <summary>
         ///   Computes the Skewness vector for the given matrix.
         /// </summary>
+        /// 
         /// <remarks>
         ///   Skewness characterizes the degree of asymmetry of a distribution
         ///   around its mean. Positive skewness indicates a distribution with
@@ -1548,11 +1844,14 @@ namespace Accord.Statistics
         ///   skewness indicates a distribution with an asymmetric tail extending
         ///   towards more negative values.
         /// </remarks>
+        /// 
         /// <param name="matrix">A number array containing the vector values.</param>
         /// <param name="means">The values' mean, if already known.</param>
         /// <param name="standardDeviations">The values' standard deviations, if already known.</param>
+        /// 
         /// <returns>The skewness of the given data.</returns>
-        public static double[] Skewness(double[][] matrix, double[] means, double[] standardDeviations)
+        /// 
+        public static double[] Skewness(this double[][] matrix, double[] means, double[] standardDeviations)
         {
             int n = matrix.Length;
             double[] skewness = new double[means.Length];
@@ -1576,9 +1875,12 @@ namespace Accord.Statistics
         /// <summary>
         ///   Computes the Kurtosis vector for the given matrix.
         /// </summary>
+        /// 
         /// <param name="matrix">A number multi-dimensional array containing the matrix values.</param>
+        /// 
         /// <returns>The kurtosis vector of the given data.</returns>
-        public static double[] Kurtosis(double[,] matrix)
+        /// 
+        public static double[] Kurtosis(this double[,] matrix)
         {
             double[] means = Mean(matrix);
             return Kurtosis(matrix, means, StandardDeviation(matrix, means));
@@ -1587,11 +1889,14 @@ namespace Accord.Statistics
         /// <summary>
         ///   Computes the Kurtosis vector for the given matrix.
         /// </summary>
+        /// 
         /// <param name="matrix">A number multi-dimensional array containing the matrix values.</param>
         /// <param name="means">The values' mean vector, if already known.</param>
         /// <param name="standardDeviations">The values' standard deviation vector, if already known.</param>
+        /// 
         /// <returns>The kurtosis vector of the given data.</returns>
-        public static double[] Kurtosis(double[,] matrix, double[] means, double[] standardDeviations)
+        /// 
+        public static double[] Kurtosis(this double[,] matrix, double[] means, double[] standardDeviations)
         {
             int n = matrix.GetLength(0);
             double[] kurtosis = new double[matrix.GetLength(1)];
@@ -1617,7 +1922,7 @@ namespace Accord.Statistics
         /// <param name="means">The values' mean vector, if already known.</param>
         /// <param name="standardDeviations">The values' standard deviation vector, if already known.</param>
         /// <returns>The kurtosis vector of the given data.</returns>
-        public static double[] Kurtosis(double[][] matrix, double[] means, double[] standardDeviations)
+        public static double[] Kurtosis(this double[][] matrix, double[] means, double[] standardDeviations)
         {
             int rows = matrix.Length;
 
@@ -1641,8 +1946,10 @@ namespace Accord.Statistics
         /// <summary>
         ///   Computes the Standard Error vector for a given matrix.
         /// </summary>
+        /// 
         /// <param name="matrix">A number multi-dimensional array containing the matrix values.</param>
         /// <returns>Returns the standard error vector for the matrix.</returns>
+        /// 
         public static double[] StandardError(double[,] matrix)
         {
             return StandardError(matrix.GetLength(0), StandardDeviation(matrix));
@@ -1651,17 +1958,21 @@ namespace Accord.Statistics
         /// <summary>
         ///   Computes the Standard Error vector for a given matrix.
         /// </summary>
+        /// 
         /// <param name="samples">The number of samples in the matrix.</param>
         /// <param name="standardDeviations">The values' standard deviation vector, if already known.</param>
+        /// 
         /// <returns>Returns the standard error vector for the matrix.</returns>
+        /// 
         public static double[] StandardError(int samples, double[] standardDeviations)
         {
             double[] standardErrors = new double[standardDeviations.Length];
-            double sqrt = System.Math.Sqrt(samples);
+
+            double sqrtN = System.Math.Sqrt(samples);
+
             for (int i = 0; i < standardDeviations.Length; i++)
-            {
-                standardErrors[i] = standardDeviations[i] / sqrt;
-            }
+                standardErrors[i] = standardDeviations[i] / sqrtN;
+
             return standardErrors;
         }
 
@@ -1669,14 +1980,18 @@ namespace Accord.Statistics
         /// <summary>
         ///   Calculates the covariance matrix of a sample matrix.
         /// </summary>
+        /// 
         /// <remarks>
         ///   In statistics and probability theory, the covariance matrix is a matrix of
         ///   covariances between elements of a vector. It is the natural generalization
         ///   to higher dimensions of the concept of the variance of a scalar-valued
         ///   random variable.
         /// </remarks>
+        /// 
         /// <param name="matrix">A number multi-dimensional array containing the matrix values.</param>
+        /// 
         /// <returns>The covariance matrix.</returns>
+        /// 
         public static double[,] Covariance(this double[,] matrix)
         {
             return Covariance(matrix, Mean(matrix));
@@ -1685,18 +2000,22 @@ namespace Accord.Statistics
         /// <summary>
         ///   Calculates the covariance matrix of a sample matrix.
         /// </summary>
+        /// 
         /// <remarks>
         ///   In statistics and probability theory, the covariance matrix is a matrix of
         ///   covariances between elements of a vector. It is the natural generalization
         ///   to higher dimensions of the concept of the variance of a scalar-valued
         ///   random variable.
         /// </remarks>
+        /// 
         /// <param name="matrix">A number multi-dimensional array containing the matrix values.</param>
         /// <param name="dimension">
         ///   The dimension of the matrix to consider as observations. Pass 0 if the matrix has
         ///   observations as rows and variables as columns, pass 1 otherwise. Default is 0.
         /// </param>
+        /// 
         /// <returns>The covariance matrix.</returns>
+        /// 
         public static double[,] Covariance(this double[,] matrix, int dimension)
         {
             return Scatter(matrix, Mean(matrix, dimension), matrix.GetLength(dimension) - 1, dimension);
@@ -1705,15 +2024,19 @@ namespace Accord.Statistics
         /// <summary>
         ///   Calculates the covariance matrix of a sample matrix.
         /// </summary>        
+        /// 
         /// <remarks>
         ///   In statistics and probability theory, the covariance matrix is a matrix of
         ///   covariances between elements of a vector. It is the natural generalization
         ///   to higher dimensions of the concept of the variance of a scalar-valued
         ///   random variable.
         /// </remarks>
+        /// 
         /// <param name="matrix">A number multi-dimensional array containing the matrix values.</param>
         /// <param name="means">The values' mean vector, if already known.</param>
+        /// 
         /// <returns>The covariance matrix.</returns>
+        /// 
         public static double[,] Covariance(this double[,] matrix, double[] means)
         {
             return Scatter(matrix, means, matrix.GetLength(0) - 1, 0);
@@ -1723,15 +2046,19 @@ namespace Accord.Statistics
         /// <summary>
         ///   Calculates the scatter matrix of a sample matrix.
         /// </summary>
+        /// 
         /// <remarks>
         ///   By dividing the Scatter matrix by the sample size, we get the population
         ///   Covariance matrix. By dividing by the sample size minus one, we get the
         ///   sample Covariance matrix.
         /// </remarks>
+        /// 
         /// <param name="matrix">A number multi-dimensional array containing the matrix values.</param>
         /// <param name="means">The values' mean vector, if already known.</param>
+        /// 
         /// <returns>The covariance matrix.</returns>
-        public static double[,] Scatter(double[,] matrix, double[] means)
+        /// 
+        public static double[,] Scatter(this double[,] matrix, double[] means)
         {
             return Scatter(matrix, means, 1.0, 0);
         }
@@ -1739,16 +2066,20 @@ namespace Accord.Statistics
         /// <summary>
         ///   Calculates the scatter matrix of a sample matrix.
         /// </summary>
+        /// 
         /// <remarks>
         ///   By dividing the Scatter matrix by the sample size, we get the population
         ///   Covariance matrix. By dividing by the sample size minus one, we get the
         ///   sample Covariance matrix.
         /// </remarks>
+        /// 
         /// <param name="matrix">A number multi-dimensional array containing the matrix values.</param>
         /// <param name="means">The values' mean vector, if already known.</param>
         /// <param name="divisor">A real number to divide each member of the matrix.</param>
+        /// 
         /// <returns>The covariance matrix.</returns>
-        public static double[,] Scatter(double[,] matrix, double[] means, double divisor)
+        /// 
+        public static double[,] Scatter(this double[,] matrix, double[] means, double divisor)
         {
             return Scatter(matrix, means, divisor, 0);
         }
@@ -1756,18 +2087,22 @@ namespace Accord.Statistics
         /// <summary>
         ///   Calculates the scatter matrix of a sample matrix.
         /// </summary>
+        /// 
         /// <remarks>
         ///   By dividing the Scatter matrix by the sample size, we get the population
         ///   Covariance matrix. By dividing by the sample size minus one, we get the
         ///   sample Covariance matrix.
         /// </remarks>
+        /// 
         /// <param name="matrix">A number multi-dimensional array containing the matrix values.</param>
         /// <param name="means">The values' mean vector, if already known.</param>
         /// <param name="dimension">
         ///   Pass 0 to if mean vector is a row vector, 1 otherwise. Default value is 0.
         /// </param>
+        /// 
         /// <returns>The covariance matrix.</returns>
-        public static double[,] Scatter(double[,] matrix, double[] means, int dimension)
+        /// 
+        public static double[,] Scatter(this double[,] matrix, double[] means, int dimension)
         {
             return Scatter(matrix, means, 1.0, dimension);
         }
@@ -1775,19 +2110,23 @@ namespace Accord.Statistics
         /// <summary>
         ///   Calculates the scatter matrix of a sample matrix.
         /// </summary>
+        /// 
         /// <remarks>
         ///   By dividing the Scatter matrix by the sample size, we get the population
         ///   Covariance matrix. By dividing by the sample size minus one, we get the
         ///   sample Covariance matrix.
         /// </remarks>
+        /// 
         /// <param name="matrix">A number multi-dimensional array containing the matrix values.</param>
         /// <param name="means">The values' mean vector, if already known.</param>
         /// <param name="divisor">A real number to divide each member of the matrix.</param>
         /// <param name="dimension">
         ///   Pass 0 if the mean vector is a row vector, 1 otherwise. Default value is 0.
         /// </param>
+        /// 
         /// <returns>The covariance matrix.</returns>
-        public static double[,] Scatter(double[,] matrix, double[] means, double divisor, int dimension)
+        /// 
+        public static double[,] Scatter(this double[,] matrix, double[] means, double divisor, int dimension)
         {
             int rows = matrix.GetLength(0);
             int cols = matrix.GetLength(1);
@@ -1843,14 +2182,17 @@ namespace Accord.Statistics
         /// <summary>
         ///   Calculates the covariance matrix of a sample matrix.
         /// </summary> 
+        /// 
         /// <remarks>
         ///   In statistics and probability theory, the covariance matrix is a matrix of
         ///   covariances between elements of a vector. It is the natural generalization
         ///   to higher dimensions of the concept of the variance of a scalar-valued
         ///   random variable.
         /// </remarks>
+        /// 
         /// <param name="matrix">A number multi-dimensional array containing the matrix values.</param>
         /// <returns>The covariance matrix.</returns>
+        /// 
         public static double[,] Covariance(this double[][] matrix)
         {
             return Covariance(matrix, Mean(matrix));
@@ -1859,18 +2201,22 @@ namespace Accord.Statistics
         /// <summary>
         ///   Calculates the covariance matrix of a sample matrix.
         /// </summary>
+        /// 
         /// <remarks>
         ///   In statistics and probability theory, the covariance matrix is a matrix of
         ///   covariances between elements of a vector. It is the natural generalization
         ///   to higher dimensions of the concept of the variance of a scalar-valued
         ///   random variable.
         /// </remarks>
+        /// 
         /// <param name="matrix">A number multi-dimensional array containing the matrix values.</param>
         /// <param name="dimension">
         ///   The dimension of the matrix to consider as observations. Pass 0 if the matrix has
         ///   observations as rows and variables as columns, pass 1 otherwise. Default is 0.
         /// </param>
+        /// 
         /// <returns>The covariance matrix.</returns>
+        /// 
         public static double[,] Covariance(this double[][] matrix, int dimension)
         {
             int size = (dimension == 0) ? matrix.Length : matrix[0].Length;
@@ -1880,15 +2226,19 @@ namespace Accord.Statistics
         /// <summary>
         ///   Calculates the covariance matrix of a sample matrix.
         /// </summary> 
+        /// 
         /// <remarks>
         ///   In statistics and probability theory, the covariance matrix is a matrix of
         ///   covariances between elements of a vector. It is the natural generalization
         ///   to higher dimensions of the concept of the variance of a scalar-valued
         ///   random variable.
         /// </remarks>
+        /// 
         /// <param name="matrix">A number multi-dimensional array containing the matrix values.</param>
         /// <param name="means">The values' mean vector, if already known.</param>
+        /// 
         /// <returns>The covariance matrix.</returns>
+        /// 
         public static double[,] Covariance(this double[][] matrix, double[] means)
         {
             return Scatter(matrix, means, matrix.Length - 1, 0);
@@ -1898,15 +2248,19 @@ namespace Accord.Statistics
         /// <summary>
         ///   Calculates the scatter matrix of a sample matrix.
         /// </summary>
+        /// 
         /// <remarks>
         ///   By dividing the Scatter matrix by the sample size, we get the population
         ///   Covariance matrix. By dividing by the sample size minus one, we get the
         ///   sample Covariance matrix.
         /// </remarks>
+        /// 
         /// <param name="matrix">A number multi-dimensional array containing the matrix values.</param>
         /// <param name="means">The values' mean vector, if already known.</param>
+        /// 
         /// <returns>The covariance matrix.</returns>
-        public static double[,] Scatter(double[][] matrix, double[] means)
+        /// 
+        public static double[,] Scatter(this double[][] matrix, double[] means)
         {
             return Scatter(matrix, means, 1.0, 0);
         }
@@ -1923,7 +2277,7 @@ namespace Accord.Statistics
         /// <param name="means">The values' mean vector, if already known.</param>
         /// <param name="divisor">A real number to divide each member of the matrix.</param>
         /// <returns>The covariance matrix.</returns>
-        public static double[,] Scatter(double[][] matrix, double[] means, double divisor)
+        public static double[,] Scatter(this double[][] matrix, double[] means, double divisor)
         {
             return Scatter(matrix, means, divisor, 0);
         }
@@ -1931,18 +2285,22 @@ namespace Accord.Statistics
         /// <summary>
         ///   Calculates the scatter matrix of a sample matrix.
         /// </summary>
+        /// 
         /// <remarks>
         ///   By dividing the Scatter matrix by the sample size, we get the population
         ///   Covariance matrix. By dividing by the sample size minus one, we get the
         ///   sample Covariance matrix.
         /// </remarks>
+        /// 
         /// <param name="matrix">A number multi-dimensional array containing the matrix values.</param>
         /// <param name="divisor">A real number to divide each member of the matrix.</param>
         /// <param name="dimension">
         ///   Pass 0 to if mean vector is a row vector, 1 otherwise. Default value is 0.
         /// </param>
+        /// 
         /// <returns>The covariance matrix.</returns>
-        public static double[,] Scatter(double[][] matrix, double divisor, int dimension = 0)
+        /// 
+        public static double[,] Scatter(this double[][] matrix, double divisor, int dimension = 0)
         {
             return Scatter(matrix, Mean(matrix), divisor, dimension);
         }
@@ -1950,18 +2308,22 @@ namespace Accord.Statistics
         /// <summary>
         ///   Calculates the scatter matrix of a sample matrix.
         /// </summary>
+        /// 
         /// <remarks>
         ///   By dividing the Scatter matrix by the sample size, we get the population
         ///   Covariance matrix. By dividing by the sample size minus one, we get the
         ///   sample Covariance matrix.
         /// </remarks>
+        /// 
         /// <param name="matrix">A number multi-dimensional array containing the matrix values.</param>
         /// <param name="means">The values' mean vector, if already known.</param>
         /// <param name="dimension">
         ///   Pass 0 to if mean vector is a row vector, 1 otherwise. Default value is 0.
         /// </param>
+        /// 
         /// <returns>The covariance matrix.</returns>
-        public static double[,] Scatter(double[][] matrix, double[] means, int dimension)
+        /// 
+        public static double[,] Scatter(this double[][] matrix, double[] means, int dimension)
         {
             return Scatter(matrix, means, 1.0, dimension);
         }
@@ -2700,7 +3062,8 @@ namespace Accord.Statistics
         /// <summary>
         ///   Returns a random sample of size k from a population of size n.
         /// </summary>
-        public static int[] Random(int n, int k)
+        /// 
+        public static int[] RandomSample(int n, int k)
         {
             int[] idx = Tools.Random(n);
             return idx.Submatrix(k);
@@ -2709,6 +3072,7 @@ namespace Accord.Statistics
         /// <summary>
         ///   Returns a random permutation of size n.
         /// </summary>
+        /// 
         public static int[] Random(int n)
         {
             Random random = Accord.Math.Tools.Random;
@@ -2716,7 +3080,7 @@ namespace Accord.Statistics
             double[] x = new double[n];
             int[] idx = Matrix.Indices(0, n);
 
-            for (int i = 0; i < n; i++)
+            for (int i = 0; i < x.Length; i++)
                 x[i] = random.NextDouble();
 
             Array.Sort(x, idx);
@@ -2724,10 +3088,12 @@ namespace Accord.Statistics
             return idx;
         }
 
+
         /// <summary>
         ///   Shuffles an array.
         /// </summary>
-        public static void Shuffle(int[] array)
+        /// 
+        public static void Shuffle<T>(T[] array)
         {
             Random random = Accord.Math.Tools.Random;
 
@@ -2743,6 +3109,8 @@ namespace Accord.Statistics
                 array[i - 1] = aux;
             }
         }
+
+
         #endregion
 
 
@@ -2789,6 +3157,66 @@ namespace Accord.Statistics
 
             // Return the transformed data
             return value.Multiply(transformMatrix);
+        }
+
+        
+        /// <summary>
+        ///   Gets the rank of a sample, often used with order statistics.
+        /// </summary>
+        /// 
+        public static double[] Rank(double[] samples, bool alreadySorted = false)
+        {
+            int[] idx = Matrix.Indices(0, samples.Length);
+
+            if (!alreadySorted)
+            {
+                samples = (double[])samples.Clone();
+                Array.Sort(samples, idx);
+            }
+
+            double[] ranks = new double[samples.Length];
+
+            double tieSum = 0;
+            int tieSize = 0;
+
+            int start = 0;
+            while (samples[start] == 0) start++;
+
+            ranks[start] = 1;
+            for (int i = start + 1, r = 1; i < ranks.Length; i++)
+            {
+                // Check if we have a tie
+                if (samples[i] != samples[i - 1])
+                {
+                    // This is not a tie.
+                    // Was a tie before?
+                    if (tieSize > 0)
+                    {
+                        // Yes. Then set the previous
+                        // elements with the average.
+
+                        for (int j = 0; j < tieSize + 1; j++)
+                            ranks[i - j - 1] = (r + tieSum) / (tieSize + 1);
+
+                        tieSize = 0;
+                        tieSum = 0;
+                    }
+
+                    ranks[i] = ++r;
+                }
+                else
+                {
+                    // This is a tie. Compute how 
+                    // long we have been in a tie.
+                    tieSize++;
+                    tieSum += r++;
+                }
+            }
+
+            if (!alreadySorted)
+                Array.Sort(idx, ranks);
+
+            return ranks;
         }
 
     }
