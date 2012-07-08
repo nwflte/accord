@@ -29,6 +29,9 @@ namespace Accord.MachineLearning
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using Accord.Math;
+    using Accord.Statistics.Distributions.Univariate;
+    using System.Threading.Tasks;
+    using System.Threading;
 
     /// <summary>
     ///   K-Means algorithm.
@@ -207,16 +210,61 @@ namespace Accord.MachineLearning
         /// </summary>
         /// 
         /// <param name="data">The data to randomize the algorithm.</param>
+        /// <param name="useSeeding">True to use the k-means++ seeding algorithm. False otherwise.</param>
         /// 
-        public void Randomize(double[][] data)
+        public void Randomize(double[][] data, bool useSeeding = true)
         {
             if (data == null) throw new ArgumentNullException("data");
 
-            // pick K unique random indexes in the range 0..n-1
-            int[] idx = Accord.Statistics.Tools.Random(data.Length, K);
+            if (useSeeding)
+            {
+                // Initialize using K-Means++
+                // http://en.wikipedia.org/wiki/K-means%2B%2B
 
-            // assign centroids from data set
-            this.centroids = data.Submatrix(idx);
+                this.centroids = new double[K][];
+
+                // 1. Choose one center uniformly at random from among the data points.
+                this.centroids[0] = (double[])data[Accord.Math.Tools.Random.Next(0, data.Length)].Clone();
+
+                for (int c = 1; c < centroids.Length; c++)
+                {
+                    // 2. For each data point x, compute D(x), the distance between
+                    //    x and the nearest center that has already been chosen.
+
+                    double sum = 0;
+                    double[] D = new double[data.Length];
+                    for (int i = 0; i < D.Length; i++)
+                    {
+                        double[] x = data[i];
+
+                        double min = Distance(x, centroids[0]);
+                        for (int j = 1; j < c; j++)
+                        {
+                            double d = Distance(x, centroids[j]);
+                            if (d < min) min = d;
+                        }
+
+                        D[i] = min;
+                        sum += min;
+                    }
+
+                    for (int i = 0; i < D.Length; i++)
+                        D[i] /= sum;
+
+                    // 3. Choose one new data point at random as a new center, using a weighted
+                    //    probability distribution where a point x is chosen with probability 
+                    //    proportional to D(x)^2.
+                    this.centroids[c] = (double[])data[GeneralDiscreteDistribution.Random(D)].Clone();
+                }
+            }
+            else
+            {
+                // pick K unique random indexes in the range 0..n-1
+                int[] idx = Accord.Statistics.Tools.RandomSample(data.Length, K);
+
+                // assign centroids from data set
+                this.centroids = data.Submatrix(idx).MemberwiseClone();
+            }
         }
 
         /// <summary>
@@ -251,9 +299,12 @@ namespace Accord.MachineLearning
         /// 
         /// <param name="data">The data where to compute the algorithm.</param>
         /// <param name="threshold">The relative convergence threshold
-        /// for the algorithm. Default is 1e-5.</param>
+        ///   for the algorithm. Default is 1e-5.</param>
+        /// <param name="computeInformation">Pass <c>true</c> to compute additional information
+        ///   when the algorithm finishes, such as cluster variances and proportions; false
+        ///   otherwise. Default is true.</param>
         /// 
-        public int[] Compute(double[][] data, double threshold)
+        public int[] Compute(double[][] data, double threshold, bool computeInformation = true)
         {
             // Initial argument checking
             if (data == null)
@@ -279,28 +330,26 @@ namespace Accord.MachineLearning
             // if the algorithm has not been initialized before.
             if (this.centroids[0] == null)
             {
-                Randomize(data);
+                Randomize(data, useSeeding: false);
             }
 
 
             // Initial variables
             int[] count = new int[k];
             int[] labels = new int[rows];
-            double[][] newCentroids;
+            double[][] newCentroids = new double[k][];
+            for (int i = 0; i < newCentroids.Length; i++)
+                newCentroids[i] = new double[cols];
 
 
-            do // Main loop
+            bool shouldStop = false;
+
+            while (!shouldStop) // Main loop
             {
-
-                // Reset the centroids and the
-                //  cluster member counters'
-                newCentroids = new double[k][];
-                for (int i = 0; i < k; i++)
-                {
-                    newCentroids[i] = new double[cols];
-                    count[i] = 0;
-                }
-
+                // Reset the centroids and the member counters
+                for (int i = 0; i < newCentroids.Length; i++)
+                    Array.Clear(newCentroids[i], 0, newCentroids[i].Length);
+                Array.Clear(count, 0, count.Length);
 
                 // First we will accumulate the data points
                 // into their nearest clusters, storing this
@@ -312,65 +361,65 @@ namespace Accord.MachineLearning
                     // Get the point
                     double[] point = data[i];
 
-                    // Compute the nearest cluster centroid
-                    int c = labels[i] = Nearest(data[i]);
+                    // Get the nearest cluster centroid
+                    int c = labels[i] = Nearest(point);
 
                     // Increase the cluster's sample counter
                     count[c]++;
 
                     // Accumulate in the corresponding centroid
-                    double[] centroid = newCentroids[c];
-                    for (int j = 0; j < centroid.Length; j++)
-                        centroid[j] += point[j];
+                    for (int j = 0; j < point.Length; j++)
+                        newCentroids[c][j] += point[j];
                 }
 
                 // Next we will compute each cluster's new centroid
                 //  by dividing the accumulated sums by the number of
                 //  samples in each cluster, thus averaging its members.
-                for (int i = 0; i < k; i++)
+                for (int i = 0; i < newCentroids.Length; i++)
                 {
-                    double[] mean = newCentroids[i];
                     double clusterCount = count[i];
 
                     if (clusterCount != 0)
                     {
-                        for (int j = 0; j < cols; j++)
-                            mean[j] /= clusterCount;
+                        for (int j = 0; j < newCentroids[i].Length; j++)
+                            newCentroids[i][j] /= clusterCount;
                     }
                 }
 
 
                 // The algorithm stops when there is no further change in the
                 //  centroids (relative difference is less than the threshold).
-                if (converged(centroids, newCentroids, threshold)) break;
-
+                shouldStop = converged(centroids, newCentroids, threshold);
 
                 // go to next generation
-                centroids = newCentroids;
-
+                for (int i = 0; i < centroids.Length; i++)
+                    for (int j = 0; j < centroids[i].Length; j++)
+                        centroids[i][j] = newCentroids[i][j];
             }
-            while (true);
 
 
-            // Compute cluster information (optional)
-            for (int i = 0; i < k; i++)
+            if (computeInformation)
             {
-                // Extract the data for the current cluster
-                double[][] sub = data.Submatrix(labels.Find(x => x == i));
-
-                if (sub.Length > 0)
+                // Compute cluster information (optional)
+                for (int i = 0; i < centroids.Length; i++)
                 {
-                    // Compute the current cluster variance
-                    covariances[i] = Statistics.Tools.Covariance(sub, centroids[i]);
-                }
-                else
-                {
-                    // The cluster doesn't have any samples
-                    covariances[i] = new double[cols, cols];
-                }
+                    // Extract the data for the current cluster
+                    double[][] sub = data.Submatrix(labels.Find(x => x == i));
 
-                // Compute the proportion of samples in the cluster
-                proportions[i] = (double)sub.Length / data.Length;
+                    if (sub.Length > 0)
+                    {
+                        // Compute the current cluster variance
+                        covariances[i] = Statistics.Tools.Covariance(sub, centroids[i]);
+                    }
+                    else
+                    {
+                        // The cluster doesn't have any samples
+                        covariances[i] = new double[cols, cols];
+                    }
+
+                    // Compute the proportion of samples in the cluster
+                    proportions[i] = (double)sub.Length / data.Length;
+                }
             }
 
 
@@ -409,10 +458,12 @@ namespace Accord.MachineLearning
         /// <summary>
         ///   Returns the closest cluster to an input vector.
         /// </summary>
+        /// 
         /// <param name="point">The input vector.</param>
         /// <returns>
         ///   The index of the nearest cluster
         ///   to the given data point. </returns>
+        ///   
         public int Nearest(double[] point)
         {
             int min_cluster = 0;
@@ -441,7 +492,7 @@ namespace Accord.MachineLearning
         ///   An array containing the index of the nearest cluster
         ///   to the corresponding point in the input array.</returns>
         ///   
-        public int[] Classify(double[][] points)
+        public int[] Nearest(double[][] points)
         {
             return points.Apply(p => Nearest(p));
         }
@@ -465,7 +516,7 @@ namespace Accord.MachineLearning
         /// 
         public double Error(double[][] data)
         {
-            return Error(data, Classify(data));
+            return Error(data, Nearest(data));
         }
 
         /// <summary>
