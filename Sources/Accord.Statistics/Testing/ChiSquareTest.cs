@@ -26,7 +26,7 @@ namespace Accord.Statistics.Testing
     using Accord.Statistics.Distributions.Univariate;
 
     /// <summary>
-    ///   Two-Sample (Goodness-of-fit) Chi-Square Test (Upper tail)
+    ///   Two-Sample (Goodness-of-fit) Chi-Square Test (Upper Tail)
     /// </summary>
     /// 
     /// <remarks>
@@ -55,20 +55,9 @@ namespace Accord.Statistics.Testing
     /// </remarks>
     /// 
     [Serializable]
-    public class ChiSquareTest : HypothesisTest, IHypothesisTest<ChiSquareDistribution>
+    public class ChiSquareTest : HypothesisTest<ChiSquareDistribution>
     {
 
-        private ChiSquareDistribution distribution;
-
-        /// <summary>
-        ///   Gets the distribution associated
-        ///   with the test statistic.
-        /// </summary>
-        /// 
-        public ChiSquareDistribution StatisticDistribution
-        {
-            get { return distribution; }
-        }
 
         /// <summary>
         ///   Gets the degrees of freedom for the Chi-Square distribution.
@@ -76,47 +65,32 @@ namespace Accord.Statistics.Testing
         /// 
         public int DegreesOfFreedom
         {
-            get { return distribution.DegreesOfFreedom; }
+            get { return StatisticDistribution.DegreesOfFreedom; }
         }
 
 
-        #region Constructors
         /// <summary>
-        ///   Constructs a Chi-Square Test.
+        ///   Constructss a Chi-Square Test.
         /// </summary>
-        /// <param name="statistic">The test statistic.</param>
-        /// <param name="degreesOfFreedom">The chi-square distribution degrees of freedom.</param>
-        /// <param name="threshold">The significance threshold. By default, 0.05 will be used.</param>
         /// 
-        public ChiSquareTest(double statistic, int degreesOfFreedom, double threshold)
-        {
-            this.Statistic = statistic;
-            this.Threshold = threshold;
-            this.distribution = new ChiSquareDistribution(degreesOfFreedom);
-
-            this.PValue = distribution.ComplementaryDistributionFunction(Statistic);
-        }
-
-        /// <summary>
-        ///   Constructs a Chi-Square Test.
-        /// </summary>
         /// <param name="statistic">The test statistic.</param>
         /// <param name="degreesOfFreedom">The chi-square distribution degrees of freedom.</param>
         /// 
         public ChiSquareTest(double statistic, int degreesOfFreedom)
-            : this(statistic, degreesOfFreedom, 0.05)
         {
+            Compute(statistic, degreesOfFreedom);
         }
 
+
         /// <summary>
-        ///   Construct a Chi-Square Test.
+        ///   Constructs a Chi-Square Test.
         /// </summary>
+        /// 
         /// <param name="expected">The expected variable values.</param>
         /// <param name="observed">The observed variable values.</param>
         /// <param name="degreesOfFreedom">The chi-square distribution degrees of freedom.</param>
-        /// <param name="threshold">The significance threshold. By default, 0.05 will be used.</param>
         /// 
-        public ChiSquareTest(double[] expected, double[] observed, int degreesOfFreedom, double threshold)
+        public ChiSquareTest(double[] expected, double[] observed, int degreesOfFreedom)
         {
             if (expected == null)
                 throw new ArgumentNullException("expected");
@@ -136,14 +110,52 @@ namespace Accord.Statistics.Testing
                 sum += (d * d) / expected[i];
             }
 
-            this.Statistic = sum;
-            this.Threshold = threshold;
-            this.distribution = new ChiSquareDistribution(degreesOfFreedom);
 
-            this.PValue = distribution.ComplementaryDistributionFunction(Statistic);
+            Compute(sum, degreesOfFreedom);
         }
-        #endregion
 
+        /// <summary>
+        ///   Constructs a Chi-Square Test.
+        /// </summary>
+        protected ChiSquareTest() { }
 
+        /// <summary>
+        ///   Computes the Chi-Square Test.
+        /// </summary>
+        /// 
+        protected void Compute(double statistic, int degreesOfFreedom)
+        {
+            this.Statistic = statistic;
+            this.StatisticDistribution = new ChiSquareDistribution(degreesOfFreedom);
+
+            this.Tail = DistributionTail.OneUpper;
+            this.PValue = StatisticDistribution.ComplementaryDistributionFunction(Statistic);
+        }
+
+        /// <summary>
+        ///   Converts a given test statistic to a p-value.
+        /// </summary>
+        /// 
+        /// <param name="x">The value of the test statistic.</param>
+        /// 
+        /// <returns>The p-value for the given statistic.</returns>
+        /// 
+        public override double StatisticToPValue(double x)
+        {
+            return StatisticDistribution.ComplementaryDistributionFunction(x);
+        }
+
+        /// <summary>
+        ///   Converts a given p-value to a test statistic.
+        /// </summary>
+        /// 
+        /// <param name="p">The p-value.</param>
+        /// 
+        /// <returns>The test statistic which would generate the given p-value.</returns>
+        /// 
+        public override double PValueToStatistic(double p)
+        {
+            throw new NotSupportedException();
+        }
     }
 }

@@ -43,4 +43,5 @@ namespace Accord.Statistics.Testing
         internal AnovaSourceCollection(IList<AnovaVariationSource> rows)
             : base(rows) { }
     }
+
 }

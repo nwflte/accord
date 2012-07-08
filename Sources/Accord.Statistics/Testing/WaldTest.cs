@@ -23,6 +23,7 @@
 namespace Accord.Statistics.Testing
 {
     using System;
+    using AForge;
 
     /// <summary>
     ///   Wald's Test using the Normal distribution.
@@ -61,9 +62,7 @@ namespace Accord.Statistics.Testing
         /// <param name="statistic">The test statistic, as given by (θ-θ')/SE.</param>
         /// 
         public WaldTest(double statistic)
-            : base(statistic, Hypothesis.TwoTail)
-        {
-        }
+            : base(statistic, OneSampleHypothesis.ValueIsDifferentFromHypothesis) { }
 
         /// <summary>
         ///   Constructs a Wald's test.
@@ -73,9 +72,12 @@ namespace Accord.Statistics.Testing
         /// <param name="standardError">The standard error of the estimation (SE).</param>
         /// 
         public WaldTest(double estimatedValue, double hypothesizedValue, double standardError)
-            : base((estimatedValue - hypothesizedValue) / standardError, Hypothesis.TwoTail)
+            : base((estimatedValue - hypothesizedValue) / standardError, OneSampleHypothesis.ValueIsDifferentFromHypothesis)
         {
+            this.HypothesizedValue = hypothesizedValue;
+            this.EstimatedValue = estimatedValue;
+            this.StandardError = standardError;
         }
-
+        
     }
 }

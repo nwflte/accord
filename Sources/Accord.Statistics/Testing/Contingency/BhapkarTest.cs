@@ -25,8 +25,6 @@ namespace Accord.Statistics.Testing
     using System;
     using Accord.Math;
     using Accord.Statistics.Analysis;
-    using Accord.Statistics.Distributions.Univariate;
-    
 
     /// <summary>
     ///   Bhapkar test of homogeneity for contingency tables.
@@ -35,6 +33,9 @@ namespace Accord.Statistics.Testing
     /// <remarks>
     ///   The Bhapkar test is a more powerful alternative to the
     ///   <see cref="StuartMaxwellTest">Stuart-Maxwell test</see>.
+    ///   
+    /// <para>
+    ///   This is a <see cref="ChiSquareTest">Chi-square kind of test</see>.</para>
     ///   
     /// <para>
     ///   References:
@@ -47,10 +48,8 @@ namespace Accord.Statistics.Testing
     /// </remarks>
     ///
     [Serializable]
-    public class BhapkarTest : HypothesisTest, IHypothesisTest<ChiSquareDistribution>
+    public class BhapkarTest : ChiSquareTest
     {
-
-        private ChiSquareDistribution distribution;
 
         double[] d;
         double[,] S;
@@ -86,24 +85,6 @@ namespace Accord.Statistics.Testing
             get { return invS; }
         }
 
-        /// <summary>
-        ///   Gets the distribution associated
-        ///   with the test statistic.
-        /// </summary>
-        /// 
-        public ChiSquareDistribution StatisticDistribution
-        {
-            get { return distribution; }
-        }
-
-        /// <summary>
-        ///   Gets the degrees of freedom for the Chi-Square distribution.
-        /// </summary>
-        /// 
-        public int DegreesOfFreedom
-        {
-            get { return distribution.DegreesOfFreedom; }
-        }
 
         /// <summary>
         ///   Creates a new Bhapkar test.
@@ -150,10 +131,12 @@ namespace Accord.Statistics.Testing
 
             invS = S.PseudoInverse();
 
-            this.Statistic = d.Multiply(invS).InnerProduct(d);
-            this.distribution = new ChiSquareDistribution(df);
-            this.PValue = distribution.ComplementaryDistributionFunction(Statistic);
+            double chiSquare = d.Multiply(invS).InnerProduct(d);
+            
+            Compute(chiSquare, df);
         }
+
+      
 
     }
 }

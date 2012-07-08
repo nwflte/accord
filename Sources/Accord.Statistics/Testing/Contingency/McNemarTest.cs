@@ -24,7 +24,6 @@ namespace Accord.Statistics.Testing
 {
     using System;
     using Accord.Statistics.Analysis;
-    using Accord.Statistics.Distributions.Univariate;
 
     /// <summary>
     ///   McNemar test of homogeneity for <c>2 x 2</c> contigency tables.
@@ -38,6 +37,9 @@ namespace Accord.Statistics.Testing
     ///   the contingency table presents marginal homogeneity.</para>
     ///
     /// <para>
+    ///   This is a <see cref="ChiSquareTest">Chi-square kind of test</see>.</para>
+    ///   
+    /// <para>
     ///   References:
     ///   <list type="bullet">
     ///     <item><description>
@@ -47,30 +49,9 @@ namespace Accord.Statistics.Testing
     /// </remarks>
     ///
     [Serializable]
-    public class McNemarTest : HypothesisTest, IHypothesisTest<ChiSquareDistribution>
+    public class McNemarTest : ChiSquareTest
     {
 
-        private ChiSquareDistribution distribution;
-
-
-        /// <summary>
-        ///   Gets the degrees of freedom for the Chi-Square distribution.
-        /// </summary>
-        /// 
-        public int DegreesOfFreedom
-        {
-            get { return distribution.DegreesOfFreedom; }
-        }
-
-        /// <summary>
-        ///   Gets the distribution associated
-        ///   with the test statistic.
-        /// </summary>
-        /// 
-        public ChiSquareDistribution StatisticDistribution
-        {
-            get { return distribution; }
-        }
 
         /// <summary>
         ///   Creates a new McNemar test.
@@ -89,11 +70,10 @@ namespace Accord.Statistics.Testing
 
             double u = (yatesCorrection) ? Math.Abs(b - c) - 0.5 : u = b - c;
 
-            this.Statistic = (u * u) / (b + c);
+            double chiSquare = (u * u) / (b + c);
+            int df = 1;
 
-            this.distribution = new ChiSquareDistribution(1);
-
-            this.PValue = distribution.ComplementaryDistributionFunction(Statistic);
+            Compute(chiSquare, df);
         }
 
     }
