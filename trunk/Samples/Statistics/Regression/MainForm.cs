@@ -34,6 +34,7 @@ using System.IO;
 using Accord.Math;
 using Accord.Controls;
 using Accord.Statistics.Models.Regression.Linear;
+using Accord.Statistics.Formats;
 
 namespace Regression
 {
@@ -41,7 +42,7 @@ namespace Regression
     {
 
         private LogisticRegressionAnalysis lra;
-        private MultipleLinearRegression mlr;
+        private MultipleLinearRegressionAnalysis mlr;
         private DataTable sourceTable;
 
 
@@ -51,6 +52,10 @@ namespace Regression
 
             dgvLogisticCoefficients.AutoGenerateColumns = false;
             dgvDistributionMeasures.AutoGenerateColumns = false;
+            dgvLinearCoefficients.AutoGenerateColumns = false;
+
+            dgvLinearCoefficients.AllowNestedProperties(true);
+
             comboBox2.SelectedIndex = 0;
 
             openFileDialog.InitialDirectory = Path.Combine(Application.StartupPath, "Resources");
@@ -117,9 +122,8 @@ namespace Regression
             // Gets the columns of the independent variables
             List<string> names = new List<string>();
             foreach (string name in checkedListBox1.CheckedItems)
-            {
                 names.Add(name);
-            }
+
             String[] independentNames = names.ToArray();
             DataTable independent = sourceTable.DefaultView.ToTable(false, independentNames);
 
@@ -157,14 +161,26 @@ namespace Regression
             tbLogLikelihood.Text = lra.LogLikelihood.ToString("N5");
 
 
-            // Perform linear regression
-            mlr = new MultipleLinearRegression(independentNames.Length, true);
-            mlr.Regress(input, output);
+            // Create the Multiple Linear Regression Analysis of the given source
+            mlr = new MultipleLinearRegressionAnalysis(input, output, independentNames, dependentName, true);
 
-            tbLinearExpression.Text = mlr.ToString();
-            tbLinearR.Text = mlr.CoefficientOfDetermination(input, output, false).ToString("N5");
-            tbLinearAdjustedR.Text = mlr.CoefficientOfDetermination(input, output, true).ToString("N5");
+            // Compute the Linear Regression Analysis
+            mlr.Compute();
 
+            dgvLinearCoefficients.DataSource = mlr.Coefficients;
+            dgvRegressionAnova.DataSource = mlr.Table;
+
+            tbRSquared.Text = mlr.RSquared.ToString("N5");
+            tbRSquaredAdj.Text = mlr.RSquareAdjusted.ToString("N5");
+            tbChiPValue.Text = mlr.ChiSquareTest.PValue.ToString("N5");
+            tbFPValue.Text = mlr.FTest.PValue.ToString("N5");
+            tbZPValue.Text = mlr.ZTest.PValue.ToString("N5");
+            tbChiStatistic.Text = mlr.ChiSquareTest.Statistic.ToString("N5");
+            tbFStatistic.Text = mlr.FTest.Statistic.ToString("N5");
+            tbZStatistic.Text = mlr.ZTest.Statistic.ToString("N5");
+            cbChiSignificant.Checked = mlr.ChiSquareTest.Significant;
+            cbFSignificant.Checked = mlr.FTest.Significant;
+            cbZSignificant.Checked = mlr.ZTest.Significant;
 
             // Populate projection source table
             string[] cols = independentNames;
@@ -201,7 +217,7 @@ namespace Regression
             }
             else
             {
-                output = mlr.Compute(input);
+                output = mlr.Regression.Compute(input);
             }
 
             DataTable result = source.Clone();
@@ -218,6 +234,11 @@ namespace Regression
             }
 
             dgvProjectionResult.DataSource = result;
+
+        }
+
+        private void splitContainer1_Panel2_Paint(object sender, PaintEventArgs e)
+        {
 
         }
 
