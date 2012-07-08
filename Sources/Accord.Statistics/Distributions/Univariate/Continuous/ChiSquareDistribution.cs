@@ -47,7 +47,8 @@ namespace Accord.Statistics.Distributions.Univariate
     /// </remarks>
     /// 
     [Serializable]
-    public class ChiSquareDistribution : UnivariateContinuousDistribution
+    public class ChiSquareDistribution : UnivariateContinuousDistribution,
+        ISampleableDistribution<double>
     {
         // Distribution parameters
         private int degreesOfFreedom;
@@ -55,10 +56,14 @@ namespace Accord.Statistics.Distributions.Univariate
         // Distribution measures
         private double? entropy;
 
+
         /// <summary>
         ///   Constructs a new Chi-Square distribution
         ///   with given degrees of freedom.
         /// </summary>
+        /// 
+        /// <param name="degreesOfFreedom">The degrees of freedom for the distribution.</param>
+        /// 
         public ChiSquareDistribution(int degreesOfFreedom)
         {
             this.degreesOfFreedom = degreesOfFreedom;
@@ -67,6 +72,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// <summary>
         ///   Gets the Degrees of Freedom for this distribution.
         /// </summary>
+        /// 
         public int DegreesOfFreedom
         {
             get { return degreesOfFreedom; }
@@ -218,6 +224,60 @@ namespace Accord.Statistics.Distributions.Univariate
         {
             return new ChiSquareDistribution(degreesOfFreedom);
         }
+
+        #region ISamplableDistribution<double> Members
+
+        /// <summary>
+        ///   Generates a random vector of observations from the current distribution.
+        /// </summary>
+        /// 
+        /// <param name="samples">The number of samples to generate.</param>
+        /// <returns>A random vector of observations drawn from this distribution.</returns>
+        /// 
+        public double[] Generate(int samples)
+        {
+            return GammaDistribution.Random(shape: degreesOfFreedom / 2.0, scale: 2, samples: samples);
+        }
+
+        /// <summary>
+        ///   Generates a random observation from the current distribution.
+        /// </summary>
+        /// 
+        /// <returns>A random observations drawn from this distribution.</returns>
+        /// 
+        public double Generate()
+        {
+            return GammaDistribution.Random(shape: degreesOfFreedom / 2.0, scale: 2);
+        }
+
+        /// <summary>
+        ///   Generates a random vector of observations from the 
+        ///   Chi-Square distribution with the given parameters.
+        /// </summary>
+        /// 
+        /// <returns>An array of double values sampled from the specified Chi-Square distribution.</returns>
+        /// 
+        public static double[] Random(int degreesOfFreedom, int samples)
+        {
+            return GammaDistribution.Random(shape: degreesOfFreedom / 2.0, scale: 2, samples: samples);
+        }
+
+
+        /// <summary>
+        ///   Generates a random observation from the 
+        ///   Chi-Square distribution with the given parameters.
+        /// </summary>
+        /// 
+        /// <param name="degreesOfFreedom">The degrees of freedom for the distribution.</param>
+        /// 
+        /// <returns>A random double value sampled from the specified Chi-Square distribution.</returns>
+        /// 
+        public static double Random(int degreesOfFreedom)
+        {
+            return GammaDistribution.Random(shape: degreesOfFreedom / 2.0, scale: 2);
+        }
+
+        #endregion
     }
 
 }

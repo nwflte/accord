@@ -23,7 +23,9 @@
 namespace Accord.Statistics.Distributions.Univariate
 {
     using System;
+    using Accord.Math;
     using Accord.Statistics.Distributions.Fitting;
+    using Accord.Statistics.Distributions;
 
     /// <summary>
     ///   Univariate general discrete distribution, also referred as the
@@ -42,7 +44,8 @@ namespace Accord.Statistics.Distributions.Univariate
     /// 
     [Serializable]
     public class GeneralDiscreteDistribution : UnivariateDiscreteDistribution,
-        IFittableDistribution<double, GeneralDiscreteOptions>
+        IFittableDistribution<double, GeneralDiscreteOptions>,
+        ISampleableDistribution<int>, ISampleableDistribution<double>
     {
 
         // distribution parameters
@@ -354,6 +357,30 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
+        ///   Generates a random observation from the current distribution.
+        /// </summary>
+        /// 
+        /// <returns>A random observations drawn from this distribution.</returns>
+        /// 
+        public int Generate()
+        {
+            return Random(probabilities);
+        }
+
+        /// <summary>
+        ///   Generates a random vector of observations from the current distribution.
+        /// </summary>
+        /// 
+        /// <param name="samples">The number of samples to generate.</param>
+        /// 
+        /// <returns>A random vector of observations drawn from this distribution.</returns>
+        /// 
+        public int[] Generate(int samples)
+        {
+            return Random(probabilities, samples);
+        }
+
+        /// <summary>
         ///   Fits the underlying distribution to a given set of observations.
         /// </summary>
         /// 
@@ -388,13 +415,21 @@ namespace Accord.Statistics.Distributions.Univariate
         {
             double[] p = new double[probabilities.Length];
 
+            // Parse options
+            double minimum = 0;
+            bool useLaplace = false;
+
+            if (options != null)
+            {
+                minimum = options.Minimum;
+                useLaplace = options.UseLaplaceRule;
+            }
+
+
             if (weights == null)
             {
                 for (int i = 0; i < observations.Length; i++)
                     p[(int)observations[i]]++;
-
-                for (int i = 0; i < p.Length; i++)
-                    p[i] /= observations.Length;
             }
             else
             {
@@ -402,24 +437,41 @@ namespace Accord.Statistics.Distributions.Univariate
                     throw new ArgumentException("The weight vector should have the same size as the observations", "weights");
 
                 for (int i = 0; i < observations.Length; i++)
-                {
-                    int symbol = (int)observations[i];
-                    p[symbol] += weights[i];
-                }
+                    p[(int)observations[i]] += weights[i] * observations.Length;
             }
 
-            if (options != null)
+            if (useLaplace)
+            {
+                for (int i = 0; i < p.Length; i++)
+                    p[i]++;
+
+                for (int i = 0; i < p.Length; i++)
+                    p[i] /= observations.Length + p.Length;
+            }
+            else
+            {
+                for (int i = 0; i < p.Length; i++)
+                    p[i] /= observations.Length;
+            }
+
+            if (minimum != 0)
             {
                 double sum = 0;
                 for (int i = 0; i < p.Length; i++)
                 {
-                    if (p[i] == 0) p[i] = options.Minimum;
+                    if (p[i] == 0)
+                        p[i] = options.Minimum;
                     sum += p[i];
                 }
 
                 for (int i = 0; i < p.Length; i++)
                     p[i] /= sum;
             }
+
+#if DEBUG
+            for (int i = 0; i < p.Length; i++)
+                if (Double.IsNaN(p[i])) throw new Exception();
+#endif
 
             initialize(0, p);
         }
@@ -484,5 +536,84 @@ namespace Accord.Statistics.Distributions.Univariate
             this.variance = null;
             this.entropy = null;
         }
+
+
+        #region ISamplableDistribution<double> Members
+
+        double[] ISampleableDistribution<double>.Generate(int samples)
+        {
+            return Generate(samples).ToDouble();
+        }
+
+        double ISampleableDistribution<double>.Generate()
+        {
+            return Generate();
+        }
+
+        #endregion
+
+        /// <summary>
+        ///   Returns a random sample within the given symbol probabilities.
+        /// </summary>
+        /// 
+        /// <param name="probabilities">The probabilities for the discrete symbols.</param>
+        /// <param name="samples">The number of samples to generate.</param>
+        /// 
+        /// <returns>A random sample within the given probabilities.</returns>
+        /// 
+        public static int[] Random(double[] probabilities, int samples)
+        {
+            double[] uniform = new double[samples];
+            for (int i = 0; i < uniform.Length; i++)
+                uniform[i] = Accord.Math.Tools.Random.NextDouble();
+
+            // Use the probabilities to partition the 0,1 interval
+            double[] cumulative = probabilities.CumulativeSum();
+
+            int[] result = new int[samples];
+
+            for (int j = 0; j < result.Length; j++)
+            {
+                // Check in which range the values fall into
+                for (int i = 0; i < cumulative.Length - 1; i++)
+                {
+                    if (uniform[j] <= cumulative[i] && uniform[j] > cumulative[i + 1])
+                    {
+                        result[j] = i; break;
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        ///   Returns a random symbol within the given symbol probabilities.
+        /// </summary>
+        /// 
+        /// <param name="probabilities">The probabilities for the discrete symbols.</param>
+        /// 
+        /// <returns>A random symbol within the given probabilities.</returns>
+        /// 
+        public static int Random(double[] probabilities)
+        {
+            double uniform = Accord.Math.Tools.Random.NextDouble();
+
+            double cumulativeSum = 0;
+
+            // Use the probabilities to partition the [0,1] interval 
+            //  and check inside which range the values fall into.
+
+            for (int i = 0; i < probabilities.Length; i++)
+            {
+                cumulativeSum += probabilities[i];
+
+                if (uniform < cumulativeSum) 
+                    return i;
+            }
+
+            throw new InvalidOperationException("Generated value is not between 0 and 1.");
+        }
+
     }
 }

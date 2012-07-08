@@ -90,10 +90,10 @@ namespace Accord.Statistics.Distributions.Univariate
         /// </summary>
         /// 
         /// <param name="populationSize">Size <c>N</c> of the population.</param>
-        /// <param name="samples">The number <c>n</c> of samples drawn from the population.</param>
         /// <param name="successes">The number <c>m</c> of successes in the population.</param>
+        /// <param name="samples">The number <c>n</c> of samples drawn from the population.</param>
         /// 
-        public HypergeometricDistribution(int populationSize, int samples, int successes)
+        public HypergeometricDistribution(int populationSize, int successes, int samples)
         {
             if (populationSize <= 0)
                 throw new ArgumentOutOfRangeException("populationSize",
@@ -163,21 +163,15 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override double DistributionFunction(int k)
         {
-            if (k < Math.Max(0, n + m - N))
-                return 0;
-
-            if (k > Math.Min(m, n))
-                k = Math.Min(m, n);
-
             // This is a really naive implementation. A better approach
             // is described in (Trong Wu; An accurate computation of the
             // hypergeometric distribution function, 1993)
 
             double sum = 0;
             for (int i = 0; i <= k; i++)
-                sum += (Special.Binomial(m, i) * Special.Binomial(N - m, n - i));
+                sum += ProbabilityMassFunction(i);
 
-            return sum / Special.Binomial(N, n);
+            return sum;
         }
 
         /// <summary>
@@ -202,8 +196,11 @@ namespace Accord.Statistics.Distributions.Univariate
             if (k < Math.Max(0, n + m - N) || k > Math.Min(m, n))
                 return 0;
 
-            return (Special.Binomial(m, k) * Special.Binomial(N - m, n - k))
-                / Special.Binomial(N, n);
+            double a = Special.Binomial(m, k);
+            double b = Special.Binomial(N - m, n - k);
+            double c = Special.Binomial(N, n);
+
+            return (a * b) / c;
         }
 
         /// <summary>
@@ -307,7 +304,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override object Clone()
         {
-            return new HypergeometricDistribution(N, n, m);
+            return new HypergeometricDistribution(N, m, n);
         }
     }
 }

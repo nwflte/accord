@@ -41,12 +41,20 @@ namespace Accord.Statistics.Distributions.Fitting
         public double Minimum { get; set; }
 
         /// <summary>
+        ///   Gets ors sets whether to use Laplace's rule
+        ///   of sucession to avoid zero probabilities.
+        /// </summary>
+        /// 
+        public bool UseLaplaceRule { get; set; }
+
+        /// <summary>
         ///   Initializes a new instance of the <see cref="GeneralDiscreteOptions"/> class.
         /// </summary>
         /// 
         public GeneralDiscreteOptions()
         {
             Minimum = 1e-10;
+            UseLaplaceRule = false;
         }
 
     }

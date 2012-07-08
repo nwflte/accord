@@ -26,6 +26,7 @@ namespace Accord.Statistics.Distributions.Multivariate
     using Accord.Math;
     using Accord.Math.Decompositions;
     using Accord.Statistics.Distributions.Fitting;
+    using Accord.Statistics.Distributions;
     using Accord.Statistics.Distributions.Univariate;
 
     /// <summary>
@@ -55,7 +56,8 @@ namespace Accord.Statistics.Distributions.Multivariate
     /// 
     [Serializable]
     public class MultivariateNormalDistribution : MultivariateContinuousDistribution,
-        IFittableDistribution<double[], NormalOptions>
+        IFittableDistribution<double[], NormalOptions>,
+        ISampleableDistribution<double[]>
     {
 
         // Distribution parameters
@@ -472,12 +474,29 @@ namespace Accord.Statistics.Distributions.Multivariate
         ///   Generates a random vector of observations from the current distribution.
         /// </summary>
         /// 
+        /// <returns>A random vector of observations drawn from this distribution.</returns>
+        /// 
+        public double[] Generate()
+        {
+            double[,] A = chol.LeftTriangularFactor;
+
+            double[] sample = new double[Dimension];
+            for (int j = 0; j < sample.Length; j++)
+                sample[j] = Accord.Math.Tools.Random.Next();
+
+            return A.Multiply(sample).Add(Mean);
+        }
+
+        /// <summary>
+        ///   Generates a random vector of observations from the current distribution.
+        /// </summary>
+        /// 
         /// <param name="samples">The number of samples to generate.</param>
+        /// 
         /// <returns>A random vector of observations drawn from this distribution.</returns>
         /// 
         public double[][] Generate(int samples)
         {
-            var r = new AForge.Math.Random.StandardGenerator();
             double[,] A = chol.LeftTriangularFactor;
 
             double[][] data = new double[samples][];
@@ -485,7 +504,7 @@ namespace Accord.Statistics.Distributions.Multivariate
             {
                 double[] sample = new double[Dimension];
                 for (int j = 0; j < sample.Length; j++)
-                    sample[j] = r.Next();
+                    sample[j] = Accord.Math.Tools.Random.Next();
 
                 data[i] = A.Multiply(sample).Add(Mean);
             }

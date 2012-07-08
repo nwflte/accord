@@ -25,6 +25,7 @@ namespace Accord.Statistics.Distributions.Univariate
     using System;
     using Accord.Math;
     using Accord.Statistics.Distributions.Fitting;
+    using Accord.Statistics.Distributions;
 
     /// <summary>
     ///   Normal (Gaussian) distribution.
@@ -38,7 +39,8 @@ namespace Accord.Statistics.Distributions.Univariate
     /// 
     [Serializable]
     public class NormalDistribution : UnivariateContinuousDistribution,
-        IFormattable, IFittableDistribution<double, NormalOptions>
+        IFormattable, IFittableDistribution<double, NormalOptions>,
+        ISampleableDistribution<double>
     {
 
         // Distribution parameters
@@ -453,6 +455,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// </summary>
         /// 
         /// <param name="samples">The number of samples to generate.</param>
+        /// 
         /// <returns>A random vector of observations drawn from this distribution.</returns>
         /// 
         public double[] Generate(int samples)
@@ -460,13 +463,27 @@ namespace Accord.Statistics.Distributions.Univariate
             double[] r = new double[samples];
 
             var g = new AForge.Math.Random.GaussianGenerator(
-                (float)mean, (float)stdDev,
-                Accord.Math.Tools.Random.Next());
+                (float)mean, (float)stdDev, Accord.Math.Tools.Random.Next());
 
             for (int i = 0; i < r.Length; i++)
                 r[i] = g.Next();
 
             return r;
         }
+
+        /// <summary>
+        ///   Generates a random vector of observations from the current distribution.
+        /// </summary>
+        /// 
+        /// <returns>A random vector of observations drawn from this distribution.</returns>
+        /// 
+        public double Generate()
+        {
+            var g = new AForge.Math.Random.GaussianGenerator(
+                (float)mean, (float)stdDev, Accord.Math.Tools.Random.Next());
+
+            return g.Next();
+        }
+
     }
 }

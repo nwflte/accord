@@ -50,7 +50,8 @@ namespace Accord.Statistics.Distributions.Univariate
     /// 
     [Serializable]
     public class BernoulliDistribution : UnivariateDiscreteDistribution,
-        IFittableDistribution<double, IFittingOptions>
+        IFittableDistribution<double, IFittingOptions>,
+        ISampleableDistribution<int>
     {
 
         // Distribution parameters
@@ -228,5 +229,40 @@ namespace Accord.Statistics.Distributions.Univariate
             return new BernoulliDistribution(probability);
         }
 
+
+        #region ISampleableDistribution<int> Members
+
+        /// <summary>
+        ///   Generates a random vector of observations from the current distribution.
+        /// </summary>
+        /// 
+        /// <param name="samples">The number of samples to generate.</param>
+        /// <returns>A random vector of observations drawn from this distribution.</returns>
+        /// 
+        public int[] Generate(int samples)
+        {
+            int[] r = new int[samples];
+            for (int i = 0; i < r.Length; i++)
+            {
+                double u = Accord.Math.Tools.Random.Next();
+                r[i] = u > this.probability ? 1 : 0;
+            }
+
+            return r;
+        }
+
+        /// <summary>
+        ///   Generates a random observation from the current distribution.
+        /// </summary>
+        /// 
+        /// <returns>A random observations drawn from this distribution.</returns>
+        /// 
+        public int Generate()
+        {
+            double u = Accord.Math.Tools.Random.Next();
+            return u > this.probability ? 1 : 0;
+        }
+
+        #endregion
     }
 }

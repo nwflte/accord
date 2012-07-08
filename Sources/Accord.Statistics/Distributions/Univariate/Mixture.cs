@@ -53,7 +53,9 @@ namespace Accord.Statistics.Distributions.Univariate
     ///   
     [Serializable]
     public class Mixture<T> : UnivariateContinuousDistribution, IMixture<T>,
-        IFittableDistribution<double, MixtureOptions> where T : IUnivariateDistribution
+        IFittableDistribution<double, MixtureOptions>,
+        ISampleableDistribution<double>
+        where T : IUnivariateDistribution
     {
 
         // distribution parameters
@@ -507,5 +509,43 @@ namespace Accord.Statistics.Distributions.Univariate
             return mixture;
         }
 
+
+        #region ISampleableDistribution<double> Members
+
+        /// <summary>
+        ///   Generates a random vector of observations from the current distribution.
+        /// </summary>
+        /// 
+        /// <param name="samples">The number of samples to generate.</param>
+        /// 
+        /// <returns>A random vector of observations drawn from this distribution.</returns>
+        /// 
+        public double[] Generate(int samples)
+        {
+            double[] r = new double[samples];
+            r.ApplyInPlace(x => Generate());
+            return r;
+        }
+
+        /// <summary>
+        ///   Generates a random observation from the current distribution.
+        /// </summary>
+        /// 
+        /// <returns>A random observations drawn from this distribution.</returns>
+        /// 
+        public double Generate()
+        {
+            // Choose one coefficient at random
+            int c = GeneralDiscreteDistribution.Random(coefficients);
+
+            // Sample from the chosen coefficient
+            var d = components[c] as ISampleableDistribution<double>;
+
+            if (d == null) throw new InvalidOperationException();
+
+            return d.Generate();
+        }
+
+        #endregion
     }
 }

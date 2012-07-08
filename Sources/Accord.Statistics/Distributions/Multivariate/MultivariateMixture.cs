@@ -25,6 +25,7 @@ namespace Accord.Statistics.Distributions.Multivariate
     using System;
     using Accord.Math;
     using Accord.Statistics.Distributions.Fitting;
+    using Accord.Statistics.Distributions.Univariate;
 
     /// <summary>
     ///   Mixture of multivariate probability distributions.
@@ -53,7 +54,9 @@ namespace Accord.Statistics.Distributions.Multivariate
     ///   
     [Serializable]
     public class MultivariateMixture<T> : MultivariateContinuousDistribution, IMixture<T>,
-        IFittableDistribution<double[], MixtureOptions> where T : IMultivariateDistribution
+        IFittableDistribution<double[], MixtureOptions>,
+        ISampleableDistribution<double[]>
+        where T : IMultivariateDistribution
     {
 
         // distribution parameters
@@ -567,5 +570,42 @@ namespace Accord.Statistics.Distributions.Multivariate
             return mixture;
         }
 
+
+        #region ISampleableDistribution<double[]> Members
+
+        /// <summary>
+        ///   Generates a random vector of observations from the current distribution.
+        /// </summary>
+        /// 
+        /// <param name="samples">The number of samples to generate.</param>
+        /// <returns>A random vector of observations drawn from this distribution.</returns>
+        /// 
+        public double[][] Generate(int samples)
+        {
+            double[][] r = new double[samples][];
+            r.ApplyInPlace(x => Generate());
+            return r;
+        }
+
+        /// <summary>
+        ///   Generates a random observation from the current distribution.
+        /// </summary>
+        /// 
+        /// <returns>A random observations drawn from this distribution.</returns>
+        /// 
+        public double[] Generate()
+        {
+            // Choose one coefficient at random
+            int c = GeneralDiscreteDistribution.Random(coefficients);
+
+            // Sample from the chosen coefficient
+            var d = components[c] as ISampleableDistribution<double[]>;
+
+            if (d == null) throw new InvalidOperationException();
+
+            return d.Generate();
+        }
+
+        #endregion
     }
 }

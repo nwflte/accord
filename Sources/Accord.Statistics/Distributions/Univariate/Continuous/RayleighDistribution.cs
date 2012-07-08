@@ -52,7 +52,8 @@ namespace Accord.Statistics.Distributions.Univariate
     /// </remarks>
     /// 
     [Serializable]
-    public class RayleighDistribution : UnivariateContinuousDistribution
+    public class RayleighDistribution : UnivariateContinuousDistribution,
+        ISampleableDistribution<double>
     {
 
         // Distribution parameters
@@ -63,7 +64,7 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   Creates a new Rayleigh distribution.
         /// </summary>
         /// 
-        /// <param name="sigma">The Rayleight distribution's sigma.</param>
+        /// <param name="sigma">The Rayleigh distribution's sigma.</param>
         /// 
         public RayleighDistribution(double sigma)
         {
@@ -198,6 +199,19 @@ namespace Accord.Statistics.Distributions.Univariate
             sigma = Math.Sqrt(1.0 / (2.0 * observations.Length) * sum);
         }
 
+          private RayleighDistribution() { }
+
+        /// <summary>
+        ///   Estimates a new Gamma distribution from a given set of observations.
+        /// </summary>
+        /// 
+          public static RayleighDistribution Estimate(double[] observations)
+        {
+            var n = new RayleighDistribution();
+            n.Fit(observations, null, null);
+            return n;
+        }
+
         /// <summary>
         ///   Creates a new object that is a copy of the current instance.
         /// </summary>
@@ -210,5 +224,69 @@ namespace Accord.Statistics.Distributions.Univariate
         {
             return new RayleighDistribution(sigma);
         }
+
+        #region ISamplableDistribution<double> Members
+
+        /// <summary>
+        ///   Generates a random vector of observations from the current distribution.
+        /// </summary>
+        /// 
+        /// <param name="samples">The number of samples to generate.</param>
+        /// <returns>A random vector of observations drawn from this distribution.</returns>
+        /// 
+        public double[] Generate(int samples)
+        {
+            return Random(sigma, samples);
+        }
+
+        /// <summary>
+        ///   Generates a random observation from the current distribution.
+        /// </summary>
+        /// 
+        /// <returns>A random observations drawn from this distribution.</returns>
+        /// 
+        public double Generate()
+        {
+            return Random(sigma);
+        }
+
+        /// <summary>
+        ///   Generates a random vector of observations from the 
+        ///   Rayleigh distribution with the given parameters.
+        /// </summary>
+        /// 
+        /// <param name="sigma">The Rayleigh distribution's sigma.</param>
+        /// <param name="samples">The number of samples to generate.</param>
+        ///
+        /// <returns>An array of double values sampled from the specified Rayleigh distribution.</returns>
+        /// 
+        public static double[] Random(double sigma, int samples)
+        {
+            double[] r = new double[samples];
+            for (int i = 0; i < r.Length; i++)
+            {
+                double u = Accord.Math.Tools.Random.Next();
+                r[i] = Math.Sqrt(-2 * sigma * sigma * Math.Log(u));
+            }
+
+            return r;
+        }
+
+        /// <summary>
+        ///   Generates a random observation from the 
+        ///   Rayleigh distribution with the given parameters.
+        /// </summary>
+        /// 
+        /// <param name="sigma">The Rayleigh distribution's sigma.</param>
+        /// 
+        /// <returns>A random double value sampled from the specified Rayleigh distribution.</returns>
+        /// 
+        public static double Random(double sigma)
+        {
+            double u = Accord.Math.Tools.Random.Next();
+            return Math.Sqrt(-2 * sigma * sigma * Math.Log(u));
+        }
+
+        #endregion
     }
 }

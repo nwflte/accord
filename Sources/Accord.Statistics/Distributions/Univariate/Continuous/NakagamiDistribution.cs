@@ -50,7 +50,8 @@ namespace Accord.Statistics.Distributions.Univariate
     /// </remarks>
     /// 
     [Serializable]
-    public class NakagamiDistribution : UnivariateContinuousDistribution
+    public class NakagamiDistribution : UnivariateContinuousDistribution,
+        ISampleableDistribution<double>
     {
         // distribution parameters
         private double mu;
@@ -87,11 +88,14 @@ namespace Accord.Statistics.Distributions.Univariate
 
         private void init(double shape, double spread)
         {
-            double twoMuMu = 2.0 * Math.Pow(shape, shape);
-            double gammaMu = Gamma.Function(shape);
-            double spreadMu = Math.Pow(spread, shape);
-            nratio = -shape / spread;
-            twoMu1 = 2.0 * shape - 1.0;
+            this.mu = shape;
+            this.omega = spread;
+
+            double twoMuMu = 2.0 * Math.Pow(mu, mu);
+            double gammaMu = Gamma.Function(mu);
+            double spreadMu = Math.Pow(omega, mu);
+            nratio = -mu / omega;
+            twoMu1 = 2.0 * mu - 1.0;
 
             constant = twoMuMu / (gammaMu * spreadMu);
 
@@ -261,12 +265,12 @@ namespace Accord.Statistics.Distributions.Univariate
             if (weights == null)
             {
                 mean = Statistics.Tools.Mean(x2);
-                var = Statistics.Tools.Variance(x2);
+                var = Statistics.Tools.Variance(x2, mean);
             }
             else
             {
                 mean = Statistics.Tools.WeightedMean(x2, weights);
-                var = Statistics.Tools.WeightedVariance(x2, weights);
+                var = Statistics.Tools.WeightedVariance(x2, weights, mean);
             }
 
             double shape = (mean * mean) / var;
@@ -276,14 +280,101 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
-        /// Creates a new object that is a copy of the current instance.
+        ///   Estimates a new Nakagami distribution from a given set of observations.
         /// </summary>
+        /// 
+        public static NakagamiDistribution Estimate(double[] observations)
+        {
+            return Estimate(observations, null);
+        }
+
+        /// <summary>
+        ///   Estimates a new Nakagami distribution from a given set of observations.
+        /// </summary>
+        /// 
+        public static NakagamiDistribution Estimate(double[] observations, double[] weights)
+        {
+            var n = new NakagamiDistribution();
+            n.Fit(observations, weights, null);
+            return n;
+        }
+
+        private NakagamiDistribution() { }
+
+        /// <summary>
+        ///   Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// 
         /// <returns>
-        /// A new object that is a copy of this instance.
+        ///   A new object that is a copy of this instance.
         /// </returns>
+        /// 
         public override object Clone()
         {
             return new NakagamiDistribution(mu, omega);
         }
+
+        #region ISampleableDistribution<double> Members
+
+        /// <summary>
+        ///   Generates a random vector of observations from the current distribution.
+        /// </summary>
+        /// 
+        /// <param name="samples">The number of samples to generate.</param>
+        /// 
+        /// <returns>A random vector of observations drawn from this distribution.</returns>
+        /// 
+        public double[] Generate(int samples)
+        {
+            return Random(mu, omega, samples);
+        }
+
+        /// <summary>
+        ///   Generates a random observation from the current distribution.
+        /// </summary>
+        /// 
+        /// <returns>A random observations drawn from this distribution.</returns>
+        /// 
+        public double Generate()
+        {
+            return Random(mu, omega);
+        }
+
+        /// <summary>
+        ///   Generates a random vector of observations from the 
+        ///   Nakagami distribution with the given parameters.
+        /// </summary>
+        /// 
+        /// <param name="shape">The shape parameter μ.</param>
+        /// <param name="spread">The spread parameter ω.</param>
+        /// <param name="samples">The number of samples to generate.</param>
+        ///
+        /// <returns>An array of double values sampled from the specified Nakagami distribution.</returns>
+        /// 
+        public static double[] Random(double shape, double spread, int samples)
+        {
+            double[] g = GammaDistribution.Random(shape: shape, scale: spread / shape, samples: samples);
+            for (int i = 0; i < g.Length; i++)
+                g[i] = Math.Sqrt(g[i]);
+            return g;
+        }
+
+        /// <summary>
+        ///   Generates a random observation from the 
+        ///   Nakagami distribution with the given parameters.
+        /// </summary>
+        /// 
+        /// <param name="shape">The shape parameter μ.</param>
+        /// <param name="spread">The spread parameter ω.</param>
+        /// 
+        /// <returns>A random double value sampled from the specified Nakagami distribution.</returns>
+        /// 
+        public static double Random(double shape, double spread)
+        {
+            double g = GammaDistribution.Random(shape: shape, scale: spread / shape);
+            return Math.Sqrt(g);
+        }
+
+        #endregion
     }
 }

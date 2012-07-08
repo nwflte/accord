@@ -31,7 +31,8 @@ namespace Accord.Statistics.Distributions.Univariate
     /// </summary>
     /// 
     [Serializable]
-    public class FDistribution : UnivariateContinuousDistribution
+    public class FDistribution : UnivariateContinuousDistribution,
+        ISampleableDistribution<double>
     {
 
         // Distribution parameters
@@ -165,7 +166,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override double ComplementaryDistributionFunction(double x)
         {
-            double u = d1 / (d1 * x + d2);
+            double u = d2 / (d2 + d1 * x);
             return Beta.Incomplete(d2 * 0.5, d1 * 0.5, u);
         }
 
@@ -277,5 +278,73 @@ namespace Accord.Statistics.Distributions.Univariate
         {
             return new FDistribution(d1, d2);
         }
+
+        #region ISamplableDistribution<double> Members
+
+        /// <summary>
+        ///   Generates a random vector of observations from the current distribution.
+        /// </summary>
+        /// 
+        /// <param name="samples">The number of samples to generate.</param>
+        /// 
+        /// <returns>A random vector of observations drawn from this distribution.</returns>
+        /// 
+        public double[] Generate(int samples)
+        {
+            return Random(d1, d2, samples);
+        }
+
+        /// <summary>
+        ///   Generates a random observation from the current distribution.
+        /// </summary>
+        /// 
+        /// <returns>A random observations drawn from this distribution.</returns>
+        /// 
+        public double Generate()
+        {
+            return Random(d1, d2);
+        }
+
+        /// <summary>
+        ///   Generates a random vector of observations from the 
+        ///   F-distribution with the given parameters.
+        /// </summary>
+        /// 
+        /// <param name="d1">The first degree of freedom.</param>
+        /// <param name="d2">The second degree of freedom.</param>
+        /// <param name="samples">The number of samples to generate.</param>
+        ///
+        /// <returns>An array of double values sampled from the specified F-distribution.</returns>
+        /// 
+        public static double[] Random(int d1, int d2, int samples)
+        {
+            double[] x = GammaDistribution.Random(shape: d1 / 2.0, scale: 2, samples: samples);
+            double[] y = GammaDistribution.Random(shape: d2 / 2.0, scale: 2, samples: samples);
+
+            for (int i = 0; i < x.Length; i++)
+                x[i] = x[i] / y[i];
+
+            return x;
+        }
+
+        /// <summary>
+        ///   Generates a random observation from the 
+        ///   F-distribution with the given parameters.
+        /// </summary>
+        /// 
+        /// <param name="d1">The first degree of freedom.</param>
+        /// <param name="d2">The second degree of freedom.</param>
+        /// 
+        /// <returns>A random double value sampled from the specified F-distribution.</returns>
+        /// 
+        public static double Random(int d1, int d2)
+        {
+            double x = GammaDistribution.Random(shape: d1 / 2.0, scale: 2);
+            double y = GammaDistribution.Random(shape: d2 / 2.0, scale: 2);
+            return x / y;
+        }
+
+
+        #endregion
     }
 }

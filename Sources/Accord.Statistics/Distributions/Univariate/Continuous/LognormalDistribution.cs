@@ -51,7 +51,8 @@ namespace Accord.Statistics.Distributions.Univariate
     /// 
     [Serializable]
     public class LognormalDistribution : UnivariateContinuousDistribution,
-        IFittableDistribution<double, NormalOptions>
+        IFittableDistribution<double, NormalOptions>,
+        ISampleableDistribution<double>
     {
 
         // Distribution parameters
@@ -287,7 +288,7 @@ namespace Accord.Statistics.Distributions.Univariate
 
             double mu, var;
 
-            observations = observations.Log();
+            observations = Matrix.Log(observations);
 
             if (weights != null)
             {
@@ -350,7 +351,7 @@ namespace Accord.Statistics.Distributions.Univariate
 
 
         /// <summary>
-        ///   Estimates a new Normal distribution from a given set of observations.
+        ///   Estimates a new Log-Normal distribution from a given set of observations.
         /// </summary>
         /// 
         public static LognormalDistribution Estimate(double[] observations)
@@ -359,7 +360,7 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
-        ///   Estimates a new Normal distribution from a given set of observations.
+        ///   Estimates a new Log-Normal distribution from a given set of observations.
         /// </summary>
         /// 
         public static LognormalDistribution Estimate(double[] observations, NormalOptions options)
@@ -368,7 +369,7 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
-        ///   Estimates a new Normal distribution from a given set of observations.
+        ///   Estimates a new Log-Normal distribution from a given set of observations.
         /// </summary>
         /// 
         public static LognormalDistribution Estimate(double[] observations, double[] weights, NormalOptions options = null)
@@ -377,5 +378,68 @@ namespace Accord.Statistics.Distributions.Univariate
             n.Fit(observations, weights, options);
             return n;
         }
+
+        #region ISampleableDistribution<double> Members
+
+        /// <summary>
+        ///   Generates a random vector of observations from the current distribution.
+        /// </summary>
+        /// 
+        /// <param name="samples">The number of samples to generate.</param>
+        /// 
+        /// <returns>A random vector of observations drawn from this distribution.</returns>
+        /// 
+        public double[] Generate(int samples)
+        {
+            return Random(location, shape, samples);
+        }
+
+        /// <summary>
+        ///   Generates a random observation from the current distribution.
+        /// </summary>
+        /// 
+        /// <returns>A random observations drawn from this distribution.</returns>
+        /// 
+        public double Generate()
+        {
+            return Random(location, shape);
+        }
+
+        /// <summary>
+        ///   Generates a random observation from the 
+        ///   Lognormal distribution with the given parameters.
+        /// </summary>
+        /// 
+        /// <param name="location">The distribution's location value.</param>
+        /// <param name="shape">The distribution's shape deviation.</param>
+        /// 
+        /// <returns>A random double value sampled from the specified Lognormal distribution.</returns>
+        /// 
+        public static double Random(double location, double shape)
+        {
+            double x = NormalDistribution.Standard.Generate();
+            return Math.Exp(location + shape * x);
+        }
+
+        /// <summary>
+        ///   Generates a random vector of observations from the 
+        ///   Lognormal distribution with the given parameters.
+        /// </summary>
+        /// 
+        /// <param name="location">The distribution's location value.</param>
+        /// <param name="shape">The distribution's shape deviation.</param>
+        /// <param name="samples">The number of samples to generate.</param>
+        ///
+        /// <returns>An array of double values sampled from the specified Lognormal distribution.</returns>
+        /// 
+        public static double[] Random(double location, double shape, int samples)
+        {
+            double[] x = NormalDistribution.Standard.Generate(samples);
+            for (int i = 0; i < x.Length; i++)
+                x[i] = Math.Exp(location + shape * x[i]);
+            return x;
+        }
+
+        #endregion
     }
 }

@@ -30,7 +30,7 @@ namespace Accord.Statistics.Distributions.Univariate
     /// </summary>
     /// 
     [Serializable]
-    public class DiscreteUniformDistribution : UnivariateDiscreteDistribution
+    public class UniformDiscreteDistribution : UnivariateDiscreteDistribution
     {
 
         // Distribution parameters
@@ -47,7 +47,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// <param name="a">The starting (minimum) value a.</param>
         /// <param name="b">The ending (maximum) value b.</param>
         /// 
-        public DiscreteUniformDistribution(int a, int b)
+        public UniformDiscreteDistribution(int a, int b)
         {
             if (a > b)
                 throw new ArgumentOutOfRangeException("b", 
@@ -209,7 +209,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override object Clone()
         {
-            return new DiscreteUniformDistribution(a, b);
+            return new UniformDiscreteDistribution(a, b);
         }
 
 
