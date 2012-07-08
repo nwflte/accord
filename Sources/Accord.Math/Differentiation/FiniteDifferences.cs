@@ -68,6 +68,7 @@ namespace Accord.Math.Differentiation
         /// <summary>
         ///   Initializes a new instance of the <see cref="FiniteDifferences"/> class.
         /// </summary>
+        /// 
         /// <param name="variables">The number of free parameters in the function.</param>
         /// 
         public FiniteDifferences(int variables)
@@ -78,6 +79,19 @@ namespace Accord.Math.Differentiation
             // Create interpolation coefficient table
             // for interpolated numerical differentation
             this.coef = createInterpolationCoefficients(3);
+        }
+
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="FiniteDifferences"/> class.
+        /// </summary>
+        /// 
+        /// <param name="variables">The number of free parameters in the function.</param>
+        /// <param name="function">The function to be differentiated.</param>
+        /// 
+        public FiniteDifferences(int variables, Func<double[], double> function)
+            : this(variables)
+        {
+            this.Function = function;
         }
 
         /// <summary>
