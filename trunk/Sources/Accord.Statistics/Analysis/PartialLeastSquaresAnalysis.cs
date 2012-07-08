@@ -165,7 +165,7 @@ namespace Accord.Statistics.Analysis
     /// </example>
     ///
     [Serializable]
-    public class PartialLeastSquaresAnalysis : IMultipleRegressionAnalysis, IProjectionAnalysis
+    public class PartialLeastSquaresAnalysis : IMultivariateRegressionAnalysis, IProjectionAnalysis
     {
 
         internal double[,] sourceX;

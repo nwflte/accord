@@ -326,9 +326,7 @@ namespace Accord.Statistics.Analysis
             int falsePositives = negativeCount - trueNegatives;
             int falseNegatives = positiveCount - truePositives;
 
-            return new ReceiverOperatingCharacteristicPoint(threshold,
-                truePositives, trueNegatives,
-                falsePositives, falseNegatives);
+            return new ReceiverOperatingCharacteristicPoint(threshold, truePositives, falseNegatives, falsePositives, trueNegatives);
         }
 
 
@@ -440,8 +438,9 @@ namespace Accord.Statistics.Analysis
         /// </summary>
         /// 
         internal ReceiverOperatingCharacteristicPoint(double cutoff,
-            int truePositives, int trueNegatives, int falsePositives, int falseNegatives)
-            : base(truePositives, trueNegatives, falsePositives, falseNegatives)
+            int truePositives, int falseNegatives, 
+            int falsePositives, int trueNegatives)
+            : base(truePositives, falseNegatives, falsePositives, trueNegatives)
         {
             //this.curve = curve;
             this.cutoff = cutoff;

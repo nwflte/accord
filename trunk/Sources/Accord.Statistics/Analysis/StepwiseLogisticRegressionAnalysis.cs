@@ -269,7 +269,7 @@ namespace Accord.Statistics.Analysis
                 // Check the significance of the nested model
                 double logLikelihood = regression.GetLogLikelihood(subset, outputData);
                 double ratio = 2.0 * (fullLikelihood - logLikelihood);
-                ChiSquareTest test = new ChiSquareTest(ratio, inputNames.Length - variables.Length, threshold);
+                ChiSquareTest test = new ChiSquareTest(ratio, inputNames.Length - variables.Length) { Size = threshold };
 
                 // Store the nested model
                 nestedModels[i] = new StepwiseLogisticRegressionModel(this, regression, variables, test);

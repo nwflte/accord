@@ -110,9 +110,20 @@ namespace Accord.Statistics.Analysis
         /// 
         /// <param name="data">The source data to perform analysis.</param>
         /// 
-        public DescriptiveAnalysis(double[,] data)
-            : this(data, null)
+        public DescriptiveAnalysis(double[] data)
         {
+            Compute(Matrix.ColumnVector(data), null);
+        }
+
+        /// <summary>
+        ///   Constructs the Descriptive Analysis.
+        /// </summary>
+        /// 
+        /// <param name="data">The source data to perform analysis.</param>
+        /// 
+        public DescriptiveAnalysis(double[,] data)
+        {
+            Compute(data, null);
         }
 
         /// <summary>
@@ -127,6 +138,13 @@ namespace Accord.Statistics.Analysis
             // Initial argument checking
             if (data == null) throw new ArgumentNullException("data");
 
+            if (columnNames == null) throw new ArgumentNullException("columnNames");
+
+            Compute(data, columnNames);
+        }
+
+        private void Compute(double[,] data, string[] columnNames)
+        {
             if (columnNames == null)
             {
                 // Generate column names as Column 1, Column 2, ...
