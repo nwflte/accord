@@ -108,8 +108,8 @@ namespace Accord.Statistics.Kernels
         /// 
         public static double[] Products(double[][] inputs, int samples)
         {
-            int[] idx = Accord.Statistics.Tools.Random(inputs.Length, samples);
-            int[] idy = Accord.Statistics.Tools.Random(inputs.Length, samples);
+            int[] idx = Accord.Statistics.Tools.RandomSample(inputs.Length, samples);
+            int[] idy = Accord.Statistics.Tools.RandomSample(inputs.Length, samples);
 
             double[] products = new double[samples * samples];
 

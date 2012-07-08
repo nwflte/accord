@@ -45,7 +45,7 @@ namespace Accord.Statistics.Kernels.Sparse
     /// </remarks>
     /// 
     [Serializable]
-    public sealed class SparseGaussian
+    public sealed class SparseGaussian : IKernel
     {
         private double sigma;
         private double gamma;
