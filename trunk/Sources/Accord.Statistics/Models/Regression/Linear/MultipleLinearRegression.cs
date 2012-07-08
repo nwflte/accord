@@ -25,6 +25,7 @@ namespace Accord.Statistics.Models.Regression.Linear
     using System;
     using System.Text;
     using Accord.Math.Decompositions;
+    using Accord.Math;
 
     /// <summary>
     ///   Multiple Linear Regression.
@@ -36,7 +37,7 @@ namespace Accord.Statistics.Models.Regression.Linear
     ///   variable, denoted y_i, is a linear combination of the parameters (but need not
     ///   be linear in the independent x_i variables). As the linear regression has a
     ///   closed form solution, the regression coefficients can be computed by calling
-    ///   the <see cref="Regress"/> method only once.</para>
+    ///   the <see cref="Regress(double[][], double[])"/> method only once.</para>
     /// </remarks>
     /// 
     /// <example>
@@ -89,11 +90,11 @@ namespace Accord.Statistics.Models.Regression.Linear
     /// </example>
     /// 
     [Serializable]
-    public class MultipleLinearRegression : ILinearRegression
+    public class MultipleLinearRegression : ILinearRegression, IFormattable
     {
 
         private double[] coefficients;
-        private bool insertConstant;
+        private bool addIntercept;
 
 
         /// <summary>
@@ -103,9 +104,7 @@ namespace Accord.Statistics.Models.Regression.Linear
         /// <param name="inputs">The number of inputs for the regression.</param>
         /// 
         public MultipleLinearRegression(int inputs)
-            : this(inputs, false)
-        {
-        }
+            : this(inputs, false) { }
 
         /// <summary>
         ///   Creates a new Multiple Linear Regression.
@@ -118,7 +117,7 @@ namespace Accord.Statistics.Models.Regression.Linear
         {
             if (intercept) inputs++;
             this.coefficients = new double[inputs];
-            this.insertConstant = intercept;
+            this.addIntercept = intercept;
         }
 
 
@@ -138,7 +137,16 @@ namespace Accord.Statistics.Models.Regression.Linear
         /// 
         public int Inputs
         {
-            get { return coefficients.Length; }
+            get { return coefficients.Length - (addIntercept ? 1 : 0); }
+        }
+
+        /// <summary>
+        ///   Gets whether this model has an additional intercept term.
+        /// </summary>
+        /// 
+        public bool HasIntercept
+        {
+            get { return addIntercept; }
         }
 
         /// <summary>
@@ -155,54 +163,63 @@ namespace Accord.Statistics.Models.Regression.Linear
             if (inputs.Length != outputs.Length)
                 throw new ArgumentException("Number of input and output samples does not match", "outputs");
 
-            int N = inputs[0].Length;     // inputs
-            int M = inputs.Length;        // points
+            double[,] X;
 
-            if (insertConstant) N++;
+            return regress(inputs, outputs, out X);
+        }
 
-            double[] B = new double[N];
-            double[,] V = new double[N, N];
+        /// <summary>
+        ///   Performs the regression using the input vectors and output
+        ///   data, returning the sum of squared errors of the fit.
+        /// </summary>
+        /// 
+        /// <param name="inputs">The input vectors to be used in the regression.</param>
+        /// <param name="outputs">The output values for each input vector.</param>
+        /// <param name="informationMatrix">Gets the Fisher's information matrix.</param>
+        /// 
+        /// <returns>The Sum-Of-Squares error of the regression.</returns>
+        /// 
+        public double Regress(double[][] inputs, double[] outputs, out double[,] informationMatrix)
+        {
+            if (inputs.Length != outputs.Length)
+                throw new ArgumentException("Number of input and output samples does not match", "outputs");
+
+            double[,] X;
+
+            double error = regress(inputs, outputs, out X);
+
+            //hatMatrix = X.Multiply(svd.Inverse());
+            informationMatrix = new SingularValueDecomposition(X.TransposeAndMultiply(X),
+                true, true, true, true).Inverse();
+
+            return error;
+        }
 
 
-            // Compute V and B matrices
-            for (int i = 0; i < N; i++)
+        private double regress(double[][] inputs, double[] outputs, out double[,] X)
+        {
+            if (inputs.Length != outputs.Length)
+                throw new ArgumentException("Number of input and output samples does not match", "outputs");
+
+            int rows = inputs.Length;     // inputs
+            int cols = inputs[0].Length;        // points
+
+
+            if (addIntercept)
             {
-                // Least Squares Matrix
-                for (int j = 0; j < N; j++)
-                {
-                    for (int k = 0; k < M; k++)
-                    {
-                        if (insertConstant)
-                        {
-                            double a = (i == N - 1) ? 1 : inputs[k][i];
-                            double b = (j == N - 1) ? 1 : inputs[k][j];
-
-                            V[i, j] += a * b;
-                        }
-                        else
-                        {
-                            V[i, j] += inputs[k][i] * inputs[k][j];
-                        }
-                    }
-                }
-
-                // Function to minimize
-                for (int k = 0; k < M; k++)
-                {
-                    if (insertConstant && (i == N - 1))
-                    {
-                        B[i] += outputs[k];
-                    }
-                    else
-                    {
-                        B[i] += inputs[k][i] * outputs[k];
-                    }
-                }
+                X = new double[rows, cols + 1];
+                for (int i = 0; i < rows; i++)
+                    X[i, cols] = 1;
             }
+            else X = new double[rows, cols];
+
+            for (int i = 0; i < inputs.Length; i++)
+                for (int j = 0; j < inputs[i].Length; j++)
+                    X[i, j] = inputs[i][j];
 
 
             // Solve V*C = B to find C (the coefficients)
-            coefficients = new SingularValueDecomposition(V).Solve(B);
+            coefficients = new SingularValueDecomposition(X).Solve(outputs);
 
             // Calculate Sum-Of-Squares error
             double error = 0.0;
@@ -219,6 +236,7 @@ namespace Accord.Statistics.Models.Regression.Linear
         /// <summary>
         ///   Gets the coefficient of determination, as known as R² (r-squared).
         /// </summary>
+        /// 
         /// <remarks>
         ///   <para>
         ///    The coefficient of determination is used in the context of statistical models
@@ -231,7 +249,9 @@ namespace Accord.Statistics.Models.Regression.Linear
         ///    regression line approximates the real data points. An R² of 1.0 indicates
         ///    that the regression line perfectly fits the data.</para> 
         /// </remarks>
+        /// 
         /// <returns>The R² (r-squared) coefficient for the given data.</returns>
+        /// 
         public double CoefficientOfDetermination(double[][] inputs, double[] outputs)
         {
             return CoefficientOfDetermination(inputs, outputs, false);
@@ -240,6 +260,7 @@ namespace Accord.Statistics.Models.Regression.Linear
         /// <summary>
         ///   Gets the coefficient of determination, as known as R² (r-squared).
         /// </summary>
+        /// 
         /// <remarks>
         ///   <para>
         ///    The coefficient of determination is used in the context of statistical models
@@ -252,25 +273,27 @@ namespace Accord.Statistics.Models.Regression.Linear
         ///    regression line approximates the real data points. An R² of 1.0 indicates
         ///    that the regression line perfectly fits the data.</para> 
         /// </remarks>
+        /// 
         /// <returns>The R² (r-squared) coefficient for the given data.</returns>
+        /// 
         public double CoefficientOfDetermination(double[][] inputs, double[] outputs, bool adjust)
         {
             // R-squared = 100 * SS(regression) / SS(total)
 
-            int N = inputs.Length;
-            int P = coefficients.Length - 1;
+            int n = inputs.Length;
+            int p = Inputs;
             double SSe = 0.0;
             double SSt = 0.0;
             double avg = 0.0;
             double d;
 
             // Calculate output mean
-            for (int i = 0; i < N; i++)
+            for (int i = 0; i < outputs.Length; i++)
                 avg += outputs[i];
             avg /= inputs.Length;
 
             // Calculate SSe and SSt
-            for (int i = 0; i < N; i++)
+            for (int i = 0; i < outputs.Length; i++)
             {
                 d = outputs[i] - Compute(inputs[i]);
                 SSe += d * d;
@@ -292,14 +315,14 @@ namespace Accord.Statistics.Models.Regression.Linear
                 if (r2 == 1)
                     return 1;
 
-                if (N == P + 1)
+                if (n - p == 1.0)
                 {
                     return double.NaN;
                 }
                 else
                 {
                     // Return adjusted R-Squared
-                    return 1.0 - (1.0 - r2) * ((N - 1.0) / (N - P - 1.0));
+                    return 1.0 - (1.0 - r2) * ((n - 1.0) / (n - p - 1.0));
                 }
             }
         }
@@ -307,8 +330,11 @@ namespace Accord.Statistics.Models.Regression.Linear
         /// <summary>
         ///   Computes the Multiple Linear Regression for an input vector.
         /// </summary>
+        /// 
         /// <param name="input">The input vector.</param>
+        /// 
         /// <returns>The calculated output.</returns>
+        /// 
         public double Compute(double[] input)
         {
             double output = 0.0;
@@ -316,7 +342,7 @@ namespace Accord.Statistics.Models.Regression.Linear
             for (int i = 0; i < input.Length; i++)
                 output += coefficients[i] * input[i];
 
-            if (insertConstant) output += coefficients[input.Length];
+            if (addIntercept) output += coefficients[input.Length];
 
             return output;
         }
@@ -324,8 +350,11 @@ namespace Accord.Statistics.Models.Regression.Linear
         /// <summary>
         ///   Computes the Multiple Linear Regression for input vectors.
         /// </summary>
+        /// 
         /// <param name="input">The input vector data.</param>
+        /// 
         /// <returns>The calculated outputs.</returns>
+        /// 
         public double[] Compute(double[][] input)
         {
             double[] output = new double[input.Length];
@@ -338,14 +367,44 @@ namespace Accord.Statistics.Models.Regression.Linear
             return output;
         }
 
+
         /// <summary>
         ///   Returns a System.String representing the regression.
         /// </summary>
+        /// 
         public override string ToString()
+        {
+            return ToString(null, System.Globalization.CultureInfo.CurrentCulture);
+        }
+
+        #region ILinearRegression Members
+        double[] ILinearRegression.Compute(double[] inputs)
+        {
+            return new double[] { this.Compute(inputs) };
+        }
+        #endregion
+
+        #region IFormattable Members
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <param name="format">The format to use.-or- A null reference (Nothing in Visual Basic) to use
+        ///     the default format defined for the type of the System.IFormattable implementation. </param>
+        /// <param name="formatProvider">The provider to use to format the value.-or- A null reference (Nothing in
+        ///     Visual Basic) to obtain the numeric format information from the current locale
+        ///     setting of the operating system.</param>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format, IFormatProvider formatProvider)
         {
             StringBuilder sb = new StringBuilder();
 
-            int inputs = (insertConstant) ? coefficients.Length - 1 : coefficients.Length;
+            int inputs = (addIntercept) ? coefficients.Length - 1 : coefficients.Length;
 
             sb.Append("y(");
             for (int i = 0; i < inputs; i++)
@@ -360,25 +419,18 @@ namespace Accord.Statistics.Models.Regression.Linear
 
             for (int i = 0; i < inputs; i++)
             {
-                sb.AppendFormat("{0}*x{1}", Coefficients[i], i);
+                sb.AppendFormat("{0}*x{1}", Coefficients[i].ToString(format, formatProvider), i);
 
                 if (i < inputs - 1)
                     sb.Append(" + ");
             }
 
-            if (insertConstant)
-                sb.AppendFormat(" + {0}", coefficients[inputs]);
+            if (addIntercept)
+                sb.AppendFormat(" + {0}", coefficients[inputs].ToString(format, formatProvider));
 
             return sb.ToString();
         }
 
-
-
-        #region ILinearRegression Members
-        double[] ILinearRegression.Compute(double[] inputs)
-        {
-            return new double[] { this.Compute(inputs) };
-        }
         #endregion
     }
 }
