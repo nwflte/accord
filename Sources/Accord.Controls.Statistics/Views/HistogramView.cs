@@ -57,11 +57,12 @@ namespace Accord.Controls
         /// <summary>
         ///   Constructs a new instance of the HistogramView.
         /// </summary>
+        /// 
         public HistogramView()
         {
             InitializeComponent();
 
-            histogram = new Histogram();
+            this.histogram = new Histogram();
             graphBars = new ZedGraph.BarItem(String.Empty);
             graphBars.Color = Color.DarkBlue;
             zedGraphControl.GraphPane.Title.FontSpec.IsBold = true;
@@ -97,6 +98,7 @@ namespace Accord.Controls
         ///   Gets a reference to the underlying ZedGraph
         ///   control used to draw the histogram.
         /// </summary>
+        /// 
         public ZedGraphControl Graph
         {
             get { return zedGraphControl; }
@@ -106,6 +108,7 @@ namespace Accord.Controls
         ///   Gets the trackbar which controls 
         ///   the histogram bins' width.
         /// </summary>
+        /// 
         public TrackBar TrackBar
         {
             get { return trackBar; }
@@ -131,9 +134,7 @@ namespace Accord.Controls
                 dataSource = value;
 
                 if (!this.DesignMode)
-                {
                     onDataBind();
-                }
             }
         }
 
@@ -193,6 +194,7 @@ namespace Accord.Controls
         /// <summary>
         ///   Forces a update of the Histogram bins.
         /// </summary>
+        /// 
         public void UpdateGraph()
         {
             graphBars.Clear();
@@ -205,6 +207,7 @@ namespace Accord.Controls
                     " - " + histogram.Bins[i].Range.Max.ToString(formatString, CultureInfo.CurrentCulture);
             }
 
+            zedGraphControl.GraphPane.Title.Text = histogram.Title;
             zedGraphControl.GraphPane.XAxis.Scale.TextLabels = labels;
             zedGraphControl.GraphPane.XAxis.Scale.FontSpec.Angle = 45.0f;
 
@@ -243,21 +246,7 @@ namespace Accord.Controls
 
             if (dataSource is DataSet)
             {
-                if (dataMember != null && dataMember.Length > 0)
-                {
-                    if (displayMember != null && displayMember.Length > 0)
-                    {
-                        //m_samples = new SampleVector(((DataSet)m_dataSource).Tables[m_dataMember].Columns[m_displayMember]);
-                    }
-                    else
-                    {
-                        //  m_samples = new SampleVector(((DataSet)m_dataSource).Tables[m_dataMember].Columns[0]);
-                    }
-                }
-                else
-                {
-                    //m_samples = new SampleVector(((DataSet)m_dataSource).Tables[0].Columns[0]);
-                }
+                // throw new NotSupportedException();
             }
             else if (dataSource is DataTable)
             {
@@ -265,8 +254,6 @@ namespace Accord.Controls
 
                 if (dataMember != null && dataMember.Length > 0)
                 {
-                    //m_samples = new SampleVector(((DataTable)m_dataSource).Columns[m_displayMember]);
-
                     if (table.Columns.Contains(dataMember))
                     {
                         DataColumn column = table.Columns[dataMember];
@@ -280,7 +267,6 @@ namespace Accord.Controls
                 else
                 {
                     return;
-                    //m_samples = new SampleVector(((DataTable)m_dataSource).Columns[0]);
                 }
             }
             else if (dataSource is double[])
@@ -289,14 +275,14 @@ namespace Accord.Controls
             }
             else if (dataSource is IListSource)
             {
-                //m_samples = new SampleVector((IListSource)m_dataSource);
+                // throw new NotSupportedException();
             }
             else
             {
                 return; // invalid data source
             }
 
-            zedGraphControl.GraphPane.Title.Text = histogram.Title;
+            
             this.histogram.Compute(samples);
 
             this.UpdateTrackbar();
@@ -319,6 +305,7 @@ namespace Accord.Controls
             this.UpdateGraph();
         }
         #endregion
+
 
     }
 }
