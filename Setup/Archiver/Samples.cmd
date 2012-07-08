@@ -12,10 +12,10 @@ echo.
 
 :: Settings for complete and (libs-only) package creation
 :: ---------------------------------------------------------
-set rar="C:\Program Files\WinRAR\rar"
-set opts=a -m5 -s
+set rar="C:\Program Files\WinRAR\winrar"
+set opts=a -m5 -s -afzip
 set sampleDir=..\..\Samples\
-set outputDir=..\bin\Samples\
+set outputDir=..\bin\samples\
 set sampleBin=\bin\x86\Release\
 
 :: Get absolute sample dir
@@ -26,6 +26,10 @@ popd
 
 :: Get absolute output dir
 pushd .
+:: Create output directory
+IF NOT EXIST %outputDir%\nul (
+   mkdir %outputDir%
+)
 cd %outputDir%
 set outputDir=%CD%
 popd
@@ -46,13 +50,8 @@ echo Packaging Accord.NET sample applications...
 echo ---------------------------------------------------------
 
 
-:: Create output directory
-IF NOT EXIST %outputDir%\nul (
-   mkdir %outputDir%
-)
-
 :: Remove old files
-forfiles /p %outputDir% /m *.rar /c "cmd /c del @file"
+forfiles /p %outputDir% /m *.zip /c "cmd /c del @file"
 
 :: For each sample application project
 for /r %sampleDir% %%f in (*.csproj) do (
@@ -62,19 +61,35 @@ for /r %sampleDir% %%f in (*.csproj) do (
    set fileName=Accord!cur:%sampleDir%=!
    set fileName=!fileName:~0,-1!
    set fileName=!fileName:\=-!
-   set fileName=!fileName!-bin.rar
+   
    
    :: Convert the filename to lowercase
    for %%c in ("A=a" "B=b" "C=c" "D=d" "E=e" "F=f" "G=g" "H=h" "I=i" "J=j" "K=k" "L=l" "M=m" "N=n" "O=o" "P=p" "Q=q" "R=r" "S=s" "T=t" "U=u" "V=v" "W=w" "X=x" "Y=y" "Z=z") do set fileName=!fileName:%%~c!
    
+   :: Create the binary package
+   set binFileName=!fileName!-bin.zip
+   
    :: Get the binary files folder
-   set folder=!cur!%sampleBin%
+   set binFolder=!cur!%sampleBin%
    
    :: Compress the files
-   echo - Processing !fileName!
+   echo - Processing !binFileName!
    pushd .
-   cd !folder!
-   %rar% %opts% -r %outputDir%\!fileName! *.* -x*.pdb -x*.xml
+   cd !binFolder!
+   %rar% %opts% -r %outputDir%\!binFileName! *.* -x*.pdb -x*.xml
+   popd
+   
+   :: Create the sources package
+   set srcFileName=!fileName!-src.zip
+   
+   :: Get the binary files folder
+   set srcFolder=!cur!
+   
+   :: Compress the files
+   echo - Processing !srcFileName!
+   pushd .
+   cd !srcFolder!   
+   %rar% %opts% -r %outputDir%\!srcFileName! *.* -x*\.svn* -x*\obj -x*\bin -x*.suo -x*.user
    popd
 )
 
