@@ -49,6 +49,16 @@ namespace Accord.MachineLearning.VectorMachines.Learning
     ///   further modifications for better performance by Shevade et al.</para> 
     ///   
     /// <para>
+    ///   Portions of this implementation has been based on the GPL code by Sylvain Roy in SMOreg.java, a 
+    ///   part of the Weka software package. It is, thus, available under the same GPL license. This file is
+    ///   not linked against the rest of the Accord.NET Framework and can only be used in GPL aplications.
+    ///   This class is only available in the special Accord.MachineLearning.GPL assembly, which has to be
+    ///   explictly selected in the framework installation. Before linking against this assembly, please
+    ///   read the <a href="http://www.gnu.org/copyleft/gpl.html">GPL license</a> for more details. This
+    ///   assembly also should have been distributed with a copy of the GNU GPLv3 alongside with it.
+    /// </para>
+    ///   
+    /// <para>
     ///   References:
     ///   <list type="bullet">
     ///     <item><description>
