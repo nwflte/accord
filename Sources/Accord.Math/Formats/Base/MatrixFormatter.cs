@@ -24,9 +24,9 @@ namespace Accord.Math.Formats
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Text;
     using System.Text.RegularExpressions;
-    using System.Globalization;
 
     /// <summary>
     ///   Defines how matrices are formatted and displayed, depending on the
@@ -119,7 +119,7 @@ namespace Accord.Math.Formats
 
                     if (row == null)
                     {
-                        handleOtherFormats(elementFormat, obj, culture);
+                        sb.Append(handleOtherFormats(elementFormat, obj, culture));
                     }
                     else
                     {
@@ -212,7 +212,7 @@ namespace Accord.Math.Formats
                     default:
                         newline = Environment.NewLine;
                         elementFormat = format;
-                        return false;
+                        return true;
                 }
             }
 
@@ -266,7 +266,7 @@ namespace Accord.Math.Formats
                 throw new FormatException(String.Format("The format of '{0}' is invalid.", format), e);
             }
 
-            return String.Empty; ;
+            return String.Empty;
         }
 
         #endregion
