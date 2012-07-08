@@ -137,6 +137,32 @@ namespace Accord.Tests.Statistics
         }
 
         [TestMethod()]
+        public void ComplementaryDistributionFunctionTest()
+        {
+            double actual;
+            double expected;
+
+            int[] nu1 = { 1, 2, 3, 4, 5 };
+            int[] nu2 = { 6, 7, 8, 9, 10 };
+            double[] x = { 2, 3, 4, 5, 6 };
+            double[] cdf = { 0.7930, 0.8854, 0.9481, 0.9788, 0.9919 };
+            FDistribution f;
+
+            for (int i = 0; i < 5; i++)
+            {
+                f = new FDistribution(nu1[i], nu2[i]);
+                expected = cdf[i];
+
+                actual = f.DistributionFunction(x[i]);
+                Assert.AreEqual(expected, actual, 1e-4);
+
+                f = new FDistribution(nu2[i], nu1[i]);
+                actual = f.ComplementaryDistributionFunction(1.0 / x[i]);
+                Assert.AreEqual(expected, actual, 1e-4);
+            }
+        }
+
+        [TestMethod()]
         public void DistributionFunctionTest3()
         {
 
@@ -241,7 +267,7 @@ namespace Accord.Tests.Statistics
 
             for (int i = 0; i < cdf.Length; i++)
             {
-                double x = (i+1) / 10.0;
+                double x = (i + 1) / 10.0;
                 double actual = target.InverseDistributionFunction(x);
                 double expected = cdf[i];
 
@@ -249,6 +275,7 @@ namespace Accord.Tests.Statistics
                 Assert.IsFalse(double.IsNaN(actual));
             }
         }
+
 
     }
 }

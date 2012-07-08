@@ -2325,5 +2325,397 @@ namespace Accord.Tests.Math
             Assert.IsTrue(expected.IsEqual(actual));
         }
 
+
+        [TestMethod()]
+        public void MultiplyByTransposeTestFloat()
+        {
+            float[,] a = 
+            {
+                { 1, 2, 3 },
+                { 4, 5, 6 },
+            };
+
+            float[,] b = 
+            {
+                {  7,  8,  9 },
+                { 10, 11, 12 },
+            };
+
+
+            float[,] expected =
+            {
+                {  50, 68  },
+                { 122, 167 }
+            };
+
+            float[,] actual = Matrix.MultiplyByTranspose(a, b);
+
+            Assert.IsTrue(actual.IsEqual(expected));
+        }
+
+
+
+        [TestMethod()]
+        public void ConcatenateTest1()
+        {
+            double[][,] matrices = 
+            {
+                new double[,] 
+                {
+                    { 0, 1 },
+                    { 2, 3 },
+                },
+
+                new double[,] 
+                {
+                    { 4, 5 },
+                    { 6, 7 },
+                },
+            };
+
+
+            double[,] expected = 
+            {
+                { 0, 1, 4, 5 },
+                { 2, 3, 6, 7 },
+            };
+
+            double[,] actual = Matrix.Concatenate(matrices);
+
+            Assert.IsTrue(expected.IsEqual(actual));
+        }
+
+
+        [TestMethod()]
+        public void ToTableTest()
+        {
+            double[,] matrix = 
+            {
+                { 1, 2 },
+                { 3, 4 },
+                { 5, 6 },
+            };
+
+            string[] columnNames = { "A", "B", };
+            DataTable actual = Matrix.ToTable(matrix, columnNames);
+
+            Assert.AreEqual("A", actual.Columns[0].ColumnName);
+            Assert.AreEqual("B", actual.Columns[1].ColumnName);
+
+            Assert.AreEqual(1, (double)actual.Rows[0][0]);
+            Assert.AreEqual(2, (double)actual.Rows[0][1]);
+            Assert.AreEqual(3, (double)actual.Rows[1][0]);
+            Assert.AreEqual(4, (double)actual.Rows[1][1]);
+            Assert.AreEqual(5, (double)actual.Rows[2][0]);
+            Assert.AreEqual(6, (double)actual.Rows[2][1]);
+        }
+
+
+        [TestMethod()]
+        public void RemoveColumnTest()
+        {
+            double[,] matrix = 
+            {
+                { 1, 2, 3 },
+                { 4, 5, 6 },
+            };
+
+
+            double[,] a = matrix.RemoveColumn(0);
+            double[,] b = matrix.RemoveColumn(1);
+            double[,] c = matrix.RemoveColumn(2);
+
+            double[,] expectedA =
+            {
+                { 2, 3 },
+                { 5, 6 },
+            };
+
+            double[,] expectedB = 
+            {
+                { 1, 3 },
+                { 4, 6 },
+            };
+
+            double[,] expectedC = 
+            {
+                { 1, 2 },
+                { 4, 5 },
+            };
+
+            Assert.IsTrue(expectedA.IsEqual(a));
+            Assert.IsTrue(expectedB.IsEqual(b));
+            Assert.IsTrue(expectedC.IsEqual(c));
+        }
+
+
+        [TestMethod()]
+        public void RemoveRowTest()
+        {
+            double[,] matrix = 
+            {
+                { 1, 2 },
+                { 3, 4 },
+                { 5, 6 },
+                { 7, 8 },
+            };
+
+
+            double[,] a = matrix.RemoveRow(0);
+            double[,] b = matrix.RemoveRow(1);
+            double[,] c = matrix.RemoveRow(3);
+
+            double[,] expectedA =
+            {
+                { 3, 4 },
+                { 5, 6 },
+                { 7, 8 },
+            };
+
+            double[,] expectedB = 
+            {
+                { 1, 2 },
+                { 5, 6 },
+                { 7, 8 },
+            };
+
+            double[,] expectedC = 
+            {
+                { 1, 2 },
+                { 3, 4 },
+                { 5, 6 },
+            };
+
+            Assert.IsTrue(expectedA.IsEqual(a));
+            Assert.IsTrue(expectedB.IsEqual(b));
+            Assert.IsTrue(expectedC.IsEqual(c));
+        }
+
+        [TestMethod()]
+        public void ReshapeTest2()
+        {
+            double[][] array = 
+            {
+                new double[] { 1, 2, 3 },
+                new double[] { 4, 5, 6 }
+            };
+
+            {
+                double[] expected = { 1, 2, 3, 4, 5, 6 };
+                double[] actual = Matrix.Reshape(array, 1);
+                Assert.IsTrue(expected.IsEqual(actual));
+            }
+
+            {
+                double[] expected = { 1, 4, 2, 5, 3, 6 };
+                double[] actual = Matrix.Reshape(array, 0);
+                Assert.IsTrue(expected.IsEqual(actual));
+            }
+
+        }
+
+
+        [TestMethod()]
+        public void SolveTest1()
+        {
+            double[,] a = 
+            {
+                { 1, 2, 3 },
+                { 4, 5, 6 },
+            };
+
+            double[,] b = 
+            {
+                {  7,  8,  9 },
+                { 10, 11, 12 },
+            };
+
+            // Test with more rows than columns
+            {
+                double[,] matrix = a.Transpose();
+                double[,] rightSide = b.Transpose();
+
+                Assert.IsTrue(matrix.GetLength(0) > matrix.GetLength(1));
+
+                double[,] expected = 
+                {
+                    { -1, -2 },
+                    {  2,  3 }
+                };
+
+
+                double[,] actual = Matrix.Solve(matrix, rightSide);
+
+                Assert.IsTrue(expected.IsEqual(actual, 1e-10));
+            }
+
+            // test with more columns than rows
+            {
+                double[,] matrix = a;
+                double[,] rightSide = b;
+
+                Assert.IsTrue(matrix.GetLength(0) < matrix.GetLength(1));
+
+
+                double[,] expected = 
+                {
+                    { -13/6.0,  -8/3.0, -19/6.0 },
+                    {   2/6.0,   2/6.0,   2/6.0 },
+                    {  17/6.0,  20/6.0,  23/6.0 }
+                };
+
+                double[,] actual = Matrix.Solve(matrix, rightSide);
+
+                Assert.IsTrue(expected.IsEqual(actual, 1e-10));
+            }
+        }
+
+        [TestMethod()]
+        public void SolveTest4()
+        {
+            // Test with more rows than columns
+            {
+                double[,] matrix = 
+                {
+                    { 1, 2 },
+                    { 3, 4 },
+                    { 5, 6 },
+                };
+
+                double[,] rightSide =
+                {
+                    { 7 },
+                    { 8 },
+                    { 9 },
+                };
+
+                Assert.IsTrue(matrix.GetLength(0) > matrix.GetLength(1));
+
+                double[,] expected = 
+                {
+                    { -6   },
+                    {  6.5 }
+                };
+
+                double[,] actual = Matrix.Solve(matrix, rightSide);
+
+                Assert.IsTrue(expected.IsEqual(actual, 1e-10));
+            }
+
+            // test with more columns than rows
+            {
+                double[,] matrix = 
+                {
+                    { 1, 2, 3 },
+                    { 4, 5, 6 },
+                };
+
+                double[,] rightSide = 
+                {
+                    { 7 },
+                    { 8 }
+                };
+
+                Assert.IsTrue(matrix.GetLength(0) < matrix.GetLength(1));
+
+
+                double[,] expected = 
+                {
+                   { -55 / 18.0 }, 
+                   {  1  /  9.0 },
+                   {  59 / 18.0 },
+                };
+
+                double[,] actual = Matrix.Solve(matrix, rightSide);
+
+                Assert.IsTrue(expected.IsEqual(actual, 1e-10));
+            }
+        }
+
+        [TestMethod()]
+        public void SolveTest3()
+        {
+            // Test with more rows than columns
+            {
+                double[,] matrix = 
+                {
+                    { 1, 2 },
+                    { 3, 4 },
+                    { 5, 6 },
+                };
+
+                double[] rightSide = { 7, 8, 9 };
+
+                Assert.IsTrue(matrix.GetLength(0) > matrix.GetLength(1));
+
+                double[] expected = { -6, 6.5 };
+
+                double[] actual = Matrix.Solve(matrix, rightSide);
+
+                Assert.IsTrue(expected.IsEqual(actual, 1e-10));
+            }
+
+            // test with more columns than rows
+            {
+                double[,] matrix = 
+                {
+                    { 1, 2, 3 },
+                    { 4, 5, 6 },
+                };
+
+                double[] rightSide = { 7, 8 };
+
+                Assert.IsTrue(matrix.GetLength(0) < matrix.GetLength(1));
+
+
+                double[] expected = { -55 / 18.0, 1 / 9.0, 59 / 18.0 };
+
+                double[] actual = Matrix.Solve(matrix, rightSide);
+
+                Assert.IsTrue(expected.IsEqual(actual, 1e-10));
+            }
+        }
+
+        [TestMethod()]
+        public void SolveTest5()
+        {
+            // Test with singular matrix
+            {
+                double[,] matrix = 
+                {
+                    { 1, 2, 3 },
+                    { 4, 5, 6 },
+                    { 7, 8, 9 },
+                };
+
+                double[] rightSide = { 1, 2, 3 };
+
+                Assert.IsTrue(matrix.IsSingular());
+
+                double[] expected = { -1 / 18.0, 2 / 18.0, 5 / 18.0 };
+
+                double[] actual = Matrix.Solve(matrix, rightSide, leastSquares: true);
+
+                Assert.IsTrue(expected.IsEqual(actual, 1e-10));
+            }
+            {
+                double[,] matrix = 
+                {
+                    { 1, 2, 3 },
+                    { 4, 5, 6 },
+                    { 7, 8, 9 },
+                };
+
+                double[,] rightSide = { { 1 }, { 2 }, { 3 } };
+
+                Assert.IsTrue(matrix.IsSingular());
+
+                double[,] expected = { { -1 / 18.0 }, { 2 / 18.0 }, { 5 / 18.0 } };
+
+                double[,] actual = Matrix.Solve(matrix, rightSide, leastSquares: true);
+
+                Assert.IsTrue(expected.IsEqual(actual, 1e-10));
+            }
+        }
     }
 }

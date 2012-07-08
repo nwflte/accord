@@ -27,6 +27,7 @@ namespace Accord.Tests.Statistics
     using Accord.Math;
     using Accord;
     using System.Data;
+    using Accord.Controls;
 
     [TestClass()]
     public class CircularTest
@@ -90,10 +91,10 @@ namespace Accord.Tests.Statistics
         [TestMethod()]
         public void WeightedKappaTest()
         {
-    DataTable table = new DataTable();
+            DataTable table = new DataTable();
 
-    // Add multiple columns at once:
-    table.Columns.Add("columnName1", "columnName2");
+            // Add multiple columns at once:
+            table.Columns.Add("columnName1", "columnName2");
 
             double[] angles = { 0.1242, 1.2425, 0.6712 };
             double[] weights = { 3, 1, 1 };
@@ -145,7 +146,7 @@ namespace Accord.Tests.Statistics
         [TestMethod()]
         public void VarianceTest()
         {
-            double expected = 0.1466856; 
+            double expected = 0.1466856;
             double actual = Circular.Variance(angles);
 
             Assert.AreEqual(expected, actual, 1e-6);

@@ -24,8 +24,12 @@ namespace Accord.Tests.Imaging
 {
     using System.Drawing;
     using Accord.Imaging.Converters;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;    
-    
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Accord.Controls.Imaging;
+    using AForge.Imaging.Filters;
+    using System.Windows.Forms;
+    using Accord.Math;
+
     [TestClass()]
     public class ImageToArrayTest
     {
@@ -99,42 +103,45 @@ namespace Accord.Tests.Imaging
             Assert.AreEqual(channel, target.Channel);
         }
 
-       
+
         [TestMethod()]
-        public void ConvertTest2()
+        public void ConvertTest3()
         {
-            Bitmap image = Properties.Resources.image1;
-
-            ImageToArray target = new ImageToArray();
-
-            double[] pixels;
-            double[] pixelsExpected =
+            double[] pixels = 
             {
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 1
-                 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, // 2 
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 3
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 4
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 5
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 6
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 7
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 8
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 9
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 10
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 11
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 12
-                 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, // 13
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 14
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 15
+                 0, 0, 0, 0,
+                 0, 1, 1, 0,
+                 0, 1, 1, 0,
+                 0, 0, 0, 0,
             };
 
+            ArrayToImage conv1 = new ArrayToImage(width: 4, height: 4);
+            Bitmap image;
+            conv1.Convert(pixels, out image);
+            image = new ResizeNearestNeighbor(16, 16).Apply(image);
 
-            target.Convert(image, out pixels);
 
-            for (int i = 0; i < pixels.Length; i++)
-                    Assert.AreEqual(pixelsExpected[i], pixelsExpected[i]);
+            // Obtain a 16x16 bitmap image
+            // Bitmap image = ...
+
+            // Show on screen
+            // ImageBox.Show(image, PictureBoxSizeMode.Zoom);
+
+            // Create the converter to convert the image to an
+            //   array containing only values between 0 and 1 
+            ImageToArray conv = new ImageToArray(min: 0, max: 1);
+
+            // Convert the image and store it in the array
+            double[] array; conv.Convert(image, out array);
+
+            // Show the array on screen
+            // ImageBox.Show(array, 16, 16, PictureBoxSizeMode.Zoom);
+
+            Assert.AreEqual(0, array.Min());
+            Assert.AreEqual(1, array.Max());
+            Assert.AreEqual(16 * 16, array.Length);
         }
 
-      
+
     }
 }

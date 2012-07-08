@@ -22,17 +22,16 @@
 
 namespace Accord.Tests.Statistics
 {
-    using Accord.Statistics.Models.Markov;
-    using Accord.Statistics.Distributions;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System;
     using Accord.Math;
+    using Accord.Statistics.Distributions;
+    using Accord.Statistics.Distributions.Fitting;
+    using Accord.Statistics.Distributions.Multivariate;
     using Accord.Statistics.Distributions.Univariate;
+    using Accord.Statistics.Models.Markov;
     using Accord.Statistics.Models.Markov.Learning;
     using Accord.Statistics.Models.Markov.Topology;
-    using Accord.Statistics.Distributions.Fitting;
-    using Accord.MachineLearning;
-    using Accord.Statistics.Distributions.Multivariate;
-    using System;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass()]
     public class GenericHiddenMarkovModelTest
@@ -41,10 +40,6 @@ namespace Accord.Tests.Statistics
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -86,6 +81,7 @@ namespace Accord.Tests.Statistics
         //}
         //
         #endregion
+
 
         [TestMethod()]
         public void ConstructorTest()
@@ -247,32 +243,47 @@ namespace Accord.Tests.Statistics
         [TestMethod()]
         public void DecodeTest()
         {
+
+            // Create the transation matrix A
             double[,] transitions = 
             {  
                 { 0.7, 0.3 },
                 { 0.4, 0.6 }
             };
 
+            // Create the vector of emission densities B
             GeneralDiscreteDistribution[] emissions = 
             {  
                 new GeneralDiscreteDistribution(0.1, 0.4, 0.5),
                 new GeneralDiscreteDistribution(0.6, 0.3, 0.1)
             };
 
+            // Create the initial probabilities pi
             double[] initial =
             {
                 0.6, 0.4
             };
 
+            // Create a new hidden Markov model with discrete probabilities
             var hmm = new HiddenMarkovModel<GeneralDiscreteDistribution>(transitions, emissions, initial);
 
-            double logLikelihood;
+            // After that, one could, for example, query the probability
+            // of a sequence ocurring. We will consider the sequence
             double[] sequence = new double[] { 0, 1, 2 };
+
+            // And now we will evaluate its likelihood
+            double logLikelihood = hmm.Evaluate(sequence);
+
+            // At this point, the log-likelihood of the sequence
+            // ocurring within the model is -3.3928721329161653.
+
+            // We can also get the Viterbi path of the sequence
             int[] path = hmm.Decode(sequence, out logLikelihood);
 
-            double expected = Math.Log(0.01344);
+            // At this point, the state path will be 1-0-0 and the
+            // log-likelihood will be -4.3095199438871337
 
-            Assert.AreEqual(logLikelihood, expected, 1e-10);
+            Assert.AreEqual(logLikelihood, Math.Log(0.01344), 1e-10);
             Assert.AreEqual(path[0], 1);
             Assert.AreEqual(path[1], 0);
             Assert.AreEqual(path[2], 0);
@@ -1090,6 +1101,42 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(2, prediction);
         }
 
+
+        [TestMethod()]
+        public void GenerateTest()
+        {
+            double[,] A;
+            double[] pi;
+
+            A = new double[,]
+            {  
+                { 0.7, 0.3 },
+                { 0.4, 0.6 }
+            };
+
+            GeneralDiscreteDistribution[] B = 
+            {  
+                new GeneralDiscreteDistribution(0.1, 0.4, 0.5),
+                new GeneralDiscreteDistribution(0.6, 0.3, 0.1)
+            };
+
+            pi = new double[]
+            {
+                0.6, 0.4
+            };
+
+            var hmm = new HiddenMarkovModel<GeneralDiscreteDistribution>(A, B, pi);
+
+
+            double logLikelihood;
+            int[] path;
+            double[] samples = (double[])hmm.Generate(10, out path, out logLikelihood);
+
+            double expected = hmm.Evaluate(samples, path);
+
+            Assert.AreEqual(expected, logLikelihood);
+
+        }
 
         
     }

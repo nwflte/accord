@@ -95,11 +95,11 @@ namespace Accord.Tests.Statistics
 
             for (int i = 0; i < expected.Length; i++)
             {
-                double actual = target.ProbabilityMassFunction(i-1);
+                double actual = target.ProbabilityMassFunction(i - 1);
                 Assert.AreEqual(expected[i], actual, 1e-10);
                 Assert.IsFalse(Double.IsNaN(actual));
 
-                double logActual = target.LogProbabilityMassFunction(i-1);
+                double logActual = target.LogProbabilityMassFunction(i - 1);
                 Assert.AreEqual(Math.Log(expected[i]), logActual, 1e-10);
                 Assert.IsFalse(Double.IsNaN(actual));
             }
@@ -153,8 +153,59 @@ namespace Accord.Tests.Statistics
         public void DistributionFunctionTest()
         {
             // http://www.stat.yale.edu/Courses/1997-98/101/binom.htm
+            // Verified in http://stattrek.com/online-calculator/binomial.aspx
 
-            double[] expected = { 0.0261, 0.1304, 0.3287, 0.5665, 0.7687, 0.8982, 0.9629, 0.9887, 0.9972, 0.9994 };
+            double[] pmf =             { 0.0260838446329553, 0.10433562893683, 0.198238170750635, 0.237886375826923, 0.202203904741285 };
+            double[] cdfLess = { 0.0000000000000000, 0.0260838446329553, 0.130419473569785, 0.32865764432042, 0.566544020147343 };
+            double[] cdfLessEqual =    { 0.0260838446329553, 0.130419473569785, 0.32865764432042, 0.566544020147343, 0.768747924888628 };
+            double[] cdfGreater =      { 0.973916155367045, 0.869580526430215, 0.67134235567958, 0.433455979852657, 0.231252075111372 };
+            double[] cdfGreaterEqual = { 1.000000000000000, 0.973916155367045, 0.869580526430215, 0.67134235567958, 0.433455979852657 };
+
+            int trials = 20;
+            double probability = 0.166667;
+            BinomialDistribution target = new BinomialDistribution(trials, probability);
+
+            for (int i = 0; i < pmf.Length; i++)
+            {
+                {   // P(X = i)
+                    double actual = target.ProbabilityMassFunction(i);
+                    Assert.AreEqual(pmf[i], actual, 1e-4);
+                    Assert.IsFalse(Double.IsNaN(actual));
+                }
+
+                {   // P(X <= i)
+                    double actual = target.DistributionFunction(i);
+                    Assert.AreEqual(cdfLessEqual[i], actual, 1e-4);
+                    Assert.IsFalse(Double.IsNaN(actual));
+                }
+
+                {   // P(X < i)
+                    double actual = target.DistributionFunction(i, inclusive: false);
+                    Assert.AreEqual(cdfLess[i], actual, 1e-4);
+                    Assert.IsFalse(Double.IsNaN(actual));
+                }
+
+                {   // P(X > i)
+                    double actual = target.ComplementaryDistributionFunction(i);
+                    Assert.AreEqual(cdfGreater[i], actual, 1e-4);
+                    Assert.IsFalse(Double.IsNaN(actual));
+                }
+
+                {   // P(X >= i)
+                    double actual = target.ComplementaryDistributionFunction(i, inclusive: true);
+                    Assert.AreEqual(cdfGreaterEqual[i], actual, 1e-4);
+                    Assert.IsFalse(Double.IsNaN(actual));
+                }
+            }
+        }
+
+        [TestMethod()]
+        public void DistributionFunctionTest2()
+        {
+            // http://www.stat.yale.edu/Courses/1997-98/101/binom.htm
+            // Verified in http://stattrek.com/online-calculator/binomial.aspx
+
+            double[] expected = { 0.0260838, 0.130419, 0.3287, 0.5665, 0.7687, 0.8982, 0.9629, 0.9887, 0.9972, 0.9994 };
 
             int trials = 20;
             double probability = 0.166667;
@@ -166,6 +217,24 @@ namespace Accord.Tests.Statistics
                 Assert.AreEqual(expected[i], actual, 1e-4);
                 Assert.IsFalse(Double.IsNaN(actual));
             }
+        }
+
+        [TestMethod()]
+        public void DistributionFunctionTest3()
+        {
+            // http://www.danielsoper.com/statcalc3/calc.aspx?id=70
+
+            double probability = 0.2;
+            int successes = 2;
+            int trials = 10;
+
+            BinomialDistribution target = new BinomialDistribution(trials, probability);
+
+            double actual = target.DistributionFunction(successes);
+            double expected = 0.67779953;
+
+            Assert.AreEqual(expected, actual, 1e-5);
+
         }
 
     }

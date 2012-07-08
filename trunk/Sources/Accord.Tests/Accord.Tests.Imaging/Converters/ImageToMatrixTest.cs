@@ -22,16 +22,16 @@
 
 namespace Accord.Tests.Imaging
 {
+    using System.Collections.Generic;
     using System.Drawing;
+    using System.Windows.Forms;
+    using Accord.Controls.Imaging;
     using Accord.Imaging.Converters;
+    using AForge;
     using AForge.Imaging;
+    using Accord.Math;
     using AForge.Imaging.Filters;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using System.Linq;
-    using System.Collections.Generic;
-    using AForge;
-    using System;
-    using System.Drawing.Imaging;
 
     [TestClass()]
     public class ImageToMatrixTest
@@ -189,6 +189,58 @@ namespace Accord.Tests.Imaging
             bool equals = new HashSet<IntPoint>(p1).SetEquals(p2);
 
             Assert.IsTrue(equals);
+        }
+
+        [TestMethod()]
+        public void ConvertTest3()
+        {
+            double[] pixels = 
+            {
+                 0, 0, 0, 0,
+                 0, 1, 1, 0,
+                 0, 1, 1, 0,
+                 0, 0, 0, 0,
+            };
+
+
+            ArrayToImage conv1 = new ArrayToImage(width: 4, height: 4);
+            Bitmap image;
+            conv1.Convert(pixels, out image);
+            image = new ResizeNearestNeighbor(16, 16).Apply(image);
+
+
+            // Obtain an image
+            // Bitmap image = ...
+
+            // Show on screen
+            //ImageBox.Show(image, PictureBoxSizeMode.Zoom);
+
+            // Create the converter to convert the image to a
+            //  matrix containing only values between 0 and 1 
+            ImageToMatrix conv = new ImageToMatrix(min: 0, max: 1);
+
+            // Convert the image and store it in the matrix
+            double[,] matrix; conv.Convert(image, out matrix);
+
+            /*
+                        // Show the matrix on screen as an image
+                        ImageBox.Show(matrix, PictureBoxSizeMode.Zoom);
+
+
+                        // Show the matrix on screen as a .NET multidimensional array
+                        MessageBox.Show(matrix.ToString(CSharpMatrixFormatProvider.InvariantCulture));
+
+                        // Show the matrix on screen as a table
+                        DataGridBox.Show(matrix, nonBlocking: true)
+                            .SetAutoSizeColumns(DataGridViewAutoSizeColumnsMode.Fill)
+                            .SetAutoSizeRows(DataGridViewAutoSizeRowsMode.AllCellsExceptHeaders)
+                            .SetDefaultFontSize(5)
+                            .WaitForClose();
+            */
+
+            Assert.AreEqual(0, matrix.Min());
+            Assert.AreEqual(1, matrix.Max());
+            Assert.AreEqual(16 * 16, matrix.Length);
         }
 
     }

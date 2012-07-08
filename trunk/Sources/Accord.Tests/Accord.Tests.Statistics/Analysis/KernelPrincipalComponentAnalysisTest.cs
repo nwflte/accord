@@ -139,7 +139,7 @@ namespace Accord.Tests.Statistics
             IKernel kernel = new Linear();
 
             // Create analysis
-            KernelPrincipalComponentAnalysis target = 
+            KernelPrincipalComponentAnalysis target =
                 new KernelPrincipalComponentAnalysis(data, kernel, AnalysisMethod.Center);
 
             // Set the minimum variance threshold to 0.001
@@ -168,7 +168,7 @@ namespace Accord.Tests.Statistics
             };
 
             // Verify both are equal with 0.001 tolerance value
-             Assert.IsTrue(Matrix.IsEqual(actual, expected, 0.0001));
+            Assert.IsTrue(Matrix.IsEqual(actual, expected, 0.0001));
 
             // Assert the result equals the transformation of the input
             double[,] result = target.Result;
@@ -514,7 +514,7 @@ namespace Accord.Tests.Statistics
                 { 0.016280981143395, 0.011860068380509 } 
 #endregion
             };
-            
+
             Assert.IsTrue(Matrix.IsEqual(expected_eig, eig, 1e-10));
             Assert.IsTrue(Matrix.IsEqual(expected_pcv, pcv, 1e-10));
 
@@ -579,6 +579,48 @@ namespace Accord.Tests.Statistics
 
             Assert.IsTrue(expectedProjection.IsEqual(proj, 1e-6));
 
+        }
+
+        [TestMethod()]
+        public void TransformTest5()
+        {
+            int element = 10;
+            int dimension = 20;
+
+            double[,] data = new double[element, dimension];
+
+            int x = 0;
+
+            for (int i = 0; i < element; i++)
+            {
+                for (int j = 0; j < dimension; j++)
+                    data[i, j] = x;
+
+                x += 10;
+            }
+
+            IKernel kernel = new Gaussian(10.0);
+            var kpca = new KernelPrincipalComponentAnalysis(data, kernel, AnalysisMethod.Center);
+
+            kpca.Compute();
+
+            double[,] result = kpca.Transform(data, 2);
+
+            double[,] expected = new double[,] 
+            {
+                { -0.23053882357602, -0.284413654763538 },
+                { -0.387883199575312, -0.331485820285834 },
+                { -0.422077400361521, -0.11134948984113 },
+                { -0.322265008788599, 0.23632015508648 },
+                { -0.12013575394419, 0.490928809797139 },
+                { 0.120135753938394, 0.490928809796094 },
+                { 0.322265008787236, 0.236320155085067 },
+                { 0.422077400363969, -0.111349489837512 },
+                { 0.38788319957867, -0.331485820278937 },
+                { 0.230538823577373, -0.28441365475783 } 
+            };
+
+            Assert.IsTrue(result.IsEqual(expected, 1e-10));
         }
 
         [TestMethod()]

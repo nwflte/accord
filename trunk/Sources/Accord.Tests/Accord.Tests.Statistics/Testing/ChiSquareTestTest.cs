@@ -20,16 +20,12 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics.Testing;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Accord.Tests.Statistics
 {
+    using Accord.Statistics.Testing;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
     
     
-    /// <summary>
-    ///This is a test class for ZTestTest and is intended
-    ///to contain all ZTestTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class ChiSquareTestTest
     {
@@ -37,10 +33,6 @@ namespace Accord.Tests.Statistics
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -91,7 +83,7 @@ namespace Accord.Tests.Statistics
             double[] expected = { 660, 220 };
 
             int degreesOfFreedom = 1;
-            var chi = new ChiSquareTest(expected, observed, degreesOfFreedom, 0.05);
+            var chi = new ChiSquareTest(expected, observed, degreesOfFreedom);
 
             Assert.AreEqual(2.668, chi.Statistic, 0.015);
             Assert.AreEqual(1, chi.DegreesOfFreedom);
@@ -105,7 +97,7 @@ namespace Accord.Tests.Statistics
             double[] expected = { 6.24, 5.76, 16.12, 14.88, 3.64, 3.36};
 
             int degreesOfFreedom = 2;
-            var chi = new ChiSquareTest(expected, observed, degreesOfFreedom, 0.05);
+            var chi = new ChiSquareTest(expected, observed, degreesOfFreedom);
 
             Assert.AreEqual(0.0952, chi.Statistic, 0.001);
             Assert.AreEqual(2, chi.DegreesOfFreedom);

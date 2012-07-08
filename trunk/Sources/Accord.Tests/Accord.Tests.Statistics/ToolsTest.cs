@@ -373,15 +373,11 @@ namespace Accord.Tests.Statistics
             double[] u = { -2, 1, 5 };
             double[] v = { 7, 1, 6 };
 
-            double[,] expected =
-            {
-                { 12.3333,   -0.8333 },
-                { -0.8333,   10.3333}
-            };
+            double expected = -0.8333;
 
-            double[,] actual = Tools.Covariance(u, v);
+            double actual = Tools.Covariance(u, v);
 
-            Assert.IsTrue(expected.IsEqual(actual, 0.0001));
+            Assert.AreEqual(expected, actual, 0.0001);
         }
 
 
@@ -521,7 +517,7 @@ namespace Accord.Tests.Statistics
         }
 
 
-     
+
         [TestMethod()]
         public void ExtendTest2()
         {
@@ -674,7 +670,30 @@ namespace Accord.Tests.Statistics
 
                 Assert.AreEqual(expected, actual);
             }
+        }
 
+        [TestMethod()]
+        public void RankTest1()
+        {
+            double[] values = { 2, 3, 4, 4, 5, 6, 8, 10, 10, 14, 16, 20, 32, 40 };
+
+            double[] expected = { 1, 2, 3.5, 3.5, 5, 6, 7, 8.5, 8.5, 10, 11, 12, 13, 14 };
+            double[] actual = Accord.Statistics.Tools.Rank(values);
+
+            Assert.IsTrue(expected.IsEqual(actual));
+        }
+
+        [TestMethod()]
+        public void RankTest2()
+        {
+            double[] values = { 7, 1, 2, 1, 7, 8, 1, 1, 2, 0, 10, 27 };
+            double[] copy = (double[])values.Clone();
+
+            double[] expected = { 7.5, 2.5, 5.5, 2.5, 7.5, 9, 2.5, 2.5, 5.5, 0, 10, 11 };
+            double[] actual = Accord.Statistics.Tools.Rank(values);
+
+            Assert.IsTrue(expected.IsEqual(actual));
+            Assert.IsTrue(copy.IsEqual(values));
         }
     }
 }

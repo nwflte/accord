@@ -20,16 +20,11 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics.Models.Regression.Linear;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Accord.Tests.Statistics
 {
+    using Accord.Statistics.Models.Regression.Linear;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-
-    /// <summary>
-    ///This is a test class for MultipleLinearRegressionTest and is intended
-    ///to contain all MultipleLinearRegressionTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class MultipleLinearRegressionTest
     {
@@ -37,10 +32,6 @@ namespace Accord.Tests.Statistics
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -84,9 +75,6 @@ namespace Accord.Tests.Statistics
         #endregion
 
 
-        /// <summary>
-        ///A test for Regress
-        ///</summary>
         [TestMethod()]
         public void RegressTest()
         {
@@ -117,14 +105,11 @@ namespace Accord.Tests.Statistics
             double r = target.CoefficientOfDetermination(inputs, outputs);
             Assert.AreEqual(0.23823529, r, 1e-6);
 
-            string str = target.ToString();
+            string str = target.ToString(null, System.Globalization.CultureInfo.GetCultureInfo("pt-BR"));
 
-            Assert.AreEqual("y(x0) = -0,264705882352942*x0 + 50,5882352941177", str);
+            Assert.AreEqual("y(x0) = -0,264705882352941*x0 + 50,5882352941176", str);
         }
 
-        /// <summary>
-        ///A test for Regress
-        ///</summary>
         [TestMethod()]
         public void RegressTest2()
         {
@@ -155,14 +140,11 @@ namespace Accord.Tests.Statistics
             double r = target.CoefficientOfDetermination(inputs, outputs);
             Assert.AreEqual(0.23823529, r, 1e-6);
 
-            string str = target.ToString();
+            string str = target.ToString(null, System.Globalization.CultureInfo.GetCultureInfo("en-US"));
 
-            Assert.AreEqual("y(x0, x1) = -0,264705882352942*x0 + 50,5882352941177*x1", str);
+            Assert.AreEqual("y(x0, x1) = -0.264705882352941*x0 + 50.5882352941176*x1", str);
         }
 
-        /// <summary>
-        ///A test for Regress
-        ///</summary>
         [TestMethod()]
         public void RegressTest3()
         {
@@ -209,5 +191,6 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(1.0, r);
 
         }
+
     }
 }

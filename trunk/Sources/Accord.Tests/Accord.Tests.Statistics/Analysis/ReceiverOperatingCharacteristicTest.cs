@@ -224,7 +224,7 @@ namespace Accord.Tests.Statistics
 
             foreach (var point in target.Points)
             {
-                Assert.AreEqual(point.Observations, 8);
+                Assert.AreEqual(point.Samples, 8);
                 Assert.AreEqual(point.ActualNegatives, 5);
                 Assert.AreEqual(point.ActualPositives, 3);
 

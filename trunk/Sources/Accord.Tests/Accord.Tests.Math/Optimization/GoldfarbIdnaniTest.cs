@@ -213,8 +213,8 @@ namespace Accord.Tests.Math
         public void RunTest3()
         {
             // Tested against R's QuadProg package
-            // solve.QP(matrix(c(10, -3,  1, -3, 11, -2, 1, -2, 12), 3, 3), c(1,5,3),
-            //        t(matrix( c(-4, 2, 1, -3, 1, -2, 0, -1, 2), 3,3)), c(-8,4,-1))
+            /* solve.QP(matrix(c(10, -3,  1, -3, 11, -2, 1, -2, 12), 3, 3), c(1,5,3),
+                     t(matrix( c(-4, 2, 1, -3, 1, -2, 0, -1, 2), 3,3)), c(-8,4,-1)) */
 
             double[,] D =
             {
@@ -517,7 +517,7 @@ namespace Accord.Tests.Math
             // Now we create the quadratic programming solver for 2 variables, using the constraints.
             GoldfarbIdnaniQuadraticSolver solver = new GoldfarbIdnaniQuadraticSolver(2, constraints);
 
-            
+
             double[,] A = 
             {
                 { 1, -1 }, 
@@ -801,6 +801,103 @@ namespace Accord.Tests.Math
             }
 
             Assert.IsTrue(thrown);
+        }
+
+
+        [TestMethod()]
+        public void GoldfarbIdnaniConstructorTest9()
+        {
+            // Solve the following optimization problem:
+            //
+            //  min f(x) = 2x² + xy + y² - 5y
+            // 
+            //  s.t.  -x - 3y >= -2
+            //        -x -  y >= 0
+            //              x >=  0
+            //              y >=  0
+            //
+
+
+
+            double x = 0, y = 0;
+
+            var f = new QuadraticObjectiveFunction(() => 2 * (x * x) + (x * y) + (y * y) - 5 * y);
+
+            List<LinearConstraint> constraints = new List<LinearConstraint>();
+            constraints.Add(new LinearConstraint(f, () => -x - 3 * y >= -2));
+            constraints.Add(new LinearConstraint(f, () => -x - y >= 0));
+            constraints.Add(new LinearConstraint(f, () => x >= 0));
+            constraints.Add(new LinearConstraint(f, () => y >= 0));
+
+
+            GoldfarbIdnaniQuadraticSolver target = new GoldfarbIdnaniQuadraticSolver(2, constraints);
+
+            double[,] expectedA = 
+            {
+                { -1, -3 },
+                { -1, -1 },
+                {  1,  0 },
+                {  0,  1 },
+            };
+
+            double[] expectedb = 
+            {
+                -2, 0, 0, 0
+            };
+
+            double[,] expectedQ = 
+            {
+                { 4, 1 },
+                { 1, 2 },
+            };
+
+            double[] expectedd = 
+            {
+                0, -5
+            };
+
+            // Tested against R's QuadProg package
+            /*
+               Qmat = matrix(c(4,1,1,2),2,2)
+               dvec = -c(0, -5)
+               Amat =  matrix(c(-1, -3, -1, -1, 1, 0, 0, 1), 2,4)
+               bvec = c(-2, 0, 0, 0)
+               
+               solve.QP(Qmat, dvec, Amat, bvec)
+            */
+
+            var actualA = target.ConstraintMatrix;
+            var actualb = target.ConstraintValues;
+            var actualQ = f.GetQuadraticTermsMatrix();
+            var actuald = f.GetLinearTermsVector();
+
+            Assert.IsTrue(expectedA.IsEqual(actualA));
+            Assert.IsTrue(expectedb.IsEqual(actualb));
+            Assert.IsTrue(expectedQ.IsEqual(actualQ));
+            Assert.IsTrue(expectedd.IsEqual(actuald));
+
+            double min = target.Minimize(f);
+
+            double[] solution = target.Solution;
+
+            Assert.AreEqual(0, solution[0], 1e-10);
+            Assert.AreEqual(0, solution[1], 1e-10);
+
+            Assert.AreEqual(0.0, min, 1e-10);
+
+            Assert.AreEqual(0, target.Lagrangian[0], 1e-10);
+            Assert.AreEqual(5, target.Lagrangian[1], 1e-10);
+            Assert.AreEqual(5, target.Lagrangian[2], 1e-10);
+            Assert.AreEqual(0, target.Lagrangian[3], 1e-10);
+
+
+            Assert.IsFalse(Double.IsNaN(min));
+
+            foreach (double v in target.Solution)
+                Assert.IsFalse(double.IsNaN(v));
+
+            foreach (double v in target.Lagrangian)
+                Assert.IsFalse(double.IsNaN(v));
         }
 
         [TestMethod()]

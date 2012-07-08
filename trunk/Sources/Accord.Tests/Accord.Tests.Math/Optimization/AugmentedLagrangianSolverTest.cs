@@ -22,10 +22,11 @@
 
 namespace Accord.Tests.Math
 {
-    using Accord.Math.Optimization;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
     using System.Collections.Generic;
+    using Accord.Math;
+    using Accord.Math.Optimization;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 
     [TestClass()]
@@ -384,7 +385,90 @@ namespace Accord.Tests.Math
             Assert.IsFalse(Double.IsNaN(minValue));
             Assert.IsFalse(Double.IsNaN(solver.Solution[0]));
             Assert.IsFalse(Double.IsNaN(solver.Solution[1]));
+        }
 
+        [Ignore()]
+        [TestMethod()]
+        public void AugmentedLagrangianSolverConstructorTest6()
+        {
+            // Max x' * c
+            //  x
+
+            // s.t. x' * A * x <= k
+            //      x' * i     = 1
+            // lower_bound < x < upper_bound
+
+            double[] c = { 2, 3 };
+            double[,] A = { { 2, 0 }, { 0, 2 } };
+            double k = 50;
+
+            // Create the objective function
+            var objective = new NonlinearObjectiveFunction(2,
+                function: (x) => x.InnerProduct(c),
+                gradient: (x) => c
+            );
+
+            // Test objective
+            for (int i = 0; i < 10; i++)
+            {
+                for (int j = 0; j < 10; j++)
+                {
+                    double expected = i * 2 + j * 3;
+                    double actual = objective.Function(new double[] { i, j });
+                    Assert.AreEqual(expected, actual);
+                }
+            }
+
+
+            // Create the optimization constraints
+            var constraints = new List<NonlinearConstraint>();
+
+            constraints.Add(new QuadraticConstraint(objective,
+                quadraticTerms: A,
+                shouldBe: ConstraintType.LesserThanOrEqualTo, value: k
+            ));
+
+            constraints.Add(new NonlinearConstraint(objective,
+                function: (x) => x.Sum(),
+                gradient: (x) => new[] { 1.0, 1.0 },
+                shouldBe: ConstraintType.EqualTo, value: 1,
+                withinTolerance: 1e-3
+            ));
+
+
+            // Test first constraint
+            for (int i = 0; i < 10; i++)
+            {
+                for (int j = 0; j < 10; j++)
+                {
+                    double expected = i * (2 * i + 0 * j) + j * (0 * i + 2 * j);
+                    double actual = constraints[0].Function(new double[] { i, j });
+                    Assert.AreEqual(expected, actual);
+                }
+            }
+
+
+            // Test second constraint
+            for (int i = 0; i < 10; i++)
+            {
+                for (int j = 0; j < 10; j++)
+                {
+                    double expected = i + j;
+                    double actual = constraints[1].Function(new double[] { i, j });
+                    Assert.AreEqual(expected, actual);
+                }
+            }
+
+
+            // Create the solver algorithm
+            AugmentedLagrangianSolver solver =
+                new AugmentedLagrangianSolver(2, constraints);
+
+            double minValue = solver.Maximize(objective);
+
+            Assert.AreEqual(7.42443, minValue, 1e-5);
+            Assert.AreEqual(-4.42433, solver.Solution[0], 1e-5);
+            Assert.AreEqual(5.42433, solver.Solution[1], 1e-5);
         }
 
     }

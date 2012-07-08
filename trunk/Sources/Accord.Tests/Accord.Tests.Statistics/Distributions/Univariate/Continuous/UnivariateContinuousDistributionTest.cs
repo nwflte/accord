@@ -321,5 +321,35 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(expected, actual);
         }
 
+
+        [TestMethod()]
+        public void GenerateTest()
+        {
+            UniformContinuousDistribution target = new UniformContinuousDistribution(2, 5);
+
+            double[] samples = target.Generate(1000000);
+
+            var actual = UniformContinuousDistribution.Estimate(samples);
+            actual.Fit(samples);
+
+            Assert.AreEqual(2, actual.Minimum, 1e-4);
+            Assert.AreEqual(5, actual.Maximum, 1e-4);
+        }
+
+        [TestMethod()]
+        public void GenerateTest2()
+        {
+            UniformContinuousDistribution target = new UniformContinuousDistribution(-1, 4);
+
+            double[] samples = new double[1000000];
+            for (int i = 0; i < samples.Length; i++)
+                samples[i] = target.Generate();
+
+            var actual = UniformContinuousDistribution.Estimate(samples);
+            actual.Fit(samples);
+
+            Assert.AreEqual(-1, actual.Minimum, 1e-4);
+            Assert.AreEqual(4, actual.Maximum, 1e-4);
+        }
     }
 }

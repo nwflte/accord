@@ -27,7 +27,9 @@ namespace Accord.Tests.Imaging
     using AForge.Imaging;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using AForge.Imaging.Filters;
-    
+    using Accord.Controls.Imaging;
+    using System.Windows.Forms;
+
     [TestClass()]
     public class ArrayToImageTest
     {
@@ -94,7 +96,7 @@ namespace Accord.Tests.Imaging
         public void ConvertTest1()
         {
 
-            ArrayToImage target = new ArrayToImage(16, 16); 
+            ArrayToImage target = new ArrayToImage(16, 16);
 
             double[] pixels = 
             {
@@ -135,6 +137,37 @@ namespace Accord.Tests.Imaging
 
             for (int i = 0; i < pixels.Length; i++)
                 Assert.AreEqual(actual[i], expected[i]);
+        }
+
+        [TestMethod()]
+        public void ConvertTest2()
+        {
+            // Create an array representation 
+            // of a 4x4 image with a inner 2x2
+            // square drawn in the middle
+
+            double[] pixels = 
+            {
+                 0, 0, 0, 0, 
+                 0, 1, 1, 0, 
+                 0, 1, 1, 0, 
+                 0, 0, 0, 0, 
+            };
+
+            // Create the converter to create a Bitmap from the array
+            ArrayToImage conv = new ArrayToImage(width: 4, height: 4);
+
+            // Declare an image and store the pixels on it
+            Bitmap image; conv.Convert(pixels, out image);
+
+            // Show the image on screen
+            image = new ResizeNearestNeighbor(320, 320).Apply(image);
+           // ImageBox.Show(image, PictureBoxSizeMode.Zoom);
+
+            Assert.AreEqual(0, conv.Min);
+            Assert.AreEqual(1, conv.Max);
+            Assert.AreEqual(320, image.Height);
+            Assert.AreEqual(320, image.Width);
         }
 
     }

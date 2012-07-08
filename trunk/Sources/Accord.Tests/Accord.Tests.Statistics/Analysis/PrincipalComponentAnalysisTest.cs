@@ -23,6 +23,7 @@
 namespace Accord.Tests.Statistics
 {
     using Accord.Statistics.Analysis;
+    using Accord.Statistics;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Accord.Math;
     using System;
@@ -145,8 +146,8 @@ namespace Accord.Tests.Statistics
             // Step 4. Compute the eigenvectors and eigenvalues of the covariance matrix
             // -------------------------------------------------------------------------
             //   Note: Since Accord.NET uses the SVD method rather than the Eigendecomposition
-            //   method, the Eigenvalues are not directly available. However, it is not the
-            //   Eigenvalues themselves which are important, but rather their proportion:
+            //   method, the Eigenvalues are computed from the singular values. However, it is
+            //   not the Eigenvalues themselves which are important, but rather their proportion:
 
             // Those are the expected eigenvalues, in descending order:
             double[] eigenvalues = { 1.28402771, 0.0490833989 };
@@ -182,7 +183,7 @@ namespace Accord.Tests.Statistics
             // Everything is alright (up to the 9 decimal places shown in the tutorial)
             Assert.IsTrue(eigenvectors.IsEqual(pca.ComponentMatrix, threshold: 1e-9));
             Assert.IsTrue(proportion.IsEqual(pca.ComponentProportions, threshold: 1e-9));
-
+            Assert.IsTrue(eigenvalues.IsEqual(pca.Eigenvalues, threshold: 1e-5));
 
             // Step 5. Deriving the new data set
             // ---------------------------------
@@ -541,5 +542,40 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(data, actual);
         }
 
+
+
+        /// <summary>
+        ///A test for Transform
+        ///</summary>
+        [TestMethod()]
+        public void TransformTest1()
+        {
+            PrincipalComponentAnalysis target = new PrincipalComponentAnalysis(data);
+
+            // Compute
+            target.Compute();
+
+            // Transform
+            double[][] actual = target.Transform(data.ToArray());
+
+            // first inversed.. ?
+            double[][] expected = new double[][]
+            {
+                new double[] {  0.827970186, -0.175115307 },
+                new double[] { -1.77758033,   0.142857227 },
+                new double[] {  0.992197494,  0.384374989 },
+                new double[] {  0.274210416,  0.130417207 },
+                new double[] {  1.67580142,  -0.209498461 },
+                new double[] {  0.912949103,  0.175282444 },
+                new double[] { -0.099109437, -0.349824698 },
+                new double[] { -1.14457216,   0.046417258 },
+                new double[] { -0.438046137,  0.017764629 },
+                new double[] { -1.22382056,  -0.162675287 },
+            };
+
+            // Verify both are equal with 0.01 tolerance value
+            Assert.IsTrue(Matrix.IsEqual(actual, expected, 0.01));
+
+        }
     }
 }

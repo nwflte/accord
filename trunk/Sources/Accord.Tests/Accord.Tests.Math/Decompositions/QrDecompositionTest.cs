@@ -20,17 +20,12 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Math.Decompositions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Accord.Math;
 namespace Accord.Tests.Math
 {
+    using Accord.Math.Decompositions;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Accord.Math;
 
-
-    /// <summary>
-    ///This is a test class for QrDecompositionTest and is intended
-    ///to contain all QrDecompositionTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class QrDecompositionTest
     {
@@ -38,10 +33,6 @@ namespace Accord.Tests.Math
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -85,9 +76,7 @@ namespace Accord.Tests.Math
         #endregion
 
 
-        /// <summary>
-        ///A test for QrDecomposition Constructor
-        ///</summary>
+
         [TestMethod()]
         public void QrDecompositionConstructorTest()
         {
@@ -115,9 +104,7 @@ namespace Accord.Tests.Math
             Assert.IsTrue(Matrix.IsEqual(expected, actual, 0.0000000000001));
         }
 
-        /// <summary>
-        ///A test for QrDecomposition Constructor
-        ///</summary>
+
         [TestMethod()]
         public void InverseTest()
         {
@@ -146,9 +133,6 @@ namespace Accord.Tests.Math
             Assert.IsTrue(Matrix.IsEqual(expected, actual, 0.0000000000001));
         }
 
-        /// <summary>
-        ///A test for QrDecomposition Constructor
-        ///</summary>
         [TestMethod()]
         public void SolveTest()
         {
@@ -165,13 +149,64 @@ namespace Accord.Tests.Math
 
             QrDecomposition target = new QrDecomposition(value);
             double[] actual = target.Solve(b);
-            
+
             Assert.IsTrue(Matrix.IsEqual(expected, actual, 0.0000000000001));
         }
 
-        /// <summary>
-        ///A test for Solve
-        ///</summary>
+        [TestMethod()]
+        public void SolveTest2()
+        {
+            // Example from Lecture notes for MATHS 370: Advanced Numerical Methods
+            // http://www.math.auckland.ac.nz/~sharp/370/qr-solving.pdf
+
+            double[,] value =
+            {
+                { 1,           0,           0 },
+                { 1,           7,          49 },
+                { 1,          14,         196 },
+                { 1,          21,         441 },
+                { 1,          28,         784 },
+                { 1,          35,        1225 },
+            };
+
+            // Matrices
+            {
+                double[,] b = 
+                {
+                    { 4 },
+                    { 1 },
+                    { 0 },
+                    { 0 }, 
+                    { 2 },
+                    { 5 },
+                };
+
+                double[,] expected =
+                {
+                    { 3.9286  },
+                    { -0.5031 },
+                    { 0.0153  },
+                };
+
+                QrDecomposition target = new QrDecomposition(value);
+                double[,] actual = target.Solve(b);
+
+                Assert.IsTrue(Matrix.IsEqual(expected, actual, 1e-4));
+            }
+
+            // Vectors
+            {
+                double[] b = { 4, 1, 0, 0, 2, 5 };
+                double[] expected = { 3.9286, -0.5031, 0.0153 };
+
+                QrDecomposition target = new QrDecomposition(value);
+                double[] actual = target.Solve(b);
+
+                Assert.IsTrue(Matrix.IsEqual(expected, actual, 1e-4));
+            }
+        }
+
+
         [TestMethod()]
         public void SolveTransposeTest()
         {

@@ -24,6 +24,8 @@ namespace Accord.Tests.Statistics
 {
     using Accord.Statistics.Distributions.Univariate;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Accord.Controls;
+    using Accord.Statistics.Testing;
 
     [TestClass()]
     public class ChiSquareDistributionTest
@@ -156,6 +158,7 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(expected, actual, 1e-4);
         }
 
+     
 
 
     }

@@ -22,12 +22,13 @@
 
 namespace Accord.Tests.Statistics
 {
-    using System;
-    using Accord.Statistics.Distributions.Univariate;
+    using Accord.Statistics.Moving;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Accord.Statistics;
+    using Accord.Statistics.Distributions.Univariate;
 
     [TestClass()]
-    public class GammaDistributionTest
+    public class RayleighDistributionTest
     {
 
         private TestContext testContextInstance;
@@ -75,83 +76,79 @@ namespace Accord.Tests.Statistics
         #endregion
 
 
-
         [TestMethod()]
-        public void GammaDistributionConstructorTest()
+        public void ConstructorTest()
         {
-            double shape = 0.4;
-            double scale = 4.2;
-
-            double[] expected = 
-            {
-                double.NegativeInfinity, 0.987114, 0.635929, 0.486871, 0.400046,
-                0.341683, 0.299071, 0.266236, 0.239956, 0.218323, 0.200126
-            };
-
-            GammaDistribution target = new GammaDistribution(scale, shape);
-
-            Assert.AreEqual(shape, target.Shape);
-            Assert.AreEqual(scale, target.Scale);
-
-            Assert.AreEqual(shape*scale, target.Mean);
-            Assert.AreEqual(shape * scale * scale, target.Variance);
-            
+            RayleighDistribution n = new RayleighDistribution(0.807602);
+            Assert.AreEqual(1.0121790039242726, n.Mean);
+            Assert.AreEqual(0.27993564482286737, n.Variance);
         }
 
         [TestMethod()]
-        public void DensityFunctionTest()
+        public void ProbabilityDistributionTest()
         {
-            double shape = 0.4;
-            double scale = 4.2;
+            RayleighDistribution n = new RayleighDistribution(0.807602);
 
-            double[] pdf = 
+            double[] expected = { 0, 0.712311, 0.142855, 0.00463779, 0.0000288872 };
+            double[] actual = new double[expected.Length];
+
+            for (int i = 0; i < actual.Length; i++)
+                actual[i] = n.ProbabilityDensityFunction(i);
+
+            for (int i = 0; i < actual.Length; i++)
             {
-                double.PositiveInfinity, 0.987114, 0.635929, 0.486871, 0.400046,
-                0.341683, 0.299071, 0.266236, 0.239956, 0.218323, 0.200126
-            };
-
-            GammaDistribution target = new GammaDistribution(scale, shape);
-
-            for (int i = 0; i < 11; i++)
-            {
-                double x = i / 10.0;
-                double actual = target.ProbabilityDensityFunction(x);
-                double expected = pdf[i];
-
-                Assert.AreEqual(expected, actual, 1e-6);
-                Assert.IsFalse(double.IsNaN(actual));
-
-                double logActual = target.LogProbabilityDensityFunction(x);
-                double logExpected = Math.Log(pdf[i]);
-
-                Assert.AreEqual(logExpected, logActual, 1e-5);
-                Assert.IsFalse(double.IsNaN(logActual));
+                Assert.AreEqual(expected[i], actual[i], 1e-5);
+                Assert.IsFalse(double.IsNaN(actual[i]));
             }
         }
 
         [TestMethod()]
-        public void CumulativeFunctionTest()
+        public void CumulativeDistributionTest()
         {
-            double shape = 0.4;
-            double scale = 4.2;
+            RayleighDistribution n = new RayleighDistribution(0.807602);
 
-            double[] cdf = 
+            double[] expected = { 0, 0.535415, 0.953414, 0.998992, 0.999995 };
+            double[] actual = new double[expected.Length];
+
+            for (int i = 0; i < actual.Length; i++)
+                actual[i] = n.DistributionFunction(i);
+
+            for (int i = 0; i < actual.Length; i++)
             {
-                0, 0.251017, 0.328997, 0.38435, 0.428371, 0.465289,
-                0.497226, 0.525426, 0.55069, 0.573571, 0.594469
-            };
-
-            GammaDistribution target = new GammaDistribution(scale, shape);
-
-            for (int i = 0; i < 11; i++)
-            {
-                double x = i / 10.0;
-                double actual = target.DistributionFunction(x);
-                double expected = cdf[i];
-
-                Assert.AreEqual(expected, actual, 1e-5);
-                Assert.IsFalse(double.IsNaN(actual));
+                Assert.AreEqual(expected[i], actual[i], 1e-6);
+                Assert.IsFalse(double.IsNaN(actual[i]));
             }
+        }
+
+
+        [TestMethod()]
+        public void GenerateTest()
+        {
+            RayleighDistribution target = new RayleighDistribution(2.5);
+
+            double[] samples = target.Generate(1000000);
+
+            var actual = RayleighDistribution.Estimate(samples);
+            actual.Fit(samples);
+
+            Assert.AreEqual(2, actual.Mean, 0.01);
+            Assert.AreEqual(5, actual.Variance, 0.01);
+        }
+
+        [TestMethod()]
+        public void GenerateTest2()
+        {
+            RayleighDistribution target = new RayleighDistribution(4.2);
+
+            double[] samples = new double[1000000];
+            for (int i = 0; i < samples.Length; i++)
+                samples[i] = target.Generate();
+
+            var actual = RayleighDistribution.Estimate(samples);
+            actual.Fit(samples);
+
+            Assert.AreEqual(4, actual.Mean, 0.01);
+            Assert.AreEqual(2, actual.Variance, 0.01);
         }
     }
 }

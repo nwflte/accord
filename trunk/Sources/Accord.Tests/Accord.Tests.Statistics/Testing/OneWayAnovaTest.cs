@@ -20,18 +20,14 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+using Accord.Controls;
 using Accord.Statistics.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 
 namespace Accord.Tests.Statistics
 {
 
 
-    /// <summary>
-    ///This is a test class for OneWayAnovaTest and is intended
-    ///to contain all OneWayAnovaTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class OneWayAnovaTest
     {
@@ -39,10 +35,6 @@ namespace Accord.Tests.Statistics
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -89,39 +81,71 @@ namespace Accord.Tests.Statistics
         [TestMethod()]
         public void OneWayAnovaConstructorTest()
         {
-            // Example from http://en.wikipedia.org/wiki/F_test
+            // The following is the same example given in Wikipedia's page for the
+            // F-Test [1]. Suppose one would like to test the effect of three levels
+            // of a fertilizer on plant growth. 
+            
+            // To achieve this goal, an experimenter has divided a set of 18 plants on
+            // three groups, 6 plants each. Each group has received different levels of
+            // the fertilizer under question.
+
+            // After some months, the experimenter registers the growth for each plant.
 
             double[][] samples =
             {
-               new double[] { 6, 8, 4, 5, 3, 4 },
-               new double[] { 8, 12, 9, 11, 6, 8 },
-               new double[] { 13, 9, 11, 8, 7, 12 },
+                new double[] {  6,  8,  4,  5,  3,  4 }, // records for the first group
+                new double[] {  8, 12,  9, 11,  6,  8 }, // records for the second group
+                new double[] { 13,  9, 11,  8,  7, 12 }, // records for the third group
             };
 
+            // Now, he would like to test whether the different fertilizer levels has
+            // indeed caused any effect in plant growth. In other words, he would like
+            // to test if the three groups are indeed significantly different.
 
-            OneWayAnova target = new OneWayAnova(samples);
+            // To do it, he runs an ANOVA test:
 
-            Assert.AreEqual(target.Table.Count, 3);
-            Assert.AreEqual("Between-Groups", target.Table[0].Source);
-            Assert.AreEqual(84, target.Table[0].SumOfSquares); // Sb
-            Assert.AreEqual(2, target.Table[0].DegreesOfFreedom); // df
-            Assert.AreEqual(42, target.Table[0].MeanSquares); // MSb
-            Assert.AreEqual(9.264705882352942, target.Table[0].Statistic);
-            Assert.AreEqual(0.0023987773293928649, target.Table[0].Significance.PValue);
+            OneWayAnova anova = new OneWayAnova(samples);
 
-            Assert.AreEqual("Within-Groups", target.Table[1].Source);
-            Assert.AreEqual(68, target.Table[1].SumOfSquares); // Sw
-            Assert.AreEqual(15, target.Table[1].DegreesOfFreedom); // df
-            Assert.AreEqual(4.5333333333333332, target.Table[1].MeanSquares); // MSw
-            Assert.IsNull(target.Table[1].Statistic);
-            Assert.IsNull(target.Table[1].Significance);
+            // After the anova object has been created, one can display its findings
+            // in the form of a standard ANOVA table by binding anova.Table to a 
+            // DataGridView or any other display object supporting databinding. To
+            // illustrate, we could use Accord.NET's DataGridBox to inspect the
+            // table's contents.
 
-            Assert.AreEqual("Total", target.Table[2].Source);
-            Assert.AreEqual(152, target.Table[2].SumOfSquares); // Sw
-            Assert.AreEqual(53, target.Table[2].DegreesOfFreedom); // df
+            // DataGridBox.Show(anova.Table);
+
+            // The p-level for the analysis is about 0.002, meaning the test is
+            // significant at the 5% significance level. The experimenter would
+            // thus reject the null hypothesis, concluding there is a strong
+            // evidence that the three groups are indeed different. Assuming the
+            // experiment was correctly controlled, this would be an indication
+            // that the fertilizant does indeed affect plant growth.
+
+            // [1] http://en.wikipedia.org/wiki/F_test
+
+
+            Assert.AreEqual(anova.Table.Count, 3);
+            Assert.AreEqual("Between-Groups", anova.Table[0].Source);
+            Assert.AreEqual(84, anova.Table[0].SumOfSquares); // Sb
+            Assert.AreEqual(2, anova.Table[0].DegreesOfFreedom); // df
+            Assert.AreEqual(42, anova.Table[0].MeanSquares); // MSb
+            Assert.AreEqual(9.264705882352942, anova.Table[0].Statistic);
+            Assert.AreEqual(0.0023987773293928649, anova.Table[0].Significance.PValue, 1e-16);
+            Assert.IsFalse(double.IsNaN(anova.Table[0].Significance.PValue));
+
+            Assert.AreEqual("Within-Groups", anova.Table[1].Source);
+            Assert.AreEqual(68, anova.Table[1].SumOfSquares); // Sw
+            Assert.AreEqual(15, anova.Table[1].DegreesOfFreedom); // df
+            Assert.AreEqual(4.5333333333333332, anova.Table[1].MeanSquares); // MSw
+            Assert.IsNull(anova.Table[1].Statistic);
+            Assert.IsNull(anova.Table[1].Significance);
+
+            Assert.AreEqual("Total", anova.Table[2].Source);
+            Assert.AreEqual(152, anova.Table[2].SumOfSquares); // Sw
+            Assert.AreEqual(53, anova.Table[2].DegreesOfFreedom); // df
             // Assert.IsNull(target.Table[2].MeanSquares); // MSw
-            Assert.IsNull(target.Table[2].Statistic);
-            Assert.IsNull(target.Table[2].Significance);
+            Assert.IsNull(anova.Table[2].Statistic);
+            Assert.IsNull(anova.Table[2].Significance);
 
         }
     }

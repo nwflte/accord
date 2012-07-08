@@ -119,5 +119,36 @@ namespace Accord.Tests.Statistics
                 Assert.IsFalse(double.IsNaN(actual[i]));
             }
         }
+
+
+        [TestMethod()]
+        public void GenerateTest()
+        {
+            NakagamiDistribution target = new NakagamiDistribution(2, 5);
+
+            double[] samples = target.Generate(1000000);
+
+            var actual = NakagamiDistribution.Estimate(samples);
+            actual.Fit(samples);
+
+            Assert.AreEqual(2, actual.Shape, 0.01);
+            Assert.AreEqual(5, actual.Spread, 0.01);
+        }
+
+        [TestMethod()]
+        public void GenerateTest2()
+        {
+            NakagamiDistribution target = new NakagamiDistribution(4, 2);
+
+            double[] samples = new double[1000000];
+            for (int i = 0; i < samples.Length; i++)
+                samples[i] = target.Generate();
+
+            var actual = NakagamiDistribution.Estimate(samples);
+            actual.Fit(samples);
+
+            Assert.AreEqual(4, actual.Shape, 0.01);
+            Assert.AreEqual(2, actual.Spread, 0.01);
+        }
     }
 }

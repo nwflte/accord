@@ -80,20 +80,29 @@ namespace Accord.Tests.Statistics
         [TestMethod()]
         public void KolmogorovSmirnovTestConstructorTest()
         {
-            // Test against a Uniform distribution
+            // Test against a standard Uniform distribution
             // References: http://www.math.nsysu.edu.tw/~lomn/homepage/class/92/kstest/kolmogorov.pdf
 
             double[] sample = { 0.621, 0.503, 0.203, 0.477, 0.710, 0.581, 0.329, 0.480, 0.554, 0.382 };
 
-            ContinuousUniformDistribution distribution = ContinuousUniformDistribution.Standard;
+            UniformContinuousDistribution distribution = UniformContinuousDistribution.Standard;
+
+            // Null hypothesis: the sample comes from a standard uniform distribution
+            // Alternate: the sample is not from a standard uniform distribution
+
             var target = new KolmogorovSmirnovTest(sample, distribution);
 
             Assert.AreEqual(distribution, target.TheoreticalDistribution);
-            Assert.AreEqual(Hypothesis.TwoTail, target.Hypothesis);
+            Assert.AreEqual(KolmogorovSmirnovTestHypothesis.SampleIsDifferent, target.Hypothesis);
+            Assert.AreEqual(DistributionTail.TwoTail, target.Tail);
 
             Assert.AreEqual(0.29, target.Statistic, 1e-16);
             Assert.AreEqual(0.3067, target.PValue, 1e-4);
             Assert.IsFalse(Double.IsNaN(target.Statistic));
+
+            // The null hypothesis fails to be rejected: 
+            // sample can be from a uniform distribution
+            Assert.IsFalse(target.Significant);
         }
 
         [TestMethod()]
@@ -103,21 +112,29 @@ namespace Accord.Tests.Statistics
 
             double[] sample = { 0.621, 0.503, 0.203, 0.477, 0.710, 0.581, 0.329, 0.480, 0.554, 0.382 };
 
+            // The sample is most likely from a uniform distribution, so it would
+            // most likely be different from a standard normal distribution.
+
             NormalDistribution distribution = NormalDistribution.Standard;
             var target = new KolmogorovSmirnovTest(sample, distribution);
 
             Assert.AreEqual(distribution, target.TheoreticalDistribution);
-            Assert.AreEqual(Hypothesis.TwoTail, target.Hypothesis);
+            Assert.AreEqual(KolmogorovSmirnovTestHypothesis.SampleIsDifferent, target.Hypothesis);
+            Assert.AreEqual(DistributionTail.TwoTail, target.Tail);
 
             Assert.AreEqual(0.580432, target.Statistic, 1e-5);
             Assert.AreEqual(0.000999, target.PValue, 1e-5);
             Assert.IsFalse(Double.IsNaN(target.Statistic));
+
+            // The null hypothesis can be rejected:
+            // the sample is not from a standard Normal distribution
+            Assert.IsTrue(target.Significant);
         }
 
         [TestMethod()]
         public void KolmogorovSmirnovTestConstructorTest3()
         {
-            // Test if the sample's distribution is greater than a Normal distribution, 
+            // Test if the sample's distribution is greater than a standard Normal distribution.
 
             double[] sample = { 0.621, 0.503, 0.203, 0.477, 0.710, 0.581, 0.329, 0.480, 0.554, 0.382 };
 
@@ -125,7 +142,8 @@ namespace Accord.Tests.Statistics
             var target = new KolmogorovSmirnovTest(sample, distribution, KolmogorovSmirnovTestHypothesis.SampleIsGreater);
 
             Assert.AreEqual(distribution, target.TheoreticalDistribution);
-            Assert.AreEqual(Hypothesis.OneUpper, target.Hypothesis);
+            Assert.AreEqual(KolmogorovSmirnovTestHypothesis.SampleIsGreater, target.Hypothesis);
+            Assert.AreEqual(DistributionTail.OneUpper, target.Tail);
 
             Assert.AreEqual(0.238852, target.Statistic, 1e-5);
             Assert.AreEqual(0.275544, target.PValue, 1e-5);
@@ -135,7 +153,7 @@ namespace Accord.Tests.Statistics
         [TestMethod()]
         public void KolmogorovSmirnovTestConstructorTest4()
         {
-            // Test if the sample's distribution is smaller than a Normal distribution, 
+            // Test if the sample's distribution is smaller than a standard Normal distribution
 
             double[] sample = { 0.621, 0.503, 0.203, 0.477, 0.710, 0.581, 0.329, 0.480, 0.554, 0.382 };
 
@@ -143,7 +161,8 @@ namespace Accord.Tests.Statistics
             var target = new KolmogorovSmirnovTest(sample, distribution, KolmogorovSmirnovTestHypothesis.SampleIsSmaller);
 
             Assert.AreEqual(distribution, target.TheoreticalDistribution);
-            Assert.AreEqual(Hypothesis.OneLower, target.Hypothesis);
+            Assert.AreEqual(KolmogorovSmirnovTestHypothesis.SampleIsSmaller, target.Hypothesis);
+            Assert.AreEqual(DistributionTail.OneLower, target.Tail);
 
             Assert.AreEqual(0.580432, target.Statistic, 1e-5);
             Assert.AreEqual(0.000499, target.PValue, 1e-5);

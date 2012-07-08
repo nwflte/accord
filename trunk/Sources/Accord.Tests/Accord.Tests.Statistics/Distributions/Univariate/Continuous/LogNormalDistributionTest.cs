@@ -24,15 +24,12 @@ using Accord.Statistics.Distributions.Univariate;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using Accord.Statistics.Distributions.Fitting;
+using Accord.Controls;
 
 namespace Accord.Tests.Statistics
 {
 
 
-    /// <summary>
-    ///This is a test class for LogNormalDistributionTest and is intended
-    ///to contain all LogNormalDistributionTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class LogNormalDistributionTest
     {
@@ -40,10 +37,6 @@ namespace Accord.Tests.Statistics
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -236,5 +229,36 @@ namespace Accord.Tests.Statistics
             double actual = target.Variance;
             Assert.AreEqual(1.1674914219333172, actual);
         }
+
+        [TestMethod()]
+        public void GenerateTest()
+        {
+            LognormalDistribution target = new LognormalDistribution(2, 5);
+
+            double[] samples = target.Generate(1000000);
+
+            var actual = LognormalDistribution.Estimate(samples);
+            actual.Fit(samples);
+
+            Assert.AreEqual(2, actual.Location, 0.01);
+            Assert.AreEqual(5, actual.Shape, 0.01);
+        }
+
+        [TestMethod()]
+        public void GenerateTest2()
+        {
+            LognormalDistribution target = new LognormalDistribution(4, 2);
+
+            double[] samples = new double[1000000];
+            for (int i = 0; i < samples.Length; i++)
+                samples[i] = target.Generate();
+
+            var actual = LognormalDistribution.Estimate(samples);
+            actual.Fit(samples);
+
+            Assert.AreEqual(4, actual.Location, 0.01);
+            Assert.AreEqual(2, actual.Shape, 0.01);
+        }
+
     }
 }

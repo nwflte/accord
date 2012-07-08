@@ -312,5 +312,24 @@ namespace Accord.Tests.Math
 
         }
 
+        [TestMethod()]
+        public void ToStringTest3()
+        {
+            double[] x = { 1, 2, 3 };
+
+            String str;
+
+            str = x.ToString(DefaultArrayFormatProvider.CurrentCulture);
+
+            Assert.AreEqual("1 2 3", str);
+
+            str = x.ToString(OctaveArrayFormatProvider.CurrentCulture);
+
+            Assert.AreEqual("[1 2 3]", str);
+
+            str = x.ToString(CSharpArrayFormatProvider.CurrentCulture);
+
+            Assert.AreEqual("new double[] { 1, 2, 3 };", str);
+        }
     }
 }
