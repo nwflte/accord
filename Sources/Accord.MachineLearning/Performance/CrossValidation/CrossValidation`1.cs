@@ -183,7 +183,6 @@ namespace Accord.MachineLearning
         ///   the model fitted using those two subsets of the available data.
         /// </remarks>
         /// 
-
         public CrossValidationFittingFunction<TModel> Fitting
         {
             get { return fitting; }
@@ -232,7 +231,7 @@ namespace Accord.MachineLearning
         ///   Creates a new k-fold cross-validation algorithm.
         /// </summary>
         /// 
-        /// <param name="size">The complete dataset for training and testing.</param>
+        /// <param name="size">The total number of available samples.</param>
         /// 
         public CrossValidation(int size)
             : this(size, 10) { }
@@ -241,7 +240,7 @@ namespace Accord.MachineLearning
         ///   Creates a new k-fold cross-validation algorithm.
         /// </summary>
         /// 
-        /// <param name="size">The complete dataset for training and testing.</param>
+        /// <param name="size">The total number of available samples.</param>
         /// <param name="folds">The number of folds, usually denoted as <c>k</c> (default is 10).</param>
         /// 
         public CrossValidation(int size, int folds)
