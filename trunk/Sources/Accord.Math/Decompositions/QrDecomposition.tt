@@ -280,7 +280,7 @@ namespace Accord.Math.Decompositions
                     X[i] -= X[k] * qr[i, k];
             }
 
-            return X;
+            return X.Submatrix(n);
         }
 
         /// <summary>Shows if the matrix <c>A</c> is of full rank.</summary>
