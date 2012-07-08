@@ -33,6 +33,32 @@ namespace Accord.Imaging
     using AForge;
     using AForge.Imaging;
     using AForge.Imaging.Filters;
+    using System.Threading;
+
+    /// <summary>
+    ///   SURF Feature descriptor types.
+    /// </summary>
+    /// 
+    public enum SpeededUpRobustFeatureDescriptorType
+    {
+        /// <summary>
+        ///   Do not compute descriptors.
+        /// </summary>
+        /// 
+        None,
+
+        /// <summary>
+        ///   Compute standard descriptors.
+        /// </summary>
+        /// 
+        Standard,
+
+        /// <summary>
+        ///   Compute extended descriptors.
+        /// </summary>
+        /// 
+        Extended,
+    }
 
     /// <summary>
     ///   Speeded-up Robust Features (SURF) detector.
@@ -63,18 +89,24 @@ namespace Accord.Imaging
     /// </para>
     /// </remarks>
     ///
-    /// <seealso cref="SurfPoint"/>
-    /// <seealso cref="SurfDescriptor"/>
+    /// <seealso cref="SpeededUpRobustFeaturePoint"/>
+    /// <seealso cref="SpeededUpRobustFeaturesDescriptor"/>
     ///
     public class SpeededUpRobustFeaturesDetector : ICornersDetector
     {
         private int octaves = 5;
         private int initial = 2;
 
-        private float threshold = 0.0002f;
+        private double threshold = 0.0002;
 
         private ResponseFilters responses;
         private IntegralImage integral;
+
+
+        // Default description options
+        private SpeededUpRobustFeaturesDescriptor descriptor;
+        private SpeededUpRobustFeatureDescriptorType featureType = SpeededUpRobustFeatureDescriptorType.Standard;
+        private bool computeOrientation = true;
 
 
         #region Constructors
@@ -121,11 +153,53 @@ namespace Accord.Imaging
         #region Properties
 
         /// <summary>
-        ///   Gets or sets the non-maximum suppression
-        ///   threshold. Default is 0.0002f.
+        ///   Gets or sets a value indicating whether all feature points
+        ///   should have their orientation computed after being detected.
+        ///   Default is true.
         /// </summary>
+        /// 
+        /// <remarks>Computing orientation requires additional processing; 
+        /// set this property to false to compute the orientation of only
+        /// selected points by using the <see cref="GetDescriptor()">
+        /// current feature descriptor</see> for the last set of detected points.
+        /// </remarks>
+        /// 
+        /// <value><c>true</c> if to compute orientation; otherwise, <c>false</c>.</value>
+        /// 
+        public bool ComputeOrientation
+        {
+            get { return computeOrientation; }
+            set { computeOrientation = value; }
+        }
+
+        /// <summary>
+        ///   Gets or sets a value indicating whether all feature points
+        ///   should have their descriptors computed after being detected.
+        ///   Default is to compute standard descriptors.
+        /// </summary>
+        /// 
+        /// <remarks>Computing descriptors requires additional processing; 
+        /// set this property to false to compute the descriptors of only
+        /// selected points by using the <see cref="GetDescriptor()">
+        /// current feature descriptor</see> for the last set of detected points.
+        /// </remarks>
+        /// 
+        /// <value><c>true</c> if to compute orientation; otherwise, <c>false</c>.</value>
+        /// 
+        public SpeededUpRobustFeatureDescriptorType ComputeDescriptors
+        {
+            get { return featureType; }
+            set { featureType = value; }
+        }
+
+        /// <summary>
+        ///   Gets or sets the non-maximum suppression
+        ///   threshold. Default is 0.0002.
+        /// </summary>
+        /// 
         /// <value>The non-maximum suppression threshold.</value>
-        public float Threshold
+        /// 
+        public double Threshold
         {
             get { return threshold; }
             set { threshold = value; }
@@ -137,6 +211,7 @@ namespace Accord.Imaging
         ///   Each octave corresponds to a series of maps covering a
         ///   doubling of scale in the image. Default is 5.
         /// </summary>
+        /// 
         public int Octaves
         {
             get { return octaves; }
@@ -155,6 +230,7 @@ namespace Accord.Imaging
         ///   the <see cref="ResponseFilters">response filter</see>.
         ///   Default is 2.
         /// </summary>
+        /// 
         public int Step
         {
             get { return initial; }
@@ -181,7 +257,7 @@ namespace Accord.Imaging
         ///   The source image has incorrect pixel format.
         /// </exception>
         /// 
-        public List<SurfPoint> ProcessImage(UnmanagedImage image)
+        public List<SpeededUpRobustFeaturePoint> ProcessImage(UnmanagedImage image)
         {
             // check image format
             if (
@@ -212,18 +288,25 @@ namespace Accord.Imaging
             integral = IntegralImage.FromBitmap(grayImage);
 
 
-            // 2. Compute interest point response map
-            if (responses == null ||
-                image.Width != responses.Width || image.Height != responses.Height)
+
+            // 2. Create and compute interest point response map
+            if (responses == null)
             {
+                // re-create only if really needed
                 responses = new ResponseFilters(image.Width, image.Height, octaves, initial);
             }
+            else
+            {
+                responses.Update(image.Width, image.Height, initial);
+            }
 
+            // Compute the response map
             responses.Compute(integral);
 
 
             // 3. Suppress non-maximum points
-            List<SurfPoint> featureList = new List<SurfPoint>();
+            List<SpeededUpRobustFeaturePoint> featureList =
+                new List<SpeededUpRobustFeaturePoint>();
 
             // for each image pyramid in the response map
             foreach (ResponseLayer[] layers in responses)
@@ -249,7 +332,7 @@ namespace Accord.Imaging
                     // for each pixel
                     for (int x = border + 1; x < top.Width - border; x++)
                     {
-                        float currentValue = mid.Responses[y * mscale, x * mscale];
+                        double currentValue = mid.Responses[y * mscale, x * mscale];
 
                         // for each windows' row
                         for (int i = -r; (currentValue >= threshold) && (i <= r); i++)
@@ -281,10 +364,10 @@ namespace Accord.Imaging
                                 System.Math.Abs(offset[1]) < 0.5 &&
                                 System.Math.Abs(offset[2]) < 0.5)
                             {
-                                featureList.Add(new SurfPoint(
-                                    (float)((x + offset[0]) * tstep),
-                                    (float)((y + offset[1]) * tstep),
-                                    (float)(0.1333f * (mid.Size + offset[2] * mstep)),
+                                featureList.Add(new SpeededUpRobustFeaturePoint(
+                                    (x + offset[0]) * tstep,
+                                    (y + offset[1]) * tstep,
+                                    0.133333333 * (mid.Size + offset[2] * mstep),
                                     mid.Laplacian[y * mscale, x * mscale]));
                             }
                         }
@@ -293,8 +376,42 @@ namespace Accord.Imaging
                 }
             }
 
+            descriptor = null;
+
+            if (featureType != SpeededUpRobustFeatureDescriptorType.None)
+            {
+                descriptor = new SpeededUpRobustFeaturesDescriptor(integral);
+                descriptor.Extended = featureType == SpeededUpRobustFeatureDescriptorType.Extended;
+                descriptor.Invariant = computeOrientation;
+                descriptor.Compute(featureList);
+            }
+            else if (computeOrientation)
+            {
+                descriptor = new SpeededUpRobustFeaturesDescriptor(integral);
+                foreach (var p in featureList) p.Orientation = descriptor.GetOrientation(p);
+            }
+
             return featureList;
         }
+
+        /// <summary>
+        ///   Gets the <see cref="SpeededUpRobustFeaturesDescriptor">
+        ///   feature descriptor</see> for the last processed image.
+        /// </summary>
+        /// 
+        public SpeededUpRobustFeaturesDescriptor GetDescriptor()
+        {
+            if (descriptor == null)
+            {
+                descriptor = new SpeededUpRobustFeaturesDescriptor(integral);
+                descriptor.Extended = featureType == SpeededUpRobustFeatureDescriptorType.Extended;
+                descriptor.Invariant = computeOrientation;
+            }
+
+            return descriptor;
+        }
+
+
 
         /// <summary>
         ///   Process image looking for interest points.
@@ -308,7 +425,7 @@ namespace Accord.Imaging
         ///   The source image has incorrect pixel format.
         /// </exception>
         /// 
-        public List<SurfPoint> ProcessImage(BitmapData imageData)
+        public List<SpeededUpRobustFeaturePoint> ProcessImage(BitmapData imageData)
         {
             return ProcessImage(new UnmanagedImage(imageData));
         }
@@ -325,7 +442,7 @@ namespace Accord.Imaging
         ///   The source image has incorrect pixel format.
         /// </exception>
         /// 
-        public List<SurfPoint> ProcessImage(Bitmap image)
+        public List<SpeededUpRobustFeaturePoint> ProcessImage(Bitmap image)
         {
             // check image format
             if (
@@ -343,7 +460,7 @@ namespace Accord.Imaging
                 new Rectangle(0, 0, image.Width, image.Height),
                 ImageLockMode.ReadOnly, image.PixelFormat);
 
-            List<SurfPoint> corners;
+            List<SpeededUpRobustFeaturePoint> corners;
 
             try
             {
@@ -357,16 +474,6 @@ namespace Accord.Imaging
             }
 
             return corners;
-        }
-
-        /// <summary>
-        ///   Gets the <see cref="SurfDescriptor">feature descriptor</see>
-        ///   for the last processed image.
-        /// </summary>
-        /// 
-        public SurfDescriptor GetDescriptor()
-        {
-            return new SurfDescriptor(integral);
         }
 
 
@@ -464,13 +571,21 @@ namespace Accord.Imaging
             /// 
             public ResponseFilters(int width, int height, int octaves, int initial)
             {
+                this.width = width;
+                this.height = height;
+                this.step = initial;
                 this.octaves = octaves;
+
+                this.initialize();
+            }
+
+            public void Update(int width, int height, int initial)
+            {
                 this.width = width;
                 this.height = height;
                 this.step = initial;
 
-
-                this.initialize();
+                this.update();
             }
 
             /// <summary>
@@ -529,6 +644,48 @@ namespace Accord.Imaging
 
                 this.responses = list.ToArray();
             }
+
+            private void update()
+            {
+                // Get image attributes
+                int w = width / step;
+                int h = height / step;
+                int s = step;
+
+                int i = 0;
+                if (octaves >= 1)
+                {
+                    responses[i++].Update(w, h, s, 9);
+                    responses[i++].Update(w, h, s, 15);
+                    responses[i++].Update(w, h, s, 21);
+                    responses[i++].Update(w, h, s, 27);
+                }
+
+                if (octaves >= 2)
+                {
+                    responses[i++].Update(w / 2, h / 2, s * 2, 39);
+                    responses[i++].Update(w / 2, h / 2, s * 2, 51);
+                }
+
+                if (octaves >= 3)
+                {
+                    responses[i++].Update(w / 4, h / 4, s * 4, 75);
+                    responses[i++].Update(w / 4, h / 4, s * 4, 99);
+                }
+
+                if (octaves >= 4)
+                {
+                    responses[i++].Update(w / 8, h / 8, s * 8, 147);
+                    responses[i++].Update(w / 8, h / 8, s * 8, 195);
+                }
+
+                if (octaves >= 5)
+                {
+                    responses[i++].Update(w / 16, h / 16, s * 16, 291);
+                    responses[i++].Update(w / 16, h / 16, s * 16, 387);
+                }
+            }
+
 
             /// <summary>
             ///   Returns an enumerator that iterates through the collection.
@@ -628,6 +785,20 @@ namespace Accord.Imaging
                 this.Laplacian = new int[height, width];
             }
 
+            public void Update(int width, int height, int step, int filter)
+            {
+                this.Width = width;
+                this.Height = height;
+                this.Step = step;
+                this.Size = filter;
+
+                if (Height > Responses.GetLength(0) || Width > Responses.GetLength(1))
+                {
+                    this.Responses = new float[height, width];
+                    this.Laplacian = new int[height, width];
+                }
+            }
+
             /// <summary>
             ///   Computes the filter for the specified integral image.
             /// </summary>
@@ -651,32 +822,27 @@ namespace Accord.Imaging
                         int j = x * Step;
 
                         // Compute response components
-                        Dxx = sum(image, i - c + 1, j - b, 2 * c - 1, w)
-                            - sum(image, i - c + 1, j - c / 2, 2 * c - 1, c) * 3;
+                        Dxx = ((int)image.GetRectangleSum(j - b, i - c + 1, j - b + w - 1, i - c + 2 * c - 1)
+                             - (int)image.GetRectangleSum(j - c / 2, i - c + 1, j - c / 2 + c - 1, i - c + 2 * c - 1) * 3);
 
-                        Dyy = sum(image, i - b, j - c + 1, w, 2 * c - 1)
-                            - sum(image, i - c / 2, j - c + 1, c, 2 * c - 1) * 3;
+                        Dyy = ((int)image.GetRectangleSum(j - c + 1, i - b, j - c + 2 * c - 1, i - b + w - 1)
+                             - (int)image.GetRectangleSum(j - c + 1, i - c / 2, j - c + 2 * c - 1, i - c / 2 + c - 1) * 3);
 
-                        Dxy = sum(image, i - c, j + 1, c, c)
-                            + sum(image, i + 1, j - c, c, c)
-                            - sum(image, i - c, j - c, c, c)
-                            - sum(image, i + 1, j + 1, c, c);
+                        Dxy = ((int)image.GetRectangleSum(j + 1, i - c, j + c, i - 1)
+                             + (int)image.GetRectangleSum(j - c, i + 1, j - 1, i + c)
+                             - (int)image.GetRectangleSum(j - c, i - c, j - 1, i - 1)
+                             - (int)image.GetRectangleSum(j + 1, i + 1, j + c, i + c));
 
                         // Normalize the filter responses with respect to their size
-                        Dxx *= inv;
-                        Dyy *= inv;
-                        Dxy *= inv;
+                        Dxx *= inv / 255f;
+                        Dyy *= inv / 255f;
+                        Dxy *= inv / 255f;
 
                         // Get the determinant of hessian response & laplacian sign
                         Responses[y, x] = (Dxx * Dyy) - (0.9f * 0.9f * Dxy * Dxy);
                         Laplacian[y, x] = (Dxx + Dyy) >= 0 ? 1 : 0;
                     }
                 }
-            }
-
-            private static float sum(IntegralImage img, int row, int col, int rows, int cols)
-            {
-                return img.GetRectangleSum(col, row, col + cols - 1, row + rows - 1) / 255f;
             }
 
         }

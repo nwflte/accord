@@ -31,13 +31,13 @@ namespace Accord.Imaging
     /// </summary>
     /// 
     /// <seealso cref="SpeededUpRobustFeaturesDetector"/>
-    /// <seealso cref="SurfDescriptor"/>
+    /// <seealso cref="SpeededUpRobustFeaturesDescriptor"/>
     /// 
-    public class SurfPoint
+    public class SpeededUpRobustFeaturePoint
     {
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref="SurfPoint"/> class.
+        ///   Initializes a new instance of the <see cref="SpeededUpRobustFeaturePoint"/> class.
         /// </summary>
         /// 
         /// <param name="x">The x-coordinate of the point in the image.</param>
@@ -45,7 +45,7 @@ namespace Accord.Imaging
         /// <param name="scale">The point's scale.</param>
         /// <param name="laplacian">The point's laplacian value.</param>
         /// 
-        public SurfPoint(float x, float y, float scale, int laplacian)
+        public SpeededUpRobustFeaturePoint(double x, double y, double scale, int laplacian)
         {
             this.X = x;
             this.Y = y;
@@ -54,35 +54,82 @@ namespace Accord.Imaging
         }
 
         /// <summary>
+        ///   Initializes a new instance of the <see cref="SpeededUpRobustFeaturePoint"/> class.
+        /// </summary>
+        /// 
+        /// <param name="x">The x-coordinate of the point in the image.</param>
+        /// <param name="y">The y-coordinate of the point in the image.</param>
+        /// <param name="scale">The point's scale.</param>
+        /// <param name="laplacian">The point's laplacian value.</param>
+        /// <param name="orientation">The point's origentation angle.</param>
+        /// <param name="response">The point's response value.</param>
+        /// 
+        public SpeededUpRobustFeaturePoint(double x, double y, double scale, int laplacian,
+            double orientation, double response)
+        {
+            this.X = x;
+            this.Y = y;
+            this.Scale = scale;
+            this.Laplacian = laplacian;
+            this.Orientation = orientation;
+            this.Response = response;
+        }
+
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="SpeededUpRobustFeaturePoint"/> class.
+        /// </summary>
+        /// 
+        /// <param name="x">The x-coordinate of the point in the image.</param>
+        /// <param name="y">The y-coordinate of the point in the image.</param>
+        /// <param name="scale">The point's scale.</param>
+        /// <param name="laplacian">The point's laplacian value.</param>
+        /// <param name="descriptor">The SURF point descriptor.</param>
+        /// <param name="orientation">The point's origentation angle.</param>
+        /// <param name="response">The point's response value.</param>
+        /// 
+        public SpeededUpRobustFeaturePoint(double x, double y, double scale, int laplacian,
+            double orientation, double response, double[] descriptor)
+        {
+            this.X = x;
+            this.Y = y;
+            this.Scale = scale;
+            this.Laplacian = laplacian;
+            this.Orientation = orientation;
+            this.Response = response;
+            this.Descriptor = descriptor;
+        }
+
+
+        /// <summary>
         ///   Gets or sets the x-coordinate of this point.
         /// </summary>
         /// 
-        public float X { get; set; }
+        public double X { get; set; }
 
         /// <summary>
         ///   Gets or sets the y-coordinate of this point.
         /// </summary>
         /// 
-        public float Y { get; set; }
+        public double Y { get; set; }
 
         /// <summary>
         ///   Gets or sets the scale of the point.
         /// </summary>
         /// 
-        public float Scale { get; set; }
+        public double Scale { get; set; }
 
         /// <summary>
         ///   Gets or sets the response of the detected feature (strength).
         /// </summary>
         /// 
-        public float Response { get; set; }
+        public double Response { get; set; }
 
         /// <summary>
         ///   Gets or sets the orientation of this point
         ///   measured anti-clockwise from +ve x-axis.
         /// </summary>
         /// 
-        public float Orientation { get; set; }
+        public double Orientation { get; set; }
 
         /// <summary>
         ///   Gets or sets the sign of laplacian for this point
@@ -96,6 +143,7 @@ namespace Accord.Imaging
         ///   associated with this point.
         /// </summary>
         /// 
-        public float[] Descriptor { get; set; }
+        public double[] Descriptor { get; set; }
+
     }
 }
