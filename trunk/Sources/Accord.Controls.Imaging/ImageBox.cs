@@ -28,6 +28,7 @@ namespace Accord.Controls.Imaging
     using AForge.Imaging;
 
     using Image = System.Drawing.Image;
+    using Accord.Imaging.Converters;
 
     /// <summary>
     ///   Displays images in a similar way to System.Windows.Forms.MessageBox.
@@ -35,6 +36,118 @@ namespace Accord.Controls.Imaging
     /// 
     public partial class ImageBox : Form
     {
+
+
+        /// <summary>
+        ///   Displays an image on the screen.
+        /// </summary>
+        /// 
+        /// <param name="image">The image to show.</param>
+        /// <param name="imageWidth">The width of the image.</param>
+        /// <param name="imageHeight">The height of the image.</param>
+        /// 
+        public static DialogResult Show(double[] image, int imageWidth, int imageHeight)
+        {
+            Bitmap bitmap;
+            new ArrayToImage(imageWidth, imageHeight).Convert(image, out bitmap);
+            return Show(bitmap, PictureBoxSizeMode.AutoSize);
+        }
+
+        /// <summary>
+        ///   Displays an image on the screen.
+        /// </summary>
+        /// 
+        /// <param name="image">The image to show.</param>
+        /// 
+        public static DialogResult Show(double[,] image)
+        {
+            Bitmap bitmap;
+            new MatrixToImage().Convert(image, out bitmap);
+            return Show(bitmap, PictureBoxSizeMode.AutoSize);
+        }
+
+        /// <summary>
+        ///   Displays an image on the screen.
+        /// </summary>
+        /// 
+        /// <param name="image">The image to show.</param>
+        /// <param name="imageWidth">The width of the image.</param>
+        /// <param name="imageHeight">The height of the image.</param>
+        /// <param name="sizeMode">How to display the image inside the image box.</param>
+        /// 
+        public static DialogResult Show(double[] image, int imageWidth, int imageHeight,
+            PictureBoxSizeMode sizeMode)
+        {
+            Bitmap bitmap;
+            new ArrayToImage(imageWidth, imageHeight).Convert(image, out bitmap);
+            return Show("Image", bitmap, sizeMode);
+        }
+
+        /// <summary>
+        ///   Displays an image on the screen.
+        /// </summary>
+        /// 
+        /// <param name="image">The image to show.</param>
+        /// <param name="imageWidth">The width of the image.</param>
+        /// <param name="imageHeight">The height of the image.</param>
+        /// <param name="width">The width of the image box.</param>
+        /// <param name="height">The height of the image box.</param>
+        /// <param name="sizeMode">How to display the image inside the image box.</param>
+        /// 
+        public static DialogResult Show(double[] image, int imageWidth, int imageHeight,
+            PictureBoxSizeMode sizeMode, int width, int height)
+        {
+            Bitmap bitmap;
+            new ArrayToImage(imageWidth, imageHeight).Convert(image, out bitmap);
+            return Show("Image", bitmap, sizeMode, width, height);
+        }
+
+        /// <summary>
+        ///   Displays an image on the screen.
+        /// </summary>
+        /// 
+        /// <param name="image">The image to show.</param>
+        /// <param name="sizeMode">How to display the image inside the image box.</param>
+        /// 
+        public static DialogResult Show(double[,] image, PictureBoxSizeMode sizeMode)
+        {
+            Bitmap bitmap;
+            new MatrixToImage().Convert(image, out bitmap);
+            return Show("Image", bitmap, sizeMode);
+        }
+
+        /// <summary>
+        ///   Displays an image on the screen.
+        /// </summary>
+        /// 
+        /// <param name="image">The image to show.</param>
+        /// <param name="width">The width of the image box.</param>
+        /// <param name="height">The height of the image box.</param>
+        /// <param name="sizeMode">How to display the image inside the image box.</param>
+        /// 
+        public static DialogResult Show(double[,] image,
+            PictureBoxSizeMode sizeMode, int width, int height)
+        {
+            return Show("Image", image, sizeMode, width, height);
+        }
+
+        /// <summary>
+        ///   Displays an image on the screen.
+        /// </summary>
+        /// 
+        /// <param name="title">The text to display in the title bar of the image box.</param>
+        /// <param name="image">The image to show.</param>
+        /// <param name="width">The width of the image box.</param>
+        /// <param name="height">The height of the image box.</param>
+        /// <param name="sizeMode">How to display the image inside the image box.</param>
+        /// 
+        public static DialogResult Show(String title, double[,] image,
+            PictureBoxSizeMode sizeMode, int width, int height)
+        {
+            Bitmap bitmap;
+            new MatrixToImage().Convert(image, out bitmap);
+            return Show(title, bitmap, sizeMode, width, height);
+        }
 
         /// <summary>
         ///   Displays an image on the screen.
@@ -77,11 +190,25 @@ namespace Accord.Controls.Imaging
         /// 
         /// <param name="image">The image to show.</param>
         /// <param name="sizeMode">How to display the image inside the image box.</param>
+        /// <param name="width">The width of the image box.</param>
+        /// <param name="height">The height of the image box.</param>
+        /// 
+        public static DialogResult Show(Image image, PictureBoxSizeMode sizeMode, int width, int height)
+        {
+            return Show("Image", image, sizeMode, width, height, Color.Black);
+        }
+
+
+        /// <summary>
+        ///   Displays an image on the screen.
+        /// </summary>
+        /// 
+        /// <param name="image">The image to show.</param>
+        /// <param name="sizeMode">How to display the image inside the image box.</param>
         /// 
         public static DialogResult Show(Image image, PictureBoxSizeMode sizeMode)
         {
-            if (image == null) throw new ArgumentNullException("image");
-            return Show("Image", image, sizeMode, image.Width, image.Height);
+            return Show("Image", image, sizeMode, 0, 0);
         }
 
         /// <summary>
@@ -93,8 +220,7 @@ namespace Accord.Controls.Imaging
         /// 
         public static DialogResult Show(UnmanagedImage image, PictureBoxSizeMode sizeMode)
         {
-            if (image == null) throw new ArgumentNullException("image");
-            return Show("Image", image, sizeMode, image.Width, image.Height);
+            return Show("Image", image, sizeMode, 0, 0);
         }
 
         /// <summary>
@@ -108,8 +234,7 @@ namespace Accord.Controls.Imaging
         ///   
         public static DialogResult Show(Image image, PictureBoxSizeMode sizeMode, Color backColor)
         {
-            if (image == null) throw new ArgumentNullException("image");
-            return Show("Image", image, sizeMode, image.Width, image.Height, backColor);
+            return Show("Image", image, sizeMode, 0, 0, backColor);
         }
 
         /// <summary>
@@ -122,8 +247,7 @@ namespace Accord.Controls.Imaging
         /// 
         public static DialogResult Show(string title, Image image, PictureBoxSizeMode sizeMode)
         {
-            if (image == null) throw new ArgumentNullException("image");
-            return Show(title, image, sizeMode, image.Width, image.Height);
+            return Show(title, image, sizeMode, 0, 0);
         }
 
         /// <summary>
@@ -136,8 +260,7 @@ namespace Accord.Controls.Imaging
         /// 
         public static DialogResult Show(string title, UnmanagedImage image, PictureBoxSizeMode sizeMode)
         {
-            if (image == null) throw new ArgumentNullException("image");
-            return Show(title, image, sizeMode, image.Width, image.Height);
+            return Show(title, image, sizeMode, 0, 0);
         }
 
         /// <summary>
@@ -184,19 +307,40 @@ namespace Accord.Controls.Imaging
         /// 
         public static DialogResult Show(string title, Image image, PictureBoxSizeMode sizeMode, int width, int height, Color backColor)
         {
-            if (image == null) 
+            if (image == null)
                 throw new ArgumentNullException("image");
 
             DialogResult result;
 
+            if (width == 0 && height == 0)
+            {
+                switch (sizeMode)
+                {
+                    case PictureBoxSizeMode.AutoSize:
+                        width = image.Width;
+                        height = image.Height;
+                        break;
+
+                    case PictureBoxSizeMode.CenterImage:
+                    case PictureBoxSizeMode.Normal:
+                    case PictureBoxSizeMode.StretchImage:
+                    case PictureBoxSizeMode.Zoom:
+                        width = 320;
+                        height = 240;
+                        break;
+                }
+            }
+
             using (ImageBox box = new ImageBox())
             {
+                box.SuspendLayout();
                 box.Text = title;
-                box.pictureBox.Width = width;
-                box.pictureBox.Height = height;
+                box.BackColor = backColor;
+                box.ClientSize = new Size(width, height);
                 box.pictureBox.SizeMode = sizeMode;
                 box.pictureBox.Image = image;
-                box.BackColor = backColor;
+                box.ResumeLayout(false);
+
                 result = box.ShowDialog();
             }
 
@@ -217,23 +361,7 @@ namespace Accord.Controls.Imaging
         /// 
         public static DialogResult Show(string title, UnmanagedImage image, PictureBoxSizeMode sizeMode, int width, int height, Color backColor)
         {
-            if (image == null)
-                throw new ArgumentNullException("image");
-
-            DialogResult result;
-
-            using (ImageBox box = new ImageBox())
-            {
-                box.Text = title;
-                box.pictureBox.Width = width;
-                box.pictureBox.Height = height;
-                box.pictureBox.SizeMode = sizeMode;
-                box.pictureBox.Image = image.ToManagedImage();
-                box.BackColor = backColor;
-                result = box.ShowDialog();
-            }
-
-            return result;
+            return Show(title, image.ToManagedImage(), sizeMode, width, height, backColor);
         }
 
 
@@ -242,6 +370,17 @@ namespace Accord.Controls.Imaging
             InitializeComponent();
         }
 
+        /// <summary>
+        ///   Raises the <see cref="E:System.Windows.Forms.Control.PreviewKeyDown"/> event.
+        /// </summary>
+        /// 
+        protected override void OnPreviewKeyDown(PreviewKeyDownEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+                this.Close();
+
+            base.OnPreviewKeyDown(e);
+        }
 
     }
 }
