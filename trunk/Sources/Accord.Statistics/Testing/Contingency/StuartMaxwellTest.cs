@@ -25,7 +25,6 @@ namespace Accord.Statistics.Testing
     using System;
     using Accord.Math;
     using Accord.Statistics.Analysis;
-    using Accord.Statistics.Distributions.Univariate;
 
     /// <summary>
     ///   Stuart-Maxwell test of homogeneity for <c>K x K</c> contigency tables.
@@ -35,6 +34,9 @@ namespace Accord.Statistics.Testing
     /// <para>
     ///   The Stuart-Maxwell test is a generalization of <see cref="McNemarTest">
     ///   McNemar's test</see> for multiple categories. </para>
+    ///   
+    /// <para>
+    ///   This is a <see cref="ChiSquareTest">Chi-square kind of test</see>.</para>
     ///   
     /// <para>
     ///   References:
@@ -49,24 +51,13 @@ namespace Accord.Statistics.Testing
     /// </remarks>
     /// 
     [Serializable]
-    public class StuartMaxwellTest : HypothesisTest, IHypothesisTest<ChiSquareDistribution>
+    public class StuartMaxwellTest : ChiSquareTest
     {
-
-        private ChiSquareDistribution distribution;
 
         double[] d;
         double[,] S;
         double[,] invS;
 
-        /// <summary>
-        ///   Gets the distribution associated
-        ///   with the test statistic.
-        /// </summary>
-        /// 
-        public ChiSquareDistribution StatisticDistribution
-        {
-            get { return distribution; }
-        }
 
         /// <summary>
         ///   Gets the delta vector <c>d</c> used
@@ -98,16 +89,6 @@ namespace Accord.Statistics.Testing
             get { return invS; }
         }
 
-
-
-        /// <summary>
-        ///   Gets the degrees of freedom for the Chi-Square distribution.
-        /// </summary>
-        /// 
-        public int DegreesOfFreedom
-        {
-            get { return distribution.DegreesOfFreedom; }
-        }
 
         /// <summary>
         ///   Creates a new Stuart-Maxwell test.
@@ -154,9 +135,9 @@ namespace Accord.Statistics.Testing
 
             invS = S.PseudoInverse();
 
-            this.Statistic = d.Multiply(invS).InnerProduct(d);
-            this.distribution = new ChiSquareDistribution(df);
-            this.PValue = distribution.ComplementaryDistributionFunction(Statistic);
+            double chiSquare = d.Multiply(invS).InnerProduct(d);
+
+            Compute(chiSquare, df);
         }
 
     }

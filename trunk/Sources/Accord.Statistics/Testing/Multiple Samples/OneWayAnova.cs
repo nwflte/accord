@@ -48,6 +48,67 @@ namespace Accord.Statistics.Testing
     ///   </list></para>
     /// </remarks>
     /// 
+    /// <example>
+    /// <para>
+    /// The following is the same example given in Wikipedia's page for the
+    /// F-Test [1]. Suppose one would like to test the effect of three levels
+    /// of a fertilizer on plant growth. </para>
+    /// 
+    /// <para>
+    /// To achieve this goal, an experimenter has divided a set of 18 plants on
+    /// three groups, 6 plants each. Each group has received different levels of
+    /// the fertilizer under question.</para>
+    /// 
+    /// <para>
+    /// After some months, the experimenter registers the growth for each plant: </para>
+    /// 
+    /// <code>
+    /// double[][] samples =
+    /// {
+    ///     new double[] {  6,  8,  4,  5,  3,  4 }, // records for the first group
+    ///     new double[] {  8, 12,  9, 11,  6,  8 }, // records for the second group
+    ///     new double[] { 13,  9, 11,  8,  7, 12 }, // records for the third group
+    /// };
+    /// </code>
+    /// 
+    /// <para>
+    /// Now, he would like to test whether the different fertilizer levels has
+    /// indeed caused any effect in plant growth. In other words, he would like
+    /// to test if the three groups are indeed significantly different.</para>
+    /// 
+    /// <code>
+    /// // To do it, he runs an ANOVA test:
+    /// OneWayAnova anova = new OneWayAnova(samples);
+    /// </code>
+    /// 
+    /// <para>
+    /// After the anova object has been created, one can display its findings
+    /// in the form of a standard ANOVA table by binding anova.Table to a 
+    /// DataGridView or any other display object supporting databinding. To
+    /// illustrate, we could use Accord.NET's DataGridBox to inspect the
+    /// table's contents.</para>
+    /// 
+    /// <code>
+    ///   DataGridBox.Show(anova.Table);
+    /// </code>
+    /// 
+    /// <para>Result in:</para>
+    /// 
+    /// <img src="../Images/one-way-anova.png"/>
+    /// 
+    /// <para>
+    ///  The p-level for the analysis is about 0.002, meaning the test is
+    ///  significant at the 5% significance level. The experimenter would
+    ///  thus reject the null hypothesis, concluding there is a strong
+    ///  evidence that the three groups are indeed different. Assuming the
+    ///  experiment was correctly controlled, this would be an indication
+    ///  that the fertilizant does indeed affect plant growth.</para>
+    /// 
+    /// <para>
+    ///   [1] http://en.wikipedia.org/wiki/F_test </para>
+    ///   
+    /// </example>
+    /// 
     [Serializable]
     public class OneWayAnova : IAnova
     {
@@ -60,16 +121,16 @@ namespace Accord.Statistics.Testing
         private double[] means;
         private double totalMean;
 
-        private double Sb; // Between-group sum of squares
-        private double Sw; // Within-group sum of squares
-        private double St; // Total sum of squares
+        private double SSb; // Between-group sum of squares
+        private double SSw; // Within-group sum of squares
+        private double SSt; // Total sum of squares
 
         private double MSb; // Between-group mean square
         private double MSw; // Within-group mean square
 
-        private int Db; // Between-group degrees-of-freedom
-        private int Dw; // Within-group degrees-of-freedom
-        private int Dt; // Total degrees-of-freedom
+        private int DFb; // Between-group degrees-of-freedom
+        private int DFw; // Within-group degrees-of-freedom
+        private int DFt; // Total degrees-of-freedom
 
         /// <summary>
         ///   Gets the F-Test produced by this one-way ANOVA.
@@ -130,9 +191,9 @@ namespace Accord.Statistics.Testing
 
         private void initialize(double[][] samples)
         {
-            Db = groupCount - 1;
-            Dw = totalSize - groupCount;
-            Dt = groupCount * totalSize - 1;
+            DFb = groupCount - 1;
+            DFw = totalSize - groupCount;
+            DFt = groupCount * totalSize - 1;
 
             // Step 1. Calculate the mean within each group
             means = Statistics.Tools.Mean(samples, 1);
@@ -146,7 +207,7 @@ namespace Accord.Statistics.Testing
             {
                 //  between-group sum of squares
                 double u = (means[i] - totalMean);
-                Sb += sizes[i] * u * u;
+                SSb += sizes[i] * u * u;
             }
 
 
@@ -156,24 +217,24 @@ namespace Accord.Statistics.Testing
                 for (int j = 0; j < samples[i].Length; j++)
                 {
                     double u = samples[i][j] - means[i];
-                    Sw += u * u;
+                    SSw += u * u;
                 }
             }
             
-            St = Sb + Sw; // total sum of squares
+            SSt = SSb + SSw; // total sum of squares
 
 
             // Step 5. Calculate the F statistic
-            MSb = Sb / Db; // between-group mean square
-            MSw = Sw / Dw; // within-group mean square
-            FTest = new FTest(MSb / MSw, Db, Dw);
+            MSb = SSb / DFb; // between-group mean square
+            MSw = SSw / DFw; // within-group mean square
+            FTest = new FTest(MSb / MSw, DFb, DFw);
 
 
             // Step 6. Create the ANOVA table
             List<AnovaVariationSource> table = new List<AnovaVariationSource>();
-            table.Add(new AnovaVariationSource(this, "Between-Groups", Sb, Db, FTest));
-            table.Add(new AnovaVariationSource(this, "Within-Groups", Sw, Dw, null));
-            table.Add(new AnovaVariationSource(this, "Total", St, Dt, null));
+            table.Add(new AnovaVariationSource(this, "Between-Groups", SSb, DFb, FTest));
+            table.Add(new AnovaVariationSource(this, "Within-Groups", SSw, DFw, null));
+            table.Add(new AnovaVariationSource(this, "Total", SSt, DFt, null));
             this.Table = new AnovaSourceCollection(table);
         }
 

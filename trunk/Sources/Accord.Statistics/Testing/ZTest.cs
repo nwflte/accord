@@ -24,6 +24,8 @@ namespace Accord.Statistics.Testing
 {
     using System;
     using Accord.Statistics.Distributions.Univariate;
+    using Accord.Statistics.Testing.Power;
+    using AForge;
 
     /// <summary>
     ///   One-sample Z-Test (location test).
@@ -39,6 +41,12 @@ namespace Accord.Statistics.Testing
     ///   size is large.</para>
     ///   
     /// <para>
+    ///   If the test is <see cref="IHypothesisTest.Significant"/>, the null hypothesis 
+    ///   can be rejected in favor of the <see cref="Hypothesis">alternate hypothesis</see>
+    ///   specified at the creation of the test.
+    /// </para>
+    ///   
+    /// <para>
     ///   References:
     ///   <list type="bullet">
     ///     <item><description><a href="http://en.wikipedia.org/wiki/Z-test">
@@ -48,18 +56,67 @@ namespace Accord.Statistics.Testing
     /// </remarks>
     /// 
     [Serializable]
-    public class ZTest : HypothesisTest, IHypothesisTest<NormalDistribution>
+    public class ZTest : HypothesisTest<NormalDistribution>
     {
 
+        private ZTestPowerAnalysis powerAnalysis;
+
         /// <summary>
-        ///   Gets the distribution associated
-        ///   with the test statistic.
+        ///   Gets the power analysis for the test, if available.
         /// </summary>
         /// 
-        public NormalDistribution StatisticDistribution
+        public IPowerAnalysis Analysis { get { return powerAnalysis; } }
+
+        /// <summary>
+        ///   Gets the standard error of the estimated value.
+        /// </summary>
+        /// 
+        public double StandardError { get; protected set; }
+
+        /// <summary>
+        ///   Gets the estimated value, such as the mean estimated from a sample.
+        /// </summary>
+        /// 
+        public double EstimatedValue { get; protected set; }
+
+        /// <summary>
+        ///   Gets the hypothesized value.
+        /// </summary>
+        /// 
+        public double HypothesizedValue { get; protected set; }
+
+        /// <summary>
+        ///   Gets the 95% confidence interval for the <see cref="EstimatedValue"/>.
+        /// </summary>
+        /// 
+        public DoubleRange Confidence { get; protected set; }
+
+        /// <summary>
+        ///   Gets the alternative hypothesis under test. If the test is
+        ///   <see cref="IHypothesisTest.Significant"/>, the null hypothesis can be rejected
+        ///   in favor of this alternative hypothesis.
+        /// </summary>
+        /// 
+        public OneSampleHypothesis Hypothesis { get; protected set; }
+
+        /// <summary>
+        ///   Gets a confidence interval for the <see cref="EstimatedValue"/>
+        ///   statistic within the given confidence level percentage.
+        /// </summary>
+        /// 
+        /// <param name="percent">The confidence level. Default is 0.95.</param>
+        /// 
+        /// <returns>A confidence interval for the estimated value.</returns>
+        /// 
+        public DoubleRange GetConfidenceInterval(double percent = 0.95)
         {
-            get { return NormalDistribution.Standard; }
+            double z = PValueToStatistic(1.0 - percent);
+
+            return new DoubleRange(
+                EstimatedValue - z * StandardError,
+                EstimatedValue + z * StandardError);
         }
+
 
         /// <summary>
         ///   Constructs a Z test.
@@ -67,16 +124,39 @@ namespace Accord.Statistics.Testing
         /// 
         /// <param name="samples">The data samples from which the test will be performed.</param>
         /// <param name="hypothesizedMean">The constant to be compared with the samples.</param>
-        /// <param name="type">The type of hypothesis to test.</param>
+        /// <param name="alternate">The alternative hypothesis (research hypothesis) to test.</param>
         /// 
-        public ZTest(double[] samples, double hypothesizedMean, Hypothesis type)
+        public ZTest(double[] samples, double hypothesizedMean = 0,
+            OneSampleHypothesis alternate = OneSampleHypothesis.ValueIsDifferentFromHypothesis)
         {
             double mean = Tools.Mean(samples);
-            double stdDev = Tools.StandardDeviation(samples, mean);
+            double stdDev = Tools.StandardDeviation(samples, EstimatedValue);
             double stdError = Tools.StandardError(samples.Length, stdDev);
-            double z = (hypothesizedMean - mean) / stdError;
 
-            this.init(z, type);
+            if (samples.Length < 30)
+            {
+                System.Diagnostics.Trace.TraceWarning(
+                    "Warning: running a Z test for less than 30 samples. Consider running a Student's T Test instead.");
+            }
+
+            this.Compute(mean, hypothesizedMean, stdError, alternate);
+
+            this.power(stdDev, samples.Length);
+        }
+
+        /// <summary>
+        ///   Constructs a Z test.
+        /// </summary>
+        /// 
+        /// <param name="sampleMean">The sample's mean.</param>
+        /// <param name="standardError">The sample's standard error.</param>
+        /// <param name="hypothesizedMean">The hypothesized value for the distribution's mean.</param>
+        /// <param name="alternate">The alternative hypothesis (research hypothesis) to test.</param>
+        /// 
+        public ZTest(double sampleMean, double standardError, double hypothesizedMean = 0,
+            OneSampleHypothesis alternate = OneSampleHypothesis.ValueIsGreaterThanHypothesis)
+        {
+            this.Compute(sampleMean, hypothesizedMean, standardError, alternate);
         }
 
         /// <summary>
@@ -87,45 +167,190 @@ namespace Accord.Statistics.Testing
         /// <param name="sampleStdDev">The sample's standard deviation.</param>
         /// <param name="hypothesizedMean">The hypothesized value for the distribution's mean.</param>
         /// <param name="samples">The sample's size.</param>
-        /// <param name="type">The type of hypothesis to test.</param>
+        /// <param name="alternate">The alternative hypothesis (research hypothesis) to test.</param>
         /// 
-        public ZTest(double sampleMean, double sampleStdDev, double hypothesizedMean, int samples, Hypothesis type)
+        public ZTest(double sampleMean, double sampleStdDev, int samples, double hypothesizedMean = 0,
+            OneSampleHypothesis alternate = OneSampleHypothesis.ValueIsDifferentFromHypothesis)
         {
-            double stdError = Tools.StandardError(samples, sampleStdDev);
-            double z = (hypothesizedMean - sampleMean) / stdError;
 
-            this.init(z, type);
+            if (samples < 30)
+            {
+                System.Diagnostics.Trace.TraceWarning(
+                    "Warning: running a Z test for less than 30 samples. Consider running a Student's T Test instead.");
+            }
+
+            double stdError = Tools.StandardError(samples, sampleStdDev);
+            Compute(sampleMean, hypothesizedMean, stdError, alternate);
+
+            power(sampleStdDev, samples);
         }
+
 
         /// <summary>
         ///   Constructs a Z test.
         /// </summary>
         /// 
         /// <param name="statistic">The test statistic, as given by (x-μ)/SE.</param>
-        /// <param name="type">The type of hypothesis to test.</param>
+        /// <param name="alternate">The alternate hypothesis to test.</param>
         /// 
-        public ZTest(double statistic, Hypothesis type)
+        public ZTest(double statistic, OneSampleHypothesis alternate)
         {
-            this.init(statistic, type);
+            this.EstimatedValue = statistic;
+            this.HypothesizedValue = 0;
+            this.StandardError = 1;
+
+            this.Compute(statistic, alternate);
         }
 
-
-        private void init(double statistic, Hypothesis type)
+        /// <summary>
+        ///   Computes the Z test.
+        /// </summary>
+        /// 
+        protected void Compute(double estimatedValue, double hypothesizedValue,
+            double stdError, OneSampleHypothesis alternate)
         {
+            this.HypothesizedValue = hypothesizedValue;
+            this.EstimatedValue = estimatedValue;
+            this.StandardError = stdError;
+
+            // Compute Z statistic
+            double z = (estimatedValue - hypothesizedValue) / StandardError;
+
+            Compute(z, alternate);
+        }
+
+        /// <summary>
+        ///   Computes the Z test.
+        /// </summary>
+        /// 
+        protected void Compute(double statistic, OneSampleHypothesis alternate)
+        {
+            this.StatisticDistribution = NormalDistribution.Standard;
             this.Statistic = statistic;
-            this.Hypothesis = type;
+            this.Hypothesis = alternate;
+            this.Tail = (DistributionTail)alternate;
+            this.PValue = StatisticToPValue(Statistic);
 
-            if (this.Hypothesis == Hypothesis.TwoTail)
+            this.OnSizeChanged();
+        }
+
+        /// <summary>
+        ///   Constructs a T-Test.
+        /// </summary>
+        protected ZTest() { }
+
+        private void power(double stdDev, int samples)
+        {
+            this.powerAnalysis = new ZTestPowerAnalysis(Hypothesis)
             {
-                this.PValue = 2.0 * NormalDistribution.Standard.
-                      DistributionFunction(-Math.Abs(Statistic));
-            }
-            else
+                Samples = samples,
+                Effect = (EstimatedValue - HypothesizedValue) / stdDev,
+                Size = Size,
+            };
+
+            powerAnalysis.ComputePower();
+        }
+
+        /// <summary>Update event.</summary>
+        protected override void OnSizeChanged()
+        {
+            this.Confidence = GetConfidenceInterval(1.0 - Size);
+
+            if (Analysis != null)
             {
-                this.PValue = NormalDistribution.Standard.
-                      DistributionFunction(-Math.Abs(Statistic));
+                powerAnalysis.Size = Size;
+                powerAnalysis.ComputePower();
             }
         }
+
+        /// <summary>
+        ///   Converts a given p-value to a test statistic.
+        /// </summary>
+        /// 
+        /// <param name="p">The p-value.</param>
+        /// 
+        /// <returns>The test statistic which would generate the given p-value.</returns>
+        /// 
+        public override double PValueToStatistic(double p)
+        {
+            return PValueToStatistic(p, Tail);
+        }
+
+        /// <summary>
+        ///   Converts a given test statistic to a p-value.
+        /// </summary>
+        /// 
+        /// <param name="x">The value of the test statistic.</param>
+        /// 
+        /// <returns>The p-value for the given statistic.</returns>
+        /// 
+        public override double StatisticToPValue(double x)
+        {
+            return StatisticToPValue(x, Tail);
+        }
+
+        /// <summary>
+        ///   Converts a given test statistic to a p-value.
+        /// </summary>
+        /// 
+        /// <param name="z">The value of the test statistic.</param>
+        /// <param name="type">The tail of the test distribution.</param>
+        /// 
+        /// <returns>The p-value for the given statistic.</returns>
+        /// 
+        public static double StatisticToPValue(double z, DistributionTail type)
+        {
+            double p;
+            switch (type)
+            {
+                case DistributionTail.TwoTail:
+                    p = 2.0 * NormalDistribution.Standard.ComplementaryDistributionFunction(Math.Abs(z));
+                    break;
+
+                case DistributionTail.OneUpper:
+                    p = NormalDistribution.Standard.ComplementaryDistributionFunction(z);
+                    break;
+
+                case DistributionTail.OneLower:
+                    p = NormalDistribution.Standard.DistributionFunction(z);
+                    break;
+
+                default:
+                    throw new InvalidOperationException();
+            }
+            return p;
+        }
+
+        /// <summary>
+        ///   Converts a given p-value to a test statistic.
+        /// </summary>
+        /// 
+        /// <param name="p">The p-value.</param>
+        /// <param name="type">The tail of the test distribution.</param>
+        /// 
+        /// <returns>The test statistic which would generate the given p-value.</returns>
+        /// 
+        public static double PValueToStatistic(double p, DistributionTail type)
+        {
+            double z;
+            switch (type)
+            {
+                case DistributionTail.OneLower:
+                    z = NormalDistribution.Standard.InverseDistributionFunction(p);
+                    break;
+                case DistributionTail.OneUpper:
+                    z = NormalDistribution.Standard.InverseDistributionFunction(1.0 - p);
+                    break;
+                case DistributionTail.TwoTail:
+                    z = NormalDistribution.Standard.InverseDistributionFunction(1.0 - p / 2.0);
+                    break;
+                default:
+                    throw new InvalidOperationException();
+            }
+
+            return z;
+        }
+
 
     }
 }

@@ -27,34 +27,6 @@ namespace Accord.Statistics.Testing
     using Accord.Statistics.Distributions.Univariate;
 
     /// <summary>
-    ///   Hypothesis for the one-sample Kolmogorov-Smirnov test.
-    /// </summary>
-    /// 
-    public enum KolmogorovSmirnovTestHypothesis
-    {
-        /// <summary>
-        ///   Tests whether the sample's distribution is
-        ///   different from the reference distribution.
-        /// </summary>
-        /// 
-        SampleIsDifferent,
-
-        /// <summary>
-        ///   Tests whether the distribution of one sample is greater
-        ///   than the reference distribution, in a statistical sense.
-        /// </summary>
-        /// 
-        SampleIsGreater,
-
-        /// <summary>
-        ///   Tests whether the distribution of one sample is smaller
-        ///   than the reference distribution, in a statistical sense.
-        /// </summary>
-        /// 
-        SampleIsSmaller,
-    }
-
-    /// <summary>
     ///   One-sample Kolmogorov-Smirnov (KS) test.
     /// </summary>
     /// 
@@ -92,9 +64,17 @@ namespace Accord.Statistics.Testing
     /// </remarks>
     /// 
     [Serializable]
-    public class KolmogorovSmirnovTest : HypothesisTest, IHypothesisTest<KolmogorovSmirnovDistribution>
+    public class KolmogorovSmirnovTest : HypothesisTest<KolmogorovSmirnovDistribution>,
+        IHypothesisTest<KolmogorovSmirnovDistribution>
     {
 
+        /// <summary>
+        ///   Gets the alternative hypothesis under test. If the test is
+        ///   <see cref="IHypothesisTest.Significant"/>, the null hypothesis can be rejected
+        ///   in favor of this alternative hypothesis.
+        /// </summary>
+        /// 
+        public KolmogorovSmirnovTestHypothesis Hypothesis { get; private set; }
 
         /// <summary>
         ///   Gets the theoretical, hypothesized distribution for the samples,
@@ -110,12 +90,6 @@ namespace Accord.Statistics.Testing
         public EmpiricalDistribution EmpiricalDistribution { get; private set; }
 
         /// <summary>
-        ///   Gets the distribution for the test statistic.
-        /// </summary>
-        /// 
-        public KolmogorovSmirnovDistribution StatisticDistribution { get; private set; }
-
-        /// <summary>
         ///   Creates a new One-Sample Kolmogorov test.
         /// </summary>
         /// 
@@ -123,9 +97,7 @@ namespace Accord.Statistics.Testing
         /// <param name="hypothesizedDistribution">A fully specified distribution (which must NOT have been estimated from the data).</param>
         /// 
         public KolmogorovSmirnovTest(double[] sample, UnivariateContinuousDistribution hypothesizedDistribution)
-            : this(sample, hypothesizedDistribution, KolmogorovSmirnovTestHypothesis.SampleIsDifferent)
-        {
-        }
+            : this(sample, hypothesizedDistribution, KolmogorovSmirnovTestHypothesis.SampleIsDifferent) { }
 
         /// <summary>
         ///   Creates a new One-Sample Kolmogorov test.
@@ -133,16 +105,13 @@ namespace Accord.Statistics.Testing
         /// 
         /// <param name="sample">The sample we would like to test as beloging to the <paramref name="hypothesizedDistribution"/>.</param>
         /// <param name="hypothesizedDistribution">A fully specified distribution (which must NOT have been estimated from the data).</param>
-        /// <param name="hypothesis">
-        ///   The kind of hypothesis to test. If a two-sided hypothesis will test if the sample belongs to the
-        ///   distribution. A lower side hypothesis will test if the sample's distribution is smaller than the
-        ///   theoretical distribution. A upper side hypothesis will test if the sample's distribution is greater
-        ///   than the theoretical distribution.
-        /// </param>
+        /// <param name="alternate">The alternative hypothesis (research hypothesis) to test.</param>
         /// 
         public KolmogorovSmirnovTest(double[] sample, UnivariateContinuousDistribution hypothesizedDistribution,
-            KolmogorovSmirnovTestHypothesis hypothesis)
+            KolmogorovSmirnovTestHypothesis alternate = KolmogorovSmirnovTestHypothesis.SampleIsDifferent)
         {
+            this.Hypothesis = alternate;
+
             double N = sample.Length;
 
             // Create the test statistic distribution with given degrees of freedom
@@ -160,12 +129,11 @@ namespace Accord.Statistics.Testing
             // Create the thoretical and empirical distributions
             this.TheoreticalDistribution = hypothesizedDistribution;
             this.EmpiricalDistribution = new EmpiricalDistribution(Y, smoothing: 0);
-            
+
             Func<double, double> F = TheoreticalDistribution.DistributionFunction;
 
-
             // Finally, compute the test statistic and perform actual testing.
-            if (hypothesis == KolmogorovSmirnovTestHypothesis.SampleIsDifferent)
+            if (alternate == KolmogorovSmirnovTestHypothesis.SampleIsDifferent)
             {
                 // Test if the sample's distribution is just significantly
                 //   "different" than the given theoretical distribution.
@@ -178,11 +146,11 @@ namespace Accord.Statistics.Testing
                 for (int i = 0; i < sample.Length; i++)
                     D[i] = Math.Max(Math.Abs(F(Y[i]) - i / N), Math.Abs((i + 1) / N - F(Y[i])));
 
-                Statistic = D.Max(); // This is the two-sided "Dn" statistic.
-                PValue = StatisticDistribution.ComplementaryDistributionFunction(Statistic);
-                Hypothesis = Testing.Hypothesis.TwoTail;
+                base.Statistic = D.Max(); // This is the two-sided "Dn" statistic.
+                base.PValue = StatisticDistribution.ComplementaryDistributionFunction(Statistic);
+                base.Tail = Testing.DistributionTail.TwoTail;
             }
-            else if (hypothesis == KolmogorovSmirnovTestHypothesis.SampleIsGreater)
+            else if (alternate == KolmogorovSmirnovTestHypothesis.SampleIsGreater)
             {
                 // Test if the sample's distribution is "larger" than the
                 // given theoretical distribution, in a statistical sense.
@@ -190,9 +158,9 @@ namespace Accord.Statistics.Testing
                 for (int i = 0; i < sample.Length; i++)
                     D[i] = Math.Max(i / N - F(Y[i]), (i + 1) / N - F(Y[i]));
 
-                Statistic = D.Max(); // This is the one-sided "Dn+" statistic.
-                PValue = StatisticDistribution.OneSideDistributionFunction(Statistic);
-                Hypothesis = Testing.Hypothesis.OneUpper;
+                base.Statistic = D.Max(); // This is the one-sided "Dn+" statistic.
+                base.PValue = StatisticDistribution.OneSideDistributionFunction(Statistic);
+                base.Tail = Testing.DistributionTail.OneUpper;
             }
             else
             {
@@ -202,11 +170,36 @@ namespace Accord.Statistics.Testing
                 for (int i = 0; i < sample.Length; i++)
                     D[i] = Math.Max(F(Y[i]) - i / N, F(Y[i]) - (i + 1) / N);
 
-                Statistic = D.Max(); // This is the one-sided "Dn-" statistic.
-                PValue = StatisticDistribution.OneSideDistributionFunction(Statistic);
-                Hypothesis = Testing.Hypothesis.OneLower;
+                base.Statistic = D.Max(); // This is the one-sided "Dn-" statistic.
+                base.PValue = StatisticDistribution.OneSideDistributionFunction(Statistic);
+                base.Tail = Testing.DistributionTail.OneLower;
             }
         }
 
+        /// <summary>
+        ///   Converts a given p-value to a test statistic.
+        /// </summary>
+        /// 
+        /// <param name="p">The p-value.</param>
+        /// 
+        /// <returns>The test statistic which would generate the given p-value.</returns>
+        /// 
+        public override double PValueToStatistic(double p)
+        {
+            throw new NotSupportedException();
+        }
+
+        /// <summary>
+        ///   Converts a given test statistic to a p-value.
+        /// </summary>
+        /// 
+        /// <param name="x">The value of the test statistic.</param>
+        /// 
+        /// <returns>The p-value for the given statistic.</returns>
+        /// 
+        public override double StatisticToPValue(double x)
+        {
+            throw new NotSupportedException();
+        }
     }
 }

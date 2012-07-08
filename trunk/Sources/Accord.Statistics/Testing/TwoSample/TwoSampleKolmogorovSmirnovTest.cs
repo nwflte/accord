@@ -27,35 +27,6 @@ namespace Accord.Statistics.Testing
     using Accord.Statistics.Distributions.Univariate;
 
     /// <summary>
-    ///   Test hypothesis for the two-sample
-    ///   Kolmogorov-Smirnov tests.
-    /// </summary>
-    /// 
-    public enum TwoSampleKolmogorovSmirnovTestHypothesis
-    {
-        /// <summary>
-        ///   Tests whether samples have been drawn 
-        ///   from significantly unequal distributions.
-        /// </summary>
-        /// 
-        SamplesDistributionsAreUnequal,
-
-        /// <summary>
-        ///   Tests whether the distribution of one sample is
-        ///   greater than the other, in a statistical sense.
-        /// </summary>
-        /// 
-        FirstSampleIsLargerThanSecond,
-
-        /// <summary>
-        ///   Tests whether the distribution of one sample is
-        ///   smaller than the other, in a statistical sense.
-        /// </summary>
-        /// 
-        FirstSampleIsSmallerThanSecond,
-    }
-
-    /// <summary>
     ///   Two-sample Kolmogorov-Smirnov (KS) test.
     /// </summary>
     /// 
@@ -97,8 +68,16 @@ namespace Accord.Statistics.Testing
     /// </remarks>
     /// 
     [Serializable]
-    public class TwoSampleKolmogorovSmirnovTest : HypothesisTest, IHypothesisTest<KolmogorovSmirnovDistribution>
+    public class TwoSampleKolmogorovSmirnovTest : HypothesisTest<KolmogorovSmirnovDistribution>
     {
+
+        /// <summary>
+        ///   Gets the alternative hypothesis under test. If the test is
+        ///   <see cref="IHypothesisTest.Significant"/>, the null hypothesis can be rejected
+        ///   in favor of this alternative hypothesis.
+        /// </summary>
+        /// 
+        public TwoSampleKolmogorovSmirnovTestHypothesis Hypothesis { get; private set; }
 
         /// <summary>
         ///   Gets the first empirical distribution being tested.
@@ -112,12 +91,6 @@ namespace Accord.Statistics.Testing
         /// 
         public EmpiricalDistribution EmpiricalDistribution2 { get; private set; }
 
-        /// <summary>
-        ///   Gets the distribution associated with the test statistic.
-        /// </summary>
-        /// 
-        public KolmogorovSmirnovDistribution StatisticDistribution { get; private set; }
-
 
         /// <summary>
         ///   Creates a new Two-Sample Kolmogorov test.
@@ -128,8 +101,7 @@ namespace Accord.Statistics.Testing
         /// 
         public TwoSampleKolmogorovSmirnovTest(double[] sample1, double[] sample2)
             : this(sample1, sample2, TwoSampleKolmogorovSmirnovTestHypothesis.SamplesDistributionsAreUnequal)
-        {
-        }
+        { }
 
         /// <summary>
         ///   Creates a new Two-Sample Kolmogorov test.
@@ -137,12 +109,13 @@ namespace Accord.Statistics.Testing
         /// 
         /// <param name="sample1">The first sample.</param>
         /// <param name="sample2">The second sample.</param>
-        /// <param name="hypothesis">The hypothesis to test.</param>
+        /// <param name="alternate">The alternative hypothesis (research hypothesis) to test.</param>
         /// 
         public TwoSampleKolmogorovSmirnovTest(double[] sample1, double[] sample2,
-            TwoSampleKolmogorovSmirnovTestHypothesis hypothesis)
+            TwoSampleKolmogorovSmirnovTestHypothesis alternate)
         {
 
+            this.Hypothesis = alternate;
             int n1 = sample1.Length;
             int n2 = sample2.Length;
 
@@ -172,7 +145,7 @@ namespace Accord.Statistics.Testing
             Func<double, double> G = EmpiricalDistribution2.DistributionFunction;
 
             // Finally, compute the test statistic and perform actual testing.
-            if (hypothesis == TwoSampleKolmogorovSmirnovTestHypothesis.SamplesDistributionsAreUnequal)
+            if (alternate == TwoSampleKolmogorovSmirnovTestHypothesis.SamplesDistributionsAreUnequal)
             {
                 // Test if the samples have been drawn from different distributions.
 
@@ -184,11 +157,11 @@ namespace Accord.Statistics.Testing
                 for (int i = 0; i < Y.Length - 1; i++)
                     D[i] = Math.Max(Math.Abs(F(Y[i]) - G(Y[i + 1])), Math.Abs(F(Y[i]) - G(Y[i])));
 
-                Statistic = D.Max(); // This is the two-sided "Dn" statistic.
-                PValue = StatisticDistribution.ComplementaryDistributionFunction(Statistic);
-                Hypothesis = Testing.Hypothesis.TwoTail;
+                base.Statistic = D.Max(); // This is the two-sided "Dn" statistic.
+                base.PValue = StatisticDistribution.ComplementaryDistributionFunction(Statistic);
+                base.Tail = Testing.DistributionTail.TwoTail;
             }
-            else if (hypothesis == TwoSampleKolmogorovSmirnovTestHypothesis.FirstSampleIsLargerThanSecond)
+            else if (alternate == TwoSampleKolmogorovSmirnovTestHypothesis.FirstSampleIsLargerThanSecond)
             {
                 // Test if the first sample's distribution is significantly "larger"
                 // than the second sample's distribution, in a statistical sense.
@@ -196,9 +169,9 @@ namespace Accord.Statistics.Testing
                 for (int i = 0; i < Y.Length - 1; i++)
                     D[i] = Math.Max(F(Y[i]) - G(Y[i + 1]), F(Y[i]) - G(Y[i]));
 
-                Statistic = D.Max(); // This is the one-sided "Dn+" statistic.
-                PValue = StatisticDistribution.OneSideDistributionFunction(Statistic);
-                Hypothesis = Testing.Hypothesis.OneUpper;
+                base.Statistic = D.Max(); // This is the one-sided "Dn+" statistic.
+                base.PValue = StatisticDistribution.OneSideDistributionFunction(Statistic);
+                base.Tail = Testing.DistributionTail.OneUpper;
             }
             else
             {
@@ -208,12 +181,37 @@ namespace Accord.Statistics.Testing
                 for (int i = 0; i < Y.Length - 1; i++)
                     D[i] = Math.Max(G(Y[i + 1]) - F(Y[i]), G(Y[i]) - F(Y[i]));
 
-                Statistic = D.Max(); // This is the one-sided "Dn-" statistic.
-                PValue = StatisticDistribution.OneSideDistributionFunction(Statistic);
-                Hypothesis = Testing.Hypothesis.OneLower;
+                base.Statistic = D.Max(); // This is the one-sided "Dn-" statistic.
+                base.PValue = StatisticDistribution.OneSideDistributionFunction(Statistic);
+                base.Tail = Testing.DistributionTail.OneLower;
             }
         }
 
+        /// <summary>
+        ///   Converts a given p-value to a test statistic.
+        /// </summary>
+        /// 
+        /// <param name="p">The p-value.</param>
+        /// 
+        /// <returns>The test statistic which would generate the given p-value.</returns>
+        /// 
+        public override double PValueToStatistic(double p)
+        {
+            throw new NotSupportedException();
+        }
+
+        /// <summary>
+        ///   Converts a given test statistic to a p-value.
+        /// </summary>
+        /// 
+        /// <param name="x">The value of the test statistic.</param>
+        /// 
+        /// <returns>The p-value for the given statistic.</returns>
+        /// 
+        public override double StatisticToPValue(double x)
+        {
+            throw new NotSupportedException();
+        }
 
     }
 }

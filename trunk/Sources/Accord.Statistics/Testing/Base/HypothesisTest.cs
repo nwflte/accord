@@ -26,57 +26,6 @@ namespace Accord.Statistics.Testing
     using Accord.Statistics.Distributions;
 
     /// <summary>
-    ///   Hypothesis type
-    /// </summary>
-    /// 
-    /// <remarks>
-    ///   The type of the hypothesis being made expresses the way in
-    ///   which a value of a parameter may deviate from that assumed
-    ///   in the null hypothesis. It can either state that a value is
-    ///   higher, lower or simply different than the one assumed under
-    ///   the null hypothesis.
-    /// </remarks>
-    /// 
-    public enum Hypothesis
-    {
-        /// <summary>
-        ///   The test considers the upper tail from a probability distribution.
-        /// </summary>
-        /// 
-        /// <remarks>
-        ///   The one-tailed, upper tail test is a statistical test in which a given
-        ///   statistical hypothesis, H0 (the null hypothesis), will be rejected when
-        ///   the value of the test statistic is sufficiently large. 
-        /// </remarks>
-        /// 
-        OneUpper,
-
-        /// <summary>
-        ///   The test considers the lower tail from a probability distribution.
-        /// </summary>
-        /// 
-        /// <remarks>
-        ///   The one-tailed, lower tail test is a statistical test in which a given
-        ///   statistical hypothesis, H0 (the null hypothesis), will be rejected when
-        ///   the value of the test statistic is sufficiently small. 
-        /// </remarks>
-        /// 
-        OneLower,
-
-        /// <summary>
-        ///   The test considers the two tails from a probability distribution.
-        /// </summary>
-        /// 
-        /// <remarks>
-        ///   The two-tailed test is a statistical test in which a given statistical
-        ///   hypothesis, H0 (the null hypothesis), will be rejected when the value of
-        ///   the test statistic is either sufficiently small or sufficiently large. 
-        /// </remarks>
-        /// 
-        TwoTail
-    };
-
-    /// <summary>
     ///   Base class for Hypothesis Tests.
     /// </summary>
     /// 
@@ -95,54 +44,25 @@ namespace Accord.Statistics.Testing
     /// </remarks>
     /// 
     [Serializable]
-    public abstract class HypothesisTest : IFormattable
+    public abstract class HypothesisTest<TDistribution> : IFormattable, IHypothesisTest<TDistribution>
+        where TDistribution : IUnivariateDistribution
     {
-        private double pvalue;
-        private double statistic;
-        private double threshold = 0.05;
-        private Hypothesis hypothesis;
+
+        private double alpha = 0.05;
 
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref="HypothesisTest"/> class.
+        ///   Initializes a new instance of the class.
         /// </summary>
         /// 
-        protected HypothesisTest()
-        {
-        }
+        protected HypothesisTest() { }
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref="HypothesisTest"/> class.
-        /// </summary>
-        /// <param name="statistic">The test statistic.</param>
-        /// 
-        protected HypothesisTest(double statistic)
-        {
-            this.Statistic = statistic;
-        }
-
-        /// <summary>
-        ///   Gets the significance threshold. Default value is 0.05 (5%).
+        ///   Gets the distribution associated
+        ///   with the test statistic.
         /// </summary>
         /// 
-        public double Threshold
-        {
-            get { return threshold; }
-            set { threshold = value; }
-        }
-
-        /// <summary>
-        ///   Gets whether the null hypothesis can be accepted or should be rejected.
-        /// </summary>
-        /// <remarks>
-        ///   A test result is said to be statistically significant when the result
-        ///   would be very unlikely to have occurred by chance alone.
-        /// </remarks>
-        /// 
-        public bool Significant
-        {
-            get { return pvalue < threshold; }
-        }
+        public TDistribution StatisticDistribution { get; protected set; }
 
         /// <summary>
         ///   Gets the P-value associated with this test.
@@ -157,35 +77,80 @@ namespace Accord.Statistics.Testing
         ///   by chance alone, assuming the null hypothesis is true.</para>  
         /// </remarks>
         /// 
-        public double PValue
-        {
-            get { return pvalue; }
-            protected set { pvalue = value; }
-        }
+        public double PValue { get; protected set; }
 
         /// <summary>
         ///   Gets the test statistic.
         /// </summary>
         /// 
-        public double Statistic
-        {
-            get { return statistic; }
-            protected set { statistic = value; }
-        }
+        public double Statistic { get; protected set; }
 
         /// <summary>
         ///   Gets the test type.
         /// </summary>
         /// 
-        public Hypothesis Hypothesis
+        public DistributionTail Tail { get; protected set; }
+
+        /// <summary>
+        ///   Gets the significance level for the
+        ///   test. Default value is 0.05 (5%).
+        /// </summary>
+        /// 
+        public double Size
         {
-            get { return hypothesis; }
-            protected set { hypothesis = value; }
+            get { return alpha; }
+            set
+            {
+                alpha = value;
+                OnSizeChanged();
+            }
         }
+
+        /// <summary>
+        ///   Gets whether the null hypothesis should be rejected.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   A test result is said to be statistically significant when the
+        ///   result would be very unlikely to have occurred by chance alone.
+        /// </remarks>
+        /// 
+        public bool Significant
+        {
+            get { return PValue < alpha; }
+        }
+
+        /// <summary>
+        ///   Converts a given test statistic to a p-value.
+        /// </summary>
+        /// 
+        /// <param name="x">The value of the test statistic.</param>
+        /// 
+        /// <returns>The p-value for the given statistic.</returns>
+        /// 
+        public abstract double StatisticToPValue(double x);
+
+        /// <summary>
+        ///   Converts a given p-value to a test statistic.
+        /// </summary>
+        /// 
+        /// <param name="p">The p-value.</param>
+        /// 
+        /// <returns>The test statistic which would generate the given p-value.</returns>
+        /// 
+        public abstract double PValueToStatistic(double p);
+
+        /// <summary>
+        ///   Called whenever the test <see cref="Size">significance level</see> changes.
+        /// </summary>
+        /// 
+        protected virtual void OnSizeChanged() { }
+
 
         /// <summary>
         ///   Converts the numeric P-Value of this test to its equivalent string representation.
         /// </summary>
+        /// 
         public string ToString(string format, IFormatProvider formatProvider)
         {
             return PValue.ToString(format, formatProvider);
@@ -194,6 +159,7 @@ namespace Accord.Statistics.Testing
         /// <summary>
         ///   Converts the numeric P-Value of this test to its equivalent string representation.
         /// </summary>
+        /// 
         public override string ToString()
         {
             return PValue.ToString(System.Globalization.CultureInfo.CurrentCulture);

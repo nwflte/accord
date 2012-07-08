@@ -24,38 +24,19 @@ namespace Accord.Statistics.Testing
 {
     using System;
     using Accord.Statistics.Analysis;
-    using Accord.Statistics.Distributions.Univariate;
 
     /// <summary>
     ///   Bowker test of symmetry for contingency tables.
     /// </summary>
     /// 
+    /// <remarks>
+    /// <para>
+    ///   This is a <see cref="ChiSquareTest">Chi-square kind of test</see>.</para>
+    /// </remarks>
+    /// 
     [Serializable]
-    public class BowkerTest : HypothesisTest, IHypothesisTest<ChiSquareDistribution>
+    public class BowkerTest : ChiSquareTest
     {
-
-        private ChiSquareDistribution distribution;
-
-
-
-        /// <summary>
-        ///   Gets the degrees of freedom for the Chi-Square distribution.
-        /// </summary>
-        /// 
-        public int DegreesOfFreedom
-        {
-            get { return distribution.DegreesOfFreedom; }
-        }
-
-        /// <summary>
-        ///   Gets the distribution associated
-        ///   with the test statistic.
-        /// </summary>
-        /// 
-        public ChiSquareDistribution StatisticDistribution
-        {
-            get { return distribution; }
-        }
 
         /// <summary>
         ///   Creates a new Bowker test.
@@ -79,9 +60,9 @@ namespace Accord.Statistics.Testing
                 }
             }
 
-            this.Statistic = Qb;
-            this.distribution = new ChiSquareDistribution((classes * (classes - 1)) / 2);
-            this.PValue = distribution.ComplementaryDistributionFunction(Statistic);
+            int df = (classes * (classes - 1)) / 2;
+
+            Compute(Qb, df);
         }
 
     }

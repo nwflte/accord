@@ -193,8 +193,8 @@ namespace Accord.Statistics.Testing
         public TwoWayAnova(double[] samples, int[] firstFactorLabels, int[] secondFactorLabels,
             TwoWayAnovaModel type = TwoWayAnovaModel.Mixed)
         {
-            FirstFactorSamples = firstFactorLabels.Max()+1;
-            SecondFactorSamples = secondFactorLabels.Max()+1;
+            FirstFactorSamples = firstFactorLabels.Max() + 1;
+            SecondFactorSamples = secondFactorLabels.Max() + 1;
 
             List<double>[][] groups = new List<double>[FirstFactorSamples][];
             for (int i = 0; i < groups.Length; i++)
@@ -265,22 +265,13 @@ namespace Accord.Statistics.Testing
             Observations = FirstFactorSamples * SecondFactorSamples * Replications;
 
 
-            // Step 0. Initialize variables
-            AnovaVariationSource cell = new AnovaVariationSource(this, "Cells");
-            AnovaVariationSource a = new AnovaVariationSource(this, "Factor A");
-            AnovaVariationSource b = new AnovaVariationSource(this, "Factor B");
-            AnovaVariationSource ab = new AnovaVariationSource(this, "Interaction AxB");
-            AnovaVariationSource error = new AnovaVariationSource(this, "Within-cells (error)");
-            AnovaVariationSource total = new AnovaVariationSource(this, "Total");
-
-
             // Step 1. Initialize all degrees of freedom
-            cell.DegreesOfFreedom = FirstFactorSamples * SecondFactorSamples - 1;
-            a.DegreesOfFreedom = FirstFactorSamples - 1;
-            b.DegreesOfFreedom = SecondFactorSamples - 1;
-            ab.DegreesOfFreedom = cell.DegreesOfFreedom - a.DegreesOfFreedom - b.DegreesOfFreedom;
-            error.DegreesOfFreedom = FirstFactorSamples * SecondFactorSamples * (Replications - 1);
-            total.DegreesOfFreedom = Observations - 1;
+            int cellDegreesOfFreedom = FirstFactorSamples * SecondFactorSamples - 1;
+            int aDegreesOfFreedom = FirstFactorSamples - 1;
+            int bDegreesOfFreedom = SecondFactorSamples - 1;
+            int abDegreesOfFreedom = cellDegreesOfFreedom - aDegreesOfFreedom - bDegreesOfFreedom;
+            int errorDegreesOfFreedom = FirstFactorSamples * SecondFactorSamples * (Replications - 1);
+            int totalDegreesOfFreedom = Observations - 1;
 
 
             // Step 1. Calculate cell means
@@ -333,7 +324,7 @@ namespace Accord.Statistics.Testing
                     }
                 }
             }
-            total.SumOfSquares = ssum;
+            double totalSumOfSquares = ssum;
 
 
             // Step 5. Calculate the cell sum of squares
@@ -346,7 +337,7 @@ namespace Accord.Statistics.Testing
                     ssum += u * u;
                 }
             }
-            cell.SumOfSquares = ssum * Replications;
+            double cellSumOfSquares = ssum * Replications;
 
 
             // Step 6. Compute within-cells error sum of squares
@@ -362,7 +353,7 @@ namespace Accord.Statistics.Testing
                     }
                 }
             }
-            error.SumOfSquares = ssum;
+            double errorSumOfSquares = ssum;
 
 
             // Step 7. Compute factors sum of squares
@@ -372,7 +363,7 @@ namespace Accord.Statistics.Testing
                 double u = aMean[i] - totalMean;
                 ssum += u * u;
             }
-            a.SumOfSquares = ssum * SecondFactorSamples * Replications;
+            double aSumOfSquares = ssum * SecondFactorSamples * Replications;
 
             ssum = 0;
             for (int i = 0; i < bMean.Length; i++)
@@ -380,38 +371,53 @@ namespace Accord.Statistics.Testing
                 double u = bMean[i] - totalMean;
                 ssum += u * u;
             }
-            b.SumOfSquares = ssum * FirstFactorSamples * Replications;
+            double bSumOfSquares = ssum * FirstFactorSamples * Replications;
 
 
             // Step 9. Compute interaction sum of squares
-            ab.SumOfSquares = cell.SumOfSquares - a.SumOfSquares - b.SumOfSquares;
+            double abSumOfSquares = cellSumOfSquares - aSumOfSquares - bSumOfSquares;
 
+            // Step 10. Compute mean squares
+            double aMeanSquares = aSumOfSquares / aDegreesOfFreedom;
+            double bMeanSquares = bSumOfSquares / bDegreesOfFreedom;
+            double abMeanSquares = abSumOfSquares / abDegreesOfFreedom;
+            double errorMeanSquares = errorSumOfSquares / errorDegreesOfFreedom;
 
             // Step 10. Create the F-Statistics
+            FTest aSignificance, bSignificance, abSignificance;
+
             if (type == TwoWayAnovaModel.Fixed)
             {
                 // Model 1: Factors A and B fixed
-                a.Significance = new FTest(a.MeanSquares / ab.MeanSquares, a.DegreesOfFreedom, ab.DegreesOfFreedom);
-                b.Significance = new FTest(b.MeanSquares / ab.MeanSquares, b.DegreesOfFreedom, ab.DegreesOfFreedom);
-                ab.Significance = new FTest(ab.MeanSquares / error.MeanSquares, ab.DegreesOfFreedom, error.DegreesOfFreedom);
+                aSignificance = new FTest(aMeanSquares / abMeanSquares, aDegreesOfFreedom, abDegreesOfFreedom);
+                bSignificance = new FTest(bMeanSquares / abMeanSquares, bDegreesOfFreedom, abDegreesOfFreedom);
+                abSignificance = new FTest(abMeanSquares / errorMeanSquares, abDegreesOfFreedom, errorDegreesOfFreedom);
             }
             else if (type == TwoWayAnovaModel.Mixed)
             {
                 // Model 2: Factors A and B random
-                a.Significance = new FTest(a.MeanSquares / error.MeanSquares, a.DegreesOfFreedom, error.DegreesOfFreedom);
-                b.Significance = new FTest(b.MeanSquares / error.MeanSquares, b.DegreesOfFreedom, error.DegreesOfFreedom);
-                ab.Significance = new FTest(ab.MeanSquares / error.MeanSquares, ab.DegreesOfFreedom, error.DegreesOfFreedom);
+                aSignificance = new FTest(aMeanSquares / errorMeanSquares, aDegreesOfFreedom, errorDegreesOfFreedom);
+                bSignificance = new FTest(bMeanSquares / errorMeanSquares, bDegreesOfFreedom, errorDegreesOfFreedom);
+                abSignificance = new FTest(abMeanSquares / errorMeanSquares, abDegreesOfFreedom, errorDegreesOfFreedom);
             }
             else if (type == TwoWayAnovaModel.Random)
             {
                 // Model 3: Factor A fixed, factor B random
-                a.Significance = new FTest(a.MeanSquares / ab.MeanSquares, a.DegreesOfFreedom, ab.DegreesOfFreedom);
-                b.Significance = new FTest(b.MeanSquares / error.MeanSquares, b.DegreesOfFreedom, error.DegreesOfFreedom);
-                ab.Significance = new FTest(ab.MeanSquares / error.MeanSquares, ab.DegreesOfFreedom, error.DegreesOfFreedom);
+                aSignificance = new FTest(aMeanSquares / abMeanSquares, aDegreesOfFreedom, abDegreesOfFreedom);
+                bSignificance = new FTest(bMeanSquares / errorMeanSquares, bDegreesOfFreedom, errorDegreesOfFreedom);
+                abSignificance = new FTest(abMeanSquares / errorMeanSquares, abDegreesOfFreedom, errorDegreesOfFreedom);
             }
+            else throw new ArgumentException("Unhandled analysis type.","type");
 
 
-            // Step 10. Create the ANOVA table and sources
+            // Step 11. Create the ANOVA table and sources
+            AnovaVariationSource cell  = new AnovaVariationSource(this, "Cells", cellSumOfSquares, cellDegreesOfFreedom);
+            AnovaVariationSource a     = new AnovaVariationSource(this, "Factor A", aSumOfSquares, aDegreesOfFreedom, aMeanSquares, aSignificance);
+            AnovaVariationSource b     = new AnovaVariationSource(this, "Factor B", bSumOfSquares, bDegreesOfFreedom, bMeanSquares, bSignificance);
+            AnovaVariationSource ab    = new AnovaVariationSource(this, "Interaction AxB", abSumOfSquares, abDegreesOfFreedom, abMeanSquares, abSignificance);
+            AnovaVariationSource error = new AnovaVariationSource(this, "Within-cells (error)", errorSumOfSquares, errorDegreesOfFreedom, errorMeanSquares);
+            AnovaVariationSource total = new AnovaVariationSource(this, "Total", totalSumOfSquares, totalDegreesOfFreedom);
+
             this.Sources = new TwoWayAnovaVariationSources()
             {
                 Cells = cell,

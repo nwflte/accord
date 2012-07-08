@@ -24,33 +24,8 @@ namespace Accord.Statistics.Testing
 {
     using System;
     using Accord.Statistics.Distributions.Univariate;
-
-    /// <summary>
-    ///   Test Hypothesis for the T-Test.
-    /// </summary>
-    /// 
-    public enum TTestHypotesis
-    {
-        /// <summary>
-        ///   Tests if the sample's mean is significantly
-        ///   different than the hypothesized mean value.
-        /// </summary>
-        /// 
-        MeanIsDifferentThanHypothesis,
-
-        /// <summary>
-        ///   Tests if the sample's mean is significantly
-        ///   greater than the hypothesized mean value.
-        /// </summary>
-        /// 
-        MeanIsGreaterThanHypothesis,
-
-        /// <summary>
-        ///   Tests if the sample's mean is significantly
-        ///   smaller than the hypothesized mean value.
-        /// </summary>
-        MeanIsSmallerThanHypothesis,
-    }
+    using Accord.Statistics.Testing.Power;
+    using AForge;
 
     /// <summary>
     ///   One-sample Student's T test.
@@ -95,7 +70,7 @@ namespace Accord.Statistics.Testing
     ///
     ///   // Create a T-Test to check this hypothesis
     ///   TTest test = new TTest(sample, hypothesizedMean,
-    ///          TTestHypotesis.MeanIsDifferentThanHypothesis);
+    ///          OneSampleHypothesis.ValueIsDifferentFromHypothesis);
     ///
     ///   // Check if the mean is significantly different
     ///   test.Significant should be true
@@ -105,7 +80,7 @@ namespace Accord.Statistics.Testing
     ///
     ///   // Create a T-Test to check this hypothesis
     ///   TTest greater = new TTest(sample, hypothesizedMean,
-    ///          TTestHypotesis.MeanIsGreaterThanHypothesis);
+    ///          OneSampleHypothesis.ValueIsGreaterThanHypothesis);
     ///
     ///   // Check if the mean is significantly larger
     ///   greater.Significant should be true
@@ -115,21 +90,104 @@ namespace Accord.Statistics.Testing
     ///
     ///   // Create a T-Test to check this hypothesis
     ///   TTest smaller = new TTest(sample, hypothesizedMean,
-    ///          TTestHypotesis.MeanIsSmallerThanHypothesis);
+    ///          OneSampleHypothesis.ValueIsSmallerThanHypothesis);
     ///
     ///   // Check if the mean is significantly smaller
     ///   smaller.Significant should be false
     ///   </code>
     /// </example>
+    /// 
     [Serializable]
-    public class TTest : HypothesisTest, IHypothesisTest<TDistribution>
+    public class TTest : HypothesisTest<TDistribution>
     {
 
+        private TTestPowerAnalysis powerAnalysis;
+
         /// <summary>
-        ///   Gets the probability distribution associated
-        ///   with the test statistic.
+        ///   Gets the power analysis for the test, if available.
         /// </summary>
-        public TDistribution StatisticDistribution { get; private set; }
+        /// 
+        public IPowerAnalysis Analysis { get { return powerAnalysis; } }
+
+        /// <summary>
+        ///   Gets the standard error of the estimated value.
+        /// </summary>
+        /// 
+        public double StandardError { get; private set; }
+
+        /// <summary>
+        ///   Gets the estimated parameter value, such as the sample's mean value.
+        /// </summary>
+        /// 
+        public double EstimatedValue { get; private set; }
+
+        /// <summary>
+        ///   Gets the hypothesized parameter value.
+        /// </summary>
+        /// 
+        public double HypothesizedValue { get; private set; }
+
+        /// <summary>
+        ///   Gets the 95% confidence interval for the <see cref="EstimatedValue"/>.
+        /// </summary>
+        /// 
+        public DoubleRange Confidence { get; protected set; }
+
+        /// <summary>
+        ///   Gets the alternative hypothesis under test. If the test is
+        ///   <see cref="IHypothesisTest.Significant"/>, the null hypothesis can be rejected
+        ///   in favor of this alternative hypothesis.
+        /// </summary>
+        /// 
+        public OneSampleHypothesis Hypothesis { get; protected set; }
+
+        /// <summary>
+        ///   Gets a confidence interval for the estimated value
+        ///   within the given confidence level percentage.
+        /// </summary>
+        /// 
+        /// <param name="percent">The confidence level. Default is 0.95.</param>
+        /// 
+        /// <returns>A confidence interval for the estimated value.</returns>
+        /// 
+        public DoubleRange GetConfidenceInterval(double percent = 0.95)
+        {
+            double u = PValueToStatistic(1.0 - percent);
+
+            return new DoubleRange(
+                EstimatedValue - u * StandardError,
+                EstimatedValue + u * StandardError);
+        }
+
+        /// <summary>
+        ///   Tests the null hypothesis that the population mean is equal to a specified value.
+        /// </summary>
+        /// 
+        /// <param name="statistic">The test statistic.</param>
+        /// <param name="degreesOfFreedom">The degrees of freedom for the test distribution.</param>
+        /// <param name="hypothesis">The alternative hypothesis (research hypothesis) to test.</param>
+        /// 
+        public TTest(double statistic, double degreesOfFreedom,
+            OneSampleHypothesis hypothesis = OneSampleHypothesis.ValueIsDifferentFromHypothesis)
+        {
+            Compute(statistic, degreesOfFreedom, hypothesis);
+        }
+
+        /// <summary>
+        ///   Tests the null hypothesis that the population mean is equal to a specified value.
+        /// </summary>
+        /// 
+        /// <param name="estimatedValue">The estimated value (θ).</param>
+        /// <param name="standardError">The standard error of the estimation (SE).</param>
+        /// <param name="hypothesizedValue">The hypothetized value (θ').</param>
+        /// <param name="degreesOfFreedom">The degrees of freedom for the test distribution.</param>
+        /// <param name="alternate">The alternative hypothesis (research hypothesis) to test.</param>
+        /// 
+        public TTest(double estimatedValue, double standardError, double degreesOfFreedom, double hypothesizedValue = 0,
+            OneSampleHypothesis alternate = OneSampleHypothesis.ValueIsDifferentFromHypothesis)
+        {
+            Compute(estimatedValue, standardError, degreesOfFreedom, hypothesizedValue, alternate);
+        }
 
         /// <summary>
         ///   Tests the null hypothesis that the population mean is equal to a specified value.
@@ -137,35 +195,203 @@ namespace Accord.Statistics.Testing
         /// 
         /// <param name="sample">The data samples from which the test will be performed.</param>
         /// <param name="hypothesizedMean">The constant to be compared with the samples.</param>
-        /// <param name="type">The type of hypothesis to test.</param>
+        /// <param name="alternate">The alternative hypothesis (research hypothesis) to test.</param>
         /// 
-        public TTest(double[] sample, double hypothesizedMean, TTestHypotesis type)
+        public TTest(double[] sample, double hypothesizedMean = 0,
+            OneSampleHypothesis alternate = OneSampleHypothesis.ValueIsDifferentFromHypothesis)
         {
             int n = sample.Length;
-            double x = Accord.Statistics.Tools.Mean(sample);
-            double s = Accord.Statistics.Tools.StandardDeviation(sample, x);
 
-            StatisticDistribution = new TDistribution(n - 1);
-            Statistic = (x - hypothesizedMean) / (s / Math.Sqrt(n));
+            double mean = Accord.Statistics.Tools.Mean(sample);
+            double stdDev = Accord.Statistics.Tools.StandardDeviation(sample, mean);
+            double stdError = Accord.Statistics.Tools.StandardError(n, stdDev);
 
+            Compute(n, mean, hypothesizedMean, stdError, alternate);
 
-            if (type == TTestHypotesis.MeanIsDifferentThanHypothesis)
+            power(stdDev, n);
+        }
+
+        /// <summary>
+        ///   Tests the null hypothesis that the population mean is equal to a specified value.
+        /// </summary>
+        /// 
+        /// <param name="mean">The sample's mean value.</param>
+        /// <param name="stdDev">The standard deviation for the samples.</param>
+        /// <param name="samples">The number of observations in the sample.</param>
+        /// <param name="hypothesizedMean">The constant to be compared with the samples.</param>
+        /// <param name="alternate">The alternative hypothesis (research hypothesis) to test.</param>
+        /// 
+        public TTest(double mean, double stdDev, int samples, double hypothesizedMean = 0,
+            OneSampleHypothesis alternate = OneSampleHypothesis.ValueIsDifferentFromHypothesis)
+        {
+            double stdError = Accord.Statistics.Tools.StandardError(samples, stdDev);
+
+            Compute(samples, mean, hypothesizedMean, stdError, alternate);
+
+            power(stdDev, samples);
+        }
+
+        /// <summary>
+        ///   Computes the T-Test.
+        /// </summary>
+        /// 
+        protected void Compute(int n, double mean, double hypothesizedMean, double stdError, OneSampleHypothesis hypothesis)
+        {
+            this.EstimatedValue = mean;
+            this.StandardError = stdError;
+            this.HypothesizedValue = hypothesizedMean;
+
+            double df = n - 1;
+            double t = (EstimatedValue - hypothesizedMean) / StandardError;
+
+            Compute(t, df, hypothesis);
+        }
+
+        /// <summary>
+        ///   Computes the T-test.
+        /// </summary>
+        /// 
+        protected void Compute(double statistic, double df, OneSampleHypothesis alternate)
+        {
+            this.Statistic = statistic;
+            this.StatisticDistribution = new TDistribution(df);
+            this.Hypothesis = alternate;
+            this.Tail = (DistributionTail)alternate;
+            this.PValue = StatisticToPValue(Statistic);
+
+            this.OnSizeChanged();
+        }
+
+        /// <summary>
+        ///   Computes the T-test.
+        /// </summary>
+        /// 
+        private void Compute(double estimatedValue, double stdError, double degreesOfFreedom,
+            double hypothesizedValue, OneSampleHypothesis alternate)
+        {
+            this.EstimatedValue = estimatedValue;
+            this.StandardError = stdError;
+            this.HypothesizedValue = hypothesizedValue;
+
+            double df = degreesOfFreedom;
+            double t = (EstimatedValue - hypothesizedValue) / StandardError;
+
+            Compute(t, df, alternate);
+        }
+
+        private void power(double stdDev, int samples)
+        {
+            this.powerAnalysis = new TTestPowerAnalysis(Hypothesis)
             {
-                PValue = 2.0 * StatisticDistribution.ComplementaryDistributionFunction(Statistic);
-                Hypothesis = Testing.Hypothesis.TwoTail;
-            }
-            else if (type == TTestHypotesis.MeanIsGreaterThanHypothesis)
+                Samples = samples,
+                Effect = (EstimatedValue - HypothesizedValue) / stdDev,
+                Size = Size,
+            };
+
+            powerAnalysis.ComputePower();
+        }
+
+        /// <summary>Update event.</summary>
+        protected override void OnSizeChanged()
+        {
+            this.Confidence = GetConfidenceInterval(1.0 - Size);
+            if (Analysis != null)
             {
-                PValue = StatisticDistribution.ComplementaryDistributionFunction(Statistic);
-                Hypothesis = Testing.Hypothesis.OneUpper;
-            }
-            else if (type == TTestHypotesis.MeanIsSmallerThanHypothesis)
-            {
-                PValue = StatisticDistribution.DistributionFunction(Statistic);
-                Hypothesis = Testing.Hypothesis.OneLower;
+                powerAnalysis.Size = Size;
+                powerAnalysis.ComputePower();
             }
         }
 
-    }
+        /// <summary>
+        ///   Converts a given p-value to a test statistic.
+        /// </summary>
+        /// 
+        /// <param name="p">The p-value.</param>
+        /// 
+        /// <returns>The test statistic which would generate the given p-value.</returns>
+        /// 
+        public override double PValueToStatistic(double p)
+        {
+            return PValueToStatistic(p, StatisticDistribution, Tail);
+        }
 
+        /// <summary>
+        ///   Converts a given test statistic to a p-value.
+        /// </summary>
+        /// 
+        /// <param name="x">The value of the test statistic.</param>
+        /// 
+        /// <returns>The p-value for the given statistic.</returns>
+        /// 
+        public override double StatisticToPValue(double x)
+        {
+            return StatisticToPValue(x, StatisticDistribution, Tail);
+        }
+
+        /// <summary>
+        ///   Converts a given test statistic to a p-value.
+        /// </summary>
+        /// 
+        /// <param name="t">The value of the test statistic.</param>
+        /// <param name="type">The tail of the test distribution.</param>
+        /// <param name="distribution">The test distribution.</param>
+        /// 
+        /// <returns>The p-value for the given statistic.</returns>
+        /// 
+        public static double StatisticToPValue(double t, TDistribution distribution, DistributionTail type)
+        {
+            double p;
+            switch (type)
+            {
+                case DistributionTail.TwoTail:
+                    p = 2.0 * distribution.ComplementaryDistributionFunction(Math.Abs(t));
+                    break;
+
+                case DistributionTail.OneUpper:
+                    p = distribution.ComplementaryDistributionFunction(t);
+                    break;
+
+                case DistributionTail.OneLower:
+                    p = distribution.DistributionFunction(t);
+                    break;
+
+                default:
+                    throw new InvalidOperationException();
+            }
+            return p;
+        }
+
+        /// <summary>
+        ///   Converts a given p-value to a test statistic.
+        /// </summary>
+        /// 
+        /// <param name="p">The p-value.</param>
+        /// <param name="type">The tail of the test distribution.</param>
+        /// <param name="distribution">The test distribution.</param>
+        /// 
+        /// <returns>The test statistic which would generate the given p-value.</returns>
+        /// 
+        public static double PValueToStatistic(double p, TDistribution distribution, DistributionTail type)
+        {
+            double t;
+            switch (type)
+            {
+                case DistributionTail.OneLower:
+                    t = distribution.InverseDistributionFunction(p);
+                    break;
+                case DistributionTail.OneUpper:
+                    t = distribution.InverseDistributionFunction(1.0 - p);
+                    break;
+                case DistributionTail.TwoTail:
+                    t = distribution.InverseDistributionFunction(1.0 - p / 2.0);
+                    break;
+                default:
+                    throw new InvalidOperationException();
+            }
+
+            return t;
+        }
+
+    
+    }
 }

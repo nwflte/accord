@@ -30,7 +30,8 @@ namespace Accord.Statistics.Testing
     /// 
     /// <typeparam name="TDistribution">The test statistic distribution.</typeparam>
     /// 
-    public interface IHypothesisTest<out TDistribution> where TDistribution : IDistribution
+    public interface IHypothesisTest<out TDistribution> : IHypothesisTest
+        where TDistribution : IDistribution
     {
         /// <summary>
         ///   Gets the distribution associated
@@ -38,7 +39,49 @@ namespace Accord.Statistics.Testing
         /// </summary>
         /// 
         TDistribution StatisticDistribution { get; }
-
     }
 
+    /// <summary>
+    ///   Common interface for Hypothesis tests depending on a statistical distribution.
+    /// </summary>
+    /// 
+    public interface IHypothesisTest
+    {
+        /// <summary>
+        ///   Gets the test type.
+        /// </summary>
+        /// 
+        DistributionTail Tail { get; }
+
+        /// <summary>
+        ///   Gets whether the null hypothesis should be rejected.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   A test result is said to be statistically significant when the
+        ///   result would be very unlikely to have occurred by chance alone.
+        /// </remarks>
+        /// 
+        bool Significant { get; }
+
+        /// <summary>
+        ///   Converts a given test statistic to a p-value.
+        /// </summary>
+        /// 
+        /// <param name="x">The value of the test statistic.</param>
+        /// 
+        /// <returns>The p-value for the given statistic.</returns>
+        /// 
+        double StatisticToPValue(double x);
+
+        /// <summary>
+        ///   Converts a given p-value to a test statistic.
+        /// </summary>
+        /// 
+        /// <param name="p">The p-value.</param>
+        /// 
+        /// <returns>The test statistic which would generate the given p-value.</returns>
+        /// 
+        double PValueToStatistic(double p);
+    }
 }
