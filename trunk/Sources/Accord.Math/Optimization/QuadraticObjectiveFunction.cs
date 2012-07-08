@@ -195,7 +195,7 @@ namespace Accord.Math.Optimization
         /// 
         public double[,] GetQuadraticTermsMatrix()
         {
-            return Q;
+            return (double[,])Q.Clone();
         }
 
         /// <summary>
@@ -204,7 +204,7 @@ namespace Accord.Math.Optimization
         /// 
         public double[] GetLinearTermsVector()
         {
-            return d;
+            return (double[])d.Clone();
         }
 
 

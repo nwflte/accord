@@ -108,12 +108,13 @@ namespace Accord.Math.Optimization
         /// left hand side of the constraint equation</paramref>.</param>
         /// <param name="shouldBe">How the left hand side of the constraint should be compared to the given <paramref name="value"/>.</param>
         /// <param name="value">The right hand side of the constraint equation.</param>
+        /// <param name="withinTolerance">The tolerance for violations of the constraint. Equality
+        ///   constraints should set this to a small positive value. Default is 0.</param>
         /// 
         /// 
         public NonlinearConstraint(IObjectiveFunction objective,
-            Expression<Func<double>> function,
-            ConstraintType shouldBe, double value,
-            Expression<Func<double[]>> gradient = null)
+            Expression<Func<double>> function, ConstraintType shouldBe, double value,
+            Expression<Func<double[]>> gradient = null, double withinTolerance = 0.0)
         {
             this.NumberOfVariables = objective.NumberOfVariables;
             this.ShouldBe = shouldBe;
@@ -122,11 +123,18 @@ namespace Accord.Math.Optimization
             var func = ExpressionParser.Replace(function, objective.Variables);
             this.Function = func.Compile();
             this.Value = value;
+            this.Tolerance = withinTolerance;
 
             if (gradient != null)
             {
                 var grad = ExpressionParser.Replace(gradient, objective.Variables);
                 this.Gradient = grad.Compile();
+
+                int n = NumberOfVariables;
+                double[] probe = new double[n];
+                double[] g = Gradient(probe);
+                if (g.Length != n) throw new DimensionMismatchException("gradient",
+                    "The length of the gradient vector must match the number of variables in the objective function.");
             }
         }
 
@@ -141,19 +149,49 @@ namespace Accord.Math.Optimization
         /// left hand side of the constraint equation</paramref>.</param>
         /// <param name="shouldBe">How the left hand side of the constraint should be compared to the given <paramref name="value"/>.</param>
         /// <param name="value">The right hand side of the constraint equation.</param>
+        /// <param name="withinTolerance">The tolerance for violations of the constraint. Equality
+        ///   constraints should set this to a small positive value. Default is 0.</param>
         /// 
         public NonlinearConstraint(IObjectiveFunction objective,
-            Func<double[], double> function,
-            ConstraintType shouldBe, double value,
-            Func<double[], double[]> gradient = null)
+            Func<double[], double> function, ConstraintType shouldBe, double value,
+            Func<double[], double[]> gradient = null, double withinTolerance = 0.0)
+        {
+            int n = objective.NumberOfVariables;
+
+            if (gradient != null)
+            {
+                double[] probe = new double[n];
+                double[] g = gradient(probe);
+                if (g.Length != n) throw new DimensionMismatchException("gradient",
+                    "The length of the gradient vector must match the number of variables in the objective function.");
+            }
+
+            this.Create(objective, function, shouldBe, value, gradient, withinTolerance);
+        }
+
+        /// <summary>
+        ///   Creates an empty nonlinear constraint.
+        /// </summary>
+        /// 
+        protected NonlinearConstraint()
+        {
+        }
+
+        /// <summary>
+        ///    Creates a nonlinear constraint.
+        /// </summary>
+        /// 
+        protected void Create(IObjectiveFunction objective,
+            Func<double[], double> function, ConstraintType shouldBe, double value,
+            Func<double[], double[]> gradient, double tolerance)
         {
             this.NumberOfVariables = objective.NumberOfVariables;
             this.ShouldBe = shouldBe;
             this.Value = value;
+            this.Tolerance = tolerance;
 
             this.Function = function;
             this.Gradient = gradient;
         }
-
     }
 }
