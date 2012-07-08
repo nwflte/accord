@@ -23,7 +23,10 @@
 namespace Accord.Statistics.Analysis
 {
     using System;
+    using System.ComponentModel;
     using Accord.Math;
+    using Accord.Statistics.Testing;
+    using System.Runtime.Serialization;
 
     /// <summary>
     ///   General confusion matrix for 
@@ -58,11 +61,24 @@ namespace Accord.Statistics.Analysis
         private double? kappa;
         private double? kappaVariance;
         private double? kappaStdError;
+        private double? kappaVariance0;
+        private double? kappaStdError0;
+
         private double? tau;
         private double? chiSquare;
 
+        private int[] diagonal;
+        private double? diagMax;
+        private double? diagMin;
+
+        private double[,] proportions;
+
         private int[] rowSum;
         private int[] colSum;
+
+        private double[] rowProportion;
+        private double[] colProportion;
+
 
         /// <summary>
         ///   Gets the confusion matrix, in which each element e_ij 
@@ -79,6 +95,7 @@ namespace Accord.Statistics.Analysis
         ///   Gets the number of samples.
         /// </summary>
         /// 
+        [DisplayName("Number of samples")]
         public int Samples
         {
             get { return samples; }
@@ -88,9 +105,22 @@ namespace Accord.Statistics.Analysis
         ///   Gets the number of classes.
         /// </summary>
         /// 
+        [DisplayName("Number of classes")]
         public int Classes
         {
             get { return classes; }
+        }
+
+        /// <summary>
+        ///   Creates a new Confusion Matrix.
+        /// </summary>
+        /// 
+        public GeneralConfusionMatrix(double[,] matrix, int samples)
+        {
+            this.matrix = matrix.Multiply(samples).ToInt32();
+            this.classes = matrix.GetLength(0);
+            this.samples = samples;
+            this.proportions = matrix;
         }
 
         /// <summary>
@@ -169,38 +199,108 @@ namespace Accord.Statistics.Analysis
             }
         }
 
+        /// <summary>
+        ///   Gets the row marginals (proportions).
+        /// </summary>
+        /// 
+        public double[] RowProportions
+        {
+            get
+            {
+                if (rowProportion == null)
+                    rowProportion = ProportionMatrix.Sum(1);
+                return rowProportion;
+            }
+        }
+
+        /// <summary>
+        ///   Gets the column marginals (proportions).
+        /// </summary>
+        /// 
+        public double[] ColumnProportions
+        {
+            get
+            {
+                if (colProportion == null)
+                    colProportion = ProportionMatrix.Sum(0);
+                return colProportion;
+            }
+        }
+
+        /// <summary>
+        ///   Gets the diagonal of the confusion matrix.
+        /// </summary>
+        /// 
+        public int[] Diagonal
+        {
+            get
+            {
+                if (diagonal == null)
+                    diagonal = matrix.Diagonal();
+                return diagonal;
+            }
+        }
+
+        /// <summary>
+        ///   Gets the maximum number of correct 
+        ///   matches (the maximum over the diagonal)
+        /// </summary>
+        /// 
+        public double Max
+        {
+            get
+            {
+                if (diagMax == null)
+                    diagMax = Diagonal.Max() / (double)Samples;
+                return diagMax.Value;
+            }
+        }
+
+        /// <summary>
+        ///   Gets the minimum number of correct 
+        ///   matches (the minimum over the diagonal)
+        /// </summary>
+        /// 
+        public double Min
+        {
+            get
+            {
+                if (diagMin == null)
+                    diagMin = Diagonal.Min() / (double)Samples;
+                return diagMin.Value;
+            }
+        }
+
+        /// <summary>
+        ///   Gets the confusion matrix in
+        ///   terms of cell percentages.
+        /// </summary>
+        /// 
+        public double[,] ProportionMatrix
+        {
+            get
+            {
+                if (proportions == null)
+                    proportions = matrix.ToDouble().Divide(Samples);
+                return proportions;
+            }
+        }
 
         /// <summary>
         ///   Gets the Kappa coefficient of performance.
         /// </summary>
         /// 
-        /// <remarks>
-        /// <para>
-        ///   References:
-        ///   <list type="bullet">
-        ///     <item><description>
-        ///       CONGALTON, R.G.A., Review of assessing the accuracy of classifications of
-        ///      remotely data, Remote sensing of the Environment, 37:35-46, 1991. </description></item>
-        ///     </list></para>  
-        /// </remarks>
-        /// 
-        /// 
+        [DisplayName("Kappa Coefficient (κ)")]
         public double Kappa
         {
             get
             {
                 if (kappa == null)
                 {
-                    int diagonalSum = matrix.Trace();
+                    double Po = OverallAgreement;
+                    double Pc = ChanceAgreement;
 
-                    int directionSum = 0;
-                    for (int i = 0; i < classes; i++)
-                        directionSum += RowTotals[i] * ColumnTotals[i];
-
-                    double p0 = diagonalSum / (double)samples;
-                    double pr = directionSum / (double)(samples * samples);
-
-                    kappa = (p0 - pr) / (1.0 - pr);
+                    kappa = (Po - Pc) / (1.0 - Pc);
                 }
 
                 return kappa.Value;
@@ -212,13 +312,16 @@ namespace Accord.Statistics.Analysis
         ///   coefficient of performance. 
         /// </summary>
         /// 
+        [DisplayName("Kappa (κ) Std. Error")]
         public double StandardError
         {
             get
             {
                 if (kappaStdError == null)
                 {
-                    computeKappaVariance();
+                    double se;
+                    kappaVariance = KappaTest.AsymptoticKappaVariance(this, out se);
+                    kappaStdError = se;
                 }
 
                 return kappaStdError.Value;
@@ -230,65 +333,67 @@ namespace Accord.Statistics.Analysis
         ///   coefficient of performance. 
         /// </summary>
         /// 
+        [DisplayName("Kappa (κ) Variance")]
         public double Variance
         {
             get
             {
                 if (kappaVariance == null)
                 {
-                    computeKappaVariance();
+                    double se;
+                    kappaVariance = KappaTest.AsymptoticKappaVariance(this, out se);
+                    kappaStdError = se;
                 }
 
                 return kappaVariance.Value;
             }
         }
 
-        private void computeKappaVariance()
+        /// <summary>
+        ///   Gets the variance of the <see cref="Kappa"/>
+        ///   under the null hypothesis that the underlying
+        ///   Kappa value is 0. 
+        /// </summary>
+        /// 
+        [DisplayName("Kappa (κ) H₀ Variance")]
+        public double VarianceUnderNull
         {
-            // References: Statistical Methods for Rates and Proportions
-
-            int[,] m = matrix;
-            double k = Kappa;
-
-            double[] colMarginal = ColumnTotals.Divide((double)samples);
-            double[] rowMarginal = RowTotals.Divide((double)samples);
-
-
-            double directionSum = 0;
-            for (int i = 0; i < classes; i++)
-                directionSum += rowMarginal[i] * colMarginal[i];
-
-            double pe = directionSum;
-
-
-            // Compute A (eq. 18.16)
-            double A = 0;
-            for (int i = 0; i < classes; i++)
+            get
             {
-                double u = 1 - (rowMarginal[i] + colMarginal[i]) * (1 - k);
-                A += (m[i, i] / (double)samples) * u * u;
+                if (kappaVariance0 == null)
+                {
+                    double se;
+                    kappaVariance0 = KappaTest.AsymptoticKappaVariance(this,
+                        out se, nullHypothesis: true);
+                    kappaStdError0 = se;
+                }
+
+                return kappaVariance0.Value;
             }
-
-            // Compute B (eq. 18.17)
-            double sum = 0;
-            for (int i = 0; i < rowMarginal.Length; i++)
-                for (int j = 0; j < colMarginal.Length; j++)
-                    if (i != j)
-                        sum += (m[i, j] / (double)samples) * (colMarginal[i] + rowMarginal[j]);
-
-            double B = (1 - k) * (1 - k) * sum;
-
-            // Compute C
-            double v = k - pe * (1 - k);
-            double C = v * v;
-
-            // Compute variance using A, B and C
-            kappaVariance = (A + B - C) / ((1 - pe) * (1 - pe) * samples);
-
-            // Compute standard error directly
-            kappaStdError = Math.Sqrt(A + B - C) / ((1 - pe) * Math.Sqrt(samples));
         }
 
+        /// <summary>
+        ///   Gets the standard error of the <see cref="Kappa"/>
+        ///   under the null hypothesis that the underlying Kappa
+        ///   value is 0. 
+        /// </summary>
+        /// 
+        [DisplayName("Kappa (κ) H₀ Std. Error")]
+        public double StandardErrorUnderNull
+        {
+            get
+            {
+                if (kappaStdError0 == null)
+                {
+                    double se;
+                    kappaVariance0 = KappaTest.AsymptoticKappaVariance(this,
+                        out se, nullHypothesis: true);
+                    kappaStdError0 = se;
+                }
+
+                return kappaStdError0.Value;
+            }
+        }
 
         /// <summary>
         ///   Gets the Tau coefficient of performance.
@@ -296,42 +401,43 @@ namespace Accord.Statistics.Analysis
         /// 
         /// <remarks>
         /// <para>
+        ///   Tau-b statistic, unlike tau-a, makes adjustments for ties and
+        ///   is suitable for square tables. Values of tau-b range from −1 
+        ///   (100% negative association, or perfect inversion) to +1 (100% 
+        ///   positive association, or perfect agreement). A value of zero 
+        ///   indicates the absence of association.</para>
+        ///  
+        /// <para>
         ///   References:
         ///   <list type="bullet">
+        ///     <item><description>
+        ///       http://en.wikipedia.org/wiki/Kendall_tau_rank_correlation_coefficient </description></item>
+        ///     <item><description>
+        ///       LEVADA, Alexandre Luis Magalhães. Combinação de modelos de campos aleatórios markovianos
+        ///       para classificação contextual de imagens multiespectrais [online]. São Carlos : Instituto 
+        ///       de Física de São Carlos, Universidade de São Paulo, 2010. Tese de Doutorado em Física Aplicada. 
+        ///       Disponível em: http://www.teses.usp.br/teses/disponiveis/76/76132/tde-11052010-165642/. </description></item>
         ///     <item><description>
         ///       MA, Z.; REDMOND, R. L. Tau coefficients for accuracy assessment of
         ///       classification of remote sensing data. </description></item>
         ///     </list></para>  
         /// </remarks>
         /// 
+        [DisplayName("Tau Coefficient (τ)")]
         public double Tau
         {
             get
             {
                 if (tau == null)
                 {
-                    int N = samples;
-
-                    int diagonalSum = 0;
-                    for (int i = 0; i < classes; i++)
-                        diagonalSum += matrix[i, i];
-
-
                     int directionSum = 0;
-                    for (int i = 0; i < classes; i++)
-                    {
-                        // Compute the row sum for the class
-                        int rowSum = 0;
-                        for (int j = 0; j < classes; j++)
-                            rowSum += matrix[i, j];
+                    for (int i = 0; i < RowTotals.Length; i++)
+                        directionSum += matrix[i, i] * RowTotals[i];
 
-                        directionSum += matrix[i, i] * rowSum;
-                    }
+                    double Po = OverallAgreement;
+                    double Pr = directionSum / (double)(samples * samples);
 
-                    double p0 = diagonalSum / (double)N;
-                    double pr = directionSum / (double)(N * N);
-
-                    tau = (p0 - pr) / (1.0 - pr);
+                    tau = (Po - Pr) / (1.0 - Pr);
                 }
                 return tau.Value;
             }
@@ -340,15 +446,19 @@ namespace Accord.Statistics.Analysis
         /// <summary>
         ///   Phi coefficient.
         /// </summary>
+        /// 
         /// <remarks>
-        ///   The Pearson correlation coefficient ranges from −1 to +1, where ±1 indicates
-        ///   perfect agreement or disagreement, and 0 indicates no relationship. 
-        ///   
+        /// <para>
+        ///   The Pearson correlation coefficient (phi) ranges from −1 to +1, where
+        ///   a value of +1 indicates perfect agreement, a value of -1 indicates perfect
+        ///   disagreement and a value 0 indicates no agreement or relationship. </para>
+        /// <para>
         ///   References:
-        ///     http://en.wikipedia.org/wiki/Phi_coefficient
-        ///     http://www.psychstat.missouristate.edu/introbook/sbk28m.htm
+        ///     http://en.wikipedia.org/wiki/Phi_coefficient,
+        ///     http://www.psychstat.missouristate.edu/introbook/sbk28m.htm </para>
         /// </remarks>
         /// 
+        [DisplayName("Pearson Correlation (φ)")]
         public double Phi
         {
             get { return Math.Sqrt(ChiSquare / samples); }
@@ -358,6 +468,7 @@ namespace Accord.Statistics.Analysis
         ///   Gets the Chi-Square statistic for the contingency table.
         /// </summary>
         /// 
+        [DisplayName("Chi-Square (χ²)")]
         public double ChiSquare
         {
             get
@@ -386,15 +497,18 @@ namespace Accord.Statistics.Analysis
         /// <summary>
         ///   Tschuprow's T association measure.
         /// </summary>
+        /// 
         /// <remarks>
+        /// <para>
         ///   Tschuprow's T is a measure of association between two nominal variables, giving 
         ///   a value between 0 and 1 (inclusive). It is closely related to <see cref="Cramer">
-        ///   Cramér's V</see>, coinciding with it for square contingency tables. 
-        ///   
+        ///   Cramér's V</see>, coinciding with it for square contingency tables. </para>
+        /// <para>
         ///   References:
-        ///     http://en.wikipedia.org/wiki/Tschuprow's_T
+        ///     http://en.wikipedia.org/wiki/Tschuprow's_T </para>  
         /// </remarks>
         /// 
+        [DisplayName("Tschuprow's T")]
         public double Tschuprow
         {
             get { return Math.Sqrt(Phi / (samples * (classes - 1))); }
@@ -405,17 +519,20 @@ namespace Accord.Statistics.Analysis
         /// </summary>
         /// 
         /// <remarks>
+        /// <para>
         ///   Pearson's C measures the degree of association between the two variables. However,
         ///   C suffers from the disadvantage that it does not reach a maximum of 1 or the minimum 
         ///   of -1; the highest it can reach in a 2 x 2 table is .707; the maximum it can reach in
         ///   a 4 × 4 table is 0.870. It can reach values closer to 1 in contingency tables with more
         ///   categories. It should, therefore, not be used to compare associations among tables with
-        ///   different numbers of categories. For a improved version of C, see <see cref="Sakoda"/>.
+        ///   different numbers of categories. For a improved version of C, see <see cref="Sakoda"/>.</para>
         ///   
+        /// <para>
         ///   References:
-        ///     http://en.wikipedia.org/wiki/Contingency_table
+        ///     http://en.wikipedia.org/wiki/Contingency_table </para>
         /// </remarks>
         /// 
+        [DisplayName("Pearson's C")]
         public double Pearson
         {
             get { return Math.Sqrt(ChiSquare / (ChiSquare + samples)); }
@@ -426,14 +543,16 @@ namespace Accord.Statistics.Analysis
         /// </summary>
         /// 
         /// <remarks>
+        /// <para>
         ///   Sakoda's V is an adjusted version of <see cref="Pearson">Pearson's C</see>
         ///   so it reaches a maximum of 1 when there is complete association in a table
-        ///   of any number of rows and columns. 
-        ///   
+        ///   of any number of rows and columns. </para>
+        /// <para>
         ///   References:
-        ///     http://en.wikipedia.org/wiki/Contingency_table
+        ///     http://en.wikipedia.org/wiki/Contingency_table </para>
         /// </remarks>
         /// 
+        [DisplayName("Sakoda's V")]
         public double Sakoda
         {
             get { return Pearson / Math.Sqrt((classes - 1) / (double)classes); }
@@ -444,16 +563,19 @@ namespace Accord.Statistics.Analysis
         /// </summary>
         /// 
         /// <remarks>
+        /// <para>
         ///   Cramér's V varies from 0 (corresponding to no association between the variables)
         ///   to 1 (complete association) and can reach 1 only when the two variables are equal
         ///   to each other. In practice, a value of 0.1 already provides a good indication that
-        ///   there is substantive relationship between the two variables.
+        ///   there is substantive relationship between the two variables.</para>
         ///   
+        /// <para>
         ///   References:
-        ///    http://en.wikipedia.org/wiki/Cram%C3%A9r%27s_V
-        ///    http://www.acastat.com/Statbook/chisqassoc.htm
+        ///    http://en.wikipedia.org/wiki/Cram%C3%A9r%27s_V,
+        ///    http://www.acastat.com/Statbook/chisqassoc.htm </para>
         /// </remarks>
         /// 
+        [DisplayName("Cramér's V")]
         public double Cramer
         {
             get { return Math.Sqrt(ChiSquare / (samples * (classes - 1))); }
@@ -468,9 +590,25 @@ namespace Accord.Statistics.Analysis
         ///   of the contigency table divided by the number of samples.
         /// </remarks>
         /// 
-        public double OverralAgreement
+        [DisplayName("Overall Agreement")]
+        public double OverallAgreement
         {
             get { return matrix.Trace() / (double)samples; }
+        }
+
+        /// <summary>
+        ///   Geometric agreement.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   The geometric agreement is the geometric mean of the
+        ///   diagonal elements of the confusion matrix.
+        /// </remarks>
+        /// 
+        [DisplayName("Geometric Agreement")]
+        public double GeometricAgreement
+        {
+            get { return Math.Exp(Accord.Statistics.Tools.LogGeometricMean(Diagonal)); }
         }
 
         /// <summary>
@@ -482,6 +620,7 @@ namespace Accord.Statistics.Analysis
         ///   were correctly classified by chance alone.
         /// </remarks>
         /// 
+        [DisplayName("Chance Agreement")]
         public double ChanceAgreement
         {
             get
@@ -489,9 +628,10 @@ namespace Accord.Statistics.Analysis
                 double chance = 0;
                 for (int i = 0; i < classes; i++)
                     chance += RowTotals[i] * ColumnTotals[i];
-                return 1.0 / (samples * samples) * chance;
+                return chance / (samples * samples);
             }
         }
+
 
     }
 }

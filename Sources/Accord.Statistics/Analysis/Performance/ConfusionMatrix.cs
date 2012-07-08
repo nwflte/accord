@@ -23,6 +23,7 @@
 namespace Accord.Statistics.Analysis
 {
     using System;
+    using System.ComponentModel;
 
     /// <summary>
     ///   Binary decision confusion matrix.
@@ -60,18 +61,26 @@ namespace Accord.Statistics.Analysis
     {
 
         //  2x2 confusion matrix
-        private int truePositives;
-        private int trueNegatives;
-        private int falsePositives;
-        private int falseNegatives;
+        //
+        //         | a(TP)    b(FN) |
+        //   A =   |                |
+        //         | c(FP)    d(TN) |
+        //
+
+        private int truePositives;  // a
+        private int falseNegatives; // b
+        private int falsePositives; // c
+        private int trueNegatives;  // d
+
 
 
         /// <summary>
         ///   Constructs a new Confusion Matrix.
         /// </summary>
         /// 
-        public ConfusionMatrix(int truePositives, int trueNegatives,
-            int falsePositives, int falseNegatives)
+        public ConfusionMatrix(
+            int truePositives, int falseNegatives,
+            int falsePositives, int trueNegatives)
         {
             this.truePositives = truePositives;
             this.trueNegatives = trueNegatives;
@@ -252,13 +261,79 @@ namespace Accord.Statistics.Analysis
         }
 
 
+        /// <summary>
+        ///   Gets the confusion matrix in count matrix form.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   The table is listed as true positives, false negatives
+        ///   on its first row, false positives and true negatives in
+        ///   its second row.
+        /// </remarks>
+        /// 
+        public int[,] Matrix
+        {
+            get
+            {
+                return new int[,] 
+                {
+                    { truePositives, falseNegatives  },
+                    { falsePositives, trueNegatives},
+                };
+            }
+        }
+
+        /// <summary>
+        ///   Gets the marginal sums for table rows.
+        /// </summary>
+        /// 
+        /// <value>
+        ///   Returns a vector with the sum of true positives and 
+        ///   false negatives on its first position, and the sum
+        ///   of false positives and true negatives on the second.
+        /// </value>
+        /// 
+        public int[] RowTotals
+        {
+            get
+            {
+                return new int[] 
+                {
+                    truePositives + falseNegatives,
+                    falsePositives + trueNegatives,
+                };
+            }
+        }
+
+        /// <summary>
+        ///   Gets the marginal sums for table columns.
+        /// </summary>
+        /// 
+        /// <value>
+        ///   Returns a vector with the sum of true positives and
+        ///   false positives on its first position, and the sum
+        ///   of false negatives and true negatives on the second.
+        /// </value>
+        /// 
+        public int[] ColumnTotals
+        {
+            get
+            {
+                return new int[] 
+                {
+                    truePositives + falsePositives,
+                    falseNegatives + trueNegatives,
+                };
+            }
+        }
 
 
         /// <summary>
         ///   Gets the number of observations for this matrix
         /// </summary>
         /// 
-        public int Observations
+        [DisplayName("Number of samples")]
+        public int Samples
         {
             get
             {
@@ -276,6 +351,7 @@ namespace Accord.Statistics.Analysis
         ///   taking the sum of true positives and false negatives.
         /// </remarks>
         /// 
+        [DisplayName("Actual Positives")]
         public int ActualPositives
         {
             get { return truePositives + falseNegatives; }
@@ -290,6 +366,7 @@ namespace Accord.Statistics.Analysis
         ///   taking the sum of true negatives and false positives.
         /// </remarks>
         /// 
+        [DisplayName("Actual Negatives")]
         public int ActualNegatives
         {
             get { return trueNegatives + falsePositives; }
@@ -305,6 +382,7 @@ namespace Accord.Statistics.Analysis
         ///   true positives and false positives.
         /// </remarks>
         /// 
+        [DisplayName("Predicted Positives")]
         public int PredictedPositives
         {
             get { return truePositives + falsePositives; }
@@ -320,6 +398,7 @@ namespace Accord.Statistics.Analysis
         ///   true negatives and false negatives.
         /// </remarks>
         /// 
+        [DisplayName("Predicted Negatives")]
         public int PredictedNegatives
         {
             get { return trueNegatives + falseNegatives; }
@@ -329,6 +408,7 @@ namespace Accord.Statistics.Analysis
         ///   Cases correctly identified by the system as positives.
         /// </summary>
         /// 
+        [DisplayName("True Positives (TP)")]
         public int TruePositives
         {
             get { return truePositives; }
@@ -338,6 +418,7 @@ namespace Accord.Statistics.Analysis
         ///   Cases correctly identified by the system as negatives.
         /// </summary>
         /// 
+        [DisplayName("True Negatives (TN)")]
         public int TrueNegatives
         {
             get { return trueNegatives; }
@@ -347,6 +428,7 @@ namespace Accord.Statistics.Analysis
         ///   Cases incorrectly identified by the system as positives.
         /// </summary>
         /// 
+        [DisplayName("False Positives (FP)")]
         public int FalsePositives
         {
             get { return falsePositives; }
@@ -356,6 +438,7 @@ namespace Accord.Statistics.Analysis
         ///   Cases incorrectly identified by the system as negatives.
         /// </summary>
         /// 
+        [DisplayName("False Negatives (FN)")]
         public int FalseNegatives
         {
             get { return falseNegatives; }
@@ -416,7 +499,7 @@ namespace Accord.Statistics.Analysis
         /// 
         public double Accuracy
         {
-            get { return 1.0 * (truePositives + trueNegatives) / Observations; }
+            get { return 1.0 * (truePositives + trueNegatives) / Samples; }
         }
 
         /// <summary>
@@ -433,6 +516,7 @@ namespace Accord.Statistics.Analysis
         ///   <c>PPV = TP / (TP + FP)</c>.</para>
         /// </remarks>
         /// 
+        [DisplayName("Positive Predictive Value (PPV)")]
         public double PositivePredictiveValue
         {
             get
@@ -457,6 +541,7 @@ namespace Accord.Statistics.Analysis
         ///   <c>NPV = TN / (TN + FN)</c>.</para> 
         /// </remarks>
         /// 
+        [DisplayName("Negative Predictive Value (NPV)")]
         public double NegativePredictiveValue
         {
             get
@@ -481,6 +566,7 @@ namespace Accord.Statistics.Analysis
         /// </para>
         /// </remarks>
         /// 
+        [DisplayName("False Positive Rate")]
         public double FalsePositiveRate
         {
             get
@@ -505,6 +591,7 @@ namespace Accord.Statistics.Analysis
         ///   <c>FDR = FP / (FP + TP)</c>.</para>
         /// </remarks>
         /// 
+        [DisplayName("False Discovery Rate")]
         public double FalseDiscoveryRate
         {
             get
@@ -516,7 +603,7 @@ namespace Accord.Statistics.Analysis
         }
 
         /// <summary>
-        ///   Matthews Correlation Coefficient, also known as Phi coefficient
+        ///   Matthews Correlation Coefficient, also known as Phi coefficient 
         /// </summary>
         /// 
         /// <remarks>
@@ -524,6 +611,7 @@ namespace Accord.Statistics.Analysis
         ///   average random prediction and −1 an inverse prediction.
         /// </remarks>
         /// 
+        [DisplayName("Mattews Correlation (φ)")]
         public double MatthewsCorrelationCoefficient
         {
             get
@@ -549,6 +637,7 @@ namespace Accord.Statistics.Analysis
         ///   References: http://www.iph.ufrgs.br/corpodocente/marques/cd/rd/presabs.htm
         /// </remarks>
         /// 
+        [DisplayName("Odds Ratio")]
         public double OddsRatio
         {
             get
@@ -565,6 +654,7 @@ namespace Accord.Statistics.Analysis
         ///   References: http://www.iph.ufrgs.br/corpodocente/marques/cd/rd/presabs.htm
         /// </remarks>
         ///
+        [DisplayName("Kappa Coefficient (κ)")]
         public double Kappa
         {
             get
@@ -573,7 +663,7 @@ namespace Accord.Statistics.Analysis
                 double b = falsePositives;
                 double c = falseNegatives;
                 double d = trueNegatives;
-                double N = Observations;
+                double N = Samples;
 
                 return (double)((a + d) - (((a + c) * (a + b) + (b + d) * (c + d)) / N))
                     / (N - (((a + c) * (a + b) + (b + d) * (c + d)) / N));
@@ -584,15 +674,17 @@ namespace Accord.Statistics.Analysis
         ///   Diagnostic power.
         /// </summary>
         /// 
+        [DisplayName("Overall Diagnostic Power")]
         public double OverallDiagnosticPower
         {
-            get { return (double)(falsePositives + trueNegatives) / Observations; }
+            get { return (double)(falsePositives + trueNegatives) / Samples; }
         }
 
         /// <summary>
         ///   Normalized Mutual Information.
         /// </summary>
         /// 
+        [DisplayName("Normalized Mutual Information")]
         public double NormalizedMutualInformation
         {
             get
@@ -601,7 +693,7 @@ namespace Accord.Statistics.Analysis
                 double b = falsePositives;
                 double c = falseNegatives;
                 double d = trueNegatives;
-                double N = Observations;
+                double N = Samples;
 
                 double num = a * Math.Log(a) + b * Math.Log(b) + c * Math.Log(c) + d * Math.Log(d)
                            - (a + b) * Math.Log(a + b) - (c + d) * Math.Log(c + d);
@@ -610,23 +702,6 @@ namespace Accord.Statistics.Analysis
 
                 return 1 + num / den;
             }
-        }
-
-        /// <summary>
-        ///   Returns a <see cref="T:int[,,]"/> representing this confusion matrix.
-        /// </summary>
-        /// 
-        /// <returns>
-        ///   A <see cref="T:int[,,]"/> representing this confusion matrix.
-        /// </returns>
-        /// 
-        public int[,] ToMatrix()
-        {
-            return new int[,]
-            {
-                { truePositives, falseNegatives },
-                { falsePositives, trueNegatives },
-            };
         }
 
         /// <summary>
@@ -640,7 +715,7 @@ namespace Accord.Statistics.Analysis
         public override string ToString()
         {
             return String.Format(System.Globalization.CultureInfo.CurrentCulture,
-                "TP:{0} TN:{1} FP:{2} FN:{3}",
+                "TP:{0} FP:{2}, FN:{3} TN:{1}",
                 truePositives, trueNegatives, falsePositives, falseNegatives);
         }
     }

@@ -30,6 +30,7 @@ namespace Accord.Statistics.Analysis
     using Accord.Statistics.Models.Regression.Fitting;
     using Accord.Statistics.Testing;
     using AForge;
+using System.ComponentModel;
 
     /// <summary>
     ///   Logistic Regression Analysis.
@@ -128,11 +129,11 @@ namespace Accord.Statistics.Analysis
             this.regression = new LogisticRegression(inputCount);
 
 
-            // Create coefficient object collection
-            List<LogisticCoefficient> list = new List<LogisticCoefficient>(coefficientCount);
+            // Create object-oriented structure to represent the analysis
+            var logCoefs = new List<LogisticCoefficient>(coefficientCount);
             for (int i = 0; i < coefficientCount; i++)
-                list.Add(new LogisticCoefficient(this, i));
-            this.coefficientCollection = new LogisticCoefficientCollection(list);
+                logCoefs.Add(new LogisticCoefficient(this, i));
+            this.coefficientCollection = new LogisticCoefficientCollection(logCoefs);
 
             this.source = inputs.ToMatrix();
         }
@@ -162,7 +163,7 @@ namespace Accord.Statistics.Analysis
         #region Public Properties
 
         /// <summary>
-        /// Source data used in the analysis.
+        ///   Source data used in the analysis.
         /// </summary>
         /// 
         public double[,] Source
@@ -171,8 +172,8 @@ namespace Accord.Statistics.Analysis
         }
 
         /// <summary>
-        /// Gets the the dependent variable value
-        /// for each of the source input points.
+        ///   Gets the the dependent variable value
+        ///   for each of the source input points.
         /// </summary>
         /// 
         public double[] Outputs
@@ -541,6 +542,7 @@ namespace Accord.Statistics.Analysis
         ///   Gets the Odds ratio for the current coefficient.
         /// </summary>
         /// 
+        [DisplayName("Odds ratio")]
         public double OddsRatio
         {
             get { return analysis.OddsRatios[index]; }
@@ -550,6 +552,7 @@ namespace Accord.Statistics.Analysis
         ///   Gets the Standard Error for the current coefficient.
         /// </summary>
         /// 
+        [DisplayName("Std. Error")]
         public double StandardError
         {
             get { return analysis.StandardErrors[index]; }
@@ -559,6 +562,7 @@ namespace Accord.Statistics.Analysis
         ///   Gets the 95% confidence interval (CI) for the current coefficient.
         /// </summary>
         /// 
+        [Browsable(false)]
         public DoubleRange Confidence
         {
             get { return analysis.Confidences[index]; }
@@ -568,6 +572,7 @@ namespace Accord.Statistics.Analysis
         ///   Gets the upper limit for the 95% confidence interval.
         /// </summary>
         /// 
+        [DisplayName("Upper confidence limit")]
         public double ConfidenceUpper
         {
             get { return Confidence.Max; }
@@ -577,6 +582,7 @@ namespace Accord.Statistics.Analysis
         ///   Gets the lower limit for the 95% confidence interval.
         /// </summary>
         /// 
+        [DisplayName("Lower confidence limit")]
         public double ConfidenceLower
         {
             get { return Confidence.Min; }
@@ -586,6 +592,7 @@ namespace Accord.Statistics.Analysis
         ///   Gets the coefficient value.
         /// </summary>
         /// 
+        [DisplayName("Value")]
         public double Value
         {
             get { return analysis.CoefficientValues[index]; }
@@ -595,6 +602,7 @@ namespace Accord.Statistics.Analysis
         ///   Gets the Wald's test performed for this coefficient.
         /// </summary>
         /// 
+        [DisplayName("Wald p-value")]
         public WaldTest Wald
         {
             get { return analysis.WaldTests[index]; }
@@ -604,6 +612,7 @@ namespace Accord.Statistics.Analysis
         ///   Gets the Likelihood-Ratio test performed for this coefficient.
         /// </summary>
         /// 
+        [DisplayName("Likelihood-Ratio p-value")]
         public ChiSquareTest LikelihoodRatio
         {
             get { return analysis.LikelihoodRatioTests[index]; }
