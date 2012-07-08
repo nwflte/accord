@@ -133,7 +133,7 @@ namespace GMM
             kmeans.Compute(mixture);
 
             // Classify all instances in mixture data
-            int[] classifications = kmeans.Classify(mixture);
+            int[] classifications = kmeans.Nearest(mixture);
 
             // Draw the classifications
             updateGraph(classifications);
