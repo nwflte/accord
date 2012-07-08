@@ -151,9 +151,33 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override double DistributionFunction(int k)
         {
-            return Beta.Incomplete(numberOfTrials - k, k + 1, 1 - probability);
-        }
+            if (k < 0) return 0;
+            if (k > numberOfTrials) return 1;
 
+            double x = 1.0 - probability;
+            double a = numberOfTrials - k;
+            double b = k + 1;
+            return Beta.Incomplete(a, b, x);
+        }
+/*
+        /// <summary>
+        ///   Gets the complementary cumulative distribution function
+        ///   (ccdf) for this distribution evaluated at point <c>k</c>.
+        ///   This function is also known as the Survival function.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   The Complementary Cumulative Distribution Function (CCDF) is
+        ///   the complement of the Cumulative Distribution Function, or 1
+        ///   minus the CDF.
+        /// </remarks>
+        /// 
+        public override double ComplementaryDistributionFunction(int k)
+        {
+            double c = 1.0 - DistributionFunction(k);
+            return c + ProbabilityMassFunction(k);
+        }
+        */
         /// <summary>
         ///   Gets the probability mass function (pmf) for
         ///   this distribution evaluated at point <c>x</c>.

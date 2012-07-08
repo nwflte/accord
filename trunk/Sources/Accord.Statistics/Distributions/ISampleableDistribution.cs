@@ -22,33 +22,32 @@
 
 namespace Accord.Statistics.Distributions
 {
-    using System;
-    using Accord.Statistics.Distributions.Fitting;
 
     /// <summary>
-    ///   Common interface for distributions which can be estimated from data.
+    ///   Common interface for samplable distributions.
     /// </summary>
     /// 
     /// <typeparam name="TObservations">The type of the observations, such as <see cref="System.Double"/>.</typeparam>
-    /// <typeparam name="TOptions">The type of the options specifying object.</typeparam>
     /// 
-    public interface IFittableDistribution<in TObservations, in TOptions> : IDistribution
-        where TOptions : class, IFittingOptions
+    public interface ISampleableDistribution<out TObservations> : IDistribution
     {
 
         /// <summary>
-        ///   Fits the underlying distribution to a given set of observations.
+        ///   Generates a random vector of observations from the current distribution.
         /// </summary>
         /// 
-        /// <param name="observations">The array of observations to fit the model against. The array
-        ///   elements can be either of type double (for univariate data) or
-        ///   type double[] (for multivariate data).</param>
-        /// <param name="weights">The weight vector containing the weight for each of the samples.</param>
-        /// <param name="options">Optional arguments which may be used during fitting, such
-        ///   as regularization constants and additional parameters.</param>
-        ///   
-        void Fit(TObservations[] observations, double[] weights = null, TOptions options = default(TOptions));
+        /// <param name="samples">The number of samples to generate.</param>
+        /// <returns>A random vector of observations drawn from this distribution.</returns>
+        /// 
+        TObservations[] Generate(int samples);
+
+        /// <summary>
+        ///   Generates a random observation from the current distribution.
+        /// </summary>
+        /// 
+        /// <returns>A random observations drawn from this distribution.</returns>
+        /// 
+        TObservations Generate();
 
     }
-
 }

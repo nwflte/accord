@@ -31,8 +31,9 @@ namespace Accord.Statistics.Distributions.Univariate
     /// </summary>
     /// 
     [Serializable]
-    public class ContinuousUniformDistribution : UnivariateContinuousDistribution, 
-        IFittableDistribution<double, IFittingOptions>
+    public class UniformContinuousDistribution : UnivariateContinuousDistribution,
+        IFittableDistribution<double, IFittingOptions>,
+        ISampleableDistribution<double>
     {
 
         // Distribution parameters
@@ -47,7 +48,7 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   Creates a new uniform distribution defined in the interval [0;1].
         /// </summary>
         /// 
-        public ContinuousUniformDistribution() : this(0, 1) { }
+        public UniformContinuousDistribution() : this(0, 1) { }
 
         /// <summary>
         ///   Creates a new uniform distribution defined in the interval [a;b].
@@ -56,11 +57,13 @@ namespace Accord.Statistics.Distributions.Univariate
         /// <param name="a">The starting number a.</param>
         /// <param name="b">The ending number b.</param>
         /// 
-        public ContinuousUniformDistribution(double a, double b)
+        public UniformContinuousDistribution(double a, double b)
         {
             if (a > b)
+            {
                 throw new ArgumentOutOfRangeException("b",
                     "The starting number a must be lower than b.");
+            }
 
             this.a = a;
             this.b = b;
@@ -224,7 +227,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override object Clone()
         {
-            return new ContinuousUniformDistribution(a, b);
+            return new UniformContinuousDistribution(a, b);
         }
 
 
@@ -233,10 +236,81 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   starting at zero and ending at one (a=0, b=1).
         /// </summary>
         /// 
-        public static ContinuousUniformDistribution Standard { get { return standard; } }
+        public static UniformContinuousDistribution Standard { get { return standard; } }
 
-        private static readonly ContinuousUniformDistribution standard = new ContinuousUniformDistribution() { immutable = true };
+        private static readonly UniformContinuousDistribution standard = new UniformContinuousDistribution() { immutable = true };
 
 
+        /// <summary>
+        ///   Estimates a new uniform distribution from a given set of observations.
+        /// </summary>
+        /// 
+        public static UniformContinuousDistribution Estimate(double[] observations)
+        {
+            var n = new UniformContinuousDistribution();
+            n.Fit(observations, null, null);
+            return n;
+        }
+
+        #region ISamplableDistribution<double> Members
+
+        /// <summary>
+        ///   Generates a random vector of observations from the current distribution.
+        /// </summary>
+        /// 
+        /// <param name="samples">The number of samples to generate.</param>
+        /// <returns>A random vector of observations drawn from this distribution.</returns>
+        /// 
+        public double[] Generate(int samples)
+        {
+            return Random(a, b, samples);
+        }
+
+        /// <summary>
+        ///   Generates a random observation from the current distribution.
+        /// </summary>
+        /// 
+        /// <returns>A random observations drawn from this distribution.</returns>
+        /// 
+        public double Generate()
+        {
+            return Random(a, b);
+        }
+
+        /// <summary>
+        ///   Generates a random vector of observations from the 
+        ///   Uniform distribution with the given parameters.
+        /// </summary>
+        /// 
+        /// <param name="a">The starting number a.</param>
+        /// <param name="b">The ending number b.</param>
+        /// <param name="samples">The number of samples to generate.</param>
+        ///
+        /// <returns>An array of double values sampled from the specified Uniform distribution.</returns>
+        /// 
+        public static double[] Random(double a, double b, int samples)
+        {
+            double[] r = new double[samples];
+            for (int i = 0; i < r.Length; i++)
+                r[i] = Accord.Math.Tools.Random.NextDouble() * (b - a) + a;
+
+            return r;
+        }
+
+        /// <summary>
+        ///   Generates a random observation from the 
+        ///   Uniform distribution with the given parameters.
+        /// </summary>
+        /// 
+        /// <param name="a">The starting number a.</param>
+        /// <param name="b">The ending number b.</param>
+        /// 
+        /// <returns>A random double value sampled from the specified Uniform distribution.</returns>
+        /// 
+        public static double Random(double a, double b)
+        {
+            return Accord.Math.Tools.Random.NextDouble() * (b - a) + a;
+        }
+        #endregion
     }
 }

@@ -33,7 +33,8 @@ namespace Accord.Statistics.Distributions.Univariate
     /// 
     [Serializable]
     public class CauchyDistribution : UnivariateContinuousDistribution,
-        IFittableDistribution<double, CauchyOptions>
+        IFittableDistribution<double, CauchyOptions>,
+        ISampleableDistribution<double>
     {
 
         // Distribution parameters
@@ -394,5 +395,69 @@ namespace Accord.Statistics.Distributions.Univariate
         {
             return new CauchyDistribution(location, scale);
         }
+
+        #region ISamplableDistribution<double> Members
+
+        /// <summary>
+        ///   Generates a random vector of observations from the current distribution.
+        /// </summary>
+        /// 
+        /// <param name="samples">The number of samples to generate.</param>
+        /// <returns>A random vector of observations drawn from this distribution.</returns>
+        /// 
+        public double[] Generate(int samples)
+        {
+            return Random(location, scale, samples);
+        }
+
+        /// <summary>
+        ///   Generates a random observation from the current distribution.
+        /// </summary>
+        /// 
+        /// <returns>A random observations drawn from this distribution.</returns>
+        /// 
+        public double Generate()
+        {
+            return Random(location, scale);
+        }
+
+        /// <summary>
+        ///   Generates a random observation from the 
+        ///   Cauchy distribution with the given parameters.
+        /// </summary>
+        /// 
+        /// <param name="location">The location parameter x0.</param>
+        /// <param name="scale">The scale parameter gamma.</param>
+        /// 
+        /// <returns>A random double value sampled from the specified Cauchy distribution.</returns>
+        /// 
+        public static double Random(double location, double scale)
+        {
+            // Generate uniform U on [-PI/2, +PI/2]
+            double x = UniformContinuousDistribution.Random(-Math.PI / 2.0, +Math.PI / 2.0);
+            return Math.Tan(x) * scale + location;
+        }
+
+        /// <summary>
+        ///   Generates a random vector of observations from the 
+        ///   Cauchy distribution with the given parameters.
+        /// </summary>
+        /// 
+        /// <param name="location">The location parameter x0.</param>
+        /// <param name="scale">The scale parameter gamma.</param>
+        /// <param name="samples">The number of samples to generate.</param>
+        /// 
+        /// <returns>An array of double values sampled from the specified Cauchy distribution.</returns>
+        /// 
+        public static double[] Random(double location, double scale, int samples)
+        {
+            // Generate uniform U on [-PI/2, +PI/2]
+            double[] x = UniformContinuousDistribution.Random(-Math.PI / 2.0, +Math.PI / 2.0, samples);
+            for (int i = 0; i < x.Length; i++)
+                x[i] = Math.Tan(x[i]) * scale + location;
+            return x;
+        }
+
+        #endregion
     }
 }

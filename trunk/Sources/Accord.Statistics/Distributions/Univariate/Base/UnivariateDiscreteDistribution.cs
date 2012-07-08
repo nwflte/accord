@@ -415,8 +415,8 @@ namespace Accord.Statistics.Distributions.Univariate
 
 
         /// <summary>
-        ///   Gets the cumulative distribution function (cdf) for
-        ///   this distribution evaluated at point <c>k</c>.
+        ///   Gets P( X&lt;= k), the cumulative distribution function
+        ///   (cdf) for this distribution evaluated at point <c>k</c>.
         /// </summary>
         /// 
         /// <param name="k">
@@ -428,6 +428,29 @@ namespace Accord.Statistics.Distributions.Univariate
         /// </remarks>
         /// 
         public abstract double DistributionFunction(int k);
+
+        /// <summary>
+        ///   Gets the cumulative distribution function
+        ///   (cdf) for this distribution evaluated at point <c>k</c>.
+        /// </summary>
+        /// 
+        /// <param name="k">
+        ///   A single point in the distribution range.</param>
+        /// <param name="inclusive">
+        ///   True to return P(X &lt; x), false to return P(X &lt; x). Default is true.</param>
+        ///   
+        /// <remarks>
+        ///   The Cumulative Distribution Function (CDF) describes the cumulative
+        ///   probability that a given value or any value smaller than it will occur.
+        /// </remarks>
+        /// 
+        public virtual double DistributionFunction(int k, bool inclusive)
+        {
+            if (inclusive)
+                return DistributionFunction(k);
+            else
+                return DistributionFunction(k) - ProbabilityMassFunction(k);
+        }
 
         /// <summary>
         ///   Gets the inverse of the cumulative distribution function (icdf) for
@@ -452,6 +475,34 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   This function is also known as the Survival function.
         /// </summary>
         /// 
+        /// <param name="k">
+        ///   A single point in the distribution range.</param>
+        /// <param name="inclusive">
+        ///   True to return P(X &gt;= x), false to return P(X &gt; x). Default is false.</param>
+        ///
+        /// <remarks>
+        ///   The Complementary Cumulative Distribution Function (CCDF) is
+        ///   the complement of the Cumulative Distribution Function, or 1
+        ///   minus the CDF.
+        /// </remarks>
+        /// 
+        public virtual double ComplementaryDistributionFunction(int k, bool inclusive)
+        {
+            if (inclusive)
+                return ComplementaryDistributionFunction(k) + ProbabilityMassFunction(k);
+            else
+                return ComplementaryDistributionFunction(k);
+        }
+
+        /// <summary>
+        ///   Gets P(X &gt; k) the complementary cumulative distribution function
+        ///   (ccdf) for this distribution evaluated at point <c>k</c>.
+        ///   This function is also known as the Survival function.
+        /// </summary>
+        /// 
+        /// <param name="k">
+        ///   A single point in the distribution range.</param>
+        ///   
         /// <remarks>
         ///   The Complementary Cumulative Distribution Function (CCDF) is
         ///   the complement of the Cumulative Distribution Function, or 1

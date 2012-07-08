@@ -31,7 +31,8 @@ namespace Accord.Statistics.Distributions.Univariate
     /// 
     [Serializable]
     public class ExponentialDistribution : UnivariateContinuousDistribution,
-        IFittableDistribution<double, IFittingOptions>
+        IFittableDistribution<double, IFittingOptions>,
+        ISampleableDistribution<double>
     {
 
         // Distribution parameters
@@ -57,6 +58,15 @@ namespace Accord.Statistics.Distributions.Univariate
             this.lambda = rate;
 
             this.lnlambda = Math.Log(rate);
+        }
+
+        /// <summary>
+        ///   Gets the distribution's rate parameter lambda.
+        /// </summary>
+        /// 
+        public double Rate
+        {
+            get { return lambda; }
         }
 
         /// <summary>
@@ -230,6 +240,28 @@ namespace Accord.Statistics.Distributions.Univariate
             init(lambda);
         }
 
+        private ExponentialDistribution() { }
+
+        /// <summary>
+        ///   Estimates a new Exponential distribution from a given set of observations.
+        /// </summary>
+        /// 
+        public static ExponentialDistribution Estimate(double[] observations)
+        {
+            return Estimate(observations, null);
+        }
+
+        /// <summary>
+        ///   Estimates a new Exponential distribution from a given set of observations.
+        /// </summary>
+        /// 
+        public static ExponentialDistribution Estimate(double[] observations, double[] weights)
+         {
+            var n = new ExponentialDistribution();
+            n.Fit(observations, weights, null);
+            return n;
+        }
+
         /// <summary>
         ///   Creates a new object that is a copy of the current instance.
         /// </summary>
@@ -242,5 +274,71 @@ namespace Accord.Statistics.Distributions.Univariate
         {
             return new ExponentialDistribution(lambda);
         }
+
+
+        #region ISamplableDistribution<double> Members
+
+        /// <summary>
+        ///   Generates a random vector of observations from the current distribution.
+        /// </summary>
+        /// 
+        /// <param name="samples">The number of samples to generate.</param>
+        /// 
+        /// <returns>A random vector of observations drawn from this distribution.</returns>
+        /// 
+        public double[] Generate(int samples)
+        {
+            return Random(lambda, samples);
+        }
+
+        /// <summary>
+        ///   Generates a random observation from the current distribution.
+        /// </summary>
+        /// 
+        /// <returns>A random observations drawn from this distribution.</returns>
+        /// 
+        public double Generate()
+        {
+            return Random(lambda);
+        }
+
+        /// <summary>
+        ///   Generates a random vector of observations from the 
+        ///   Exponential distribution with the given parameters.
+        /// </summary>
+        /// 
+        /// <param name="lambda">The rate parameter lambda.</param>
+        /// <param name="samples">The number of samples to generate.</param>
+        ///
+        /// <returns>An array of double values sampled from the specified Exponential distribution.</returns>
+        /// 
+        public static double[] Random(double lambda, int samples)
+        {
+            double[] r = new double[samples];
+            for (int i = 0; i < r.Length; i++)
+            {
+                double u = Accord.Math.Tools.Random.NextDouble();
+                r[i] = -Math.Log(u) / lambda;
+            }
+
+            return r;
+        }
+
+        /// <summary>
+        ///   Generates a random observation from the 
+        ///   Exponential distribution with the given parameters.
+        /// </summary>
+        /// 
+        /// <param name="lambda">The rate parameter lambda.</param>
+        /// 
+        /// <returns>A random double value sampled from the specified Exponential distribution.</returns>
+        /// 
+        public static double Random(double lambda)
+        {
+            double u = Accord.Math.Tools.Random.NextDouble();
+            return -Math.Log(u) / lambda;
+        }
+
+        #endregion
     }
 }

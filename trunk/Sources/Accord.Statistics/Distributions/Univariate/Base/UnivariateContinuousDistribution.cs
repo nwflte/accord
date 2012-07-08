@@ -438,7 +438,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public virtual double InverseDistributionFunction(double p)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         /// <summary>
@@ -569,7 +569,10 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   impact in performance.
         /// </remarks>
         /// 
-        public abstract void Fit(double[] observations, double[] weights, IFittingOptions options);
+        public virtual void Fit(double[] observations, double[] weights, IFittingOptions options)
+        {
+            throw new NotSupportedException();
+        }
 
         /// <summary>
         ///   Creates a new object that is a copy of the current instance.

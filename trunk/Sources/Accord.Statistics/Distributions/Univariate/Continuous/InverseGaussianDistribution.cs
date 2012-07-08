@@ -51,7 +51,8 @@ namespace Accord.Statistics.Distributions.Univariate
     /// <seealso cref="NormalDistribution"/>
     ///
     [Serializable]
-    public class InverseGaussianDistribution : UnivariateContinuousDistribution
+    public class InverseGaussianDistribution : UnivariateContinuousDistribution,
+        ISampleableDistribution<double>
     {
 
         // Distribution parameters
@@ -230,7 +231,7 @@ namespace Accord.Statistics.Distributions.Univariate
                 double sum = 0;
                 for (int i = 0; i < observations.Length; i++)
                     sum += (1.0 / observations[i] - 1.0 / mean);
-                lambda = (n * n) / sum;
+                lambda = n / sum;
             }
             else
             {
@@ -239,11 +240,35 @@ namespace Accord.Statistics.Distributions.Univariate
                 double sum = 0;
                 for (int i = 0; i < observations.Length; i++)
                     sum += weights[i] * (1.0 / observations[i] - 1.0 / mean);
-                lambda = n / sum;
+                lambda = 1.0 / sum;
             }
 
             init(mean, lambda);
         }
+
+
+        private InverseGaussianDistribution() { }
+
+        /// <summary>
+        ///   Estimates a new Normal distribution from a given set of observations.
+        /// </summary>
+        /// 
+        public static InverseGaussianDistribution Estimate(double[] observations)
+        {
+            return Estimate(observations, null);
+        }
+
+        /// <summary>
+        ///   Estimates a new Normal distribution from a given set of observations.
+        /// </summary>
+        /// 
+        public static InverseGaussianDistribution Estimate(double[] observations, double[] weights)
+        {
+            var n = new InverseGaussianDistribution();
+            n.Fit(observations, weights, null);
+            return n;
+        }
+
 
         /// <summary>
         ///   Creates a new object that is a copy of the current instance.
@@ -267,15 +292,71 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public double[] Generate(int samples)
         {
-            var g = new AForge.Math.Random.GaussianGenerator(0, 1);
+            return Random(mean, lambda, samples);
+        }
+
+        #region ISampleableDistribution<double> Members
+
+        /// <summary>
+        ///   Generates a random observation from the current distribution.
+        /// </summary>
+        /// 
+        /// <returns>A random observations drawn from this distribution.</returns>
+        /// 
+        public double Generate()
+        {
+            return Random(mean, lambda);
+        }
+
+        /// <summary>
+        ///   Generates a random observation from the 
+        ///   Inverse Gaussian distribution with the given parameters.
+        /// </summary>
+        /// 
+        /// <param name="mean">The mean parameter mu.</param>
+        /// <param name="shape">The shape parameter lambda.</param>
+        /// 
+        /// <returns>A random double value sampled from the specified Uniform distribution.</returns>
+        /// 
+        public static double Random(double mean, double shape)
+        {
             var u = Accord.Math.Tools.Random;
+            var g = new AForge.Math.Random.GaussianGenerator(0, 1, u.Next());
+
+            double v = g.Next();
+            double y = v * v;
+            double x = mean + (mean * mean * y) / (2 * shape) - (mean / (2 * shape)) * Math.Sqrt(4 * mean * shape * y + mean * mean * y * y);
+
+            double t = u.NextDouble();
+
+            if (t <= (mean) / (mean + x))
+                return x;
+
+            return (mean * mean) / x;
+        }
+
+        /// <summary>
+        ///   Generates a random vector of observations from the 
+        ///   Inverse Gaussian distribution with the given parameters.
+        /// </summary>
+        /// 
+        /// <param name="mean">The mean parameter mu.</param>
+        /// <param name="shape">The shape parameter lambda.</param>
+        /// <param name="samples">The number of samples to generate.</param>
+        ///
+        /// <returns>An array of double values sampled from the specified Uniform distribution.</returns>
+        /// 
+        public static double[] Random(double mean, double shape, int samples)
+        {
+            var u = Accord.Math.Tools.Random;
+            var g = new AForge.Math.Random.GaussianGenerator(0, 1, u.Next());
 
             double[] r = new double[samples];
             for (int i = 0; i < r.Length; i++)
             {
                 double v = g.Next();
                 double y = v * v;
-                double x = mean + (mean * mean * y) / (2 * lambda) - (mean / (2 * lambda)) * Math.Sqrt(4 * mean * lambda * y + mean * mean * y * y);
+                double x = mean + (mean * mean * y) / (2 * shape) - (mean / (2 * shape)) * Math.Sqrt(4 * mean * shape * y + mean * mean * y * y);
 
                 double t = u.NextDouble();
 
@@ -287,6 +368,8 @@ namespace Accord.Statistics.Distributions.Univariate
 
             return r;
         }
+
+        #endregion
     }
 }
 

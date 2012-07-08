@@ -42,6 +42,7 @@ namespace Accord.Statistics.Distributions.Univariate
     [Serializable]
     public class TDistribution : UnivariateContinuousDistribution
     {
+
         private double constant;
 
 
@@ -134,13 +135,13 @@ namespace Accord.Statistics.Distributions.Univariate
         /// <param name="x">A single point in the distribution range.</param>
         /// 
         /// <returns>
-        /// The probability of <c>x</c> occurring
-        /// in the current distribution.
+        ///   The probability of <c>x</c> occurring
+        ///   in the current distribution.
         /// </returns>
         /// 
         /// <remarks>
-        /// The Probability Density Function (PDF) describes the
-        /// probability that a given value <c>x</c> will occur.
+        ///   The Probability Density Function (PDF) describes the
+        ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
         /// 
         public override double ProbabilityDensityFunction(double x)
@@ -150,22 +151,43 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
-        /// Gets the log-probability density function (pdf) for
-        /// this distribution evaluated at point <c>x</c>.
+        ///   Gets the log-probability density function (pdf) for
+        ///   this distribution evaluated at point <c>x</c>.
         /// </summary>
+        /// 
         /// <param name="x">A single point in the distribution range.</param>
+        /// 
         /// <returns>
-        /// The logarithm of the probability of <c>x</c>
-        /// occurring in the current distribution.
+        ///   The logarithm of the probability of <c>x</c>
+        ///   occurring in the current distribution.
         /// </returns>
+        /// 
         /// <remarks>
-        /// The Probability Density Function (PDF) describes the
-        /// probability that a given value <c>x</c> will occur.
+        ///   The Probability Density Function (PDF) describes the
+        ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
+        /// 
         public override double LogProbabilityDensityFunction(double x)
         {
             double v = DegreesOfFreedom;
             return Math.Log(constant) - ((v + 1) / 2.0) * Math.Log(1 + (x * x) / DegreesOfFreedom);
+        }
+
+        /// <summary>
+        ///   Gets the inverse of the cumulative distribution function (icdf) for
+        ///   this distribution evaluated at probability <c>p</c>. This function
+        ///   is also known as the Quantile function.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   The Inverse Cumulative Distribution Function (ICDF) specifies, for
+        ///   a given probability, the value which the random variable will be at,
+        ///   or below, with that probability.
+        /// </remarks>
+        /// 
+        public override double InverseDistributionFunction(double p)
+        {
+            return inverseDistributionLeftTail(DegreesOfFreedom, p);
         }
 
         /// <summary>
@@ -188,6 +210,54 @@ namespace Accord.Statistics.Distributions.Univariate
         public override object Clone()
         {
             return new TDistribution(DegreesOfFreedom);
+        }
+
+
+
+        /// <summary>
+        ///   Gets the inverse of the cumulative distribution function (icdf) for
+        ///   the left tail T-distribution evaluated at probability <c>p</c>.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   Based on the stdtril function from the Cephes Math Library
+        ///   Release 2.8, adapted with permission of Stephen L. Moshier.
+        /// </remarks>
+        /// 
+        private static double inverseDistributionLeftTail(double df, double p)
+        {
+            if (p > 0.25 && p < 0.75)
+            {
+                if (p == 0.5)
+                    return 0;
+
+                double u = 1.0 - 2.0 * p;
+                double z = Beta.IncompleteInverse(0.5, 0.5 * df, Math.Abs(u));
+                double t = Math.Sqrt(df * z / (1.0 - z));
+
+                if (p < 0.5)
+                    t = -t;
+
+                return t;
+            }
+            else
+            {
+                int rflg = -1;
+
+                if (p >= 0.5)
+                {
+                    p = 1.0 - p;
+                    rflg = 1;
+                }
+
+                double z = Beta.IncompleteInverse(0.5 * df, 0.5, 2.0 * p);
+
+                if ((Double.MaxValue * z) < df)
+                    return rflg * Double.MaxValue;
+
+                double t = Math.Sqrt(df / z - df);
+                return rflg * t;
+            }
         }
 
     }

@@ -31,12 +31,13 @@ namespace Accord.Statistics.Distributions.Univariate
     /// </summary>
     /// 
     [Serializable]
-    public class WeibullDistribution : UnivariateContinuousDistribution
+    public class WeibullDistribution : UnivariateContinuousDistribution,
+        ISampleableDistribution<double>
     {
 
         // Distribution parameters
-        private double b;
         private double a;
+        private double b;
 
 
         /// <summary>
@@ -48,8 +49,8 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public WeibullDistribution(double shape, double scale)
         {
-            this.b = scale;
             this.a = shape;
+            this.b = scale;
         }
 
         /// <summary>
@@ -190,5 +191,70 @@ namespace Accord.Statistics.Distributions.Univariate
             return new WeibullDistribution(b, a);
         }
 
+
+        #region ISampleableDistribution<double> Members
+
+        /// <summary>
+        ///   Generates a random vector of observations from the current distribution.
+        /// </summary>
+        /// 
+        /// <param name="samples">The number of samples to generate.</param>
+        /// <returns>A random vector of observations drawn from this distribution.</returns>
+        /// 
+        public double[] Generate(int samples)
+        {
+            return Random(a, b, samples);
+        }
+
+        /// <summary>
+        ///   Generates a random observation from the current distribution.
+        /// </summary>
+        /// 
+        /// <returns>A random observations drawn from this distribution.</returns>
+        /// 
+        public double Generate()
+        {
+            return Random(a, b);
+        }
+
+        /// <summary>
+        ///   Generates a random vector of observations from the 
+        ///   Weibull distribution with the given parameters.
+        /// </summary>
+        /// 
+        /// <param name="scale">The scale parameter lambda.</param>
+        /// <param name="shape">The shape parameter k.</param>
+        /// <param name="samples">The number of samples to generate.</param>
+        ///
+        /// <returns>An array of double values sampled from the specified Weibull distribution.</returns>
+        /// 
+        public static double[] Random(double shape, double scale, int samples)
+        {
+            double[] r = new double[samples];
+            for (int i = 0; i < r.Length; i++)
+            {
+                double u = Accord.Math.Tools.Random.NextDouble();
+                r[i] = scale * Math.Pow(-Math.Log(u), 1 / shape);
+            }
+
+            return r;
+        }
+
+        /// <summary>
+        ///   Generates a random observation from the 
+        ///   Weibull distribution with the given parameters.
+        /// </summary>
+        /// 
+        /// <param name="scale">The scale parameter lambda.</param>
+        /// <param name="shape">The shape parameter k.</param>
+        /// 
+        /// <returns>A random double value sampled from the specified Weibull distribution.</returns>
+        /// 
+        public static double Random(double shape, double scale)
+        {
+            double u = Accord.Math.Tools.Random.NextDouble();
+            return scale * Math.Pow(-Math.Log(u), 1 / shape);
+        }
+        #endregion
     }
 }
