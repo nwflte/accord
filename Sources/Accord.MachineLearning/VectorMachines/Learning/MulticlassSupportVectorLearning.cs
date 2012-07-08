@@ -173,6 +173,12 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         ///   Constructs a new Multi-class Support Vector Learning algorithm.
         /// </summary>
         /// 
+        /// <param name="inputs">The input learning vectors for the machine learning algorithm.</param>
+        /// <param name="machine">The <see cref="MulticlassSupportVectorMachine"/> to be trained.</param>
+        /// <param name="outputs">The output labels associated with each of the input vectors. The
+        /// class labels should be between 0 and the <see cref="MulticlassSupportVectorMachine.Classes">
+        /// number of classes in the multiclass machine</see>.</param>
+        /// 
         public MulticlassSupportVectorLearning(MulticlassSupportVectorMachine machine,
             double[][] inputs, int[] outputs)
         {
@@ -188,20 +194,32 @@ namespace Accord.MachineLearning.VectorMachines.Learning
                 throw new ArgumentNullException("outputs");
 
             if (inputs.Length != outputs.Length)
-                throw new DimensionMismatchException("outputs", "The number of inputs and outputs does not match.");
+                throw new DimensionMismatchException("outputs", 
+                    "The number of input vectors and output labels does not match.");
 
             if (machine.Inputs > 0)
             {
                 // This machine has a fixed input vector size
                 for (int i = 0; i < inputs.Length; i++)
+                {
                     if (inputs[i].Length != machine.Inputs)
-                        throw new DimensionMismatchException("inputs", "The size of the input vectors does not match the expected number of inputs of the machine");
+                    {
+                        throw new DimensionMismatchException("inputs",
+                            "The size of the input vector at index " + i
+                            + " does not match the expected number of inputs of the machine."
+                            + " All input vectors for this machine must have length " + machine.Inputs);
+                    }
+                }
             }
 
             for (int i = 0; i < outputs.Length; i++)
             {
                 if (outputs[i] < 0 || outputs[i] >= machine.Classes)
-                    throw new ArgumentException("Some output values are outside of the expected class label ranges.", "outputs");
+                {
+                    throw new ArgumentOutOfRangeException("outputs",
+                        "The output value at index " + i + " is outside the expected class range"
+                        + " All output values must be higher than or equal to 0 and less than " + machine.Classes);
+                }
             }
 
 
@@ -301,11 +319,11 @@ namespace Accord.MachineLearning.VectorMachines.Learning
                     OnSubproblemFinished(args);
                 }
 #if !DEBUG
-            );
+);
 #endif
             }
 #if !DEBUG
-        );
+);
 #endif
 
             // Compute error if required.
@@ -325,7 +343,7 @@ namespace Accord.MachineLearning.VectorMachines.Learning
                 int actual = msvm.Compute(inputs[i]);
                 int expected = expectedOutputs[i];
 
-                if (actual != expected) 
+                if (actual != expected)
                     Interlocked.Increment(ref count);
             }
 

@@ -300,7 +300,7 @@ namespace Accord.MachineLearning
                 while (samplings < maxSamplings)
                 {
                     // Select at random s datapoints to form a trial model.
-                    sample = Statistics.Tools.Random(size, r);
+                    sample = Statistics.Tools.RandomSample(size, r);
 
                     // If the sampled points are not in a degenerate configuration,
                     if (degenerate == null || !degenerate(sample)) 
