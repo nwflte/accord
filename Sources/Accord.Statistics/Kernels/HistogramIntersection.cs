@@ -44,7 +44,7 @@ namespace Accord.Statistics.Kernels
         ///   Constructs a new Generalized Histogram Intersection Kernel.
         /// </summary>
         /// 
-        public HistogramIntersection(double alpha, double beta)
+        public HistogramIntersection(double alpha = 1, double beta = 1)
         {
             this.alpha = alpha;
             this.beta = beta;

@@ -57,7 +57,10 @@ namespace Accord.Statistics.Kernels
             for (int i = 0; i < x.Length; i++)
             {
                 double num = x[i] - y[i];
-                sum += (num * num) / (0.5 * (x[i] + y[i]));
+                double den = 0.5 * (x[i] + y[i]);
+
+                if (den != 0)
+                    sum += (num * num) / den;
             }
 
             return 1.0 - sum;
