@@ -285,6 +285,11 @@ namespace Accord.Math
         /// </remarks>
         public static T[] Submatrix<T>(this T[] data, int startRow, int endRow)
         {
+            if (startRow < 0)
+                throw new ArgumentOutOfRangeException("startRow");
+            if (endRow >= data.Length)
+                throw new ArgumentOutOfRangeException("endRow");
+
             T[] X = new T[endRow - startRow + 1];
 
             for (int i = startRow; i <= endRow; i++)
@@ -575,7 +580,7 @@ namespace Accord.Math
                 {
                     X[i, j] = m[i, j];
                 }
-                for (int j = index + 1; j < newCols; j++)
+                for (int j = index + 1; j < cols; j++)
                 {
                     X[i, j - 1] = m[i, j];
                 }
@@ -682,7 +687,7 @@ namespace Accord.Math
                 {
                     X[j, i] = m[j, i];
                 }
-                for (int j = index + 1; j < newRows; j++)
+                for (int j = index + 1; j < rows; j++)
                 {
                     X[j - 1, i] = m[j, i];
                 }
@@ -788,6 +793,8 @@ namespace Accord.Math
 
         #region Element ranges (maximum and minimum)
 
+
+
         /// <summary>
         ///   Gets the maximum non-null element in a vector.
         /// </summary>
@@ -812,6 +819,8 @@ namespace Accord.Math
 
             return max;
         }
+
+
 
         /// <summary>
         ///   Gets the maximum element in a vector.
@@ -863,9 +872,86 @@ namespace Accord.Math
         /// </summary>
         public static T Min<T>(this T[] values) where T : IComparable
         {
-            int imin = 0;
+            int imin;
             return Min(values, out imin);
         }
+
+
+
+        /// <summary>
+        ///   Gets the maximum value of a matrix.
+        /// </summary>
+        public static T Max<T>(this T[,] matrix) where T : IComparable
+        {
+            Tuple<int, int> imax;
+            return Max(matrix, out imax);
+        }
+
+        /// <summary>
+        ///   Gets the maximum value of a matrix.
+        /// </summary>
+        /// 
+        public static T Max<T>(this T[,] matrix, out Tuple<int, int> imax) where T : IComparable
+        {
+            int rows = matrix.GetLength(0);
+            int cols = matrix.GetLength(1);
+
+            T max = matrix[0, 0];
+            imax = Tuple.Create(0, 0);
+
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < cols; j++)
+                {
+                    if (matrix[i, j].CompareTo(max) > 0)
+                    {
+                        max = matrix[i, j];
+                        imax = Tuple.Create(i, j);
+                    }
+                }
+            }
+
+            return max;
+        }
+
+        /// <summary>
+        ///   Gets the minimum value of a matrix.
+        /// </summary>
+        /// 
+        public static T Min<T>(this T[,] matrix) where T : IComparable
+        {
+            Tuple<int, int> imin;
+            return Min(matrix, out imin);
+        }
+
+        /// <summary>
+        ///   Gets the minimum value of a matrix.
+        /// </summary>
+        /// 
+        public static T Min<T>(this T[,] matrix, out Tuple<int, int> imin) where T : IComparable
+        {
+            int rows = matrix.GetLength(0);
+            int cols = matrix.GetLength(1);
+
+            T min = matrix[0, 0];
+            imin = Tuple.Create(0, 0);
+
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < cols; j++)
+                {
+                    if (matrix[i, j].CompareTo(min) < 0)
+                    {
+                        min = matrix[i, j];
+                        imin = Tuple.Create(i, j);
+                    }
+                }
+            }
+
+            return min;
+        }
+
+
 
         /// <summary>
         ///   Gets the maximum values accross one dimension of a matrix.
@@ -934,7 +1020,7 @@ namespace Accord.Math
         }
 
         /// <summary>
-        ///   Gets the minimum values across one dimension of a matrix.
+        ///   Gets the minimum values accross one dimension of a matrix.
         /// </summary>
         public static T[] Min<T>(this T[,] matrix, int dimension, out int[] imin) where T : IComparable
         {
@@ -981,13 +1067,15 @@ namespace Accord.Math
             return min;
         }
 
+
+
         /// <summary>
         ///   Gets the maximum values accross one dimension of a matrix.
         /// </summary>
-        public static T[] Max<T>(this T[][] matrix) where T : IComparable
+        public static T[] Max<T>(this T[][] matrix, int dimension) where T : IComparable
         {
             int[] imax;
-            return Max(matrix, 0, out imax);
+            return Max(matrix, dimension, out imax);
         }
 
         /// <summary>
@@ -1041,10 +1129,10 @@ namespace Accord.Math
         /// <summary>
         ///   Gets the minimum values across one dimension of a matrix.
         /// </summary>
-        public static T[] Min<T>(this T[][] matrix) where T : IComparable
+        public static T[] Min<T>(this T[][] matrix, int dimension) where T : IComparable
         {
             int[] imin;
-            return Min(matrix, 0, out imin);
+            return Min(matrix, dimension, out imin);
         }
 
         /// <summary>
@@ -1094,6 +1182,8 @@ namespace Accord.Math
 
             return min;
         }
+
+
 
         /// <summary>
         ///   Gets the range of the values in a vector.

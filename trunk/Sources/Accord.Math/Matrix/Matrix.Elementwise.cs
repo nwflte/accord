@@ -316,6 +316,39 @@ namespace Accord.Math
             return r;
         }
 
+        /// <summary>
+        ///   Elementwise division.
+        /// </summary>
+        /// 
+        public static double[,] ElementwiseDivide(this int[,] a, int[] b, int dimension)
+        {
+            int rows = a.GetLength(0);
+            int cols = a.GetLength(1);
+
+            double[,] r =  new double[rows, cols];
+
+            if (dimension == 1)
+            {
+                if (cols != b.Length) throw new ArgumentException(
+                        "Length of B should be equals to the number of columns in A", "b");
+
+                for (int i = 0; i < rows; i++)
+                    for (int j = 0; j < cols; j++)
+                        r[i, j] = a[i, j] / (double)b[j];
+            }
+            else
+            {
+                if (rows != b.Length) throw new ArgumentException(
+                        "Length of B should be equals to the number of rows in A", "b");
+
+                for (int j = 0; j < cols; j++)
+                    for (int i = 0; i < rows; i++)
+                        r[i, j] = a[i, j] / (double)b[i];
+            }
+
+            return r;
+        }
+
 
         /// <summary>
         ///   Elementwise multiply operation.

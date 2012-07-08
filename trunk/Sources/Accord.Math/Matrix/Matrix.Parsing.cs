@@ -46,16 +46,20 @@ namespace Accord.Math
         /// <summary>
         ///   Returns a <see cref="System.String"/> that represents a matrix.
         /// </summary>
+        /// 
         /// <param name="matrix">The matrix.</param>
+        /// 
         /// <param name="multiline">
         ///   If set to <c>true</c>, the matrix will be written using multiple
         ///   lines. If set to <c>false</c>, the matrix will be written in a 
         ///   single line.</param>
+        ///   
         /// <param name="provider">
         ///   The <see cref="IMatrixFormatProvider"/> to be used
         ///   when creating the resulting string. Default is to use
         ///   <see cref="DefaultMatrixFormatProvider.CurrentCulture"/>.
         /// </param>
+        /// 
         /// <returns>
         ///   A <see cref="System.String"/> that represents this instance.
         /// </returns>
@@ -75,12 +79,15 @@ namespace Accord.Math
         /// <summary>
         ///   Returns a <see cref="System.String"/> that represents a matrix.
         /// </summary>
+        /// 
         /// <param name="matrix">The matrix.</param>
+        /// 
         /// <param name="provider">
         ///   The <see cref="IMatrixFormatProvider"/> to be used
         ///   when creating the resulting string. Default is to use
         ///   <see cref="DefaultMatrixFormatProvider.CurrentCulture"/>.
         /// </param>
+        /// 
         /// <returns>
         ///   A <see cref="System.String"/> that represents this instance.
         /// </returns>
@@ -114,7 +121,28 @@ namespace Accord.Math
         /// <summary>
         ///   Returns a <see cref="System.String"/> that represents a matrix.
         /// </summary>
+        /// 
         /// <param name="matrix">The matrix.</param>
+        /// 
+        /// <param name="format">
+        ///   The format to use when creating the resulting string.
+        /// </param>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public static string ToString(this double[,] matrix, string format)
+        {
+            return MatrixFormatter.Format(format, matrix, DefaultMatrixFormatProvider.CurrentCulture);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents a matrix.
+        /// </summary>
+        /// 
+        /// <param name="matrix">The matrix.</param>
+        /// 
         /// <returns>
         ///   A <see cref="System.String"/> that represents this instance.
         /// </returns>
@@ -164,48 +192,76 @@ namespace Accord.Math
         }
 
         /// <summary>
-        ///   Returns a <see cref="System.String"/> that represents an array.
+        ///   Returns a <see cref="System.String"/> that represents a matrix.
         /// </summary>
-        /// <param name="matrix">The matrix.</param>
-        /// <returns>
-        ///   A <see cref="System.String"/> that represents this instance.
-        /// </returns>
         /// 
-        public static string ToString(this double[] matrix)
-        {
-            return ToString(matrix, DefaultMatrixFormatProvider.CurrentCulture);
-        }
-
-        /// <summary>
-        ///   Returns a <see cref="System.String"/> that represents an array.
-        /// </summary>
         /// <param name="matrix">The matrix.</param>
-        /// <param name="provider">
-        ///   The <see cref="IMatrixFormatProvider"/> to be used
-        ///   when creating the resulting string. Default is to use
-        ///   <see cref="DefaultMatrixFormatProvider.CurrentCulture"/>.
-        /// </param>
-        /// <returns>
-        ///   A <see cref="System.String"/> that represents this instance.
-        /// </returns>
         /// 
-        public static string ToString(this double[] matrix, IMatrixFormatProvider provider)
-        {
-            return ToString(matrix, null, provider);
-        }
-
-        /// <summary>
-        ///   Returns a <see cref="System.String"/> that represents an array.
-        /// </summary>
-        /// <param name="matrix">The matrix.</param>
         /// <param name="format">
         ///   The format to use when creating the resulting string.
         /// </param>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public static string ToString(this double[][] matrix, string format)
+        {
+            return MatrixFormatter.Format(format, matrix, DefaultMatrixFormatProvider.CurrentCulture);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents an array.
+        /// </summary>
+        /// 
+        /// <param name="array">The array.</param>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public static string ToString(this double[] array)
+        {
+            return ToString(array, DefaultArrayFormatProvider.CurrentCulture);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents an array.
+        /// </summary>
+        /// 
+        /// <param name="array">The array.</param>
+        /// 
         /// <param name="provider">
         ///   The <see cref="IMatrixFormatProvider"/> to be used
         ///   when creating the resulting string. Default is to use
         ///   <see cref="DefaultMatrixFormatProvider.CurrentCulture"/>.
         /// </param>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public static string ToString(this double[] array, IMatrixFormatProvider provider)
+        {
+            return ToString(array, null, provider);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents an array.
+        /// </summary>
+        /// 
+        /// <param name="matrix">The matrix.</param>
+        /// 
+        /// <param name="format">
+        ///   The format to use when creating the resulting string.
+        /// </param>
+        /// 
+        /// <param name="provider">
+        ///   The <see cref="IMatrixFormatProvider"/> to be used
+        ///   when creating the resulting string. Default is to use
+        ///   <see cref="DefaultMatrixFormatProvider.CurrentCulture"/>.
+        /// </param>
+        /// 
         /// <returns>
         ///   A <see cref="System.String"/> that represents this instance.
         /// </returns>
@@ -213,6 +269,25 @@ namespace Accord.Math
         public static string ToString(this double[] matrix, string format, IMatrixFormatProvider provider)
         {
             return MatrixFormatter.Format(format, matrix, provider);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents an array.
+        /// </summary>
+        /// 
+        /// <param name="array">The array.</param>
+        /// 
+        /// <param name="format">
+        ///   The format to use when creating the resulting string.
+        /// </param>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public static string ToString(this double[] array, string format)
+        {
+            return MatrixFormatter.Format(format, array, DefaultArrayFormatProvider.CurrentCulture);
         }
 
         #endregion
