@@ -55,4 +55,5 @@ namespace Accord.Statistics.Models.Markov
         int Classes { get; }
 
     }
+
 }

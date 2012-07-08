@@ -23,11 +23,12 @@
 namespace Accord.Statistics.Models.Markov
 {
     using System;
-    using Accord.Statistics.Distributions;
-    using Accord.Statistics.Distributions.Univariate;
-    using Accord.Statistics.Models.Markov.Topology;
-    using Accord.Statistics.Distributions.Multivariate;
     using Accord.Math;
+    using Accord.Statistics.Distributions;
+    using Accord.Statistics.Distributions.Multivariate;
+    using Accord.Statistics.Distributions.Univariate;
+    using Accord.Statistics.Models.Markov.Learning;
+    using Accord.Statistics.Models.Markov.Topology;
 
     /// <summary>
     ///   Arbitrary-density Hidden Markov Model.
@@ -83,109 +84,60 @@ namespace Accord.Statistics.Models.Markov
     ///       http://en.wikipedia.org/wiki/Hidden_Markov_model </description></item>
     ///   </list></para>
     /// </remarks>
-    ///
-    /// <seealso cref="HiddenMarkovModel">Discrete-density Hidden Markov Model</seealso>
-    /// 
     /// 
     /// <example>
-    ///   In the following example, we will create a Continuous Hidden Markov Model using
-    ///   a univariate Normal distribution to model properly model continuous sequences.
-    ///   <code>
-    ///   // Create continuous sequences. In the sequences below, there
-    ///   //  seems to be two states, one for values between 0 and 1 and
-    ///   //  another for values between 5 and 7. The states seems to be
-    ///   //  switched on every observation.
-    ///   double[][] sequences = new double[][] 
-    ///   {
-    ///       new double[] { 0.1, 5.2, 0.3, 6.7, 0.1, 6.0 },
-    ///       new double[] { 0.2, 6.2, 0.3, 6.3, 0.1, 5.0 },
-    ///       new double[] { 0.1, 7.0, 0.1, 7.0, 0.2, 5.6 },
+    ///   <para>The example below reproduces the same example given in the Wikipedia
+    ///   entry for the Viterbi algorithm (http://en.wikipedia.org/wiki/Viterbi_algorithm).
+    ///   As an arbitrary density model, one can use it with any available <see cref="IDistribution">
+    ///   probability distributions</see>, including with a discrete probability. In the 
+    ///   following example, the generic model is used with a <see cref="GeneralDiscreteDistribution"/>
+    ///   to reproduce the same example given in <see cref="HiddenMarkovModel{TDistribution}"/>.
+    ///   Below, the model's parameters are initialized manually. However, it is possible to learn
+    ///   those automatically using <see cref="BaumWelchLearning{TDistribution}"/>.</para>
+    /// 
+    /// <code>
+    ///   // Create the transation matrix A
+    ///   double[,] transitions = 
+    ///   {  
+    ///       { 0.7, 0.3 },
+    ///       { 0.4, 0.6 }
     ///   };
-    /// 
-    ///             
-    ///   // Specify a initial normal distribution for the samples.
-    ///   NormalDistribution density = NormalDistribution();
-    /// 
-    ///   // Creates a continuous hidden Markov Model with two states organized in a forward
-    ///   //  topology and an underlying univariate Normal distribution as probability density.
-    ///   var model = new HiddenMarkovModel&lt;NormalDistribution&gt;(new Ergodic(2), density);
-    /// 
-    ///   // Configure the learning algorithms to train the sequence classifier until the
-    ///   // difference in the average log-likelihood changes only by as little as 0.0001
-    ///   var teacher = new BaumWelchLearning&lt;NormalDistribution&gt;(model)
-    ///   {
-    ///       Tolerance = 0.0001,
-    ///       Iterations = 0,
+    ///   
+    ///   // Create the vector of emission densities B
+    ///   GeneralDiscreteDistribution[] emissions = 
+    ///   {  
+    ///       new GeneralDiscreteDistribution(0.1, 0.4, 0.5),
+    ///       new GeneralDiscreteDistribution(0.6, 0.3, 0.1)
     ///   };
-    /// 
-    ///   // Fit the model
-    ///   double likelihood = teacher.Run(sequences);
-    /// 
-    ///   // See the probability of the sequences learned
-    ///   double l1 = model.Evaluate(new[] { 0.1, 5.2, 0.3, 6.7, 0.1, 6.0 }); // 0.87
-    ///   double l2 = model.Evaluate(new[] { 0.2, 6.2, 0.3, 6.3, 0.1, 5.0 }); // 1.00
-    /// 
-    ///   // See the probability of an unrelated sequence
-    ///   double l3 = model.Evaluate(new[] { 1.1, 2.2, 1.3, 3.2, 4.2, 1.0 }); // 0.00
+    ///   
+    ///   // Create the initial probabilities pi
+    ///   double[] initial =
+    ///   {
+    ///       0.6, 0.4
+    ///   };
+    ///   
+    ///   // Create a new hidden Markov model with discrete probabilities
+    ///   var hmm = new HiddenMarkovModel&lt;GeneralDiscreteDistribution>(transitions, emissions, initial);
+    ///   
+    ///   // After that, one could, for example, query the probability
+    ///   // of a sequence ocurring. We will consider the sequence
+    ///   double[] sequence = new double[] { 0, 1, 2 };
+    ///   
+    ///   // And now we will evaluate its likelihood
+    ///   double logLikelihood = hmm.Evaluate(sequence);
+    ///   
+    ///   // At this point, the log-likelihood of the sequence
+    ///   // ocurring within the model is -3.3928721329161653.
+    ///   
+    ///   // We can also get the Viterbi path of the sequence
+    ///   int[] path = hmm.Decode(sequence, out logLikelihood);
+    ///   
+    ///   // At this point, the state path will be 1-0-0 and the
+    ///   // log-likelihood will be -4.3095199438871337
     /// </code>
     /// </example>
-    /// 
-    /// <example>
-    ///   In the following example, we will create a Discrete Hidden Markov Model
-    ///   using a Generic Discrete Probability Distribution to reproduce the same
-    ///   code example given in <seealso cref="HiddenMarkovModel"/> documentation.
-    ///   <code>
-    ///   // Arbitrary-density Markov Models can operate using any
-    ///   // probability distribution, including discrete ones. 
-    ///   
-    ///   // In the follwing example, we will try to create a
-    ///   // Discrete Hidden Markov Model using a discrete
-    ///   // distribution to detect if a given sequence starts
-    ///   // with a zero and has any number of ones after that.
-    ///   
-    ///   double[][] sequences = new double[][] 
-    ///   {
-    ///       new double[] { 0,1,1,1,1,0,1,1,1,1 },
-    ///       new double[] { 0,1,1,1,0,1,1,1,1,1 },
-    ///       new double[] { 0,1,1,1,1,1,1,1,1,1 },
-    ///       new double[] { 0,1,1,1,1,1         },
-    ///       new double[] { 0,1,1,1,1,1,1       },
-    ///       new double[] { 0,1,1,1,1,1,1,1,1,1 },
-    ///       new double[] { 0,1,1,1,1,1,1,1,1,1 },
-    ///   };
-    ///   
-    ///   // Create a new Hidden Markov Model with 3 states and
-    ///   //  a generic discrete distribution with two symbols
-    ///   var hmm = new HiddenMarkovModel.CreateGeneric(3, 2);
-    ///   
-    ///   // We will try to fit the model to the data until the difference in
-    ///   //  the average log-likelihood changes only by as little as 0.0001
-    ///   var teacher = new BaumWelchLearning&lt;DiscreteUniformDistribution&gt;(hmm)
-    ///   { 
-    ///       Tolerance = 0.0001,
-    ///       Iterations = 0 
-    ///   };
-    ///   
-    ///   // Begin model training
-    ///   double ll = teacher.Run(sequences);
-    ///   
-    /// 
-    ///   // Calculate the probability that the given
-    ///   //  sequences originated from the model
-    ///   double l1 = hmm.Evaluate(new double[] { 0, 1 });       // 0.999
-    ///   double l2 = hmm.Evaluate(new double[] { 0, 1, 1, 1 }); // 0.916
-    ///   
-    ///   // Sequences which do not start with zero have much lesser probability.
-    ///   double l3 = hmm.Evaluate(new double[] { 1, 1 });       // 0.000
-    ///   double l4 = hmm.Evaluate(new double[] { 1, 0, 0, 0 }); // 0.000
-    ///   
-    ///   // Sequences which contains few errors have higher probabability
-    ///   //  than the ones which do not start with zero. This shows some
-    ///   //  of the temporal elasticity and error tolerance of the HMMs.
-    ///   double l5 = hmm.Evaluate(new double[] { 0, 1, 0, 1, 1, 1, 1, 1, 1 }); // 0.034
-    ///   double l6 = hmm.Evaluate(new double[] { 0, 1, 1, 1, 1, 1, 1, 0, 1 }); // 0.034
-    ///   </code>
-    /// </example>
+    ///
+    /// <seealso cref="HiddenMarkovModel">Discrete-density Hidden Markov Model</seealso>
     /// 
     [Serializable]
     public class HiddenMarkovModel<TDistribution> : BaseHiddenMarkovModel, IHiddenMarkovModel
@@ -353,6 +305,29 @@ namespace Accord.Statistics.Models.Markov
         /// </remarks>
         /// 
         /// <param name="observations">A sequence of observations.</param>
+        /// 
+        /// <returns>The sequence of states that most likely produced the sequence.</returns>
+        /// 
+        public int[] Decode(Array observations)
+        {
+            double logLikelihood;
+            return Decode(observations, out logLikelihood);
+        }
+
+
+        /// <summary>
+        ///   Calculates the most likely sequence of hidden states
+        ///   that produced the given observation sequence.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   Decoding problem. Given the HMM M = (A, B, pi) and  the observation sequence 
+        ///   O = {o1,o2, ..., oK}, calculate the most likely sequence of hidden states Si
+        ///   that produced this observation sequence O. This can be computed efficiently
+        ///   using the Viterbi algorithm.
+        /// </remarks>
+        /// 
+        /// <param name="observations">A sequence of observations.</param>
         /// <param name="logLikelihood">The log-likelihood along the most likely sequence.</param>
         /// <returns>The sequence of states that most likely produced the sequence.</returns>
         /// 
@@ -489,6 +464,51 @@ namespace Accord.Statistics.Models.Markov
 
             // Compute forward probabilities
             ForwardBackwardAlgorithm.LogForward(this, obs, out logLikelihood);
+
+            // Return the sequence probability
+            return logLikelihood;
+        }
+
+        /// <summary>
+        ///   Calculates the log-likelihood that this model has generated the
+        ///   given observation sequence along the given state path.
+        /// </summary>
+        /// 
+        /// <param name="observations">A sequence of observations. </param>
+        /// <param name="path">A sequence of states. </param>
+        /// 
+        /// <returns>
+        ///   The log-likelihood that the given sequence of observations has
+        ///   been generated by this model along the given sequence of states.
+        /// </returns>
+        /// 
+        public double Evaluate(Array observations, int[] path)
+        {
+            if (observations == null)
+                throw new ArgumentNullException("observations");
+
+            if (path == null)
+                throw new ArgumentNullException("path");
+
+            if (observations.Length == 0)
+                return Double.NegativeInfinity;
+
+            if (!(observations is double[][] || observations is double[]))
+                throw new ArgumentException("Argument should be either of type " +
+                    "double[] (for univariate observation) or double[][] (for " +
+                    "multivariate observation).", "observations");
+
+            double[][] obs = convert(observations);
+
+
+            double logLikelihood = Probabilities[path[0]]
+                + Emissions[path[0]].LogProbabilityFunction(obs[0]);
+
+            for (int i = 1; i < observations.Length; i++)
+            {
+                logLikelihood = Accord.Math.Special.LogSum(logLikelihood, Transitions[path[i - 1],
+                    path[i]] + Emissions[path[i]].LogProbabilityFunction(obs[i]));
+            }
 
             // Return the sequence probability
             return logLikelihood;
@@ -676,6 +696,99 @@ namespace Accord.Statistics.Models.Markov
             // Return the first (single) dimension of the next observations.
             return Accord.Math.Matrix.Concatenate(prediction);
         }
+
+        /// <summary>
+        ///   Generates a random vector of observations from the model.
+        /// </summary>
+        /// 
+        /// <param name="samples">The number of samples to generate.</param>
+        /// 
+        /// <returns>A random vector of observations drawn from the model.</returns>
+        /// 
+        public Array Generate(int samples)
+        {
+            int[] path; double logLikelihood;
+            return Generate(samples, out path, out logLikelihood);
+        }
+
+        /// <summary>
+        ///   Generates a random vector of observations from the model.
+        /// </summary>
+        /// 
+        /// <param name="samples">The number of samples to generate.</param>
+        /// <param name="logLikelihood">The log-likelihood of the generated observation sequence.</param>
+        /// <param name="path">The Viterbi path of the generated observation sequence.</param>
+        /// 
+        /// <returns>A random vector of observations drawn from the model.</returns>
+        /// 
+        public Array Generate(int samples, out int[] path, out double logLikelihood)
+        {
+            double[] transitions = Probabilities;
+
+            logLikelihood = Double.NegativeInfinity;
+            path = new int[samples];
+
+            var multivariate = Emissions as ISampleableDistribution<double[]>[];
+            if (multivariate != null)
+            {
+                double[][] observations = new double[samples][];
+
+                // For each observation to be generated
+                for (int t = 0; t < observations.Length; t++)
+                {
+                    // Navigate randomly on one of the state transitions
+                    int state = GeneralDiscreteDistribution.Random(Matrix.Exp(transitions));
+
+                    // Generate a sample for the state
+                    double[] symbol = multivariate[state].Generate();
+
+                    // Store the sample
+                    observations[t] = symbol;
+                    path[t] = state;
+
+                    // Compute log-likelihood up to this point
+                    logLikelihood = Accord.Math.Special.LogSum(logLikelihood,
+                        transitions[state] + Emissions[state].LogProbabilityFunction(symbol));
+
+                    // Continue sampling
+                    transitions = Transitions.GetRow(state);
+                }
+
+                return observations;
+            }
+
+            var univariate = Emissions as ISampleableDistribution<double>[];
+            if (univariate != null)
+            {
+                double[] observations = new double[samples];
+
+                // For each observation to be generated
+                for (int t = 0; t < observations.Length; t++)
+                {
+                    // Navigate randomly on one of the state transitions
+                    int state = GeneralDiscreteDistribution.Random(Matrix.Exp(transitions));
+
+                    // Generate a sample for the state
+                    double symbol = univariate[state].Generate();
+
+                    // Store the sample
+                    observations[t] = symbol;
+                    path[t] = state;
+
+                    // Compute log-likelihood up to this point
+                    logLikelihood = Accord.Math.Special.LogSum(logLikelihood,
+                        transitions[state] + Emissions[state].LogProbabilityFunction(symbol));
+
+                    // Continue sampling
+                    transitions = Transitions.GetRow(state);
+                }
+
+                return observations;
+            }
+
+            throw new ArgumentException("The model's emission distributions do not support sampling.");
+        }
+
         #endregion
 
 

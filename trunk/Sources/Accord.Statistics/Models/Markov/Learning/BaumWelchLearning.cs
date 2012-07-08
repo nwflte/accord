@@ -29,12 +29,71 @@ namespace Accord.Statistics.Models.Markov.Learning
     ///   Baum-Welch learning algorithm for discrete-density Hidden Markov Models.
     /// </summary>
     /// 
+    /// <remarks>
+    ///   <para>
+    ///   The Baum-Welch algorithm is a kind of Expectation-Maximization algorithm.
+    ///   For discrete models, it estimates the matrix of state transition probabilities
+    ///   A, the matrix of symbol emission probabilities B and the vector of initial
+    ///   state probabilities pi. For increased accuracy, all computations are performed
+    ///   using log-probabilities.</para>
+    /// </remarks>
+    /// 
+    /// <example>
+    ///   <code>
+    ///   // We will try to create a Hidden Markov Model which
+    ///   //  can detect if a given sequence starts with a zero
+    ///   //  and has any number of ones after that.
+    ///   int[][] sequences = new int[][] 
+    ///   {
+    ///       new int[] { 0,1,1,1,1,0,1,1,1,1 },
+    ///       new int[] { 0,1,1,1,0,1,1,1,1,1 },
+    ///       new int[] { 0,1,1,1,1,1,1,1,1,1 },
+    ///       new int[] { 0,1,1,1,1,1         },
+    ///       new int[] { 0,1,1,1,1,1,1       },
+    ///       new int[] { 0,1,1,1,1,1,1,1,1,1 },
+    ///       new int[] { 0,1,1,1,1,1,1,1,1,1 },
+    ///   };
+    ///   
+    ///   // Creates a new Hidden Markov Model with 3 states for
+    ///   //  an output alphabet of two characters (zero and one)
+    ///   HiddenMarkovModel hmm = new HiddenMarkovModel(3, 2);
+    ///   
+    ///   // Try to fit the model to the data until the difference in
+    ///   //  the average log-likelihood changes only by as little as 0.0001
+    ///   var teacher = new BaumWelchLearning(hmm) { Tolerance = 0.0001, Iterations = 0 };
+    ///   double ll = teacher.Run(sequences);
+    ///   
+    ///   // Calculate the probability that the given
+    ///   //  sequences originated from the model
+    ///   double l1 = hmm.Evaluate(new int[] { 0, 1 });       // 0.999
+    ///   double l2 = hmm.Evaluate(new int[] { 0, 1, 1, 1 }); // 0.916
+    ///   
+    ///   // Sequences which do not start with zero have much lesser probability.
+    ///   double l3 = hmm.Evaluate(new int[] { 1, 1 });       // 0.000
+    ///   double l4 = hmm.Evaluate(new int[] { 1, 0, 0, 0 }); // 0.000
+    ///   
+    ///   // Sequences which contains few errors have higher probabability
+    ///   //  than the ones which do not start with zero. This shows some
+    ///   //  of the temporal elasticity and error tolerance of the HMMs.
+    ///   double l5 = hmm.Evaluate(new int[] { 0, 1, 0, 1, 1, 1, 1, 1, 1 }); // 0.034
+    ///   double l6 = hmm.Evaluate(new int[] { 0, 1, 1, 1, 1, 1, 1, 0, 1 }); // 0.034
+    ///   </code>
+    /// </example>
+    /// 
     public class BaumWelchLearning : BaseBaumWelchLearning, IUnsupervisedLearning
     {
 
         private HiddenMarkovModel model;
-
         private int[][] discreteObservations;
+
+        /// <summary>
+        ///   Gets the model being trained.
+        /// </summary>
+        /// 
+        public HiddenMarkovModel Model
+        {
+            get { return model; }
+        }
 
 
         /// <summary>
