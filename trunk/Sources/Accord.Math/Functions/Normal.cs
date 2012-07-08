@@ -297,6 +297,11 @@ namespace Accord.Math
 
             int j = (int)(0.5 * (Math.Abs(x) + 1));
 
+            if (j >= R.Length)
+            {
+                return x > 0 ? 0 : 1;
+            }
+
             double a = R[j];
             double z = 2 * j;
             double b = a * z - 1;
