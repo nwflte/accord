@@ -20,10 +20,10 @@
 //
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using Accord.Imaging;
-using AForge.Imaging.Filters;
 using Accord.Imaging.Filters;
 
 namespace Surf
@@ -41,18 +41,18 @@ namespace Surf
             // Open a image
             Bitmap lenna = Surf.Properties.Resources.lena512;
 
+            float threshold = (float)numThreshold.Value;
+            int octaves = (int)numOctaves.Value;
+            int initial = (int)numInitial.Value;
+
             // Create a new SURF Features Detector using the given parameters
             SpeededUpRobustFeaturesDetector surf =
-                new SpeededUpRobustFeaturesDetector(0.0002f, 5, 2);
+                new SpeededUpRobustFeaturesDetector(threshold, octaves, initial);
 
-            var points = surf.ProcessImage(lenna);
-
-            // Get the SURF Features Descriptor from the detector
-            SurfDescriptor descriptor = surf.GetDescriptor();
-            descriptor.Describe(points);
+            List<SpeededUpRobustFeaturePoint> points = surf.ProcessImage(lenna);
 
             // Create a new AForge's Corner Marker Filter
-            FeaturesMarker features = new FeaturesMarker(points.ToArray());
+            FeaturesMarker features = new FeaturesMarker(points);
 
             // Apply the filter and display it on a picturebox
             pictureBox1.Image = features.Apply(lenna);
