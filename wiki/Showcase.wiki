@@ -10,12 +10,19 @@ This page enlists several works which have used Accord.NET in some point of thei
 
 == Developer projects ==
 
+<table>
+<tr>
+<td>
  * [http://www.windowsphone.com/en-US/apps/fe1a5891-61de-4553-8741-fcce23a56291 Point and Call] - Windows phone application to read a phone number using the phone's camera. After reading the number, it is possible to either call or save this number in your contact list, useful for reading numbers from magazines or business cards.
 
  * [http://harperia.ru/en/home.html Harperia] - Language agnostic speech recognition. Uses AForge.NET and Accord.NET to process audio signals and recognize specific recordings using Neural Networks.
 
  * GMM-EM - Estimates parameters of a multidimensional Gaussian Mixture Model (GMM) by expectation-Maximization (EM) methods and performs Receiver Operating Characteristics (ROC) analysis based on given true labels of input vectors in medical research. Created in a time where GMMs were not yet available in Accord.NET, this project uses a combination of many libraries to achieve its goals. <br />
-
+</td>
+<td>
+<wiki:video width="240px" height="160" url="http://www.youtube.com/watch?v=4mwRDGheiWw"/></td>
+</tr>
+</table>
 
 == Academical studies ==
 
