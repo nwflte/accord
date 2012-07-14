@@ -1,0 +1,16 @@
+#summary Sample Application: FAST Corners Detector
+#labels Type-SampleApps
+
+ * Download [http://dl.dropbox.com/u/32601472/accord/samples/accord-imaging-fast-bin.zip application]
+ * Download [http://dl.dropbox.com/u/32601472/accord/samples/accord-imaging-fast-src.zip source code]
+ * Browse the [https://code.google.com/p/accord/source/browse/trunk#trunk%2FSamples%2FImaging%2FFAST source code online]
+
+The FAST sample application demonstrates how to perform corners detection using the [http://accord.googlecode.com/svn/docs/html/T_Accord_Imaging_FastCornersDetector.htm FAST corners detector]. As the name implies, the FAST  detector is one of the fastest corners detectors available.
+
+<br /><p align="center">
+http://accord.googlecode.com/svn/wiki/samples/accord-imaging-fast-img.png
+<br />Fast corners detection in the world-famous Lena Söderberg's picture.
+</p><br />
+
+
+The current implementation is based on the excellent [http://www.edwardrosten.com/work/fast.html Edward Rosten's implementation], and is dual licensed under the [http://en.wikipedia.org/wiki/BSD_licenses permissive BSD license].
