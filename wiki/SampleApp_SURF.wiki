@@ -1,0 +1,16 @@
+#summary Sample Application: Speeded-Up Robust Features Detector
+#labels Type-SampleApps
+
+ * Download [http://dl.dropbox.com/u/32601472/accord/samples/accord-imaging-harris-bin.zip application]
+ * Download [http://dl.dropbox.com/u/32601472/accord/samples/accord-imaging-harris-src.zip source code]
+ * Browse the [https://code.google.com/p/accord/source/browse/trunk#trunk%2FSamples%2FImaging%2FSURF source code online]
+
+The SURF sample application shows how to use the [http://accord.googlecode.com/svn/docs/html/T_Accord_Imaging_SpeededUpRobustFeaturesDetector.htm Speeded-Up Robust Features (SURF) Detector].
+
+<br /><p align="center">
+http://accord.googlecode.com/svn/wiki/samples/accord-imaging-surf-img.png
+<br />SURF detection with the world-famous Lena Söderberg's picture.
+</p><br />
+
+
+The current implementation is based on the excellent [http://www.chrisevansdev.com/computer-vision-opensurf.html OpenSURF library by Christopher Evans]. The framework version, however, comes with further performance optimizations.
