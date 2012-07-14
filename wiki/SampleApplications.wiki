@@ -43,6 +43,10 @@ The framework comes with over 25 sample applications demonstrating the framework
   <td>Shows how to classify images using the Baf of Visual Words (BoW) model and Support Vector Machines (SVM).</td>
 </tr>
 <tr>
+  <td width="104px">[SampleApp_FAST FAST Corners Detector]</td>
+  <td>Demonstration of the FAST corners detector in the world-famous Lena Söderberg's picture.</td>
+</tr>
+<tr>
   <td width="104px">[SampleApp_Harris Harris Corners Detector]</td>
   <td>Demonstration of the Harris corners detector in the world-famous Lena Söderberg's picture.</td>
 </tr>
