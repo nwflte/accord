@@ -1,3 +1,77 @@
+Accord.NET Framework 2.7.0 release notes
+-----------------------------------------
+08.07.2012.    
+
+Version updates and fixes:
+
+* Accord.Statistics
+  - Standardizing statistical tests hypotheses;
+  - Adding power analysis for statistical tests;
+  - Adding Fisher's exact test for contingency tables;
+  - Adding Multiple-Matrix Kappa and Average Kappa tests;
+  - Adding Binomial tests, Sign tests, Wilcoxon and Mann-Whitney tests;
+  - Adding Noncentral T, Wilcoxon's W and Mann-Whitney's U distributions;
+  - Adding Multiple Linear Regression Analysis with ANOVA statistics;
+  - Adding inverse distribution calculation in the T-Distribution;
+  - Adding the unsupervised Viterbi learning and the supervised
+    Maximum Likelihood Estimation learning for hidden Markov models;
+  - Adding Generate methods for sampling from hidden Markov models;
+  - Marking several Statistics.Tools methods as extension methods;
+  - Introducing the ISampleableDistribution interface for probability
+    distributions and adding generate methods for most distributions;
+  - Correcting variance calculation for Cohen's Kappa, adding variants
+    for the null hypothesis and the calculation using the Delta method;
+  - Correcting F-Distribution ComplementaryDistributionFunction;
+  - Correcting Kernel Principal Component Analysis bug when auto-
+    selecting the maximum number of components;
+  - Resolving naming confusion in KMeans, renaming Classify to Nearest;
+  - Renaming ContinuousUniformDistribution to UniformContinuousDistribution;
+  - Renaming DiscreteUniformDistribution to UniformDiscreteDistribution;
+  - Renaming Random to RandomSample for clarity;
+  - Updating MultipleLinearRegression to use a single SVD;
+  - Updating Covariance method with two variables to generate
+    a covariance value rather than a 2x2 covariance matrix;
+  - Renaming IMultipleRegressionAnalysis interface to the
+    more adequate name IMultivariateRegressionAnalysis;
+  - Renaming ConfusionMatrix.Observations to .Samples to  
+    mantain consistency with the GeneralConfusionMatrix.
+
+* Accord.MachineLearning
+  - Adding Bootstrap for generalization performance estimation;
+  - Adding the K-Modes clustering algorithm for discrete data;
+  - Optimizing both memory usage and performance for Sequential
+    Minimal Optimization learning and the kernel function cache.
+
+* Accord.Math
+  - Adding Brent Search Root Finding Algorithm;
+  - Adding Combinatorics class for permutations and combinations;
+  - Fixing a bug in Goldfarb-Idnani Quadratic Solver;
+  - Adding Trigamma function to Gamma class;
+  - Adding array format providers.
+
+* Accord.Controls
+  - Adding ScatterplotBox class for displaying point data; DataGridBox for
+    displaying tabular data; and DataSeriesBox to display series data in the
+    same way as Windows.Forms's MessageBox can be used to display text data;
+  - Adding extension method for enabling DataGridViewColumns nested properties;
+  - Adding ImageBox overloads to work with images represented in matricial form.
+
+* Accord.Imaging
+  - Adding the Bag of Visual Words (BoW) feature extractor;
+  - Renaming SpeededUpRobustFeatures (SURF) classes avoiding acronyms.
+  - Updating FeaturesMarker to make it work with indexed images.
+
+* Sample applications
+  - Adding image classification sample application;
+  - Updating Regression sample application to include
+    more information for linear regression analysis.
+
+* AForge Compatibility
+  - Compiled against AForge.NET Framework 2.2.4. May work with newer versions.
+
+
+
+
 Accord.NET Framework 2.6.1 release notes
 -----------------------------------------
 05.05.2012.    

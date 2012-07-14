@@ -25,7 +25,7 @@ be accompanying each respective source code. Please see relevant source headers 
 
 The documentation sections contains references to Wikipedia and is thus entirely available under the
 Creative Commons Attribution/Share-Alike License. All referenced sections include a hyperlink to the
-original article page. If you think you have found something which has not properly linked, please
+original article page. If you think you have found something which has not been properly linked, please
 let me know so it can be corrected.
 
 Overall framework architecture and style was greatly inspired by AForge.NET. The AForge.NET
