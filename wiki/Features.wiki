@@ -96,10 +96,12 @@ _`*` Further type variants may be implemented under request_
 
  === Accord.MachineLearning ===
  *  [http://crsouza.blogspot.com/2010/10/k-means-clustering.html K-Means Clustering]
+ * K-Modes Clustering (for discrete or generic data)
  * [http://crsouza.blogspot.com/2010/10/gaussian-mixture-models-and-expectation.html Gaussian Mixture Models (GMM)]
  * Support Vector Machines (SVM)
  * [http://crsouza.blogspot.com/2010/04/kernel-support-vector-machines-for.html Kernel Support Vector Machines (kSVM)]
  * [http://www.codeproject.com/KB/recipes/handwriting-svm.aspx Multi-class Kernel Support Vector Machines]
+ * Large-Margin Decision Directed Graphs (DDAGs)
  * Sequential Minimal Optimization Learning (SMO)
  * Sequential Minimal Optimization for Regression (SMOR)
  * [http://crsouza.blogspot.com/2010/06/random-sample-consensus-ransac-in-c.html Multipurpose RANSAC for robust model estimation]
@@ -117,7 +119,7 @@ _`*` Further type variants may be implemented under request_
  * Border Following contour extraction
  * K-Curvature algorithm for contour peak detection
  * Blob convex hull defects extraction
- * Filters for image processing
+ * Image processing filters
    * [http://www.codeproject.com/KB/recipes/automatic_panoramas.aspx Image blending]
    * Concatenation
    * Markers (points, pairs, rectangles, features)
