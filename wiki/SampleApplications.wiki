@@ -166,8 +166,8 @@ Solves the XOR classification problem using Neural Networks trained by the Leven
   <td>Sample application demonstrating how to create and visualize Receiver-Operating Characteristic Curves from a given set of results from a test or a classification process.</td>
 </tr>
 <tr>
-  <td width="104px">Mouse Gestures</td>
-  <td>Learning and recognition of mouse gestures using Hidden Markov Models.</td>
+  <td width="104px">[SampleApp_MouseGestures Mouse Gestures]</td>
+  <td>Learning and recognition of mouse gestures using  [http://accord.googlecode.com/svn/docs/html/T_Accord_Statistics_Models_Markov_HiddenMarkovClassifier.htm hidden Markov model-based classifiers].</td>
 </tr>
 </table>
 
