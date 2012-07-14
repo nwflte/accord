@@ -1,10 +1,10 @@
 #summary Sample Application: Image Classification
 #labels Type-SampleApps
 
- * Download [http://accord.googlecode.com/svn/wiki/samples/accord-imaging-classification-bin.zip application]
- * Download [http://accord.googlecode.com/svn/wiki/samples/accord-imaging-classification-src.zip source code]
+ * Download [http://dl.dropbox.com/u/32601472/accord/samples/accord-imaging-classification-bin.zip application]
+ * Download [http://dl.dropbox.com/u/32601472/accord/samples/accord-imaging-classification-src.zip source code]
 
-The Image Classification sample application shows how to perform image classification using the Bag of Visual Words (BoW) model created using [http://accord.googlecode.com/svn/docs/html/T_Accord_Imaging_SpeededUpRobustFeaturesDetector.htm SURF] and [http://accord.googlecode.com/svn/docs/html/T_Accord_MachineLearning_KMeans.htm K-Means]. 
+The Image Classification sample application shows how to perform image classification using the [http://accord.googlecode.com/svn/docs/html/T_Accord_Imaging_BagOfVisualWords.htm Bag of Visual Words (BoW) model] with [http://accord.googlecode.com/svn/docs/html/T_Accord_Imaging_SpeededUpRobustFeaturesDetector.htm SURF] and [http://accord.googlecode.com/svn/docs/html/T_Accord_MachineLearning_KMeans.htm K-Means]. 
 
 <br /><p align="center">
 http://accord.googlecode.com/svn/wiki/samples/accord-imaging-classification-img.png
