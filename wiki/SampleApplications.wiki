@@ -146,7 +146,7 @@ Solves the XOR classification problem using Neural Networks trained by the Leven
   <td>Sample application demonstrating how to use Principal Component Analysis (PCA) to perform linear transformations and dimensionality reduction. The sample datasets which can be used in the application are available under the Resources folder in the main directory of the application.</td>
 </tr>
 <tr>
-  <td width="104px">Independent Component Analysis (ICA)</td>
+  <td width="104px">[SampleApp_IndependentComponentAnalysis Independent Component Analysis (ICA)]</td>
   <td>Sample application demonstrating how to use Independent Component Analysis (ICA) to perform blind source separation of audio signals. The audio is processed using the Accord.Audio modules of the framework.</td>
 </tr>
 <tr>
