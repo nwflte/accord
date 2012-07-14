@@ -1,8 +1,9 @@
 #summary Sample Application: Image Stitching
 #labels Type-SampleApps
 
- * Download [http://accord.googlecode.com/svn/wiki/samples/accord-imaging-panorama-bin.zip application]
- * Download [http://accord.googlecode.com/svn/wiki/samples/accord-imaging-panorama-src.zip source code]
+ * Download [http://dl.dropbox.com/u/32601472/accord/samples/accord-imaging-panorama-bin.zip application]
+ * Download [http://dl.dropbox.com/u/32601472/accord/samples/accord-imaging-panorama-src.zip source code]
+ * Browse the [https://code.google.com/p/accord/source/browse/trunk#trunk%2FSamples%2FImaging%2FPanorama source code online]
 
 The Image Stitching (panorama) sample application demonstrates [http://www.codeproject.com/Articles/95453/Automatic-Image-Stitching-with-Accord-NET how to perform automatic image stitching by interest point matching using Accord.NET and AForge.NET Frameworks]. 
 
