@@ -3,6 +3,7 @@
 
  * Download [http://dl.dropbox.com/u/32601472/accord/samples/accord-audio-fourier-bin.zip application]
  * Download [http://dl.dropbox.com/u/32601472/accord/samples/accord-audio-fourier-src.zip source code]
+ * Browse the [https://code.google.com/p/accord/source/browse/trunk#trunk%2FSamples%2FAudio%2FFourier source code online]
 
 The Fourier sample application shows how to capture sounds from a capture device (such as the soundcard's microphone jack) using the Accord.NET Framework. The sound can then be analyzed using the AForge.NET [http://www.aforgenet.com/framework/docs/html/a233a2c8-37ef-459d-f3dd-4088592f458a.htm FourierTransform functions].
 
