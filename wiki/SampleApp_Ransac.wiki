@@ -1,0 +1,15 @@
+#summary Sample Application: Random Sample Consensus
+#labels Type-SampleApps
+
+ * Download [http://dl.dropbox.com/u/32601472/accord/samples/accord-machinelearning-ransac-bin.zip application]
+ * Download [http://dl.dropbox.com/u/32601472/accord/samples/accord-machinelearning-ransac-src.zip source code]
+ * Browse the [https://code.google.com/p/accord/source/browse/trunk#trunk%2FSamples%2FMachineLearning%2FRansac source code online]
+
+This sample application shows how to use the [http://accord.googlecode.com/svn/docs/html/T_Accord_MachineLearning_RANSAC_1.htm Random Sample Consensus (RANSAC)] algorithm to fit [http://accord.googlecode.com/svn/docs/html/N_Accord_Statistics_Models_Regression_Linear.htm linear regression models]. The algorithm works with any model or function, producing a robust version of the model which is less sensitive to outliers.
+
+<br /><p align="center">
+http://accord.googlecode.com/svn/wiki/samples/accord-machinelearning-ransac-img.png
+<br />RAndom SAmple Consensus (RANSAC) sample application
+</p><br />
+
+Here is a more [http://crsouza.blogspot.com.br/2010/06/random-sample-consensus-ransac-in-c.html detailed explanation on how RANSAC works].
