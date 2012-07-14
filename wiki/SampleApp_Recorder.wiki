@@ -1,8 +1,9 @@
 #summary Sample Application: Audio recorder sample application
 #labels Type-SampleApps
 
- * Download [http://accord.googlecode.com/svn/wiki/samples/accord-audio-fourier-bin.zip application]
- * Download [http://accord.googlecode.com/svn/wiki/samples/accord-audio-fourier-src.zip source code]
+ * Download [http://dl.dropbox.com/u/32601472/accord/samples/accord-audio-fourier-bin.zip application]
+ * Download [http://dl.dropbox.com/u/32601472/accord/samples/accord-audio-fourier-src.zip source code]
+ * Browse [https://code.google.com/p/accord/source/browse/trunk#trunk%2FSamples%2FAudio%2FRecording source code online].
 
 The Wave Recorder sample application demonstrates how to use the IAudioOutput and IAudioSource interfaces to capture and output sound. This is just a sample application, however. The intent of the framework is not to allow building of audio players, but to support the use of audio signals in machine learning and statistics experiments.
 
