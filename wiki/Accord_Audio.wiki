@@ -1,0 +1,3 @@
+#summary Accord.Audio namespace
+
+ _This page is about the Audio module of Accord.NET. For general descriptions on Audio, please see [http://en.wikipedia.org/wiki/Audio Audio (Wikipedia)]._
