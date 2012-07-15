@@ -3,11 +3,9 @@
  _This page is about the MachineLearning module of Accord.NET. For general descriptions on Machine Learning, please see [http://en.wikipedia.org/wiki/Machine_learning Machine learning (Wikipedia)]._
 
 
-= Introduction =
+= Accord.MachineLearning =
 
 The [http://accord.googlecode.com/svn/docs/html/N_Accord_MachineLearning.htm Accord.MachineLearning namespace] contains key classes for many machine learning algorithms and related tasks. One of the most prominent tools are the Support Vector Machines (SVMs), located in the [http://accord.googlecode.com/svn/docs/html/N_Accord_MachineLearning_VectorMachines.htm MachineLearning.VectorMachines namespace]. Other interesting applications are given by Decision Trees (DTs), clustering algorithms such as K-Means and meta-algorithms such as Cross-validation and RANSAC.
-
-= Methods and Algorithms =
 
 == Support Vector Machines ==
 
