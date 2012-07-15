@@ -159,7 +159,7 @@ The framework comes with over 25 sample applications demonstrating the framework
   <td>Demonstrates how to use Partial Least Squares to fit a (multiple and multivariate) linear regression model from high-dimensionality data.</td>
 </tr>
 <tr>
-  <td width="104px">[SampleApp_LinearLogisticRegression Logistic Regression]</td>
+  <td width="104px">[SampleApp_LinearLogisticRegression Linear and Logistic Regression Analysis]</td>
   <td>Sample application for creating and fitting Logistic Regression models. Also fits a multiple linear regression model for comparison purposes, and performs chi-square tests and computes Wald's statistics for the logistic regression coefficients.</td>
 </tr>
 <tr>
