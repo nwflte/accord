@@ -1,0 +1,8 @@
+#summary Accord.Statistics namespace
+
+ _This page is about the Statistics module of Accord.NET. For general descriptions on Statistics, please see [http://en.wikipedia.org/wiki/Statistics Statistics (Wikipedia)]._
+
+<br />
+----
+
+ Please take a look on [http://accord.googlecode.com/svn/docs/Index.html the integral Accord.NET documentation] to get a more detailed overview of the available classes, methods and interfaces.
