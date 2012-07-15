@@ -11,7 +11,11 @@
 
 Contributions can be sent in form of patches and feature requests by using the project's issue tracker.
 
-==== SVN Properties ====
+==== Sandcastle ====
+
+The fastest way to get up and running with Sandcastle is to use the [http://sandcastlestyles.codeplex.com/releases/view/86091 Sandcastle Guided Installer].
+
+==== Subversion ====
 
 In order to ensure proper repository properties when committing, please be sure to set up your SVN client with the following properties:
 
