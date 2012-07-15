@@ -2,67 +2,25 @@
 
 This list encompasses the feature set for the current version of the Accord.NET Framework. You may also want to check the [http://www.aforgenet.com/framework/features/ feature list for AForge.NET].
 
- === Accord.Math ===
+ === Accord.Math ([Accord_Math main page]) ===
 
- * [http://crsouza.blogspot.com/2010/08/matrix-manipulation-using-accordnet.html MATLAB-like matrix manipulation of multidimensional-arrays]
- * Matrix parsing and formatting (compatible with Octave, MATLAB and C# formats)
- * Limited-memory Broyden–Fletcher–Goldfarb–Shanno (BFGS) method for non-linear optimization
- * Conjugate-Gradient (CG) method for non-linear optimization
- * Goldfarb-Idnani for constrained Quadratic Programming (QP) solving
- * Special scientific functions (gamma, gammal, erf, bessel, ...)
+ * [http://crsouza.blogspot.com/2010/08/matrix-manipulation-using-accordnet.html Extension Matrix Library]
+   * Parsing & formatting
+   * Linear system solving
+   * Echelon reduction
+ * Optimization
+   * Limited-memory Broyden–Fletcher–Goldfarb–Shanno (BFGS)
+   * Conjugate-Gradient (CG)
+   * Goldfarb-Idnani
+   * Augmented Lagrangian
+   * Brent's root finding
+ * Special scientific functions and constants
+   * Bessel, Beta, Gamma, Normal, Combinatorics, Distances, Norms
  * Wavelet Transforms
    * Haar, CDF97
- * Numeric matrix decompositions for float (32-bit), double (64-bit) and decimal (128-bit) data-types
-
-<table border="0" width="600px">
-<tbody align="left">
-<tr>
-<th>Decompositions</th>
-<th>Multidimensional</th>
-<th>Jagged</th>
-</tr>
-<tr>
-<td>
-Cholesky
-</td>
-<td>(<a href="http://accord.googlecode.com/svn/docs/html/T_Accord_Math_Decompositions_CholeskyDecomposition.htm">double</a>)(<a href="http://accord.googlecode.com/svn/docs/html/T_Accord_Math_Decompositions_CholeskyDecompositionF.htm">float</a>)(<a href="http://accord.googlecode.com/svn/docs/html/T_Accord_Math_Decompositions_CholeskyDecompositionD.htm">decimal</a>)</td>
-<td>(<a href="http://accord.googlecode.com/svn/docs/html/T_Accord_Math_Decompositions_JaggedCholeskyDecomposition.htm">double</a>)(<a href="http://accord.googlecode.com/svn/docs/html/T_Accord_Math_Decompositions_JaggedCholeskyDecompositionF.htm">float</a>)(<a href="http://accord.googlecode.com/svn/docs/html/T_Accord_Math_Decompositions_JaggedCholeskyDecompositionD.htm">decimal</a>)</td>
-</tr>
-<tr>
-<td>Eigenvalue (EVD)</td>
-<td>(<a href="http://accord.googlecode.com/svn/docs/html/T_Accord_Math_Decompositions_EigenvalueDecomposition.htm">double</a>)(<a href="http://accord.googlecode.com/svn/docs/html/T_Accord_Math_Decompositions_EigenvalueDecompositionF.htm">float</a>)</td>
-<td></td>
-</tr>
-<tr>
-<td>Generalized Eigenvalue [<a href="http://crsouza.blogspot.com.br/2010/06/generalized-eigenvalue-decomposition-in.html">1</a>]</td>
-<td>(<a href="http://accord.googlecode.com/svn/docs/html/T_Accord_Math_Decompositions_GeneralizedEigenvalueDecomposition.htm">double</a>)</td>
-<td></td>
-</tr>
-<tr>
-<td>Nonnegative Factorization</td>
-<td>(<a href="http://accord.googlecode.com/svn/docs/html/T_Accord_Math_Decompositions_NonnegativeMatrixFactorization.htm">double</a>)</td>
-<td></td>
-</tr>
-<tr>
-<td>LU</td>
-<td>(<a href="http://accord.googlecode.com/svn/docs/html/T_Accord_Math_Decompositions_LuDecomposition.htm">double</a>)(<a href="http://accord.googlecode.com/svn/docs/html/T_Accord_Math_Decompositions_LuDecompositionF.htm">float</a>)(<a href="http://accord.googlecode.com/svn/docs/html/T_Accord_Math_Decompositions_LuDecompositionD.htm">decimal</a>)</td>
-<td>(<a href="http://accord.googlecode.com/svn/docs/html/T_Accord_Math_Decompositions_JaggedLuDecomposition.htm">double</a>)(<a href="http://accord.googlecode.com/svn/docs/html/T_Accord_Math_Decompositions_LuDecompositionF.htm">float</a>)(<a href="http://accord.googlecode.com/svn/docs/html/T_Accord_Math_Decompositions_JaggedLuDecompositionD.htm">decimal</a>)</td>
-</tr>
-<tr>
-<td>QR</td>
-<td>(<a href="http://accord.googlecode.com/svn/docs/html/T_Accord_Math_Decompositions_QrDecomposition.htm">double</a>)(<a href="http://accord.googlecode.com/svn/docs/html/T_Accord_Math_Decompositions_QrDecompositionF.htm">float</a>)(<a href="http://accord.googlecode.com/svn/docs/html/T_Accord_Math_Decompositions_QrDecompositionD.htm">decimal</a>)</td>
-<td></td>
-</tr>
-<tr>
-<td>Singular value (SVD)</td>
-<td>(<a href="http://accord.googlecode.com/svn/docs/html/T_Accord_Math_Decompositions_SingularValueDecomposition.htm">double</a>)(<a href="http://accord.googlecode.com/svn/docs/html/T_Accord_Math_Decompositions_SingularValueDecompositionF.htm">float</a>)</td>
-<td></td>
-</tr>
-</tbody>
-</table>
-_`*` Further type variants may be implemented under request_
-
-
+ * Numeric matrix decompositions
+   * Cholesky, Eigenvalue, Generalized Eigenvalue, LU, QR, Singular Value, Nonnegative Factorization
+ * Linear system solving
  === Accord.Statistics ===
  * Simple Descriptive Analysis
  * Independent Component Analysis (ICA)
