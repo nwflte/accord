@@ -17,7 +17,7 @@ The framework comes with over 25 sample applications demonstrating the framework
 
 <br />
 
-= [Accord_Audio Accord.Audio] =
+= [Accord_Audio *] Audio =
 
 <table cellspacing="12px" width="840px">
 <tr>
@@ -35,7 +35,7 @@ The framework comes with over 25 sample applications demonstrating the framework
 </table>
 
 <br/>
-= [Accord_Imaging Accord.Imaging] =
+= [Accord_Imaging *] Imaging =
 
 <table cellspacing="12px" width="840px">
 <tr>
@@ -66,7 +66,7 @@ The framework comes with over 25 sample applications demonstrating the framework
 
 
 <br />
-= [Accord_MachineLearning Accord.MachineLearning] =
+= [Accord_MachineLearning *] MachineLearning =
 
 <table cellspacing="12px" width="840px">
 <tr>
@@ -97,7 +97,7 @@ The framework comes with over 25 sample applications demonstrating the framework
 
 
 <br />
-= [Accord_Math Math] =
+= [Accord_Math *] Math =
 
 <table cellspacing="12px" width="840px">
 <tr>
@@ -108,7 +108,7 @@ The framework comes with over 25 sample applications demonstrating the framework
 
 
 <br />
-= [Accord_Neuro Neuro] =
+= [Accord_Neuro *] Neuro =
 
 <table cellspacing="12px" width="840px">
 <tr>
@@ -123,7 +123,7 @@ The framework comes with over 25 sample applications demonstrating the framework
 
 
 <br />
-= [Accord_Statistics Statistics] =
+= [Accord_Statistics *] Statistics =
 
 <table cellspacing="12px" width="840px">
 <tr>
@@ -174,7 +174,7 @@ The framework comes with over 25 sample applications demonstrating the framework
 
 
 <br />
-= [Accord_Vision Vision] =
+= [Accord_Vision *] Vision =
 
 <table cellspacing="12px" width="840px">
 <tr>
