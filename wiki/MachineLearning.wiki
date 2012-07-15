@@ -29,17 +29,17 @@ Moreover, the framework also offers the automatic determination of some learning
 
 Meta-algorithms are algorithms designed to control other algorithms. For instance, consider the RANSAC algorithm, which can be used to create a robust version of any other classification algorithm; or the cross-validation algorithm, which is able to determine more statistically accurate performance estimates for any learning algorithm.
 
-===RANdom SAmple Consensus (RANSAC)===
+====RANdom SAmple Consensus (RANSAC)====
 
 The [http://accord.googlecode.com/svn/docs/html/T_Accord_MachineLearning_RANSAC_1.htm RANdom SAmple Consensus (RANSAC)] algorithm can be used to turn virtually any algorithm in a robust algorithm. It works by learning nested models in different subsets of the data, hoping it will detect outliers (distinguishable data points which could have been the result of noise contamination or data acquisition error) in the process.
 
 One of the most famous application of the RANSAC algorithm is to help detect inliers in homography estimation and image matching, such as demonstrated in the CodeProject article [http://www.codeproject.com/Articles/95453/Automatic-Image-Stitching-with-Accord-NET Automatic Image Stitching with Accord.NET]. A convenience class for achieving such results is available in the Accord.Imaging namespace: [http://accord.googlecode.com/svn/docs/html/T_Accord_Imaging_RansacHomographyEstimator.htm RansacHomographyEstimator].
 
-=== Grid Search ===
+==== Grid Search ====
 
 [http://accord.googlecode.com/svn/docs/html/T_Accord_MachineLearning_GridSearch_1.htm Grid-Search] is a fancy name for selecting the best parameters of a model through a multivariate search. It can be used, for example, to determine the best C and sigma parameters in Gaussian-kernel SVM learning.
 
-=== Cross-validation ===
+==== Cross-validation ====
 
 [http://accord.googlecode.com/svn/docs/html/T_Accord_MachineLearning_CrossValidation_1.htm Cross-validation] is one of the basic methods for reliable performance assessment, absolutely useful when one have limited amounts of data and wish to obtain performance estimates for a given model.
 
