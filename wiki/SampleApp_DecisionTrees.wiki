@@ -1,0 +1,15 @@
+#summary Sample Application: Decision Trees
+#labels Type-SampleApps
+
+ * Download [http://dl.dropbox.com/u/32601472/accord/samples/accord-machinelearning-decisiontrees-bin.zip application]
+ * Download [http://dl.dropbox.com/u/32601472/accord/samples/accord-machinelearning-decisiontrees-src.zip source code]
+ * Browse the [https://code.google.com/p/accord/source/browse/trunk#trunk%2FSamples%2FMachineLearning%2FDecisionTrees source code online]
+
+The Decision Trees sample application demonstrates how to create and use Decision Trees in C#.
+
+<br /><p align="center">
+https://accord.googlecode.com/svn/wiki/samples/accord-machinelearning-decisiontrees-img.png
+<br />Decision Trees sample application
+</p><br />
+
+Decision trees are simple predictive models which map input attributes to a target value using simple conditional rules. Trees are commonly used in problems whose solutions must be readily understandable or explainable by humans, such as in computer-aided diagnostics and credit analysis. A much more [http://crsouza.blogspot.com.br/2012/01/decision-trees-in-c.html#!/2012/01/decision-trees-in-c.html detailed explanation on Decision Trees is also available].
