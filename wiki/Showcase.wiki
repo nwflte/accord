@@ -28,6 +28,9 @@ This page enlists several works which have used Accord.NET in some point of thei
 
 The following papers include at least a citation to the framework, reference material published based on the framework or have used standalone code which now has been incorporated in the framework.
 
+ * Liam Williams, Spotting The Wisdom In The Crowds. Master Thesis on Joint Mathematics and Computer Science. Imperial College London,
+Department of Computing. June, 2012.
+
  * Almeida, R. N., Portuguese Sign Language Recognition via Computer Vision and Depth Sensor. Master Thesis. Lisbon University Institute, Department of Science and Information Technology. October, 2011.
 
  * Alosefer, Y.; Rana, O.F.; "Predicting client-side attacks via behaviour analysis using honeypot data," Next Generation Web Services Practices (NWeSP), 2011 7th International Conference on , vol., no., pp.31-36, 19-21 Oct. 2011
