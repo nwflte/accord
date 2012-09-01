@@ -29,7 +29,7 @@ namespace Accord.Statistics.Kernels
     /// </summary>
     /// 
     [Serializable]
-    public sealed class Linear : IKernel, IDistance
+    public sealed class Linear : IKernel, IDistance, ICloneable
     {
         private double constant;
 
@@ -89,6 +89,20 @@ namespace Accord.Statistics.Kernels
         public double Distance(double[] x, double[] y)
         {
             return Function(x, x) + Function(y, y) - 2.0 * Function(x, y);
+        }
+
+
+        /// <summary>
+        ///   Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A new object that is a copy of this instance.
+        /// </returns>
+        /// 
+        public object Clone()
+        {
+            return MemberwiseClone();
         }
 
     }

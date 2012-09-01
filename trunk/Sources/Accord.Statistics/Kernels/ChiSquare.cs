@@ -33,7 +33,7 @@ namespace Accord.Statistics.Kernels
     /// </remarks>
     /// 
     [Serializable]
-    public sealed class ChiSquare : IKernel
+    public sealed class ChiSquare : IKernel, ICloneable
     {
         /// <summary>
         ///   Constructs a new Chi-Square kernel.
@@ -66,5 +66,17 @@ namespace Accord.Statistics.Kernels
             return 1.0 - sum;
         }
 
+        /// <summary>
+        ///   Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A new object that is a copy of this instance.
+        /// </returns>
+        /// 
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
     }
 }

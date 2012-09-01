@@ -50,7 +50,7 @@ namespace Accord.Statistics.Kernels
     /// </remarks>
     /// 
     [Serializable]
-    public sealed class Wavelet : IKernel
+    public sealed class Wavelet : IKernel, ICloneable
     {
         // Default wavelet mother function : h(x) = cos(1.75x)*exp(-x²/2)
         private Func<double, double> h = (x => Math.Cos(1.75 * x) * Math.Exp(-(x * x) / 2.0));
@@ -186,7 +186,18 @@ namespace Accord.Statistics.Kernels
             return prod;
         }
 
-
+        /// <summary>
+        ///   Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A new object that is a copy of this instance.
+        /// </returns>
+        /// 
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
 
     }
 }

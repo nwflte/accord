@@ -38,7 +38,7 @@ namespace Accord.Statistics.Kernels
     /// </remarks>
     /// 
     [Serializable]
-    public sealed class Sigmoid : IKernel
+    public sealed class Sigmoid : IKernel, ICloneable, IEstimable
     {
         private double alpha;
         private double constant;
@@ -200,6 +200,26 @@ namespace Accord.Statistics.Kernels
             double value = Math.Tanh(alpha * sum + constant);
 
             return value;
+        }
+
+        /// <summary>
+        ///   Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A new object that is a copy of this instance.
+        /// </returns>
+        /// 
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
+
+        void IEstimable.Estimate(double[][] inputs)
+        {
+            var s = Estimate(inputs);
+            this.Alpha = s.Alpha;
+            this.Constant = s.Constant;
         }
 
     }

@@ -39,7 +39,7 @@ namespace Accord.Statistics.Kernels
     /// </remarks>
     /// 
     [Serializable]
-    public sealed class Hypersecant : IKernel
+    public sealed class Hypersecant : IKernel, ICloneable
     {
         private double gamma;
 
@@ -85,6 +85,18 @@ namespace Accord.Statistics.Kernels
             return 2.0 / Math.Exp(gamma * norm) + Math.Exp(-gamma * norm);
         }
 
+        /// <summary>
+        ///   Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A new object that is a copy of this instance.
+        /// </returns>
+        /// 
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
 
     }
 }

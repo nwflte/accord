@@ -33,7 +33,7 @@ namespace Accord.Statistics.Kernels
     /// </remarks>
     /// 
     [Serializable]
-    public sealed class Bessel : IKernel
+    public sealed class Bessel : IKernel, ICloneable
     {
         private int order;
         private double sigma;
@@ -92,6 +92,19 @@ namespace Accord.Statistics.Kernels
 
             return Accord.Math.Bessel.J(order, sigma * norm) /
                 System.Math.Pow(norm, -norm * order);
+        }
+
+        /// <summary>
+        ///   Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A new object that is a copy of this instance.
+        /// </returns>
+        /// 
+        public object Clone()
+        {
+            return MemberwiseClone();
         }
 
     }

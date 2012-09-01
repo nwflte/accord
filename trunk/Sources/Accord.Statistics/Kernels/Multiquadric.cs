@@ -33,7 +33,7 @@ namespace Accord.Statistics.Kernels
     /// </remarks>
     /// 
     [Serializable]
-    public sealed class Multiquadric : IKernel
+    public sealed class Multiquadric : IKernel, ICloneable
     {
 
         private double constant;
@@ -83,6 +83,19 @@ namespace Accord.Statistics.Kernels
             }
 
             return -(norm + constant * constant);
+        }
+
+        /// <summary>
+        ///   Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A new object that is a copy of this instance.
+        /// </returns>
+        /// 
+        public object Clone()
+        {
+            return MemberwiseClone();
         }
 
     }
