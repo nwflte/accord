@@ -113,6 +113,11 @@
             this.Column8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column10 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.numPositiveWeight = new System.Windows.Forms.NumericUpDown();
+            this.label10 = new System.Windows.Forms.Label();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.numNegativeWeight = new System.Windows.Forms.NumericUpDown();
             this.menuStrip1.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.tabSamples.SuspendLayout();
@@ -156,6 +161,9 @@
             this.groupBox11.SuspendLayout();
             this.groupBox6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPerformance)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numPositiveWeight)).BeginInit();
+            this.statusStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numNegativeWeight)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -252,7 +260,7 @@
             this.tabControl.Location = new System.Drawing.Point(0, 24);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(763, 436);
+            this.tabControl.Size = new System.Drawing.Size(763, 457);
             this.tabControl.TabIndex = 14;
             // 
             // tabSamples
@@ -342,10 +350,11 @@
             // tabPage2
             // 
             this.tabPage2.Controls.Add(this.splitContainer3);
+            this.tabPage2.Controls.Add(this.statusStrip1);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(755, 410);
+            this.tabPage2.Size = new System.Drawing.Size(755, 431);
             this.tabPage2.TabIndex = 13;
             this.tabPage2.Text = "Machine Creation";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -363,7 +372,7 @@
             // splitContainer3.Panel2
             // 
             this.splitContainer3.Panel2.Controls.Add(this.groupBox4);
-            this.splitContainer3.Size = new System.Drawing.Size(749, 404);
+            this.splitContainer3.Size = new System.Drawing.Size(749, 403);
             this.splitContainer3.SplitterDistance = 240;
             this.splitContainer3.TabIndex = 13;
             // 
@@ -383,6 +392,8 @@
             this.groupBox3.Controls.Add(this.numSigAlpha);
             this.groupBox3.Controls.Add(this.label8);
             this.groupBox3.Controls.Add(this.label4);
+            this.groupBox3.Controls.Add(this.numNegativeWeight);
+            this.groupBox3.Controls.Add(this.numPositiveWeight);
             this.groupBox3.Controls.Add(this.numC);
             this.groupBox3.Controls.Add(this.numPolyConstant);
             this.groupBox3.Controls.Add(this.numDegree);
@@ -392,13 +403,14 @@
             this.groupBox3.Controls.Add(this.rbLaplacian);
             this.groupBox3.Controls.Add(this.label5);
             this.groupBox3.Controls.Add(this.rbPolynomial);
+            this.groupBox3.Controls.Add(this.label10);
             this.groupBox3.Controls.Add(this.label9);
             this.groupBox3.Controls.Add(this.numLaplacianSigma);
             this.groupBox3.Controls.Add(this.numSigma);
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox3.Location = new System.Drawing.Point(0, 0);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(240, 404);
+            this.groupBox3.Size = new System.Drawing.Size(240, 403);
             this.groupBox3.TabIndex = 8;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Settings";
@@ -408,7 +420,7 @@
             this.btnEstimateSig.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnEstimateSig.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnEstimateSig.Location = new System.Drawing.Point(181, 214);
+            this.btnEstimateSig.Location = new System.Drawing.Point(181, 213);
             this.btnEstimateSig.Name = "btnEstimateSig";
             this.btnEstimateSig.Size = new System.Drawing.Size(53, 47);
             this.btnEstimateSig.TabIndex = 1;
@@ -422,7 +434,7 @@
             this.btnEstimateLaplacian.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnEstimateLaplacian.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnEstimateLaplacian.Location = new System.Drawing.Point(180, 164);
+            this.btnEstimateLaplacian.Location = new System.Drawing.Point(180, 163);
             this.btnEstimateLaplacian.Name = "btnEstimateLaplacian";
             this.btnEstimateLaplacian.Size = new System.Drawing.Size(53, 20);
             this.btnEstimateLaplacian.TabIndex = 1;
@@ -436,7 +448,7 @@
             this.btnEstimateGaussian.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnEstimateGaussian.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnEstimateGaussian.Location = new System.Drawing.Point(185, 41);
+            this.btnEstimateGaussian.Location = new System.Drawing.Point(185, 40);
             this.btnEstimateGaussian.Name = "btnEstimateGaussian";
             this.btnEstimateGaussian.Size = new System.Drawing.Size(53, 20);
             this.btnEstimateGaussian.TabIndex = 1;
@@ -450,7 +462,7 @@
             this.btnEstimateC.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnEstimateC.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnEstimateC.Location = new System.Drawing.Point(181, 281);
+            this.btnEstimateC.Location = new System.Drawing.Point(181, 280);
             this.btnEstimateC.Name = "btnEstimateC";
             this.btnEstimateC.Size = new System.Drawing.Size(53, 20);
             this.btnEstimateC.TabIndex = 1;
@@ -463,9 +475,9 @@
             // 
             this.btnSampleRunAnalysis.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSampleRunAnalysis.Location = new System.Drawing.Point(6, 333);
+            this.btnSampleRunAnalysis.Location = new System.Drawing.Point(6, 358);
             this.btnSampleRunAnalysis.Name = "btnSampleRunAnalysis";
-            this.btnSampleRunAnalysis.Size = new System.Drawing.Size(228, 65);
+            this.btnSampleRunAnalysis.Size = new System.Drawing.Size(228, 39);
             this.btnSampleRunAnalysis.TabIndex = 1;
             this.btnSampleRunAnalysis.Text = "Create Machine";
             this.btnSampleRunAnalysis.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
@@ -482,7 +494,7 @@
             0,
             0,
             65536});
-            this.numT.Location = new System.Drawing.Point(94, 307);
+            this.numT.Location = new System.Drawing.Point(94, 333);
             this.numT.Name = "numT";
             this.numT.Size = new System.Drawing.Size(139, 20);
             this.numT.TabIndex = 7;
@@ -692,7 +704,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(18, 309);
+            this.label9.Location = new System.Drawing.Point(18, 335);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(55, 13);
             this.label9.TabIndex = 3;
@@ -746,7 +758,7 @@
             this.groupBox4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox4.Location = new System.Drawing.Point(0, 0);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(505, 404);
+            this.groupBox4.Size = new System.Drawing.Size(505, 403);
             this.groupBox4.TabIndex = 8;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Visualization";
@@ -763,7 +775,7 @@
             this.zedGraphControl2.ScrollMinX = 0D;
             this.zedGraphControl2.ScrollMinY = 0D;
             this.zedGraphControl2.ScrollMinY2 = 0D;
-            this.zedGraphControl2.Size = new System.Drawing.Size(499, 385);
+            this.zedGraphControl2.Size = new System.Drawing.Size(499, 384);
             this.zedGraphControl2.TabIndex = 3;
             // 
             // tabOverview
@@ -1119,11 +1131,78 @@
             this.Column9.ReadOnly = true;
             this.Column9.Visible = false;
             // 
+            // numPositiveWeight
+            // 
+            this.numPositiveWeight.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.numPositiveWeight.DecimalPlaces = 7;
+            this.numPositiveWeight.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.numPositiveWeight.Location = new System.Drawing.Point(94, 307);
+            this.numPositiveWeight.Name = "numPositiveWeight";
+            this.numPositiveWeight.Size = new System.Drawing.Size(66, 20);
+            this.numPositiveWeight.TabIndex = 7;
+            this.numPositiveWeight.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.numPositiveWeight.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(20, 309);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(56, 13);
+            this.label10.TabIndex = 3;
+            this.label10.Text = "Cost Ratio";
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel1});
+            this.statusStrip1.Location = new System.Drawing.Point(3, 406);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(749, 22);
+            this.statusStrip1.TabIndex = 14;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(118, 17);
+            this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
+            // 
+            // numNegativeWeight
+            // 
+            this.numNegativeWeight.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.numNegativeWeight.DecimalPlaces = 7;
+            this.numNegativeWeight.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
+            this.numNegativeWeight.Location = new System.Drawing.Point(166, 307);
+            this.numNegativeWeight.Name = "numNegativeWeight";
+            this.numNegativeWeight.Size = new System.Drawing.Size(67, 20);
+            this.numNegativeWeight.TabIndex = 7;
+            this.numNegativeWeight.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.numNegativeWeight.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(763, 460);
+            this.ClientSize = new System.Drawing.Size(763, 481);
             this.Controls.Add(this.tabControl);
             this.Controls.Add(this.menuStrip1);
             this.Name = "MainForm";
@@ -1140,6 +1219,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvLearningSource)).EndInit();
             this.groupBox15.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
+            this.tabPage2.PerformLayout();
             this.splitContainer3.Panel1.ResumeLayout(false);
             this.splitContainer3.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
@@ -1173,6 +1253,10 @@
             this.groupBox11.ResumeLayout(false);
             this.groupBox6.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvPerformance)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numPositiveWeight)).EndInit();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numNegativeWeight)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1254,6 +1338,11 @@
         private System.Windows.Forms.NumericUpDown numLaplacianSigma;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.NumericUpDown numPolyConstant;
+        private System.Windows.Forms.NumericUpDown numPositiveWeight;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.NumericUpDown numNegativeWeight;
     }
 }
 

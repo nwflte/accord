@@ -31,11 +31,15 @@ using Accord.MachineLearning;
 using Accord.Imaging;
 using Accord.Math;
 using Accord.Statistics;
+using Accord.Imaging.Converters;
 
 namespace KMeansClustering
 {
     public partial class MainForm : Form
     {
+
+       
+
         public MainForm()
         {
             InitializeComponent();
@@ -49,8 +53,12 @@ namespace KMeansClustering
             // Load original image
             Bitmap image = Properties.Resources.leaf;
 
+            // Create conversors
+            ImageToArray imageToArray = new ImageToArray(min: -1, max: +1);
+            ArrayToImage arrayToImage = new ArrayToImage(image.Width, image.Height, min: -1, max: +1);
+
             // Transform the image into an array of pixel values
-            double[][] pixels = image.ToDoubleArray();
+            double[][] pixels; imageToArray.Convert(image, out pixels);
 
 
             // Create a K-Means algorithm using given k and a
@@ -66,7 +74,9 @@ namespace KMeansClustering
             pixels.ApplyInPlace((x, i) => kmeans.Clusters.Centroids[idx[i]]);
 
             // Show resulting image in the picture box
-            pictureBox.Image = pixels.ToBitmap(image.Width, image.Height);
+            Bitmap result; arrayToImage.Convert(pixels, out result);
+
+            pictureBox.Image = result;
         }
 
         private void button2_Click(object sender, EventArgs e)

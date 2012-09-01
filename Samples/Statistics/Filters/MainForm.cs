@@ -80,7 +80,7 @@ namespace DataProcessing
 
         private void equalizationToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            filters.Add(new FilterDescriptor(new Equalization(), "Equalization"));
+            filters.Add(new FilterDescriptor(new Stratification(), "Equalization"));
         }
 
         private void scalingToolStripMenuItem_Click(object sender, EventArgs e)
@@ -93,6 +93,10 @@ namespace DataProcessing
             filters.Add(new FilterDescriptor(new Projection(), "Projection"));
         }
 
+        private void groupingToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            filters.Add(new FilterDescriptor(new Grouping(), "Grouping"));
+        }
 
         private void dataGridView2_CurrentCellChanged(object sender, EventArgs e)
         {
@@ -149,6 +153,8 @@ namespace DataProcessing
         {
             apply();
         }
+
+   
 
         
 

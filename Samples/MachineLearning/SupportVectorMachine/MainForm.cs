@@ -37,6 +37,7 @@ using ZedGraph;
 using Accord.Statistics.Formats;
 using Accord.MachineLearning;
 using AForge;
+using Accord;
 
 
 namespace SVMs
@@ -124,17 +125,32 @@ namespace SVMs
             // Creates the Support Vector Machine using the selected kernel
             svm = new KernelSupportVectorMachine(kernel, 2);
 
-            // Creates a new instance of the SMO Learning Algortihm
+            // Creates a new instance of the SMO Learning Algorithm
             smo = new SequentialMinimalOptimization(svm, inputs.ToArray(), labels);
 
             // Set learning parameters
             smo.Complexity = (double)numC.Value;
             smo.Tolerance = (double)numT.Value;
+            smo.PositiveWeight = (double)numPositiveWeight.Value;
+            smo.NegativeWeight = (double)numNegativeWeight.Value;
 
-            // Run
-            double error = smo.Run();
+            bool converged = true;
 
-            numC.Value = (decimal)smo.Complexity;
+            try
+            {
+                // Run
+                double error = smo.Run();
+            }
+            catch (ConvergenceException)
+            {
+                converged = false;
+            }
+
+            if (converged)
+                toolStripStatusLabel1.Text = "Convergence reached.";
+            else
+                toolStripStatusLabel1.Text = "Convergence could not be attained.";
+
 
             // Show support vectors
             double[,] supportVectors = svm.SupportVectors.ToMatrix();
@@ -401,26 +417,25 @@ namespace SVMs
 
         private IKernel getKernel()
         {
-            IKernel kernel;
             if (rbGaussian.Checked)
             {
-                kernel = new Gaussian((double)numSigma.Value);
+                return new Gaussian((double)numSigma.Value);
             }
             else if (rbPolynomial.Checked)
             {
-                kernel = new Polynomial((int)numDegree.Value, (double)numSigAlpha.Value);
+                if (numDegree.Value == 1)
+                    return new Linear((double)numPolyConstant.Value);
+                return new Polynomial((int)numDegree.Value, (double)numPolyConstant.Value);
             }
             else if (rbLaplacian.Checked)
             {
-                kernel = new Laplacian((double)numLaplacianSigma.Value);
+                return new Laplacian((double)numLaplacianSigma.Value);
             }
             else if (rbSigmoid.Checked)
             {
-                kernel = new Sigmoid((double)numSigAlpha.Value, (double)numSigB.Value);
+                return new Sigmoid((double)numSigAlpha.Value, (double)numSigB.Value);
             }
             else throw new Exception();
-
-            return kernel;
         }
 
         private void btnEstimateGaussian_Click(object sender, EventArgs e)

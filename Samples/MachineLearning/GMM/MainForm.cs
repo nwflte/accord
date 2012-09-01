@@ -62,7 +62,7 @@ namespace GMM
             for (int i = 0; i < k; i++)
             {
                 // Create random centroid to place the Gaussian distribution
-                var mean = Matrix.Random(2, -6.0, +6.0);
+                double[] mean = Matrix.Random(2, -6.0, +6.0);
 
                 // Create random covariance matrix for the distribution
                 double[,] covariance;
@@ -102,7 +102,7 @@ namespace GMM
             gmm.Compute(mixture);
 
             // Classify all instances in mixture data
-            int[] classifications = gmm.Classify(mixture);
+            int[] classifications = gmm.Gaussians.Nearest(mixture);
 
             // Draw the classifications
             updateGraph(classifications);
@@ -133,7 +133,7 @@ namespace GMM
             kmeans.Compute(mixture);
 
             // Classify all instances in mixture data
-            int[] classifications = kmeans.Nearest(mixture);
+            int[] classifications = kmeans.Clusters.Compute(mixture);
 
             // Draw the classifications
             updateGraph(classifications);
