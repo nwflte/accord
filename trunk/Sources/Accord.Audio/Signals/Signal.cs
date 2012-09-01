@@ -29,38 +29,45 @@ namespace Accord.Audio
     /// <summary>
     ///   Specifies the format of each sample in a signal.
     /// </summary>
+    /// 
     public enum SampleFormat
     {
         /// <summary>
         ///   Specifies the format is 8 bit, unsigned.
         /// </summary>
+        /// 
         Format8BitUnsigned,
         
         /// <summary>
         ///   Specifies the format is 8 bit, signed.
         /// </summary>
+        /// 
         Format8Bit,
 
         /// <summary>
         ///   Specifies the format is 16 bit, signed.
         /// </summary>
+        /// 
         Format16Bit,
 
         /// <summary>
         ///   Specifies the format is 32 bit, signed.
         /// </summary>
+        /// 
         Format32Bit,
 
         /// <summary>
         ///   Specifies the format is 32 bit, represented by
         ///   single-precision IEEE floating-point numbers.
         /// </summary>
+        /// 
         Format32BitIeeeFloat,
 
         /// <summary>
         ///   Specifies the format is 64 bit, represented by
         ///   double-precision IEEE floating-point numbers.
         /// </summary>
+        /// 
         Format64BitIeeeFloat,
 
         /// <summary>
@@ -68,6 +75,7 @@ namespace Accord.Audio
         ///   complex numbers with real and imaginary parts as
         ///   double-precision IEEE floating-point numbers.
         /// </summary>
+        /// 
         Format128BitComplex,
     }
 
@@ -175,6 +183,7 @@ namespace Accord.Audio
         /// <summary>
         ///   Gets a pointer to the first sample of the signal.
         /// </summary>
+        /// 
         public IntPtr Data
         {
             get { return ptrData; }
@@ -187,11 +196,13 @@ namespace Accord.Audio
         /// <summary>
         ///   Constructs a new signal.
         /// </summary>
+        /// 
         /// <param name="data">The raw data for the signal.</param>
         /// <param name="channels">The number of channels for the signal.</param>
         /// <param name="length">The length of the signal.</param>
         /// <param name="format">The sample format for the signal.</param>
         /// <param name="sampleRate">The sample date of the signal.</param>
+        /// 
         public Signal(byte[] data, int channels, int length, int sampleRate, SampleFormat format)
         {
             init(data, channels, length, sampleRate, format);
@@ -200,10 +211,12 @@ namespace Accord.Audio
         /// <summary>
         ///   Constructs a new Signal.
         /// </summary>
+        /// 
         /// <param name="channels">The number of channels for the signal.</param>
         /// <param name="length">The length of the signal.</param>
         /// <param name="format">The sample format for the signal.</param>
         /// <param name="sampleRate">The sample date of the signal.</param>
+        /// 
         public Signal(int channels, int length, int sampleRate, SampleFormat format)
         {
             int sampleSize = GetSampleSize(format);
@@ -229,6 +242,7 @@ namespace Accord.Audio
         /// <summary>
         ///   Computes the signal energy.
         /// </summary>
+        /// 
         public unsafe double GetEnergy()
         {
             double e = 0, v;
@@ -257,11 +271,13 @@ namespace Accord.Audio
         /// <summary>
         ///   Gets the value of the specified sample in the Signal.
         /// </summary>
+        /// 
         /// <param name="channel">The channel's index of the sample to set.</param>
         /// <param name="position">The position of the sample to set.</param>
         /// <returns>A floating-point value ranging from -1 to 1 representing
         ///   the retrieved value. Conversion is performed automatically from
         ///   the underlying signal sample format if supported.</returns>
+        ///   
         public unsafe float GetSample(int channel, int position)
         {
             void* ptr = ptrData.ToPointer();
@@ -280,11 +296,13 @@ namespace Accord.Audio
         /// <summary>
         ///   Sets the value of the specified sample in the Signal.
         /// </summary>
+        /// 
         /// <param name="channel">The channel's index of the sample to set.</param>
         /// <param name="position">The position of the sample to set.</param>
         /// <param name="value">A floating-point value ranging from -1 to 1
         ///   specifying the value to set. Conversion will be done automatically
         ///   to the underlying signal sample format if supported.</param>
+        ///   
         public unsafe void SetSample(int channel, int position, float value)
         {
             void* ptr = ptrData.ToPointer();
@@ -304,6 +322,7 @@ namespace Accord.Audio
         /// <summary>
         ///   Creates a new Signal from a float array.
         /// </summary>
+        /// 
         public static Signal FromArray(Array signal, int sampleRate)
         {
             int channels = signal.Rank == 1 ? 1 : signal.GetLength(1);
@@ -313,6 +332,7 @@ namespace Accord.Audio
         /// <summary>
         ///   Converts this signal to a ComplexSignal object.
         /// </summary>
+        /// 
         public ComplexSignal ToComplex()
         {
             if (format == SampleFormat.Format128BitComplex)
@@ -380,6 +400,7 @@ namespace Accord.Audio
         /// <summary>
         ///   Gets the number of samples contained in a signal of given duration and sampling rate.
         /// </summary>
+        /// 
         public static int NumberOfSamples(int duration, int samplingRate)
         {
             return (duration / 1000) * samplingRate;
@@ -388,6 +409,7 @@ namespace Accord.Audio
         /// <summary>
         ///   Gets the duration of each sample in a signal with the given number of samples and sampling rate.
         /// </summary>
+        /// 
         public static int DurationOfSamples(int samples, int samplingRate)
         {
             return (int)(samples / (double)samplingRate * 1000.0);
@@ -396,6 +418,7 @@ namespace Accord.Audio
         /// <summary>
         ///   Gets the size (in bytes) of a sample format.
         /// </summary>
+        /// 
         public static int GetSampleSize(SampleFormat format)
         {
             switch (format)
