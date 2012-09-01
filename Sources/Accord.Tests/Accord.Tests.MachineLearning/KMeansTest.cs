@@ -124,7 +124,7 @@ namespace Accord.Tests.MachineLearning
             Assert.AreNotEqual(labels[0], labels[6]);
 
 
-            int[] labels2 = kmeans.Nearest(observations);
+            int[] labels2 = kmeans.Clusters.Compute(observations);
             Assert.IsTrue(labels.IsEqual(labels2));
 
             // the data must not have changed!

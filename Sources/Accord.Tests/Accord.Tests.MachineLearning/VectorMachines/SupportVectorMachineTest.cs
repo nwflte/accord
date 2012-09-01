@@ -30,6 +30,7 @@ namespace Accord.Tests.MachineLearning
     using System.IO;
     using Accord.Math;
     using Accord.Math.Formats;
+    using Accord.Statistics.Analysis;
 
     [TestClass()]
     public class SupportVectorMachineTest
@@ -208,7 +209,6 @@ namespace Accord.Tests.MachineLearning
         [TestMethod()]
         public void ComputeTest4()
         {
-            // XOR
             double[][] inputs = training.Submatrix(null, 0, 3);
 
             int[] labels = Tools.Scale(0, 1, -1, 1, training.GetColumn(4)).ToInt32();
@@ -238,7 +238,146 @@ namespace Accord.Tests.MachineLearning
             };
 
             Assert.IsTrue(expectedWeights.IsEqual(machine.Weights, 1e-6));
+
+            int[] actual = new int[labels.Length];
+            for (int i = 0; i < actual.Length; i++)
+                actual[i] = Math.Sign(machine.Compute(inputs[i]));
+
+            ConfusionMatrix matrix = new ConfusionMatrix(actual, labels);
+
+            Assert.AreEqual(8, matrix.FalseNegatives);
+            Assert.AreEqual(0, matrix.FalsePositives);
+            Assert.AreEqual(4, matrix.TruePositives);
+            Assert.AreEqual(30, matrix.TrueNegatives);
+
+            Assert.AreEqual(1 / 3.0, matrix.Sensitivity);
+            Assert.AreEqual(1, matrix.Specificity);
+
+            Assert.AreEqual(0.5, matrix.FScore);
+            Assert.AreEqual(0.5129891760425771, matrix.MatthewsCorrelationCoefficient);
         }
+
+        [TestMethod()]
+        public void ComputeTest5()
+        {
+            double[][] inputs = training.Submatrix(null, 0, 3);
+
+            int[] labels = Tools.Scale(0, 1, -1, 1, training.GetColumn(4)).ToInt32();
+
+            Gaussian kernel = Gaussian.Estimate(inputs);
+
+            var machine = new KernelSupportVectorMachine(kernel, inputs[0].Length);
+
+            var smo = new SequentialMinimalOptimization(machine, inputs, labels);
+
+
+            smo.Complexity = 1.0;
+            smo.UseClassProportions = true;
+
+            double error = smo.Run();
+
+            Assert.AreEqual(1, smo.Complexity);
+            Assert.AreEqual(0.4, smo.PositiveWeight);
+            Assert.AreEqual(1.0, smo.NegativeWeight);
+            Assert.AreEqual(0.4, smo.WeightRatio, 1e-10);
+            Assert.AreEqual(0.38095238095238093, error);
+            Assert.AreEqual(265.78327637381551, (machine.Kernel as Gaussian).Sigma);
+            Assert.AreEqual(32, machine.SupportVectors.Length);
+
+
+            int[] actual = new int[labels.Length];
+            for (int i = 0; i < actual.Length; i++)
+                actual[i] = Math.Sign(machine.Compute(inputs[i]));
+
+            ConfusionMatrix matrix = new ConfusionMatrix(actual, labels);
+
+            Assert.AreEqual(7, matrix.FalseNegatives);
+            Assert.AreEqual(9, matrix.FalsePositives);
+            Assert.AreEqual(5, matrix.TruePositives);
+            Assert.AreEqual(21, matrix.TrueNegatives);
+
+            Assert.AreEqual(0.41666666666666669, matrix.Sensitivity);
+            Assert.AreEqual(0.7, matrix.Specificity);
+        }
+
+        [TestMethod()]
+        public void ComputeTest6()
+        {
+            double[][] inputs = training.Submatrix(null, 0, 3);
+
+            int[] labels = Tools.Scale(0, 1, -1, 1, training.GetColumn(4)).ToInt32();
+
+            Gaussian kernel = Gaussian.Estimate(inputs);
+
+            {
+                var machine = new KernelSupportVectorMachine(kernel, inputs[0].Length);
+                var smo = new SequentialMinimalOptimization(machine, inputs, labels);
+
+                smo.Complexity = 1.0;
+                smo.WeightRatio = 30 / 12.0;
+
+                double error = smo.Run();
+
+                Assert.AreEqual(1, smo.PositiveWeight);
+                Assert.AreEqual(0.4, smo.NegativeWeight);
+                Assert.AreEqual(0.21428571428571427, error);
+                Assert.AreEqual(265.78327637381551, (machine.Kernel as Gaussian).Sigma);
+                Assert.AreEqual(34, machine.SupportVectors.Length);
+
+
+                int[] actual = new int[labels.Length];
+                for (int i = 0; i < actual.Length; i++)
+                    actual[i] = Math.Sign(machine.Compute(inputs[i]));
+
+                ConfusionMatrix matrix = new ConfusionMatrix(actual, labels);
+
+                Assert.AreEqual(9, matrix.FalseNegatives);
+                Assert.AreEqual(0, matrix.FalsePositives);
+                Assert.AreEqual(3, matrix.TruePositives);
+                Assert.AreEqual(30, matrix.TrueNegatives);
+
+                Assert.AreEqual(0.25, matrix.Sensitivity);
+                Assert.AreEqual(1.0, matrix.Specificity);
+
+                Assert.AreEqual(0.4, matrix.FScore);
+                Assert.AreEqual(0.4385290096535146, matrix.MatthewsCorrelationCoefficient);
+            }
+
+            {
+                var machine = new KernelSupportVectorMachine(kernel, inputs[0].Length);
+                var smo = new SequentialMinimalOptimization(machine, inputs, labels);
+
+                smo.Complexity = 1.0;
+                smo.WeightRatio = 12 / 30.0;
+
+                double error = smo.Run();
+
+                Assert.AreEqual(0.4, smo.PositiveWeight);
+                Assert.AreEqual(1.0, smo.NegativeWeight);
+                Assert.AreEqual(0.38095238095238093, error);
+                Assert.AreEqual(265.78327637381551, (machine.Kernel as Gaussian).Sigma);
+                Assert.AreEqual(32, machine.SupportVectors.Length);
+
+
+                int[] actual = new int[labels.Length];
+                for (int i = 0; i < actual.Length; i++)
+                    actual[i] = Math.Sign(machine.Compute(inputs[i]));
+
+                ConfusionMatrix matrix = new ConfusionMatrix(actual, labels);
+
+                Assert.AreEqual(7, matrix.FalseNegatives);
+                Assert.AreEqual(9, matrix.FalsePositives);
+                Assert.AreEqual(5, matrix.TruePositives);
+                Assert.AreEqual(21, matrix.TrueNegatives);
+
+                Assert.AreEqual(0.41666666666666669, matrix.Sensitivity);
+                Assert.AreEqual(0.7, matrix.Specificity);
+
+                Assert.AreEqual(0.38461538461538458, matrix.FScore);
+                Assert.AreEqual(0.27950849718747373, matrix.MatthewsCorrelationCoefficient);
+            }
+        }
+
 
         [TestMethod()]
         public void LoadTest1()

@@ -20,29 +20,20 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics.Filters;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Data;
-
 namespace Accord.Tests.Statistics
 {
-    
-    
-    /// <summary>
-    ///This is a test class for EqualizingFilterTest and is intended
-    ///to contain all EqualizingFilterTest Unit Tests
-    ///</summary>
+    using Accord.Statistics.Testing;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System;
+
+
     [TestClass()]
-    public class EqualizingFilterTest
+    public class MultinomialTestTest
     {
 
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -86,51 +77,27 @@ namespace Accord.Tests.Statistics
         #endregion
 
 
-        /// <summary>
-        ///A test for Apply
-        ///</summary>
         [TestMethod()]
-        public void ApplyTest()
+        public void MultinomialTestConstructorTest()
         {
-            DataTable data = new DataTable("Sample data");
-            data.Columns.Add("x", typeof(double));
-            data.Columns.Add("Class", typeof(int));
-            data.Rows.Add(0.21, 0);
-            data.Rows.Add(0.25, 0);
-            data.Rows.Add(0.54, 0);
-            data.Rows.Add(0.19, 1);
+            // Example from http://www.stat.berkeley.edu/~stark/SticiGui/Text/chiSquare.htm
 
-            DataTable expected = new DataTable("Sample data");
-            expected.Columns.Add("x", typeof(double));
-            expected.Columns.Add("Class", typeof(int));
-            expected.Rows.Add(0.21, 0);
-            expected.Rows.Add(0.25, 0);
-            expected.Rows.Add(0.54, 0);
-            expected.Rows.Add(0.19, 1);
-            expected.Rows.Add(0.19, 1);
-            expected.Rows.Add(0.19, 1);
+            int[] sample = { 45, 41, 9 };
+            double[] hypothesizedProportion = { 18 / 38.0, 18 / 38.0, 2 / 38.0 };
+
+            MultinomialTest target = new MultinomialTest(sample, hypothesizedProportion);
+
+            Assert.AreEqual(18 / 38.0, target.HypothesizedProportions[0]);
+            Assert.AreEqual(18 / 38.0, target.HypothesizedProportions[1]);
+            Assert.AreEqual(2 / 38.0, target.HypothesizedProportions[2]);
+
+            Assert.AreEqual(45 / 95.0, target.ObservedProportions[0]);
+            Assert.AreEqual(41 / 95.0, target.ObservedProportions[1]);
+            Assert.AreEqual(9 / 95.0, target.ObservedProportions[2]);
 
 
-            DataTable actual;
-
-            Stratification target = new Stratification("Class");
-            target.Columns["Class"].Classes = new int[] { 0, 1 };
-            
-            actual = target.Apply(data);
-
-            for (int i = 0; i < actual.Rows.Count; i++)
-            {
-                double ex = (double)expected.Rows[i][0];
-                int ec = (int)expected.Rows[i][1];
-
-                double ax = (double)actual.Rows[i][0];
-                int ac = (int)actual.Rows[i][1];
-
-                Assert.AreEqual(ex, ax);
-                Assert.AreEqual(ec, ac);                    
-                
-            }
-            
+            Assert.AreEqual(3.55555556, target.Statistic, 1e-5);
         }
+
     }
 }

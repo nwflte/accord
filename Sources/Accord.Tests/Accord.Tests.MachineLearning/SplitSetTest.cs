@@ -24,13 +24,17 @@ namespace Accord.Tests.MachineLearning
 {
     using Accord.MachineLearning;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Accord.MachineLearning.VectorMachines;
-    using Accord.MachineLearning.VectorMachines.Learning;
+    using System;
     using Accord.Math;
+    using Accord.Statistics;
+    using Accord.MachineLearning.VectorMachines;
     using Accord.Statistics.Kernels;
+    using Accord.MachineLearning.VectorMachines.Learning;
+    using Accord.Statistics.Analysis;
+
 
     [TestClass()]
-    public class CrossvalidationTest
+    public class SplitSetTest
     {
 
 
@@ -79,13 +83,14 @@ namespace Accord.Tests.MachineLearning
         #endregion
 
 
+
         [TestMethod()]
-        public void CrossvalidationConstructorTest()
+        public void SplitSetConstructorTest1()
         {
 
             Accord.Math.Tools.SetupGenerator(0);
 
-            // This is a sample code on how to use Cross-Validation
+            // This is a sample code on how to use two split sets
             // to assess the performance of Support Vector Machines.
 
             // Consider the example binary data. We will be trying
@@ -117,13 +122,13 @@ namespace Accord.Tests.MachineLearning
             };
 
 
-            // Create a new Cross-validation algorithm passing the data set size and the number of folds
-            var crossvalidation = new CrossValidation<KernelSupportVectorMachine>(size: data.Length, folds: 3);
+            // Create a new split set validation algorithm passing the set size and the split set proportion
+            var splitset = new SplitSetValidation<KernelSupportVectorMachine>(size: data.Length, proportion: 0.4);
 
             // Define a fitting function using Support Vector Machines. The objective of this
-            // function is to learn a SVM in the subset of the data dicted by cross-validation.
+            // function is to learn a SVM in the subset of the data dicted by the split sets.
 
-            crossvalidation.Fitting = delegate(int k, int[] indicesTrain, int[] indicesValidation)
+            splitset.Fitting = delegate(int[] indicesTrain)
             {
                 // The fitting function is passing the indices of the original set which
                 // should be considered training data and the indices of the original set
@@ -133,11 +138,6 @@ namespace Accord.Tests.MachineLearning
                 var trainingInputs = data.Submatrix(indicesTrain);
                 var trainingOutputs = xor.Submatrix(indicesTrain);
 
-                // And now the validation data:
-                var validationInputs = data.Submatrix(indicesValidation);
-                var validationOutputs = xor.Submatrix(indicesValidation);
-
-
                 // Create a Kernel Support Vector Machine to operate on the set
                 var svm = new KernelSupportVectorMachine(new Polynomial(2), 2);
 
@@ -146,27 +146,51 @@ namespace Accord.Tests.MachineLearning
 
                 double trainingError = smo.Run();
 
-                // Now we can compute the validation error on the validation data:
-                double validationError = smo.ComputeError(validationInputs, validationOutputs);
+                // Compute results for the training set
+                int[] computedOutputs = trainingInputs.Apply(svm.Compute).Apply(Math.Sign);
 
-                // Return a new information structure containing the model and the errors achieved.
-                return new CrossValidationValues<KernelSupportVectorMachine>(svm, trainingError, validationError);
+                // Compute the absolute error
+                int[] errors = (computedOutputs.Subtract(trainingOutputs)).Abs();
+
+                // Retrieve error statistics
+                double mean = errors.Mean();
+                double variance = errors.Variance();
+
+                // Return a new information structure containing the model and the errors.
+                return SplitSetStatistics.Create(svm, trainingInputs.Length, mean, variance);
+
+            };
+
+            splitset.Evaluation = delegate(int[] indicesValidation, KernelSupportVectorMachine svm)
+            {
+                // Lets now grab the training data:
+                var validationInputs = data.Submatrix(indicesValidation);
+                var validationOutputs = xor.Submatrix(indicesValidation);
+
+                // Compute results for the validation set
+                int[] computedOutputs = validationInputs.Apply(svm.Compute).Apply(Math.Sign);
+
+                // Compute the absolute error
+                int[] errors = (computedOutputs.Subtract(validationOutputs)).Abs();
+
+                // Retrieve error statistics
+                double mean = errors.Mean();
+                double variance = errors.Variance();
+
+                // Return a new information structure containing the model and the errors.
+                return SplitSetStatistics.Create(svm, validationInputs.Length, mean, variance);
             };
 
 
-            // Compute the cross-validation
-            var result = crossvalidation.Compute();
+            // Compute the bootstrap estimate
+            var result = splitset.Compute();
 
             // Finally, access the measured performance.
-            double trainingErrors = result.Training.Mean;
-            double validationErrors = result.Validation.Mean;
+            double trainingErrors = result.Training.Value;
+            double validationErrors = result.Validation.Value;
 
-            Assert.AreEqual(3, crossvalidation.K);
-            Assert.AreEqual(0, result.Training.Mean);
-            Assert.AreEqual(0, result.Validation.Mean);
-
-            Assert.AreEqual(3, crossvalidation.Folds.Length);
-            Assert.AreEqual(3, result.Models.Length);
+            Assert.AreEqual(0, trainingErrors);
+            Assert.AreEqual(0, validationErrors);
         }
 
     }

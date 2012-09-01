@@ -204,7 +204,7 @@ namespace Accord.Tests.Statistics
         [TestMethod()]
         public void TransformTest4()
         {
-            // Tested against R's kernelab
+            // Tested against R's kernlab
 
             // test <-   c(16, 117, 94, 132, 13, 73, 68, 129, 91, 50, 56, 12, 145, 105, 35, 53, 38, 51, 85, 116)
             int[] test = { 15, 116, 93, 131, 12, 72, 67, 128, 90, 49, 55, 11, 144, 104, 34, 52, 37, 50, 84, 115 };

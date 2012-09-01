@@ -57,6 +57,29 @@ namespace Accord.Tests.Math
         //
         #endregion
 
+        [TestMethod()]
+        public void ConstructorTest()
+        {
+
+            // Suppose we were given the function x³ + 2x² - 10x and 
+            // we have to find its root, maximum and minimum inside 
+            // the interval [-4,3]. First, we express this function
+            // as a lambda expression:
+            Func<double, double> function = x => x * x * x + 2 * x * x - 10 * x;
+
+            // And now we can create the search algorithm:
+            BrentSearch search = new BrentSearch(function, -4, 3);
+
+            // Finally, we can query the information we need
+            double max = search.Maximize();  // occurs at -2.61
+            double min = search.Minimize();  // occurs at  1.27
+            double root = search.FindRoot(); // occurs at  0.50
+
+            Assert.AreEqual(-2.6103173042172645, max);
+            Assert.AreEqual(1.2769840667540548, min);
+            Assert.AreEqual(-0.5, root);
+        }
+
 
         [TestMethod()]
         public void FindRootTest()

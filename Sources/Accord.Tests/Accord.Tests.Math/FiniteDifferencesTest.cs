@@ -20,18 +20,14 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Math.Optimization;
-using Accord.Math;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Accord.Math.Differentiation;
 namespace Accord.Tests.Math
 {
+    using Accord.Math.Optimization;
+    using Accord.Math;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Accord.Math.Differentiation;
+    using System;
 
-
-    /// <summary>
-    ///This is a test class for FiniteDifferencesTest and is intended
-    ///to contain all FiniteDifferencesTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class FiniteDifferencesTest
     {
@@ -39,10 +35,6 @@ namespace Accord.Tests.Math
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -86,16 +78,11 @@ namespace Accord.Tests.Math
         #endregion
 
 
-        /// <summary>
-        ///A test for Compute
-        ///</summary>
         [TestMethod()]
         public void ComputeTest()
         {
             int numberOfParameters = 2;
             FiniteDifferences target = new FiniteDifferences(numberOfParameters);
-
-
 
             double[] inputs = { -1, 0.4 };
 
@@ -107,6 +94,27 @@ namespace Accord.Tests.Math
             Assert.IsTrue(expected.IsEqual(actual, 0.05));
         }
 
+        [TestMethod()]
+        public void ComputeTest2()
+        {
+            // Create a simple function with two parameters: f(x,y) = x² + y
+            Func<double[], double> function = x => Math.Pow(x[0], 2) + x[1];
+
+            // The gradient w.r.t to x should be 2x,
+            // the gradient w.r.t to y should be  1
+
+
+            // Create a new finite differences calculator
+            var calculator = new FiniteDifferences(2, function);
+
+            // Evaluate the gradient function at the point (2, -1)
+            double[] result = calculator.Compute(2, -1); // answer is (4, 1)
+
+            Assert.AreEqual(4, result[0], 1e-10);
+            Assert.AreEqual(1, result[1], 1e-10);
+            Assert.IsFalse(Double.IsNaN(result[0]));
+            Assert.IsFalse(Double.IsNaN(result[1]));
+        }
 
     }
 }

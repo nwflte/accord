@@ -20,18 +20,14 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics.Distributions.Multivariate;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Accord.Math;
-using Accord.Statistics.Distributions.Fitting;
 namespace Accord.Tests.Statistics
 {
+    using Accord.Statistics.Distributions.Multivariate;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Accord.Math;
+    using Accord.Statistics.Distributions.Fitting;
+    using Accord.Statistics;
 
-
-    /// <summary>
-    ///This is a test class for MultivariateNormalDistributionTest and is intended
-    ///to contain all MultivariateNormalDistributionTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class MultivariateNormalDistributionTest
     {
@@ -39,10 +35,6 @@ namespace Accord.Tests.Statistics
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -270,6 +262,54 @@ namespace Accord.Tests.Statistics
 
             // No exception thrown
             target.Fit(observations, options);
+        }
+
+        [TestMethod()]
+        public void GenerateTest()
+        {
+            Accord.Math.Tools.SetupGenerator(0);
+
+            var normal = new MultivariateNormalDistribution(
+                new double[] { 2, 6 },
+                new double[,] { { 2, 1 }, { 1, 5 } });
+
+            double[][] sample = normal.Generate(1000000);
+
+            double[] mean = sample.Mean();
+            double[,] cov = sample.Covariance();
+
+            Assert.AreEqual(2, mean[0], 1e-2);
+            Assert.AreEqual(6, mean[1], 1e-2);
+
+            Assert.AreEqual(2, cov[0, 0], 1e-2);
+            Assert.AreEqual(1, cov[0, 1], 1e-2);
+            Assert.AreEqual(1, cov[1, 0], 1e-2);
+            Assert.AreEqual(5, cov[1, 1], 2e-2);
+        }
+
+        [TestMethod()]
+        public void GenerateTest2()
+        {
+            Accord.Math.Tools.SetupGenerator(0);
+
+            var normal = new MultivariateNormalDistribution(
+                new double[] { 2, 6 },
+                new double[,] { { 2, 1 }, { 1, 5 } });
+
+            double[][] sample = new double[1000000][];
+            for (int i = 0; i < sample.Length; i++)
+                sample[i] = normal.Generate();    
+
+            double[] mean = sample.Mean();
+            double[,] cov = sample.Covariance();
+
+            Assert.AreEqual(2, mean[0], 1e-2);
+            Assert.AreEqual(6, mean[1], 1e-2);
+
+            Assert.AreEqual(2, cov[0, 0], 1e-2);
+            Assert.AreEqual(1, cov[0, 1], 1e-2);
+            Assert.AreEqual(1, cov[1, 0], 1e-2);
+            Assert.AreEqual(5, cov[1, 1], 2e-2);
         }
 
     }

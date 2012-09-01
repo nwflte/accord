@@ -20,29 +20,19 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics.Filters;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Data;
-
 namespace Accord.Tests.Statistics
 {
+    using Accord.Statistics.Distributions.Univariate;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System;    
     
-    
-    /// <summary>
-    ///This is a test class for EqualizingFilterTest and is intended
-    ///to contain all EqualizingFilterTest Unit Tests
-    ///</summary>
     [TestClass()]
-    public class EqualizingFilterTest
+    public class BetaDistributionTest
     {
 
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -86,51 +76,38 @@ namespace Accord.Tests.Statistics
         #endregion
 
 
-        /// <summary>
-        ///A test for Apply
-        ///</summary>
         [TestMethod()]
-        public void ApplyTest()
+        public void BetaDistributionConstructorTest()
         {
-            DataTable data = new DataTable("Sample data");
-            data.Columns.Add("x", typeof(double));
-            data.Columns.Add("Class", typeof(int));
-            data.Rows.Add(0.21, 0);
-            data.Rows.Add(0.25, 0);
-            data.Rows.Add(0.54, 0);
-            data.Rows.Add(0.19, 1);
+            double expected, actual;
 
-            DataTable expected = new DataTable("Sample data");
-            expected.Columns.Add("x", typeof(double));
-            expected.Columns.Add("Class", typeof(int));
-            expected.Rows.Add(0.21, 0);
-            expected.Rows.Add(0.25, 0);
-            expected.Rows.Add(0.54, 0);
-            expected.Rows.Add(0.19, 1);
-            expected.Rows.Add(0.19, 1);
-            expected.Rows.Add(0.19, 1);
-
-
-            DataTable actual;
-
-            Stratification target = new Stratification("Class");
-            target.Columns["Class"].Classes = new int[] { 0, 1 };
-            
-            actual = target.Apply(data);
-
-            for (int i = 0; i < actual.Rows.Count; i++)
             {
-                double ex = (double)expected.Rows[i][0];
-                int ec = (int)expected.Rows[i][1];
+                BetaDistribution target = new BetaDistribution(1.73, 4.2);
+                actual = target.ProbabilityDensityFunction(-1);
+                expected = 0;
+                Assert.AreEqual(expected, actual, 1e-7);
+                Assert.IsFalse(Double.IsNaN(actual));
 
-                double ax = (double)actual.Rows[i][0];
-                int ac = (int)actual.Rows[i][1];
+                actual = target.ProbabilityDensityFunction(0);
+                expected = 0;
+                Assert.AreEqual(expected, actual, 1e-7);
+                Assert.IsFalse(Double.IsNaN(actual));
 
-                Assert.AreEqual(ex, ax);
-                Assert.AreEqual(ec, ac);                    
-                
+                actual = target.ProbabilityDensityFunction(1);
+                expected = 0;
+                Assert.AreEqual(expected, actual, 1e-7);
+                Assert.IsFalse(Double.IsNaN(actual));
+
+                actual = target.ProbabilityDensityFunction(0.2);
+                expected = 2.27095841;
+                Assert.AreEqual(expected, actual, 1e-7);
+                Assert.IsFalse(Double.IsNaN(actual));
+
+                actual = target.ProbabilityDensityFunction(0.4);
+                expected = 1.50022749;
+                Assert.AreEqual(expected, actual, 1e-7);
+                Assert.IsFalse(Double.IsNaN(actual));
             }
-            
         }
     }
 }

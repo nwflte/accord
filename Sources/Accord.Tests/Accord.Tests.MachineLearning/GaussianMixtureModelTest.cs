@@ -105,14 +105,14 @@ namespace Accord.Tests.MachineLearning
             gmm.Compute(samples, 0.0001);
 
             // Classify a single sample
-            int c = gmm.Classify(sample);
+            int c = gmm.Gaussians.Nearest(sample);
 
             Assert.AreEqual(2, gmm.Gaussians.Count);
 
             for (int i = 0; i < samples.Length; i++)
             {
                 sample = samples[i];
-                c = gmm.Classify(sample);
+                c = gmm.Gaussians.Nearest(sample);
 
                 Assert.AreEqual(c, i >= 5 ? 1 : 0);
             }
@@ -158,7 +158,7 @@ namespace Accord.Tests.MachineLearning
             bool thrown = false;
             try
             {
-                double result = gmm.Compute(B);
+                var result = gmm.Compute(B);
             }
             catch (NonPositiveDefiniteMatrixException )
             {
@@ -181,7 +181,7 @@ namespace Accord.Tests.MachineLearning
 
             double[][] B = Matrix.Random(56, 12).ToArray();
 
-            double result = gmm.Compute(B);
+            var result = gmm.Compute(B);
         }
 
     }

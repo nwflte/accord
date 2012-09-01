@@ -144,7 +144,8 @@ namespace Accord.Tests.MachineLearning
             Assert.AreEqual(84, tree.Root.Branches[1].Value); // Temperature > 84.0
             Assert.AreEqual(0, tree.Root.Branches[1].Output.Value); // Output is "No"
             Assert.AreEqual(ComparisonKind.GreaterThan, tree.Root.Branches[1].Comparison);
-            Assert.IsNull(tree.Root.Branches[1].Branches);
+            Assert.IsNotNull(tree.Root.Branches[1].Branches);
+            Assert.AreEqual(0, tree.Root.Branches[1].Branches.Count);
             Assert.IsTrue(tree.Root.Branches[1].IsLeaf);
 
             Assert.AreEqual(80, tree.Root.Branches[0].Branches[0].Value); // Humidity <= 80

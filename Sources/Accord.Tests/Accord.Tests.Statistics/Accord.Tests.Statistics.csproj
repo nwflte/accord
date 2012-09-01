@@ -100,7 +100,15 @@
   <ItemGroup>
     <Compile Include="Analysis\IndependentComponentAnalysisTest.cs" />
     <Compile Include="Analysis\DescriptiveAnalysisTest.cs" />
-    <Compile Include="MannWhitneyDistributionTest.cs" />
+    <Compile Include="Distributions\Univariate\Continuous\BetaDistributionTest.cs" />
+    <Compile Include="Distributions\Univariate\Continuous\MannWhitneyDistributionTest.cs" />
+    <Compile Include="Distributions\Univariate\Continuous\InverseGammaDistributionTest.cs" />
+    <Compile Include="Distributions\Univariate\Continuous\LaplaceDistributionTest.cs" />
+    <Compile Include="Distributions\Univariate\Discrete\NegativeBinomialTest.cs" />
+    <Compile Include="Formats\ExcelReaderTest.cs" />
+    <Compile Include="MovingNormalStatisticsTest.cs" />
+    <Compile Include="Distributions\Univariate\Continuous\ParetoDistributionTest.cs" />
+    <Compile Include="MultinomialTestTest.cs" />
     <Compile Include="Testing\BinomialTestTest.cs" />
     <Compile Include="Distributions\Univariate\Continuous\RayleighDistributionTest.cs" />
     <Compile Include="Distributions\Univariate\Continuous\ExponentialDistributionTest.cs" />
@@ -117,7 +125,8 @@
     <Compile Include="Links\LogLogLinkFunctionTest.cs" />
     <Compile Include="Links\ProbitLinkFunctionTest.cs" />
     <Compile Include="Links\SinLinkFunctionTest.cs" />
-    <Compile Include="MannWhitneyWilcoxonTestTest.cs" />
+    <Compile Include="Testing\PairedTTestTest.cs" />
+    <Compile Include="Testing\MannWhitneyWilcoxonTestTest.cs" />
     <Compile Include="Models\Fields\Learning\GradientDescentHiddenLearningTest.cs" />
     <Compile Include="Models\Fields\Learning\ResilientGradientHiddenLearningTest.cs" />
     <Compile Include="Models\Markov\ViterbiLearning`1Test.cs" />
@@ -126,6 +135,7 @@
     <Compile Include="Analysis\MultipleLinearRegressionAnalysisTest.cs" />
     <Compile Include="Distributions\Univariate\Continuous\NoncentralTDistributionTest.cs" />
     <Compile Include="Testing\SignTestTest.cs" />
+    <Compile Include="Testing\TwoSamples\TwoProportionZTestTest.cs" />
     <Compile Include="Testing\WilcoxonSignedRankTestTest.cs" />
     <Compile Include="Testing\TwoSamples\TwoSampleSignTestTest.cs" />
     <Compile Include="Testing\Contingency\BhapkarTestTest.cs" />
@@ -178,7 +188,6 @@
     <Compile Include="Models\Regression\MultivariateLinearRegressionTest.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MovingNormalStatisticsTest.cs" />
     <Compile Include="Distributions\Univariate\Continuous\NakagamiDistributionTest.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -195,6 +204,7 @@
     <Compile Include="Testing\KolmogorovSmirnovTestTest.cs" />
     <Compile Include="Testing\TwoSamples\TwoSampleZTestTest.cs" />
     <Compile Include="Testing\Power\TTestPowerAnalysisTest.cs" />
+    <Compile Include="Testing\TwoSamples\TwoSampleKolmogorovSmirnovTestTest.cs" />
     <Compile Include="Visualizations\HistogramTest.cs" />
     <Compile Include="Kernels\AnovaTest.cs" />
     <Compile Include="Filters\CategoryFilterTest.cs" />
@@ -299,9 +309,14 @@
   <ItemGroup>
     <None Include="Accord.snk" />
     <None Include="app.config" />
+    <None Include="Resources\sample.xls">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\sample.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\iris.txt" />
     <Content Include="Resources\iris.scale.txt" />
   </ItemGroup>
   <ItemGroup>

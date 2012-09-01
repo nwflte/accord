@@ -677,7 +677,7 @@ namespace Accord.Tests.Statistics
         [TestMethod()]
         public void LearnTest9()
         {
-
+            // Include this example in the documentattion
             var observations = new double[][][]
             {
                 #region example
@@ -830,6 +830,79 @@ namespace Accord.Tests.Statistics
             foreach (double value in model.Probabilities)
                 Assert.IsFalse(Double.IsNaN(value));
         }
+
+        [TestMethod()]
+        public void LearnTest10()
+        {
+            // Create sequences of vector-valued observations. In the
+            // sequence below, a single observation is composed of two
+            // coordinate values, such as (x, y). There seems to be two
+            // states, one for (x,y) values less than (5,5) and another
+            // for higher values. The states seems to be switched on
+            // every observation.
+            double[][][] sequences =
+            {
+                new double[][] // sequence 1
+                {
+                    new double[] { 1, 2 }, // observation 1 of sequence 1
+                    new double[] { 6, 7 }, // observation 2 of sequence 1
+                    new double[] { 2, 3 }, // observation 3 of sequence 1
+                },
+                new double[][] // sequence 2
+                {
+                    new double[] { 2, 2 }, // observation 1 of sequence 2
+                    new double[] { 9, 8 }, // observation 2 of sequence 2
+                    new double[] { 1, 0 }, // observation 3 of sequence 2
+                },
+                new double[][] // sequence 3
+                {
+                    new double[] { 1, 3 }, // observation 1 of sequence 3
+                    new double[] { 8, 9 }, // observation 2 of sequence 3
+                    new double[] { 3, 3 }, // observation 3 of sequence 3
+                },
+            };
+
+
+            // Specify a initial normal distribution for the samples.
+            var density = new MultivariateNormalDistribution(dimension: 2);
+
+            // Creates a continuous hidden Markov Model with two states organized in a forward
+            //  topology and an underlying univariate Normal distribution as probability density.
+            var model = new HiddenMarkovModel<MultivariateNormalDistribution>(new Forward(2), density);
+
+            // Configure the learning algorithms to train the sequence classifier until the
+            // difference in the average log-likelihood changes only by as little as 0.0001
+            var teacher = new BaumWelchLearning<MultivariateNormalDistribution>(model)
+            {
+                Tolerance = 0.0001,
+                Iterations = 0,
+            };
+
+            // Fit the model
+            double logLikelihood = teacher.Run(sequences);
+
+            // See the likelihood of the sequences learned
+            double a1 = Math.Exp(model.Evaluate(new [] { 
+                new double[] { 1, 2 }, 
+                new double[] { 6, 7 },
+                new double[] { 2, 3 }})); // 0.000208
+
+            double a2 = Math.Exp(model.Evaluate(new [] { 
+                new double[] { 2, 2 }, 
+                new double[] { 9, 8  },
+                new double[] { 1, 0 }})); // 0.0000376
+
+            // See the likelihood of an unrelated sequence
+            double a3 = Math.Exp(model.Evaluate(new [] { 
+                new double[] { 8, 7 }, 
+                new double[] { 9, 8  },
+                new double[] { 1, 0 }})); // 2.10 x 10^(-89)
+
+            Assert.AreEqual(0.00020825319093038984, a1);
+            Assert.AreEqual(0.000037671116792519834, a2);
+            Assert.AreEqual(2.1031924118199194E-89, a3);
+        }
+
 
 
         [TestMethod()]

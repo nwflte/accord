@@ -20,29 +20,20 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics.Filters;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Data;
-
 namespace Accord.Tests.Statistics
 {
-    
-    
-    /// <summary>
-    ///This is a test class for EqualizingFilterTest and is intended
-    ///to contain all EqualizingFilterTest Unit Tests
-    ///</summary>
+    using System;
+    using Accord.Statistics.Distributions.Univariate;
+    using Accord.Statistics.Testing;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+
     [TestClass()]
-    public class EqualizingFilterTest
+    public class TwoSampleKolmogorovSmirnovTestTest
     {
 
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -86,51 +77,33 @@ namespace Accord.Tests.Statistics
         #endregion
 
 
-        /// <summary>
-        ///A test for Apply
-        ///</summary>
         [TestMethod()]
-        public void ApplyTest()
+        public void TwoSampleKolmogorovSmirnovTestConstructorTest()
         {
-            DataTable data = new DataTable("Sample data");
-            data.Columns.Add("x", typeof(double));
-            data.Columns.Add("Class", typeof(int));
-            data.Rows.Add(0.21, 0);
-            data.Rows.Add(0.25, 0);
-            data.Rows.Add(0.54, 0);
-            data.Rows.Add(0.19, 1);
+            Accord.Math.Tools.SetupGenerator(0);
 
-            DataTable expected = new DataTable("Sample data");
-            expected.Columns.Add("x", typeof(double));
-            expected.Columns.Add("Class", typeof(int));
-            expected.Rows.Add(0.21, 0);
-            expected.Rows.Add(0.25, 0);
-            expected.Rows.Add(0.54, 0);
-            expected.Rows.Add(0.19, 1);
-            expected.Rows.Add(0.19, 1);
-            expected.Rows.Add(0.19, 1);
+            // Create a K-S test to verify if two samples have been
+            // drawn from different populations. In this example, we
+            // will first generate a number of samples from different
+            // distributions, and then check if the K-S test can indeed
+            // see the difference:
 
+            // Generate 15 points from a Normal distribution with mean 5 and sigma 2
+            double[] sample1 = new NormalDistribution(mean: 5, stdDev: 1).Generate(25);
 
-            DataTable actual;
+            // Generate 15 points from an uniform distribution from 0 to 10
+            double[] sample2 = new UniformContinuousDistribution(a: 0, b: 10).Generate(25);
 
-            Stratification target = new Stratification("Class");
-            target.Columns["Class"].Classes = new int[] { 0, 1 };
-            
-            actual = target.Apply(data);
+            // Now we can create a K-S test and test the unequal hypothesis:
+            var test = new TwoSampleKolmogorovSmirnovTest(sample1, sample2,
+                TwoSampleKolmogorovSmirnovTestHypothesis.SamplesDistributionsAreUnequal);
 
-            for (int i = 0; i < actual.Rows.Count; i++)
-            {
-                double ex = (double)expected.Rows[i][0];
-                int ec = (int)expected.Rows[i][1];
+            bool significant = test.Significant; // outputs true
 
-                double ax = (double)actual.Rows[i][0];
-                int ac = (int)actual.Rows[i][1];
-
-                Assert.AreEqual(ex, ax);
-                Assert.AreEqual(ec, ac);                    
-                
-            }
-            
+            Assert.IsTrue(test.Significant);
+            Assert.AreEqual(0.44, test.Statistic, 1e-15);
+            Assert.IsFalse(Double.IsNaN(test.Statistic));
+            Assert.AreEqual(0.012408, test.PValue, 1e-4);
         }
     }
 }
