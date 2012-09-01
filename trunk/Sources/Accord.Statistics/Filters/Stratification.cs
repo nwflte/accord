@@ -25,6 +25,7 @@ namespace Accord.Statistics.Filters
     using System;
     using System.Collections.Generic;
     using System.Data;
+    using Accord.Math;
 
     /// <summary>
     ///   Class equalization filter.
@@ -35,24 +36,50 @@ namespace Accord.Statistics.Filters
     /// </remarks>
     /// 
     [Serializable]
-    public class Equalization : BaseFilter<Equalization.Options>
+    public class Stratification : BaseFilter<Stratification.Options>
     {
 
         /// <summary>
         ///   Creates a new class equalization filter.
         /// </summary>
         /// 
-        public Equalization()
+        public Stratification() { }
+
+        /// <summary>
+        ///   Creates a new classes equalization filter.
+        /// </summary>
+        /// 
+        public Stratification(string column)
         {
+            Columns.Add(new Options(column));
         }
 
         /// <summary>
         ///   Creates a new classes equalization filter.
         /// </summary>
         /// 
-        public Equalization(string column)
+        public Stratification(string column, int classes)
         {
-            Columns.Add(new Options(column));
+            Options option = new Options(column)
+            {
+                Classes = Matrix.Indices(0, classes)
+            };
+
+            Columns.Add(option);
+        }
+
+        /// <summary>
+        ///   Creates a new classes equalization filter.
+        /// </summary>
+        /// 
+        public Stratification(string column, int[] classLabels)
+        {
+            Options option = new Options(column)
+            {
+                Classes = classLabels
+            };
+
+            Columns.Add(option);
         }
 
         /// <summary>
@@ -70,28 +97,26 @@ namespace Accord.Statistics.Filters
             List<DataRow>[] subsets = new List<DataRow>[classes.Length];
 
             for (int i = 0; i < subsets.Length; i++)
-            {
                 subsets[i] = new List<DataRow>(data.Select("[" + column + "] = " + classes[i]));
-            }
 
-            while (subsets[0].Count != subsets[1].Count)
+
+            if (subsets[0].Count > subsets[1].Count)
             {
-                if (subsets[0].Count > subsets[1].Count)
-                {
-                    int diff = subsets[0].Count - subsets[1].Count;
-                    for (int i = 0; i < diff && i < subsets[1].Count; i++)
-                    {
-                        subsets[1].Add(subsets[1][i]);
-                    }
-                }
-                else
-                {
-                    int diff = subsets[1].Count - subsets[0].Count;
-                    for (int i = 0; i < diff && i < subsets[0].Count; i++)
-                    {
-                        subsets[0].Add(subsets[0][i]);
-                    }
-                }
+                if (subsets[1].Count == 0) throw new ArgumentException(
+                    "Data does not contains one of the classes.", "data");
+
+                int i = 0;
+                while (subsets[0].Count > subsets[1].Count)
+                    subsets[1].Add(subsets[1][i++ % subsets[1].Count]);
+            }
+            else
+            {
+                if (subsets[0].Count == 0) throw new ArgumentException(
+                    "Data does not contains one of the classes.", "data");
+
+                int i = 0;
+                while (subsets[0].Count < subsets[1].Count)
+                    subsets[0].Add(subsets[0][i++ % subsets[0].Count]);
             }
 
             DataTable result = data.Clone();
@@ -106,11 +131,11 @@ namespace Accord.Statistics.Filters
         }
 
         /// <summary>
-        ///   Options for the equalization filter.
+        ///   Options for the stratification filter.
         /// </summary>
         /// 
         [Serializable]
-        public class Options : ColumnOptionsBase
+        public class Options : ColumnOptionsBase, IAutoConfigurableColumn
         {
             /// <summary>
             ///   Gets or sets the labels used for each class contained in the column.
@@ -129,6 +154,7 @@ namespace Accord.Statistics.Filters
             public Options(String name)
                 : base(name)
             {
+                Classes = new int[] { 0, 1 };
             }
 
             /// <summary>
@@ -136,10 +162,20 @@ namespace Accord.Statistics.Filters
             /// </summary>
             /// 
             public Options()
-                : this("New column")
-            {
+                : this("New column") { }
 
+            /// <summary>
+            ///   Auto detects the column options by analyzing a given <see cref="System.Data.DataColumn"/>.
+            /// </summary>
+            /// 
+            /// <param name="column">The column to analyze.</param>
+            /// 
+            public void Detect(DataColumn column)
+            {
+                double[] values = column.ToArray();
+                Classes = values.Distinct().ToInt32();
             }
+
         }
 
     }

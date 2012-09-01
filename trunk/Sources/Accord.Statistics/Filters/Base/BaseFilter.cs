@@ -53,6 +53,7 @@ namespace Accord.Statistics.Filters
         /// <summary>
         ///   Creates a new DataTable Filter Base.
         /// </summary>
+        /// 
         protected BaseFilter()
         {
             this.Columns = new ColumnOptionCollection<T>();
@@ -62,8 +63,11 @@ namespace Accord.Statistics.Filters
         /// <summary>
         ///   Applies the Filter to a <see cref="System.Data.DataTable"/>.
         /// </summary>
+        /// 
         /// <param name="data">The source <see cref="System.Data.DataTable"/>.</param>
+        /// 
         /// <returns>The processed <see cref="System.Data.DataTable"/>.</returns>
+        /// 
         public DataTable Apply(DataTable data)
         {
             // Initial argument checking
@@ -82,6 +86,7 @@ namespace Accord.Statistics.Filters
         /// <summary>
         ///   Processes the current filter.
         /// </summary>
+        /// 
         protected abstract DataTable ProcessFilter(DataTable data);
 
     }
@@ -96,12 +101,15 @@ namespace Accord.Statistics.Filters
         /// <summary>
         ///   Gets or sets the name of the column that the options will apply to.
         /// </summary>
+        /// 
         public String ColumnName { get; set; }
 
         /// <summary>
         ///   Constructs the base class for Column Options.
         /// </summary>
+        /// 
         /// <param name="column">Column's name.</param>
+        /// 
         protected ColumnOptionsBase(string column)
         {
             this.ColumnName = column;
@@ -110,9 +118,11 @@ namespace Accord.Statistics.Filters
         /// <summary>
         ///   Returns a <see cref="System.String"/> that represents this instance.
         /// </summary>
+        /// 
         /// <returns>
         ///   A <see cref="System.String"/> that represents this instance.
         /// </returns>
+        /// 
         public override string ToString()
         {
             return this.ColumnName;
@@ -130,8 +140,7 @@ namespace Accord.Statistics.Filters
         /// <summary>
         ///   Extracts the key from the specified element.
         /// </summary>
-        /// <param name="item"></param>
-        /// <returns></returns>
+        /// 
         protected override string GetKeyForItem(T item)
         {
             return item.ColumnName;

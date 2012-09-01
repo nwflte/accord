@@ -37,13 +37,13 @@ namespace Accord.Statistics.Filters
         /// <summary>
         ///   Creates a new Linear Scaling Filter.
         /// </summary>
-        public LinearScaling()
-        {
-        }
+        /// 
+        public LinearScaling() { }
 
         /// <summary>
         ///   Creates a new Linear Scaling Filter.
         /// </summary>
+        /// 
         public LinearScaling(params string[] columns)
         {
             foreach (String col in columns)
@@ -53,6 +53,7 @@ namespace Accord.Statistics.Filters
         /// <summary>
         ///   Applies the filter to the DataTable.
         /// </summary>
+        /// 
         protected override DataTable ProcessFilter(DataTable data)
         {
             DataTable result = data.Copy();
@@ -65,12 +66,20 @@ namespace Accord.Statistics.Filters
                 {
                     foreach (DataRow row in result.Rows)
                     {
-                        double value = (double)row[column];
-                        Options options = Columns[name];
-                        row[column] = Accord.Math.Tools.Scale(
-                            options.SourceRange,
-                            options.OutputRange,
-                            value);
+                        try
+                        {
+                            double value = System.Convert.ToDouble(row[column]);
+
+                            Options options = Columns[name];
+                            row[column] = Accord.Math.Tools.Scale(
+                                options.SourceRange,
+                                options.OutputRange,
+                                value);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new InvalidCastException("Error in row #" + result.Rows.IndexOf(row), ex);
+                        }
                     }
                 }
             }
@@ -81,6 +90,7 @@ namespace Accord.Statistics.Filters
         /// <summary>
         ///   Auto detects the filter options by analyzing a given <see cref="System.Data.DataTable"/>.
         /// </summary>  
+        /// 
         public void Detect(DataTable data)
         {
             // For each column
@@ -91,14 +101,14 @@ namespace Accord.Statistics.Filters
                     column.DataType == typeof(Decimal))
                 {
                     string name = column.ColumnName;
-                    double max = (double)data.Compute("MAX(" + name + ")", String.Empty);
-                    double min = (double)data.Compute("MIN(" + name + ")", String.Empty);
+                    double max = (double)data.Compute("MAX([" + name + "])", String.Empty);
+                    double min = (double)data.Compute("MIN([" + name + "])", String.Empty);
 
                     if (!Columns.Contains(name))
                         Columns.Add(new Options(name));
 
                     Columns[name].SourceRange = new DoubleRange(min, max);
-                   // Columns[name].OutputRange = new DoubleRange(-1, +1);
+                    // Columns[name].OutputRange = new DoubleRange(-1, +1);
                 }
             }
         }
@@ -129,7 +139,7 @@ namespace Accord.Statistics.Filters
             public Options(String name)
                 : base(name)
             {
-                this.SourceRange = new DoubleRange( 0, 1);
+                this.SourceRange = new DoubleRange(0, 1);
                 this.OutputRange = new DoubleRange(-1, 1);
             }
 
@@ -138,10 +148,7 @@ namespace Accord.Statistics.Filters
             /// </summary>
             /// 
             public Options()
-                : this("New column")
-            {
-
-            }
+                : this("New column") { }
         }
     }
 }

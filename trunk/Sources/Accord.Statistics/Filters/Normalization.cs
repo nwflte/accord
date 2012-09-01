@@ -38,13 +38,13 @@ namespace Accord.Statistics.Filters
         /// <summary>
         ///   Creates a new data normalization filter.
         /// </summary>
-        public Normalization()
-        {
-        }
+        /// 
+        public Normalization() { }
 
         /// <summary>
         ///   Creates a new data normalization filter.
         /// </summary>
+        /// 
         public Normalization(params string[] columns)
         {
             foreach (String col in columns)
@@ -54,6 +54,7 @@ namespace Accord.Statistics.Filters
         /// <summary>
         ///   Processes the current filter.
         /// </summary>
+        /// 
         protected override DataTable ProcessFilter(DataTable data)
         {
             DataTable result = data.Copy();
@@ -134,10 +135,7 @@ namespace Accord.Statistics.Filters
             ///   Constructs a new Options object.
             /// </summary>
             public Options()
-                : this("New column")
-            {
-
-            }
+                : this("New column") { }
 
             /// <summary>
             ///   Constructs a new Options object for the given column.
@@ -148,9 +146,7 @@ namespace Accord.Statistics.Filters
             /// </param>
             /// 
             public Options(String name)
-                : this(name, 0, 1)
-            {
-            }
+                : this(name, 0, 1) { }
 
             /// <summary>
             ///   Constructs a new Options object for the given column.

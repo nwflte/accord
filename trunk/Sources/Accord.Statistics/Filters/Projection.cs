@@ -23,6 +23,7 @@
 namespace Accord.Statistics.Filters
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Data;
     using System.Linq;
@@ -53,6 +54,15 @@ namespace Accord.Statistics.Filters
         ///   Creates a new projection filter.
         /// </summary>
         /// 
+        public Projection(IEnumerable<string> columns)
+        {
+            this.Columns = new Collection<string>(columns.ToList());
+        }
+
+        /// <summary>
+        ///   Creates a new projection filter.
+        /// </summary>
+        /// 
         public Projection()
         {
             this.Columns = new Collection<string>();
@@ -64,6 +74,14 @@ namespace Accord.Statistics.Filters
         /// 
         public DataTable Apply(DataTable data)
         {
+            List<String> cols = new List<String>();
+
+            foreach (var col in Columns)
+            {
+                if (data.Columns.Contains(col))
+                    cols.Add(col);
+            }
+
             return data.DefaultView.ToTable(false, Columns.ToArray());
         }
 

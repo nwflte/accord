@@ -66,4 +66,20 @@ namespace Accord.Statistics.Filters
         /// 
         void Detect(DataTable data);
     }
+
+    /// <summary>
+    ///   Indicates that a column filter supports automatic initialization.
+    /// </summary>
+    /// 
+    public interface IAutoConfigurableColumn
+    {
+        /// <summary>
+        ///   Auto detects the column options by analyzing a given <see cref="System.Data.DataColumn"/>.
+        /// </summary> 
+        /// 
+        /// <param name="column">The column to analyze.</param>
+        /// 
+        void Detect(DataColumn column);
+    }
+
 }
