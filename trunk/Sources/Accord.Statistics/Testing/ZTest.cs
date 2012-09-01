@@ -43,8 +43,7 @@ namespace Accord.Statistics.Testing
     /// <para>
     ///   If the test is <see cref="IHypothesisTest.Significant"/>, the null hypothesis 
     ///   can be rejected in favor of the <see cref="Hypothesis">alternate hypothesis</see>
-    ///   specified at the creation of the test.
-    /// </para>
+    ///   specified at the creation of the test.</para>
     ///   
     /// <para>
     ///   References:
@@ -54,6 +53,50 @@ namespace Accord.Statistics.Testing
     ///        http://en.wikipedia.org/wiki/Z-test </a></description></item>
     ///   </list></para>
     /// </remarks>
+    /// 
+    /// <example>
+    /// <para>
+    ///   This example has been gathered from the Wikipedia's page about
+    ///   the Z-Test, available from: http://en.wikipedia.org/wiki/Z-test </para>
+    /// <para>
+    ///   Suppose there is a text comprehension test being run accross
+    ///   a given demographic region. The mean score of the population
+    ///   from this entire region are around 100 points, with a standard
+    ///   deviation of 12 points.</para>
+    /// <para>There is a local school, however, whose 55 students attained
+    ///   an average score in the test of only about 96 points. Would 
+    ///   their scores be surprinsingly that low, or could this event
+    ///   have happened due to chance?</para>
+    ///   
+    /// <code>
+    /// // So we would like to check that a sample of
+    /// // 55 students with a mean score of 96 points:
+    /// 
+    /// int sampleSize = 55;
+    /// double sampleMean = 96;
+    /// 
+    /// // Was expected to have happened by chance in a population with
+    /// // an hypothesized mean of 100 points and standard deviation of
+    /// // about 12 points:
+    /// 
+    /// double standardDeviation = 12;
+    /// double hypothesizedMean = 100;
+    /// 
+    /// 
+    /// // So we start by creating the test:
+    /// ZTest test = new ZTest(sampleMean, standardDeviation, sampleSize,
+    ///     hypothesizedMean, OneSampleHypothesis.ValueIsSmallerThanHypothesis);
+    /// 
+    /// // Now, we can check whether this result would be
+    /// // unlikely under a standard significance level:
+    /// 
+    /// bool significant  = test.Significant;
+    /// 
+    /// // We can also check the test statistic and its P-Value
+    /// double statistic = test.Statistic;
+    /// double pvalue = test.PValue;
+    /// </code>
+    /// </example>
     /// 
     [Serializable]
     public class ZTest : HypothesisTest<NormalDistribution>

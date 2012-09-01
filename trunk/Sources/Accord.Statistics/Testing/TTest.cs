@@ -86,7 +86,7 @@ namespace Accord.Statistics.Testing
     ///   greater.Significant should be true
     ///
     ///   // Now, we would like to test if the sample mean is
-    ///   // significantly smaller than the hypothetised zero.
+    ///   // significantly smaller than the hypothesized zero.
     ///
     ///   // Create a T-Test to check this hypothesis
     ///   TTest smaller = new TTest(sample, hypothesizedMean,

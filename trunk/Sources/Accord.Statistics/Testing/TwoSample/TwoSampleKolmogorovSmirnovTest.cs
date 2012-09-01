@@ -67,6 +67,28 @@ namespace Accord.Statistics.Testing
     ///   </list></para>
     /// </remarks>
     /// 
+    /// <example>
+    /// <para>
+    ///   In the following example, we will be creating a K-S test to verify
+    ///   if two samples have been drawn from different populations. In this
+    ///   example, we will first generate a number of samples from two different
+    ///   distributions and then check if the K-S can indeed see the difference
+    ///   between them:</para>
+    /// <code>
+    /// // Generate 15 points from a Normal distribution with mean 5 and sigma 2
+    /// double[] sample1 = new NormalDistribution(mean: 5, stdDev: 1).Generate(25);
+    /// 
+    /// // Generate 15 points from an uniform distribution from 0 to 10
+    /// double[] sample2 = new UniformContinuousDistribution(a: 0, b: 10).Generate(25);
+    /// 
+    /// // Now we can create a K-S test and test the unequal hypothesis:
+    /// var test = new TwoSampleKolmogorovSmirnovTest(sample1, sample2,
+    ///     TwoSampleKolmogorovSmirnovTestHypothesis.SamplesDistributionsAreUnequal);
+    /// 
+    /// bool significant = test.Significant; // outputs true
+    /// </code>
+    /// </example>
+    /// 
     [Serializable]
     public class TwoSampleKolmogorovSmirnovTest : HypothesisTest<KolmogorovSmirnovDistribution>
     {
@@ -120,7 +142,7 @@ namespace Accord.Statistics.Testing
             int n2 = sample2.Length;
 
             // Compute the effective number of parameters (degrees of freedom)
-            int n = (n1 * n2) / (n1 + n2);
+            int n = (int)Math.Round((n1 * n2) / (double)(n1 + n2));
 
             // Create the test statistic distribution with given d. f.
             StatisticDistribution = new KolmogorovSmirnovDistribution(n);

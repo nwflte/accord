@@ -33,10 +33,11 @@ namespace Accord.Statistics.Testing
     /// <para>
     ///   A chi-square test (also chi-squared or χ2  test) is any statistical
     ///   hypothesis test in which the sampling distribution of the test statistic
-    ///   is a chi-square distribution when the null hypothesis is true, or any in
-    ///   which this is asymptotically true, meaning that the sampling distribution
-    ///   (if the null hypothesis is true) can be made to approximate a chi-square
-    ///   distribution as closely as desired by making the sample size large enough.</para>
+    ///   is a <see cref="ChiSquareDistribution">chi-square distribution</see> when
+    ///   the null hypothesis is true, or any in which this is asymptotically true,
+    ///   meaning that the sampling distribution (if the null hypothesis is true) 
+    ///   can be made to approximate a chi-square distribution as closely as desired
+    ///   by making the sample size large enough.</para>
     /// <para>
     ///   The chi-square test is used whenever one would like to test whether the
     ///   actual data differs from a random distribution. </para>
