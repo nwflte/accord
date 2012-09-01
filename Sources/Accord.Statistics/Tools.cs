@@ -64,6 +64,25 @@ namespace Accord.Statistics
         }
 
         /// <summary>
+        ///   Computes the mean of the given values.
+        /// </summary>
+        /// 
+        /// <param name="values">An integer array containing the vector members.</param>
+        /// 
+        /// <returns>The mean of the given data.</returns>
+        /// 
+        public static double Mean(this int[] values)
+        {
+            double sum = 0.0;
+
+            for (int i = 0; i < values.Length; i++)
+                sum += values[i];
+
+            return sum / values.Length;
+        }
+
+
+        /// <summary>
         ///   Computes the Geometric mean of the given values.
         /// </summary>
         /// 
@@ -136,10 +155,33 @@ namespace Accord.Statistics
         }
 
         /// <summary>
+        ///   Computes the (weighted) grand mean of a set of samples.
+        /// </summary>
+        /// 
+        /// <param name="means">A double array containing the sample means.</param>
+        /// <param name="samples">A integer array containing the sample's sizes.</param>
+        /// 
+        /// <returns>The grand mean of the samples.</returns>
+        /// 
+        public static double GrandMean(double[] means, int[] samples)
+        {
+            double sum = 0;
+            int n = 0;
+
+            for (int i = 0; i < means.Length; i++)
+            {
+                sum += samples[i] * means[i];
+                n += samples[i];
+            }
+
+            return sum / n;
+        }
+
+        /// <summary>
         ///   Computes the mean of the given values.
         /// </summary>
         /// 
-        /// <param name="values">A double array containing the vector members.</param>
+        /// <param name="values">A unsigned short array containing the vector members.</param>
         /// 
         /// <returns>The mean of the given data.</returns>
         /// 
@@ -217,6 +259,17 @@ namespace Accord.Statistics
         public static float StandardDeviation(this float[] values, float mean)
         {
             return (float)System.Math.Sqrt(Variance(values, mean));
+        }
+
+        /// <summary>
+        ///   Computes the Standard Deviation of the given values.
+        /// </summary>
+        /// <param name="values">An integer array containing the vector members.</param>
+        /// <param name="mean">The mean of the vector, if already known.</param>
+        /// <returns>The standard deviation of the given data.</returns>
+        public static double StandardDeviation(this int[] values, double mean)
+        {
+            return System.Math.Sqrt(Variance(values, mean));
         }
 
         /// <summary>
@@ -398,6 +451,34 @@ namespace Accord.Statistics
         /// <summary>
         ///   Computes the Variance of the given values.
         /// </summary>
+        /// 
+        /// <param name="values">An integer number array containing the vector members.</param>
+        /// <returns>The variance of the given data.</returns>
+        /// 
+        public static double Variance(this int[] values)
+        {
+            return Variance(values, Mean(values));
+        }
+
+        /// <summary>
+        ///   Computes the Variance of the given values.
+        /// </summary>
+        /// 
+        /// <param name="values">An integer number array containing the vector members.</param>
+        /// <param name="unbiased">
+        ///   True to compute the unbiased estimate of the population
+        ///   variance, false for the sample variance.</param>
+        ///
+        /// <returns>The variance of the given data.</returns>
+        /// 
+        public static double Variance(this int[] values, bool unbiased)
+        {
+            return Variance(values, Mean(values), unbiased);
+        }
+
+        /// <summary>
+        ///   Computes the Variance of the given values.
+        /// </summary>
         /// <param name="values">A single precision number array containing the vector members.</param>
         /// <returns>The variance of the given data.</returns>
         /// 
@@ -432,7 +513,41 @@ namespace Accord.Statistics
         ///   
         /// <returns>The variance of the given data.</returns>
         /// 
-        public static double Variance(this double[] values, double mean, bool unbiased)
+        public static double Variance(this double[] values, double mean, bool unbiased = true)
+        {
+            double variance = 0.0;
+
+            for (int i = 0; i < values.Length; i++)
+            {
+                double x = values[i] - mean;
+                variance += x * x;
+            }
+
+            if (unbiased)
+            {
+                // Sample variance
+                return variance / (values.Length - 1);
+            }
+            else
+            {
+                // Population variance
+                return variance / values.Length;
+            }
+        }
+
+        /// <summary>
+        ///   Computes the Variance of the given values.
+        /// </summary>
+        /// 
+        /// <param name="values">A number array containing the vector members.</param>
+        /// <param name="mean">The mean of the array, if already known.</param>
+        /// <param name="unbiased">
+        ///   True to compute the unbiased estimate of the population
+        ///   variance, false for the sample variance.</param>
+        ///   
+        /// <returns>The variance of the given data.</returns>
+        /// 
+        public static double Variance(this int[] values, double mean, bool unbiased = true)
         {
             double variance = 0.0;
 
@@ -805,12 +920,17 @@ namespace Accord.Statistics
         /// </remarks>
         /// 
         /// <param name="values">A number array containing the vector values.</param>
+        /// <param name="unbiased">
+        ///   True to compute the unbiased estimate of the population
+        ///   skewness, false for the sample skewness. Default is true
+        ///   (compute the unbiased estimator).</param>
+        ///   
         /// <returns>The skewness of the given data.</returns>
         /// 
-        public static double Skewness(this double[] values)
+        public static double Skewness(this double[] values, bool unbiased = true)
         {
             double mean = Mean(values);
-            return Skewness(values, mean, StandardDeviation(values, mean));
+            return Skewness(values, mean, unbiased);
         }
 
         /// <summary>
@@ -827,54 +947,118 @@ namespace Accord.Statistics
         /// 
         /// <param name="values">A number array containing the vector values.</param>
         /// <param name="mean">The values' mean, if already known.</param>
-        /// <param name="standardDeviation">The values' standard deviations, if already known.</param>
+        /// <param name="unbiased">
+        ///   True to compute the unbiased estimate of the population
+        ///   skewness, false for the sample skewness. Default is true
+        ///   (compute the unbiased estimator).</param>
         /// 
         /// <returns>The skewness of the given data.</returns>
         /// 
-        public static double Skewness(this double[] values, double mean, double standardDeviation)
+        public static double Skewness(this double[] values, double mean, bool unbiased = true)
         {
             int n = values.Length;
-            double sum = 0.0;
-            for (int i = 0; i < n; i++)
+
+            double s2 = 0;
+            double s3 = 0;
+
+            for (int i = 0; i < values.Length; i++)
             {
-                // Sum of third moment deviations
-                sum += System.Math.Pow(values[i] - mean, 3);
+                double dev = values[i] - mean;
+
+                s2 += dev * dev;
+                s3 += dev * dev * dev;
             }
 
-            return sum / ((double)n * System.Math.Pow(standardDeviation, 3));
+            double m2 = s2 / n;
+            double m3 = s3 / n;
+
+            double g = m3 / (Math.Pow(m2, 3 / 2.0));
+
+            if (unbiased)
+            {
+                double a = Math.Sqrt(n * (n - 1));
+                double b = n - 2;
+                return (a / b) * g;
+            }
+            else
+            {
+                return g;
+            }
         }
 
         /// <summary>
         ///   Computes the Kurtosis for the given values.
         /// </summary>
+        /// 
+        /// <remarks>
+        ///   The framework uses the same definition used by default in SAS and SPSS.
+        /// </remarks>
+        ///
         /// <param name="values">A number array containing the vector values.</param>
+        /// <param name="unbiased">
+        ///   True to compute the unbiased estimate of the population
+        ///   kurtosis, false for the sample kurtosis. Default is true
+        ///   (compute the unbiased estimator).</param>
+        /// 
         /// <returns>The kurtosis of the given data.</returns>
-        public static double Kurtosis(this double[] values)
+        /// 
+        public static double Kurtosis(this double[] values, bool unbiased = true)
         {
             double mean = Mean(values);
-            return Kurtosis(values, mean, StandardDeviation(values, mean));
+            return Kurtosis(values, mean, unbiased);
         }
 
         /// <summary>
         ///   Computes the Kurtosis for the given values.
         /// </summary>
+        /// 
+        /// <remarks>
+        ///   The framework uses the same definition used by default in SAS and SPSS.
+        /// </remarks>
+        ///
         /// <param name="values">A number array containing the vector values.</param>
         /// <param name="mean">The values' mean, if already known.</param>
-        /// <param name="standardDeviation">The values' variance, if already known.</param>
+        /// <param name="unbiased">
+        ///   True to compute the unbiased estimate of the population
+        ///   kurtosis, false for the sample kurtosis. Default is true
+        ///   (compute the unbiased estimator).</param>
+        /// 
         /// <returns>The kurtosis of the given data.</returns>
-        public static double Kurtosis(this double[] values, double mean, double standardDeviation)
+        /// 
+        public static double Kurtosis(this double[] values, double mean, bool unbiased = true)
         {
+            // http://www.ats.ucla.edu/stat/mult_pkg/faq/general/kurtosis.htm
+
             int n = values.Length;
 
-            double sum = 0.0, deviation;
-            for (int i = 0; i < n; i++)
+            double s2 = 0;
+            double s4 = 0;
+
+            for (int i = 0; i < values.Length; i++)
             {
-                // Sum of fourth moment deviations
-                deviation = (values[i] - mean);
-                sum += System.Math.Pow(deviation, 4);
+                double dev = values[i] - mean;
+
+                s2 += dev * dev;
+                s4 += dev * dev * dev * dev;
             }
 
-            return sum / ((double)n * System.Math.Pow(standardDeviation, 4)) - 3.0;
+            double m2 = s2 / n;
+            double m4 = s4 / n;
+
+            if (unbiased)
+            {
+                double v = s2 / (n - 1);
+
+                double a = (n * (n + 1)) / (double)((n - 1) * (n - 2) * (n - 3));
+                double b = s4 / (v * v);
+                double c = ((n - 1) * (n - 1)) / (double)((n - 2) * (n - 3));
+
+                return a * b - 3 * c;
+            }
+            else
+            {
+                return m4 / (m2 * m2) - 3;
+            }
         }
 
         /// <summary>
@@ -1279,11 +1463,12 @@ namespace Accord.Statistics
         {
             int rows = matrix.Length;
             if (rows == 0) return new double[0];
-            int cols = matrix[0].Length;
+
             double[] mean;
 
             if (dimension == 0)
             {
+                int cols = matrix[0].Length;
                 mean = new double[cols];
                 double N = rows;
 
@@ -1300,16 +1485,15 @@ namespace Accord.Statistics
             else if (dimension == 1)
             {
                 mean = new double[rows];
-                double N = cols;
 
                 // for each row
                 for (int j = 0; j < rows; j++)
                 {
                     // for each column
-                    for (int i = 0; i < cols; i++)
+                    for (int i = 0; i < matrix[j].Length; i++)
                         mean[j] += matrix[j][i];
 
-                    mean[j] = mean[j] / N;
+                    mean[j] = mean[j] / (double)matrix[j].Length;
                 }
             }
             else
@@ -1781,6 +1965,7 @@ namespace Accord.Statistics
         /// <summary>
         ///   Computes the Skewness for the given values.
         /// </summary>
+        /// 
         /// <remarks>
         ///   Skewness characterizes the degree of asymmetry of a distribution
         ///   around its mean. Positive skewness indicates a distribution with
@@ -1788,12 +1973,19 @@ namespace Accord.Statistics
         ///   skewness indicates a distribution with an asymmetric tail extending
         ///   towards more negative values.
         /// </remarks>
+        /// 
         /// <param name="matrix">A number matrix containing the matrix values.</param>
+        /// <param name="unbiased">
+        ///   True to compute the unbiased estimate of the population
+        ///   skewness, false for the sample skewness. Default is true
+        ///   (compute the unbiased estimator).</param>
+        /// 
         /// <returns>The skewness of the given data.</returns>
-        public static double[] Skewness(this double[,] matrix)
+        /// 
+        public static double[] Skewness(this double[,] matrix, bool unbiased = true)
         {
             double[] means = Mean(matrix);
-            return Skewness(matrix, means, StandardDeviation(matrix, means));
+            return Skewness(matrix, means, unbiased);
         }
 
         /// <summary>
@@ -1810,30 +2002,78 @@ namespace Accord.Statistics
         /// 
         /// <param name="matrix">A number array containing the vector values.</param>
         /// <param name="means">The values' mean, if already known.</param>
-        /// <param name="standardDeviations">The values' standard deviations, if already known.</param>
+        /// <param name="unbiased">
+        ///   True to compute the unbiased estimate of the population
+        ///   skewness, false for the sample skewness. Default is true
+        ///   (compute the unbiased estimator).</param>
         /// 
         /// <returns>The skewness of the given data.</returns>
         /// 
-        public static double[] Skewness(this double[,] matrix, double[] means, double[] standardDeviations)
+        public static double[] Skewness(this double[,] matrix, double[] means, bool unbiased = true)
         {
             int n = matrix.GetLength(0);
-            double[] skewness = new double[matrix.GetLength(1)];
-            for (int j = 0; j < skewness.Length; j++)
+            double[] skewness = new double[means.Length];
+
+            for (int j = 0; j < means.Length; j++)
             {
-                double sum = 0.0;
+                double s2 = 0;
+                double s3 = 0;
+
                 for (int i = 0; i < n; i++)
                 {
-                    // Sum of third moment deviations
-                    sum += Math.Pow(matrix[i, j] - means[j], 3);
+                    double dev = matrix[i, j] - means[j];
+
+                    s2 += dev * dev;
+                    s3 += dev * dev * dev;
                 }
 
-                skewness[j] = sum / ((n - 1) * Math.Pow(standardDeviations[j], 3));
+                double m2 = s2 / n;
+                double m3 = s3 / n;
+
+                double g = m3 / (Math.Pow(m2, 3 / 2.0));
+
+                if (unbiased)
+                {
+                    double a = Math.Sqrt(n * (n - 1));
+                    double b = n - 2;
+                    skewness[j] = (a / b) * g;
+                }
+                else
+                {
+                    skewness[j] = g;
+                }
             }
 
             return skewness;
         }
 
         /// <summary>
+        ///   Computes the Skewness for the given values.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   Skewness characterizes the degree of asymmetry of a distribution
+        ///   around its mean. Positive skewness indicates a distribution with
+        ///   an asymmetric tail extending towards more positive values. Negative
+        ///   skewness indicates a distribution with an asymmetric tail extending
+        ///   towards more negative values.
+        /// </remarks>
+        /// 
+        /// <param name="matrix">A number matrix containing the matrix values.</param>
+        /// <param name="unbiased">
+        ///   True to compute the unbiased estimate of the population
+        ///   skewness, false for the sample skewness. Default is true
+        ///   (compute the unbiased estimator).</param>
+        /// 
+        /// <returns>The skewness of the given data.</returns>
+        /// 
+        public static double[] Skewness(this double[][] matrix, bool unbiased = true)
+        {
+            double[] means = Mean(matrix);
+            return Skewness(matrix, means, unbiased);
+        }
+
+        /// <summary>
         ///   Computes the Skewness vector for the given matrix.
         /// </summary>
         /// 
@@ -1846,26 +2086,47 @@ namespace Accord.Statistics
         /// </remarks>
         /// 
         /// <param name="matrix">A number array containing the vector values.</param>
-        /// <param name="means">The values' mean, if already known.</param>
-        /// <param name="standardDeviations">The values' standard deviations, if already known.</param>
+        /// <param name="means">The column means, if known.</param>
+        /// <param name="unbiased">
+        ///   True to compute the unbiased estimate of the population
+        ///   skewness, false for the sample skewness. Default is true
+        ///   (compute the unbiased estimator).</param>
         /// 
         /// <returns>The skewness of the given data.</returns>
         /// 
-        public static double[] Skewness(this double[][] matrix, double[] means, double[] standardDeviations)
+        public static double[] Skewness(this double[][] matrix, double[] means, bool unbiased = true)
         {
             int n = matrix.Length;
             double[] skewness = new double[means.Length];
 
             for (int j = 0; j < means.Length; j++)
             {
-                double sum = 0.0;
+                double s2 = 0;
+                double s3 = 0;
+
                 for (int i = 0; i < matrix.Length; i++)
                 {
-                    // Sum of third moment deviations
-                    sum += Math.Pow(matrix[i][j] - means[j], 3);
+                    double dev = matrix[i][j] - means[j];
+
+                    s2 += dev * dev;
+                    s3 += dev * dev * dev;
                 }
 
-                skewness[j] = sum / ((n - 1) * Math.Pow(standardDeviations[j], 3));
+                double m2 = s2 / n;
+                double m3 = s3 / n;
+
+                double g = m3 / (Math.Pow(m2, 3 / 2.0));
+
+                if (unbiased)
+                {
+                    double a = Math.Sqrt(n * (n - 1));
+                    double b = n - 2;
+                    skewness[j] = (a / b) * g;
+                }
+                else
+                {
+                    skewness[j] = g;
+                }
             }
 
             return skewness;
@@ -1876,40 +2137,79 @@ namespace Accord.Statistics
         ///   Computes the Kurtosis vector for the given matrix.
         /// </summary>
         /// 
+        /// <remarks>
+        ///   The framework uses the same definition used by default in SAS and SPSS.
+        /// </remarks>
+        /// 
         /// <param name="matrix">A number multi-dimensional array containing the matrix values.</param>
+        /// <param name="unbiased">
+        ///   True to compute the unbiased estimate of the population
+        ///   kurtosis, false for the sample kurtosis. Default is true
+        ///   (compute the unbiased estimator).</param>
         /// 
         /// <returns>The kurtosis vector of the given data.</returns>
         /// 
-        public static double[] Kurtosis(this double[,] matrix)
+        public static double[] Kurtosis(this double[,] matrix, bool unbiased = true)
         {
             double[] means = Mean(matrix);
-            return Kurtosis(matrix, means, StandardDeviation(matrix, means));
+            return Kurtosis(matrix, means, unbiased);
         }
 
         /// <summary>
-        ///   Computes the Kurtosis vector for the given matrix.
+        ///   Computes the sample Kurtosis vector for the given matrix.
         /// </summary>
+        /// 
+        /// <remarks>
+        ///   The framework uses the same definition used by default in SAS and SPSS.
+        /// </remarks>
         /// 
         /// <param name="matrix">A number multi-dimensional array containing the matrix values.</param>
         /// <param name="means">The values' mean vector, if already known.</param>
-        /// <param name="standardDeviations">The values' standard deviation vector, if already known.</param>
+        /// <param name="unbiased">
+        ///   True to compute the unbiased estimate of the population
+        ///   kurtosis, false for the sample kurtosis. Default is true
+        ///   (compute the unbiased estimator).</param>
         /// 
-        /// <returns>The kurtosis vector of the given data.</returns>
+        /// <returns>The sample kurtosis vector of the given data.</returns>
         /// 
-        public static double[] Kurtosis(this double[,] matrix, double[] means, double[] standardDeviations)
+        public static double[] Kurtosis(this double[,] matrix, double[] means, bool unbiased = true)
         {
             int n = matrix.GetLength(0);
-            double[] kurtosis = new double[matrix.GetLength(1)];
+            int m = matrix.GetLength(1);
+
+            double[] kurtosis = new double[m];
+
             for (int j = 0; j < kurtosis.Length; j++)
             {
-                double sum = 0.0;
+                double s2 = 0;
+                double s4 = 0;
+
                 for (int i = 0; i < n; i++)
                 {
-                    // Sum of fourth moment deviations
-                    sum += Math.Pow(matrix[i, j] - means[j], 4);
+                    double dev = matrix[i, j] - means[j];
+
+                    s2 += dev * dev;
+                    s4 += dev * dev * dev * dev;
                 }
 
-                kurtosis[j] = sum / (n * System.Math.Pow(standardDeviations[j], 4)) - 3.0;
+                double m2 = s2 / n;
+                double m4 = s4 / n;
+
+                if (unbiased)
+                {
+                    double v = s2 / (n - 1);
+
+                    double a = (n * (n + 1)) / (double)((n - 1) * (n - 2) * (n - 3));
+                    double b = s4 / (v * v);
+                    double c = ((n - 1) * (n - 1)) / (double)((n - 2) * (n - 3));
+
+                    kurtosis[j] = a * b - 3 * c;
+                }
+                else
+                {
+                    kurtosis[j] = m4 / (m2 * m2) - 3;
+                }
+
             }
 
             return kurtosis;
@@ -1918,25 +2218,80 @@ namespace Accord.Statistics
         /// <summary>
         ///   Computes the Kurtosis vector for the given matrix.
         /// </summary>
+        /// 
+        /// <remarks>
+        ///   The framework uses the same definition used by default in SAS and SPSS.
+        /// </remarks>
+        /// 
+        /// <param name="matrix">A number multi-dimensional array containing the matrix values.</param>
+        /// <param name="unbiased">
+        ///   True to compute the unbiased estimate of the population
+        ///   kurtosis, false for the sample kurtosis. Default is true
+        ///   (compute the unbiased estimator).</param>
+        /// 
+        /// <returns>The kurtosis vector of the given data.</returns>
+        /// 
+        public static double[] Kurtosis(this double[][] matrix, bool unbiased = true)
+        {
+            double[] means = Mean(matrix);
+            return Kurtosis(matrix, means, unbiased);
+        }
+
+        /// <summary>
+        ///   Computes the Kurtosis vector for the given matrix.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   The framework uses the same definition used by default in SAS and SPSS.
+        /// </remarks>
+        /// 
         /// <param name="matrix">A number multi-dimensional array containing the matrix values.</param>
         /// <param name="means">The values' mean vector, if already known.</param>
-        /// <param name="standardDeviations">The values' standard deviation vector, if already known.</param>
+        /// <param name="unbiased">
+        ///   True to compute the unbiased estimate of the population
+        ///   kurtosis, false for the sample kurtosis. Default is true
+        ///   (compute the unbiased estimator).</param>
+        ///   
         /// <returns>The kurtosis vector of the given data.</returns>
-        public static double[] Kurtosis(this double[][] matrix, double[] means, double[] standardDeviations)
+        /// 
+        public static double[] Kurtosis(this double[][] matrix, double[] means, bool unbiased = true)
         {
-            int rows = matrix.Length;
+            int n = matrix.Length;
+            int m = matrix[0].Length;
 
-            double[] kurtosis = new double[means.Length];
-            for (int j = 0; j < means.Length; j++)
+            double[] kurtosis = new double[m];
+
+            for (int j = 0; j < kurtosis.Length; j++)
             {
-                double sum = 0.0;
+                double s2 = 0;
+                double s4 = 0;
+
                 for (int i = 0; i < matrix.Length; i++)
                 {
-                    // Sum of fourth moment deviations
-                    sum += Math.Pow(matrix[i][j] - means[j], 4);
+                    double dev = matrix[i][j] - means[j];
+
+                    s2 += dev * dev;
+                    s4 += dev * dev * dev * dev;
                 }
 
-                kurtosis[j] = sum / (rows * Math.Pow(standardDeviations[j], 4)) - 3.0;
+                double m2 = s2 / n;
+                double m4 = s4 / n;
+
+                if (unbiased)
+                {
+                    double v = s2 / (n - 1);
+
+                    double a = (n * (n + 1)) / (double)((n - 1) * (n - 2) * (n - 3));
+                    double b = s4 / (v * v);
+                    double c = ((n - 1) * (n - 1)) / (double)((n - 2) * (n - 3));
+
+                    kurtosis[j] = a * b - 3 * c;
+                }
+                else
+                {
+                    kurtosis[j] = m4 / (m2 * m2) - 3;
+                }
+
             }
 
             return kurtosis;
@@ -3070,6 +3425,55 @@ namespace Accord.Statistics
         }
 
         /// <summary>
+        ///   Returns a random group assignment for a sample.
+        /// </summary>
+        /// 
+        /// <param name="size">The sample size.</param>
+        /// <param name="groups">The number of groups.</param>
+        /// 
+        public static int[] RandomGroups(int size, int groups)
+        {
+            // Create the index vector
+            int[] idx = new int[size];
+
+            double n = groups / (double)size;
+            for (int i = 0; i < idx.Length; i++)
+                idx[i] = (int)System.Math.Ceiling((i + 0.9) * n) - 1;
+
+            // Shuffle the indices vector
+            Statistics.Tools.Shuffle(idx);
+
+            return idx;
+        }
+
+        /// <summary>
+        ///   Returns a random group assignment for a sample
+        ///   into two mutually exclusive groups.
+        /// </summary>
+        /// 
+        /// <param name="size">The sample size.</param>
+        /// <param name="proportion">The proportion of samples between the groups.</param>
+        /// 
+        public static int[] RandomGroups(int size, double proportion)
+        {
+            // Create the index vector
+            int[] idx = new int[size];
+
+            int mid = (int)Math.Floor(proportion * size);
+
+            for (int i = 0; i < mid; i++)
+                idx[i] = 0;
+
+            for (int i = mid; i < idx.Length; i++)
+                idx[i] = 1;
+
+            // Shuffle the indices vector
+            Statistics.Tools.Shuffle(idx);
+
+            return idx;
+        }
+
+        /// <summary>
         ///   Returns a random permutation of size n.
         /// </summary>
         /// 
@@ -3159,7 +3563,7 @@ namespace Accord.Statistics
             return value.Multiply(transformMatrix);
         }
 
-        
+
         /// <summary>
         ///   Gets the rank of a sample, often used with order statistics.
         /// </summary>
@@ -3219,6 +3623,24 @@ namespace Accord.Statistics
             return ranks;
         }
 
+
+      
+
+        /// <summary>
+        ///   Gets the number of distinct values 
+        ///   present in each column of a matrix.
+        /// </summary>
+        /// 
+        public static int[] DistinctCount(double[,] sourceMatrix)
+        {
+            double[][] distinct = sourceMatrix.Distinct();
+
+            int[] counts = new int[distinct.Length];
+            for (int i = 0; i < counts.Length; i++)
+                counts[i] = distinct[i].Length;
+
+            return counts;
+        }
     }
 }
 

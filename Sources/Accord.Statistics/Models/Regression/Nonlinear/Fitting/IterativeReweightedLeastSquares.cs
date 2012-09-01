@@ -357,5 +357,30 @@ namespace Accord.Statistics.Models.Regression.Fitting
             return Matrix.Max(deltas);
         }
 
+        /// <summary>
+        ///   Computes the sum-of-squared error between the
+        ///   model outputs and the expected outputs.
+        /// </summary>
+        /// 
+        /// <param name="inputs">The input data set.</param>
+        /// <param name="outputs">The output values.</param>
+        /// 
+        /// <returns>The sum-of-squared errors.</returns>
+        /// 
+        public double ComputeError(double[][] inputs, double[] outputs)
+        {
+            double sum = 0;
+
+            for (int i = 0; i < inputs.Length; i++)
+            {
+                double actual = regression.Compute(inputs[i]);
+                double expected = outputs[i];
+                double delta = actual - expected;
+                sum += delta * delta;
+            }
+
+            return sum;
+        }
+
     }
 }
