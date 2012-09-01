@@ -729,10 +729,7 @@ namespace Accord.Controls.Vision
                     bindingContext = new BindingContext();
                 return bindingContext;
             }
-            set
-            {
-                bindingContext = value;
-            }
+            set { bindingContext = value; }
         }
 
         /// <summary>

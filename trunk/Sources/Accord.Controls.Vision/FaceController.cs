@@ -532,12 +532,13 @@ namespace Accord.Controls.Vision
         private ControlBindingsCollection dataBindings;
 
         /// <summary>
-        /// Gets or sets the collection of currency managers for the <see cref="T:System.Windows.Forms.IBindableComponent"/>.
+        ///   Gets or sets the collection of currency managers for the <see cref="T:System.Windows.Forms.IBindableComponent"/>.
         /// </summary>
-        /// <value></value>
+        /// 
         /// <returns>
-        /// The collection of <see cref="T:System.Windows.Forms.BindingManagerBase"/> objects for this <see cref="T:System.Windows.Forms.IBindableComponent"/>.
+        ///   The collection of <see cref="T:System.Windows.Forms.BindingManagerBase"/> objects for this <see cref="T:System.Windows.Forms.IBindableComponent"/>.
         /// </returns>
+        /// 
         [Browsable(false)]
         public BindingContext BindingContext
         {
@@ -547,19 +548,17 @@ namespace Accord.Controls.Vision
                     bindingContext = new BindingContext();
                 return bindingContext;
             }
-            set
-            {
-                bindingContext = value;
-            }
+            set { bindingContext = value; }
         }
 
         /// <summary>
-        /// Gets the collection of data-binding objects for this <see cref="T:System.Windows.Forms.IBindableComponent"/>.
+        ///   Gets the collection of data-binding objects for this <see cref="T:System.Windows.Forms.IBindableComponent"/>.
         /// </summary>
-        /// <value></value>
+        /// 
         /// <returns>
-        /// The <see cref="T:System.Windows.Forms.ControlBindingsCollection"/> for this <see cref="T:System.Windows.Forms.IBindableComponent"/>.
+        ///   The <see cref="T:System.Windows.Forms.ControlBindingsCollection"/> for this <see cref="T:System.Windows.Forms.IBindableComponent"/>.
         /// </returns>
+        /// 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         public ControlBindingsCollection DataBindings
         {
