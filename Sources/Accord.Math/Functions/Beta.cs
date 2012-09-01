@@ -610,5 +610,22 @@ namespace Accord.Math
             return s;
         }
 
+        /// <summary>
+        ///   Multinomial Beta function.
+        /// </summary>
+        /// 
+        public static double Multinomial(double[] x)
+        {
+            double sum = 0;
+            double prd = 1;
+
+            for (int i = 0; i < x.Length; i++)
+            {
+                sum += x[i];
+                prd *= Gamma.Function(x[i]);
+            }
+
+            return prd / Gamma.Function(sum);
+        }
     }
 }

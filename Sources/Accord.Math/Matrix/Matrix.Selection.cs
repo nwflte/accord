@@ -715,6 +715,20 @@ namespace Accord.Math
         #region Element search
 
         /// <summary>
+        ///   Gets the number of elements matching a certain criteria.
+        /// </summary>
+        /// <typeparam name="T">The type of the array.</typeparam>
+        /// <param name="data">The array to search inside.</param>
+        /// <param name="func">The search criteria.</param>
+        public static int Count<T>(this T[] data, Func<T, bool> func)
+        {
+            int count = 0;
+            for (int i = 0; i < data.Length; i++)
+                if (func(data[i])) count++;
+            return count;
+        }
+
+        /// <summary>
         ///   Gets the indices of all elements matching a certain criteria.
         /// </summary>
         /// <typeparam name="T">The type of the array.</typeparam>
@@ -723,6 +737,17 @@ namespace Accord.Math
         public static int[] Find<T>(this T[] data, Func<T, bool> func)
         {
             return Find(data, func, false);
+        }
+
+        /// <summary>
+        ///   Gets the indices of the first element matching a certain criteria.
+        /// </summary>
+        /// <typeparam name="T">The type of the array.</typeparam>
+        /// <param name="data">The array to search inside.</param>
+        /// <param name="func">The search criteria.</param>
+        public static int First<T>(this T[] data, Func<T, bool> func)
+        {
+            return Find(data, func, true)[0];
         }
 
         /// <summary>
@@ -825,6 +850,7 @@ namespace Accord.Math
         /// <summary>
         ///   Gets the maximum element in a vector.
         /// </summary>
+        /// 
         public static T Max<T>(this T[] values, out int imax) where T : IComparable
         {
             imax = 0;
@@ -843,15 +869,18 @@ namespace Accord.Math
         /// <summary>
         ///   Gets the maximum element in a vector.
         /// </summary>
+        /// 
         public static T Max<T>(this T[] values) where T : IComparable
         {
             int imax;
             return Max(values, out imax);
         }
 
+
         /// <summary>
         ///   Gets the minimum element in a vector.
         /// </summary>
+        /// 
         public static T Min<T>(this T[] values, out int imax) where T : IComparable
         {
             imax = 0;
@@ -870,6 +899,7 @@ namespace Accord.Math
         /// <summary>
         ///   Gets the minimum element in a vector.
         /// </summary>
+        /// 
         public static T Min<T>(this T[] values) where T : IComparable
         {
             int imin;
@@ -877,10 +907,71 @@ namespace Accord.Math
         }
 
 
+        /// <summary>
+        ///   Gets the maximum element in a vector up to a fixed length.
+        /// </summary>
+        /// 
+        public static T Max<T>(this T[] values, int length, out int imax) where T : IComparable
+        {
+            imax = 0;
+            T max = values[0];
+            for (int i = 1; i < length; i++)
+            {
+                if (values[i].CompareTo(max) > 0)
+                {
+                    max = values[i];
+                    imax = i;
+                }
+            }
+            return max;
+        }
+
+        /// <summary>
+        ///   Gets the maximum element in a vector up to a fixed length.
+        /// </summary>
+        /// 
+        public static T Max<T>(this T[] values, int length) where T : IComparable
+        {
+            int imax;
+            return Max(values, length, out imax);
+        }
+
+
+        /// <summary>
+        ///   Gets the minimum element in a vector up to a fixed length.
+        /// </summary>
+        /// 
+        public static T Min<T>(this T[] values, int length, out int imax) where T : IComparable
+        {
+            imax = 0;
+            T max = values[0];
+            for (int i = 1; i < length; i++)
+            {
+                if (values[i].CompareTo(max) < 0)
+                {
+                    max = values[i];
+                    imax = i;
+                }
+            }
+            return max;
+        }
+
+        /// <summary>
+        ///   Gets the minimum element in a vector up to a fixed length.
+        /// </summary>
+        /// 
+        public static T Min<T>(this T[] values, int length) where T : IComparable
+        {
+            int imin;
+            return Min(values, length, out imin);
+        }
+
+
 
         /// <summary>
         ///   Gets the maximum value of a matrix.
         /// </summary>
+        /// 
         public static T Max<T>(this T[,] matrix) where T : IComparable
         {
             Tuple<int, int> imax;
@@ -1286,11 +1377,59 @@ namespace Accord.Math
 
 
         /// <summary>
+        ///   Retrieves a list of the distinct values for each matrix column.
+        /// </summary>
+        /// 
+        /// <param name="values">The matrix.</param>
+        /// 
+        /// <returns>An array containing arrays of distinct values for
+        /// each column in the <paramref name="values"/>.</returns>
+        /// 
+        public static T[][] Distinct<T>(this T[,] values)
+        {
+            int rows = values.GetLength(0);
+            int cols = values.GetLength(1);
+
+            var sets = new HashSet<T>[cols];
+
+            for (int i = 0; i < sets.Length; i++)
+                sets[i] = new HashSet<T>();
+
+            for (int i = 0; i < rows; i++)
+                for (int j = 0; j < cols; j++)
+                    sets[j].Add(values[i, j]);
+
+            T[][] result = new T[cols][];
+            for (int i = 0; i < result.Length; i++)
+                result[i] = sets[i].ToArray();
+
+            return result;
+        }
+
+        /// <summary>
+        ///   Retrieves only distinct values contained in an array.
+        /// </summary>
+        /// 
+        /// <param name="values">The array.</param>
+        /// 
+        /// <returns>An array containing only the distinct values in <paramref name="values"/>.</returns>
+        /// 
+        public static T[] Distinct<T>(this T[] values)
+        {
+            var set = new HashSet<T>(values);
+
+            return set.ToArray();
+        }
+
+
+        /// <summary>
         ///   Sorts the columns of a matrix by sorting keys.
         /// </summary>
+        /// 
         /// <param name="keys">The key value for each column.</param>
         /// <param name="values">The matrix to be sorted.</param>
         /// <param name="comparer">The comparer to use.</param>
+        /// 
         public static TValue[,] Sort<TKey, TValue>(TKey[] keys, TValue[,] values, IComparer<TKey> comparer)
         {
             int[] indices = new int[keys.Length];

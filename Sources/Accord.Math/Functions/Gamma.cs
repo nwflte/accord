@@ -172,6 +172,22 @@ namespace Accord.Math
         }
 
         /// <summary>
+        ///   Multivariate Gamma function
+        /// </summary>
+        /// 
+        public static double Function(double x, int p)
+        {
+            if (p < 1) throw new ArgumentOutOfRangeException("p","Parameter p must be higher than 1.");
+            if (p == 1) return Function(x);
+
+            double prod = Math.Pow(Math.PI, 1.0 / p);
+            for (int i = 0; i < p; i++)
+                prod *= Function(x - 0.5 * i);
+
+            return prod;
+        }
+
+        /// <summary>
         ///   Upper incomplete regularized gamma function Q.
         /// </summary>
         /// 
@@ -520,7 +536,7 @@ namespace Accord.Math
             // Check the input.
             if (x <= 0.0)
             {
-                throw new ArgumentException("The input parameter x must be positive.","x");
+                throw new ArgumentException("The input parameter x must be positive.", "x");
             }
 
             z = x;
@@ -686,7 +702,7 @@ namespace Accord.Math
         }
 
         /// <summary>
-        ///   Natural logarithm of gamma function.
+        ///   Natural logarithm of the gamma function.
         /// </summary>
         /// 
         public static double Log(double x)
@@ -790,5 +806,20 @@ namespace Accord.Math
             return q;
         }
 
+        /// <summary>
+        ///   Natural logarithm of the multivariate Gamma function
+        /// </summary>
+        /// 
+        public static double Log(double x, int p)
+        {
+            if (p < 1) throw new ArgumentOutOfRangeException("p", "Parameter p must be higher than 1.");
+            if (p == 1) return Log(x);
+
+            double sum = Constants.LogPI / p;
+            for (int i = 0; i < p; i++)
+                sum += Log(x - 0.5 * i);
+
+            return sum;
+        }
     }
 }

@@ -607,6 +607,24 @@ namespace Accord.Math
         }
 
         /// <summary>
+        ///   Combines two matrices horizontally.
+        /// </summary>
+        /// 
+        public static T[,] Concatenate<T>(this T[,] a, T[,] b)
+        {
+            return Concatenate(new[] { a, b });
+        }
+
+        /// <summary>
+        ///   Combines two matrices horizontally.
+        /// </summary>
+        /// 
+        public static T[][] Concatenate<T>(this T[][] a, T[][] b)
+        {
+            return Concatenate(new[] { a, b });
+        }
+
+        /// <summary>
         ///   Combines a matrix and a vector horizontally.
         /// </summary>
         /// 
@@ -644,6 +662,45 @@ namespace Accord.Math
             return r;
         }
 
+        /// <summary>
+        ///   Combines a matrix and a vector horizontally.
+        /// </summary>
+        /// 
+        public static T[][] Concatenate<T>(params T[][][] matrices)
+        {
+            int rows = 0;
+            int cols = 0;
+
+            for (int i = 0; i < matrices.Length; i++)
+            {
+                cols += matrices[i][0].Length;
+                if (matrices[i].Length > rows)
+                    rows = matrices[i].Length;
+            }
+
+            T[][] r = new T[rows][];
+            for (int i = 0; i < r.Length; i++)
+                r[i] = new T[cols];
+
+
+            int c = 0;
+            for (int k = 0; k < matrices.Length; k++)
+            {
+                int currentRows = matrices[k].Length;
+                int currentCols = matrices[k][0].Length;
+
+                for (int j = 0; j < currentCols; j++)
+                {
+                    for (int i = 0; i < currentRows; i++)
+                    {
+                        r[i][c] = matrices[k][i][j];
+                    }
+                    c++;
+                }
+            }
+
+            return r;
+        }
 
         /// <summary>
         ///   Combine vectors horizontally.

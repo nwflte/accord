@@ -25,7 +25,6 @@ namespace Accord.Math
     using System;
     using Accord.Math.Decompositions;
 
-
     public static partial class Matrix
     {
 
@@ -44,6 +43,29 @@ namespace Accord.Math
         ///   in case the matrix is singular, pass true to the <paramref name="leastSquares"/>
         ///   parameter when calling this function.
         /// </remarks>
+        /// 
+        /// <example>
+        /// <code>
+        /// // Create a matrix. Please note that this matrix
+        /// // is singular (i.e. not invertible), so only a 
+        /// // least squares solution would be feasible here.
+        /// 
+        /// double[,] matrix = 
+        /// {
+        ///     { 1, 2, 3 },
+        ///     { 4, 5, 6 },
+        ///     { 7, 8, 9 },
+        /// };
+        /// 
+        /// // Define a right side matrix b:
+        /// double[,] rightSide = { {1}, {2}, {3} };
+        /// 
+        /// // Solve the linear system Ax = b by finding x:
+        /// double[,] x = Matrix.Solve(matrix, rightSide, leastSquares: true);
+        /// 
+        /// // The answer should be { {-1/18}, {2/18}, {5/18} }.
+        /// </code>
+        /// </example>
         /// 
         public static double[,] Solve(this double[,] matrix, double[,] rightSide, bool leastSquares = false)
         {
@@ -102,6 +124,29 @@ namespace Accord.Math
         ///   parameter when calling this function.
         /// </remarks>
         /// 
+        /// <example>
+        /// <code>
+        /// // Create a matrix. Please note that this matrix
+        /// // is singular (i.e. not invertible), so only a 
+        /// // least squares solution would be feasible here.
+        /// 
+        /// double[,] matrix = 
+        /// {
+        ///     { 1, 2, 3 },
+        ///     { 4, 5, 6 },
+        ///     { 7, 8, 9 },
+        /// };
+        /// 
+        /// // Define a right side vector b:
+        /// double[] rightSide = { 1, 2, 3 };
+        /// 
+        /// // Solve the linear system Ax = b by finding x:
+        /// double[] x = Matrix.Solve(matrix, rightSide, leastSquares: true);
+        /// 
+        /// // The answer should be { -1/18, 2/18, 5/18 }.
+        /// </code>
+        /// </example>
+        /// 
         public static double[] Solve(this double[,] matrix, double[] rightSide, bool leastSquares = false)
         {
             if (matrix == null)
@@ -152,6 +197,7 @@ namespace Accord.Math
         /// <summary>
         ///   Computes the inverse of a matrix.
         /// </summary>
+        /// 
         public static double[,] Inverse(this double[,] matrix)
         {
             return Inverse(matrix, false);
@@ -160,6 +206,7 @@ namespace Accord.Math
         /// <summary>
         ///   Computes the inverse of a matrix.
         /// </summary>
+        /// 
         public static double[,] Inverse(this double[,] matrix, bool inPlace)
         {
             int rows = matrix.GetLength(0);
@@ -214,6 +261,7 @@ namespace Accord.Math
         /// <summary>
         ///   Computes the pseudo-inverse of a matrix.
         /// </summary>
+        /// 
         public static double[,] PseudoInverse(this double[,] matrix)
         {
             return new SingularValueDecomposition(matrix, true, true, true).Inverse();

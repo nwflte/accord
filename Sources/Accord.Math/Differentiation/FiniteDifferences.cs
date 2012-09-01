@@ -46,6 +46,21 @@ namespace Accord.Math.Differentiation
     ///  </para>
     /// </remarks>
     /// 
+    /// <example>
+    /// <code>
+    /// // Create a simple function with two parameters: f(x,y) = x² + y
+    /// Func &lt;double[], double> function = x => Math.Pow(x[0], 2) + x[1];
+    /// 
+    /// // The gradient function should be g(x,y) = &lt;2x, 1>
+    /// 
+    /// // Create a new finite differences calculator
+    /// var calculator = new FiniteDifferences(2, function);
+    /// 
+    /// // Evaluate the gradient function at the point (2, -1)
+    /// double[] result = calculator.Compute(2, -1); // answer is (4, 1)
+    /// </code>
+    /// </example>
+    /// 
     public class FiniteDifferences
     {
         private const double step = 1e-2;
@@ -54,8 +69,6 @@ namespace Accord.Math.Differentiation
 
         private double[][,] coef; // differential coefficients
         private double[] stepSize; // Relative step sizes
-
-
 
 
         /// <summary>
@@ -110,7 +123,7 @@ namespace Accord.Math.Differentiation
         /// <param name="x">The point where to compute the gradient.</param>
         /// <returns>The gradient of the function evaluated at point <c>x</c>.</returns>
         /// 
-        public double[] Compute(double[] x)
+        public double[] Compute(params double[] x)
         {
             if (x == null)
                 throw new ArgumentNullException("x");

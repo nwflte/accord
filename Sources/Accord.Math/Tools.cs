@@ -349,6 +349,28 @@ namespace Accord.Math
         ///   'from') to another value measured in the scale 'to'.
         /// </summary>
         /// 
+        public static double[][] Scale(double fromMin, double fromMax, double toMin, double toMax, double[][] x)
+        {
+            int rows = x.Length;
+
+            double[][] result = new double[rows][];
+            for (int i = 0; i < rows; i++)
+            {
+                result[i] = new double[x[i].Length];
+                for (int j = 0; j < result[i].Length; j++)
+                {
+                    result[i][j] = (toMax - toMin) * (x[i][j] - fromMin) / (fromMax - fromMin) + toMin;
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        ///   Converts the value x (which is measured in the scale
+        ///   'from') to another value measured in the scale 'to'.
+        /// </summary>
+        /// 
         public static double[][] Scale(double[] fromMin, double[] fromMax, double toMin, double toMax, double[][] x)
         {
             int rows = x.Length;
@@ -522,13 +544,13 @@ namespace Accord.Math
         ///   Sorting will be performed in ascending order.
         /// </summary>
         /// 
-        Ascending,
+        Ascending = +1,
 
         /// <summary>
         ///   Sorting will be performed in descending order.
         /// </summary>
         /// 
-        Descending
+        Descending = -1
     };
 
 
@@ -623,15 +645,24 @@ namespace Accord.Math
         private int direction = 1;
 
         /// <summary>
+        ///   Gets or sets the sorting direction
+        ///   used by this comparer.
+        /// </summary>
+        /// 
+        public ComparerDirection Direction
+        {
+            get { return (ComparerDirection)direction; }
+            set { direction = (int)value; }
+        }
+
+        /// <summary>
         ///   Constructs a new General Comparer.
         /// </summary>
         /// 
         /// <param name="direction">The direction to compare.</param>
         /// 
         public GeneralComparer(ComparerDirection direction)
-            : this(direction, false)
-        {
-        }
+            : this(direction, false) { }
 
         /// <summary>
         ///   Constructs a new General Comparer.
@@ -642,7 +673,7 @@ namespace Accord.Math
         /// 
         public GeneralComparer(ComparerDirection direction, bool useAbsoluteValues)
         {
-            this.direction = (direction == ComparerDirection.Ascending) ? 1 : -1;
+            this.direction = (int)direction;
             this.absolute = useAbsoluteValues;
         }
 

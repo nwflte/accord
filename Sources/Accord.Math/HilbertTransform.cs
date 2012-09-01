@@ -63,7 +63,7 @@ namespace Accord.Math
 	public static class HilbertTransform
 	{
         /// <summary>
-		///   Performs the transformation over a double[] array.
+		///   Performs the Fast Hilbert Transform over a double[] array.
 		/// </summary>
         /// 
 		public static void FHT(double[] data, FourierTransform.Direction direction)
@@ -123,7 +123,7 @@ namespace Accord.Math
 
 
         /// <summary>
-        ///   Performs the transformation over a complex[] array.
+        ///   Performs the Fast Hilbert Transform over a complex[] array.
         /// </summary>
         /// 
 		public static void FHT(Complex[] data, FourierTransform.Direction direction)
