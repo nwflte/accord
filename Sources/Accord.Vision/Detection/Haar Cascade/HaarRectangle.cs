@@ -126,9 +126,7 @@ namespace Accord.Vision.Detection
             this.Weight = weight;
         }
 
-        private HaarRectangle()
-        {
-        }
+        private HaarRectangle() { }
 
         /// <summary>
         ///   Gets the area of this rectangle.

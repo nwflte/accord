@@ -74,7 +74,7 @@ namespace Accord.Vision.Detection
     /// </remarks>
     /// 
     [Serializable]
-    public class HaarClassifier 
+    public class HaarClassifier
     {
 
         private HaarCascade cascade;
@@ -97,15 +97,14 @@ namespace Accord.Vision.Detection
         /// </summary>
         /// 
         public HaarClassifier(int baseWidth, int baseHeight, HaarCascadeStage[] stages)
-            : this(new HaarCascade(baseWidth, baseHeight, stages))
-        {
-        }
+            : this(new HaarCascade(baseWidth, baseHeight, stages)) { }
 
 
         /// <summary>
         ///   Gets the cascade of weak-classifiers
         ///   used by this strong classifier.
         /// </summary>
+        /// 
         public HaarCascade Cascade
         {
             get { return cascade; }

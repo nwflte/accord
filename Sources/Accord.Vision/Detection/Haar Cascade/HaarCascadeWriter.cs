@@ -33,7 +33,7 @@ namespace Accord.Vision.Detection
     /// <remarks>
     ///   This class can be used to generate code-only definitions for Haar cascades,
     ///   avoiding the need for loading and parsing XML files during application startup.
-    ///   This class generates a C# code for a class inheriting from <see cref="HaarCascade"/>
+    ///   This class generates C# code for a class inheriting from <see cref="HaarCascade"/>
     ///   which may be used to create a <see cref="HaarObjectDetector"/>.
     /// </remarks>
     /// 

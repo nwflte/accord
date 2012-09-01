@@ -29,6 +29,7 @@ namespace Accord.Vision.Detection
     /// <summary>
     ///   Haar Cascade Feature Tree Node.
     /// </summary>
+    /// 
     /// <remarks>
     ///   The Feature Node is a node belonging to a feature tree,
     ///   containing information about child nodes and an associated 
@@ -103,9 +104,7 @@ namespace Accord.Vision.Detection
         /// </summary>
         /// 
         public HaarFeatureNode(double threshold, double leftValue, double rightValue, params int[][] rectangles)
-            : this(threshold, leftValue, rightValue, false, rectangles)
-        {
-        }
+            : this(threshold, leftValue, rightValue, false, rectangles) { }
 
         /// <summary>
         ///   Constructs a new feature tree node.

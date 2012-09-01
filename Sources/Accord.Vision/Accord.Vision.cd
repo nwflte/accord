@@ -26,7 +26,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>EACAIAAggCAAYAAQAAAAEAgACAADAAAAAwEQAAABCIA=</HashCode>
+      <HashCode>EACAMAAigSAAYIAQACBAEAgACAADAAAAAwEQAAAFCIA=</HashCode>
       <FileName>Detection\HaarObjectDetector.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -64,7 +64,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>LAAAECQJAZAgREmAEkFAAAAACcAAAAAAAhAEAgAQDIg=</HashCode>
+      <HashCode>LAAAECQJAZAgREmAEkFAAAAAKcAIAAAAAhAEAgAQDIo=</HashCode>
       <FileName>Tracking\Camshift.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>

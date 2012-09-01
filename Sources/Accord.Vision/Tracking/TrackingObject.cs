@@ -28,6 +28,7 @@ namespace Accord.Vision.Tracking
     using AForge.Imaging;
     using AForge.Math.Geometry;
     using Point = AForge.Point;
+    using System.Xml.Serialization;
 
 
     /// <summary>
@@ -52,8 +53,12 @@ namespace Accord.Vision.Tracking
     ///   Tracking object to represent an object in a scene.
     /// </summary>
     /// 
-    public class TrackingObject
+    [Serializable]
+    public class TrackingObject : ICloneable
     {
+
+        [NonSerialized]
+        UnmanagedImage image;
 
         /// <summary>
         /// Gets or sets an user-defined tag associated with this object.
@@ -77,7 +82,8 @@ namespace Accord.Vision.Tracking
         ///   Gets or sets the object's extracted image.
         /// </summary>
         /// 
-        public UnmanagedImage Image { get; set; }
+        [XmlIgnore]
+        public UnmanagedImage Image { get { return image; } set { image = value; } }
 
         /// <summary>
         /// Gets a value indicating whether the object is empty.
@@ -189,5 +195,49 @@ namespace Accord.Vision.Tracking
             this.Angle = 0;
         }
 
+
+
+
+        #region ICloneable Members
+
+        /// <summary>
+        ///   Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A new object that is a copy of this instance.
+        /// </returns>
+        /// 
+        object ICloneable.Clone()
+        {
+            return Clone();
+        }
+
+        /// <summary>
+        ///   Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A new object that is a copy of this instance.
+        /// </returns>
+        /// 
+        /// <param name="excludeImage">Pass true to not include
+        ///   the <see cref="Image"/> in the copy object.</param>
+        /// 
+        public TrackingObject Clone(bool excludeImage = true)
+        {
+            TrackingObject obj = new TrackingObject();
+            obj.Angle = Angle;
+            obj.Center = Center;
+            obj.Rectangle = Rectangle;
+            obj.Tag = Tag;
+
+            if (!excludeImage)
+                obj.Image = Image.Clone();
+
+            return obj;
+        }
+
+        #endregion
     }
 }
