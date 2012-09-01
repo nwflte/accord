@@ -52,4 +52,26 @@ namespace Accord.Statistics.Models.Markov.Learning
         double Run(Array[] observations);
 
     }
+
+    /// <summary>
+    ///   Common interface for unsupervised learning algorithms for hidden
+    ///   Markov models which support for weighted training samples.
+    /// </summary>
+    /// 
+    public interface IWeightedUnsupervisedLearning
+    {
+
+        /// <summary>
+        ///   Runs the learning algorithm.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   Learning problem. Given some training observation sequences O = {o1, o2, ..., oK}
+        ///   and general structure of HMM (numbers of hidden and visible states), determine
+        ///   HMM parameters M = (A, B, pi) that best fit training data. 
+        /// </remarks>
+        /// 
+        double Run(Array[] observations, double[] weights);
+
+    }
 }

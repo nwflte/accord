@@ -24,6 +24,9 @@ namespace Accord.Statistics.Models.Markov.Learning
 {
     using System;
     using Accord.Math;
+    using Accord.Statistics.Distributions.Univariate;
+    using Accord.Statistics.Distributions.Fitting;
+    using Accord.Statistics.Distributions.Multivariate;
 
     /// <summary>
     ///   Baum-Welch learning algorithm for discrete-density Hidden Markov Models.
@@ -79,6 +82,10 @@ namespace Accord.Statistics.Models.Markov.Learning
     ///   double l6 = hmm.Evaluate(new int[] { 0, 1, 1, 1, 1, 1, 1, 0, 1 }); // 0.034
     ///   </code>
     /// </example>
+    /// 
+    /// <seealso cref="HiddenMarkovModel"/>
+    /// <seealso cref="HiddenMarkovModel{TDistribution}"/>
+    /// <seealso cref="BaumWelchLearning{TDistribution}"/>
     /// 
     public class BaumWelchLearning : BaseBaumWelchLearning, IUnsupervisedLearning
     {
@@ -238,18 +245,19 @@ namespace Accord.Statistics.Models.Markov.Learning
             var sequence = discreteObservations[index];
             int T = sequence.Length;
             var logKsi = LogKsi[index];
+            var w = LogWeights[index]; 
 
 
             for (int t = 0; t < T - 1; t++)
             {
                 double lnsum = Double.NegativeInfinity;
-                var x = sequence[t + 1];
+                int x = sequence[t + 1];
 
                 for (int i = 0; i < states; i++)
                 {
                     for (int j = 0; j < states; j++)
                     {
-                        logKsi[t][i, j] = lnFwd[t, i] + logA[i, j] + logB[j, x] + lnBwd[t + 1, j];
+                        logKsi[t][i, j] = lnFwd[t, i] + logA[i, j] + logB[j, x] + lnBwd[t + 1, j] + w;
                         lnsum = Special.LogSum(lnsum, logKsi[t][i, j]);
                     }
                 }
@@ -258,6 +266,46 @@ namespace Accord.Statistics.Models.Markov.Learning
                     for (int j = 0; j < states; j++)
                         logKsi[t][i, j] = logKsi[t][i, j] - lnsum;
             }
+        }
+
+        /// <summary>
+        ///   Creates a Baum-Welch with default configurations for
+        ///   hidden Markov models with normal mixture densities.
+        /// </summary>
+        /// 
+        public static BaumWelchLearning<Mixture<NormalDistribution>> FromMixtureModel(
+            HiddenMarkovModel<Mixture<NormalDistribution>> model, NormalOptions options)
+        {
+            MixtureOptions mixOptions = new MixtureOptions()
+            {
+                Iterations = 1,
+                InnerOptions = options
+            };
+
+            return new BaumWelchLearning<Mixture<NormalDistribution>>(model)
+            {
+                FittingOptions = mixOptions
+            };
+        }
+
+        /// <summary>
+        ///   Creates a Baum-Welch with default configurations for
+        ///   hidden Markov models with normal mixture densities.
+        /// </summary>
+        /// 
+        public static BaumWelchLearning<MultivariateMixture<MultivariateNormalDistribution>> FromMixtureModel(
+            HiddenMarkovModel<MultivariateMixture<MultivariateNormalDistribution>> model, NormalOptions options)
+        {
+            MixtureOptions mixOptions = new MixtureOptions()
+            {
+                Iterations = 1,
+                InnerOptions = options
+            };
+
+            return new BaumWelchLearning<MultivariateMixture<MultivariateNormalDistribution>>(model)
+            {
+                FittingOptions = mixOptions
+            };
         }
     }
 }

@@ -76,7 +76,7 @@ namespace Accord.Statistics.Models.Markov.Learning
     ///   int[] states = new int[] { 2, 2 };
     ///
     ///   // Creates a new Hidden Markov Model Sequence Classifier with the given parameters
-    ///   SequenceClassifier classifier = new HiddenMarkovClassifier(classes, states, symbols);
+    ///   HiddenMarkovClassifier classifier = new HiddenMarkovClassifier(classes, states, symbols);
     ///   
     ///   // Create a new learning algorithm to train the sequence classifier
     ///   var teacher = new HiddenMarkovClassifierLearning(classifier,
