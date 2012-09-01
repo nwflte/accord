@@ -342,7 +342,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAQAAAAEABAABEAEAACIAggABASgBAEgAEgDACCIAgQ=</HashCode>
+      <HashCode>AAQAAAAEABAABEAEAECIAgkABASgBAEgAEgDACCIEgQ=</HashCode>
       <FileName>Analysis\Performance\ConfusionMatrix.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -383,7 +383,7 @@
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>BMEAgAABAAAAgQAEIEEQAAAAAAAAABAAAADAAQiAAAU=</HashCode>
+      <HashCode>BMEAggABAAAAgQAEIEEQAAAAAAAAABAAAADAAQiAAAU=</HashCode>
       <FileName>Analysis\Performance\ReceiverOperatingCharacteristic.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -412,7 +412,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAgAAAJAAAAAAEIACAARABAAAAAAkgAEAAAABAAQ=</HashCode>
+      <HashCode>AAAAAgAAAJAACAAAEIACAARABAAAAAAkgAEAAAABAAQ=</HashCode>
       <FileName>Analysis\DescriptiveAnalysis.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -439,7 +439,7 @@
       <Field Name="waldTests" Hidden="true" />
     </Members>
     <TypeIdentifier>
-      <HashCode>BUAYAIEAAiCgEQIIBAAIQAQQUMAAAECARAAAFEAQEAQ=</HashCode>
+      <HashCode>BUAYAIEAAjCgEQIIBAEIQAQQUMAAAECARAAAFEAQEAQ=</HashCode>
       <FileName>Analysis\LogisticRegressionAnalysis.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>

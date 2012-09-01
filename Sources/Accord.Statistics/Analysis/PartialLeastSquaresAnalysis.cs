@@ -94,6 +94,12 @@ namespace Accord.Statistics.Analysis
     ///       Rosipal, Roman and Nicole Kramer. (2006). Overview and Recent Advances in Partial Least
     ///       Squares, in Subspace, Latent Structure and Feature Selection Techniques, pp 34–51.
     ///       http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.85.7735 </description></item>
+    ///     <item><description>
+    ///       Yi Cao. (2008). Partial Least-Squares and Discriminant Analysis: A tutorial and tool
+    ///       using PLS for discriminant analysis.</description></item>
+    ///     <item><description>
+    ///       Wikipedia contributors. Partial least squares regression. Wikipedia, The Free Encyclopedia;
+    ///       2009. Available from: http://en.wikipedia.org/wiki/Partial_least_squares_regression. </description></item>
     ///   </list></para>   
     /// </remarks>
     ///
@@ -212,9 +218,7 @@ namespace Accord.Statistics.Analysis
         /// <param name="outputs">The output source data to perform analysis.</param>
         /// 
         public PartialLeastSquaresAnalysis(double[,] inputs, double[,] outputs)
-            : this(inputs, outputs, AnalysisMethod.Center, PartialLeastSquaresAlgorithm.NIPALS)
-        {
-        }
+            : this(inputs, outputs, AnalysisMethod.Center, PartialLeastSquaresAlgorithm.NIPALS) { }
 
         /// <summary>
         ///   Constructs a new Partial Least Squares Analysis.
@@ -225,9 +229,7 @@ namespace Accord.Statistics.Analysis
         /// <param name="algorithm">The PLS algorithm to use in the analysis. Default is <see cref="PartialLeastSquaresAlgorithm.NIPALS"/>.</param>
         /// 
         public PartialLeastSquaresAnalysis(double[,] inputs, double[,] outputs, PartialLeastSquaresAlgorithm algorithm)
-            : this(inputs, outputs, AnalysisMethod.Center, algorithm)
-        {
-        }
+            : this(inputs, outputs, AnalysisMethod.Center, algorithm) { }
 
         /// <summary>
         ///   Constructs a new Partial Least Squares Analysis.
@@ -402,20 +404,28 @@ namespace Accord.Statistics.Analysis
         ///   variables in the input source data matrix. </param>
         public void Compute(int factors)
         {
+            // maxFactors = min(rows-1,cols)
+            int maxFactors = System.Math.Min(
+                sourceX.GetLength(0) - 1,
+                sourceX.GetLength(1)
+            );
+
+            if (factors > maxFactors)
+                throw new ArgumentOutOfRangeException("factors");
 
             // Initialize and prepare the data
-            double[,] X0 = Adjust(sourceX, meanX, stdDevX, Overwrite);
-            double[,] Y0 = Adjust(sourceY, meanY, null, Overwrite);
+            double[,] inputs = Adjust(sourceX, meanX, stdDevX, Overwrite);
+            double[,] outputs = Adjust(sourceY, meanY, null, Overwrite);
 
 
             // Run selected algorithm
             if (algorithm == PartialLeastSquaresAlgorithm.SIMPLS)
             {
-                simpls(X0, Y0, factors);
+                simpls(inputs, outputs, factors);
             }
             else
             {
-                nipals(X0, Y0, factors, 0);
+                nipals(inputs, outputs, factors, 0);
             }
 
 
@@ -457,19 +467,28 @@ namespace Accord.Statistics.Analysis
         /// 
         public double[,] Transform(double[,] data, int dimensions)
         {
+            if (data == null) throw new ArgumentNullException("data");
+
             int rows = data.GetLength(0);
             int cols = data.GetLength(1);
 
-            double[,] r = new double[rows, dimensions];
-            double[,] s = Adjust(data, meanX, stdDevX, false);
+            if (cols > loadingsX.GetLength(0))
+            {
+                throw new DimensionMismatchException("data",
+                    "The data matrix should have a number of columns less than or equal to"
+                    + " the number of rows in the loadings matrix for the input varaibles.");
+            }
+
+            double[,] result = new double[rows, dimensions];
+            double[,] source = Adjust(data, meanX, stdDevX, false);
 
             // multiply the data matrix by the selected factors
             for (int i = 0; i < rows; i++)
                 for (int j = 0; j < dimensions; j++)
                     for (int k = 0; k < cols; k++)
-                        r[i, j] += s[i, k] * loadingsX[k, j];
+                        result[i, j] += source[i, k] * loadingsX[k, j];
 
-            return r;
+            return result;
         }
 
         /// <summary>
@@ -487,19 +506,28 @@ namespace Accord.Statistics.Analysis
         /// 
         public double[,] TransformOutput(double[,] outputs, int dimensions)
         {
+            if (outputs == null) throw new ArgumentNullException("outputs");
+
             int rows = outputs.GetLength(0);
             int cols = outputs.GetLength(1);
 
-            double[,] r = new double[rows, dimensions];
-            double[,] s = Adjust(outputs, meanY, stdDevY, false);
+            if (cols > loadingsY.GetLength(0))
+            {
+                throw new DimensionMismatchException("outputs",
+                    "The data matrix should have a number of columns less than or equal to"
+                    + " the number of rows in the loadings matrix for the input varaibles.");
+            }
+
+            double[,] result = new double[rows, dimensions];
+            double[,] source = Adjust(outputs, meanY, stdDevY, false);
 
             // multiply the data matrix by the selected factors
             for (int i = 0; i < rows; i++)
                 for (int j = 0; j < dimensions; j++)
                     for (int k = 0; k < cols; k++)
-                        r[i, j] += s[i, k] * loadingsY[k, j];
+                        result[i, j] += source[i, k] * loadingsY[k, j];
 
-            return r;
+            return result;
         }
 
         /// <summary>
@@ -519,6 +547,10 @@ namespace Accord.Statistics.Analysis
         /// 
         public MultivariateLinearRegression CreateRegression(int factors)
         {
+            if (factors > factorCollection.Count)
+                throw new ArgumentOutOfRangeException("factors", 
+                    "The number of factors should be equal to or less than the number of factors computed in the analysis.");
+
             int xcols = sourceX.GetLength(1);
             int ycols = sourceY.GetLength(1);
 
@@ -559,11 +591,31 @@ namespace Accord.Statistics.Analysis
         ///   Computes PLS parameters using NIPALS algorithm.
         /// </summary>
         /// 
-        private void nipals(double[,] X0, double[,] Y0, int factors, double tolerance)
+        /// <param name="factors">The number of factors to compute.</param>
+        /// <param name="inputsX">The mean-centered (<see cref="Adjust">adjusted</see>) input values X.</param>
+        /// <param name="outputsY">The mean-centered (<see cref="Adjust">adjusted</see>) output values Y.</param>
+        /// <param name="tolerance">The tolerance for convergence.</param>
+        /// 
+        /// <remarks>
+        /// <para>
+        ///   The algorithm implementation follows the original paper by Hervé
+        ///   Abdi, with overall structure as suggested in Yi Cao's tutorial.</para>
+        ///   
+        /// <para>
+        ///   References:
+        ///   <list type="bullet">
+        ///     <item><description>
+        ///       Abdi, H. (2010). Partial least square regression, projection on latent structure regression,
+        ///       PLS-Regression. Wiley Interdisciplinary Reviews: Computational Statistics, 2, 97-106. 
+        ///       Available in: http://www.utdallas.edu/~herve/abdi-wireCS-PLS2010.pdf </description></item>
+        ///     <item><description>
+        ///       Yi Cao. (2008). Partial Least-Squares and Discriminant Analysis: A tutorial and tool
+        ///       using PLS for discriminant analysis.</description></item>
+        ///    </list></para>
+        /// </remarks>
+        /// 
+        private void nipals(double[,] inputsX, double[,] outputsY, int factors, double tolerance)
         {
-            // References:
-            //  - Hervé Abdi, http://www.utdallas.edu/~herve/abdi-wireCS-PLS2010.pdf
-
 
             // Initialize and prepare the data
             int rows = sourceX.GetLength(0);
@@ -572,8 +624,8 @@ namespace Accord.Statistics.Analysis
 
 
             // Initialize storage variables
-            double[,] E = (double[,])X0.Clone();
-            double[,] F = (double[,])Y0.Clone();
+            double[,] E = (double[,])inputsX.Clone();
+            double[,] F = (double[,])outputsY.Clone();
 
             double[,] T = new double[rows, factors];  // factor score matrix T
             double[,] U = new double[rows, factors];  // factor score matrix U
@@ -606,9 +658,10 @@ namespace Accord.Statistics.Analysis
                 double norm_t = Norm.Euclidean(t);
 
 
-                #region Iteration
                 while (norm_t > 1e-14)
                 {
+                    #region Iteration
+
                     // Store initial t to check convergence
                     double[] t0 = (double[])t.Clone();
 
@@ -671,8 +724,8 @@ namespace Accord.Statistics.Analysis
                     }
 
                     norm_t = Math.Sqrt(norm_t);
+                    #endregion
                 }
-                #endregion
 
 
                 // Compute the value of b which is used to
@@ -703,7 +756,7 @@ namespace Accord.Statistics.Analysis
                 varX[factor] = p.InnerProduct(p);
 
 
-                // Save iteration results
+                // Save iteration cols
                 T.SetColumn(factor, t);
                 P.SetColumn(factor, p);
                 U.SetColumn(factor, u);
@@ -747,11 +800,11 @@ namespace Accord.Statistics.Analysis
             {
                 // Sum of squares for matrix X
                 for (int j = 0; j < xcols; j++)
-                    sumX += X0[i, j] * X0[i, j];
+                    sumX += inputsX[i, j] * inputsX[i, j];
 
                 // Sum of squares for matrix Y
                 for (int j = 0; j < ycols; j++)
-                    sumY += Y0[i, j] * Y0[i, j];
+                    sumY += outputsY[i, j] * outputsY[i, j];
             }
 
             // Calculate variance proportions
@@ -767,17 +820,39 @@ namespace Accord.Statistics.Analysis
         ///   Computes PLS parameters using SIMPLS algorithm.
         /// </summary>
         /// 
-        private void simpls(double[,] X0, double[,] Y0, int factors)
+        /// <param name="factors">The number of factors to compute.</param>
+        /// <param name="inputsX">The mean-centered (<see cref="Adjust">adjusted</see>) input values X.</param>
+        /// <param name="outputsY">The mean-centered (<see cref="Adjust">adjusted</see>) output values Y.</param>
+        ///
+        /// <remarks>
+        /// <para>
+        ///   The algorithm implementation is based on the appendix code by Martin Anderson,
+        ///   with modifications for multiple output variables as given in the sources listed
+        ///   below.</para>
+        ///   
+        /// <para>
+        ///   References:
+        ///   <list type="bullet">
+        ///     <item><description>
+        ///       Martin Anderson, "A comparison of nine PLS1 algorithms". Available on:
+        ///       http://onlinelibrary.wiley.com/doi/10.1002/cem.1248/pdf </description></item>
+        ///     <item><description>
+        ///       Abdi, H. (2010). Partial least square regression, projection on latent structure regression,
+        ///       PLS-Regression. Wiley Interdisciplinary Reviews: Computational Statistics, 2, 97-106. 
+        ///       Available from: http://www.utdallas.edu/~herve/abdi-wireCS-PLS2010.pdf </description></item>
+        ///     <item><description>
+        ///       StatSoft, Inc. (2012). Electronic Statistics Textbook: Partial Least Squares (PLS).
+        ///       Tulsa, OK: StatSoft. Available from: http://www.statsoft.com/textbook/partial-least-squares/#SIMPLS
+        /// </description></item>
+        ///     <item><description>
+        ///       De Jong, S. (1993). SIMPLS: an alternative approach to partial least squares regression.
+        ///       Chemometrics and Intelligent Laboratory Systems, 18: 251–263.
+        ///       http://dx.doi.org/10.1016/0169-7439(93)85002-X </description></item>
+        ///    </list></para>
+        /// </remarks>
+        /// 
+        private void simpls(double[,] inputsX, double[,] outputsY, int factors)
         {
-            // References:
-            //  - Martin Anderson, "A comparison of nine PLS1 algorithms". Journal of Chemometrics,
-            //    2009. Available on: http://onlinelibrary.wiley.com/doi/10.1002/cem.1248/pdf
-            //  - Hervé Abdi, http://www.utdallas.edu/~herve/abdi-wireCS-PLS2010.pdf
-            //  - Statsoft, http://www.statsoft.com/textbook/partial-least-squares/#SIMPLS
-            //  - Sijmen de Jong, "SIMPLS: an alternative approach to partial least squares regression"
-            //  - N.M. Faber and J. Ferré, “On the numerical stability of two widely used PLS algorithms,”
-            //    J. Chemometrics, 22, pps 101-105, 2008.
-
 
             // Initialize and prepare the data
             int rows = sourceX.GetLength(0);
@@ -797,8 +872,8 @@ namespace Accord.Statistics.Analysis
             double[,] V = new double[xcols, factors];
 
 
-            // Create covariance matrix C = X0'Y0
-            double[,] covariance = X0.TransposeAndMultiply(Y0);
+            // Create covariance matrix C = X'Y
+            double[,] covariance = inputsX.TransposeAndMultiply(outputsY);
 
             #region SIMPLS
             for (int factor = 0; factor < factors; factor++)
@@ -815,30 +890,33 @@ namespace Accord.Statistics.Analysis
                     computeRightSingularVectors: false,
                     autoTranspose: true);
 
+                // TODO: Use an iterative approximation instead, since we
+                // are interested only in the first left singular vector.
+
                 double[] w = svd.LeftSingularVectors.GetColumn(0);
                 double[] c = covariance.TransposeAndMultiply(w);
 
 
-                // Step 2. Estimate X factor scores: t ∝ X0*w
+                // Step 2. Estimate X factor scores: t ∝ X*w
                 //   Similarly to NIPALS, the T factor of SIMPLS
                 //   is computed as T=X*W [Statsoft] [Abdi, 2010].
 
-                // 2.1. Estimate t (X factor scores): t = X0*w [Abdi, 2010]
+                // 2.1. Estimate t (X factor scores): t = X*w [Abdi, 2010]
                 double[] t = new double[rows];
                 for (int i = 0; i < t.Length; i++)
                     for (int j = 0; j < w.Length; j++)
-                        t[i] += X0[i, j] * w[j];
+                        t[i] += inputsX[i, j] * w[j];
 
                 // 2.2. Normalize t (X factor scores): t = t/norm(t)
                 double norm_t = Norm.Euclidean(t);
                 t = t.Divide(norm_t);
 
 
-                // Step 3. Estimate p (X factor loadings): p = X0'*t
+                // Step 3. Estimate p (X factor loadings): p = X'*t
                 double[] p = new double[xcols];
                 for (int i = 0; i < p.Length; i++)
                     for (int j = 0; j < t.Length; j++)
-                        p[i] += X0[j, i] * t[j];
+                        p[i] += inputsX[j, i] * t[j];
 
 
                 // Step 4. Estimate X and Y weights. Actually, the weights have
@@ -849,11 +927,11 @@ namespace Accord.Statistics.Analysis
                 c = c.Divide(norm_t);
 
 
-                // Step 5. Estimate u (Y factor scores): u = Y0*c [Abdi, 2010]
+                // Step 5. Estimate u (Y factor scores): u = Y*c [Abdi, 2010]
                 double[] u = new double[rows];
                 for (int i = 0; i < u.Length; i++)
                     for (int j = 0; j < c.Length; j++)
-                        u[i] += Y0[i, j] * c[j];
+                        u[i] += outputsY[i, j] * c[j];
 
 
                 // Step 6. Create orthogonal loading
@@ -908,7 +986,7 @@ namespace Accord.Statistics.Analysis
                 covariance = cov;
 
 
-                // Save iteration
+                // Save iteration cols
                 W.SetColumn(factor, w);
                 U.SetColumn(factor, u);
                 C.SetColumn(factor, c);
@@ -927,8 +1005,8 @@ namespace Accord.Statistics.Analysis
             this.scoresX = T;      // factor score matrix T
             this.scoresY = U;      // factor score matrix U
             this.loadingsX = P;    // loading matrix P, the loadings for X such that X = TP + F
-            this.loadingsY = C;    // loading matrix Q, the loadings for Y such that Y = TQ + E
-            this.weights = W;      // the columns of R are weight vectors
+            this.loadingsY = C;    // loading matrix C, the loadings for Y such that Y = TC + E
+            this.weights = W;      // the columns of W are weight vectors
             this.coeffbase = W;
 
 
@@ -941,11 +1019,11 @@ namespace Accord.Statistics.Analysis
             {
                 // Sum of squares for matrix X
                 for (int j = 0; j < xcols; j++)
-                    sumX += X0[i, j] * X0[i, j];
+                    sumX += inputsX[i, j] * inputsX[i, j];
 
                 // Sum of squares for matrix Y
                 for (int j = 0; j < ycols; j++)
-                    sumY += Y0[i, j] * Y0[i, j];
+                    sumY += outputsY[i, j] * outputsY[i, j];
             }
 
             // Calculate variance proportions
