@@ -553,164 +553,12 @@ namespace Accord.Imaging
         #region Image tools
 
         #region Sum
-        /// <summary>
-        ///   Computes the sum of the pixels in a given image.
-        /// </summary>
-        /// 
-        public static int Sum(this BitmapData image)
-        {
-            if (image.PixelFormat != PixelFormat.Format8bppIndexed)
-                throw new UnsupportedImageFormatException("Only grayscale images are supported");
 
-            int width = image.Width;
-            int height = image.Height;
-            int offset = image.Stride - image.Width;
-
-            int sum = 0;
-
-            unsafe
-            {
-                byte* src = (byte*)image.Scan0.ToPointer();
-
-                for (int y = 0; y < height; y++)
-                {
-                    for (int x = 0; x < width; x++, src++)
-                        sum += (*src);
-                    src += offset;
-                }
-            }
-
-            return sum;
-        }
 
         /// <summary>
         ///   Computes the sum of the pixels in a given image.
         /// </summary>
-        public static int Sum(this UnmanagedImage image)
-        {
-            if (image.PixelFormat != PixelFormat.Format8bppIndexed)
-                throw new UnsupportedImageFormatException("Only grayscale images are supported");
-
-            int width = image.Width;
-            int height = image.Height;
-            int offset = image.Stride - image.Width;
-
-            int sum = 0;
-
-            unsafe
-            {
-                byte* src = (byte*)image.ImageData.ToPointer();
-
-                for (int y = 0; y < height; y++)
-                {
-                    for (int x = 0; x < width; x++, src++)
-                        sum += (*src);
-                    src += offset;
-                }
-            }
-
-            return sum;
-        }
-
-        /// <summary>
-        ///   Computes the sum of the pixels in a given image.
-        /// </summary>
-        public static int Sum(this BitmapData image, Rectangle rectangle)
-        {
-            if (image.PixelFormat != PixelFormat.Format8bppIndexed)
-                throw new UnsupportedImageFormatException("Only grayscale images are supported");
-
-            int width = image.Width;
-            int height = image.Height;
-            int stride = image.Stride;
-            int offset = image.Stride - image.Width;
-
-            int rwidth = rectangle.Width;
-            int rheight = rectangle.Height;
-            int rx = rectangle.X;
-            int ry = rectangle.Y;
-
-            int sum = 0;
-
-            unsafe
-            {
-                byte* src = (byte*)image.Scan0.ToPointer();
-
-                for (int y = 0; y < rheight; y++)
-                {
-                    byte* p = src + stride * (ry + y) + rx;
-
-                    for (int x = 0; x < rwidth; x++)
-                        sum += (*p++);
-                }
-            }
-
-            return sum;
-        }
-
-        /// <summary>
-        ///   Computes the sum of the pixels in a given image.
-        /// </summary>
-        public static long Sum(this UnmanagedImage image, Rectangle rectangle)
-        {
-            if ((image.PixelFormat != PixelFormat.Format8bppIndexed) &&
-                (image.PixelFormat != PixelFormat.Format16bppGrayScale))
-                throw new UnsupportedImageFormatException("Only grayscale images are supported");
-
-            int width = image.Width;
-            int height = image.Height;
-            int stride = image.Stride;
-            int offset = image.Stride - image.Width;
-
-            int rwidth = rectangle.Width;
-            int rheight = rectangle.Height;
-            int rx = rectangle.X;
-            int ry = rectangle.Y;
-
-            if (image.PixelFormat == PixelFormat.Format8bppIndexed)
-            {
-                int sum = 0;
-
-                unsafe
-                {
-                    byte* src = (byte*)image.ImageData.ToPointer();
-
-                    for (int y = 0; y < rheight; y++)
-                    {
-                        byte* p = src + stride * (ry + y) + rx;
-
-                        for (int x = 0; x < rwidth; x++)
-                            sum += (*p++);
-                    }
-                }
-
-                return sum;
-            }
-            else
-            {
-                long sum = 0;
-
-                unsafe
-                {
-                    ushort* src = (ushort*)image.ImageData.ToPointer();
-
-                    for (int y = 0; y < rheight; y++)
-                    {
-                        ushort* p = src + stride * (ry + y) + rx;
-
-                        for (int x = 0; x < rwidth; x++)
-                            sum += (*p++);
-                    }
-                }
-
-                return sum;
-            }
-        }
-
-        /// <summary>
-        ///   Computes the sum of the pixels in a given image.
-        /// </summary>
-        public static long Sum(this Bitmap image)
+        public static int Sum(this Bitmap image)
         {
             BitmapData data = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
                 ImageLockMode.ReadOnly, image.PixelFormat);
@@ -725,17 +573,127 @@ namespace Accord.Imaging
         /// <summary>
         ///   Computes the sum of the pixels in a given image.
         /// </summary>
+        /// 
+        public unsafe static int Sum(this BitmapData image)
+        {
+            return Sum(new UnmanagedImage(image));
+        }
+
+        /// <summary>
+        ///   Computes the sum of the pixels in a given image.
+        /// </summary>
+        public unsafe static int Sum(this UnmanagedImage image)
+        {
+            if (image.PixelFormat != PixelFormat.Format8bppIndexed &&
+                image.PixelFormat != PixelFormat.Format16bppGrayScale)
+                throw new UnsupportedImageFormatException("Only grayscale images are supported");
+
+            int width = image.Width;
+            int height = image.Height;
+            int offset = image.Stride - image.Width;
+
+            int sum = 0;
+
+            if (image.PixelFormat == PixelFormat.Format8bppIndexed)
+            {
+                byte* src = (byte*)image.ImageData.ToPointer();
+
+                for (int y = 0; y < height; y++)
+                {
+                    for (int x = 0; x < width; x++, src++)
+                        sum += (*src);
+                    src += offset;
+                }
+            }
+            else
+            {
+                short* src = (short*)image.ImageData.ToPointer();
+
+                for (int y = 0; y < height; y++)
+                {
+                    for (int x = 0; x < width; x++, src++)
+                        sum += (*src);
+                    src += offset;
+                }
+            }
+
+            return sum;
+        }
+
+
+
+        /// <summary>
+        ///   Computes the sum of the pixels in a given image.
+        /// </summary>
         public static long Sum(this Bitmap image, Rectangle rectangle)
         {
-            BitmapData data = image.LockBits(rectangle,
+            BitmapData data = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
                 ImageLockMode.ReadOnly, image.PixelFormat);
 
-            int sum = Sum(data);
+            int sum = Sum(data, rectangle);
 
             image.UnlockBits(data);
 
             return sum;
         }
+
+        /// <summary>
+        ///   Computes the sum of the pixels in a given image.
+        /// </summary>
+        public static int Sum(this BitmapData image, Rectangle rectangle)
+        {
+            return Sum(new UnmanagedImage(image), rectangle);
+        }
+
+        /// <summary>
+        ///   Computes the sum of the pixels in a given image.
+        /// </summary>
+        public unsafe static int Sum(this UnmanagedImage image, Rectangle rectangle)
+        {
+            if ((image.PixelFormat != PixelFormat.Format8bppIndexed) &&
+                (image.PixelFormat != PixelFormat.Format16bppGrayScale))
+                throw new UnsupportedImageFormatException("Only grayscale images are supported");
+
+            int width = image.Width;
+            int height = image.Height;
+            int stride = image.Stride;
+            int offset = image.Stride - image.Width;
+
+            int rwidth = rectangle.Width;
+            int rheight = rectangle.Height;
+            int rx = rectangle.X;
+            int ry = rectangle.Y;
+            int sum = 0;
+
+            if (image.PixelFormat == PixelFormat.Format8bppIndexed)
+            {
+                byte* src = (byte*)image.ImageData.ToPointer();
+
+                for (int y = 0; y < rheight; y++)
+                {
+                    byte* p = src + stride * (ry + y) + rx;
+
+                    for (int x = 0; x < rwidth; x++)
+                        sum += (*p++);
+                }
+            }
+            else
+            {
+                ushort* src = (ushort*)image.ImageData.ToPointer();
+
+                for (int y = 0; y < rheight; y++)
+                {
+                    ushort* p = src + stride * (ry + y) + rx;
+
+                    for (int x = 0; x < rwidth; x++)
+                        sum += (*p++);
+                }
+            }
+
+            return sum;
+        }
+
+
         #endregion
 
         #region Mean
@@ -764,6 +722,189 @@ namespace Accord.Imaging
         public static double Mean(this UnmanagedImage image, Rectangle rectangle)
         {
             return (double)Sum(image, rectangle) / (rectangle.Width * rectangle.Height);
+        }
+
+        /// <summary>
+        ///   Computes the arithmetic mean of the pixels in a given image.
+        /// </summary>
+        /// 
+        public static double Mean(this Bitmap image)
+        {
+            return (double)Sum(image) / (image.Width * image.Height);
+        }
+
+        /// <summary>
+        ///   Computes the arithmetic mean of the pixels in a given image.
+        /// </summary>
+        /// 
+        public static double Mean(this BitmapData image)
+        {
+            return (double)Sum(image) / (image.Width * image.Height);
+        }
+
+        /// <summary>
+        ///   Computes the arithmetic mean of the pixels in a given image.
+        /// </summary>
+        /// 
+        public static double Mean(this UnmanagedImage image)
+        {
+            return (double)Sum(image) / (image.Width * image.Height);
+        }
+
+        /// <summary>
+        ///   Computes the standard deviation of image pixels.
+        /// </summary>
+        /// 
+        public static double StandardDeviation(this Bitmap image, double mean)
+        {
+            BitmapData data = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
+                       ImageLockMode.ReadOnly, image.PixelFormat);
+
+            double dev = StandardDeviation(data, mean);
+
+            image.UnlockBits(data);
+
+            return dev;
+        }
+
+        /// <summary>
+        ///   Computes the standard deviation of image pixels.
+        /// </summary>
+        /// 
+        public static double StandardDeviation(this BitmapData image, double mean)
+        {
+            return StandardDeviation(new UnmanagedImage(image), mean);
+        }
+
+        /// <summary>
+        ///   Computes the standard deviation of image pixels.
+        /// </summary>
+        /// 
+        public unsafe static double StandardDeviation(this UnmanagedImage image, double mean)
+        {
+            if (image.PixelFormat != PixelFormat.Format8bppIndexed &&
+                image.PixelFormat != PixelFormat.Format16bppGrayScale)
+                throw new UnsupportedImageFormatException("Only grayscale images are supported");
+
+            int width = image.Width;
+            int height = image.Height;
+            int offset = image.Stride - image.Width;
+
+            double sum = 0;
+
+            if (image.PixelFormat == PixelFormat.Format8bppIndexed)
+            {
+                byte* src = (byte*)image.ImageData.ToPointer();
+
+                for (int y = 0; y < height; y++)
+                {
+                    for (int x = 0; x < width; x++, src++)
+                    {
+                        double u = (*src) - mean;
+                        sum += u * u;
+                    }
+                    src += offset;
+                }
+            }
+            else
+            {
+                short* src = (short*)image.ImageData.ToPointer();
+
+                for (int y = 0; y < height; y++)
+                {
+                    for (int x = 0; x < width; x++, src++)
+                    {
+                        double u = (*src) - mean;
+                        sum += u * u;
+                    }
+                    src += offset;
+                }
+            }
+
+            return Math.Sqrt(sum / (width * height - 1));
+        }
+
+        /// <summary>
+        ///   Computes the standard deviation of image pixels.
+        /// </summary>
+        /// 
+        public static double StandardDeviation(this Bitmap image, Rectangle rectangle, double mean)
+        {
+            BitmapData data = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
+                       ImageLockMode.ReadOnly, image.PixelFormat);
+
+            double dev = StandardDeviation(data, rectangle, mean);
+
+            image.UnlockBits(data);
+
+            return dev;
+        }
+
+        /// <summary>
+        ///   Computes the standard deviation of image pixels.
+        /// </summary>
+        /// 
+        public static double StandardDeviation(this BitmapData image, Rectangle rectangle, double mean)
+        {
+            return StandardDeviation(new UnmanagedImage(image), rectangle, mean);
+        }
+
+        /// <summary>
+        ///   Computes the standard deviation of image pixels.
+        /// </summary>
+        /// 
+        public unsafe static double StandardDeviation(this UnmanagedImage image, Rectangle rectangle, double mean)
+        {
+            if (image.PixelFormat != PixelFormat.Format8bppIndexed &&
+                image.PixelFormat != PixelFormat.Format16bppGrayScale)
+                throw new UnsupportedImageFormatException("Only grayscale images are supported");
+
+            int width = image.Width;
+            int height = image.Height;
+            int stride = image.Stride;
+            int offset = image.Stride - image.Width;
+
+            int rwidth = rectangle.Width;
+            int rheight = rectangle.Height;
+            int rx = rectangle.X;
+            int ry = rectangle.Y;
+
+            double sum = 0;
+
+            if (image.PixelFormat == PixelFormat.Format8bppIndexed)
+            {
+                byte* src = (byte*)image.ImageData.ToPointer();
+
+                for (int y = 0; y < rheight; y++)
+                {
+                    byte* p = src + stride * (ry + y) + rx;
+
+                    for (int x = 0; x < rwidth; x++)
+                    {
+                        double u = (*p++) - mean;
+                        sum += u * u;
+                    }
+                    src += offset;
+                }
+            }
+            else
+            {
+                short* src = (short*)image.ImageData.ToPointer();
+
+                for (int y = 0; y < rheight; y++)
+                {
+                    short* p = src + stride * (ry + y) + rx;
+
+                    for (int x = 0; x < rwidth; x++)
+                    {
+                        double u = (*p++) - mean;
+                        sum += u * u;
+                    }
+                    src += offset;
+                }
+            }
+
+            return Math.Sqrt(sum / (rwidth * rheight - 1));
         }
         #endregion
 
@@ -828,7 +969,7 @@ namespace Accord.Imaging
         ///   Computes the maximum pixel value in the given image.
         /// </summary>
         /// 
-        public static int Max(this UnmanagedImage image, Rectangle rectangle)
+        public unsafe static int Max(this UnmanagedImage image, Rectangle rectangle)
         {
             if ((image.PixelFormat != PixelFormat.Format8bppIndexed) &&
                 (image.PixelFormat != PixelFormat.Format16bppGrayScale))
@@ -848,33 +989,64 @@ namespace Accord.Imaging
 
             if (image.PixelFormat == PixelFormat.Format8bppIndexed)
             {
-                unsafe
+                byte* src = (byte*)image.ImageData.ToPointer();
+
+                for (int y = 0; y < rheight; y++)
                 {
-                    byte* src = (byte*)image.ImageData.ToPointer();
+                    byte* p = src + stride * (ry + y) + rx;
 
-                    for (int y = 0; y < rheight; y++)
-                    {
-                        byte* p = src + stride * (ry + y) + rx;
-
-                        for (int x = 0; x < rwidth; x++, p++)
-                            if (*p > max) max = *p;
-                    }
+                    for (int x = 0; x < rwidth; x++, p++)
+                        if (*p > max) max = *p;
                 }
             }
             else
             {
-                unsafe
+                ushort* src = (ushort*)image.ImageData.ToPointer();
+
+                for (int y = 0; y < rheight; y++)
                 {
-                    ushort* src = (ushort*)image.ImageData.ToPointer();
+                    ushort* p = src + 2 * stride * (ry + y) + 2 * rx;
 
-                    for (int y = 0; y < rheight; y++)
-                    {
-                        ushort* p = src + stride * (ry + y) + rx;
-
-                        for (int x = 0; x < rwidth; x++, p++)
-                            if (*p > max) max = *p;
-                    }
+                    for (int x = 0; x < rwidth; x++, p++)
+                        if (*p > max) max = *p;
                 }
+            }
+
+            return max;
+        }
+
+        /// <summary>
+        ///   Computes the maximum pixel value in the given image.
+        /// </summary>
+        /// 
+        public unsafe static int Max(this UnmanagedImage image)
+        {
+            if ((image.PixelFormat != PixelFormat.Format8bppIndexed) &&
+                (image.PixelFormat != PixelFormat.Format16bppGrayScale))
+                throw new UnsupportedImageFormatException("Only grayscale images are supported");
+
+            int width = image.Width;
+            int height = image.Height;
+            int stride = image.Stride;
+            int offset = image.Stride - image.Width;
+
+            int max = 0;
+
+            if (image.PixelFormat == PixelFormat.Format8bppIndexed)
+            {
+                byte* src = (byte*)image.ImageData.ToPointer();
+
+                for (int y = 0; y < height; y++)
+                    for (int x = 0; x < width; x++, src++)
+                        if (*src > max) max = *src;
+            }
+            else
+            {
+                ushort* src = (ushort*)image.ImageData.ToPointer();
+
+                for (int y = 0; y < height; y++)
+                    for (int x = 0; x < width; x++, src++)
+                        if (*src > max) max = *src;
             }
 
             return max;
@@ -902,10 +1074,10 @@ namespace Accord.Imaging
         /// 
         public static int Max(this Bitmap image, Rectangle rectangle)
         {
-            BitmapData data = image.LockBits(rectangle,
+            BitmapData data = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
                 ImageLockMode.ReadOnly, image.PixelFormat);
 
-            int max = Max(data, new Rectangle(0, 0, image.Width, image.Height));
+            int max = Max(data, rectangle);
 
             image.UnlockBits(data);
 
@@ -970,6 +1142,15 @@ namespace Accord.Imaging
             }
 
             return min;
+        }
+
+        /// <summary>
+        ///   Computes the minimum pixel value in the given image.
+        /// </summary>
+        /// 
+        public static int Min(this UnmanagedImage image)
+        {
+            return Min(image, new Rectangle(0, 0, image.Width, image.Height));
         }
 
         /// <summary>
@@ -1041,7 +1222,7 @@ namespace Accord.Imaging
             BitmapData data = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
                 ImageLockMode.ReadOnly, image.PixelFormat);
 
-            int min = Min(data, new Rectangle(0, 0, image.Width, image.Height));
+            int min = Min(data, new Rectangle(0, 0, data.Width, data.Height));
 
             image.UnlockBits(data);
 
@@ -1054,10 +1235,10 @@ namespace Accord.Imaging
         /// 
         public static int Min(this Bitmap image, Rectangle rectangle)
         {
-            BitmapData data = image.LockBits(rectangle,
+            BitmapData data = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
                 ImageLockMode.ReadOnly, image.PixelFormat);
 
-            int min = Min(data, new Rectangle(0, 0, image.Width, image.Height));
+            int min = Min(data, rectangle);
 
             image.UnlockBits(data);
 
@@ -1072,6 +1253,8 @@ namespace Accord.Imaging
         ///   Converts a given image into a array of double-precision
         ///   floating-point numbers scaled between -1 and 1.
         /// </summary>
+        /// 
+        [Obsolete("Please use the converters in the Imaging.Converters namespace.")]
         public static double[] ToDoubleArray(this Bitmap image, int channel)
         {
             return ToDoubleArray(image, channel, -1, 1);
@@ -1081,6 +1264,8 @@ namespace Accord.Imaging
         ///   Converts a given image into a array of double-precision
         ///   floating-point numbers scaled between the given range.
         /// </summary>
+        /// 
+        [Obsolete("Please use the converters in the Imaging.Converters namespace.")]
         public static double[] ToDoubleArray(this Bitmap image, int channel, double min, double max)
         {
             BitmapData data = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
@@ -1097,6 +1282,8 @@ namespace Accord.Imaging
         ///   Converts a given image into a array of double-precision
         ///   floating-point numbers scaled between -1 and 1.
         /// </summary>
+        /// 
+        [Obsolete("Please use the converters in the Imaging.Converters namespace.")]
         public static double[] ToDoubleArray(this BitmapData image, int channel)
         {
             return ToDoubleArray(new UnmanagedImage(image), channel, -1, 1);
@@ -1106,6 +1293,8 @@ namespace Accord.Imaging
         ///   Converts a given image into a array of double-precision
         ///   floating-point numbers scaled between the given range.
         /// </summary>
+        /// 
+        [Obsolete("Please use the converters in the Imaging.Converters namespace.")]
         public static double[] ToDoubleArray(this BitmapData image, int channel, double min, double max)
         {
             return ToDoubleArray(new UnmanagedImage(image), channel, min, max);
@@ -1115,6 +1304,8 @@ namespace Accord.Imaging
         ///   Converts a given image into a array of double-precision
         ///   floating-point numbers scaled between the given range.
         /// </summary>
+        /// 
+        [Obsolete("Please use the converters in the Imaging.Converters namespace.")]
         public static double[] ToDoubleArray(this UnmanagedImage image, int channel)
         {
             return ToDoubleArray(image, channel, -1, 1);
@@ -1124,6 +1315,8 @@ namespace Accord.Imaging
         ///   Converts a given image into a array of double-precision
         ///   floating-point numbers scaled between the given range.
         /// </summary>
+        /// 
+        [Obsolete("Please use the converters in the Imaging.Converters namespace.")]
         public static double[] ToDoubleArray(this UnmanagedImage image, int channel, double min, double max)
         {
             int width = image.Width;
@@ -1152,6 +1345,8 @@ namespace Accord.Imaging
         ///   Converts a given image into a array of double-precision
         ///   floating-point numbers scaled between -1 and 1.
         /// </summary>
+        /// 
+        [Obsolete("Please use the converters in the Imaging.Converters namespace.")]
         public static double[][] ToDoubleArray(this Bitmap image)
         {
             return ToDoubleArray(image, -1, 1);
@@ -1161,6 +1356,8 @@ namespace Accord.Imaging
         ///   Converts a given image into a array of double-precision
         ///   floating-point numbers scaled between the given range.
         /// </summary>
+        /// 
+        [Obsolete("Please use the converters in the Imaging.Converters namespace.")]
         public static double[][] ToDoubleArray(this Bitmap image, double min, double max)
         {
             BitmapData data = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
@@ -1177,6 +1374,8 @@ namespace Accord.Imaging
         ///   Converts a given image into a array of double-precision
         ///   floating-point numbers scaled between the given range.
         /// </summary>
+        /// 
+        [Obsolete("Please use the converters in the Imaging.Converters namespace.")]
         public static double[][] ToDoubleArray(this BitmapData image, double min, double max)
         {
             int width = image.Width;
@@ -1212,6 +1411,8 @@ namespace Accord.Imaging
         ///   Converts a given image into a array of double-precision
         ///   floating-point numbers scaled between -1 and 1.
         /// </summary>
+        /// 
+        [Obsolete("Please use the converters in the Imaging.Converters namespace.")]
         public static double[,] ToDoubleMatrix(this Bitmap image, int channel)
         {
             return ToDoubleMatrix(image, channel, -1, 1);
@@ -1221,6 +1422,8 @@ namespace Accord.Imaging
         ///   Converts a given image into a array of double-precision
         ///   floating-point numbers scaled between the given range.
         /// </summary>
+        /// 
+        [Obsolete("Please use the converters in the Imaging.Converters namespace.")]
         public static double[,] ToDoubleMatrix(this Bitmap image, int channel, double min, double max)
         {
             BitmapData data = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
@@ -1237,6 +1440,8 @@ namespace Accord.Imaging
         ///   Converts a given image into a array of double-precision
         ///   floating-point numbers scaled between -1 and 1.
         /// </summary>
+        /// 
+        [Obsolete("Please use the converters in the Imaging.Converters namespace.")]
         public static double[,] ToDoubleMatrix(this BitmapData image, int channel)
         {
             return ToDoubleMatrix(image, channel, -1, 1);
@@ -1246,6 +1451,8 @@ namespace Accord.Imaging
         ///   Converts a given image into a array of double-precision
         ///   floating-point numbers scaled between the given range.
         /// </summary>
+        /// 
+        [Obsolete("Please use the converters in the Imaging.Converters namespace.")]
         public static double[,] ToDoubleMatrix(this BitmapData image, int channel, double min, double max)
         {
             int width = image.Width;
@@ -1281,10 +1488,13 @@ namespace Accord.Imaging
         ///   Converts an image given as a matrix of pixel values into
         ///   a <see cref="System.Drawing.Bitmap"/>.
         /// </summary>
+        /// 
         /// <param name="pixels">A matrix containing the grayscale pixel
         /// values as <see cref="System.Double">bytes</see>.</param>
         /// <returns>A <see cref="System.Drawing.Bitmap"/> of the same width
         /// and height as the pixel matrix containing the given pixel values.</returns>
+        /// 
+        [Obsolete("Please use the converters in the Imaging.Converters namespace.")]
         public static Bitmap ToBitmap(this byte[,] pixels)
         {
             int width = pixels.GetLength(1);
@@ -1317,17 +1527,64 @@ namespace Accord.Imaging
         }
 
         /// <summary>
+        ///   Converts an image given as a matrix of pixel values into
+        ///   a <see cref="System.Drawing.Bitmap"/>.
+        /// </summary>
+        /// 
+        /// <param name="pixels">A matrix containing the grayscale pixel
+        /// values as <see cref="System.Double">bytes</see>.</param>
+        /// <returns>A <see cref="System.Drawing.Bitmap"/> of the same width
+        /// and height as the pixel matrix containing the given pixel values.</returns>
+        /// 
+        [Obsolete("Please use the converters in the Imaging.Converters namespace.")]
+        public static Bitmap ToBitmap(this short[,] pixels)
+        {
+            int width = pixels.GetLength(1);
+            int height = pixels.GetLength(0);
+
+            Bitmap bitmap = AForge.Imaging.Image.CreateGrayscaleImage(width, height);
+            bitmap = AForge.Imaging.Image.Convert8bppTo16bpp(bitmap);
+
+            BitmapData data = bitmap.LockBits(new Rectangle(0, 0, width, height),
+                ImageLockMode.WriteOnly, bitmap.PixelFormat);
+
+            int offset = data.Stride - width;
+
+            unsafe
+            {
+                short* dst = (short*)data.Scan0.ToPointer();
+
+                for (int y = 0; y < height; y++)
+                {
+                    for (int x = 0; x < width; x++, dst++)
+                    {
+                        *dst = (short)pixels[y, x];
+                    }
+                    dst += offset;
+                }
+            }
+
+            bitmap.UnlockBits(data);
+
+            return bitmap;
+        }
+
+        /// <summary>
         ///   Converts an image given as a array of pixel values into
         ///   a <see cref="System.Drawing.Bitmap"/>.
         /// </summary>
+        /// 
         /// <param name="pixels">An array containing the grayscale pixel
         /// values as <see cref="System.Double">doubles</see>.</param>
         /// <param name="width">The width of the resulting image.</param>
         /// <param name="height">The height of the resulting image.</param>
         /// <param name="min">The minimum value representing a color value of 0.</param>
         /// <param name="max">The maximum value representing a color value of 255. </param>
+        /// 
         /// <returns>A <see cref="System.Drawing.Bitmap"/> of given width and height
         /// containing the given pixel values.</returns>
+        /// 
+        [Obsolete("Please use the converters in the Imaging.Converters namespace.")]
         public static Bitmap ToBitmap(this double[] pixels, int width, int height, double min, double max)
         {
             Bitmap bitmap = AForge.Imaging.Image.CreateGrayscaleImage(width, height);
@@ -1361,6 +1618,7 @@ namespace Accord.Imaging
         ///   Converts an image given as a array of pixel values into
         ///   a <see cref="System.Drawing.Bitmap"/>.
         /// </summary>
+        /// 
         /// <param name="pixels">An jagged array containing the pixel values
         /// as double arrays. Each element of the arrays will be converted to
         /// a R, G, B, A value. The bits per pixel of the resulting image
@@ -1369,8 +1627,11 @@ namespace Accord.Imaging
         /// <param name="height">The height of the resulting image.</param>
         /// <param name="min">The minimum value representing a color value of 0.</param>
         /// <param name="max">The maximum value representing a color value of 255. </param>
+        /// 
         /// <returns>A <see cref="System.Drawing.Bitmap"/> of given width and height
         /// containing the given pixel values.</returns>
+        /// 
+        [Obsolete("Please use the converters in the Imaging.Converters namespace.")]
         public static Bitmap ToBitmap(this double[][] pixels, int width, int height, double min, double max)
         {
             PixelFormat format;
@@ -1430,15 +1691,18 @@ namespace Accord.Imaging
         ///   Converts an image given as a array of pixel values into
         ///   a <see cref="System.Drawing.Bitmap"/>.
         /// </summary>
+        /// 
         /// <param name="pixels">An jagged array containing the pixel values
         /// as double arrays. Each element of the arrays will be converted to
         /// a R, G, B, A value. The bits per pixel of the resulting image
         /// will be set according to the size of these arrays.</param>
         /// <param name="width">The width of the resulting image.</param>
         /// <param name="height">The height of the resulting image.</param>
+        /// 
         /// <returns>A <see cref="System.Drawing.Bitmap"/> of given width and height
         /// containing the given pixel values.</returns>
         /// 
+        [Obsolete("Please use the converters in the Imaging.Converters namespace.")]
         public static Bitmap ToBitmap(this double[][] pixels, int width, int height)
         {
             return ToBitmap(pixels, width, height, -1, 1);

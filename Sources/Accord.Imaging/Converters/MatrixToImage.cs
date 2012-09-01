@@ -233,15 +233,15 @@ namespace Accord.Imaging.Converters
         /// </summary>
         /// 
         /// <param name="input">The input image to be converted.</param>
-        /// <param name="bitmap">The converted image.</param>
+        /// <param name="output">The converted image.</param>
         /// 
-        public void Convert(byte[,] input, out UnmanagedImage bitmap)
+        public void Convert(byte[,] input, out UnmanagedImage output)
         {
             Bitmap image;
 
             Convert(input, out image);
 
-            bitmap = UnmanagedImage.FromManagedImage(image);
+            output = UnmanagedImage.FromManagedImage(image);
         }
 
         /// <summary>
@@ -249,17 +249,17 @@ namespace Accord.Imaging.Converters
         /// </summary>
         /// 
         /// <param name="input">The input image to be converted.</param>
-        /// <param name="bitmap">The converted image.</param>
+        /// <param name="output">The converted image.</param>
         /// 
-        public void Convert(byte[,] input, out Bitmap bitmap)
+        public void Convert(byte[,] input, out Bitmap output)
         {
             int width = input.GetLength(1);
             int height = input.GetLength(0);
 
-            bitmap = AForge.Imaging.Image.CreateGrayscaleImage(width, height);
+            output = AForge.Imaging.Image.CreateGrayscaleImage(width, height);
 
-            BitmapData data = bitmap.LockBits(new Rectangle(0, 0, width, height),
-                ImageLockMode.WriteOnly, bitmap.PixelFormat);
+            BitmapData data = output.LockBits(new Rectangle(0, 0, width, height),
+                ImageLockMode.WriteOnly, output.PixelFormat);
 
             int offset = data.Stride - width;
 
@@ -276,7 +276,7 @@ namespace Accord.Imaging.Converters
                 }
             }
 
-            bitmap.UnlockBits(data);
+            output.UnlockBits(data);
         }
 
     }
