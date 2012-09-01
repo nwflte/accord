@@ -53,7 +53,7 @@
             this.ClientSize = new System.Drawing.Size(484, 362);
             this.Controls.Add(this.zedGraphControl);
             this.Name = "DataSeriesBox";
-            this.Text = "DataSeriesBox";
+            this.Text = "Data Series";
             this.ResumeLayout(false);
 
         }

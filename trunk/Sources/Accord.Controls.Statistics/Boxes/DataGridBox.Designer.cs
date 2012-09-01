@@ -59,7 +59,7 @@
             this.ClientSize = new System.Drawing.Size(484, 362);
             this.Controls.Add(this.dataGridView);
             this.Name = "DataGridBox";
-            this.Text = "ScatterplotBox";
+            this.Text = "Data Grid";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
             this.ResumeLayout(false);
 

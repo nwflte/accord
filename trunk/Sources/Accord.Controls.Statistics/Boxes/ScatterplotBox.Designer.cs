@@ -48,7 +48,7 @@
             this.ClientSize = new System.Drawing.Size(484, 362);
             this.Controls.Add(this.scatterplotView1);
             this.Name = "ScatterplotBox";
-            this.Text = "ScatterplotBox";
+            this.Text = "Scatterplot";
             this.ResumeLayout(false);
 
         }

@@ -61,6 +61,7 @@ namespace Accord.Controls
     /// <summary>
     /// Represents a data bondable, customized view of two dimensional array
     /// </summary>
+    /// 
     public class ArrayDataView : IBindingList
     {
 
