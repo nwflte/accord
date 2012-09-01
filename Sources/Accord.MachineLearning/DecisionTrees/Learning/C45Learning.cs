@@ -247,7 +247,8 @@ namespace Accord.MachineLearning.DecisionTrees.Learning
                     split(children[i], inputSubset, outputSubset); // recursion
                 }
 
-                root.Branches = new DecisionBranchNodeCollection(maxGainAttribute, children);
+                root.Branches.AttributeIndex = maxGainAttribute;
+                root.Branches.AddRange(children);
             }
             else
             {
@@ -274,7 +275,8 @@ namespace Accord.MachineLearning.DecisionTrees.Learning
                 outputSubset = output.Submatrix(maxGainPartition[1]);
                 split(children[1], inputSubset, outputSubset);
 
-                root.Branches = new DecisionBranchNodeCollection(maxGainAttribute, children);
+                root.Branches.AttributeIndex = maxGainAttribute;
+                root.Branches.AddRange(children);
             }
 
             attributes[maxGainAttribute] = false;

@@ -61,6 +61,12 @@ namespace Accord.MachineLearning
         public CrossValidationValues<TModel>[] Models { get; private set; }
 
         /// <summary>
+        ///   Gets or sets a tag for user-defined information.
+        /// </summary>
+        /// 
+        public object Tag { get; set; }
+
+        /// <summary>
         ///   Initializes a new instance of the <see cref="CrossValidationResult&lt;TModel&gt;"/> class.
         /// </summary>
         /// 
