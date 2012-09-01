@@ -144,7 +144,7 @@ namespace Accord.MachineLearning.VectorMachines.Learning
     ///   </code>
     /// </example>
     /// 
-    public class MulticlassSupportVectorLearning : ISupportVectorMachineLearning
+    public class MulticlassSupportVectorLearning : ISupportVectorMachineLearning, ISupportCancellation
     {
         // Training data
         private double[][] inputs;
@@ -194,7 +194,7 @@ namespace Accord.MachineLearning.VectorMachines.Learning
                 throw new ArgumentNullException("outputs");
 
             if (inputs.Length != outputs.Length)
-                throw new DimensionMismatchException("outputs", 
+                throw new DimensionMismatchException("outputs",
                     "The number of input vectors and output labels does not match.");
 
             if (machine.Inputs > 0)
@@ -251,6 +251,11 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         ///   Runs the one-against-one learning algorithm.
         /// </summary>
         /// 
+        /// <returns>
+        ///   The sum of squares error rate for
+        ///   the resulting support vector machine.
+        /// </returns>
+        ///         
         public double Run()
         {
             return Run(true);
@@ -269,8 +274,32 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         ///   The sum of squares error rate for
         ///   the resulting support vector machine.
         /// </returns>
-        /// 
+        ///         
         public double Run(bool computeError)
+        {
+            return Run(true, CancellationToken.None);
+        }
+
+        /// <summary>
+        ///   Runs the one-against-one learning algorithm.
+        /// </summary>
+        /// 
+        /// <param name="computeError">
+        ///   True to compute error after the training
+        ///   process completes, false otherwise. Default is true.
+        /// </param>
+        /// <param name="token">
+        ///   A <see cref="CancellationToken"/> which can be used
+        ///   to request the cancellation of the learning algorithm
+        ///   when it is being run in another thread.
+        /// </param>
+        /// 
+        /// <returns>
+        ///   The sum of squares error rate for
+        ///   the resulting support vector machine.
+        /// </returns>
+        /// 
+        public double Run(bool computeError, CancellationToken token)
         {
             int classes = msvm.Classes;
             int total = (classes * (classes - 1)) / 2;
@@ -291,6 +320,13 @@ namespace Accord.MachineLearning.VectorMachines.Learning
                 Parallel.For(0, i, j =>
                 {
 #endif
+                    if (token.IsCancellationRequested) 
+#if DEBUG
+                        break;
+#else
+                        return;
+#endif
+
                     // We will start the binary sub-problem
                     var args = new SubproblemEventArgs(i, j);
                     OnSubproblemStarted(args);
@@ -305,11 +341,17 @@ namespace Accord.MachineLearning.VectorMachines.Learning
                     int[] subOutputs = outputs.Submatrix(idx);
 
 
-                    // Transform in a two-class problem
+                    // Transform it into a two-class problem
                     subOutputs.ApplyInPlace(x => x = (x == i) ? -1 : +1);
 
                     // Train the machine on the two-class problem.
-                    configure(machine, subInputs, subOutputs, i, j).Run(false);
+                    var subproblem = configure(machine, subInputs, subOutputs, i, j);
+
+                    var canCancel = (subproblem as ISupportCancellation);
+
+                    if (canCancel != null)
+                        canCancel.Run(false, token); 
+                    else subproblem.Run(false);
 
 
                     // Update and report progress

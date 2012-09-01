@@ -22,6 +22,8 @@
 
 namespace Accord.MachineLearning.VectorMachines.Learning
 {
+    using System.Threading;
+
     /// <summary>
     ///   Common interface for Support Machine Vector learning algorithms.
     /// </summary>
@@ -45,6 +47,37 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         /// </param>
         /// 
         double Run(bool computeError);
+
+    }
+
+    /// <summary>
+    ///   Common interface for Support Machine Vector learning
+    ///   algorithms which support thread cancellation.
+    /// </summary>
+    /// 
+    public interface ISupportCancellation : ISupportVectorMachineLearning
+    {
+
+        /// <summary>
+        ///   Runs the one-against-one learning algorithm.
+        /// </summary>
+        /// 
+        /// <param name="computeError">
+        ///   True to compute error after the training
+        ///   process completes, false otherwise. Default is true.
+        /// </param>
+        /// <param name="token">
+        ///   A <see cref="CancellationToken"/> which can be used
+        ///   to request the cancellation of the learning algorithm
+        ///   when it is being run in another thread.
+        /// </param>
+        /// 
+        /// <returns>
+        ///   The sum of squares error rate for
+        ///   the resulting support vector machine.
+        /// </returns>
+        /// 
+        double Run(bool computeError, CancellationToken token);
 
     }
 }
