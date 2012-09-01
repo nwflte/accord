@@ -75,10 +75,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bayes\NaiveBayes`1.cs" />
+    <Compile Include="Clustering\BinarySplit.cs" />
+    <Compile Include="Clustering\KMeansCluster.cs" />
+    <Compile Include="Clustering\IClusteringAlgorithm.cs" />
+    <Compile Include="Clustering\KModesCluster.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Performance\Bootstrap\Bootstrap.cs" />
     <Compile Include="Performance\Bootstrap\BootstrapResult.cs" />
     <Compile Include="Performance\Bootstrap\BootstrapValues.cs" />
-    <Compile Include="KModes`1.cs" />
+    <Compile Include="Clustering\KModes`1.cs" />
     <Compile Include="EarlyStopping.cs" />
     <Compile Include="GridSearchRange.cs" />
     <Compile Include="GridSearchParameter.cs" />
@@ -94,12 +99,14 @@
     <Compile Include="DecisionTrees\Learning\ID3Learning.cs" />
     <Compile Include="DecisionTrees\DecisionTree.cs" />
     <Compile Include="DecisionTrees\DecisionNode.cs" />
-    <Compile Include="GaussianMixtureModel.cs" />
+    <Compile Include="Clustering\GaussianMixtureModel.cs" />
     <Compile Include="Bayes\NaiveBayes.cs" />
     <Compile Include="KNearestNeighbor.cs" />
-    <Compile Include="Properties\GlobalSuppressions.cs" />
+    <Compile Include="Performance\SplitSet\SplitSetStatistics`1.cs" />
+    <Compile Include="Performance\SplitSet\SplitSetResult`1.cs" />
+    <Compile Include="Performance\SplitSet\SplitSetValidation`1.cs" />
     <Compile Include="GridSearch.cs" />
-    <Compile Include="KMeans.cs" />
+    <Compile Include="Clustering\KMeans.cs" />
     <Compile Include="Ransac.cs" />
     <Compile Include="VectorMachines\Learning\MultilabelSupportVectorLearning.cs" />
     <Compile Include="VectorMachines\Learning\SupportVectorReduction.cs" />

@@ -250,12 +250,14 @@ namespace Accord.MachineLearning.VectorMachines
         /// 
         /// <param name="inputs">An input vector.</param>
         /// 
-        /// <returns>The decision label for the given input.</returns>
+        /// <returns>The output for the given input. In a typical classification
+        /// problem, the sign of this value should be considered as the class label.</returns>
         ///  
-        public int Compute(double[] inputs)
+        public double Compute(double[] inputs)
         {
             double output;
-            return Compute(inputs, out output);
+            Compute(inputs, out output);
+            return output;
         }
 
 

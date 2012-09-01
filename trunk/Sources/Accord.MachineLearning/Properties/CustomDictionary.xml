@@ -10,7 +10,7 @@
       <Term PreferredAlternate=""></Term>
     </Deprecated>
     <Compound>
-      <Term CompoundAlternate="KMeans">kmeans</Term>
+      <Term CompoundAlternate=""></Term>
     </Compound>
     <DiscreteExceptions>
       <Term></Term>
@@ -19,6 +19,8 @@
   <Acronyms>
     <CasingExceptions>
       <Acronym>RANSAC</Acronym>
+      <Acronym>KMeans</Acronym>
+      <Acronym>kmeans</Acronym>
     </CasingExceptions>
   </Acronyms>
 </Dictionary>
