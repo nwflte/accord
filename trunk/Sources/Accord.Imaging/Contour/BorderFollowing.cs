@@ -32,6 +32,28 @@ namespace Accord.Imaging
     ///   Border following algorithm for contour extraction.
     /// </summary>
     /// 
+    /// <example>
+    /// <code>
+    /// // Create a new border following algorithm
+    /// BorderFollowing bf = new BorderFollowing();
+    /// 
+    /// // Get all points in the contour of the image. 
+    /// List&lt;IntPoint> contour = bf.FindContour(grayscaleImage);
+    /// 
+    /// // Mark all points in the contour point list in blue
+    /// new PointsMarker(contour, Color.Blue).ApplyInPlace(image);
+    /// 
+    /// // Show the result
+    /// ImageBox.Show(image);
+    /// </code>
+    /// 
+    /// <para>
+    ///   The resulting image is shown below.</para>
+    ///   
+    /// <img src="..\Images\border-following.png" /> 
+    /// 
+    /// </example>
+    /// 
     public class BorderFollowing : IContourExtractionAlgorithm
     {
 

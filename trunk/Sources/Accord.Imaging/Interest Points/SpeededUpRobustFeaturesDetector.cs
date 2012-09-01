@@ -99,7 +99,7 @@ namespace Accord.Imaging
 
         private double threshold = 0.0002;
 
-        private ResponseFilters responses;
+        private ResponseLayerCollection responses;
         private IntegralImage integral;
 
 
@@ -134,11 +134,11 @@ namespace Accord.Imaging
         /// <param name="threshold">
         ///   The non-maximum suppression threshold. Default is 0.0002f.</param>
         /// <param name="octaves">
-        ///   The number of octaves to use when building the <see cref="ResponseFilters">
+        ///   The number of octaves to use when building the <see cref="ResponseLayerCollection">
         ///   response filter</see>. Each octave corresponds to a series of maps covering a
         ///   doubling of scale in the image. Default is 5.</param>
         /// <param name="initial">
-        ///   The initial step to use when building the <see cref="ResponseFilters">
+        ///   The initial step to use when building the <see cref="ResponseLayerCollection">
         ///   response filter</see>. Default is 2. </param>
         public SpeededUpRobustFeaturesDetector(float threshold, int octaves, int initial)
         {
@@ -207,7 +207,7 @@ namespace Accord.Imaging
 
         /// <summary>
         ///   Gets or sets the number of octaves to use when building
-        ///   the <see cref="ResponseFilters">response filter</see>.
+        ///   the <see cref="ResponseLayerCollection">response filter</see>.
         ///   Each octave corresponds to a series of maps covering a
         ///   doubling of scale in the image. Default is 5.
         /// </summary>
@@ -227,7 +227,7 @@ namespace Accord.Imaging
 
         /// <summary>
         ///   Gets or sets the initial step to use when building
-        ///   the <see cref="ResponseFilters">response filter</see>.
+        ///   the <see cref="ResponseLayerCollection">response filter</see>.
         ///   Default is 2.
         /// </summary>
         /// 
@@ -293,7 +293,7 @@ namespace Accord.Imaging
             if (responses == null)
             {
                 // re-create only if really needed
-                responses = new ResponseFilters(image.Width, image.Height, octaves, initial);
+                responses = new ResponseLayerCollection(image.Width, image.Height, octaves, initial);
             }
             else
             {
@@ -519,13 +519,14 @@ namespace Accord.Imaging
 
 
         /// <summary>
-        ///   Response filters.
+        ///   Response filter.
         /// </summary>
+        /// 
         /// <remarks>
         /// <para>
         ///   In SURF, the scale-space is divided into a number of octaves,
-        ///   where an octave refers to a series of response maps covering
-        ///   a doubling of scale.</para>
+        ///   where an octave refers to a series of <see cref="ResponseLayer"/>
+        ///   response maps covering a doubling of scale.</para>
         /// <para>
         ///   In the traditional approach to constructing a scale-space,
         ///   the image size is varied and the Gaussian filter is repeatedly
@@ -533,7 +534,7 @@ namespace Accord.Imaging
         ///   the original image unchanged and varies only the filter size.</para>
         /// </remarks>
         /// 
-        private class ResponseFilters : IEnumerable<ResponseLayer[]>
+        public class ResponseLayerCollection : IEnumerable<ResponseLayer[]>
         {
             private int width;
             private int height;
@@ -569,7 +570,7 @@ namespace Accord.Imaging
             ///   the specified number of octaves and initial step.
             /// </summary>
             /// 
-            public ResponseFilters(int width, int height, int octaves, int initial)
+            public ResponseLayerCollection(int width, int height, int octaves, int initial)
             {
                 this.width = width;
                 this.height = height;
@@ -579,6 +580,11 @@ namespace Accord.Imaging
                 this.initialize();
             }
 
+            /// <summary>
+            ///   Updates the response filter definitions
+            ///   without recreating objects.
+            /// </summary>
+            /// 
             public void Update(int width, int height, int initial)
             {
                 this.width = width;
@@ -731,7 +737,7 @@ namespace Accord.Imaging
         ///   Response Layer.
         /// </summary>
         /// 
-        private class ResponseLayer
+        public class ResponseLayer
         {
             /// <summary>
             ///   Gets the width of the filter.
@@ -785,18 +791,23 @@ namespace Accord.Imaging
                 this.Laplacian = new int[height, width];
             }
 
+            /// <summary>
+            ///   Updates the response layer definitions
+            ///   without recreating objects.
+            /// </summary>
+            /// 
             public void Update(int width, int height, int step, int filter)
             {
-                this.Width = width;
-                this.Height = height;
-                this.Step = step;
-                this.Size = filter;
-
-                if (Height > Responses.GetLength(0) || Width > Responses.GetLength(1))
+                if (height > Height || width > Width)
                 {
                     this.Responses = new float[height, width];
                     this.Laplacian = new int[height, width];
                 }
+
+                this.Width = width;
+                this.Height = height;
+                this.Step = step;
+                this.Size = filter;
             }
 
             /// <summary>

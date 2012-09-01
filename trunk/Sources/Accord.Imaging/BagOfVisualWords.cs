@@ -45,6 +45,21 @@ namespace Accord.Imaging
     ///   for a given image.
     /// </remarks>
     /// 
+    /// <example>
+    /// <code>
+    ///   int numberOfWords = 32;
+    ///   
+    ///   // Create bag-of-words (BoW) with the given number of words
+    ///   BagOfVisualWords bow = new BagOfVisualWords(numberOfWords);
+    ///   
+    ///   // Create the BoW codebook using a set of training images
+    ///   bow.Compute(imageArray);
+    ///   
+    ///   // Create a fixed-length feature vector for a new image
+    ///   bow.GetFeatureVector(image);
+    /// </code>
+    /// </example>
+    /// 
     [Serializable]
     public class BagOfVisualWords
     {
@@ -58,7 +73,7 @@ namespace Accord.Imaging
         ///   Gets the K-Means algorithm used to create this model.
         /// </summary>
         /// 
-        public KMeans KMeans { get; private set; }
+        public IClusteringAlgorithm<double[]> Clustering { get; private set; }
 
         /// <summary>
         ///   Gets the <see cref="SpeededUpRobustFeaturesDetector">SURF</see>
@@ -77,8 +92,21 @@ namespace Accord.Imaging
         public BagOfVisualWords(int numberOfWords)
         {
             this.NumberOfWords = numberOfWords;
-            KMeans = new KMeans(numberOfWords);
-            Surf = new SpeededUpRobustFeaturesDetector();
+            this.Clustering = new KMeans(numberOfWords);
+            this.Surf = new SpeededUpRobustFeaturesDetector();
+        }
+
+        /// <summary>
+        ///   Constructs a new <see cref="BagOfVisualWords"/>.
+        /// </summary>
+        /// 
+        /// <param name="algorithm">The clustering algorithm to use.</param>
+        /// 
+        public BagOfVisualWords(IClusteringAlgorithm<double[]> algorithm)
+        {
+            this.NumberOfWords = algorithm.Clusters.Count;
+            this.Clustering = algorithm;
+            this.Surf = new SpeededUpRobustFeaturesDetector();
         }
 
         /// <summary>
@@ -102,7 +130,7 @@ namespace Accord.Imaging
                 Bitmap image = images[i];
 
                 // Compute the feature points
-                List<SpeededUpRobustFeaturePoint> points = Surf.ProcessImage(image);
+                var points = Surf.ProcessImage(image);
 
                 foreach (var point in points)
                     descriptors.Add(point.Descriptor);
@@ -111,11 +139,9 @@ namespace Accord.Imaging
             }
 
             // Compute K-Means of the descriptors
-            var data = descriptors.ToArray();
+            double[][] data = descriptors.ToArray();
 
-            //  KMeans.Randomize(data, useSeeding: true);
-
-            KMeans.Compute(data, threshold, computeInformation: false);
+            Clustering.Compute(data, threshold);
 
             return imagePoints;
         }
@@ -183,9 +209,9 @@ namespace Accord.Imaging
             int[] features = new int[NumberOfWords];
 
             // Detect all activation centroids
-            Parallel.ForEach(points, point =>
+            Parallel.For(0, points.Count, i =>
             {
-                int j = KMeans.Nearest(point.Descriptor);
+                int j = Clustering.Clusters.Nearest(points[i].Descriptor);
 
                 // Form feature vector
                 Interlocked.Increment(ref features[j]);

@@ -162,48 +162,48 @@ namespace Accord.Imaging.Converters
         ///   Converts an image from one representation to another.
         /// </summary>
         /// 
-        /// <param name="image">The input image to be converted.</param>
+        /// <param name="input">The input image to be converted.</param>
         /// <param name="output">The converted image.</param>
         /// 
-        public void Convert(Bitmap image, out double[,] output)
+        public void Convert(Bitmap input, out double[,] output)
         {
-            BitmapData bitmapData = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
-                ImageLockMode.ReadOnly, image.PixelFormat);
+            BitmapData bitmapData = input.LockBits(new Rectangle(0, 0, input.Width, input.Height),
+                ImageLockMode.ReadOnly, input.PixelFormat);
 
             Convert(new UnmanagedImage(bitmapData), out output);
 
-            image.UnlockBits(bitmapData);
+            input.UnlockBits(bitmapData);
         }
 
         /// <summary>
         ///   Converts an image from one representation to another.
         /// </summary>
         /// 
-        /// <param name="image">The input image to be converted.</param>
+        /// <param name="input">The input image to be converted.</param>
         /// <param name="output">The converted image.</param>
         /// 
-        public void Convert(Bitmap image, out float[,] output)
+        public void Convert(Bitmap input, out float[,] output)
         {
-            BitmapData bitmapData = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
-                ImageLockMode.ReadOnly, image.PixelFormat);
+            BitmapData bitmapData = input.LockBits(new Rectangle(0, 0, input.Width, input.Height),
+                ImageLockMode.ReadOnly, input.PixelFormat);
 
             Convert(new UnmanagedImage(bitmapData), out output);
 
-            image.UnlockBits(bitmapData);
+            input.UnlockBits(bitmapData);
         }
 
         /// <summary>
         ///   Converts an image from one representation to another.
         /// </summary>
         /// 
-        /// <param name="image">The input image to be converted.</param>
+        /// <param name="input">The input image to be converted.</param>
         /// <param name="output">The converted image.</param>
         /// 
-        public void Convert(UnmanagedImage image, out double[,] output)
+        public void Convert(UnmanagedImage input, out double[,] output)
         {
-            int width = image.Width;
-            int height = image.Height;
-            int offset = image.Stride - image.Width;
+            int width = input.Width;
+            int height = input.Height;
+            int offset = input.Stride - input.Width;
 
             output = new double[height, width];
 
@@ -212,7 +212,7 @@ namespace Accord.Imaging.Converters
                 fixed (double* ptrData = output)
                 {
                     double* dst = ptrData;
-                    byte* src = (byte*)image.ImageData.ToPointer() + Channel;
+                    byte* src = (byte*)input.ImageData.ToPointer() + Channel;
 
                     for (int y = 0; y < height; y++)
                     {
@@ -230,14 +230,14 @@ namespace Accord.Imaging.Converters
         ///   Converts an image from one representation to another.
         /// </summary>
         /// 
-        /// <param name="image">The input image to be converted.</param>
+        /// <param name="input">The input image to be converted.</param>
         /// <param name="output">The converted image.</param>
         /// 
-        public void Convert(UnmanagedImage image, out float[,] output)
+        public void Convert(UnmanagedImage input, out float[,] output)
         {
-            int width = image.Width;
-            int height = image.Height;
-            int offset = image.Stride - image.Width;
+            int width = input.Width;
+            int height = input.Height;
+            int offset = input.Stride - input.Width;
 
             output = new float[height, width];
 
@@ -249,7 +249,7 @@ namespace Accord.Imaging.Converters
                 fixed (float* ptrData = output)
                 {
                     float* dst = ptrData;
-                    byte* src = (byte*)image.ImageData.ToPointer() + Channel;
+                    byte* src = (byte*)input.ImageData.ToPointer() + Channel;
 
                     for (int y = 0; y < height; y++)
                     {

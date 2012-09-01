@@ -95,6 +95,7 @@
     <Compile Include="Converters\MatrixToImage.cs" />
     <Compile Include="Converters\ImageToArray.cs" />
     <Compile Include="Converters\ImageToMatrix.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="RansacFundamentalEstimator.cs" />
     <Compile Include="CorrelationMatching.cs" />
     <Compile Include="Filters\CombineChannel.cs" />
@@ -102,7 +103,6 @@
     <Compile Include="Moments\CentralMoments.cs" />
     <Compile Include="Moments\IMoments.cs" />
     <Compile Include="Moments\RawMoments.cs" />
-    <Compile Include="Properties\GlobalSuppressions.cs" />
     <Compile Include="Interest Points\FastCornersDetector.cs" />
     <Compile Include="Filters\FeaturesMarker.cs" />
     <Compile Include="Interest Points\SpeededUpRobustFeaturesDetector.cs" />
