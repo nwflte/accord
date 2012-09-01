@@ -72,6 +72,7 @@ namespace Accord.Statistics.Distributions.Multivariate
         /// <summary>
         ///   Initializes a new instance of the <see cref="MultivariateMixture&lt;T&gt;"/> class.
         /// </summary>
+        /// 
         /// <param name="components">The mixture distribution components.</param>
         /// 
         public MultivariateMixture(params T[] components)
@@ -86,6 +87,7 @@ namespace Accord.Statistics.Distributions.Multivariate
         /// <summary>
         ///   Initializes a new instance of the <see cref="MultivariateMixture&lt;T&gt;"/> class.
         /// </summary>
+        /// 
         /// <param name="coefficients">The mixture weight coefficients.</param>
         /// <param name="components">The mixture distribution components.</param>
         /// 
@@ -105,6 +107,7 @@ namespace Accord.Statistics.Distributions.Multivariate
 
             this.initialize(coefficients, components);
         }
+
 
         private void initialize(double[] coef, T[] comp)
         {
@@ -281,6 +284,7 @@ namespace Accord.Statistics.Distributions.Multivariate
         public void Fit(double[][] observations, double[] weights, MixtureOptions options)
         {
             // Estimation parameters
+            int maxIterations = 0;
             double threshold = 1e-3;
             IFittingOptions innerOptions = null;
 
@@ -296,6 +300,7 @@ namespace Accord.Statistics.Distributions.Multivariate
                 // Process optional arguments
                 threshold = options.Threshold;
                 innerOptions = options.InnerOptions;
+                maxIterations = options.Iterations;
             }
 
 
@@ -330,10 +335,13 @@ namespace Accord.Statistics.Distributions.Multivariate
             // Prepare the iteration
             double likelihood = logLikelihood(pi, pdf, observations, weights);
             bool converged = false;
+            int iteration = 0;
 
             // Start
             while (!converged)
             {
+                iteration++;
+
                 // 2. Expectation: Evaluate the component distributions 
                 //    responsibilities using the current parameter values.
                 Array.Clear(norms, 0, norms.Length);
@@ -365,8 +373,10 @@ namespace Accord.Statistics.Distributions.Multivariate
                 if (Double.IsNaN(newLikelihood) || Double.IsInfinity(newLikelihood))
                     throw new ConvergenceException("Fitting did not converge.");
 
-                if (Math.Abs(likelihood - newLikelihood) < threshold * Math.Abs(likelihood))
+                if ((maxIterations > 0 && iteration >= maxIterations) ||
+                    Math.Abs(likelihood - newLikelihood) < threshold * Math.Abs(likelihood))
                     converged = true;
+
 
                 likelihood = newLikelihood;
             }

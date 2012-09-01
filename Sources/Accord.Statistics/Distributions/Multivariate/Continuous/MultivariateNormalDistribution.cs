@@ -28,6 +28,7 @@ namespace Accord.Statistics.Distributions.Multivariate
     using Accord.Statistics.Distributions.Fitting;
     using Accord.Statistics.Distributions;
     using Accord.Statistics.Distributions.Univariate;
+    using AForge.Math.Random;
 
     /// <summary>
     ///   Multivariate Normal (Gaussian) distribution.
@@ -478,11 +479,12 @@ namespace Accord.Statistics.Distributions.Multivariate
         /// 
         public double[] Generate()
         {
+            var r = new StandardGenerator(Accord.Math.Tools.Random.Next());
             double[,] A = chol.LeftTriangularFactor;
 
             double[] sample = new double[Dimension];
             for (int j = 0; j < sample.Length; j++)
-                sample[j] = Accord.Math.Tools.Random.Next();
+                sample[j] = r.Next();
 
             return A.Multiply(sample).Add(Mean);
         }
@@ -497,6 +499,7 @@ namespace Accord.Statistics.Distributions.Multivariate
         /// 
         public double[][] Generate(int samples)
         {
+            var r = new StandardGenerator(Accord.Math.Tools.Random.Next());
             double[,] A = chol.LeftTriangularFactor;
 
             double[][] data = new double[samples][];
@@ -504,7 +507,7 @@ namespace Accord.Statistics.Distributions.Multivariate
             {
                 double[] sample = new double[Dimension];
                 for (int j = 0; j < sample.Length; j++)
-                    sample[j] = Accord.Math.Tools.Random.Next();
+                    sample[j] = r.Next();
 
                 data[i] = A.Multiply(sample).Add(Mean);
             }
