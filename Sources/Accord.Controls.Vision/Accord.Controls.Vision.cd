@@ -22,7 +22,9 @@
       <Field Name="tracker" Hidden="true" />
       <Field Name="videoSource" Hidden="true" />
       <Field Name="xaxisRange" Hidden="true" />
+      <Field Name="xsmooth" Hidden="true" />
       <Field Name="yaxisRange" Hidden="true" />
+      <Field Name="ysmooth" Hidden="true" />
     </Members>
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
