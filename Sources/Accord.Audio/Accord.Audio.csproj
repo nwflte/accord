@@ -113,7 +113,7 @@
     <Compile Include="Filters\LowPassFilter.cs" />
     <Compile Include="Filters\WaveRectifier.cs" />
     <Compile Include="Generators\ImpulseGenerator.cs" />
-    <Compile Include="Properties\GlobalSuppressions.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IAudioOutput.cs" />
     <Compile Include="Metronome.cs" />
     <Compile Include="SampleConverter.cs">

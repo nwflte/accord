@@ -92,7 +92,6 @@
     <Compile Include="PointBox.Designer.cs">
       <DependentUpon>PointBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="Properties\GlobalSuppressions.cs" />
     <Compile Include="ImageBox.cs">
       <SubType>Form</SubType>
     </Compile>

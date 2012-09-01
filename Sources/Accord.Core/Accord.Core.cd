@@ -1,30 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="Accord.ConvergenceException">
-    <Position X="5" Y="6" Width="2.75" />
-    <InheritanceLine Type="System.Exception" ManuallyRouted="true">
-      <Path>
-        <Point X="11.75" Y="1.259" />
-        <Point X="11.75" Y="2.385" />
-        <Point X="6.375" Y="2.385" />
-        <Point X="6.375" Y="6" />
-      </Path>
-    </InheritanceLine>
+    <Position X="5" Y="3.25" Width="2.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Exceptions\ConvergenceException.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.SingularMatrixException">
-    <Position X="1.75" Y="6" Width="3" />
-    <InheritanceLine Type="System.Exception" ManuallyRouted="true">
-      <Path>
-        <Point X="11.75" Y="1.259" />
-        <Point X="11.75" Y="2.373" />
-        <Point X="3.25" Y="2.373" />
-        <Point X="3.25" Y="6" />
-      </Path>
-    </InheritanceLine>
+    <Position X="1.75" Y="3.25" Width="3" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Exceptions\SingularMatrixException.cs</FileName>
@@ -38,15 +22,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.NonPositiveDefiniteMatrixException">
-    <Position X="8" Y="6" Width="3.5" />
-    <InheritanceLine Type="System.Exception" ManuallyRouted="true">
-      <Path>
-        <Point X="11.75" Y="1.259" />
-        <Point X="11.75" Y="2.383" />
-        <Point X="9.75" Y="2.383" />
-        <Point X="9.75" Y="6" />
-      </Path>
-    </InheritanceLine>
+    <Position X="8" Y="3.25" Width="3.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Exceptions\NonPositiveDefiniteMatrixException.cs</FileName>
@@ -75,14 +51,6 @@
   </Class>
   <Class Name="System.SystemException" Collapsed="true">
     <Position X="16" Y="2.75" Width="1.5" />
-    <InheritanceLine Type="System.Exception" ManuallyRouted="true">
-      <Path>
-        <Point X="11.75" Y="1.259" />
-        <Point X="11.75" Y="2.375" />
-        <Point X="16.75" Y="2.375" />
-        <Point X="16.75" Y="2.75" />
-      </Path>
-    </InheritanceLine>
     <TypeIdentifier />
   </Class>
   <Font Name="Segoe UI" Size="9" />
