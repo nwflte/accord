@@ -1,21 +1,26 @@
-﻿<html xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+﻿<html xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <head>
-    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
-    <META NAME="save" CONTENT="history" />
+    <link rel="SHORTCUT ICON" href="./../branding/favicon.ico" />
+    <link rel="stylesheet" type="text/css" href="./../branding/branding-en-US.css" />
+    <style type="text/css">.OH_CodeSnippetContainerTabLeftActive, .OH_CodeSnippetContainerTabLeft,.OH_CodeSnippetContainerTabLeftDisabled {background-image: url('./../branding/tabLeftBG.gif')}.OH_CodeSnippetContainerTabRightActive, .OH_CodeSnippetContainerTabRight,.OH_CodeSnippetContainerTabRightDisabled {background-image: url('./../branding/tabRightBG.gif')}.OH_footer { background-image: url('./../branding/footer_slice.gif'); background-position:top; background-repeat:repeat-x}</style>
+    <style type="text/css">
+			body
+			{
+			border-left:5px solid #e6e6e6;
+			overflow-x:scroll;
+			overflow-y:scroll;
+			}
+		</style>
+    <script src="./../branding/branding.js" type="text/javascript">
+      <!---->
+    </script>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>FiltersSequence Methods</title>
     <meta name="Language" content="en-us" />
     <meta name="System.Keywords" content="FiltersSequence class, methods" />
     <meta name="Microsoft.Help.Id" content="Methods.T:Accord.Statistics.Filters.FiltersSequence" />
     <meta name="Microsoft.Help.ContentType" content="Reference" />
-    <link rel="stylesheet" type="text/css" href="../styles/Presentation.css" />
-    <link rel="stylesheet" type="text/css" href="ms-help://Hx/HxRuntime/HxLink.css" />
-    <script type="text/javascript" src="../scripts/EventUtilities.js"> </script>
-    <script type="text/javascript" src="../scripts/SplitScreen.js"> </script>
-    <script type="text/javascript" src="../scripts/Dropdown.js"> </script>
-    <script type="text/javascript" src="../scripts/script_manifold.js"> </script>
-    <script type="text/javascript" src="../scripts/script_feedBack.js"> </script>
-    <script type="text/javascript" src="../scripts/CheckboxMenu.js"> </script>
-    <script type="text/javascript" src="../scripts/CommonUtilities.js"> </script>
+    <meta name="BrandingAware" content="'true'" />
     <meta name="container" content="Accord.Statistics.Filters" />
     <meta name="file" content="Methods_T_Accord_Statistics_Filters_FiltersSequence" />
     <meta name="guid" content="Methods_T_Accord_Statistics_Filters_FiltersSequence" />
@@ -26,335 +31,152 @@
       <MSHelp:Keyword Index="A" Term="Methods.T:Accord.Statistics.Filters.FiltersSequence" />
       <MSHelp:Keyword Index="A" Term="frlrfAccordStatisticsFiltersFiltersSequenceMethodsTopic" />
       <MSHelp:Keyword Index="K" Term="FiltersSequence class, methods" />
-      <MSHelp:Attr Name="DevLang" Value="CSharp" />
-      <MSHelp:Attr Name="DevLang" Value="VB" />
+      <MSHelp:Attr Name="DevLang" Value="C#" />
       <MSHelp:Attr Name="Locale" Value="en-us" />
       <MSHelp:Attr Name="TopicType" Value="kbSyntax" />
       <MSHelp:Attr Name="TopicType" Value="apiref" />
-      <MSHelp:Attr Name="AssemblyVersion" Value="2.7.0.0" />
+      <MSHelp:Attr Name="AssemblyVersion" Value="2.7.1.0" />
     </xml>
+    <link type="text/css" rel="stylesheet" href="./../styles/Presentation.css" />
+    <meta name="SelfBranded" content="true" />
   </head>
-  <body>
-    <input type="hidden" id="userDataCache" class="userDataStyle" />
-    <input type="hidden" id="hiddenScrollOffset" />
-    <img id="collapseImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" alt="Collapse image" title="Collapse image" />
-    <img id="expandImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" alt="Expand Image" title="Expand Image" />
-    <img id="collapseAllImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" />
-    <img id="expandAllImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" />
-    <img id="dropDownImage" style="display:none; height:0; width:0;" src="../icons/dropdown.gif" />
-    <img id="dropDownHoverImage" style="display:none; height:0; width:0;" src="../icons/dropdownHover.gif" />
-    <img id="copyImage" style="display:none; height:0; width:0;" src="../icons/copycode.gif" alt="Copy image" title="Copy image" />
-    <img id="copyHoverImage" style="display:none; height:0; width:0;" src="../icons/copycodeHighlight.gif" alt="CopyHover image" title="CopyHover image" />
-    <div id="header">
-      <table cellspacing="0" cellpadding="0">
-        <tr>
-          <td>
-            <table id="topTable" cellspacing="0" cellpadding="0">
+  <body onload="onLoad()" class="primary-mtps-offline-document">
+    <div class="OH_outerDiv">
+      <div class="OH_outerContent">
+        <div class="OH_topic">
+          <div class="OH_title">
+            <table>
               <tr>
-                <td>
-                  <span onclick="ExpandCollapseAll(toggleAllImage)" style="cursor:default;" onkeypress="ExpandCollapseAll_CheckKey(toggleAllImage, event)" tabindex="0">
-                    <img ID="toggleAllImage" class="toggleAll" src="../icons/collapse_all.gif" /> <label id="collapseAllLabel" for="toggleAllImage" style="display: none;">Collapse All</label><label id="expandAllLabel" for="toggleAllImage" style="display: none;">Expand All</label> </span>
-                  <span>    </span>
-                  <span id="devlangsDropdown" class="filter" tabindex="0">
-                    <img id="devlangsDropdownImage" src="../icons/dropdown.gif" /> <label id="devlangsMenuAllLabel" for="devlangsDropdownImage" style="display: none;"><nobr>Code: All </nobr></label><label id="devlangsMenuMultipleLabel" for="devlangsDropdownImage" style="display: none;"><nobr>Code: Multiple </nobr></label><label id="devlangsMenuCSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>Code: C# </nobr></label><label id="devlangsMenuVisualBasicLabel" for="devlangsDropdownImage" style="display: none;"><nobr>Code: Visual Basic </nobr></label></span>
-                  <span>    </span>
-                  <span id="memberOptionsDropdown" class="filter" tabindex="0">
-                    <img id="memberOptionsDropdownImage" src="../icons/dropdown.gif" /> <label id="memberOptionsMenuAllLabel" for="memberOptionsDropdownImage" style="display: none;"><nobr>Members: Show All </nobr></label><label id="memberOptionsMenuMultipleLabel" for="memberOptionsDropdownImage" style="display: none;"><nobr>Members: Filtered </nobr></label><label id="memberOptionsMenuProtectedLabel" for="memberOptionsDropdownImage" style="display: none;"><nobr>Members: Filtered </nobr></label><label id="memberOptionsMenuInheritedLabel" for="memberOptionsDropdownImage" style="display: none;"><nobr>Members: Filtered </nobr></label></span>
+                <td class="OH_tdTitleColumn">FiltersSequence Methods</td>
+                <td class="OH_tdLogoColumn">
+                  <img align="right" src="./../icons/Accord.NET.png" />
                 </td>
               </tr>
             </table>
-            <div id="devlangsMenu">
-              <input id="CSharpCheckbox" type="checkbox" data="CSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
-              <label class="checkboxLabel" for="CSharpCheckbox">C#</label>
-              <br />
-              <input id="VisualBasicCheckbox" type="checkbox" data="VisualBasic,vb,'persist'" value="on" onClick="SetLanguage(this)" />
-              <label class="checkboxLabel" for="VisualBasicCheckbox">Visual Basic</label>
-              <br />
-            </div>
-            <div id="memberOptionsMenu">
-              <input id="ProtectedCheckbox" type="checkbox" data="Protected" value="on" onClick="SetMemberOptions(this, 'vis')" />
-              <label class="checkboxLabel" for="ProtectedCheckbox">Include Protected Members</label>
-              <br />
-              <input id="InheritedCheckbox" type="checkbox" data="Inherited" value="on" onClick="SetMemberOptions(this, 'decl')" />
-              <label class="checkboxLabel" for="InheritedCheckbox">Include Inherited Members</label>
-              <br />
-            </div>
-            <table id="bottomTable" cellpadding="0" cellspacing="0">
-              <tr id="headerTableRow1">
-                <td align="left">
-                  <span id="runningHeaderText">Accord.NET Framework</span>
-                </td>
-              </tr>
-              <tr id="headerTableRow2">
-                <td align="left">
-                  <span id="nsrTitle">FiltersSequence Methods</span>
-                </td>
-              </tr>
-              <tr id="headerTableRow3">
-                <td align="left">
-                  <a href="T_Accord_Statistics_Filters_FiltersSequence.htm">FiltersSequence Class</a> <a href="#seeAlsoToggle" onclick="OpenSection(seeAlsoToggle)">See Also</a> <span id="headfeedbackarea" class="feedbackhead"><a href="javascript:SubmitFeedback('','Accord.NET Framework','','','','%0\dYour%20feedback%20is%20used%20to%20improve%20the%20documentation%20and%20the%20product.%20Your%20e-mail%20address%20will%20not%20be%20used%20for%20any%20other%20purpose%20and%20is%20disposed%20of%20after%20the%20issue%20you%20report%20is%20resolved.%20%20While%20working%20to%20resolve%20the%20issue%20that%20you%20report,%20you%20may%20be%20contacted%20via%20e-mail%20to%20get%20further%20details%20or%20clarification%20on%20the%20feedback%20you%20sent.%20After%20the%20issue%20you%20report%20has%20been%20addressed,%20you%20may%20receive%20an%20e-mail%20to%20let%20you%20know%20that%20your%20feedback%20has%20been%20addressed.%0\A%0\d','Customer%20Feedback');">Send Feedback</a></span></td>
-              </tr>
-            </table>
-          </td>
-          <td align="center" style="width: 1px; padding: 0px">
-            <img src="../icons/Accord.NET.png" />
-          </td>
-        </tr>
-      </table>
-      <table id="gradientTable">
-        <tr>
-          <td class="nsrBottom" background="../icons/gradient.gif" />
-        </tr>
-      </table>
-    </div>
-    <div id="mainSection">
-      <div id="mainBody">
-        <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
-        <span style="color: DarkGray">
-          <div style="float: right; margin-right: 25px; margin-bottom: 25px; margin-left: 25px;">
-            <a href="http://accord.googlecode.com/svn/docs/Index.html" target="_top">&lt;&lt; Table of Contents</a>
           </div>
-        </span>
-        <p>The <a href="T_Accord_Statistics_Filters_FiltersSequence.htm">FiltersSequence</a> type exposes the following members.</p>
-        <h1 class="heading">
-          <span onclick="ExpandCollapse(methodTableToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(methodTableToggle, event)" tabindex="0">
-            <img id="methodTableToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />Methods</span>
-        </h1>
-        <div id="methodTableSection" class="section" name="collapseableSection" style="">
-          <table id="memberList" class="members" frame="lhs" cellpadding="2">
-            <col width="10%" />
-            <tr>
-              <th class="iconColumn">
-               
-            </th>
-              <th class="nameColumn">Name</th>
-              <th class="descriptionColumn">Description</th>
-            </tr>
-            <tr data="public;inherited;notNetfw;">
-              <td>
-                <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
-              </td>
-              <td>
-                <a href="http://msdn2.microsoft.com/en-us/library/ms132404" target="_blank">Add</a>
-              </td>
-              <td>
-                <div class="summary">Adds an object to the end of the <a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span>T<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span></a>. </div> (Inherited from <a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection</a><span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><a href="T_Accord_Statistics_Filters_IFilter.htm">IFilter</a><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span>.)</td>
-            </tr>
-            <tr data="public;declared;notNetfw;">
-              <td>
-                <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
-              </td>
-              <td>
-                <a href="M_Accord_Statistics_Filters_FiltersSequence_Apply.htm">Apply</a>
-              </td>
-              <td>
-                <div class="summary">
-              Applies the sequence of filters to a given table.
-            </div>
-              </td>
-            </tr>
-            <tr data="public;inherited;notNetfw;">
-              <td>
-                <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
-              </td>
-              <td>
-                <a href="http://msdn2.microsoft.com/en-us/library/ms132405" target="_blank">Clear</a>
-              </td>
-              <td>
-                <div class="summary">Removes all elements from the <a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span>T<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span></a>.</div> (Inherited from <a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection</a><span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><a href="T_Accord_Statistics_Filters_IFilter.htm">IFilter</a><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span>.)</td>
-            </tr>
-            <tr data="protected;inherited;notNetfw;">
-              <td>
-                <img src="../icons/protmethod.gif" alt="Protected method" title="Protected method" />
-              </td>
-              <td>
-                <a href="http://msdn2.microsoft.com/en-us/library/ms132406" target="_blank">ClearItems</a>
-              </td>
-              <td>
-                <div class="summary">Removes all elements from the <a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span>T<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span></a>.</div> (Inherited from <a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection</a><span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><a href="T_Accord_Statistics_Filters_IFilter.htm">IFilter</a><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span>.)</td>
-            </tr>
-            <tr data="public;inherited;notNetfw;">
-              <td>
-                <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
-              </td>
-              <td>
-                <a href="http://msdn2.microsoft.com/en-us/library/ms132407" target="_blank">Contains</a>
-              </td>
-              <td>
-                <div class="summary">Determines whether an element is in the <a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span>T<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span></a>.</div> (Inherited from <a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection</a><span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><a href="T_Accord_Statistics_Filters_IFilter.htm">IFilter</a><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span>.)</td>
-            </tr>
-            <tr data="public;inherited;notNetfw;">
-              <td>
-                <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
-              </td>
-              <td>
-                <a href="http://msdn2.microsoft.com/en-us/library/ms132408" target="_blank">CopyTo</a>
-              </td>
-              <td>
-                <div class="summary">Copies the entire <a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span>T<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span></a> to a compatible one-dimensional <a href="http://msdn2.microsoft.com/en-us/library/czz5hkty" target="_blank">Array</a>, starting at the specified index of the target array.</div> (Inherited from <a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection</a><span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><a href="T_Accord_Statistics_Filters_IFilter.htm">IFilter</a><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span>.)</td>
-            </tr>
-            <tr data="public;inherited;notNetfw;">
-              <td>
-                <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
-              </td>
-              <td>
-                <a href="http://msdn2.microsoft.com/en-us/library/bsc2ak47" target="_blank">Equals</a>
-              </td>
-              <td>
-                <div class="summary">Determines whether the specified <a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a> is equal to the current <a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a>.</div> (Inherited from <a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a>.)</td>
-            </tr>
-            <tr data="protected;inherited;notNetfw;">
-              <td>
-                <img src="../icons/protmethod.gif" alt="Protected method" title="Protected method" />
-              </td>
-              <td>
-                <a href="http://msdn2.microsoft.com/en-us/library/4k87zsw7" target="_blank">Finalize</a>
-              </td>
-              <td>
-                <div class="summary">Allows an <a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a> to attempt to free resources and perform other cleanup operations before the <a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a> is reclaimed by garbage collection.</div> (Inherited from <a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a>.)</td>
-            </tr>
-            <tr data="public;inherited;notNetfw;">
-              <td>
-                <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
-              </td>
-              <td>
-                <a href="http://msdn2.microsoft.com/en-us/library/ms132409" target="_blank">GetEnumerator</a>
-              </td>
-              <td>
-                <div class="summary">Returns an enumerator that iterates through the <a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span>T<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span></a>.</div> (Inherited from <a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection</a><span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><a href="T_Accord_Statistics_Filters_IFilter.htm">IFilter</a><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span>.)</td>
-            </tr>
-            <tr data="public;inherited;notNetfw;">
-              <td>
-                <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
-              </td>
-              <td>
-                <a href="http://msdn2.microsoft.com/en-us/library/zdee4b3y" target="_blank">GetHashCode</a>
-              </td>
-              <td>
-                <div class="summary">Serves as a hash function for a particular type. </div> (Inherited from <a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a>.)</td>
-            </tr>
-            <tr data="public;inherited;notNetfw;">
-              <td>
-                <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
-              </td>
-              <td>
-                <a href="http://msdn2.microsoft.com/en-us/library/dfwy45w9" target="_blank">GetType</a>
-              </td>
-              <td>
-                <div class="summary">Gets the <a href="http://msdn2.microsoft.com/en-us/library/42892f65" target="_blank">Type</a> of the current instance.</div> (Inherited from <a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a>.)</td>
-            </tr>
-            <tr data="public;inherited;notNetfw;">
-              <td>
-                <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
-              </td>
-              <td>
-                <a href="http://msdn2.microsoft.com/en-us/library/ms132410" target="_blank">IndexOf</a>
-              </td>
-              <td>
-                <div class="summary">Searches for the specified object and returns the zero-based index of the first occurrence within the entire <a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span>T<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span></a>.</div> (Inherited from <a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection</a><span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><a href="T_Accord_Statistics_Filters_IFilter.htm">IFilter</a><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span>.)</td>
-            </tr>
-            <tr data="public;inherited;notNetfw;">
-              <td>
-                <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
-              </td>
-              <td>
-                <a href="http://msdn2.microsoft.com/en-us/library/ms132411" target="_blank">Insert</a>
-              </td>
-              <td>
-                <div class="summary">Inserts an element into the <a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span>T<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span></a> at the specified index.</div> (Inherited from <a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection</a><span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><a href="T_Accord_Statistics_Filters_IFilter.htm">IFilter</a><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span>.)</td>
-            </tr>
-            <tr data="protected;inherited;notNetfw;">
-              <td>
-                <img src="../icons/protmethod.gif" alt="Protected method" title="Protected method" />
-              </td>
-              <td>
-                <a href="http://msdn2.microsoft.com/en-us/library/ms132412" target="_blank">InsertItem</a>
-              </td>
-              <td>
-                <div class="summary">Inserts an element into the <a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span>T<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span></a> at the specified index.</div> (Inherited from <a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection</a><span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><a href="T_Accord_Statistics_Filters_IFilter.htm">IFilter</a><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span>.)</td>
-            </tr>
-            <tr data="protected;inherited;notNetfw;">
-              <td>
-                <img src="../icons/protmethod.gif" alt="Protected method" title="Protected method" />
-              </td>
-              <td>
-                <a href="http://msdn2.microsoft.com/en-us/library/57ctke0a" target="_blank">MemberwiseClone</a>
-              </td>
-              <td>
-                <div class="summary">Creates a shallow copy of the current <a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a>.</div> (Inherited from <a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a>.)</td>
-            </tr>
-            <tr data="public;inherited;notNetfw;">
-              <td>
-                <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
-              </td>
-              <td>
-                <a href="http://msdn2.microsoft.com/en-us/library/ms132413" target="_blank">Remove</a>
-              </td>
-              <td>
-                <div class="summary">Removes the first occurrence of a specific object from the <a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span>T<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span></a>.</div> (Inherited from <a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection</a><span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><a href="T_Accord_Statistics_Filters_IFilter.htm">IFilter</a><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span>.)</td>
-            </tr>
-            <tr data="public;inherited;notNetfw;">
-              <td>
-                <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
-              </td>
-              <td>
-                <a href="http://msdn2.microsoft.com/en-us/library/ms132414" target="_blank">RemoveAt</a>
-              </td>
-              <td>
-                <div class="summary">Removes the element at the specified index of the <a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span>T<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span></a>.</div> (Inherited from <a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection</a><span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><a href="T_Accord_Statistics_Filters_IFilter.htm">IFilter</a><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span>.)</td>
-            </tr>
-            <tr data="protected;inherited;notNetfw;">
-              <td>
-                <img src="../icons/protmethod.gif" alt="Protected method" title="Protected method" />
-              </td>
-              <td>
-                <a href="http://msdn2.microsoft.com/en-us/library/ms132415" target="_blank">RemoveItem</a>
-              </td>
-              <td>
-                <div class="summary">Removes the element at the specified index of the <a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection<span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span>T<span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span></a>.</div> (Inherited from <a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection</a><span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><a href="T_Accord_Statistics_Filters_IFilter.htm">IFilter</a><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span>.)</td>
-            </tr>
-            <tr data="protected;inherited;notNetfw;">
-              <td>
-                <img src="../icons/protmethod.gif" alt="Protected method" title="Protected method" />
-              </td>
-              <td>
-                <a href="http://msdn2.microsoft.com/en-us/library/ms132416" target="_blank">SetItem</a>
-              </td>
-              <td>
-                <div class="summary">Replaces the element at the specified index.</div> (Inherited from <a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection</a><span class="languageSpecificText"><span class="cs">&lt;</span><span class="vb">(Of </span><span class="cpp">&lt;</span><span class="nu">(</span><span class="fs">&lt;'</span></span><a href="T_Accord_Statistics_Filters_IFilter.htm">IFilter</a><span class="languageSpecificText"><span class="cs">&gt;</span><span class="vb">)</span><span class="cpp">&gt;</span><span class="nu">)</span><span class="fs">&gt;</span></span>.)</td>
-            </tr>
-            <tr data="public;inherited;notNetfw;">
-              <td>
-                <img src="../icons/pubmethod.gif" alt="Public method" title="Public method" />
-              </td>
-              <td>
-                <a href="http://msdn2.microsoft.com/en-us/library/7bxwbwt2" target="_blank">ToString</a>
-              </td>
-              <td>
-                <div class="summary">Returns a <a href="http://msdn2.microsoft.com/en-us/library/s1wwdcbf" target="_blank">String</a> that represents the current <a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a>.</div> (Inherited from <a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a>.)</td>
-            </tr>
-          </table>
         </div>
-        <h1 class="heading">
-          <span onclick="ExpandCollapse(seeAlsoToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(seeAlsoToggle, event)" tabindex="0">
-            <img id="seeAlsoToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />See Also</span>
-        </h1>
-        <div id="seeAlsoSection" class="section" name="collapseableSection" style="">
-          <div class="seeAlsoStyle">
-            <a href="T_Accord_Statistics_Filters_FiltersSequence.htm">FiltersSequence Class</a>
-          </div>
-          <div class="seeAlsoStyle">
-            <a href="N_Accord_Statistics_Filters.htm">Accord.Statistics.Filters Namespace</a>
-          </div>
+        <div class="OH_feedbacklink">
+          <a href="mailto:?subject=Accord.NET+Framework+FiltersSequence+Methods+100+EN-US&amp;body=Your%20feedback%20is%20used%20to%20improve%20the%20documentation%20and%20the%20product.%20Your%20e-mail%20address%20will%20not%20be%20used%20for%20any%20other%20purpose%20and%20is%20disposed%20of%20after%20the%20issue%20you%20report%20is%20resolved.%20While%20working%20to%20resolve%20the%20issue%20that%20you%20report%2c%20you%20may%20be%20contacted%20via%20e-mail%20to%20get%20further%20details%20or%20clarification%20on%20the%20feedback%20you%20sent.%20After%20the%20issue%20you%20report%20has%20been%20addressed%2c%20you%20may%20receive%20an%20e-mail%20to%20let%20you%20know%20that%20your%20feedback%20has%20been%20addressed.">Send Feedback</a>
+        </div>
+        <div id="mainSection">
+          <div id="mainBody">
+            <span class="introStyle">
+              <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" />
+              <a href="http://accord.googlecode.com/svn/docs/Index.html" target="_blank">Show table of contents (goes to the online documentation index).</a>
+              <br />
+            </span>The <a href="T_Accord_Statistics_Filters_FiltersSequence.htm" target="">FiltersSequence</a> type exposes the following members.<div class="OH_CollapsibleAreaRegion"><div class="OH_regiontitle">Methods</div><div class="OH_CollapsibleArea_HrDiv"><hr class="OH_CollapsibleArea_Hr" /></div></div><div class="OH_clear"></div><table id="memberList" class="members"><tr><th class="ps_iconColumn">
+							 
+						</th><th class="ps_nameColumn">Name</th><th class="ps_descriptionColumn">Description</th></tr><tr data="public;inherited;notNetfw;"><td><img src="./../icons/pubmethod.gif" alt="Public method" title="Public method" /></td><td><img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/ms132404" target="_blank">Add</a></td><td><div class="summary">Adds an object to the end of the <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection<span id="ID0ECBGATBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0ECBGATBCAAAAA?vb=(Of |cpp=&lt;|cs=&lt;|fs=&lt;'|nu=(");
+				</script>T<span id="ID0EABGATBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EABGATBCAAAAA?vb=)|cpp=&gt;|cs=&gt;|fs=&gt;|nu=)");
+				</script></a>. </div> (Inherited from <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection</a><span id="ID0EDATBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EDATBCAAAAA?vb=(Of |cpp=&lt;|cs=&lt;|fs=&lt;'|nu=(");
+				</script><a href="T_Accord_Statistics_Filters_IFilter.htm" target="">IFilter</a><span id="ID0EBATBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EBATBCAAAAA?vb=)|cpp=&gt;|cs=&gt;|fs=&gt;|nu=)");
+				</script>.)</td></tr><tr data="public;declared;notNetfw;"><td><img src="./../icons/pubmethod.gif" alt="Public method" title="Public method" /></td><td><a href="M_Accord_Statistics_Filters_FiltersSequence_Apply.htm" target="">Apply</a></td><td><div class="summary">
+              Applies the sequence of filters to a given table.
+            </div></td></tr><tr data="public;inherited;notNetfw;"><td><img src="./../icons/pubmethod.gif" alt="Public method" title="Public method" /></td><td><img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/ms132405" target="_blank">Clear</a></td><td><div class="summary">Removes all elements from the <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection<span id="ID0ECBGARBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0ECBGARBCAAAAA?vb=(Of |cpp=&lt;|cs=&lt;|fs=&lt;'|nu=(");
+				</script>T<span id="ID0EABGARBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EABGARBCAAAAA?vb=)|cpp=&gt;|cs=&gt;|fs=&gt;|nu=)");
+				</script></a>.</div> (Inherited from <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection</a><span id="ID0EDARBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EDARBCAAAAA?vb=(Of |cpp=&lt;|cs=&lt;|fs=&lt;'|nu=(");
+				</script><a href="T_Accord_Statistics_Filters_IFilter.htm" target="">IFilter</a><span id="ID0EBARBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EBARBCAAAAA?vb=)|cpp=&gt;|cs=&gt;|fs=&gt;|nu=)");
+				</script>.)</td></tr><tr data="protected;inherited;notNetfw;"><td><img src="./../icons/protmethod.gif" alt="Protected method" title="Protected method" /></td><td><img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/ms132406" target="_blank">ClearItems</a></td><td><div class="summary">Removes all elements from the <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection<span id="ID0ECBGAQBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0ECBGAQBCAAAAA?vb=(Of |cpp=&lt;|cs=&lt;|fs=&lt;'|nu=(");
+				</script>T<span id="ID0EABGAQBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EABGAQBCAAAAA?vb=)|cpp=&gt;|cs=&gt;|fs=&gt;|nu=)");
+				</script></a>.</div> (Inherited from <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection</a><span id="ID0EDAQBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EDAQBCAAAAA?vb=(Of |cpp=&lt;|cs=&lt;|fs=&lt;'|nu=(");
+				</script><a href="T_Accord_Statistics_Filters_IFilter.htm" target="">IFilter</a><span id="ID0EBAQBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EBAQBCAAAAA?vb=)|cpp=&gt;|cs=&gt;|fs=&gt;|nu=)");
+				</script>.)</td></tr><tr data="public;inherited;notNetfw;"><td><img src="./../icons/pubmethod.gif" alt="Public method" title="Public method" /></td><td><img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/ms132407" target="_blank">Contains</a></td><td><div class="summary">Determines whether an element is in the <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection<span id="ID0ECBGAPBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0ECBGAPBCAAAAA?vb=(Of |cpp=&lt;|cs=&lt;|fs=&lt;'|nu=(");
+				</script>T<span id="ID0EABGAPBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EABGAPBCAAAAA?vb=)|cpp=&gt;|cs=&gt;|fs=&gt;|nu=)");
+				</script></a>.</div> (Inherited from <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection</a><span id="ID0EDAPBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EDAPBCAAAAA?vb=(Of |cpp=&lt;|cs=&lt;|fs=&lt;'|nu=(");
+				</script><a href="T_Accord_Statistics_Filters_IFilter.htm" target="">IFilter</a><span id="ID0EBAPBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EBAPBCAAAAA?vb=)|cpp=&gt;|cs=&gt;|fs=&gt;|nu=)");
+				</script>.)</td></tr><tr data="public;inherited;notNetfw;"><td><img src="./../icons/pubmethod.gif" alt="Public method" title="Public method" /></td><td><img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/ms132408" target="_blank">CopyTo</a></td><td><div class="summary">Copies the entire <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection<span id="ID0ECDGAOBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0ECDGAOBCAAAAA?vb=(Of |cpp=&lt;|cs=&lt;|fs=&lt;'|nu=(");
+				</script>T<span id="ID0EADGAOBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EADGAOBCAAAAA?vb=)|cpp=&gt;|cs=&gt;|fs=&gt;|nu=)");
+				</script></a> to a compatible one-dimensional <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/czz5hkty" target="_blank">Array</a>, starting at the specified index of the target array.</div> (Inherited from <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection</a><span id="ID0EDAOBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EDAOBCAAAAA?vb=(Of |cpp=&lt;|cs=&lt;|fs=&lt;'|nu=(");
+				</script><a href="T_Accord_Statistics_Filters_IFilter.htm" target="">IFilter</a><span id="ID0EBAOBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EBAOBCAAAAA?vb=)|cpp=&gt;|cs=&gt;|fs=&gt;|nu=)");
+				</script>.)</td></tr><tr data="public;inherited;notNetfw;"><td><img src="./../icons/pubmethod.gif" alt="Public method" title="Public method" /></td><td><img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/bsc2ak47" target="_blank">Equals</a></td><td><div class="summary">Determines whether the specified <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a> is equal to the current <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a>.</div> (Inherited from <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a>.)</td></tr><tr data="protected;inherited;notNetfw;"><td><img src="./../icons/protmethod.gif" alt="Protected method" title="Protected method" /></td><td><img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/4k87zsw7" target="_blank">Finalize</a></td><td><div class="summary">Allows an <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a> to attempt to free resources and perform other cleanup operations before the <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a> is reclaimed by garbage collection.</div> (Inherited from <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a>.)</td></tr><tr data="public;inherited;notNetfw;"><td><img src="./../icons/pubmethod.gif" alt="Public method" title="Public method" /></td><td><img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/ms132409" target="_blank">GetEnumerator</a></td><td><div class="summary">Returns an enumerator that iterates through the <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection<span id="ID0ECBGALBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0ECBGALBCAAAAA?vb=(Of |cpp=&lt;|cs=&lt;|fs=&lt;'|nu=(");
+				</script>T<span id="ID0EABGALBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EABGALBCAAAAA?vb=)|cpp=&gt;|cs=&gt;|fs=&gt;|nu=)");
+				</script></a>.</div> (Inherited from <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection</a><span id="ID0EDALBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EDALBCAAAAA?vb=(Of |cpp=&lt;|cs=&lt;|fs=&lt;'|nu=(");
+				</script><a href="T_Accord_Statistics_Filters_IFilter.htm" target="">IFilter</a><span id="ID0EBALBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EBALBCAAAAA?vb=)|cpp=&gt;|cs=&gt;|fs=&gt;|nu=)");
+				</script>.)</td></tr><tr data="public;inherited;notNetfw;"><td><img src="./../icons/pubmethod.gif" alt="Public method" title="Public method" /></td><td><img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/zdee4b3y" target="_blank">GetHashCode</a></td><td><div class="summary">Serves as a hash function for a particular type. </div> (Inherited from <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a>.)</td></tr><tr data="public;inherited;notNetfw;"><td><img src="./../icons/pubmethod.gif" alt="Public method" title="Public method" /></td><td><img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/dfwy45w9" target="_blank">GetType</a></td><td><div class="summary">Gets the <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/42892f65" target="_blank">Type</a> of the current instance.</div> (Inherited from <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a>.)</td></tr><tr data="public;inherited;notNetfw;"><td><img src="./../icons/pubmethod.gif" alt="Public method" title="Public method" /></td><td><img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/ms132410" target="_blank">IndexOf</a></td><td><div class="summary">Searches for the specified object and returns the zero-based index of the first occurrence within the entire <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection<span id="ID0ECBGAIBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0ECBGAIBCAAAAA?vb=(Of |cpp=&lt;|cs=&lt;|fs=&lt;'|nu=(");
+				</script>T<span id="ID0EABGAIBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EABGAIBCAAAAA?vb=)|cpp=&gt;|cs=&gt;|fs=&gt;|nu=)");
+				</script></a>.</div> (Inherited from <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection</a><span id="ID0EDAIBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EDAIBCAAAAA?vb=(Of |cpp=&lt;|cs=&lt;|fs=&lt;'|nu=(");
+				</script><a href="T_Accord_Statistics_Filters_IFilter.htm" target="">IFilter</a><span id="ID0EBAIBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EBAIBCAAAAA?vb=)|cpp=&gt;|cs=&gt;|fs=&gt;|nu=)");
+				</script>.)</td></tr><tr data="public;inherited;notNetfw;"><td><img src="./../icons/pubmethod.gif" alt="Public method" title="Public method" /></td><td><img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/ms132411" target="_blank">Insert</a></td><td><div class="summary">Inserts an element into the <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection<span id="ID0ECBGAHBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0ECBGAHBCAAAAA?vb=(Of |cpp=&lt;|cs=&lt;|fs=&lt;'|nu=(");
+				</script>T<span id="ID0EABGAHBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EABGAHBCAAAAA?vb=)|cpp=&gt;|cs=&gt;|fs=&gt;|nu=)");
+				</script></a> at the specified index.</div> (Inherited from <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection</a><span id="ID0EDAHBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EDAHBCAAAAA?vb=(Of |cpp=&lt;|cs=&lt;|fs=&lt;'|nu=(");
+				</script><a href="T_Accord_Statistics_Filters_IFilter.htm" target="">IFilter</a><span id="ID0EBAHBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EBAHBCAAAAA?vb=)|cpp=&gt;|cs=&gt;|fs=&gt;|nu=)");
+				</script>.)</td></tr><tr data="protected;inherited;notNetfw;"><td><img src="./../icons/protmethod.gif" alt="Protected method" title="Protected method" /></td><td><img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/ms132412" target="_blank">InsertItem</a></td><td><div class="summary">Inserts an element into the <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection<span id="ID0ECBGAGBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0ECBGAGBCAAAAA?vb=(Of |cpp=&lt;|cs=&lt;|fs=&lt;'|nu=(");
+				</script>T<span id="ID0EABGAGBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EABGAGBCAAAAA?vb=)|cpp=&gt;|cs=&gt;|fs=&gt;|nu=)");
+				</script></a> at the specified index.</div> (Inherited from <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection</a><span id="ID0EDAGBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EDAGBCAAAAA?vb=(Of |cpp=&lt;|cs=&lt;|fs=&lt;'|nu=(");
+				</script><a href="T_Accord_Statistics_Filters_IFilter.htm" target="">IFilter</a><span id="ID0EBAGBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EBAGBCAAAAA?vb=)|cpp=&gt;|cs=&gt;|fs=&gt;|nu=)");
+				</script>.)</td></tr><tr data="protected;inherited;notNetfw;"><td><img src="./../icons/protmethod.gif" alt="Protected method" title="Protected method" /></td><td><img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/57ctke0a" target="_blank">MemberwiseClone</a></td><td><div class="summary">Creates a shallow copy of the current <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a>.</div> (Inherited from <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a>.)</td></tr><tr data="public;inherited;notNetfw;"><td><img src="./../icons/pubmethod.gif" alt="Public method" title="Public method" /></td><td><img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/ms132413" target="_blank">Remove</a></td><td><div class="summary">Removes the first occurrence of a specific object from the <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection<span id="ID0ECBGAEBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0ECBGAEBCAAAAA?vb=(Of |cpp=&lt;|cs=&lt;|fs=&lt;'|nu=(");
+				</script>T<span id="ID0EABGAEBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EABGAEBCAAAAA?vb=)|cpp=&gt;|cs=&gt;|fs=&gt;|nu=)");
+				</script></a>.</div> (Inherited from <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection</a><span id="ID0EDAEBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EDAEBCAAAAA?vb=(Of |cpp=&lt;|cs=&lt;|fs=&lt;'|nu=(");
+				</script><a href="T_Accord_Statistics_Filters_IFilter.htm" target="">IFilter</a><span id="ID0EBAEBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EBAEBCAAAAA?vb=)|cpp=&gt;|cs=&gt;|fs=&gt;|nu=)");
+				</script>.)</td></tr><tr data="public;inherited;notNetfw;"><td><img src="./../icons/pubmethod.gif" alt="Public method" title="Public method" /></td><td><img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/ms132414" target="_blank">RemoveAt</a></td><td><div class="summary">Removes the element at the specified index of the <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection<span id="ID0ECBGADBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0ECBGADBCAAAAA?vb=(Of |cpp=&lt;|cs=&lt;|fs=&lt;'|nu=(");
+				</script>T<span id="ID0EABGADBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EABGADBCAAAAA?vb=)|cpp=&gt;|cs=&gt;|fs=&gt;|nu=)");
+				</script></a>.</div> (Inherited from <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection</a><span id="ID0EDADBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EDADBCAAAAA?vb=(Of |cpp=&lt;|cs=&lt;|fs=&lt;'|nu=(");
+				</script><a href="T_Accord_Statistics_Filters_IFilter.htm" target="">IFilter</a><span id="ID0EBADBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EBADBCAAAAA?vb=)|cpp=&gt;|cs=&gt;|fs=&gt;|nu=)");
+				</script>.)</td></tr><tr data="protected;inherited;notNetfw;"><td><img src="./../icons/protmethod.gif" alt="Protected method" title="Protected method" /></td><td><img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/ms132415" target="_blank">RemoveItem</a></td><td><div class="summary">Removes the element at the specified index of the <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection<span id="ID0ECBGACBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0ECBGACBCAAAAA?vb=(Of |cpp=&lt;|cs=&lt;|fs=&lt;'|nu=(");
+				</script>T<span id="ID0EABGACBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EABGACBCAAAAA?vb=)|cpp=&gt;|cs=&gt;|fs=&gt;|nu=)");
+				</script></a>.</div> (Inherited from <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection</a><span id="ID0EDACBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EDACBCAAAAA?vb=(Of |cpp=&lt;|cs=&lt;|fs=&lt;'|nu=(");
+				</script><a href="T_Accord_Statistics_Filters_IFilter.htm" target="">IFilter</a><span id="ID0EBACBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EBACBCAAAAA?vb=)|cpp=&gt;|cs=&gt;|fs=&gt;|nu=)");
+				</script>.)</td></tr><tr data="protected;inherited;notNetfw;"><td><img src="./../icons/protmethod.gif" alt="Protected method" title="Protected method" /></td><td><img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/ms132416" target="_blank">SetItem</a></td><td><div class="summary">Replaces the element at the specified index.</div> (Inherited from <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/ms132397" target="_blank">Collection</a><span id="ID0EDABBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EDABBCAAAAA?vb=(Of |cpp=&lt;|cs=&lt;|fs=&lt;'|nu=(");
+				</script><a href="T_Accord_Statistics_Filters_IFilter.htm" target="">IFilter</a><span id="ID0EBABBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EBABBCAAAAA?vb=)|cpp=&gt;|cs=&gt;|fs=&gt;|nu=)");
+				</script>.)</td></tr><tr data="public;inherited;notNetfw;"><td><img src="./../icons/pubmethod.gif" alt="Public method" title="Public method" /></td><td><img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/7bxwbwt2" target="_blank">ToString</a></td><td><div class="summary">Returns a <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/s1wwdcbf" target="_blank">String</a> that represents the current <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a>.</div> (Inherited from <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/e5kfa45b" target="_blank">Object</a>.)</td></tr></table><a href="#mainBody" target="">Back to Top</a><a name="seeAlsoSection"><!----></a><div class="OH_CollapsibleAreaRegion"><div class="OH_regiontitle">See Also</div><div class="OH_CollapsibleArea_HrDiv"><hr class="OH_CollapsibleArea_Hr" /></div></div><div class="OH_clear"></div><div class="seeAlsoStyle"><a href="T_Accord_Statistics_Filters_FiltersSequence.htm" target="">FiltersSequence Class</a></div><div class="seeAlsoStyle"><a href="N_Accord_Statistics_Filters.htm" target="">Accord.Statistics.Filters Namespace</a></div></div>
         </div>
       </div>
-      <div id="footer">
-        <div class="footerLine">
-          <img width="100%" height="3px" src="../icons/footer.gif" alt="Footer image" title="Footer image" />
-        </div>
-        <A NAME="feedback"></A>
-        <span id="fb" class="feedbackcss"></span>
-        <a href="http://accord.googlecode.com" target="_blank">Accord.NET Framework</a> © 2009-2012. All documentation is licensed under the Creative Commons Attribution/Share-Alike License.  <script type="text/javascript">    var _gaq = _gaq || [];   _gaq.push(['_setAccount', 'UA-3114672-4']);   _gaq.push(['_trackPageview']);    (function() {     var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);   })();  </script></div>
+    </div>
+    <div id="OH_footer" class="OH_footer">
+      <p>
+        <a href="http://accord.googlecode.com" target="_blank">Accord.NET Framework</a> © 2009-2012. All documentation is licensed under the Creative Commons Attribution/Share-Alike License.</p>
+      <div class="OH_feedbacklink">
+        <a href="mailto:?subject=Accord.NET+Framework+FiltersSequence+Methods+100+EN-US&amp;body=Your%20feedback%20is%20used%20to%20improve%20the%20documentation%20and%20the%20product.%20Your%20e-mail%20address%20will%20not%20be%20used%20for%20any%20other%20purpose%20and%20is%20disposed%20of%20after%20the%20issue%20you%20report%20is%20resolved.%20While%20working%20to%20resolve%20the%20issue%20that%20you%20report%2c%20you%20may%20be%20contacted%20via%20e-mail%20to%20get%20further%20details%20or%20clarification%20on%20the%20feedback%20you%20sent.%20After%20the%20issue%20you%20report%20has%20been%20addressed%2c%20you%20may%20receive%20an%20e-mail%20to%20let%20you%20know%20that%20your%20feedback%20has%20been%20addressed.">Send Feedback</a> on this topic.</div>
     </div>
   </body>
 </html>

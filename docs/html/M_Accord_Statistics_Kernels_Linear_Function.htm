@@ -1,7 +1,20 @@
-﻿<html xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:ddue="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:msxsl="urn:schemas-microsoft-com:xslt">
+﻿<html xmlns:MSHelp="http://msdn.microsoft.com/mshelp" xmlns:mshelp="http://msdn.microsoft.com/mshelp" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <head>
-    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8" />
-    <META NAME="save" CONTENT="history" />
+    <link rel="SHORTCUT ICON" href="./../branding/favicon.ico" />
+    <link rel="stylesheet" type="text/css" href="./../branding/branding-en-US.css" />
+    <style type="text/css">.OH_CodeSnippetContainerTabLeftActive, .OH_CodeSnippetContainerTabLeft,.OH_CodeSnippetContainerTabLeftDisabled {background-image: url('./../branding/tabLeftBG.gif')}.OH_CodeSnippetContainerTabRightActive, .OH_CodeSnippetContainerTabRight,.OH_CodeSnippetContainerTabRightDisabled {background-image: url('./../branding/tabRightBG.gif')}.OH_footer { background-image: url('./../branding/footer_slice.gif'); background-position:top; background-repeat:repeat-x}</style>
+    <style type="text/css">
+			body
+			{
+			border-left:5px solid #e6e6e6;
+			overflow-x:scroll;
+			overflow-y:scroll;
+			}
+		</style>
+    <script src="./../branding/branding.js" type="text/javascript">
+      <!---->
+    </script>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Function Method </title>
     <meta name="Language" content="en-us" />
     <meta name="System.Keywords" content="Function method" />
@@ -10,15 +23,7 @@
     <meta name="Microsoft.Help.Id" content="M:Accord.Statistics.Kernels.Linear.Function(System.Double[],System.Double[])" />
     <meta name="Description" content="Linear kernel function." />
     <meta name="Microsoft.Help.ContentType" content="Reference" />
-    <link rel="stylesheet" type="text/css" href="../styles/Presentation.css" />
-    <link rel="stylesheet" type="text/css" href="ms-help://Hx/HxRuntime/HxLink.css" />
-    <script type="text/javascript" src="../scripts/EventUtilities.js"> </script>
-    <script type="text/javascript" src="../scripts/SplitScreen.js"> </script>
-    <script type="text/javascript" src="../scripts/Dropdown.js"> </script>
-    <script type="text/javascript" src="../scripts/script_manifold.js"> </script>
-    <script type="text/javascript" src="../scripts/script_feedBack.js"> </script>
-    <script type="text/javascript" src="../scripts/CheckboxMenu.js"> </script>
-    <script type="text/javascript" src="../scripts/CommonUtilities.js"> </script>
+    <meta name="BrandingAware" content="'true'" />
     <meta name="container" content="Accord.Statistics.Kernels" />
     <meta name="file" content="M_Accord_Statistics_Kernels_Linear_Function" />
     <meta name="guid" content="M_Accord_Statistics_Kernels_Linear_Function" />
@@ -34,103 +39,84 @@
       <MSHelp:Attr Name="APIType" Value="Managed" />
       <MSHelp:Attr Name="APILocation" Value="Accord.Statistics.dll" />
       <MSHelp:Attr Name="APIName" Value="Accord.Statistics.Kernels.Linear.Function" />
-      <MSHelp:Attr Name="DevLang" Value="CSharp" />
-      <MSHelp:Attr Name="DevLang" Value="VB" />
+      <MSHelp:Attr Name="DevLang" Value="C#" />
       <MSHelp:Attr Name="Locale" Value="en-us" />
       <MSHelp:Attr Name="TopicType" Value="kbSyntax" />
       <MSHelp:Attr Name="TopicType" Value="apiref" />
       <MSHelp:Attr Name="Abstract" Value="Linear kernel function." />
-      <MSHelp:Attr Name="AssemblyVersion" Value="2.7.0.0" />
+      <MSHelp:Attr Name="AssemblyVersion" Value="2.7.1.0" />
     </xml>
+    <link type="text/css" rel="stylesheet" href="./../styles/Presentation.css" />
+    <meta name="SelfBranded" content="true" />
   </head>
-  <body>
-    <input type="hidden" id="userDataCache" class="userDataStyle" />
-    <input type="hidden" id="hiddenScrollOffset" />
-    <img id="collapseImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" alt="Collapse image" title="Collapse image" />
-    <img id="expandImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" alt="Expand Image" title="Expand Image" />
-    <img id="collapseAllImage" style="display:none; height:0; width:0;" src="../icons/collapse_all.gif" />
-    <img id="expandAllImage" style="display:none; height:0; width:0;" src="../icons/expand_all.gif" />
-    <img id="dropDownImage" style="display:none; height:0; width:0;" src="../icons/dropdown.gif" />
-    <img id="dropDownHoverImage" style="display:none; height:0; width:0;" src="../icons/dropdownHover.gif" />
-    <img id="copyImage" style="display:none; height:0; width:0;" src="../icons/copycode.gif" alt="Copy image" title="Copy image" />
-    <img id="copyHoverImage" style="display:none; height:0; width:0;" src="../icons/copycodeHighlight.gif" alt="CopyHover image" title="CopyHover image" />
-    <div id="header">
-      <table cellspacing="0" cellpadding="0">
-        <tr>
-          <td>
-            <table id="topTable" cellspacing="0" cellpadding="0">
+  <body onload="onLoad()" class="primary-mtps-offline-document">
+    <div class="OH_outerDiv">
+      <div class="OH_outerContent">
+        <div class="OH_topic">
+          <div class="OH_title">
+            <table>
               <tr>
-                <td>
-                  <span onclick="ExpandCollapseAll(toggleAllImage)" style="cursor:default;" onkeypress="ExpandCollapseAll_CheckKey(toggleAllImage, event)" tabindex="0">
-                    <img ID="toggleAllImage" class="toggleAll" src="../icons/collapse_all.gif" /> <label id="collapseAllLabel" for="toggleAllImage" style="display: none;">Collapse All</label><label id="expandAllLabel" for="toggleAllImage" style="display: none;">Expand All</label> </span>
-                  <span>    </span>
-                  <span id="devlangsDropdown" class="filter" tabindex="0">
-                    <img id="devlangsDropdownImage" src="../icons/dropdown.gif" /> <label id="devlangsMenuAllLabel" for="devlangsDropdownImage" style="display: none;"><nobr>Code: All </nobr></label><label id="devlangsMenuMultipleLabel" for="devlangsDropdownImage" style="display: none;"><nobr>Code: Multiple </nobr></label><label id="devlangsMenuCSharpLabel" for="devlangsDropdownImage" style="display: none;"><nobr>Code: C# </nobr></label><label id="devlangsMenuVisualBasicLabel" for="devlangsDropdownImage" style="display: none;"><nobr>Code: Visual Basic </nobr></label></span>
+                <td class="OH_tdTitleColumn">Linear<span id="ID0EBCAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EBCAAA?vb=.|cpp=::|cs=.|fs=.|nu=.");
+				</script>Function Method </td>
+                <td class="OH_tdLogoColumn">
+                  <img align="right" src="./../icons/Accord.NET.png" />
                 </td>
               </tr>
             </table>
-            <div id="devlangsMenu">
-              <input id="CSharpCheckbox" type="checkbox" data="CSharp,cs,'persist'" value="on" onClick="SetLanguage(this)" />
-              <label class="checkboxLabel" for="CSharpCheckbox">C#</label>
-              <br />
-              <input id="VisualBasicCheckbox" type="checkbox" data="VisualBasic,vb,'persist'" value="on" onClick="SetLanguage(this)" />
-              <label class="checkboxLabel" for="VisualBasicCheckbox">Visual Basic</label>
-              <br />
-            </div>
-            <table id="bottomTable" cellpadding="0" cellspacing="0">
-              <tr id="headerTableRow1">
-                <td align="left">
-                  <span id="runningHeaderText">Accord.NET Framework</span>
-                </td>
-              </tr>
-              <tr id="headerTableRow2">
-                <td align="left">
-                  <span id="nsrTitle">Linear<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>Function Method </span>
-                </td>
-              </tr>
-              <tr id="headerTableRow3">
-                <td align="left">
-                  <a href="T_Accord_Statistics_Kernels_Linear.htm">Linear Class</a> <a href="#seeAlsoToggle" onclick="OpenSection(seeAlsoToggle)">See Also</a> <span id="headfeedbackarea" class="feedbackhead"><a href="javascript:SubmitFeedback('','Accord.NET Framework','','','','%0\dYour%20feedback%20is%20used%20to%20improve%20the%20documentation%20and%20the%20product.%20Your%20e-mail%20address%20will%20not%20be%20used%20for%20any%20other%20purpose%20and%20is%20disposed%20of%20after%20the%20issue%20you%20report%20is%20resolved.%20%20While%20working%20to%20resolve%20the%20issue%20that%20you%20report,%20you%20may%20be%20contacted%20via%20e-mail%20to%20get%20further%20details%20or%20clarification%20on%20the%20feedback%20you%20sent.%20After%20the%20issue%20you%20report%20has%20been%20addressed,%20you%20may%20receive%20an%20e-mail%20to%20let%20you%20know%20that%20your%20feedback%20has%20been%20addressed.%0\A%0\d','Customer%20Feedback');">Send Feedback</a></span></td>
-              </tr>
-            </table>
-          </td>
-          <td align="center" style="width: 1px; padding: 0px">
-            <img src="../icons/Accord.NET.png" />
-          </td>
-        </tr>
-      </table>
-      <table id="gradientTable">
-        <tr>
-          <td class="nsrBottom" background="../icons/gradient.gif" />
-        </tr>
-      </table>
-    </div>
-    <div id="mainSection">
-      <div id="mainBody">
-        <div id="allHistory" class="saveHistory" onsave="saveAll()" onload="loadAll()" />
-        <span style="color: DarkGray">
-          <div style="float: right; margin-right: 25px; margin-bottom: 25px; margin-left: 25px;">
-            <a href="http://accord.googlecode.com/svn/docs/Index.html" target="_top">&lt;&lt; Table of Contents</a>
           </div>
-        </span>
-        <div class="summary">
+        </div>
+        <div class="OH_feedbacklink">
+          <a href="mailto:?subject=Accord.NET+Framework+Function+Method++100+EN-US&amp;body=Your%20feedback%20is%20used%20to%20improve%20the%20documentation%20and%20the%20product.%20Your%20e-mail%20address%20will%20not%20be%20used%20for%20any%20other%20purpose%20and%20is%20disposed%20of%20after%20the%20issue%20you%20report%20is%20resolved.%20While%20working%20to%20resolve%20the%20issue%20that%20you%20report%2c%20you%20may%20be%20contacted%20via%20e-mail%20to%20get%20further%20details%20or%20clarification%20on%20the%20feedback%20you%20sent.%20After%20the%20issue%20you%20report%20has%20been%20addressed%2c%20you%20may%20receive%20an%20e-mail%20to%20let%20you%20know%20that%20your%20feedback%20has%20been%20addressed.">Send Feedback</a>
+        </div>
+        <div id="mainSection">
+          <div id="mainBody">
+            <span class="introStyle">
+              <img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" />
+              <a href="http://accord.googlecode.com/svn/docs/Index.html" target="_blank">Show table of contents (goes to the online documentation index).</a>
+              <br />
+            </span>
+            <div class="summary">
               Linear kernel function.
             </div>
-        <p />
-        <b>Namespace:</b> <a href="N_Accord_Statistics_Kernels.htm">Accord.Statistics.Kernels</a><br /><b>Assembly:</b> <span sdata="assembly">Accord.Statistics</span> (in Accord.Statistics.dll) Version: 2.7.0.0 (2.7.0.0)<h1 class="heading"><span onclick="ExpandCollapse(syntaxToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(syntaxToggle, event)" tabindex="0"><img id="syntaxToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />Syntax</span></h1><div id="syntaxSection" class="section" name="collapseableSection" style=""><div id="syntaxCodeBlocks" class="code"><span codeLanguage="CSharp"><table><tr><th>C#</th></tr><tr><td><pre xml:space="preserve"><span class="keyword">public</span> <a href="http://msdn2.microsoft.com/en-us/library/643eft0t" target="_blank">double</a> <span class="identifier">Function</span>(
+            <p></p>
+            <b>Namespace:</b> <a href="N_Accord_Statistics_Kernels.htm" target="">Accord.Statistics.Kernels</a><br /><b>Assembly:</b> <span sdata="assembly">Accord.Statistics</span> (in Accord.Statistics.dll) Version: 2.7.1.0 (2.7.1.0)<div class="OH_CollapsibleAreaRegion"><div class="OH_regiontitle">Syntax</div><div class="OH_CollapsibleArea_HrDiv"><hr class="OH_CollapsibleArea_Hr" /></div></div><div class="OH_clear"></div><div id="snippetGroup_Syntax" class="code"><div id="ID0EAGCAAAAA" class="OH_CodeSnippetContainer"><div class="OH_CodeSnippetContainerTabs" id="ID0EAGCAAAAA_tabs"><div class="OH_CodeSnippetContainerTabLeftActive" id="ID0EAGCAAAAA_tabimgleft"></div><div id="ID0EAGCAAAAA_tab1" class="OH_CodeSnippetContainerTabDisabled" EnableCopyCode="true" disabled="true"><a>VB</a></div><div id="ID0EAGCAAAAA_tab2" class="OH_CodeSnippetContainerTab" EnableCopyCode="true"><a href="javascript:ChangeTab('ID0EAGCAAAAA','C#','2','5')">C#</a></div><div id="ID0EAGCAAAAA_tab3" class="OH_CodeSnippetContainerTabDisabledNotFirst" EnableCopyCode="true" disabled="true"><a>C++</a></div><div id="ID0EAGCAAAAA_tab4" class="OH_CodeSnippetContainerTabDisabledNotFirst" EnableCopyCode="true" disabled="true"><a>F#</a></div><div id="ID0EAGCAAAAA_tab5" class="OH_CodeSnippetContainerTabDisabledNotFirst" EnableCopyCode="true" disabled="true"><a>JScript</a></div><div class="OH_CodeSnippetContainerTabRight" id="ID0EAGCAAAAA_tabimgright"></div></div><div id="ID0EAGCAAAAA_codecollection" class="OH_CodeSnippetContainerCodeCollection"><div class="OH_CodeSnippetToolBar"><div class="OH_CodeSnippetToolBarText"><a id="ID0EAGCAAAAA_ViewColorized" href="javascript:ExchangeTitleContent('ID0EAGCAAAAA','5')" title="View Colorized" style="display: none">View Colorized</a><a id="ID0EAGCAAAAA_copycode" href="javascript:CopyToClipboard('ID0EAGCAAAAA','5')" title="Copy to Clipboard">Copy to Clipboard</a><a id="ID0EAGCAAAAA_PrintText" class="OH_PrintText" href="javascript:Print('ID0EAGCAAAAA','5')" title="Print">Print</a></div></div><div id="ID0EAGCAAAAA_code_Div1" class="OH_CodeSnippetContainerCode" style="display: block"><pre /></div><div id="ID0EAGCAAAAA_code_Plain_Div1" class="OH_CodeSnippetContainerCode" style="display: none"><pre /></div><div id="ID0EAGCAAAAA_code_Div2" class="OH_CodeSnippetContainerCode" style="display: none"><pre style="white-space:pre-line;word-wrap:normal;"><span class="keyword">public</span> <a href="http://msdn2.microsoft.com/en-us/library/643eft0t" target="_blank">double</a> <span class="identifier">Function</span>(
 	<a href="http://msdn2.microsoft.com/en-us/library/643eft0t" target="_blank">double</a>[] <span class="parameter">x</span>,
 	<a href="http://msdn2.microsoft.com/en-us/library/643eft0t" target="_blank">double</a>[] <span class="parameter">y</span>
-)</pre></td></tr></table></span><span codeLanguage="VisualBasicDeclaration"><table><tr><th>Visual Basic</th></tr><tr><td><pre xml:space="preserve"><span class="keyword">Public</span> <span class="keyword">Function</span> <span class="identifier">Function</span> ( _
-	<span class="parameter">x</span> <span class="keyword">As</span> <a href="http://msdn2.microsoft.com/en-us/library/643eft0t" target="_blank">Double</a>(), _
-	<span class="parameter">y</span> <span class="keyword">As</span> <a href="http://msdn2.microsoft.com/en-us/library/643eft0t" target="_blank">Double</a>() _
-) <span class="keyword">As</span> <a href="http://msdn2.microsoft.com/en-us/library/643eft0t" target="_blank">Double</a></pre></td></tr></table></span></div><div id="parameters"><h4 class="subHeading">Parameters</h4><dl paramName="x"><dt><span class="parameter">x</span></dt><dd>Type: <span class="languageSpecificText"><span class="cpp">array&lt;</span></span><a href="http://msdn2.microsoft.com/en-us/library/643eft0t" target="_blank">System<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>Double</a><span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span><span class="fs">[]</span></span><br />Vector <span class="code">x</span> in input space.</dd></dl><dl paramName="y"><dt><span class="parameter">y</span></dt><dd>Type: <span class="languageSpecificText"><span class="cpp">array&lt;</span></span><a href="http://msdn2.microsoft.com/en-us/library/643eft0t" target="_blank">System<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>Double</a><span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span><span class="fs">[]</span></span><br />Vector <span class="code">y</span> in input space.</dd></dl></div><h4 class="subHeading">Return Value</h4>Dot product in feature (kernel) space.<h4 class="subHeading">Implements</h4><a href="M_Accord_Statistics_Kernels_IKernel_Function.htm">IKernel<span class="languageSpecificText"><span class="cs">.</span><span class="vb">.</span><span class="cpp">::</span><span class="nu">.</span><span class="fs">.</span></span>Function(<span class="languageSpecificText"><span class="cpp">array&lt;</span></span>Double<span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span><span class="fs">[]</span></span>, <span class="languageSpecificText"><span class="cpp">array&lt;</span></span>Double<span class="languageSpecificText"><span class="cpp">&gt;</span><span class="cs">[]</span><span class="vb">()</span><span class="nu">[]</span><span class="fs">[]</span></span>)</a><br /></div><h1 class="heading"><span onclick="ExpandCollapse(seeAlsoToggle)" style="cursor:default;" onkeypress="ExpandCollapse_CheckKey(seeAlsoToggle, event)" tabindex="0"><img id="seeAlsoToggle" class="toggle" name="toggleSwitch" src="../icons/collapse_all.gif" />See Also</span></h1><div id="seeAlsoSection" class="section" name="collapseableSection" style=""><div class="seeAlsoStyle"><a href="T_Accord_Statistics_Kernels_Linear.htm">Linear Class</a></div><div class="seeAlsoStyle"><a href="N_Accord_Statistics_Kernels.htm">Accord.Statistics.Kernels Namespace</a></div></div></div>
-      <div id="footer">
-        <div class="footerLine">
-          <img width="100%" height="3px" src="../icons/footer.gif" alt="Footer image" title="Footer image" />
+)</pre></div><div id="ID0EAGCAAAAA_code_Plain_Div2" class="OH_CodeSnippetContainerCode" style="display: none"><pre>public double Function(
+	double[] x,
+	double[] y
+)</pre></div><div id="ID0EAGCAAAAA_code_Div3" class="OH_CodeSnippetContainerCode" style="display: none"><pre /></div><div id="ID0EAGCAAAAA_code_Plain_Div3" class="OH_CodeSnippetContainerCode" style="display: none"><pre /></div><div id="ID0EAGCAAAAA_code_Div4" class="OH_CodeSnippetContainerCode" style="display: none"><pre /></div><div id="ID0EAGCAAAAA_code_Plain_Div4" class="OH_CodeSnippetContainerCode" style="display: none"><pre /></div><div id="ID0EAGCAAAAA_code_Div5" class="OH_CodeSnippetContainerCode" style="display: none"><pre /></div><div id="ID0EAGCAAAAA_code_Plain_Div5" class="OH_CodeSnippetContainerCode" style="display: none"><pre /></div></div></div><script>addSpecificTextLanguageTagSet('ID0EAGCAAAAA');</script></div><div id="parameters"><h4 class="subHeading">Parameters</h4><dl paramName="x"><dt><span class="parameter">x</span></dt><dd>Type: <span id="ID0EEABFCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EEABFCAAAAA?vb=|cpp=array&lt;|cs=|fs=|nu=");
+				</script><img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/643eft0t" target="_blank">System<span id="ID0EBDABFCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EBDABFCAAAAA?vb=.|cpp=::|cs=.|fs=.|nu=.");
+				</script>Double</a><span id="ID0ECABFCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0ECABFCAAAAA?vb=()|cpp=&gt;|cs=[]|fs=[]|nu=[]");
+				</script><br /><span>Vector <span class="code">x</span> in input space.</span></dd></dl><dl paramName="y"><dt><span class="parameter">y</span></dt><dd>Type: <span id="ID0EEAAFCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EEAAFCAAAAA?vb=|cpp=array&lt;|cs=|fs=|nu=");
+				</script><img src="./../branding/online_icon.gif" class="OH_offlineIcon" alt="Online" title="Online" /><a href="http://msdn2.microsoft.com/en-us/library/643eft0t" target="_blank">System<span id="ID0EBDAAFCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EBDAAFCAAAAA?vb=.|cpp=::|cs=.|fs=.|nu=.");
+				</script>Double</a><span id="ID0ECAAFCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0ECAAFCAAAAA?vb=()|cpp=&gt;|cs=[]|fs=[]|nu=[]");
+				</script><br /><span>Vector <span class="code">y</span> in input space.</span></dd></dl></div><h4 class="subHeading">Return Value</h4>Dot product in feature (kernel) space.<h4 class="subHeading">Implements</h4><a href="M_Accord_Statistics_Kernels_IKernel_Function.htm" target="">IKernel<span id="ID0EJBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EJBCAAAAA?vb=.|cpp=::|cs=.|fs=.|nu=.");
+				</script>Function(<span id="ID0EHBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EHBCAAAAA?vb=|cpp=array&lt;|cs=|fs=|nu=");
+				</script>Double<span id="ID0EFBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EFBCAAAAA?vb=()|cpp=&gt;|cs=[]|fs=[]|nu=[]");
+				</script>, <span id="ID0EDBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EDBCAAAAA?vb=|cpp=array&lt;|cs=|fs=|nu=");
+				</script>Double<span id="ID0EBBCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EBBCAAAAA?vb=()|cpp=&gt;|cs=[]|fs=[]|nu=[]");
+				</script>)</a><br /><a name="seeAlsoSection"><!----></a><div class="OH_CollapsibleAreaRegion"><div class="OH_regiontitle">See Also</div><div class="OH_CollapsibleArea_HrDiv"><hr class="OH_CollapsibleArea_Hr" /></div></div><div class="OH_clear"></div><div class="seeAlsoStyle"><a href="T_Accord_Statistics_Kernels_Linear.htm" target="">Linear Class</a></div><div class="seeAlsoStyle"><a href="AllMembers_T_Accord_Statistics_Kernels_Linear.htm" target="">Linear Members</a></div><div class="seeAlsoStyle"><a href="N_Accord_Statistics_Kernels.htm" target="">Accord.Statistics.Kernels Namespace</a></div></div>
         </div>
-        <A NAME="feedback"></A>
-        <span id="fb" class="feedbackcss"></span>
-        <a href="http://accord.googlecode.com" target="_blank">Accord.NET Framework</a> © 2009-2012. All documentation is licensed under the Creative Commons Attribution/Share-Alike License.  <script type="text/javascript">    var _gaq = _gaq || [];   _gaq.push(['_setAccount', 'UA-3114672-4']);   _gaq.push(['_trackPageview']);    (function() {     var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);   })();  </script></div>
+      </div>
+    </div>
+    <div id="OH_footer" class="OH_footer">
+      <p>
+        <a href="http://accord.googlecode.com" target="_blank">Accord.NET Framework</a> © 2009-2012. All documentation is licensed under the Creative Commons Attribution/Share-Alike License.</p>
+      <div class="OH_feedbacklink">
+        <a href="mailto:?subject=Accord.NET+Framework+Function+Method++100+EN-US&amp;body=Your%20feedback%20is%20used%20to%20improve%20the%20documentation%20and%20the%20product.%20Your%20e-mail%20address%20will%20not%20be%20used%20for%20any%20other%20purpose%20and%20is%20disposed%20of%20after%20the%20issue%20you%20report%20is%20resolved.%20While%20working%20to%20resolve%20the%20issue%20that%20you%20report%2c%20you%20may%20be%20contacted%20via%20e-mail%20to%20get%20further%20details%20or%20clarification%20on%20the%20feedback%20you%20sent.%20After%20the%20issue%20you%20report%20has%20been%20addressed%2c%20you%20may%20receive%20an%20e-mail%20to%20let%20you%20know%20that%20your%20feedback%20has%20been%20addressed.">Send Feedback</a> on this topic.</div>
     </div>
   </body>
 </html>
