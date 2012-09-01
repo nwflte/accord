@@ -75,6 +75,7 @@
             this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
+            this.groupingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             this.menuStrip1.SuspendLayout();
@@ -82,9 +83,9 @@
             // 
             // dataGridView1
             // 
-            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Location = new System.Drawing.Point(12, 27);
             this.dataGridView1.Name = "dataGridView1";
@@ -322,7 +323,8 @@
             this.projectionToolStripMenuItem,
             this.selectionToolStripMenuItem,
             this.scalingToolStripMenuItem,
-            this.codificationToolStripMenuItem});
+            this.codificationToolStripMenuItem,
+            this.groupingToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
             this.toolsToolStripMenuItem.Text = "Filters";
@@ -330,14 +332,14 @@
             // brnNormalization
             // 
             this.brnNormalization.Name = "brnNormalization";
-            this.brnNormalization.Size = new System.Drawing.Size(149, 22);
+            this.brnNormalization.Size = new System.Drawing.Size(152, 22);
             this.brnNormalization.Text = "Normalization";
             this.brnNormalization.Click += new System.EventHandler(this.normToolStripMenuItem_Click);
             // 
             // equalizationToolStripMenuItem
             // 
             this.equalizationToolStripMenuItem.Name = "equalizationToolStripMenuItem";
-            this.equalizationToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.equalizationToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.equalizationToolStripMenuItem.Text = "Equalization";
             this.equalizationToolStripMenuItem.Click += new System.EventHandler(this.equalizationToolStripMenuItem_Click);
             // 
@@ -351,20 +353,20 @@
             // selectionToolStripMenuItem
             // 
             this.selectionToolStripMenuItem.Name = "selectionToolStripMenuItem";
-            this.selectionToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.selectionToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.selectionToolStripMenuItem.Text = "Selection";
             // 
             // scalingToolStripMenuItem
             // 
             this.scalingToolStripMenuItem.Name = "scalingToolStripMenuItem";
-            this.scalingToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.scalingToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.scalingToolStripMenuItem.Text = "Scaling";
             this.scalingToolStripMenuItem.Click += new System.EventHandler(this.scalingToolStripMenuItem_Click);
             // 
             // codificationToolStripMenuItem
             // 
             this.codificationToolStripMenuItem.Name = "codificationToolStripMenuItem";
-            this.codificationToolStripMenuItem.Size = new System.Drawing.Size(149, 22);
+            this.codificationToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.codificationToolStripMenuItem.Text = "Codification";
             // 
             // helpToolStripMenuItem
@@ -412,14 +414,14 @@
             // 
             this.openFileDialog.DefaultExt = "xls";
             this.openFileDialog.Filter = "Xml Files (*.xml) |*.xml|Excel files (*.xls)|*.xls|Text files (*.txt)|*.txt|All f" +
-                "iles (*.*)|*.*";
+    "iles (*.*)|*.*";
             this.openFileDialog.FilterIndex = 2;
             this.openFileDialog.Title = "Open file";
             // 
             // histogramView1
             // 
-            this.histogramView1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.histogramView1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.histogramView1.Location = new System.Drawing.Point(12, 388);
             this.histogramView1.Name = "histogramView1";
             this.histogramView1.Size = new System.Drawing.Size(499, 124);
@@ -427,8 +429,8 @@
             // 
             // propertyGrid1
             // 
-            this.propertyGrid1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.propertyGrid1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.propertyGrid1.Location = new System.Drawing.Point(517, 166);
             this.propertyGrid1.Name = "propertyGrid1";
             this.propertyGrid1.Size = new System.Drawing.Size(240, 317);
@@ -455,6 +457,13 @@
             this.button2.Text = "Apply";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // groupingToolStripMenuItem
+            // 
+            this.groupingToolStripMenuItem.Name = "groupingToolStripMenuItem";
+            this.groupingToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.groupingToolStripMenuItem.Text = "Grouping";
+            this.groupingToolStripMenuItem.Click += new System.EventHandler(this.groupingToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -528,6 +537,7 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.ToolStripMenuItem groupingToolStripMenuItem;
     }
 }
 

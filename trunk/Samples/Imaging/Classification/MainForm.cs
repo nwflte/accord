@@ -17,6 +17,7 @@ using Accord.MachineLearning.VectorMachines;
 using Accord.MachineLearning.VectorMachines.Learning;
 using System.Diagnostics;
 using AForge;
+using Accord.MachineLearning;
 
 namespace Classification
 {
@@ -123,8 +124,10 @@ namespace Classification
         {
             int numberOfWords = (int)numWords.Value;
 
+            BinarySplit bs = new BinarySplit(numberOfWords);
+
             // Create bag-of-words (BoW) with the given number of words
-            BagOfVisualWords bow = new BagOfVisualWords(numberOfWords);
+            BagOfVisualWords bow = new BagOfVisualWords(bs);
 
             if (cbExtended.Checked)
                 bow.Surf.ComputeDescriptors = SpeededUpRobustFeatureDescriptorType.Extended;
