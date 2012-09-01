@@ -256,7 +256,17 @@ namespace Accord.Math
         /// <summary>
         ///   Computes the binomial coefficients C(n,k).
         /// </summary>
+        /// 
         public static double Binomial(int n, int k)
+        {
+            return Math.Round(Math.Exp(LogFactorial(n) - LogFactorial(k) - LogFactorial(n - k)));
+        }
+
+        /// <summary>
+        ///   Computes the binomial coefficients C(n,k).
+        /// </summary>
+        /// 
+        public static double Binomial(double n, double k)
         {
             return Math.Round(Math.Exp(LogFactorial(n) - LogFactorial(k) - LogFactorial(n - k)));
         }
@@ -264,15 +274,43 @@ namespace Accord.Math
         /// <summary>
         ///   Computes the log binomial Coefficients Log[C(n,k)].
         /// </summary>
+        /// 
         public static double LogBinomial(int n, int k)
         {
             return LogFactorial(n) - LogFactorial(k) - LogFactorial(n - k);
         }
 
+        /// <summary>
+        ///   Computes the log binomial Coefficients Log[C(n,k)].
+        /// </summary>
+        /// 
+        public static double LogBinomial(double n, double k)
+        {
+            return LogFactorial(n) - LogFactorial(k) - LogFactorial(n - k);
+        }
+
+        /// <summary>
+        ///   Returns the extended factorial definition of a real number.
+        /// </summary>
+        /// 
+        public static double Factorial(double n)
+        {
+            return Gamma.Function(n + 1.0);
+        }
 
         /// <summary>
         ///   Returns the log factorial of a number (ln(n!))
         /// </summary>
+        /// 
+        public static double LogFactorial(double n)
+        {
+            return Gamma.Log(n + 1.0);
+        }
+
+        /// <summary>
+        ///   Returns the log factorial of a number (ln(n!))
+        /// </summary>
+        /// 
         public static double LogFactorial(int n)
         {
             if (lnfcache == null)

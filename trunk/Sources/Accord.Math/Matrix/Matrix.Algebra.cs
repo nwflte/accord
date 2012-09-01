@@ -1646,6 +1646,30 @@ namespace Accord.Math
             return r;
         }
 
+        /// <summary>
+        ///   Subtracts two vectors.
+        /// </summary>
+        /// 
+        /// <param name="a">A vector.</param>
+        /// <param name="b">A vector.</param>
+        /// <param name="inPlace">True to perform the operation in-place,
+        /// overwriting the original array; false to return a new array.</param>
+        /// 
+        /// <returns>The subtraction of vector b from vector a.</returns>
+        /// 
+        public static int[] Subtract(this int[] a, int[] b, bool inPlace = false)
+        {
+            if (a.Length != b.Length)
+                throw new ArgumentException("Vector length must match", "b");
+
+            int[] r = inPlace ? a : new int[a.Length];
+
+            for (int i = 0; i < a.Length; i++)
+                r[i] = a[i] - b[i];
+
+            return r;
+        }
+
 
         /// <summary>
         ///   Subtracts a scalar from a vector.

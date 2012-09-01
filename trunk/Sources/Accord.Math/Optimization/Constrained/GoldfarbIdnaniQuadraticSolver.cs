@@ -338,16 +338,17 @@ namespace Accord.Math.Optimization
         /// </summary>
         /// 
         /// <param name="numberOfVariables">The number of variables.</param>
-        /// <param name="A">The constraints matrix <c>A</c>.</param>
-        /// <param name="b">The constraints values <c>b</c>.</param>
+        /// <param name="constraintMatrix">The constraints matrix <c>A</c>.</param>
+        /// <param name="constraintValues">The constraints values <c>b</c>.</param>
         /// <param name="numberOfEqualities">The number of equalities in the constraints.</param>
         /// 
-        public GoldfarbIdnaniQuadraticSolver(int numberOfVariables, double[,] A, double[] b, int numberOfEqualities = 0)
+        public GoldfarbIdnaniQuadraticSolver(int numberOfVariables, double[,] constraintMatrix,
+            double[] constraintValues, int numberOfEqualities = 0)
         {
-            if (numberOfVariables != A.GetLength(1))
-                throw new ArgumentException("The number of columns in the constraint matrix A should equal the number of variables in the problem.", "A");
+            if (numberOfVariables != constraintMatrix.GetLength(1))
+                throw new ArgumentException("The number of columns in the constraint matrix A should equal the number of variables in the problem.", "constraintMatrix");
 
-            initialize(numberOfVariables, A, b, numberOfEqualities);
+            initialize(numberOfVariables, constraintMatrix, constraintValues, numberOfEqualities);
         }
 
         private void initialize(int numberOfVariables, double[,] A, double[] b, int numberOfEqualities)

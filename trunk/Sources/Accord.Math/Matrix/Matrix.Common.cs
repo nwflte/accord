@@ -316,6 +316,24 @@ namespace Accord.Math
             return false;
         }
 
+        /// <summary>
+        ///   Returns a value indicating whether the specified
+        ///   matrix contains a value that is not a number (NaN).
+        /// </summary>
+        /// 
+        /// <param name="matrix">A double-precision multidimensional matrix.</param>
+        /// 
+        /// <returns>True if the matrix contains a value that is not a number, false otherwise.</returns>
+        /// 
+        public static bool HasNaN(this double[][] matrix)
+        {
+            for (int i = 0; i < matrix.Length; i++)
+                for (int j = 0; j < matrix[i].Length; j++)
+                    if (Double.IsNaN(matrix[i][j]))
+                        return true;
+            return false;
+        }
+
         #endregion
 
 
@@ -522,7 +540,7 @@ namespace Accord.Math
                 return false;
 
             for (int i = 0; i < matrix.Length; i++)
-                for (int j = i+1; j < matrix[i].Length; j++)
+                for (int j = i + 1; j < matrix[i].Length; j++)
                     if (matrix[i][j].CompareTo(zero) != 0)
                         return false;
 
@@ -646,11 +664,13 @@ namespace Accord.Math
         /// <summary>
         ///   Gets the trace of a matrix.
         /// </summary>
+        /// 
         /// <remarks>
         ///   The trace of an n-by-n square matrix A is defined to be the sum of the
         ///   elements on the main diagonal (the diagonal from the upper left to the
         ///   lower right) of A.
         /// </remarks>
+        /// 
         public static double Trace(this double[,] matrix)
         {
             if (matrix == null) throw new ArgumentNullException("matrix");
@@ -664,13 +684,39 @@ namespace Accord.Math
         }
 
         /// <summary>
+        ///   Gets the trace of a matrix product.
+        /// </summary>
+        /// 
+        public static unsafe double Trace(double[,] matrixA, double[,] matrixB)
+        {
+            if (matrixA.Length != matrixB.Length)
+                throw new DimensionMismatchException("matrixB", "Matrices must have the same length.");
+
+            int length = matrixA.Length;
+
+            fixed (double* ptrA = matrixA)
+            fixed (double* ptrB = matrixB)
+            {
+                double* a = ptrA;
+                double* b = ptrB;
+
+                double trace = 0.0;
+                for (int i = 0; i < length; i++)
+                    trace += (*a++) * (*b++);
+                return trace;
+            }
+        }
+
+        /// <summary>
         ///   Gets the trace of a matrix.
         /// </summary>
+        /// 
         /// <remarks>
         ///   The trace of an n-by-n square matrix A is defined to be the sum of the
         ///   elements on the main diagonal (the diagonal from the upper left to the
         ///   lower right) of A.
         /// </remarks>
+        /// 
         public static int Trace(this int[,] matrix)
         {
             if (matrix == null) throw new ArgumentNullException("matrix");
@@ -1380,10 +1426,22 @@ namespace Accord.Math
         /// <summary>
         ///   Transforms a matrix into a single vector.
         /// </summary>
+        /// 
+        /// <param name="matrix">A matrix.</param>
+        /// 
+        public static T[] Reshape<T>(this T[,] matrix)
+        {
+            return Reshape(matrix, 0);
+        }
+
+        /// <summary>
+        ///   Transforms a matrix into a single vector.
+        /// </summary>
+        /// 
         /// <param name="matrix">A matrix.</param>
         /// <param name="dimension">The direction to perform copying. Pass
         /// 0 to perform a row-wise copy. Pass 1 to perform a column-wise
-        /// copy.</param>
+        /// copy. Default is 0.</param>
         /// 
         public static T[] Reshape<T>(this T[,] matrix, int dimension)
         {

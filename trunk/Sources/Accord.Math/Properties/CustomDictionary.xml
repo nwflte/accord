@@ -4,6 +4,7 @@
       <Word></Word>
     </Unrecognized>
     <Recognized>
+      <Word>indices</Word>
       <Word>Mahalanobis</Word>
       <Word>Elementwise</Word>
       <Word>Im</Word>
@@ -17,6 +18,7 @@
       <Word>Sqrt</Word>
       <Word>Submatrix</Word>
       <Word>str</Word>
+      <Word>Haar</Word>
       <Word>Haar</Word>
     </Recognized>
     <Deprecated>
@@ -38,6 +40,8 @@
       <Acronym>Lu</Acronym>
       <Acronym>IWT</Acronym>
       <Acronym>FWT</Acronym>
+      <Acronym>FHT</Acronym>
+      <Acronym>CDF</Acronym>
     </CasingExceptions>
   </Acronyms>
 </Dictionary>
