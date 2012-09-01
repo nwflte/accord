@@ -84,43 +84,42 @@ namespace Accord.Statistics.Analysis
         private ReceiverOperatingCharacteristicPointCollection collection;
 
 
-
         /// <summary>
         ///   Constructs a new Receiver Operating Characteristic model
         /// </summary>
         /// 
-        /// <param name="measurement">
+        /// <param name="expected">
         ///   An array of binary values. Typically represented as 0 and 1, or -1 and 1,
         ///   indicating negative and positive cases, respectively. The maximum value
         ///   will be treated as the positive case, and the lowest as the negative.</param>
-        /// <param name="prediction">
+        /// <param name="actual">
         ///   An array of continuous values trying to approximate the measurement array.
         /// </param>
         /// 
-        public ReceiverOperatingCharacteristic(double[] measurement, double[] prediction)
+        public ReceiverOperatingCharacteristic(double[] expected, double[] actual)
         {
             // Initial argument checking
-            if (measurement.Length != prediction.Length)
+            if (expected.Length != actual.Length)
                 throw new ArgumentException("The size of the measurement and prediction arrays must match.");
 
 
-            this.measurement = measurement;
-            this.prediction = prediction;
+            this.measurement = expected;
+            this.prediction = actual;
 
             // Determine which numbers correspond to each binary category
-            dtrue = dfalse = measurement[0];
-            for (int i = 1; i < measurement.Length; i++)
+            dtrue = dfalse = expected[0];
+            for (int i = 1; i < expected.Length; i++)
             {
-                if (dtrue < measurement[i])
-                    dtrue = measurement[i];
-                if (dfalse > measurement[i])
-                    dfalse = measurement[i];
+                if (dtrue < expected[i])
+                    dtrue = expected[i];
+                if (dfalse > expected[i])
+                    dfalse = expected[i];
             }
 
             // Count the real number of positive and negative cases
-            for (int i = 0; i < measurement.Length; i++)
+            for (int i = 0; i < expected.Length; i++)
             {
-                if (measurement[i] == dtrue)
+                if (expected[i] == dtrue)
                     this.positiveCount++;
             }
 
@@ -395,10 +394,17 @@ namespace Accord.Statistics.Analysis
             else return sum;
         }
 
-        /// <summary>
-        ///   Calculates the standard error associated with this curve
-        /// </summary>
         private double calculateStandardError()
+        {
+            return StandardError(area, positiveCount, negativeCount);
+        }
+
+        /// <summary>
+        ///   Calculates the standard error of an area calculation for a
+        ///   curve with the given number of positive and negatives instances
+        /// </summary>
+        /// 
+        public static double StandardError(double area, int positiveCount, int negativeCount)
         {
             double A = area;
 
@@ -438,11 +444,10 @@ namespace Accord.Statistics.Analysis
         /// </summary>
         /// 
         internal ReceiverOperatingCharacteristicPoint(double cutoff,
-            int truePositives, int falseNegatives, 
+            int truePositives, int falseNegatives,
             int falsePositives, int trueNegatives)
             : base(truePositives, falseNegatives, falsePositives, trueNegatives)
         {
-            //this.curve = curve;
             this.cutoff = cutoff;
         }
 

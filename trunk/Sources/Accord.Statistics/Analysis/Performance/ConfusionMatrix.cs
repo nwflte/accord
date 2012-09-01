@@ -277,8 +277,8 @@ namespace Accord.Statistics.Analysis
             {
                 return new int[,] 
                 {
-                    { truePositives, falseNegatives  },
-                    { falsePositives, trueNegatives},
+                    { truePositives, falseNegatives },
+                    { falsePositives, trueNegatives },
                 };
             }
         }
@@ -293,6 +293,7 @@ namespace Accord.Statistics.Analysis
         ///   of false positives and true negatives on the second.
         /// </value>
         /// 
+        [DisplayName("Row Totals")]
         public int[] RowTotals
         {
             get
@@ -315,6 +316,7 @@ namespace Accord.Statistics.Analysis
         ///   of false negatives and true negatives on the second.
         /// </value>
         /// 
+        [DisplayName("Column Totals")]
         public int[] ColumnTotals
         {
             get
@@ -702,6 +704,35 @@ namespace Accord.Statistics.Analysis
 
                 return 1 + num / den;
             }
+        }
+
+        /// <summary>
+        ///   Precision, same as the <see cref="PositivePredictiveValue"/>.
+        /// </summary>
+        /// 
+        public double Precision
+        {
+            get { return PositivePredictiveValue; }
+        }
+
+        /// <summary>
+        ///   Recall, same as the <see cref="Sensitivity"/>.
+        /// </summary>
+        /// 
+        public double Recall
+        {
+            get { return Sensitivity; }
+        }
+
+        /// <summary>
+        ///   F-Score, computed as the harmonic mean of
+        ///   <see cref="Precision"/> and <see cref="Recall"/>.
+        /// </summary>
+        /// 
+        [DisplayName("F-Score")]
+        public double FScore
+        {
+            get { return 2.0 * (Precision * Recall) / (Precision + Recall); }
         }
 
         /// <summary>

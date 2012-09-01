@@ -94,9 +94,7 @@ namespace Accord.Statistics.Analysis
         /// <param name="method">The analysis method to perform.</param>
         /// 
         public KernelPrincipalComponentAnalysis(double[,] data, IKernel kernel, AnalysisMethod method)
-            : this(data, kernel, method, true)
-        {
-        }
+            : this(data, kernel, method, true) { }
 
         /// <summary>Constructs the Kernel Principal Component Analysis.</summary>
         /// 
@@ -104,9 +102,7 @@ namespace Accord.Statistics.Analysis
         /// <param name="kernel">The kernel to be used in the analysis.</param>
         /// 
         public KernelPrincipalComponentAnalysis(double[,] data, IKernel kernel)
-            : this(data, kernel, AnalysisMethod.Center, true)
-        {
-        }
+            : this(data, kernel, AnalysisMethod.Center, true) { }
         #endregion
 
 

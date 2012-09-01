@@ -79,12 +79,15 @@ namespace Accord.Statistics.Analysis
 
         private int samples;
         private int variables;
+
         private double[] sums;
         private double[] means;
         private double[] standardDeviations;
         private double[] variances;
         private double[] medians;
         private double[] modes;
+        private int[] distinct;
+
         private string[] columnNames;
 
         private DoubleRange[] ranges;
@@ -143,6 +146,34 @@ namespace Accord.Statistics.Analysis
             Compute(data, columnNames);
         }
 
+        /// <summary>
+        ///   Constructs the Descriptive Analysis.
+        /// </summary>
+        /// 
+        /// <param name="data">The source data to perform analysis.</param>
+        /// 
+        public DescriptiveAnalysis(double[][] data)
+        {
+            Compute(data.ToMatrix(), null);
+        }
+
+        /// <summary>
+        ///   Constructs the Descriptive Analysis.
+        /// </summary>
+        /// 
+        /// <param name="data">The source data to perform analysis.</param>
+        /// <param name="columnNames">Names for the analyzed variables.</param>
+        /// 
+        public DescriptiveAnalysis(double[][] data, string[] columnNames)
+        {
+            // Initial argument checking
+            if (data == null) throw new ArgumentNullException("data");
+
+            if (columnNames == null) throw new ArgumentNullException("columnNames");
+
+            Compute(data.ToMatrix(), columnNames);
+        }
+
         private void Compute(double[,] data, string[] columnNames)
         {
             if (columnNames == null)
@@ -179,12 +210,13 @@ namespace Accord.Statistics.Analysis
             this.means = Statistics.Tools.Mean(sourceMatrix, sums);
             this.standardDeviations = Statistics.Tools.StandardDeviation(sourceMatrix, means);
             this.ranges = Matrix.Range(sourceMatrix);
-            this.kurtosis = Statistics.Tools.Kurtosis(sourceMatrix, means, standardDeviations);
-            this.skewness = Statistics.Tools.Skewness(sourceMatrix, means, standardDeviations);
+            this.kurtosis = Statistics.Tools.Kurtosis(sourceMatrix, means);
+            this.skewness = Statistics.Tools.Skewness(sourceMatrix, means);
             this.medians = Statistics.Tools.Median(sourceMatrix);
             this.modes = Statistics.Tools.Mode(sourceMatrix);
             this.variances = Statistics.Tools.Variance(sourceMatrix, means);
             this.standardErrors = Statistics.Tools.StandardError(samples, standardDeviations);
+            this.distinct = Statistics.Tools.DistinctCount(sourceMatrix);
 
             // Mean centered data
             this.dScores = Statistics.Tools.Center(sourceMatrix, means, inPlace: false);
@@ -199,6 +231,7 @@ namespace Accord.Statistics.Analysis
 
 
         #region Properties
+
         /// <summary>
         ///   Gets the source matrix from which the analysis was run.
         /// </summary>
@@ -218,7 +251,7 @@ namespace Accord.Statistics.Analysis
         }
 
         /// <summary>
-        /// Gets the mean subtracted data.
+        ///   Gets the mean subtracted data.
         /// </summary>
         /// 
         public double[,] DeviationScores
@@ -236,7 +269,7 @@ namespace Accord.Statistics.Analysis
         }
 
         /// <summary>
-        /// Gets the Covariance Matrix
+        ///   Gets the Covariance Matrix
         /// </summary>
         /// 
         public double[,] CovarianceMatrix
@@ -245,7 +278,7 @@ namespace Accord.Statistics.Analysis
         }
 
         /// <summary>
-        /// Gets the Correlation Matrix
+        ///   Gets the Correlation Matrix
         /// </summary>
         /// 
         public double[,] CorrelationMatrix
@@ -254,7 +287,7 @@ namespace Accord.Statistics.Analysis
         }
 
         /// <summary>
-        /// Gets a vector containing the Mean of each column of data.
+        ///   Gets a vector containing the Mean of each column of data.
         /// </summary>
         /// 
         public double[] Means
@@ -263,7 +296,7 @@ namespace Accord.Statistics.Analysis
         }
 
         /// <summary>
-        /// Gets a vector containing the Standard Deviation of each column of data.
+        ///   Gets a vector containing the Standard Deviation of each column of data.
         /// </summary>
         /// 
         public double[] StandardDeviations
@@ -272,7 +305,7 @@ namespace Accord.Statistics.Analysis
         }
 
         /// <summary>
-        /// Gets a vector containing the Standard Error of the Mean of each column of data.
+        ///   Gets a vector containing the Standard Error of the Mean of each column of data.
         /// </summary>
         /// 
         public double[] StandardErrors
@@ -281,7 +314,7 @@ namespace Accord.Statistics.Analysis
         }
 
         /// <summary>
-        /// Gets a vector containing the Mode of each column of data.
+        ///   Gets a vector containing the Mode of each column of data.
         /// </summary>
         /// 
         public double[] Modes
@@ -290,7 +323,7 @@ namespace Accord.Statistics.Analysis
         }
 
         /// <summary>
-        /// Gets a vector containing the Median of each column of data.
+        ///   Gets a vector containing the Median of each column of data.
         /// </summary>
         /// 
         public double[] Medians
@@ -299,7 +332,7 @@ namespace Accord.Statistics.Analysis
         }
 
         /// <summary>
-        /// Gets a vector containing the Variance of each column of data.
+        ///   Gets a vector containing the Variance of each column of data.
         /// </summary>
         /// 
         public double[] Variances
@@ -308,7 +341,16 @@ namespace Accord.Statistics.Analysis
         }
 
         /// <summary>
-        /// Gets an array containing the Ranges of each column of data.
+        ///   Gets a vector containing the number of distinct elements for each column of data.
+        /// </summary>
+        /// 
+        public int[] Distinct
+        {
+            get { return distinct; }
+        }
+
+        /// <summary>
+        ///   Gets an array containing the Ranges of each column of data.
         /// </summary>
         /// 
         public DoubleRange[] Ranges
@@ -317,7 +359,7 @@ namespace Accord.Statistics.Analysis
         }
 
         /// <summary>
-        /// Gets an array containing the sum of each column of data.
+        ///   Gets an array containing the sum of each column of data.
         /// </summary>
         /// 
         public double[] Sums
@@ -506,6 +548,24 @@ namespace Accord.Statistics.Analysis
         public double Length
         {
             get { return analysis.Ranges[index].Length; }
+        }
+
+        /// <summary>
+        ///   Gets the number of distinct values for the variable.
+        /// </summary>
+        /// 
+        public int Distinct
+        {
+            get { return analysis.Distinct[index]; }
+        }
+
+        /// <summary>
+        ///   Gets the number of samples for the variable.
+        /// </summary>
+        /// 
+        public int Count
+        {
+            get { return analysis.Samples; }
         }
 
         /// <summary>

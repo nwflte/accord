@@ -175,6 +175,7 @@ namespace Accord.Statistics.Analysis
         ///   Gets the row totals.
         /// </summary>
         /// 
+        [DisplayName("Row Totals")]
         public int[] RowTotals
         {
             get
@@ -189,6 +190,7 @@ namespace Accord.Statistics.Analysis
         ///   Gets the column totals.
         /// </summary>
         /// 
+        [DisplayName("Column Totals")]
         public int[] ColumnTotals
         {
             get
@@ -203,6 +205,7 @@ namespace Accord.Statistics.Analysis
         ///   Gets the row marginals (proportions).
         /// </summary>
         /// 
+        [DisplayName("Row Proportions")]
         public double[] RowProportions
         {
             get
@@ -217,6 +220,7 @@ namespace Accord.Statistics.Analysis
         ///   Gets the column marginals (proportions).
         /// </summary>
         /// 
+        [DisplayName("Column Proportions")]
         public double[] ColumnProportions
         {
             get
@@ -246,6 +250,7 @@ namespace Accord.Statistics.Analysis
         ///   matches (the maximum over the diagonal)
         /// </summary>
         /// 
+        [DisplayName("Maximum Hits")]
         public double Max
         {
             get
@@ -261,6 +266,7 @@ namespace Accord.Statistics.Analysis
         ///   matches (the minimum over the diagonal)
         /// </summary>
         /// 
+        [DisplayName("Minimum Hits")]
         public double Min
         {
             get
@@ -276,6 +282,7 @@ namespace Accord.Statistics.Analysis
         ///   terms of cell percentages.
         /// </summary>
         /// 
+        [DisplayName("Proportion Matrix")]
         public double[,] ProportionMatrix
         {
             get

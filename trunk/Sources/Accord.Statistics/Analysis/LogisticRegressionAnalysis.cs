@@ -25,12 +25,12 @@ namespace Accord.Statistics.Analysis
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.ComponentModel;
     using Accord.Math;
     using Accord.Statistics.Models.Regression;
     using Accord.Statistics.Models.Regression.Fitting;
     using Accord.Statistics.Testing;
     using AForge;
-using System.ComponentModel;
 
     /// <summary>
     ///   Logistic Regression Analysis.
@@ -95,6 +95,25 @@ using System.ComponentModel;
         ///   Constructs a Logistic Regression Analysis.
         /// </summary>
         /// 
+        /// <param name="regression">The already computed regression model.</param>
+        /// <param name="inputs">The input data for the analysis.</param>
+        /// <param name="outputs">The output data for the analysis.</param>
+        /// 
+        public LogisticRegressionAnalysis(LogisticRegression regression, double[][] inputs, double[] outputs)
+        {
+            this.regression = regression;
+            this.inputData = inputs;
+            this.outputData = outputs;
+
+            initialize(inputs, outputs);
+
+            computeInformation();
+        }
+
+        /// <summary>
+        ///   Constructs a Logistic Regression Analysis.
+        /// </summary>
+        /// 
         /// <param name="inputs">The input data for the analysis.</param>
         /// <param name="outputs">The output data for the analysis.</param>
         /// 
@@ -108,6 +127,14 @@ using System.ComponentModel;
                 throw new ArgumentException("The number of rows in the input array must match the number of given outputs.");
 
 
+            initialize(inputs, outputs);
+
+            // Start regression using the Null Model
+            this.regression = new LogisticRegression(inputCount);
+        }
+
+        private void initialize(double[][] inputs, double[] outputs)
+        {
             this.inputCount = inputs[0].Length;
             int coefficientCount = inputCount + 1;
 
@@ -123,11 +150,6 @@ using System.ComponentModel;
             this.oddsRatios = new double[coefficientCount];
             this.confidences = new DoubleRange[coefficientCount];
             this.ratioTests = new ChiSquareTest[coefficientCount];
-
-
-            // Start regression using the Null Model
-            this.regression = new LogisticRegression(inputCount);
-
 
             // Create object-oriented structure to represent the analysis
             var logCoefs = new List<LogisticCoefficient>(coefficientCount);
@@ -442,22 +464,7 @@ using System.ComponentModel;
             bool converged = iteration < maxIterations;
 
 
-            // Store model information
-            this.result = regression.Compute(inputData);
-            this.deviance = regression.GetDeviance(inputData, outputData);
-            this.logLikelihood = regression.GetLogLikelihood(inputData, outputData);
-            this.chiSquare = regression.ChiSquare(inputData, outputData);
-
-            // Store coefficient information
-            for (int i = 0; i < regression.Coefficients.Length; i++)
-            {
-                this.standardErrors[i] = regression.StandardErrors[i];
-
-                this.waldTests[i] = regression.GetWaldTest(i);
-                this.coefficients[i] = regression.Coefficients[i];
-                this.confidences[i] = regression.GetConfidenceInterval(i);
-                this.oddsRatios[i] = regression.GetOddsRatio(i);
-            }
+            computeInformation();
 
 
             // Perform likelihood-ratio tests against diminished nested models
@@ -487,6 +494,26 @@ using System.ComponentModel;
 
             // Returns true if the full model has converged, false otherwise.
             return converged;
+        }
+
+        private void computeInformation()
+        {
+            // Store model information
+            this.result = regression.Compute(inputData);
+            this.deviance = regression.GetDeviance(inputData, outputData);
+            this.logLikelihood = regression.GetLogLikelihood(inputData, outputData);
+            this.chiSquare = regression.ChiSquare(inputData, outputData);
+
+            // Store coefficient information
+            for (int i = 0; i < regression.Coefficients.Length; i++)
+            {
+                this.standardErrors[i] = regression.StandardErrors[i];
+
+                this.waldTests[i] = regression.GetWaldTest(i);
+                this.coefficients[i] = regression.Coefficients[i];
+                this.confidences[i] = regression.GetConfidenceInterval(i);
+                this.oddsRatios[i] = regression.GetOddsRatio(i);
+            }
         }
         #endregion
 
