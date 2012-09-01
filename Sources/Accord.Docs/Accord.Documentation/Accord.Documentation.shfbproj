@@ -43,8 +43,6 @@
       <DocumentationSource sourceFile="..\..\..\Release\Accord.MachineLearning.xml" />
       <DocumentationSource sourceFile="..\..\..\Release\Accord.Math.dll" />
       <DocumentationSource sourceFile="..\..\..\Release\Accord.Math.xml" />
-      <DocumentationSource sourceFile="..\..\..\Release\Accord.Music.dll" />
-      <DocumentationSource sourceFile="..\..\..\Release\Accord.Music.xml" />
       <DocumentationSource sourceFile="..\..\..\Release\Accord.Neuro.dll" />
       <DocumentationSource sourceFile="..\..\..\Release\Accord.Neuro.xml" />
       <DocumentationSource sourceFile="..\..\..\Release\Accord.Statistics.dll" />
@@ -53,8 +51,7 @@
       <DocumentationSource sourceFile="..\..\..\Release\Accord.Vision.xml" />
       <DocumentationSource sourceFile="..\..\..\Release\Accord.xml" />
     </DocumentationSources>
-    <CopyrightText>
-    </CopyrightText>
+    <CopyrightText>&amp;lt%3ba href=&amp;quot%3bhttp://accord.googlecode.com&amp;quot%3b target=&amp;quot%3b_blank&amp;quot%3b&amp;gt%3bAccord.NET Framework&amp;lt%3b/a&amp;gt%3b &amp;#169%3b 2009-2012. All documentation is licensed under the Creative Commons Attribution/Share-Alike License.</CopyrightText>
     <FeedbackEMailAddress>
     </FeedbackEMailAddress>
     <NamespaceSummaries>
@@ -137,7 +134,8 @@
     </NamespaceSummaries>
     <ProjectSummary>Accord.NET provides statistical analysis, machine learning, image processing and computer vision methods for .NET applications. The Accord.NET Framework extends the popular AForge.NET with new features, adding to a more complete environment for scientific computing in .NET.</ProjectSummary>
     <HelpTitle>Accord.NET Framework</HelpTitle>
-    <FooterText>&amp;lt%3ba href=&amp;quot%3bhttp://accord.googlecode.com&amp;quot%3b target=&amp;quot%3b_blank&amp;quot%3b&amp;gt%3bAccord.NET Framework&amp;lt%3b/a&amp;gt%3b &amp;#169%3b 2009-2012. All documentation is licensed under the Creative Commons Attribution/Share-Alike License.  &amp;lt%3bscript type=&amp;quot%3btext/javascript&amp;quot%3b&amp;gt%3b    var _gaq = _gaq || []%3b   _gaq.push%28[&amp;#39%3b_setAccount&amp;#39%3b, &amp;#39%3bUA-3114672-4&amp;#39%3b]%29%3b   _gaq.push%28[&amp;#39%3b_trackPageview&amp;#39%3b]%29%3b    %28function%28%29 {{     var ga = document.createElement%28&amp;#39%3bscript&amp;#39%3b%29%3b ga.type = &amp;#39%3btext/javascript&amp;#39%3b%3b ga.async = true%3b     ga.src = %28&amp;#39%3bhttps:&amp;#39%3b == document.location.protocol %3f &amp;#39%3bhttps://ssl&amp;#39%3b : &amp;#39%3bhttp://www&amp;#39%3b%29 + &amp;#39%3b.google-analytics.com/ga.js&amp;#39%3b%3b     var s = document.getElementsByTagName%28&amp;#39%3bscript&amp;#39%3b%29[0]%3b s.parentNode.insertBefore%28ga, s%29%3b   }}%29%28%29%3b  &amp;lt%3b/script&amp;gt%3b</FooterText>
+    <FooterText>
+    </FooterText>
     <MissingTags>AutoDocumentCtors, AutoDocumentDispose</MissingTags>
     <KeepLogFile>True</KeepLogFile>
     <RootNamespaceContainer>True</RootNamespaceContainer>
@@ -182,10 +180,10 @@
       <ComponentConfig id="Code Block Component" enabled="True">
         <component id="Code Block Component" type="SandcastleBuilder.Components.CodeBlockComponent" assembly="{@SHFBFolder}SandcastleBuilder.Components.dll">
           <basePath value="{@HtmlEncProjectFolder}" />
-          <languageFilter value="true" />
+          <languageFilter value="false" />
           <allowMissingSource value="false" />
           <removeRegionMarkers value="false" />
-          <colorizer syntaxFile="{@SHFBFolder}Colorizer\highlight.xml" styleFile="{@SHFBFolder}Colorizer\highlight.xsl" copyImageUrl="../icons/CopyCode.gif" language="cs" tabSize="2" numberLines="true" outlining="false" keepSeeTags="false" defaultTitle="true" />
+          <colorizer syntaxFile="{@SHFBFolder}Colorizer\highlight.xml" styleFile="{@SHFBFolder}Colorizer\highlight.xsl" copyImageUrl="../icons/CopyCode.gif" language="cs" tabSize="2" numberLines="false" outlining="false" keepSeeTags="false" defaultTitle="false" />
         </component>
       </ComponentConfig>
       <ComponentConfig id="Cached MSDN URL References" enabled="True">
@@ -232,10 +230,10 @@
       </ComponentConfig>
     </ComponentConfigurations>
     <CleanIntermediates>True</CleanIntermediates>
-    <PresentationStyle>vs2005</PresentationStyle>
-    <SyntaxFilters>CSharp, VisualBasic</SyntaxFilters>
+    <PresentationStyle>vs2010</PresentationStyle>
+    <SyntaxFilters>CSharp</SyntaxFilters>
     <NamingMethod>MemberName</NamingMethod>
-    <HelpFileVersion>2.7.0.0</HelpFileVersion>
+    <HelpFileVersion>2.7.1.0</HelpFileVersion>
     <FrameworkVersion>.NET 4.0.30319</FrameworkVersion>
     <VisibleItems>Attributes, InheritedMembers, InheritedFrameworkMembers, Protected, SealedProtected</VisibleItems>
     <PlugInNamespaces>ms.vsipcc+, ms.vsexpresscc+</PlugInNamespaces>
@@ -252,8 +250,8 @@
           <toc minParts="2" insertBelow="False" />
         </configuration>
       </PlugInConfig>
-    </PlugInConfigurations>
-    <HeaderText>&amp;lt%3bdiv style=&amp;quot%3bfloat: right%3b margin-right: 25px%3b margin-bottom: 25px%3b margin-left: 25px%3b&amp;quot%3b&amp;gt%3b&amp;lt%3ba href=&amp;quot%3bhttp://accord.googlecode.com/svn/docs/Index.html&amp;quot%3b target=&amp;quot%3b_top&amp;quot%3b&amp;gt%3b&amp;amp%3blt%3b&amp;amp%3blt%3b Table of Contents&amp;lt%3b/a&amp;gt%3b&amp;lt%3b/div&amp;gt%3b</HeaderText>
+<PlugInConfig id="Bibliography Support" enabled="False"><configuration /></PlugInConfig></PlugInConfigurations>
+    <HeaderText>&amp;lt%3ba href=&amp;quot%3bhttp://accord.googlecode.com/svn/docs/Index.html&amp;quot%3b target=&amp;quot%3b_top&amp;quot%3b&amp;gt%3bShow table of contents %28goes to the online documentation index%29.&amp;lt%3b/a&amp;gt%3b&amp;lt%3bbr /&amp;gt%3b</HeaderText>
     <HelpAttributes />
     <IndentHtml>True</IndentHtml>
   </PropertyGroup>
@@ -407,6 +405,10 @@
       <ImageId>Accord.Statistics.Testing</ImageId>
       <AlternateText>Accord.Statistics.Testing</AlternateText>
     </Content>
+    <Content Include="images\border-following.png">
+      <ImageId>border-following</ImageId>
+      <AlternateText>border-following</AlternateText>
+    </Content>
     <Image Include="resources\Accord.NET.png">
       <CopyToMedia>True</CopyToMedia>
       <AlternateText>Accord.NET</AlternateText>
@@ -448,9 +450,6 @@
     </Reference>
     <Reference Include="Accord.Math">
       <HintPath>..\..\..\Release\Accord.Math.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Music">
-      <HintPath>..\..\..\Release\Accord.Music.dll</HintPath>
     </Reference>
     <Reference Include="Accord.Neuro">
       <HintPath>..\..\..\Release\Accord.Neuro.dll</HintPath>

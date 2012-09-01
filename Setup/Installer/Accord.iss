@@ -2,18 +2,18 @@
 
 [Setup]
 AppName=Accord.NET Framework
-AppVersion=2.7.0
-AppVerName=Accord.NET Framework 2.7.0
+AppVersion=2.7.1
+AppVerName=Accord.NET Framework 2.7.1
 AppPublisher=Accord.NET
 AppPublisherURL=http://accord.googlecode.com
 AppSupportURL=http://accord.googlecode.com
 AppUpdatesURL=http://accord.googlecode.com
 AppCopyright=Copyright (c) 2009-2012 Cesar Souza
-VersionInfoVersion=2.7.0
+VersionInfoVersion=2.7.1
 DefaultDirName={pf}\Accord.NET\Framework
 DefaultGroupName=Accord.NET\Framework
 AllowNoIcons=yes
-OutputBaseFilename=Accord.NET Framework-2.7.0
+OutputBaseFilename=Accord.NET Framework-2.7.1
 OutputDir=..\bin
 
 Compression=lzma2/ultra64
