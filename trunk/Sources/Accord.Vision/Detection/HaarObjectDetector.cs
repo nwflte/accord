@@ -35,13 +35,12 @@
 namespace Accord.Vision.Detection
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Drawing;
     using System.Threading.Tasks;
     using Accord.Imaging;
     using AForge.Imaging;
-    using System.Collections.Concurrent;
-    using Accord.Math;
 
     /// <summary>
     ///   Object detector options for the search procedure.
@@ -451,14 +450,14 @@ namespace Accord.Vision.Detection
                             if (searchMode == ObjectDetectorSearchMode.NoOverlap && overlaps(window))
                                 continue; // We have already detected something here, moving along.
 
-                            // Try to detect and object inside the window
+                            // Try to detect an object inside the window
                             if (classifier.Compute(integralImage, window))
                             {
-                                // an object has been detected
+                                // object has been detected
                                 detectedObjects.Add(window);
 
                                 if (searchMode == ObjectDetectorSearchMode.Single)
-                                    goto EXIT; // Stop on first object found
+                                    goto EXIT; // stop on first object found
                             }
                         }
                     }

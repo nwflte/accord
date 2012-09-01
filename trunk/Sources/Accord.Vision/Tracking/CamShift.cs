@@ -326,6 +326,7 @@ namespace Accord.Vision.Tracking
         /// <summary>
         ///   Resets the object tracking algorithm.
         /// </summary>
+        /// 
         public void Reset()
         {
             this.unstableCounter = 0;
@@ -450,6 +451,7 @@ namespace Accord.Vision.Tracking
         /// <summary>
         ///   Processes a new video frame.
         /// </summary>
+        /// 
         public void ProcessFrame(UnmanagedImage frame)
         {
             // Check if the tracker has been initialized
@@ -599,6 +601,7 @@ namespace Accord.Vision.Tracking
         /// <summary>
         ///   Computes the ratio histogram between to histograms.
         /// </summary>
+        /// 
         /// <remarks>
         ///   http://www.robinhewitt.com/research/track/backproject.html
         /// </remarks>

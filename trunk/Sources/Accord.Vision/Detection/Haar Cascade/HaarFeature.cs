@@ -32,6 +32,7 @@ namespace Accord.Vision.Detection
     /// <summary>
     ///   Rectangular Haar-like feature container.
     /// </summary>
+    /// 
     /// <remarks>
     ///   References:
     ///   - http://en.wikipedia.org/wiki/Haar-like_features#Rectangular_Haar-like_features
@@ -77,9 +78,7 @@ namespace Accord.Vision.Detection
         /// </summary>
         /// 
         public HaarFeature(params int[][] rectangles)
-            : this(false, rectangles)
-        {
-        }
+            : this(false, rectangles) { }
 
         /// <summary>
         ///   Constructs a new Haar-like feature.
@@ -204,11 +203,13 @@ namespace Accord.Vision.Detection
 
 
         /// <summary>
-        /// Creates a new object that is a copy of the current instance.
+        ///   Creates a new object that is a copy of the current instance.
         /// </summary>
+        /// 
         /// <returns>
-        /// A new object that is a copy of this instance.
+        ///   A new object that is a copy of this instance.
         /// </returns>
+        /// 
         public object Clone()
         {
             HaarRectangle[] newRectangles = new HaarRectangle[Rectangles.Length];

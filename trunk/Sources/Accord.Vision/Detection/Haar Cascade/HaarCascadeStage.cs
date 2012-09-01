@@ -44,6 +44,7 @@ namespace Accord.Vision.Detection
         ///   Gets or sets the feature trees and its respective
         ///   feature tree nodes which compose this stage.
         /// </summary>
+        /// 
         [XmlArray("trees")]
         [XmlArrayItem("_")]
         [XmlArrayItem("_", NestingLevel = 1)]
@@ -54,24 +55,28 @@ namespace Accord.Vision.Detection
         ///   i.e. the minimum value the classifiers should output
         ///   to decide if the image contains the object or not.
         /// </summary>
+        /// 
         [XmlElement("stage_threshold")]
         public double Threshold { get; set; }
 
         /// <summary>
         ///   Gets the index of the parent stage from this stage.
         /// </summary>
+        /// 
         [XmlElement("parent")]
         public int ParentIndex { get; set; }
 
         /// <summary>
         ///   Gets the index of the next stage from this stage.
         /// </summary>
+        /// 
         [XmlElement("next")]
         public int NextIndex { get; set; }
 
         /// <summary>
         ///   Constructs a new Haar Cascade Stage.
         /// </summary>
+        /// 
         public HaarCascadeStage()
         {
         }
@@ -79,6 +84,7 @@ namespace Accord.Vision.Detection
         /// <summary>
         ///   Constructs a new Haar Cascade Stage.
         /// </summary>
+        /// 
         public HaarCascadeStage(double threshold)
         {
             this.Threshold = threshold;
@@ -87,6 +93,7 @@ namespace Accord.Vision.Detection
         /// <summary>
         ///   Constructs a new Haar Cascade Stage.
         /// </summary>
+        /// 
         public HaarCascadeStage(double threshold, int parentIndex, int nextIndex)
         {
             this.Threshold = threshold;
@@ -97,6 +104,7 @@ namespace Accord.Vision.Detection
         /// <summary>
         ///   Classifies an image as having the searched object or not.
         /// </summary>
+        /// 
         public bool Classify(IntegralImage2 image, int x, int y, double factor)
         {
             double value = 0;
@@ -150,11 +158,13 @@ namespace Accord.Vision.Detection
 
 
         /// <summary>
-        /// Creates a new object that is a copy of the current instance.
+        ///   Creates a new object that is a copy of the current instance.
         /// </summary>
+        /// 
         /// <returns>
-        /// A new object that is a copy of this instance.
+        ///   A new object that is a copy of this instance.
         /// </returns>
+        /// 
         public object Clone()
         {
             HaarFeatureNode[][] newTrees = new HaarFeatureNode[Trees.Length][];
