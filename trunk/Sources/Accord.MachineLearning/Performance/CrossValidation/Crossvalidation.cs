@@ -27,6 +27,7 @@ namespace Accord.MachineLearning
     /// <summary>
     ///   k-Fold Cross-Validation.
     /// </summary>
+    /// 
     /// <remarks>
     /// <para>
     ///   Cross-validation is a technique for estimating the performance of a predictive
@@ -54,7 +55,7 @@ namespace Accord.MachineLearning
     /// <example>
     ///   <code>
     ///   // This is a sample code on how to use Cross-Validation
-    ///   // to access the performance of Support Vector Machines.
+    ///   // to assess the performance of Support Vector Machines.
     ///
     ///   // Consider the example binary data. We will be trying
     ///   // to learn a XOR problem and see how well does SVMs
@@ -172,17 +173,7 @@ namespace Accord.MachineLearning
         /// 
         public static int[] Splittings(int size, int folds)
         {
-            // Create the index vector
-            int[] idx = new int[size];
-
-            float n = (float)folds / size;
-            for (int i = 0; i < size; i++)
-                idx[i] = (int)System.Math.Ceiling((i + 0.9) * n) - 1;
-
-            // Shuffle the indices vector
-            Statistics.Tools.Shuffle(idx);
-
-            return idx;
+            return Accord.Statistics.Tools.RandomGroups(size, folds);
         }
 
     }

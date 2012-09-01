@@ -295,7 +295,8 @@ namespace Accord.MachineLearning.DecisionTrees.Learning
 
             attributes[maxGainAttribute] = false;
 
-            root.Branches = new DecisionBranchNodeCollection(maxGainAttribute, children);
+            root.Branches.AttributeIndex = maxGainAttribute;
+            root.Branches.AddRange(children);
         }
 
 

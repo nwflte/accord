@@ -72,7 +72,7 @@ namespace Accord.MachineLearning.DecisionTrees
         ///   determining the reasoning process for those children.
         /// </summary>
         /// 
-        public DecisionBranchNodeCollection Branches { get; set; }
+        public DecisionBranchNodeCollection Branches { get; private set; }
 
         /// <summary>
         ///   Gets or sets the parent of this node. If this is a root
@@ -97,6 +97,7 @@ namespace Accord.MachineLearning.DecisionTrees
         {
             Owner = owner;
             Comparison = ComparisonKind.None;
+            Branches = new DecisionBranchNodeCollection();
         }
 
         /// <summary>
@@ -216,7 +217,7 @@ namespace Accord.MachineLearning.DecisionTrees
     /// </summary>
     /// 
     [Serializable]
-    public class DecisionBranchNodeCollection : ReadOnlyCollection<DecisionNode>
+    public class DecisionBranchNodeCollection : Collection<DecisionNode>
     {
         /// <summary>
         ///   Gets or sets the index of the attribute to be
@@ -224,6 +225,14 @@ namespace Accord.MachineLearning.DecisionTrees
         /// </summary>
         /// 
         public int AttributeIndex { get; set; }
+
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="DecisionBranchNodeCollection"/> class.
+        /// </summary>
+        /// 
+        public DecisionBranchNodeCollection()
+        {
+        }
 
         /// <summary>
         ///   Initializes a new instance of the <see cref="DecisionBranchNodeCollection"/> class.
@@ -244,6 +253,18 @@ namespace Accord.MachineLearning.DecisionTrees
                 throw new ArgumentException("Node collection is empty.", "nodes");
 
             this.AttributeIndex = attributeIndex;
+        }
+
+        /// <summary>
+        ///   Adds the elements of the specified collection to the end of the collection.
+        /// </summary>
+        /// 
+        /// <param name="children">The child nodes to be added.</param>
+        /// 
+        public void AddRange(DecisionNode[] children)
+        {
+            for (int i = 0; i < children.Length; i++)
+                this.Add(children[i]);
         }
     }
 

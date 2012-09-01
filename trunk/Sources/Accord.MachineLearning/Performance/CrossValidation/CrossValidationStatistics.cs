@@ -50,6 +50,7 @@ namespace Accord.MachineLearning
         ///   Gets the number of samples used to compute the variance
         ///   of the values acquired during the cross-validation.
         /// </summary>
+        /// 
         public int[] Sizes { get; private set; }
 
 
@@ -83,6 +84,12 @@ namespace Accord.MachineLearning
         /// 
         public double PooledStandardDeviation { get { return Math.Sqrt(PooledVariance); } }
 
+
+        /// <summary>
+        ///   Gets or sets a tag for user-defined information.
+        /// </summary>
+        /// 
+        public object Tag { get; set; }
 
         /// <summary>
         ///   Create a new cross-validation statistics class.

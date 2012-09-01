@@ -22,7 +22,6 @@
 
 namespace Accord.MachineLearning
 {
-
     using System;
     using System.Linq;
     using System.Threading.Tasks;
@@ -51,6 +50,87 @@ namespace Accord.MachineLearning
     ///   Boostrap method for generalization
     ///   performance measurements.
     /// </summary>
+    /// 
+    /// <example>
+    /// // This is a sample code on how to use Bootstrap estimate
+    /// // to assess the performance of Support Vector Machines.
+    /// 
+    /// // Consider the example binary data. We will be trying
+    /// // to learn a XOR problem and see how well does SVMs
+    /// // perform on this data.
+    /// 
+    /// double[][] data =
+    /// {
+    ///     new double[] { -1, -1 }, new double[] {  1, -1 },
+    ///     new double[] { -1,  1 }, new double[] {  1,  1 },
+    ///     new double[] { -1, -1 }, new double[] {  1, -1 },
+    ///     new double[] { -1,  1 }, new double[] {  1,  1 },
+    ///     new double[] { -1, -1 }, new double[] {  1, -1 },
+    ///     new double[] { -1,  1 }, new double[] {  1,  1 },
+    ///     new double[] { -1, -1 }, new double[] {  1, -1 },
+    ///     new double[] { -1,  1 }, new double[] {  1,  1 },
+    /// };
+    /// 
+    /// int[] xor = // result of xor for the sample input data
+    /// {
+    ///     -1,       1,
+    ///      1,      -1,
+    ///     -1,       1,
+    ///      1,      -1,
+    ///     -1,       1,
+    ///      1,      -1,
+    ///     -1,       1,
+    ///      1,      -1,
+    /// };
+    /// 
+    /// 
+    /// // Create a new Bootstrap algorithm passing the set size and the number of resamplings
+    /// var bootstrap = new Bootstrap(size: data.Length, subsamples: 50);
+    /// 
+    /// // Define a fitting function using Support Vector Machines. The objective of this
+    /// // function is to learn a SVM in the subset of the data dicted by the bootstrap.
+    /// 
+    /// bootstrap.Fitting = delegate(int[] indicesTrain, int[] indicesValidation)
+    /// {
+    ///     // The fitting function is passing the indices of the original set which
+    ///     // should be considered training data and the indices of the original set
+    ///     // which should be considered validation data.
+    /// 
+    ///     // Lets now grab the training data:
+    ///     var trainingInputs = data.Submatrix(indicesTrain);
+    ///     var trainingOutputs = xor.Submatrix(indicesTrain);
+    /// 
+    ///     // And now the validation data:
+    ///     var validationInputs = data.Submatrix(indicesValidation);
+    ///     var validationOutputs = xor.Submatrix(indicesValidation);
+    /// 
+    /// 
+    ///     // Create a Kernel Support Vector Machine to operate on the set
+    ///     var svm = new KernelSupportVectorMachine(new Polynomial(2), 2);
+    /// 
+    ///     // Create a training algorithm and learn the training data
+    ///     var smo = new SequentialMinimalOptimization(svm, trainingInputs, trainingOutputs);
+    /// 
+    ///     double trainingError = smo.Run();
+    /// 
+    ///     // Now we can compute the validation error on the validation data:
+    ///     double validationError = smo.ComputeError(validationInputs, validationOutputs);
+    /// 
+    ///     // Return a new information structure containing the model and the errors achieved.
+    ///     return new BootstrapValues(trainingError, validationError);
+    /// };
+    /// 
+    /// 
+    /// // Compute the bootstrap estimate
+    /// var result = bootstrap.Compute();
+    /// 
+    /// // Finally, access the measured performance.
+    /// double trainingErrors = result.Training.Mean;
+    /// double validationErrors = result.Validation.Mean;
+    /// 
+    /// // And compute the 0.632 estimate
+    /// double estimate = result.Estimate;
+    /// </example>
     /// 
     [Serializable]
     public class Bootstrap
@@ -119,38 +199,39 @@ namespace Accord.MachineLearning
         ///   Creates a new Bootstrap estimation algorithm.
         /// </summary>
         /// 
-        /// <param name="dataSize">The size of the complete dataset.</param>
+        /// <param name="size">The size of the complete dataset.</param>
         /// <param name="subsamples">The number B of bootstrap resamplings to perform.</param>
         /// 
-        public Bootstrap(int dataSize, int subsamples)
-            : this(dataSize, subsamples, dataSize) { }
+        public Bootstrap(int size, int subsamples)
+            : this(size, subsamples, size) { }
+
         /// <summary>
         ///   Creates a new Bootstrap estimation algorithm.
         /// </summary>
         /// 
-        /// <param name="dataSize">The size of the complete dataset.</param>
+        /// <param name="size">The size of the complete dataset.</param>
         /// <param name="subsamples">The number B of bootstrap resamplings to perform.</param>
         /// <param name="subsampleSize">The number of samples in each subsample. Default
         ///   is to use the total number of samples in the population dataset.</param>.
         /// 
-        public Bootstrap(int dataSize, int subsamples, int subsampleSize)
+        public Bootstrap(int size, int subsamples, int subsampleSize)
         {
-            this.samples = dataSize;
+            this.samples = size;
             this.subsampleIndices = new int[subsamples][];
 
-            this.subsampleIndices = Bootstrap.Samplings(dataSize, subsamples, subsampleSize);
+            this.subsampleIndices = Bootstrap.Samplings(size, subsamples, subsampleSize);
         }
 
         /// <summary>
         ///   Creates a new Bootstrap estimation algorithm.
         /// </summary>
         /// 
-        /// <param name="dataSize">The size of the complete dataset.</param>
+        /// <param name="size">The size of the complete dataset.</param>
         /// <param name="resamplings">The indices of the bootstrap samplings.</param>
         /// 
-        public Bootstrap(int dataSize, int[][] resamplings)
+        public Bootstrap(int size, int[][] resamplings)
         {
-            this.samples = dataSize;
+            this.samples = size;
             this.subsampleIndices = resamplings;
         }
 
