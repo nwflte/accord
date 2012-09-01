@@ -26,12 +26,8 @@
 namespace Accord.MachineLearning
 {
     using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using Accord.Math;
     using Accord.Statistics.Distributions.Univariate;
-    using System.Threading.Tasks;
-    using System.Threading;
 
     /// <summary>
     ///   K-Means algorithm.
@@ -116,15 +112,10 @@ namespace Accord.MachineLearning
     /// </example>
     ///
     [Serializable]
-    public class KMeans
+    public class KMeans : IClusteringAlgorithm<double[]>
     {
 
-        internal double[] proportions;
-        internal double[][] centroids;
-        internal double[][,] covariances;
-
         private KMeansClusterCollection clusters;
-        private Func<double[], double[], double> distance;
 
 
         /// <summary>
@@ -151,7 +142,7 @@ namespace Accord.MachineLearning
         /// 
         public int Dimension
         {
-            get { return centroids[0].Length; }
+            get { return clusters.Centroids[0].Length; }
         }
 
         /// <summary>
@@ -161,26 +152,24 @@ namespace Accord.MachineLearning
         /// 
         public Func<double[], double[], double> Distance
         {
-            get { return distance; }
-            set { distance = value; }
+            get { return clusters.Distance; }
+            set { clusters.Distance = value; }
         }
 
         /// <summary>
-        ///   Initializes a new instance of K-Means algorithm
+        ///   Initializes a new instance of the K-Means algorithm
         /// </summary>
         /// 
-        /// <param name="k">The number of clusters to divide input data.</param>    
+        /// <param name="k">The number of clusters to divide the input data into.</param>    
         /// 
         public KMeans(int k)
-            : this(k, Accord.Math.Distance.SquareEuclidean)
-        {
-        }
+            : this(k, Accord.Math.Distance.SquareEuclidean) { }
 
         /// <summary>
-        ///   Initializes a new instance of KMeans algorithm
+        ///   Initializes a new instance of the KMeans algorithm
         /// </summary>
         /// 
-        /// <param name="k">The number of clusters to divide input data.</param>       
+        /// <param name="k">The number of clusters to divide the input data into.</param>    
         /// <param name="distance">The distance function to use. Default is to
         /// use the <see cref="Accord.Math.Distance.SquareEuclidean(double[], double[])"/> distance.</param>
         /// 
@@ -189,19 +178,9 @@ namespace Accord.MachineLearning
             if (k <= 0) throw new ArgumentOutOfRangeException("k");
             if (distance == null) throw new ArgumentNullException("distance");
 
-            this.distance = distance;
-
-            // To store centroids of the clusters
-            this.proportions = new double[k];
-            this.centroids = new double[k][];
-            this.covariances = new double[k][,];
-
             // Create the object-oriented structure to hold
             //  information about the k-means' clusters.
-            List<KMeansCluster> clusterList = new List<KMeansCluster>(k);
-            for (int i = 0; i < k; i++)
-                clusterList.Add(new KMeansCluster(this, i));
-            this.clusters = new KMeansClusterCollection(this, clusterList);
+            this.clusters = new KMeansClusterCollection(k, distance);
         }
 
 
@@ -216,15 +195,15 @@ namespace Accord.MachineLearning
         {
             if (data == null) throw new ArgumentNullException("data");
 
+            double[][] centroids = clusters.Centroids;
+
             if (useSeeding)
             {
                 // Initialize using K-Means++
                 // http://en.wikipedia.org/wiki/K-means%2B%2B
 
-                this.centroids = new double[K][];
-
                 // 1. Choose one center uniformly at random from among the data points.
-                this.centroids[0] = (double[])data[Accord.Math.Tools.Random.Next(0, data.Length)].Clone();
+                centroids[0] = (double[])data[Accord.Math.Tools.Random.Next(0, data.Length)].Clone();
 
                 for (int c = 1; c < centroids.Length; c++)
                 {
@@ -254,7 +233,7 @@ namespace Accord.MachineLearning
                     // 3. Choose one new data point at random as a new center, using a weighted
                     //    probability distribution where a point x is chosen with probability 
                     //    proportional to D(x)^2.
-                    this.centroids[c] = (double[])data[GeneralDiscreteDistribution.Random(D)].Clone();
+                    centroids[c] = (double[])data[GeneralDiscreteDistribution.Random(D)].Clone();
                 }
             }
             else
@@ -263,34 +242,10 @@ namespace Accord.MachineLearning
                 int[] idx = Accord.Statistics.Tools.RandomSample(data.Length, K);
 
                 // assign centroids from data set
-                this.centroids = data.Submatrix(idx).MemberwiseClone();
+                centroids = data.Submatrix(idx).MemberwiseClone();
             }
-        }
 
-        /// <summary>
-        ///   Divides the input data into K clusters. 
-        /// </summary>     
-        /// 
-        /// <param name="data">The data where to compute the algorithm.</param>
-        /// 
-        public int[] Compute(double[][] data)
-        {
-            return Compute(data, 1e-5);
-        }
-
-        /// <summary>
-        ///   Divides the input data into K clusters. 
-        /// </summary>    
-        /// 
-        /// <param name="data">The data where to compute the algorithm.</param>
-        /// <param name="error">
-        ///   The average square distance from the
-        ///   data points to the clusters' centroids.
-        /// </param>
-        /// 
-        public int[] Compute(double[][] data, out double error)
-        {
-            return Compute(data, 1e-5, out error);
+            this.clusters.Centroids = centroids;
         }
 
         /// <summary>
@@ -300,11 +255,24 @@ namespace Accord.MachineLearning
         /// <param name="data">The data where to compute the algorithm.</param>
         /// <param name="threshold">The relative convergence threshold
         ///   for the algorithm. Default is 1e-5.</param>
+        /// 
+        public int[] Compute(double[][] data, double threshold)
+        {
+            return Compute(data, threshold, true);
+        }
+
+        /// <summary>
+        ///   Divides the input data into K clusters. 
+        /// </summary>
+        /// 
+        /// <param name="data">The data where to compute the algorithm.</param>
+        /// <param name="threshold">The relative convergence threshold
+        ///   for the algorithm. Default is 1e-5.</param>
         /// <param name="computeInformation">Pass <c>true</c> to compute additional information
         ///   when the algorithm finishes, such as cluster variances and proportions; false
         ///   otherwise. Default is true.</param>
-        /// 
-        public int[] Compute(double[][] data, double threshold, bool computeInformation = true)
+        ///   
+        public int[] Compute(double[][] data, double threshold = 1e-5, bool computeInformation = true)
         {
             // Initial argument checking
             if (data == null)
@@ -328,7 +296,7 @@ namespace Accord.MachineLearning
 
             // Perform a random initialization of the clusters
             // if the algorithm has not been initialized before.
-            if (this.centroids[0] == null)
+            if (this.Clusters.Centroids[0] == null)
             {
                 Randomize(data, useSeeding: false);
             }
@@ -337,9 +305,13 @@ namespace Accord.MachineLearning
             // Initial variables
             int[] count = new int[k];
             int[] labels = new int[rows];
+            double[][] centroids = clusters.Centroids;
             double[][] newCentroids = new double[k][];
             for (int i = 0; i < newCentroids.Length; i++)
                 newCentroids[i] = new double[cols];
+
+            double[][,] covariances = clusters.Covariances;
+            double[] proportions = clusters.Proportions;
 
 
             bool shouldStop = false;
@@ -362,7 +334,7 @@ namespace Accord.MachineLearning
                     double[] point = data[i];
 
                     // Get the nearest cluster centroid
-                    int c = labels[i] = Nearest(point);
+                    int c = labels[i] = Clusters.Nearest(point);
 
                     // Increase the cluster's sample counter
                     count[c]++;
@@ -422,6 +394,7 @@ namespace Accord.MachineLearning
                 }
             }
 
+            clusters.Centroids = centroids;
 
             // Return the classification result
             return labels;
@@ -432,118 +405,47 @@ namespace Accord.MachineLearning
         /// </summary>  
         /// 
         /// <param name="data">The data where to compute the algorithm.</param>
-        /// <param name="threshold">The relative convergence threshold
-        /// for the algorithm. Default is 1e-5.</param>
-        /// 
+        /// <param name="computeInformation">Pass <c>true</c> to compute additional information
+        ///   when the algorithm finishes, such as cluster variances and proportions; false
+        ///   otherwise. Default is true.</param>
         /// <param name="error">
         ///   The average square distance from the
         ///   data points to the clusters' centroids.
         /// </param>
         /// 
-        public int[] Compute(double[][] data, double threshold, out double error)
+        public int[] Compute(double[][] data, out double error, bool computeInformation = true)
+        {
+            return Compute(data, 1e-5, out error, computeInformation);
+        }
+
+        /// <summary>
+        ///   Divides the input data into K clusters. 
+        /// </summary>  
+        /// 
+        /// <param name="data">The data where to compute the algorithm.</param>
+        /// <param name="threshold">The relative convergence threshold
+        /// for the algorithm. Default is 1e-5.</param>
+        /// <param name="computeInformation">Pass <c>true</c> to compute additional information
+        ///   when the algorithm finishes, such as cluster variances and proportions; false
+        ///   otherwise. Default is true.</param>
+        /// <param name="error">
+        ///   The average square distance from the
+        ///   data points to the clusters' centroids.
+        /// </param>
+        /// 
+        public int[] Compute(double[][] data, double threshold, out double error, bool computeInformation = true)
         {
             // Initial argument checking
             if (data == null) throw new ArgumentNullException("data");
 
             // Classify the input data
-            int[] labels = Compute(data, threshold);
+            int[] labels = Compute(data, threshold, computeInformation);
 
             // Compute the average error
-            error = Error(data, labels);
+            error = Clusters.Distortion(data, labels);
 
             // Return the classification result
             return labels;
-        }
-
-        /// <summary>
-        ///   Returns the closest cluster to an input vector.
-        /// </summary>
-        /// 
-        /// <param name="point">The input vector.</param>
-        /// <returns>
-        ///   The index of the nearest cluster
-        ///   to the given data point. </returns>
-        ///   
-        public int Nearest(double[] point)
-        {
-            int min_cluster = 0;
-            double min_distance = distance(point, centroids[0]);
-
-            for (int i = 1; i < centroids.Length; i++)
-            {
-                double dist = distance(point, centroids[i]);
-                if (dist < min_distance)
-                {
-                    min_distance = dist;
-                    min_cluster = i;
-                }
-            }
-
-            return min_cluster;
-        }
-
-        /// <summary>
-        ///   Returns the closest clusters to an input vector array.
-        /// </summary>
-        /// 
-        /// <param name="points">The input vector array.</param>
-        /// 
-        /// <returns>
-        ///   An array containing the index of the nearest cluster
-        ///   to the corresponding point in the input array.</returns>
-        ///   
-        public int[] Nearest(double[][] points)
-        {
-            return points.Apply(p => Nearest(p));
-        }
-
-        /// <summary>
-        ///   Calculates the average square distance from the data points
-        ///   to the clusters' centroids.
-        /// </summary>
-        /// 
-        /// <remarks>
-        ///   The average distance from centroids can be used as a measure
-        ///   of the "goodness" of the clusterization. The more the data
-        ///   are aggregated around the centroids, the less the average
-        ///   distance.
-        /// </remarks>
-        /// 
-        /// <returns>
-        ///   The average square distance from the data points to the
-        ///   clusters' centroids.
-        /// </returns>
-        /// 
-        public double Error(double[][] data)
-        {
-            return Error(data, Nearest(data));
-        }
-
-        /// <summary>
-        ///   Calculates the average square distance from the data points
-        ///   to the clusters' centroids.
-        /// </summary>
-        /// 
-        /// <remarks>
-        ///   The average distance from centroids can be used as a measure
-        ///   of the "goodness" of the clusterization. The more the data
-        ///   are aggregated around the centroids, the less the average
-        ///   distance.
-        /// </remarks>
-        /// 
-        /// <returns>
-        ///   The average square distance from the data points to the
-        ///   clusters' centroids.
-        /// </returns>
-        /// 
-        public double Error(double[][] data, int[] labels)
-        {
-            double error = 0.0;
-
-            for (int i = 0; i < data.Length; i++)
-                error += distance(data[i], centroids[labels[i]]);
-
-            return error / (double)data.Length;
         }
 
         /// <summary>
@@ -574,129 +476,51 @@ namespace Accord.MachineLearning
             return true;
         }
 
+        /// <summary>
+        ///   Gets the collection of clusters currently modeled by the clustering algorithm.
+        /// </summary>
+        /// 
+        IClusterCollection<double[]> IClusteringAlgorithm<double[]>.Clusters
+        {
+            get { return clusters; }
+        }
+
+
+
+        #region Deprecated
+        /// <summary>
+        ///   Returns the closest cluster to an input point.
+        /// </summary>
+        /// 
+        /// <param name="point">The input vector.</param>
+        /// <returns>
+        ///   The index of the nearest cluster
+        ///   to the given data point. </returns>
+        ///   
+        [Obsolete("Usage of Clusters.Nearest() is preferred.")]
+        public int Nearest(double[] point)
+        {
+            return Clusters.Nearest(point);
+        }
+
+        /// <summary>
+        ///   Returns the closest cluster to an input point.
+        /// </summary>
+        /// 
+        /// <param name="points">The input vector.</param>
+        /// <returns>
+        ///   The index of the nearest cluster
+        ///   to the given data point. </returns>
+        ///   
+        [Obsolete("Usage of Clusters.Nearest() is preferred.")]
+        public int[] Nearest(double[][] points)
+        {
+            return Clusters.Compute(points);
+        }
+        #endregion
+
     }
 
-    /// <summary>
-    ///   K-means' Cluster
-    /// </summary>
-    /// 
-    [Serializable]
-    public class KMeansCluster
-    {
-        private KMeans owner;
-        private int index;
 
-        /// <summary>
-        ///   Gets the label for this cluster.
-        /// </summary>
-        /// 
-        public int Index
-        {
-            get { return this.index; }
-        }
-
-        /// <summary>
-        ///   Gets the cluster's centroid.
-        /// </summary>
-        /// 
-        public double[] Mean
-        {
-            get { return owner.centroids[index]; }
-        }
-
-        /// <summary>
-        ///   Gets the cluster's variance-covariance matrix.
-        /// </summary>
-        /// 
-        public double[,] Covariance
-        {
-            get { return owner.covariances[index]; }
-        }
-
-        /// <summary>
-        ///   Gets the proportion of samples in the cluster.
-        /// </summary>
-        /// 
-        public double Proportion
-        {
-            get { return owner.proportions[index]; }
-        }
-
-        internal KMeansCluster(KMeans owner, int index)
-        {
-            this.owner = owner;
-            this.index = index;
-        }
-    }
-
-    /// <summary>
-    ///   K-means Cluster Collection.
-    /// </summary>
-    /// 
-    [Serializable]
-    public class KMeansClusterCollection : ReadOnlyCollection<KMeansCluster>
-    {
-        private KMeans owner;
-
-
-        /// <summary>
-        ///   Gets the clusters' variance-covariance matrices.
-        /// </summary>
-        /// 
-        /// <value>The clusters' variance-covariance matrices.</value>
-        /// 
-        public double[][,] Covariances
-        {
-            get { return owner.covariances; }
-        }
-
-        /// <summary>
-        ///   Gets or sets the clusters' centroids.
-        /// </summary>
-        /// 
-        /// <value>The clusters' centroids.</value>
-        /// 
-        public double[][] Centroids
-        {
-            get { return owner.centroids; }
-            set
-            {
-                if (value == owner.centroids)
-                    return;
-
-                if (value == null)
-                    throw new ArgumentNullException("value");
-
-                int k = owner.K;
-
-                if (value.Length != k)
-                    throw new ArgumentException("The number of centroids should be equal to K.", "value");
-
-                // Make a deep copy of the
-                // input centroids vector.
-                for (int i = 0; i < k; i++)
-                    owner.centroids[i] = (double[])value[i].Clone();
-
-                // Reset derived information
-                owner.covariances = new double[k][,];
-                owner.proportions = new double[k];
-            }
-        }
-
-        /// <summary>
-        ///   Gets the proportion of samples in each cluster.
-        /// </summary>
-        /// 
-        public double[] Proportions
-        {
-            get { return owner.proportions; }
-        }
-
-        internal KMeansClusterCollection(KMeans owner, IList<KMeansCluster> list)
-            : base(list)
-        {
-            this.owner = owner;
-        }
-    }
 
 }
