@@ -45,7 +45,7 @@ namespace Accord.Statistics.Kernels
     /// </remarks>
     /// 
     [Serializable]
-    public sealed class Gaussian : IKernel, IDistance
+    public sealed class Gaussian : IKernel, IDistance, IEstimable, ICloneable
     {
         private double sigma;
         private double gamma;
@@ -218,7 +218,7 @@ namespace Accord.Statistics.Kernels
         }
 
         /// <summary>
-        ///   Estimate appropriate values for sigma given a data set.
+        ///   Estimates appropriate values for sigma given a data set.
         /// </summary>
         /// 
         /// <remarks>
@@ -289,6 +289,32 @@ namespace Accord.Statistics.Kernels
             return distances;
         }
 
+
+
+        /// <summary>
+        ///   Estimates kernel parameters from the data.
+        /// </summary>
+        /// 
+        /// <param name="inputs">The input data.</param>
+        /// 
+        void IEstimable.Estimate(double[][] inputs)
+        {
+            var g = Gaussian.Estimate(inputs);
+            this.Gamma = g.Gamma;
+        }
+
+        /// <summary>
+        ///   Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A new object that is a copy of this instance.
+        /// </returns>
+        /// 
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
 
     }
 }

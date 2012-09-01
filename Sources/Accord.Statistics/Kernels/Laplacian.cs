@@ -30,7 +30,7 @@ namespace Accord.Statistics.Kernels
     /// </summary>
     /// 
     [Serializable]
-    public sealed class Laplacian : IKernel, IDistance
+    public sealed class Laplacian : IKernel, IDistance, ICloneable, IEstimable
     {
         private double sigma;
         private double gamma;
@@ -135,6 +135,26 @@ namespace Accord.Statistics.Kernels
             return (1.0 / -gamma) * Math.Log(1.0 - 0.5 * norm);
         }
 
+        /// <summary>
+        ///   Estimate appropriate values for sigma given a data set.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   This method uses a simple heuristic to obtain appropriate values
+        ///   for sigma in a radial basis function kernel. The heristic is shown
+        ///   by Caputo, Sim, Furesjo and Smola, "Appearance-based object
+        ///   recognition using SVMs: which kernel should I use?", 2002.
+        /// </remarks>
+        /// 
+        /// <param name="inputs">The data set.</param>
+        /// 
+        /// <returns>A Laplacian kernel initialized with an appropriate sigma value.</returns>
+        /// 
+        public static Laplacian Estimate(double[][] inputs)
+        {
+            DoubleRange range;
+            return Estimate(inputs, inputs.Length, out range);
+        }
 
         /// <summary>
         ///   Estimate appropriate values for sigma given a data set.
@@ -167,6 +187,27 @@ namespace Accord.Statistics.Kernels
             range = new DoubleRange(q1, q9);
 
             return new Laplacian(sigma: qm);
+        }
+
+        /// <summary>
+        ///   Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A new object that is a copy of this instance.
+        /// </returns>
+        /// 
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
+
+
+
+        void IEstimable.Estimate(double[][] inputs)
+        {
+            var l = Estimate(inputs);
+            this.Sigma = l.Sigma;
         }
 
     }

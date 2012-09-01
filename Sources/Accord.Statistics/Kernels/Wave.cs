@@ -33,7 +33,7 @@ namespace Accord.Statistics.Kernels
     /// </remarks>
     /// 
     [Serializable]
-    public sealed class Wave : IKernel
+    public sealed class Wave : IKernel, ICloneable
     {
         private double sigma;
 
@@ -82,6 +82,17 @@ namespace Accord.Statistics.Kernels
                 return (sigma / norm) * System.Math.Sin(norm / sigma);
         }
 
-
+        /// <summary>
+        ///   Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A new object that is a copy of this instance.
+        /// </returns>
+        /// 
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
     }
 }

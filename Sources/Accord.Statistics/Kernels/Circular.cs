@@ -34,9 +34,10 @@ namespace Accord.Statistics.Kernels
     /// </remarks>
     /// 
     [Serializable]
-    public sealed class Circular : IKernel
+    public sealed class Circular : IKernel, ICloneable
     {
         private const double c2dPI = 2.0 / System.Math.PI;
+
         private double sigma;
 
         /// <summary>
@@ -94,5 +95,17 @@ namespace Accord.Statistics.Kernels
             }
         }
 
+        /// <summary>
+        ///   Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A new object that is a copy of this instance.
+        /// </returns>
+        /// 
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
     }
 }

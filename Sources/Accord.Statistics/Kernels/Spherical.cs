@@ -34,7 +34,7 @@ namespace Accord.Statistics.Kernels
     /// </remarks>
     /// 
     [Serializable]
-    public sealed class Spherical : IKernel
+    public sealed class Spherical : IKernel, ICloneable
     {
         private double sigma;
 
@@ -89,5 +89,17 @@ namespace Accord.Statistics.Kernels
             }
         }
 
+        /// <summary>
+        ///   Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A new object that is a copy of this instance.
+        /// </returns>
+        /// 
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
     }
 }

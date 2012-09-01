@@ -29,7 +29,7 @@ namespace Accord.Statistics.Kernels
     /// </summary>
     /// 
     [Serializable]
-    public sealed class Polynomial : IKernel, IDistance
+    public sealed class Polynomial : IKernel, IDistance, ICloneable
     {
         private int degree;
         private double constant;
@@ -110,5 +110,17 @@ namespace Accord.Statistics.Kernels
                 - 2.0 * Math.Pow(Function(x, y), q);
         }
 
+        /// <summary>
+        ///   Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A new object that is a copy of this instance.
+        /// </returns>
+        /// 
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
     }
 }

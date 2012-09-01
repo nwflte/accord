@@ -39,7 +39,7 @@ namespace Accord.Statistics.Kernels
     /// </remarks>
     /// 
     [Serializable]
-    public sealed class SymmetricTriangle : IKernel
+    public sealed class SymmetricTriangle : IKernel, ICloneable
     {
         private double gamma;
 
@@ -83,6 +83,19 @@ namespace Accord.Statistics.Kernels
             double z = 1.0 - gamma * Math.Sqrt(norm);
 
             return (z > 0) ? z : 0;
+        }
+
+        /// <summary>
+        ///   Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A new object that is a copy of this instance.
+        /// </returns>
+        /// 
+        public object Clone()
+        {
+            return MemberwiseClone();
         }
 
 

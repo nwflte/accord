@@ -29,7 +29,7 @@ namespace Accord.Statistics.Kernels
     /// </summary>
     /// 
     [Serializable]
-    public sealed class Quadratic : IKernel, IDistance
+    public sealed class Quadratic : IKernel, IDistance, ICloneable
     {
         private double constant;
 
@@ -94,5 +94,17 @@ namespace Accord.Statistics.Kernels
                 - 2.0 * Math.Sqrt(Function(x, y));
         }
 
+        /// <summary>
+        ///   Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A new object that is a copy of this instance.
+        /// </returns>
+        /// 
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
     }
 }

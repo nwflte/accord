@@ -29,7 +29,7 @@ namespace Accord.Statistics.Kernels
     /// </summary>
     /// 
     [Serializable]
-    public sealed class Precomputed : IKernel
+    public sealed class Precomputed : IKernel, ICloneable
     {
         private double[,] matrix;
 
@@ -68,5 +68,17 @@ namespace Accord.Statistics.Kernels
             return matrix[i, j];
         }
 
+        /// <summary>
+        ///   Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A new object that is a copy of this instance.
+        /// </returns>
+        /// 
+        public object Clone()
+        {
+            return new Precomputed((double[,])matrix.Clone());
+        }
     }
 }

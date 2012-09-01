@@ -35,7 +35,7 @@ namespace Accord.Statistics.Kernels
     /// </remarks>
     /// 
     [Serializable]
-    public sealed class TStudent : IKernel
+    public sealed class TStudent : IKernel, ICloneable
     {
 
         private int degree;
@@ -82,5 +82,17 @@ namespace Accord.Statistics.Kernels
             return 1.0 / (1.0 + System.Math.Pow(norm, degree));
         }
 
+        /// <summary>
+        ///   Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A new object that is a copy of this instance.
+        /// </returns>
+        /// 
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
     }
 }

@@ -35,15 +35,15 @@ namespace Accord.Statistics.Kernels
     /// </remarks>
     /// 
     [Serializable]
-    public sealed class Power : IKernel
+    public sealed class Power : IKernel, ICloneable
     {
-        private int degree;
+        private double degree;
 
         /// <summary>
         ///   Gets or sets the kernel's degree.
         /// </summary>
         /// 
-        public int Degree
+        public double Degree
         {
             get { return degree; }
             set { degree = value; }
@@ -56,6 +56,17 @@ namespace Accord.Statistics.Kernels
         /// <param name="degree">The kernel's degree.</param>
         /// 
         public Power(int degree)
+        {
+            this.degree = degree;
+        }
+
+        /// <summary>
+        ///   Constructs a new Power Kernel.
+        /// </summary>
+        /// 
+        /// <param name="degree">The kernel's degree.</param>
+        /// 
+        public Power(double degree)
         {
             this.degree = degree;
         }
@@ -82,6 +93,20 @@ namespace Accord.Statistics.Kernels
             }
 
             return -System.Math.Pow(norm, degree);
+        }
+
+
+        /// <summary>
+        ///   Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A new object that is a copy of this instance.
+        /// </returns>
+        /// 
+        public object Clone()
+        {
+            return MemberwiseClone();
         }
 
     }

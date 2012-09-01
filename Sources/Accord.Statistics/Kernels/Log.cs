@@ -34,7 +34,7 @@ namespace Accord.Statistics.Kernels
     /// </remarks>
     /// 
     [Serializable]
-    public sealed class Log : IKernel
+    public sealed class Log : IKernel, ICloneable
     {
         private double degree;
 
@@ -45,6 +45,17 @@ namespace Accord.Statistics.Kernels
         /// <param name="degree">The kernel's degree.</param>
         /// 
         public Log(int degree)
+        {
+            this.degree = degree;
+        }
+
+        /// <summary>
+        ///   Constructs a new Log Kernel
+        /// </summary>
+        /// 
+        /// <param name="degree">The kernel's degree.</param>
+        /// 
+        public Log(double degree)
         {
             this.degree = degree;
         }
@@ -80,5 +91,17 @@ namespace Accord.Statistics.Kernels
             return -System.Math.Log(System.Math.Pow(norm, degree / 2.0) + 1);
         }
 
+        /// <summary>
+        ///   Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A new object that is a copy of this instance.
+        /// </returns>
+        /// 
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
     }
 }

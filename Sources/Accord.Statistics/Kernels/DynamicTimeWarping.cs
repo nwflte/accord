@@ -55,7 +55,7 @@ namespace Accord.Statistics.Kernels
     /// </remarks>
     /// 
     [Serializable]
-    public sealed class DynamicTimeWarping : IKernel
+    public sealed class DynamicTimeWarping : IKernel, ICloneable
     {
         private double alpha = 1.0; // spherical projection distance
         private int length = 1;     // length of the feature vectors
@@ -278,6 +278,19 @@ namespace Accord.Statistics.Kernels
 
             // Remarks: the above could be done much more
             // efficiently using unsafe pointer arithmetic.
+        }
+
+        /// <summary>
+        ///   Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A new object that is a copy of this instance.
+        /// </returns>
+        /// 
+        public object Clone()
+        {
+            return MemberwiseClone();
         }
 
     }
