@@ -193,13 +193,13 @@ namespace Accord.Statistics.Testing
         {
             DFb = groupCount - 1;
             DFw = totalSize - groupCount;
-            DFt = groupCount * totalSize - 1;
+            DFt = totalSize - 1;
 
             // Step 1. Calculate the mean within each group
             means = Statistics.Tools.Mean(samples, 1);
 
             // Step 2. Calculate the overall mean
-            totalMean = Statistics.Tools.Mean(means);
+            totalMean = Statistics.Tools.GrandMean(means, sizes);
 
 
             // Step 3. Calculate the "between-group" sum of squares
@@ -220,7 +220,7 @@ namespace Accord.Statistics.Testing
                     SSw += u * u;
                 }
             }
-            
+
             SSt = SSb + SSw; // total sum of squares
 
 

@@ -29,6 +29,58 @@ namespace Accord.Statistics.Testing
     ///   Binomial test.
     /// </summary>
     /// 
+    /// <remarks>
+    /// <para>
+    ///   In statistics, the binomial test is an exact test of the statistical significance
+    ///   of deviations from a theoretically expected distribution of observations into two
+    ///   categories. The most common use of the binomial test is in the case where the null
+    ///   hypothesis is that two categories are equally likely to occur (such as a coin toss).</para>
+    /// <para>
+    ///   When there are more than two categories, and an exact test is required, the
+    ///   <see cref="MultinomialTest"> multinomial test</see>, based on the multinomial
+    ///   distribution, must be used instead of the binomial test.</para>
+    ///   
+    /// <para>
+    ///   References:
+    ///   <list type="bullet">
+    ///     <item><description><a href="http://en.wikipedia.org/wiki/Binomial_test">
+    ///        Wikipedia, The Free Encyclopedia. Binomial-Test. Available from:
+    ///        http://en.wikipedia.org/wiki/Binomial_test </a></description></item>
+    ///   </list></para>
+    /// </remarks>
+    /// 
+    /// <example>
+    ///   <para>
+    ///     This is the second example from Wikipedia's page on hypothesis testing. In this example, 
+    ///     a person is tested for clairvoyance (ability of gaining information about something through
+    ///     extra sensory perception; detecting something without using the known human senses.</para>
+    ///     
+    /// <code>
+    /// // A person is shown the reverse of a playing card 25 times and is
+    /// // asked which of the four suits the card belongs to. Every time
+    /// // the person correctly guesses the suit of the card, we count this
+    /// // result as a correct answer. Let's suppose the person obtained 13
+    /// // correctly answers out of the 25 cards.
+    /// 
+    /// // Since each suit appears 1/4 of the time in the card deck, we 
+    /// // would assume the probability of producing a correct answer by
+    /// // chance alone would be of 1/4.
+    /// 
+    /// // And finally, we must consider we are interested in which the
+    /// // subject performs better than what would expected by chance. 
+    /// // In other words, that the person's probability of predicting
+    /// // a card is higher than the chance hypothesized value of 1/4.
+    /// 
+    /// BinomialTest test = new BinomialTest(
+    ///     successes: 13, trials: 25,
+    ///     hypothesizedProbability: 1.0 / 4.0,
+    ///     alternate: OneSampleHypothesis.ValueIsGreaterThanHypothesis);
+    /// 
+    /// Console.WriteLine("Test p-Value: " + test.PValue);     // ~ 0.003
+    /// Console.WriteLine("Significant? " + test.Significant); // True.
+    /// </code>
+    /// </example>
+    /// 
     [Serializable]
     public class BinomialTest : HypothesisTest<BinomialDistribution>
     {

@@ -76,6 +76,7 @@ namespace Accord.Statistics.Testing.Power
             Tail = tail;
             Size = 0.05;
             Power = 0.8;
+            Samples = 2;
         }
 
         /// <summary>

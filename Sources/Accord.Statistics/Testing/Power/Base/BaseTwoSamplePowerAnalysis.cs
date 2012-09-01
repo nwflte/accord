@@ -103,6 +103,8 @@ namespace Accord.Statistics.Testing.Power
             Tail = tail;
             Size = 0.05;
             Power = 0.8;
+            Samples1 = 2;
+            Samples2 = 2;
         }
 
         /// <summary>
@@ -147,6 +149,47 @@ namespace Accord.Statistics.Testing.Power
 
             // Check it
             Effect = sol;
+            ComputePower();
+
+            double newPower = Power;
+            Power = requiredPower;
+
+            if (Math.Abs(requiredPower - newPower) > 1e-5)
+                Effect = Double.NaN;
+        }
+
+        /// <summary>
+        ///   Computes the minimum significance level for the test
+        ///   considering the power given in <see cref="Power"/>, the
+        ///   number of samples in <see cref="TotalSamples"/> and the 
+        ///   effect size <see cref="Effect"/>.
+        /// </summary>
+        /// 
+        /// <returns>The minimum detectable <see cref="Effect">effect
+        /// size</see> for the test under the given conditions.</returns>
+        /// 
+        public virtual void ComputeSize()
+        {
+            double requiredPower = Power;
+
+            // Attempt to locate the optimal sample size
+            // to attain the required power by locating
+            // a zero in the difference function:
+
+            double sol = BrentSearch.FindRoot(alpha =>
+            {
+                Size = alpha;
+                ComputePower();
+
+                return requiredPower - Power;
+            },
+
+            lowerBound: 0,
+            upperBound: 1);
+
+
+            // Check it
+            Size = sol;
             ComputePower();
 
             double newPower = Power;
