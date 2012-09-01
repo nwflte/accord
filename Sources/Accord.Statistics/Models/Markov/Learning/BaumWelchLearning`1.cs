@@ -41,8 +41,10 @@ namespace Accord.Statistics.Models.Markov.Learning
     /// </remarks>
     /// 
     /// <example>
+    /// <para>
     ///   In the following example, we will create a Continuous Hidden Markov Model using
-    ///   a univariate Normal distribution to model properly model continuous sequences.
+    ///   a univariate Normal distribution to model properly model continuous sequences.</para>
+    ///   
     ///   <code>
     ///   // Create continuous sequences. In the sequences below, there
     ///   //  seems to be two states, one for values between 0 and 1 and
@@ -74,19 +76,19 @@ namespace Accord.Statistics.Models.Markov.Learning
     ///   // Fit the model
     ///   double likelihood = teacher.Run(sequences);
     /// 
-    ///   // See the probability of the sequences learned
+    ///   // See the likelihood of the sequences learned
     ///   double l1 = model.Evaluate(new[] { 0.1, 5.2, 0.3, 6.7, 0.1, 6.0 }); // 0.87
     ///   double l2 = model.Evaluate(new[] { 0.2, 6.2, 0.3, 6.3, 0.1, 5.0 }); // 1.00
     /// 
     ///   // See the probability of an unrelated sequence
     ///   double l3 = model.Evaluate(new[] { 1.1, 2.2, 1.3, 3.2, 4.2, 1.0 }); // 0.00
     /// </code>
-    /// </example>
     /// 
-    /// <example>
+    /// <para>
     ///   In the following example, we will create a Discrete Hidden Markov Model
     ///   using a Generic Discrete Probability Distribution to reproduce the same
-    ///   code example given in <seealso cref="BaumWelchLearning"/> documentation.
+    ///   code example given in <seealso cref="BaumWelchLearning"/> documentation.</para>
+    ///   
     ///   <code>
     ///   // Arbitrary-density Markov Models can operate using any
     ///   // probability distribution, including discrete ones. 
@@ -123,8 +125,10 @@ namespace Accord.Statistics.Models.Markov.Learning
     ///   double ll = teacher.Run(sequences);
     ///   
     /// 
-    ///   // Calculate the probability that the given
-    ///   //  sequences originated from the model
+    ///   // Calculate the likelihood that the given sequences originated
+    ///   // from the model. The commented values on the right are the 
+    ///   // likelihoods computed by taking an exp(x) of the log-likelihoods
+    ///   // returned by the Evaluate method.
     ///   double l1 = hmm.Evaluate(new double[] { 0, 1 });       // 0.999
     ///   double l2 = hmm.Evaluate(new double[] { 0, 1, 1, 1 }); // 0.916
     ///   
@@ -138,7 +142,83 @@ namespace Accord.Statistics.Models.Markov.Learning
     ///   double l5 = hmm.Evaluate(new double[] { 0, 1, 0, 1, 1, 1, 1, 1, 1 }); // 0.034
     ///   double l6 = hmm.Evaluate(new double[] { 0, 1, 1, 1, 1, 1, 1, 0, 1 }); // 0.034
     ///   </code>
+    ///   
+    /// <para>
+    ///   Finally, the next example shows how to create a multivariate model
+    ///   using a multivariate normal distribution. In this example, sequences
+    ///   contain vector-valued observations, such as in the case of (x,y) pairs.</para>
+    ///   
+    /// <code>
+    /// // Create sequences of vector-valued observations. In the
+    /// // sequence below, a single observation is composed of two
+    /// // coordinate values, such as (x, y). There seems to be two
+    /// // states, one for (x,y) values less than (5,5) and another
+    /// // for higher values. The states seems to be switched on
+    /// // every observation.
+    /// double[][][] sequences =
+    /// {
+    ///     new double[][] // sequence 1
+    ///     {
+    ///         new double[] { 1, 2 }, // observation 1 of sequence 1
+    ///         new double[] { 6, 7 }, // observation 2 of sequence 1
+    ///         new double[] { 2, 3 }, // observation 3 of sequence 1
+    ///     },
+    ///     new double[][] // sequence 2
+    ///     {
+    ///         new double[] { 2, 2 }, // observation 1 of sequence 2
+    ///         new double[] { 9, 8 }, // observation 2 of sequence 2
+    ///         new double[] { 1, 0 }, // observation 3 of sequence 2
+    ///     },
+    /// new double[][] // sequence 3
+    ///     {
+    ///         new double[] { 1, 3 }, // observation 1 of sequence 3
+    ///         new double[] { 8, 9 }, // observation 2 of sequence 3
+    ///         new double[] { 3, 3 }, // observation 3 of sequence 3
+    ///     },
+    /// };
+    /// 
+    /// 
+    /// // Specify a initial normal distribution for the samples.
+    /// var density = new MultivariateNormalDistribution(dimension: 2);
+    /// 
+    /// // Creates a continuous hidden Markov Model with two states organized in a forward
+    /// //  topology and an underlying univariate Normal distribution as probability density.
+    /// var model = new HiddenMarkovModel&lt;MultivariateNormalDistribution>(new Forward(2), density);
+    /// 
+    /// // Configure the learning algorithms to train the sequence classifier until the
+    /// // difference in the average log-likelihood changes only by as little as 0.0001
+    /// var teacher = new BaumWelchLearning&lt;MultivariateNormalDistribution>(model)
+    /// {
+    ///     Tolerance = 0.0001,
+    ///     Iterations = 0,
+    /// };
+    /// 
+    /// // Fit the model
+    /// double logLikelihood = teacher.Run(sequences);
+    /// 
+    /// // See the likelihood of the sequences learned
+    /// double a1 = Math.Exp(model.Evaluate(new [] { 
+    ///     new double[] { 1, 2 }, 
+    ///     new double[] { 6, 7 },
+    ///     new double[] { 2, 3 }})); // 0.000208
+    /// 
+    /// double a2 = Math.Exp(model.Evaluate(new [] { 
+    ///     new double[] { 2, 2 }, 
+    ///     new double[] { 9, 8  },
+    ///     new double[] { 1, 0 }})); // 0.0000376
+    /// 
+    /// // See the likelihood of an unrelated sequence
+    /// double a3 = Math.Exp(model.Evaluate(new [] { 
+    ///     new double[] { 8, 7 }, 
+    ///     new double[] { 9, 8  },
+    ///     new double[] { 1, 0 }})); // 2.10 x 10^(-89)
+    /// </code>
     /// </example>
+    /// 
+    /// <seealso cref="HiddenMarkovModel"/>
+    /// <seealso cref="HiddenMarkovModel{TDistribution}"/>
+    /// <seealso cref="BaumWelchLearning"/>
+    /// <seealso cref="BaumWelchLearning{TDistribution}"/>
     /// 
     public class BaumWelchLearning<TDistribution> : BaseBaumWelchLearning, IUnsupervisedLearning
         where TDistribution : IDistribution
@@ -243,10 +323,11 @@ namespace Accord.Statistics.Models.Markov.Learning
             double[,] logA = model.Transitions;
             TDistribution[] B = model.Emissions;
 
-            double[][] sequence = vectorObservations[index];
+            var sequence = vectorObservations[index];
 
             int T = sequence.Length;
             var logKsi = LogKsi[index];
+            var w = LogWeights[index];
 
 
             for (int t = 0; t < T - 1; t++)
@@ -258,7 +339,7 @@ namespace Accord.Statistics.Models.Markov.Learning
                 {
                     for (int j = 0; j < states; j++)
                     {
-                        logKsi[t][i, j] = lnFwd[t, i] + lnBwd[t + 1, j] + logA[i, j] + B[j].LogProbabilityFunction(x);
+                        logKsi[t][i, j] = lnFwd[t, i] + lnBwd[t + 1, j] + logA[i, j] + B[j].LogProbabilityFunction(x) + w;
                         lnsum = Special.LogSum(lnsum, logKsi[t][i, j]);
                     }
                 }

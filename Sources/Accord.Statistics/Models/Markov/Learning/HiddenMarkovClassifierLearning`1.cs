@@ -64,10 +64,10 @@ namespace Accord.Statistics.Models.Markov.Learning
     ///   //  containing 2 hidden Markov Models with 2 states and an underlying Normal
     ///   //  distribution as the continuous probability density.
     ///   NormalDistribution density = new NormalDistribution();
-    ///   var classifier = new SequenceClassifier&lt;NormalDistribution&gt;(2, new Ergodic(2), density);
+    ///   var classifier = new HiddenMarkovClassifier&lt;NormalDistribution&gt;(2, new Ergodic(2), density);
     ///
     ///   // Create a new learning algorithm to train the sequence classifier
-    ///   var teacher = new SequenceClassifierLearning&lt;NormalDistribution&gt;(classifier,
+    ///   var teacher = new HiddenMarkovClassifierLearning&lt;NormalDistribution&gt;(classifier,
     ///
     ///       // Train each model until the log-likelihood changes less than 0.001
     ///       modelIndex => new BaumWelchLearning&lt;NormalDistribution&gt;(classifier.Models[modelIndex])

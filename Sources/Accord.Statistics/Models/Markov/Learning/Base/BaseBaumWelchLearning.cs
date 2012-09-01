@@ -73,21 +73,29 @@ namespace Accord.Statistics.Models.Markov.Learning
         /// 
         public double[][,] LogGamma { get; protected set; }
 
-
+        /// <summary>
+        ///   Gets the sample weights in the last iteration of the
+        ///   Baum-Welch learning algorithm.
+        /// </summary>
+        /// 
+        public double[] LogWeights { get; protected set; }
 
         /// <summary>
         ///   Runs the Baum-Welch learning algorithm for hidden Markov models.
         /// </summary>
+        /// 
         /// <remarks>
         ///   Learning problem. Given some training observation sequences O = {o1, o2, ..., oK}
         ///   and general structure of HMM (numbers of hidden and visible states), determine
         ///   HMM parameters M = (A, B, pi) that best fit training data. 
         /// </remarks>
+        /// 
         /// <param name="observations">
         ///   The sequences of univariate or multivariate observations used to train the model.
         ///   Can be either of type double[] (for the univariate case) or double[][] for the
         ///   multivariate case.
         /// </param>
+        /// 
         /// <returns>
         ///   The average log-likelihood for the observations after the model has been trained.
         /// </returns>
@@ -100,6 +108,50 @@ namespace Accord.Statistics.Models.Markov.Learning
             if (observations.Length == 0)
                 throw new ArgumentException("Observations vector must contain at least one observation", "observations");
 
+            LogWeights = new double[observations.Length];
+
+            return run(observations);
+        }
+
+        /// <summary>
+        ///   Runs the Baum-Welch learning algorithm for hidden Markov models.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   Learning problem. Given some training observation sequences O = {o1, o2, ..., oK}
+        ///   and general structure of HMM (numbers of hidden and visible states), determine
+        ///   HMM parameters M = (A, B, pi) that best fit training data. 
+        /// </remarks>
+        /// 
+        /// <param name="observations">
+        ///   The sequences of univariate or multivariate observations used to train the model.
+        ///   Can be either of type double[] (for the univariate case) or double[][] for the
+        ///   multivariate case.</param>
+        /// <param name="weights">
+        ///   The weight associated with each sequence.</param>
+        /// 
+        /// <returns>
+        ///   The average log-likelihood for the observations after the model has been trained.
+        /// </returns>
+        /// 
+        protected double Run(Array[] observations, double[] weights)
+        {
+            if (observations == null)
+                throw new ArgumentNullException("observations");
+
+            if (observations.Length == 0)
+                throw new ArgumentException("Observations vector must contain at least one observation", "observations");
+
+            LogWeights = new double[observations.Length];
+            for (int i = 0; i < observations.Length; i++)
+                LogWeights[i] = Math.Log(weights[i]);
+
+            return run(observations);
+        }
+
+
+        private double run(Array[] observations)
+        {
             // Baum-Welch algorithm.
 
             // The Baum–Welch algorithm is a particular case of a generalized expectation-maximization
@@ -140,6 +192,7 @@ namespace Accord.Statistics.Models.Markov.Learning
                     LogKsi[i][t] = new double[states, states];
             }
 
+
             int iteration = 1;
             bool stop = false;
 
@@ -159,6 +212,7 @@ namespace Accord.Statistics.Models.Markov.Learning
                 {
                     int T = observations[i].Length;
                     double[,] logGamma = LogGamma[i];
+                    double w = LogWeights[i];
 
 
                     // 1st step - Calculating the forward probability and the
@@ -175,7 +229,7 @@ namespace Accord.Statistics.Models.Markov.Learning
                         double lnsum = Double.NegativeInfinity;
                         for (int k = 0; k < states; k++)
                         {
-                            logGamma[t, k] = lnFwd[t, k] + lnBwd[t, k];
+                            logGamma[t, k] = lnFwd[t, k] + lnBwd[t, k] + w;
                             lnsum = Special.LogSum(lnsum, logGamma[t, k]);
                         }
 
