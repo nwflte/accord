@@ -97,10 +97,7 @@ namespace Accord.Statistics.Running
         ///   Initializes a new instance of the <see cref="RunningNormalStatistics"/> class.
         /// </summary>
         /// 
-        public RunningNormalStatistics()
-        {
-
-        }
+        public RunningNormalStatistics() { }
 
         /// <summary>
         ///   Registers the occurance of a value.

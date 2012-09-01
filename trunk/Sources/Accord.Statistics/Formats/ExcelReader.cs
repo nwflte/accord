@@ -26,6 +26,7 @@ namespace Accord.Statistics.Formats
     using System.Data;
     using System.Data.OleDb;
     using System.Globalization;
+    using System.IO;
 
     /// <summary>
     ///   Excel file reader using Microsoft Jet Database Engine.
@@ -52,13 +53,35 @@ namespace Accord.Statistics.Formats
         public ExcelReader(string path, bool hasHeaders = true, bool hasMixedData = true)
         {
             OleDbConnectionStringBuilder strBuilder = new OleDbConnectionStringBuilder();
-            strBuilder.Provider = "Microsoft.Jet.OLEDB.4.0";
-            strBuilder.DataSource = path;
-            strBuilder.Add("Extended Properties", "Excel 8.0;" +
-                "HDR=" + (hasHeaders ? "Yes" : "No") + ';' +
-                "Imex=" + (hasMixedData ? "2" : "0") + ';' +
-              "");
 
+            string fullPath = Path.GetFullPath(path);
+
+            if (!File.Exists(fullPath))
+                throw new FileNotFoundException("File could not be found.", fullPath);
+
+            string temp = Path.GetTempFileName();
+            File.Copy(fullPath, temp, true);
+
+            if (Path.GetExtension(path) == ".xls")
+            {
+                // Settings for MS Office formats prior to 2007
+                strBuilder.Provider = "Microsoft.Jet.OLEDB.4.0";
+                strBuilder.DataSource = temp;
+                strBuilder.Add("Extended Properties", "Excel 8.0;" +
+                    "HDR=" + (hasHeaders ? "Yes" : "No") + ';' +
+                    "Imex=" + (hasMixedData ? "2" : "0") + ';' +
+                  "");
+            }
+            else
+            {
+                // Settings for MS Office 2007 and beyond
+                strBuilder.Provider = "Microsoft.ACE.OLEDB.12.0";
+                strBuilder.DataSource = temp;
+                strBuilder.Add("Extended Properties", "Excel 12.0;" +
+                    "HDR=" + (hasHeaders ? "Yes" : "No") + ';' +
+                    "Imex=" + (hasMixedData ? "2" : "0") + ';' +
+                  "");
+            }
 
             strConnection = strBuilder.ToString();
         }
@@ -122,7 +145,11 @@ namespace Accord.Statistics.Formats
             DataTable ws;
 
             OleDbConnection connection = new OleDbConnection(strConnection);
-            OleDbDataAdapter adaptor = new OleDbDataAdapter(String.Format("SELECT * FROM [{0}$]", worksheet), connection);
+
+            OleDbCommand command = new OleDbCommand("SELECT * FROM [" + worksheet + "$]", connection);
+
+            OleDbDataAdapter adaptor = new OleDbDataAdapter(command);
+
             ws = new DataTable(worksheet);
             ws.Locale = CultureInfo.InvariantCulture;
             adaptor.FillSchema(ws, SchemaType.Source);
@@ -140,19 +167,16 @@ namespace Accord.Statistics.Formats
         /// 
         public DataSet GetWorksheet()
         {
-            DataSet workplace;
+            DataSet dataset = new DataSet("Excel Workbook");
+            dataset.Locale = CultureInfo.InvariantCulture;
 
-            OleDbConnection connection = new OleDbConnection(strConnection);
-            OleDbDataAdapter adaptor = new OleDbDataAdapter("SELECT * FROM *", connection);
-            workplace = new DataSet();
-            workplace.Locale = CultureInfo.InvariantCulture;
-            adaptor.FillSchema(workplace, SchemaType.Source);
-            adaptor.Fill(workplace);
+            foreach (string sheet in GetWorksheetList())
+            {
+                DataTable table = GetWorksheet(sheet);
+                dataset.Tables.Add(table);
+            }
 
-            adaptor.Dispose();
-            connection.Close();
-
-            return workplace;
+            return dataset;
         }
 
     }
