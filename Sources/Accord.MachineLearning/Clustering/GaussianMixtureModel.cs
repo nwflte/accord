@@ -51,15 +51,16 @@ namespace Accord.MachineLearning
     ///   gmm.Compute(samples, 0.0001);
     ///   
     ///   // Classify a single sample
-    ///   int c = gmm.Classify(sample);
+    ///   int c = gmm.Nearest(sample);
     ///   </code>
     /// </example>
     /// 
     [Serializable]
-    public class GaussianMixtureModel
+    public class GaussianMixtureModel : IClusteringAlgorithm<double[]>
     {
         // the underlying mixture distribution
         internal MultivariateMixture<MultivariateNormalDistribution> model;
+
         private GaussianClusterCollection clusters;
 
 
@@ -73,11 +74,10 @@ namespace Accord.MachineLearning
         }
 
         /// <summary>
-        ///   Gets a mixture distribution modeled
-        ///   by this Gaussian Mixture Model.
+        ///   Gets a copy of the mixture distribution modeled by this Gaussian Mixture Model.
         /// </summary>
         /// 
-        public MultivariateMixture<MultivariateNormalDistribution> GetMixtureDistribution()
+        public MultivariateMixture<MultivariateNormalDistribution> ToMixtureDistribution()
         {
             return (MultivariateMixture<MultivariateNormalDistribution>)model.Clone();
         }
@@ -111,9 +111,7 @@ namespace Accord.MachineLearning
         public GaussianMixtureModel(KMeans kmeans)
         {
             if (kmeans == null)
-            {
                 throw new ArgumentNullException("kmeans");
-            }
 
             constructor(kmeans.K);
 
@@ -129,7 +127,7 @@ namespace Accord.MachineLearning
                 clusterList.Add(new GaussianCluster(this, i));
 
             // Initialize the model using the created objects.
-            this.clusters = new GaussianClusterCollection(clusterList);
+            this.clusters = new GaussianClusterCollection(this, clusterList);
         }
 
         /// <summary>
@@ -192,7 +190,7 @@ namespace Accord.MachineLearning
             int components = clusters.Count;
 
             if (distributions.Length != components)
-                throw new ArgumentException("The number distributions and clusters does not match.", "distributions");
+                throw new ArgumentException("The number of distributions and clusters does not match.", "distributions");
 
             this.model = new MultivariateMixture<MultivariateNormalDistribution>(distributions);
         }
@@ -277,6 +275,34 @@ namespace Accord.MachineLearning
         }
 
         /// <summary>
+        ///   Gets the collection of clusters currently modeled by the clustering algorithm.
+        /// </summary>
+        /// 
+        IClusterCollection<double[]> IClusteringAlgorithm<double[]>.Clusters
+        {
+            get { return clusters; }
+        }
+
+        /// <summary>
+        ///   Divides the input data into a number of clusters. 
+        /// </summary>  
+        /// 
+        /// <param name="data">The data where to compute the algorithm.</param>
+        /// <param name="threshold">The relative convergence threshold
+        /// for the algorithm. Default is 1e-5.</param>
+        /// 
+        /// <returns>
+        ///   The labelings for the input data.
+        /// </returns>
+        /// 
+        int[] IClusteringAlgorithm<double[]>.Compute(double[][] data, double threshold)
+        {
+            Compute(data, threshold);
+            return clusters.Nearest(data);
+        }
+
+        #region Deprecated
+        /// <summary>
         ///   Returns the most likely clusters of an observation.
         /// </summary>
         /// 
@@ -286,6 +312,7 @@ namespace Accord.MachineLearning
         ///   The index of the most likely cluster
         ///   of the given observation. </returns>
         ///   
+        [Obsolete("Use of Gaussians.Nearest is preferred.")]
         public int Classify(double[] observation)
         {
             if (observation == null)
@@ -318,20 +345,11 @@ namespace Accord.MachineLearning
         /// <returns>
         ///   The index of the most likely cluster
         ///   of the given observation. </returns>
-        ///   
+        ///
+        [Obsolete("Use of Gaussians.Nearest is preferred.")]
         public int Classify(double[] observation, out double[] responses)
         {
-            if (observation == null)
-                throw new ArgumentNullException("observation");
-
-            responses = new double[model.Components.Length];
-
-            for (int i = 0; i < responses.Length; i++)
-                responses[i] = model.ProbabilityDensityFunction(i, observation);
-
-            int imax;
-            responses.Max(out imax);
-            return imax;
+            return Gaussians.Nearest(observation, out responses);
         }
 
         /// <summary>
@@ -344,16 +362,12 @@ namespace Accord.MachineLearning
         ///   An array containing the index of the most likely cluster
         ///   for each of the given observations. </returns>
         ///   
+        [Obsolete("Use of Gaussians.Nearest is preferred.")]
         public int[] Classify(double[][] observations)
         {
-            if (observations == null)
-                throw new ArgumentNullException("observations");
-
-            int[] result = new int[observations.Length];
-            for (int i = 0; i < observations.Length; i++)
-                result[i] = Classify(observations[i]);
-            return result;
+            return Gaussians.Nearest(observations);
         }
+        #endregion
 
     }
 
@@ -464,27 +478,49 @@ namespace Accord.MachineLearning
         ///   in the weighted Gaussian distribution.
         /// </returns>
         /// 
-        public double Probability(double[] x)
+        public double LogLikelihood(double[] x)
         {
             if (owner.model == null) return 0;
-            return owner.model.ProbabilityDensityFunction(index, x);
+            return owner.model.LogProbabilityDensityFunction(index, x);
         }
 
         /// <summary>
-        ///   Gets the normal distribution associated with this cluster.
+        ///   Gets a copy of the normal distribution associated with this cluster.
         /// </summary>
         /// 
-        public MultivariateNormalDistribution GetDistribution()
+        public MultivariateNormalDistribution ToDistribution()
         {
             if (owner.model == null)
                 throw new InvalidOperationException("The model has not been initialized.");
             return (MultivariateNormalDistribution)owner.model.Components[index].Clone();
         }
 
-        internal GaussianCluster(GaussianMixtureModel owner, int index)
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="GaussianCluster"/> class.
+        /// </summary>
+        /// 
+        /// <param name="owner">The owner collection.</param>
+        /// <param name="index">The cluster index.</param>
+        /// 
+        public GaussianCluster(GaussianMixtureModel owner, int index)
         {
             this.owner = owner;
             this.index = index;
+        }
+
+        /// <summary>
+        ///   Gets the deviance of the points in relation to the cluster.
+        /// </summary>
+        /// 
+        /// <param name="points">The input points.</param>
+        /// 
+        /// <returns>The deviance, measured as -2 * the log-likelihood
+        /// of the input points in this cluster.</returns>
+        /// 
+        public double Deviance(double[] points)
+        {
+            if (owner.model == null) return 1;
+            return -2 * owner.model.LogProbabilityDensityFunction(index, points);
         }
     }
 
@@ -493,12 +529,115 @@ namespace Accord.MachineLearning
     /// </summary>
     /// 
     [Serializable]
-    public class GaussianClusterCollection : ReadOnlyCollection<GaussianCluster>
+    public class GaussianClusterCollection : ReadOnlyCollection<GaussianCluster>, IClusterCollection<double[]>
     {
-        internal GaussianClusterCollection(IList<GaussianCluster> list)
+        GaussianMixtureModel owner;
+
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="GaussianClusterCollection"/> class.
+        /// </summary>
+        /// 
+        /// <param name="owner">The owner collection.</param>
+        /// <param name="list">The list.</param>
+        /// 
+        public GaussianClusterCollection(GaussianMixtureModel owner, IList<GaussianCluster> list)
             : base(list)
         {
+            this.owner = owner;
         }
+
+        /// <summary>
+        ///   Returns the closest cluster to an input point.
+        /// </summary>
+        /// 
+        /// <param name="point">The input vector.</param>
+        /// <returns>
+        ///   The index of the nearest cluster
+        ///   to the given data point. </returns>
+        ///   
+        public int Nearest(double[] point)
+        {
+            if (point == null)
+                throw new ArgumentNullException("point");
+
+            var model = owner.model;
+
+            int imax = 0;
+            double max = model.ProbabilityDensityFunction(0, point);
+
+            for (int i = 1; i < model.Components.Length; i++)
+            {
+                double p = model.ProbabilityDensityFunction(i, point);
+
+                if (p > max)
+                {
+                    max = p;
+                    imax = i;
+                }
+            }
+
+            return imax;
+        }
+
+        /// <summary>
+        ///   Returns the closest cluster to an input point.
+        /// </summary>
+        /// 
+        /// <param name="point">The input vector.</param>
+        /// <param name="responses">The likelihood for each of the classes.</param>
+        /// 
+        /// <returns>
+        ///   The index of the nearest cluster
+        ///   to the given data point. </returns>
+        ///   
+        public int Nearest(double[] point, out double[] responses)
+        {
+            if (point == null)
+                throw new ArgumentNullException("point");
+
+            var model = owner.model;
+
+            responses = new double[model.Components.Length];
+
+            for (int i = 0; i < responses.Length; i++)
+                responses[i] = model.ProbabilityDensityFunction(i, point);
+
+            int imax;
+            responses.Max(out imax);
+            return imax;
+        }
+
+        /// <summary>
+        ///   Returns the closest cluster to an input point.
+        /// </summary>
+        /// 
+        /// <param name="points">The input vectors.</param>
+        /// <returns>
+        ///   The index of the nearest cluster
+        ///   to the given data point. </returns>
+        ///   
+        public int[] Nearest(double[][] points)
+        {
+            int[] labels = new int[points.Length];
+            for (int i = 0; i < points.Length; i++)
+                labels[i] = Nearest(points[i]);
+
+            return labels;
+        }
+
+        /// <summary>
+        ///   Gets the deviance of the points in relation to the model.
+        /// </summary>
+        /// 
+        /// <param name="points">The input points.</param>
+        /// 
+        /// <returns>The deviance, measured as -2 * the log-likelihood of the input points.</returns>
+        /// 
+        public double Deviance(double[][] points)
+        {
+            return -2 * owner.model.LogLikelihood(points);
+        }
+
     }
 
 }
