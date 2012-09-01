@@ -32,14 +32,15 @@ namespace Accord.Neuro
     ///
     /// <remarks>
     ///   <para>This class implements a linear activation function bounded
-    ///   in the interval (a,b), as given by the piecewise formula:
+    ///   in the interval (a,b), as given by the piecewise formula:</para>
     /// 
     ///   <code lang="none">
     ///   f(x) = alpha*x, if a > x*alpha > b
     ///   f(x) = a,       if a > x*alpha;
     ///   f(x) = b,       if     x*alpha > b;
     ///   </code>
-    /// 
+    ///   
+    /// <para>
     ///   In which, by default, a = -1 and b = +1.</para>
     /// 
     /// <para>

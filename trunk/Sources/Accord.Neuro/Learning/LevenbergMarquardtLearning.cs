@@ -445,6 +445,9 @@ namespace Accord.Neuro.Learning
                 else
                     sumOfSquaredErrors = JacobianByFiniteDifference(inputBlock, outputBlock);
 
+                if (Double.IsNaN(sumOfSquaredErrors))
+                    throw new ArithmeticException("Jacobian calculation has produced a non-finite number.");
+
                 Trace.TraceInformation("Jacobian block finished.");
 
 

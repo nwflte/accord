@@ -83,7 +83,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Activation Functions\LinearFunction.cs" />
-    <Compile Include="Properties\GlobalSuppressions.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Learning\LevenbergMarquardtLearning.cs" />
     <Compile Include="Learning\ParallelResilientBackPropagationLearning.cs" />
     <Compile Include="NguyenWidrow.cs" />
