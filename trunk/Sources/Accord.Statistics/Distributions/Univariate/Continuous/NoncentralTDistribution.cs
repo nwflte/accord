@@ -157,7 +157,7 @@ namespace Accord.Statistics.Distributions.Univariate
 
             if (x != 0)
             {
-                double A = F(x * Math.Sqrt(1 + 2 / v), v + 1, u);
+                double A = F(x * Math.Sqrt(1 + 2 / v), v + 2, u);
                 double B = F(x, v, u);
                 double C = v / x;
                 return C * (A - B);

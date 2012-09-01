@@ -44,6 +44,14 @@ namespace Accord.Statistics.Distributions.Fitting
         public double Threshold { get; set; }
 
         /// <summary>
+        ///   Gets or sets the maximum number of iterations
+        ///   to be performed by the Expectation-Maximization
+        ///   algorithm. Default is zero (iterate until convergence).
+        /// </summary>
+        /// 
+        public int Iterations { get; set; }
+
+        /// <summary>
         ///   Gets or sets the fitting options for the inner
         ///   component distributions of the mixture density.
         /// </summary>
