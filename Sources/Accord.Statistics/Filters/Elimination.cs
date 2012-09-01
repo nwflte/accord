@@ -23,30 +23,34 @@
 namespace Accord.Statistics.Filters
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
     using System.Data;
 
     /// <summary>
-    ///   Value discretization preprocessing filter.
+    ///   Elimination filter.
     /// </summary>
     /// 
     [Serializable]
-    public class Discretization : BaseFilter<Discretization.Options>, IAutoConfigurableFilter
+    public class Elimination : BaseFilter<Elimination.Options>, IAutoConfigurableFilter
     {
 
         /// <summary>
-        ///   Creates a new Discretization filter.
+        ///   Creates a elimination filter to remove
+        ///   rows containing missing values.
         /// </summary>
         /// 
-        public Discretization()
-            : base()
-        {
-        }
+        public Elimination()
+            : base() { }
 
         /// <summary>
-        ///   Creates a new Discretization filter.
+        ///   Creates a elimination filter to remove
+        ///   rows containing missing values in the
+        ///   specified columns.
         /// </summary>
         /// 
-        public Discretization(params string[] columns)
+        public Elimination(params string[] columns)
         {
             foreach (String col in columns)
                 Columns.Add(new Options(col));
@@ -61,25 +65,27 @@ namespace Accord.Statistics.Filters
             // Copy the DataTable
             DataTable result = data.Copy();
 
-            foreach (Options options in Columns)
+            List<DataRow> deleted = new List<DataRow>();
+
+            foreach (DataRow row in result.Rows)
             {
-                foreach (DataRow row in result.Rows)
+                foreach (Options options in Columns)
                 {
-                    double value = (double)row[options.ColumnName];
+                    double value;
 
-                    double x = options.Symmetric ? System.Math.Abs(value) : value;
+                    if (!Double.TryParse(row[options.ColumnName].ToString(), out value))
+                        value = Double.NaN;
 
-                    double floor = System.Math.Floor(x);
-
-                    x = (x >= (floor + options.Threshold)) ?
-                        System.Math.Ceiling(x) : floor;
-
-
-                    value = (options.Symmetric && value < 0) ? -x : x;
-
-                    row[options.ColumnName] = value;
+                    if ((!Double.IsNaN(options.Value) && value == options.Value)
+                      || (Double.IsNaN(options.Value) && Double.IsNaN(value)))
+                    {
+                        deleted.Add(row); break;
+                    }
                 }
             }
+
+            foreach (DataRow row in deleted)
+                result.Rows.Remove(row);
 
             return result;
         }
@@ -92,14 +98,9 @@ namespace Accord.Statistics.Filters
         {
             foreach (DataColumn column in data.Columns)
             {
-                // If the column has a continuous numeric type
-                if (column.DataType == typeof(Double) ||
-                    column.DataType == typeof(Decimal))
-                {
-                    // Add the column to the processing options
-                    if (!Columns.Contains(column.ColumnName))
-                        Columns.Add(new Options(column.ColumnName));
-                }
+                // Add the column to the processing options
+                if (!Columns.Contains(column.ColumnName))
+                    Columns.Add(new Options(column.ColumnName));
             }
         }
 
@@ -110,48 +111,33 @@ namespace Accord.Statistics.Filters
         [Serializable]
         public class Options : ColumnOptionsBase
         {
-            /// <summary>
-            ///   Gets or sets the threshold for the discretization filter.
-            /// </summary>
-            /// 
-            public double Threshold { get; set; }
 
             /// <summary>
-            ///   Gets or sets whether the discretization threshold is symmetric.
+            ///   Gets the value indicator of a missing field.
+            ///   Default is <see cref="Double.NaN"/>.
             /// </summary>
             /// 
-            /// <remarks>
-            /// <para>
-            ///   If a symmetric threshold of 0.4 is used, for example, a real value of
-            ///   0.5 will be rounded to 1.0 and a real value of -0.5 will be rounded to
-            ///   -1.0. </para>
-            /// <para>
-            ///   If a non-symmetric threshold of 0.4 is used, a real value of 0.5
-            ///   will be rounded towards 1.0, but a real value of -0.5 will be rounded
-            ///   to 0.0 (because |-0.5| is higher than the threshold of 0.4).</para>
-            /// </remarks>
-            /// 
-            public bool Symmetric { get; set; }
+            public double Value { get; set; }
 
             /// <summary>
-            ///   Constructs a new Options class for the discretization filter.
+            ///   Constructs a new column option
+            ///   for the Elimination filter.
             /// </summary>
             /// 
             public Options(String name)
                 : base(name)
             {
-                this.Threshold = 0.5;
-                this.Symmetric = false;
+                this.Value = Double.NaN;
             }
 
             /// <summary>
-            ///   Constructs a new Options object.
+            ///   Constructs a new column option
+            ///   for the Elimination filter.
             /// </summary>
             /// 
             public Options()
-                : this("New column")
-            {
-            }
+                : this("New column") { }
+
         }
     }
 }

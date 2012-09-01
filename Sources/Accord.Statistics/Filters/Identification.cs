@@ -23,70 +23,59 @@
 namespace Accord.Statistics.Filters
 {
     using System;
+    using System.Collections.ObjectModel;
     using System.Data;
+    using System.Linq;
+    using System.Collections.Generic;
 
     /// <summary>
-    ///   Relational-algebra selection filter.
+    ///   Identification filter.
     /// </summary>
     /// 
     [Serializable]
-    public class Selection : IFilter
+    public class Identification : IFilter
     {
+        
         /// <summary>
-        ///   Gets or sets the eSQL filter expression for the filter.
+        ///   Gets or sets the name of the column used
+        ///   to store row indices.
         /// </summary>
         /// 
-        public string Expression { get; set; }
+        public String ColumnName { get; set; }
 
         /// <summary>
-        ///   Gets or sets the ordering to apply for the filter.
+        ///   Creates a new identification filter.
         /// </summary>
         /// 
-        public string OrderBy { get; set; }
-
-
-        /// <summary>
-        ///   Constructs a new Selection Filter.
-        /// </summary>
-        /// 
-        /// <param name="expression">The filtering criteria.</param>
-        /// <param name="orderBy">The desired sort order.</param>
-        /// 
-        public Selection(string expression, string orderBy)
+        public Identification()
         {
-            this.Expression = expression;
-            this.OrderBy = orderBy;
+            ColumnName = "Id";
         }
 
         /// <summary>
-        ///   Constructs a new Selection Filter.
+        ///   Creates a new identification filter.
         /// </summary>
         /// 
-        /// <param name="expression">The filtering criteria.</param>
-        /// 
-        public Selection(string expression)
-            : this(expression, String.Empty) { }
+        public Identification(String columnName)
+        {
+            ColumnName = columnName;
+        }
+
 
         /// <summary>
-        ///   Constructs a new Selection Filter.
-        /// </summary>
-        /// 
-        public Selection()
-            : this(String.Empty, String.Empty) { }
-
-        /// <summary>
-        ///   Applies the filter to the current data.
+        ///   Applies the filter to the DataTable.
         /// </summary>
         /// 
         public DataTable Apply(DataTable data)
         {
-            DataTable table = data.Clone();
+            DataTable result = data.Copy();
 
-            DataRow[] rows = data.Select(Expression, OrderBy);
-            foreach (DataRow row in rows)
-                table.ImportRow(row);
+            result.Columns.Add(ColumnName, typeof(int));
 
-            return table;
+            for (int i = 0; i < result.Rows.Count; i++)
+                result.Rows[i][ColumnName] = i;
+
+            return result;
         }
 
     }

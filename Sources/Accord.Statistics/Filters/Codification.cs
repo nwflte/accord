@@ -30,6 +30,7 @@ namespace Accord.Statistics.Filters
     /// <summary>
     ///   Codification Filter class.
     /// </summary>
+    /// 
     /// <remarks>
     ///   The codification filter performs an integer codification of classes in
     ///   given in a string form. An unique integer identifier will be assigned
@@ -127,7 +128,7 @@ namespace Accord.Statistics.Filters
             {
                 for (int j = 0; j < Columns.Count; j++)
                 {
-                    Options options = this.Columns[i];
+                    Options options = this.Columns[j];
                     if (options.Mapping.TryGetValue(data[i], out result[i]))
                         break;
                 }

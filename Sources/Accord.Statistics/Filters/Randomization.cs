@@ -24,55 +24,49 @@ namespace Accord.Statistics.Filters
 {
     using System;
     using System.Data;
+    using Accord.Math;
 
     /// <summary>
-    ///   Relational-algebra selection filter.
+    ///   Randomization filter.
     /// </summary>
     /// 
     [Serializable]
-    public class Selection : IFilter
+    public class Randomization : IFilter
     {
-        /// <summary>
-        ///   Gets or sets the eSQL filter expression for the filter.
-        /// </summary>
-        /// 
-        public string Expression { get; set; }
-
-        /// <summary>
-        ///   Gets or sets the ordering to apply for the filter.
-        /// </summary>
-        /// 
-        public string OrderBy { get; set; }
 
 
         /// <summary>
-        ///   Constructs a new Selection Filter.
+        ///   Gets or sets the fixed random seed to
+        ///   be used in randomization, if any.
         /// </summary>
         /// 
-        /// <param name="expression">The filtering criteria.</param>
-        /// <param name="orderBy">The desired sort order.</param>
+        /// <value>The random seed, for fixed permutations;
+        /// or null, for true random permutations.</value>
         /// 
-        public Selection(string expression, string orderBy)
+        public int? Seed { get; set; }
+
+
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="Randomization"/> class.
+        /// </summary>
+        /// 
+        /// <param name="seed">A fixed random seed value to generate fixed
+        /// permutations. If not specified, generates true random permutations. </param>
+        /// 
+        public Randomization(int seed)
         {
-            this.Expression = expression;
-            this.OrderBy = orderBy;
+            this.Seed = seed;
         }
 
         /// <summary>
-        ///   Constructs a new Selection Filter.
+        /// Initializes a new instance of the <see cref="Randomization"/> class.
         /// </summary>
         /// 
-        /// <param name="expression">The filtering criteria.</param>
-        /// 
-        public Selection(string expression)
-            : this(expression, String.Empty) { }
+        public Randomization()
+        {
+            this.Seed = null;
+        }
 
-        /// <summary>
-        ///   Constructs a new Selection Filter.
-        /// </summary>
-        /// 
-        public Selection()
-            : this(String.Empty, String.Empty) { }
 
         /// <summary>
         ///   Applies the filter to the current data.
@@ -80,13 +74,25 @@ namespace Accord.Statistics.Filters
         /// 
         public DataTable Apply(DataTable data)
         {
-            DataTable table = data.Clone();
+            DataTable result = data.Clone();
 
-            DataRow[] rows = data.Select(Expression, OrderBy);
-            foreach (DataRow row in rows)
-                table.ImportRow(row);
+            int rows = data.Rows.Count;
 
-            return table;
+            int[] indices = Matrix.Indices(0, rows);
+
+            int r = Accord.Math.Tools.Random.Next();
+            if (Seed.HasValue) 
+                Accord.Math.Tools.SetupGenerator(Seed.Value);
+
+            Accord.Statistics.Tools.Shuffle(indices);
+
+            if (Seed.HasValue)
+                Accord.Math.Tools.SetupGenerator(r);
+
+            for (int i = 0; i < indices.Length; i++)
+                result.ImportRow(data.Rows[indices[i]]);
+
+            return result;
         }
 
     }
