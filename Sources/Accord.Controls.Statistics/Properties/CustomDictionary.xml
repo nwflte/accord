@@ -4,7 +4,7 @@
       <Word></Word>
     </Unrecognized>
     <Recognized>
-      <Word>scatterplot</Word>
+      <Word>Scatterplot</Word>
     </Recognized>
     <Deprecated>
       <Term PreferredAlternate=""></Term>
@@ -18,7 +18,7 @@
   </Words>
   <Acronyms>
     <CasingExceptions>
-      <Acronym>RANSAC</Acronym>
+      <Acronym></Acronym>
     </CasingExceptions>
   </Acronyms>
 </Dictionary>

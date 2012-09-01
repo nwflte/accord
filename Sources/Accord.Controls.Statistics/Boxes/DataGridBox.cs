@@ -234,7 +234,7 @@ namespace Accord.Controls
 
                 // Show control in a form
                 form = new DataGridBox();
-                form.Text = title ?? "DataGridBox";
+                form.Text = title ?? "Data Grid";
                 form.formThread = formThread;
                 form.dataGridView.DataSource = source;
 
