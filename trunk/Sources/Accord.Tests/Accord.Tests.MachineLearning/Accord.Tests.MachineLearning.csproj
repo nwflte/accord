@@ -101,6 +101,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BootstrapTest.cs" />
+    <Compile Include="SplitSetTest.cs" />
     <Compile Include="DecisionTrees\C45LearningTest.cs" />
     <Compile Include="DecisionTrees\DecisionTreeCompilerTest.cs" />
     <Compile Include="Bayes\NaiveBayes`1Test.cs" />
@@ -176,7 +177,9 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Resources\iris.scale.txt" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="Resources\SVM-014.svm" />
   </ItemGroup>

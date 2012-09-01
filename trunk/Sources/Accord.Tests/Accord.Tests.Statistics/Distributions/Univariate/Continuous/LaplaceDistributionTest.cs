@@ -20,29 +20,19 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics.Filters;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Data;
-
 namespace Accord.Tests.Statistics
 {
-    
-    
-    /// <summary>
-    ///This is a test class for EqualizingFilterTest and is intended
-    ///to contain all EqualizingFilterTest Unit Tests
-    ///</summary>
+    using Accord.Statistics.Distributions.Univariate;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System;
+
     [TestClass()]
-    public class EqualizingFilterTest
+    public class LaplaceDistributionTest
     {
 
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -86,51 +76,39 @@ namespace Accord.Tests.Statistics
         #endregion
 
 
-        /// <summary>
-        ///A test for Apply
-        ///</summary>
         [TestMethod()]
-        public void ApplyTest()
+        public void LaplaceDistributionConstructorTest()
         {
-            DataTable data = new DataTable("Sample data");
-            data.Columns.Add("x", typeof(double));
-            data.Columns.Add("Class", typeof(int));
-            data.Rows.Add(0.21, 0);
-            data.Rows.Add(0.25, 0);
-            data.Rows.Add(0.54, 0);
-            data.Rows.Add(0.19, 1);
-
-            DataTable expected = new DataTable("Sample data");
-            expected.Columns.Add("x", typeof(double));
-            expected.Columns.Add("Class", typeof(int));
-            expected.Rows.Add(0.21, 0);
-            expected.Rows.Add(0.25, 0);
-            expected.Rows.Add(0.54, 0);
-            expected.Rows.Add(0.19, 1);
-            expected.Rows.Add(0.19, 1);
-            expected.Rows.Add(0.19, 1);
-
-
-            DataTable actual;
-
-            Stratification target = new Stratification("Class");
-            target.Columns["Class"].Classes = new int[] { 0, 1 };
-            
-            actual = target.Apply(data);
-
-            for (int i = 0; i < actual.Rows.Count; i++)
             {
-                double ex = (double)expected.Rows[i][0];
-                int ec = (int)expected.Rows[i][1];
+                LaplaceDistribution target = new LaplaceDistribution(0, 0.2);
 
-                double ax = (double)actual.Rows[i][0];
-                int ac = (int)actual.Rows[i][1];
+                double[] expected = { 2.5, 1.5163266, 0.919699, 0.557825, 0.338338 };
 
-                Assert.AreEqual(ex, ax);
-                Assert.AreEqual(ec, ac);                    
-                
+                for (int i = 0; i < expected.Length; i++)
+                {
+
+                    double x = i / 10.0;
+                    double actual = target.ProbabilityDensityFunction(x);
+                    Assert.AreEqual(expected[i], actual, 1e-6);
+                    Assert.IsFalse(double.IsNaN(actual));
+                }
             }
-            
+
+            {
+                LaplaceDistribution target = new LaplaceDistribution(-2, 5.79);
+
+                double[] expected = { 0.0666469, 0.0655057, 0.06438406, 0.0632816234, 0.062198060, 0.061133051 };
+
+                for (int i = 0; i < expected.Length; i++)
+                {
+
+                    double x = (i - 5) / 10.0;
+                    double actual = target.ProbabilityDensityFunction(x);
+                    Assert.AreEqual(expected[i], actual, 1e-8);
+                    Assert.IsFalse(double.IsNaN(actual));
+                }
+            }
         }
+
     }
 }

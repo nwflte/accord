@@ -1,4 +1,24 @@
-﻿
+﻿// Accord Unit Tests
+// The Accord.NET Framework
+// http://accord.googlecode.com
+//
+// Copyright © César Souza, 2009-2012
+// cesarsouza at gmail.com
+//
+//    This library is free software; you can redistribute it and/or
+//    modify it under the terms of the GNU Lesser General Public
+//    License as published by the Free Software Foundation; either
+//    version 2.1 of the License, or (at your option) any later version.
+//
+//    This library is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+//    Lesser General Public License for more details.
+//
+//    You should have received a copy of the GNU Lesser General Public
+//    License along with this library; if not, write to the Free Software
+//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+//
 
 namespace Accord.Tests.Statistics
 {
@@ -300,5 +320,20 @@ namespace Accord.Tests.Statistics
                 Assert.AreEqual(target.Samples1, target.Samples2);
             }
         }
+
+        [TestMethod()]
+        public void TTestPowerAnalysisConstructorTest5()
+        {
+            var analysis = new TwoSampleTTestPowerAnalysis(TwoSampleHypothesis.ValuesAreDifferent);
+
+            analysis.Effect = 5;
+            analysis.Power = 0.95;
+            analysis.ComputeSize();
+
+            Assert.AreEqual(0.12207248549844732, analysis.Size);
+            Assert.AreEqual(2, analysis.Samples1);
+            Assert.AreEqual(2, analysis.Samples2);
+        }
+
     }
 }

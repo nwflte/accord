@@ -236,7 +236,8 @@ namespace Accord.Tests.MachineLearning
             Assert.IsTrue(tree.Root.Branches[0].Branches[1].IsLeaf);
 
             Assert.AreEqual(1, tree.Root.Branches[1].Value); // Outlook = Overcast
-            Assert.IsNull(tree.Root.Branches[1].Branches);
+            Assert.IsNotNull(tree.Root.Branches[1].Branches);
+            Assert.AreEqual(0, tree.Root.Branches[1].Branches.Count);
             Assert.IsTrue(tree.Root.Branches[1].IsLeaf);
 
             Assert.AreEqual(2, tree.Root.Branches[2].Value); // Outlook = Rain

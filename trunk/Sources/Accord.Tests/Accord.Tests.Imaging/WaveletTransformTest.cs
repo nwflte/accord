@@ -32,10 +32,6 @@ namespace Accord.Tests.Imaging
 {
     
     
-    /// <summary>
-    ///This is a test class for WaveletTransformTest and is intended
-    ///to contain all WaveletTransformTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class WaveletTransformTest
     {
@@ -43,10 +39,6 @@ namespace Accord.Tests.Imaging
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -90,9 +82,6 @@ namespace Accord.Tests.Imaging
         #endregion
 
 
-        /// <summary>
-        ///A test for WaveletTransform Constructor
-        ///</summary>
         [TestMethod()]
         public void WaveletTransformConstructorTest()
         {

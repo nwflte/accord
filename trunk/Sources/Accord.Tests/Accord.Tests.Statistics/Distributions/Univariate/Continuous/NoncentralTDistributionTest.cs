@@ -133,6 +133,45 @@ namespace Accord.Tests.Statistics
         }
 
         [TestMethod()]
+        public void ProbabilityFunctionTest()
+        {
+            double[,] table = 
+            {
+                //   x    d     df      expected
+                {  3.00,  0.0,  1,    0.03183098861      },
+                {  3.00,  0.0,  2,    0.02741012223      },
+                {  3.00,  0.0,  3,    0.02297203730      },
+                {  3.00,  0.5,  1,    0.05359565579      },
+                {  3.00,  0.5,  2,    0.05226515196      },
+                {  3.00,  0.5,  3,    0.04788249161      },
+                {  3.00,  7.0, 15,    0.0009236578208725 },
+                { 15.00,  7.0, 15,    0.0013850587855    },
+                { 15.00,  7.0, 25,    0.00018206084230   },
+                {  0.00,  7.0, 25,    0.0000000000090438 },
+                {  0.00,  2.0,  1,    0.0430785586036    },
+                {  0.00,  2.0,  2,    0.047848248255205  },
+                {  0.00,  2.0,  3,    0.0497428348122    },
+                {  0.00,  4.0,  1,    0.000106781070     },
+                {  0.00,  4.0,  2,    0.000118603949     },
+            };
+
+            for (int i = 0; i < table.GetLength(0); i++)
+            {
+                double x = table[i, 0];
+                double delta = table[i, 1];
+                double df = table[i, 2];
+
+                var target = new NoncentralTDistribution(df, delta);
+
+                double expected = table[i, 3];
+                double actual = target.ProbabilityDensityFunction(x);
+
+               Assert.AreEqual(expected, actual, 1e-10);
+            }
+        }
+
+
+        [TestMethod()]
         public void MeanTest()
         {
             NoncentralTDistribution target;

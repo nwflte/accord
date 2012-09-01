@@ -20,29 +20,21 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics.Filters;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Data;
-
 namespace Accord.Tests.Statistics
 {
-    
-    
-    /// <summary>
-    ///This is a test class for EqualizingFilterTest and is intended
-    ///to contain all EqualizingFilterTest Unit Tests
-    ///</summary>
+    using Accord.Statistics.Testing;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System;
+    using AForge;
+    using Accord.Statistics.Testing.Power;
+
     [TestClass()]
-    public class EqualizingFilterTest
+    public class TwoProportionZTestTest
     {
 
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -86,51 +78,27 @@ namespace Accord.Tests.Statistics
         #endregion
 
 
-        /// <summary>
-        ///A test for Apply
-        ///</summary>
+
+
         [TestMethod()]
-        public void ApplyTest()
+        public void TwoProportionZTestConstructorTest()
         {
-            DataTable data = new DataTable("Sample data");
-            data.Columns.Add("x", typeof(double));
-            data.Columns.Add("Class", typeof(int));
-            data.Rows.Add(0.21, 0);
-            data.Rows.Add(0.25, 0);
-            data.Rows.Add(0.54, 0);
-            data.Rows.Add(0.19, 1);
+            // Example from http://stattrek.com/hypothesis-test/difference-in-proportions.aspx
 
-            DataTable expected = new DataTable("Sample data");
-            expected.Columns.Add("x", typeof(double));
-            expected.Columns.Add("Class", typeof(int));
-            expected.Rows.Add(0.21, 0);
-            expected.Rows.Add(0.25, 0);
-            expected.Rows.Add(0.54, 0);
-            expected.Rows.Add(0.19, 1);
-            expected.Rows.Add(0.19, 1);
-            expected.Rows.Add(0.19, 1);
+            int sampleSize1 = 100;
+            int sampleSize2 = 200;
+            double sample1 = 0.38;
+            double sample2 = 0.51;
 
+            TwoProportionZTest target = new TwoProportionZTest(
+                sample1, sampleSize1,
+                sample2, sampleSize2,
+                TwoSampleHypothesis.ValuesAreDifferent);
 
-            DataTable actual;
-
-            Stratification target = new Stratification("Class");
-            target.Columns["Class"].Classes = new int[] { 0, 1 };
-            
-            actual = target.Apply(data);
-
-            for (int i = 0; i < actual.Rows.Count; i++)
-            {
-                double ex = (double)expected.Rows[i][0];
-                int ec = (int)expected.Rows[i][1];
-
-                double ax = (double)actual.Rows[i][0];
-                int ac = (int)actual.Rows[i][1];
-
-                Assert.AreEqual(ex, ax);
-                Assert.AreEqual(ec, ac);                    
-                
-            }
-            
+            Assert.AreEqual(-2.13, target.Statistic, 5e-3);
+            Assert.AreEqual(0.034, target.PValue, 1e-3);
+            Assert.IsTrue(target.Significant);
         }
+
     }
 }

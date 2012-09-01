@@ -138,6 +138,8 @@ namespace Accord.Tests.Statistics
         [TestMethod()]
         public void GenerateTest2()
         {
+            Accord.Math.Tools.SetupGenerator(0);
+
             NakagamiDistribution target = new NakagamiDistribution(4, 2);
 
             double[] samples = new double[1000000];

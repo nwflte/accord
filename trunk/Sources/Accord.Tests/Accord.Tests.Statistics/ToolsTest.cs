@@ -1,4 +1,7 @@
-﻿// Accord Unit Tests
+﻿using Accord.Statistics;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+// Accord Unit Tests
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
@@ -557,8 +560,8 @@ namespace Accord.Tests.Statistics
         public void KurtosisTest()
         {
             double[] values = { 3.4, 7.1, 1.5, 8.6, 4.9 };
-            double expected = -1.939370186981427;
-            double actual = Tools.Kurtosis(values);
+            double expected = 1.6572340828415202; // definition used by Stata
+            double actual = Tools.Kurtosis(values, false) + 3;
             Assert.AreEqual(expected, actual);
         }
 
@@ -566,11 +569,10 @@ namespace Accord.Tests.Statistics
         public void SkewnessTest()
         {
             double[] values = { 3.4, 7.1, 1.5, 8.6, 4.9 };
-            double expected = -0.0061643641512110154;
-            double actual = Tools.Skewness(values);
+            double expected = -0.00861496080010664;
+            double actual = Tools.Skewness(values, false);
             Assert.AreEqual(expected, actual);
         }
-
 
 
         [TestMethod()]
@@ -600,9 +602,6 @@ namespace Accord.Tests.Statistics
         }
 
 
-        /// <summary>
-        ///A test for PooledVariance
-        ///</summary>
         [TestMethod()]
         public void PooledVarianceTest()
         {
@@ -620,9 +619,6 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(expected, actual);
         }
 
-        /// <summary>
-        ///A test for PooledStandardDeviation
-        ///</summary>
         [TestMethod()]
         public void PooledStandardDeviationTest()
         {
@@ -694,6 +690,171 @@ namespace Accord.Tests.Statistics
 
             Assert.IsTrue(expected.IsEqual(actual));
             Assert.IsTrue(copy.IsEqual(values));
+        }
+
+        [TestMethod()]
+        public void ModeTest2()
+        {
+            int[][] matrix = 
+            {
+                new[] { 6, 4, 9 },
+                new[] { 3, 1, 3 },
+                new[] { 1, 3, 8 },
+                new[] { 1, 5, 4 },
+                new[] { 7, 4, 1 },
+                new[] { 4, 4, 3 },
+            };
+
+            int[] expected = { 1, 4, 3 };
+            int[] actual = Tools.Mode(matrix);
+
+            Assert.AreEqual(expected[0], actual[0]);
+            Assert.AreEqual(expected[1], actual[1]);
+            Assert.AreEqual(expected[2], actual[2]);
+        }
+
+        [TestMethod()]
+        public void ModeTest3()
+        {
+            double[][] matrix = 
+            {
+                new double[] { 6, 4, 9 },
+                new double[] { 3, 1, 3 },
+                new double[] { 1, 3, 8 },
+                new double[] { 1, 5, 4 },
+                new double[] { 7, 4, 1 },
+                new double[] { 4, 4, 3 },
+            };
+
+            double[] expected = { 1, 4, 3 };
+            double[] actual = Tools.Mode(matrix);
+
+            Assert.AreEqual(expected[0], actual[0]);
+            Assert.AreEqual(expected[1], actual[1]);
+            Assert.AreEqual(expected[2], actual[2]);
+        }
+
+        [TestMethod()]
+        public void ModeTest4()
+        {
+            int[] values = { 2, 5, 1, 6, 4, 1, 2, 6, 2, 6, 8, 2, 6, 2, 2 };
+            int expected = 2;
+            int actual = Tools.Mode(values);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod()]
+        public void KurtosisTest1()
+        {
+            double[,] matrix = 
+            {
+                { 1987 },
+                { 1987 },
+                { 1991 },
+                { 1992 },
+                { 1992 },
+                { 1992 },
+                { 1992 },
+                { 1993 },
+                { 1994 },
+                { 1994 },
+                { 1995 },
+            };
+
+            double expected = 0.4466489;
+            {
+                double[] actual = Tools.Kurtosis(matrix);
+                Assert.AreEqual(expected, actual[0], 1e-7);
+            }
+            {
+                double actual = Tools.Kurtosis(matrix.GetColumn(0));
+                Assert.AreEqual(expected, actual, 1e-7);
+            }
+        }
+
+        [TestMethod()]
+        public void KurtosisTest2()
+        {
+            double[][] matrix = 
+            {
+                new double[] { 1987 },
+                new double[] { 1987 },
+                new double[] { 1991 },
+                new double[] { 1992 },
+                new double[] { 1992 },
+                new double[] { 1992 },
+                new double[] { 1992 },
+                new double[] { 1993 },
+                new double[] { 1994 },
+                new double[] { 1994 },
+                new double[] { 1995 },
+            };
+
+            double expected = 0.4466489;
+            {
+                double[] actual = Tools.Kurtosis(matrix);
+                Assert.AreEqual(expected, actual[0], 1e-7);
+            }
+            {
+                double actual = Tools.Kurtosis(matrix.GetColumn(0));
+                Assert.AreEqual(expected, actual, 1e-7);
+            }
+        }
+
+        [TestMethod()]
+        public void SkewnessTest1()
+        {
+            double[,] matrix = 
+            {
+                { 180 },
+                { 182 },
+                { 169 },
+                { 175 },
+                { 178 },
+                { 189 },
+                { 174 },
+                { 174 }, 
+                { 171 },
+                { 168 }
+            };
+
+            double expected = 0.77771377;
+            {
+                double[] actual = Tools.Skewness(matrix);
+                Assert.AreEqual(expected, actual[0], 1e-7);
+            }
+            {
+                double actual = Tools.Skewness(matrix.GetColumn(0));
+                Assert.AreEqual(expected, actual, 1e-7);
+            }
+        }
+
+        [TestMethod()]
+        public void SkewnessTest2()
+        {
+            double[][] matrix = 
+            {
+                new double[] { 180 },
+                new double[] { 182 },
+                new double[] { 169 },
+                new double[] { 175 },
+                new double[] { 178 },
+                new double[] { 189 },
+                new double[] { 174 },
+                new double[] { 174 }, 
+                new double[] { 171 },
+                new double[] { 168 }
+            };
+
+            double expected = 0.77771377;
+            {
+                double[] actual = Tools.Skewness(matrix);
+                Assert.AreEqual(expected, actual[0], 1e-7);
+            }
+            {
+                double actual = Tools.Skewness(matrix.GetColumn(0));
+                Assert.AreEqual(expected, actual, 1e-7);
+            }
         }
     }
 }

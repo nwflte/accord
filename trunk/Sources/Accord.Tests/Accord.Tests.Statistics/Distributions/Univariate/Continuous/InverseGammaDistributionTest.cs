@@ -20,29 +20,19 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics.Filters;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Data;
-
 namespace Accord.Tests.Statistics
 {
-    
-    
-    /// <summary>
-    ///This is a test class for EqualizingFilterTest and is intended
-    ///to contain all EqualizingFilterTest Unit Tests
-    ///</summary>
+    using Accord.Statistics.Distributions.Univariate;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System;
+
     [TestClass()]
-    public class EqualizingFilterTest
+    public class InverseGammaDistributionTest
     {
 
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -86,51 +76,45 @@ namespace Accord.Tests.Statistics
         #endregion
 
 
-        /// <summary>
-        ///A test for Apply
-        ///</summary>
         [TestMethod()]
-        public void ApplyTest()
+        public void InverseGammaDistributionConstructorTest()
         {
-            DataTable data = new DataTable("Sample data");
-            data.Columns.Add("x", typeof(double));
-            data.Columns.Add("Class", typeof(int));
-            data.Rows.Add(0.21, 0);
-            data.Rows.Add(0.25, 0);
-            data.Rows.Add(0.54, 0);
-            data.Rows.Add(0.19, 1);
+            double actual, expected;
 
-            DataTable expected = new DataTable("Sample data");
-            expected.Columns.Add("x", typeof(double));
-            expected.Columns.Add("Class", typeof(int));
-            expected.Rows.Add(0.21, 0);
-            expected.Rows.Add(0.25, 0);
-            expected.Rows.Add(0.54, 0);
-            expected.Rows.Add(0.19, 1);
-            expected.Rows.Add(0.19, 1);
-            expected.Rows.Add(0.19, 1);
-
-
-            DataTable actual;
-
-            Stratification target = new Stratification("Class");
-            target.Columns["Class"].Classes = new int[] { 0, 1 };
-            
-            actual = target.Apply(data);
-
-            for (int i = 0; i < actual.Rows.Count; i++)
             {
-                double ex = (double)expected.Rows[i][0];
-                int ec = (int)expected.Rows[i][1];
+                InverseGammaDistribution target = new InverseGammaDistribution(4, 2);
+                actual = target.ProbabilityDensityFunction(-2);
+                expected = 0;
+                Assert.AreEqual(expected, actual);
 
-                double ax = (double)actual.Rows[i][0];
-                int ac = (int)actual.Rows[i][1];
+                actual = target.ProbabilityDensityFunction(5);
+                expected = 0.000572006;
+                Assert.AreEqual(expected, actual, 1e-6);
+                Assert.IsFalse(Double.IsNaN(actual));
 
-                Assert.AreEqual(ex, ax);
-                Assert.AreEqual(ec, ac);                    
-                
+                actual = target.ProbabilityDensityFunction(0.42);
+                expected = 1.74443;
+                Assert.AreEqual(expected, actual, 1e-6);
+                Assert.IsFalse(Double.IsNaN(actual));
             }
-            
+
+            {
+                InverseGammaDistribution target = new InverseGammaDistribution(2.4, 0.42);
+                actual = target.ProbabilityDensityFunction(0);
+                expected = 0;
+                Assert.AreEqual(expected, actual);
+                Assert.IsFalse(Double.IsNaN(actual));
+
+                actual = target.ProbabilityDensityFunction(0.3);
+                expected = 1.4838600;
+                Assert.AreEqual(expected, actual, 1e-7);
+                Assert.IsFalse(Double.IsNaN(actual));
+
+                actual = target.ProbabilityDensityFunction(0.42);
+                expected = 0.705140;
+                Assert.AreEqual(expected, actual, 1e-6);
+                Assert.IsFalse(Double.IsNaN(actual));
+            }
         }
     }
 }

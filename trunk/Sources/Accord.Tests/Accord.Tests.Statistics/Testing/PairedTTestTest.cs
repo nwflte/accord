@@ -20,29 +20,22 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics.Filters;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Data;
-
 namespace Accord.Tests.Statistics
 {
-    
-    
-    /// <summary>
-    ///This is a test class for EqualizingFilterTest and is intended
-    ///to contain all EqualizingFilterTest Unit Tests
-    ///</summary>
+
+    using Accord.Statistics.Testing;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Accord.Statistics.Testing.Power;
+    using System;
+    using Accord.Math;
+
     [TestClass()]
-    public class EqualizingFilterTest
+    public class PairedTTestTest
     {
 
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -86,51 +79,49 @@ namespace Accord.Tests.Statistics
         #endregion
 
 
-        /// <summary>
-        ///A test for Apply
-        ///</summary>
         [TestMethod()]
-        public void ApplyTest()
+        public void TTestConstructorTest()
         {
-            DataTable data = new DataTable("Sample data");
-            data.Columns.Add("x", typeof(double));
-            data.Columns.Add("Class", typeof(int));
-            data.Rows.Add(0.21, 0);
-            data.Rows.Add(0.25, 0);
-            data.Rows.Add(0.54, 0);
-            data.Rows.Add(0.19, 1);
+            // Suppose we would like to know the effect of a treatment (such
+            // as a new drug) in improving the well-being of 9 patients. The
+            // well-being is measured in a discrete scale, going from 0 to 10.
+            //
+            // To do so, we need to register the initial state of each patient
+            // and then register their state after a given time under treatment.
 
-            DataTable expected = new DataTable("Sample data");
-            expected.Columns.Add("x", typeof(double));
-            expected.Columns.Add("Class", typeof(int));
-            expected.Rows.Add(0.21, 0);
-            expected.Rows.Add(0.25, 0);
-            expected.Rows.Add(0.54, 0);
-            expected.Rows.Add(0.19, 1);
-            expected.Rows.Add(0.19, 1);
-            expected.Rows.Add(0.19, 1);
-
-
-            DataTable actual;
-
-            Stratification target = new Stratification("Class");
-            target.Columns["Class"].Classes = new int[] { 0, 1 };
-            
-            actual = target.Apply(data);
-
-            for (int i = 0; i < actual.Rows.Count; i++)
+            double[,] patients =
             {
-                double ex = (double)expected.Rows[i][0];
-                int ec = (int)expected.Rows[i][1];
+                 //                 before      after
+                 //                treatment  treatment
+                 /* Patient 1.*/ {     0,         1     },
+                 /* Patient 1.*/ {     6,         5     },
+                 /* Patient 1.*/ {     4,         9     },
+                 /* Patient 1.*/ {     8,         6     },
+                 /* Patient 1.*/ {     1,         6     },
+                 /* Patient 1.*/ {     6,         7     },
+                 /* Patient 1.*/ {     3,         4     },
+                 /* Patient 1.*/ {     8,         7     },
+                 /* Patient 1.*/ {     6,         5     },
+            };
 
-                double ax = (double)actual.Rows[i][0];
-                int ac = (int)actual.Rows[i][1];
+            // Extect the before and after columns
+            double[] before = patients.GetColumn(0);
+            double[] after = patients.GetColumn(1);
 
-                Assert.AreEqual(ex, ax);
-                Assert.AreEqual(ec, ac);                    
-                
-            }
-            
+            // Create the paired-sample T-test. Our research hypothesis is
+            // that the treatment does improve the patient's well-being. So
+            // we will be testing the hypothesis that the well-being of the
+            // "before" sample, the first sample, is "smaller" in comparison
+            // to the "after" treatment group.
+
+            PairedTTest test = new PairedTTest(before, after,
+                TwoSampleHypothesis.FirstValueIsSmallerThanSecond);
+
+            bool significant = test.Significant; //    true
+            double pvalue = test.PValue;         // ~ 0.0239
+
+            Assert.IsTrue(significant);
+            Assert.AreEqual(0.023897, pvalue, 1e-5);
         }
     }
 }

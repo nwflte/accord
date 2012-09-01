@@ -28,6 +28,9 @@ using System.Drawing;
 using Tools = Accord.Imaging.Tools;
 using System.Drawing.Imaging;
 using Accord.Math.Decompositions;
+using System;
+using AForge.Imaging;
+using Accord.Imaging.Converters;
 
 namespace Accord.Tests.Imaging
 {
@@ -180,7 +183,7 @@ namespace Accord.Tests.Imaging
             Assert.AreEqual(expected, actual);
         }
 
-        
+
         [TestMethod()]
         public void HomographyTest()
         {
@@ -275,7 +278,7 @@ namespace Accord.Tests.Imaging
                 for (int j = 0; j < 3; j++)
                     actual[i, j] /= actual[2, 2];
 
-            
+
             Assert.IsTrue(Matrix.IsEqual(expected, actual, 1e-5));
 
 
@@ -469,6 +472,180 @@ namespace Accord.Tests.Imaging
             Assert.IsTrue(Matrix.IsEqual(array, actualarray));
 
         }
+
+
+        [TestMethod()]
+        public void MeanTest()
+        {
+            Bitmap image = new byte[,]
+            {
+                { 1, 2, 3 },
+                { 4, 5, 6 },
+                { 7, 8, 9 },
+            }.ToBitmap();
+
+            {
+                Rectangle rectangle = new Rectangle(0, 0, 1, 2);
+                double expected = (1 + 4) / 2.0;
+                double actual = Tools.Mean(image, rectangle);
+                Assert.AreEqual(expected, actual);
+            }
+
+            {
+                double expected = (1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9) / 9.0;
+                double actual = Tools.Mean(image);
+                Assert.AreEqual(expected, actual);
+            }
+        }
+
+        [TestMethod()]
+        public void MeanTest2()
+        {
+            // Test for 16 bpp images
+            Bitmap image = new short[,]
+            {
+                { 1, 2, 3 },
+                { 4, 5, 6 },
+                { 7, 8, 9 },
+            }.ToBitmap();
+
+            {
+                Rectangle rectangle = new Rectangle(0, 0, 1, 2);
+                double expected = (1 + 4) / 2.0;
+                double actual = Tools.Mean(image, rectangle);
+                Assert.AreEqual(expected, actual);
+            }
+
+            {
+                double expected = (1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9) / 9.0;
+                double actual = Tools.Mean(image);
+                Assert.AreEqual(expected, actual);
+            }
+        }
+
+
+        [TestMethod()]
+        public void MeanTest3()
+        {
+            UnmanagedImage image = UnmanagedImage.FromManagedImage(new byte[,]
+            {
+                { 1, 2, 3 },
+                { 4, 5, 6 },
+                { 7, 8, 9 },
+            }.ToBitmap());
+
+            {
+                Rectangle rectangle = new Rectangle(0, 0, 1, 2);
+                double expected = (1 + 4) / 2.0;
+                double actual = Tools.Mean(image, rectangle);
+                Assert.AreEqual(expected, actual);
+            }
+
+            {
+                double expected = (1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9) / 9.0;
+                double actual = Tools.Mean(image);
+                Assert.AreEqual(expected, actual);
+            }
+        }
+
+
+
+        [TestMethod()]
+        public void StandardDeviationTest()
+        {
+            double[] values = { 5, 2, 7, 5, 3, 5, 1, 1, 2 };
+
+            Bitmap image = values.ToBitmap(3, 3, 0, 255);
+            double mean = Accord.Statistics.Tools.Mean(values);
+            double expected = Accord.Statistics.Tools.StandardDeviation(values);
+            double actual = Tools.StandardDeviation(image, mean);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod()]
+        public void StandardDeviationTest2()
+        {
+            short[,] values =
+            {
+                { 5, 2, 7 },
+                { 5, 3, 5 },
+                { 1, 1, 2 }
+            };
+
+            Bitmap image = values.ToBitmap();
+            double mean = Accord.Statistics.Tools.Mean(values.Reshape().ToDouble());
+            double expected = Accord.Statistics.Tools.StandardDeviation(values.Reshape().ToDouble());
+            double actual = Tools.StandardDeviation(image, mean);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod()]
+        public void StandardDeviationTest3()
+        {
+            short[,] values =
+            {
+                { 5, 2, 7 },
+                { 5, 3, 5 },
+                { 1, 1, 2 }
+            };
+
+            Rectangle rect = new Rectangle(1, 1, 2, 1);
+
+            Bitmap image = values.ToBitmap();
+            double mean = Accord.Statistics.Tools.Mean(new double[] { 3, 5 });
+            double expected = Accord.Statistics.Tools.StandardDeviation(new double[] { 3, 5 });
+            double actual = Tools.StandardDeviation(image, rect, mean);
+            Assert.AreEqual(expected, actual);
+        }
+
+
+
+        [TestMethod()]
+        public void MaxTest2()
+        {
+            Bitmap image = new byte[,]
+            {
+                { 5, 2, 7 },
+                { 5, 3, 5 },
+                { 9, 1, 2 }
+            }.ToBitmap();
+
+            {
+                Rectangle rectangle = new Rectangle(1, 0, 2, 2);
+                int expected = 7;
+                int actual = Tools.Max(image, rectangle);
+                Assert.AreEqual(expected, actual);
+            }
+            {
+                int expected = 9;
+                int actual = Tools.Max(image);
+                Assert.AreEqual(expected, actual);
+            }
+        }
+
+        [TestMethod()]
+        public void MinTest2()
+        {
+            Bitmap image = new byte[,]
+            {
+                { 5, 2, 7 },
+                { 5, 3, 5 },
+                { 9, 1, 2 }
+            }.ToBitmap();
+
+            {
+                Rectangle rectangle = new Rectangle(1, 0, 2, 2);
+                int expected = 2;
+                int actual = Tools.Min(image, rectangle);
+                Assert.AreEqual(expected, actual);
+            }
+            {
+                int expected = 1;
+                int actual = Tools.Min(image);
+                Assert.AreEqual(expected, actual);
+            }
+        }
+
 
     }
 }

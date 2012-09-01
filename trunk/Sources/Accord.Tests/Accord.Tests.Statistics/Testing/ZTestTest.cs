@@ -24,8 +24,8 @@ namespace Accord.Tests.Statistics
 {
     using Accord.Statistics.Testing;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Accord.Statistics.Testing.Power;    
-    
+    using Accord.Statistics.Testing.Power;
+
     [TestClass()]
     public class ZTestTest
     {
@@ -80,40 +80,60 @@ namespace Accord.Tests.Statistics
         [TestMethod()]
         public void ZTestConstructorTest()
         {
-            // Example from: http://en.wikipedia.org/wiki/Z-test
+    // This example has been gathered from the Wikipedia's page about
+    // the Z-Test, available from: http://en.wikipedia.org/wiki/Z-test
 
-            /* Suppose that in a particular geographic region, the mean and standard
-             * deviation of scores on a reading test are 100 points, and 12 points, 
-             * respectively. Our interest is in the scores of 55 students in a particular
-             * school who received a mean score of 96. We can ask whether this mean score
-             * is significantly lower than the regional mean — that is, are the students
-             * in this school comparable to a simple random sample of 55 students from the
-             * region as a whole, or are their scores surprisingly low?
-             */
+    // Suppose there is a text comprehension test being run accross
+    // a given demographic region. The mean score of the population
+    // from this entire region are around 100 points, with a standard
+    // deviation of 12 points.
 
-            ZTest target;
+    // There is a local school, however, whose 55 students attained
+    // an average score in the test of only about 96 points. Would 
+    // their scores be surprinsingly that low, or could this event
+    // have happened due to chance?
 
-            double mean = 96;
-            double stdDev = 12;
-            int samples = 55;
-            double hypothesizedMean = 100;
-            target = new ZTest(mean, stdDev, samples, hypothesizedMean,
-                OneSampleHypothesis.ValueIsSmallerThanHypothesis);
-            
-            Assert.AreEqual(target.Statistic, -2.47, 0.01);
-            Assert.AreEqual(target.PValue, 0.0068, 0.001);
+    // So we would like to check that a sample of
+    // 55 students with a mean score of 96 points:
+
+    int sampleSize = 55;
+    double sampleMean = 96;
+
+    // Was expected to have happened by chance in a population with
+    // an hypothesized mean of 100 points and standard deviation of
+    // about 12 points:
+
+    double standardDeviation = 12;
+    double hypothesizedMean = 100;
+
+
+    // So we start by creating the test:
+    ZTest test = new ZTest(sampleMean, standardDeviation, sampleSize,
+        hypothesizedMean, OneSampleHypothesis.ValueIsSmallerThanHypothesis);
+
+    // Now, we can check whether this result would be
+    // unlikely under a standard significance level:
+
+    bool significant  = test.Significant;
+
+    // We can also check the test statistic and its P-Value
+    double statistic = test.Statistic;
+    double pvalue = test.PValue;
+
+            Assert.AreEqual(statistic, -2.47, 0.01);
+            Assert.AreEqual(pvalue, 0.0068, 0.001);
 
             /* This is the one-sided p-value for the null hypothesis that the 55 students 
              * are comparable to a simple random sample from the population of all test-takers.
              * The two-sided p-value is approximately 0.014 (twice the one-sided p-value).
              */
 
-            target = new ZTest(mean, stdDev, samples, hypothesizedMean, 
+            test = new ZTest(sampleMean, standardDeviation, sampleSize, hypothesizedMean,
                 OneSampleHypothesis.ValueIsDifferentFromHypothesis);
 
-            Assert.AreEqual(target.Statistic, -2.47, 0.01);
-            Assert.AreEqual(target.PValue, 0.014, 0.005);
-            
+            Assert.AreEqual(test.Statistic, -2.47, 0.01);
+            Assert.AreEqual(test.PValue, 0.014, 0.005);
+
         }
 
         [TestMethod()]
@@ -181,7 +201,7 @@ namespace Accord.Tests.Statistics
 
             Assert.AreEqual(1.5, target.Statistic, 0.01);
             Assert.AreEqual(OneSampleHypothesis.ValueIsDifferentFromHypothesis, target.Hypothesis);
-            Assert.AreEqual(DistributionTail.TwoTail, target .Tail);
+            Assert.AreEqual(DistributionTail.TwoTail, target.Tail);
             Assert.IsFalse(target.Significant);
         }
 
@@ -253,7 +273,7 @@ namespace Accord.Tests.Statistics
         [TestMethod()]
         public void StatisticToPValueTest()
         {
-            double z  = 1.96;
+            double z = 1.96;
             {
                 ZTest target = new ZTest(z, OneSampleHypothesis.ValueIsDifferentFromHypothesis);
                 Assert.AreEqual(DistributionTail.TwoTail, target.Tail);

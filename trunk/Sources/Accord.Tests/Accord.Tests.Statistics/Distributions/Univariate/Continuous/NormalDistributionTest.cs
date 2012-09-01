@@ -23,6 +23,7 @@
 namespace Accord.Tests.Statistics
 {
     using Accord.Statistics.Distributions.Univariate;
+    using Accord.Statistics;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
 
@@ -151,6 +152,45 @@ namespace Accord.Tests.Statistics
             Assert.IsTrue(thrown);
         }
 
+        [TestMethod()]
+        public void ConstructorTest3()
+        {
+            Accord.Math.Tools.SetupGenerator(0);
+
+            // Create a normal distribution with mean 2 and sigma 3
+            var normal = new NormalDistribution(mean: 2, stdDev: 3);
+
+            // In a normal distribution, the median and
+            // the mode coincide with the mean, so
+
+            double mean = normal.Mean;     // 2
+            double mode = normal.Mode;     // 2
+            double median = normal.Median; // 2
+
+            // The variance is the square of the standard deviation
+            double variance = normal.Variance; // 3² = 9
+
+            // Let's check what is the cumulative probability of
+            // a value less than 3 ocurring in this distribution:
+            double cdf = normal.DistributionFunction(3); // 0.63055
+
+            // Finally, let's generate 1000 samples from this distribution
+            // and check if they have the specified mean and standard devs
+
+            double[] samples = normal.Generate(1000);
+
+            double sampleMean = samples.Mean();             // 1.92
+            double sampleDev = samples.StandardDeviation(); // 3.00
+
+            Assert.AreEqual(2, mean);
+            Assert.AreEqual(2, mode);
+            Assert.AreEqual(2, median);
+
+            Assert.AreEqual(9, variance);
+            Assert.AreEqual(1000, samples.Length);
+            Assert.AreEqual(1.9245, sampleMean, 1e-4);
+            Assert.AreEqual(3.0008, sampleDev, 1e-4);
+        }
 
         [TestMethod()]
         public void ProbabilityDensityFunctionTest()

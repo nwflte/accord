@@ -35,15 +35,11 @@ using Accord.Controls.Imaging;
 using System;
 using Accord.Imaging.Filters;
 using AForge.Imaging;
+using AForge.Imaging.Filters;
 
 namespace Accord.Tests.Imaging
 {
 
-
-    /// <summary>
-    ///This is a test class for ToolsTest and is intended
-    ///to contain all ToolsTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class BorderFollowingTest
     {
@@ -51,10 +47,6 @@ namespace Accord.Tests.Imaging
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -173,6 +165,26 @@ namespace Accord.Tests.Imaging
                           System.Math.Abs(first.Y - last.Y) <= 1);
         }
 
+        [TestMethod()]
+        public void FindContourTest3()
+        {
+            Bitmap image = Properties.Resources.sample_black;
+            Bitmap grayscaleImage = Grayscale.CommonAlgorithms.BT709.Apply(image);
+
+            // Create a new border following algorithm
+            BorderFollowing borderFollowing = new BorderFollowing();
+
+            // Get all points in the contour of the image. 
+            List<IntPoint> contour = borderFollowing.FindContour(grayscaleImage);
+
+            // Mark all points in the contour point list in blue
+            new PointsMarker(contour, Color.Blue).ApplyInPlace(image);
+
+            // Show the result
+            // ImageBox.Show(image);
+
+            Assert.AreEqual(380, contour.Count);
+        }
 
     }
 }

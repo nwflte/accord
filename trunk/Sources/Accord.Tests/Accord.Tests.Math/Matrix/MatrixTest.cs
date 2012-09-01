@@ -1009,6 +1009,41 @@ namespace Accord.Tests.Math
         }
 
         [TestMethod()]
+        public void ConcatenateTest2()
+        {
+            double[][] a =
+            {
+                new double[] { 1, 2 },
+                new double[] { 6, 7 },
+                new double[] { 11, 12 },
+            };
+
+            double[][] b =
+            {
+                new double[] {  3,  4,  5 },
+                new double[] {  8,  9, 10 },
+                new double[] { 13, 14, 15 },
+            };
+
+            double[][] expected = 
+            {
+                new double[] {  1,  2,  3,  4,  5 },
+                new double[] {  6,  7,  8,  9, 10 },
+                new double[] { 11, 12, 13, 14, 15 },
+            };
+
+            {
+                double[][] actual = Matrix.Concatenate(a, b);
+                Assert.IsTrue(Matrix.IsEqual(expected, actual));
+            }
+
+            {
+                double[][] actual = a.Concatenate(b);
+                Assert.IsTrue(Matrix.IsEqual(expected, actual));
+            }
+        }
+
+        [TestMethod()]
         public void CombineTest5()
         {
             double[,] A = Matrix.Create(2, 2.0);
@@ -2681,6 +2716,10 @@ namespace Accord.Tests.Math
         {
             // Test with singular matrix
             {
+                // Create a matrix. Please note that this matrix
+                // is singular (i.e. not invertible), so only a 
+                // least squares solution would be feasible here.
+
                 double[,] matrix = 
                 {
                     { 1, 2, 3 },
@@ -2688,15 +2727,17 @@ namespace Accord.Tests.Math
                     { 7, 8, 9 },
                 };
 
+                // Define a right side vector b:
                 double[] rightSide = { 1, 2, 3 };
 
-                Assert.IsTrue(matrix.IsSingular());
+                // Solve the linear system Ax = b by finding x:
+                double[] x = Matrix.Solve(matrix, rightSide, leastSquares: true);
+
+                // The answer should be { -1/18, 2/18, 5/18 }.
 
                 double[] expected = { -1 / 18.0, 2 / 18.0, 5 / 18.0 };
-
-                double[] actual = Matrix.Solve(matrix, rightSide, leastSquares: true);
-
-                Assert.IsTrue(expected.IsEqual(actual, 1e-10));
+                Assert.IsTrue(matrix.IsSingular());
+                Assert.IsTrue(expected.IsEqual(x, 1e-10));
             }
             {
                 double[,] matrix = 
