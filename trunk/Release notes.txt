@@ -1,3 +1,47 @@
+Accord.NET Framework 2.7.1 release notes
+-----------------------------------------
+01.09.2012.    
+
+Version updates and fixes:
+
+* Accord.Statistics
+  - Adding data processing filters for data randomization,
+    branching, grouping, elimination and imputation;
+  - Adding Precision, Recall and F-Score in Confusion matrix; 
+  - Adding GrandMean calculation in Statistics.Tools;
+  - Adding the Negative Binomial, Pareto, Laplace, Inverse
+    Gamma, Beta, Wishart, Inverse Wishart, Dirichlet distributions;
+  - Adding the Two Proportion Z-Test, Paired T-Test and Multinomial test
+  - Correcting Noncentral T distribution pdf calculation; 
+  - Correcting Skewness and Kurtosis calculations; 
+  - Correcting ANOVA when groups have different sizes;
+  - Adding support for newer Excel versions in ExcelReader;
+  - Adding support for different sample weights in HMM learning;
+  - Adding distinct elements calculation in DescriptiveAnalysis;
+  - Adding standalone Standard Error computation for ROC curves. 
+
+* Accord.MachineLearning
+  - Redesigning clustering framework to accomodate the
+    Binary-Split algorithm, K-Means, K-Modes and GMMs;
+  - Adding support for cancellation in SVM learning;
+  - Adding support for different class weights in SMO;
+
+* Accord.Controls
+  - Adding Confusion Matrix viewer;
+  - Adding numeric collection editor.
+
+* Accord.Imaging
+  - Adding Mean and Standard Deviation for images.
+
+  * Accord.Vision
+  - Marking TrackingObject as Serializable.
+
+* AForge Compatibility
+  - Compiled against AForge.NET Framework 2.2.4. May work with newer versions.
+
+
+
+
 Accord.NET Framework 2.7.0 release notes
 -----------------------------------------
 08.07.2012.    
