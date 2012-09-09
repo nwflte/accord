@@ -28,6 +28,8 @@ This page enlists several works which have used Accord.NET in some point of thei
 
 The following papers include at least a citation to the framework, reference material published based on the framework or have used standalone code which now has been incorporated in the framework.
 
+ * Ludovico Buffon, Evelina Lamma, Fabrizio Riguzzi, and Davide Forment. Un sistema di vision inspection basato su reti neurali. In Matteo Baldoni, Federico Chesani, Bernardo Magnini, Paola Mello, and Marco Montai, editors, Popularize Artificial Intelligence. Proceedings of the AI*IA Workshop and Prize for Celebrating 100th Anniversary of Alan Turing's Birth (PAI 2012), Rome, Italy, June 15, 2012, number 860 in CEUR Workshop Proceedings, pages 1-6, Aachen, Germany, 2012. © by the authors, Sun SITE Central Europe.
+
  * Liam Williams, Spotting The Wisdom In The Crowds. Master Thesis on Joint Mathematics and Computer Science. Imperial College London, Department of Computing. June, 2012.
 
  * Almeida, R. N., Portuguese Sign Language Recognition via Computer Vision and Depth Sensor. Master Thesis. Lisbon University Institute, Department of Science and Information Technology. October, 2011.
@@ -48,7 +50,7 @@ The following papers include at least a citation to the framework, reference mat
 
  * Deinhofer, M., Roland L., Baca, A., 2010. Klassifizierung von Schlagtechniken im Badminton mittels Mustererkennung aus Inertialdaten. 13 Österreichische Sportwissenschaftliche Gesellschaft, Bruch an der Mur.
 
- * Le Hoang Thai,Tran Son Hai,Nguyen Thanh Thuy,"Image Classification using Support Vector Machine and Artificial Neural Network ", IJITCS, vol.4, no.5, pp.32-38, 2012.
+ * Le Hoang Thai,Tran Son Hai,Nguyen Thanh Thuy, "Image Classification using Support Vector Machine and Artificial Neural Network", IJITCS, vol.4, no.5, pp.32-38, 2012.
 
  * Kungcharoen, K.; Palangsantikul, P.; Premchaiswadi, W. "Development of object detection software for a mobile robot using an AForge.Net framework", 9th International Conference on ICT and Knowledge Engineering (ICT & Knowledge Engineering), pp.201-206, 12-13 Jan. 2012.
 
