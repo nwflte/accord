@@ -7,6 +7,11 @@ Users often find the SVM learning algorithm to take too much time. This, however
 
 In those cases, consider using the automatic parameter estimation routines in SequentialMinimalOptimization and in the choosen Kernel function. Values returned by those routines may lead to more sparse machines and faster training times.
 
-== I can't open Excel worksheets using the ExcelReader class. What is happening? ==
+== Why can't I open Excel worksheets using ExcelReader? ==
 
 To open Excel files, you have to install the [http://www.microsoft.com/en-us/download/details.aspx?id=13255 Microsoft Access Database Engine 2010 Redistributable], available [http://www.microsoft.com/en-us/download/details.aspx?id=13255 here]. This engine, also known as ACE, is a replacement for JET, the old ODBC driver which could be used to open Excel 2003 workbooks. 
+
+In order to use ACE in both 32-bit and 64-bit applications, you need to install both redistributables from the Microsoft website. To install them both, you need to use the /passive command line switch to prevent the installation from failing once it detects another component version already installed. After downloading the executables, run:
+
+ * C:\Users\You\Downloads\AccessDatabaseEngine.exe /passive
+ * C:\Users\You\Downloads\AccessDatabaseEngine_x64.exe /passive
