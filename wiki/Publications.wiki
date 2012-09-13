@@ -2,6 +2,13 @@
 
 This page lists works published featuring specifics of the Accord.NET Framework. For a list of works referencing the framework, please see the [Showcase] page of the wiki.
 
+
+= Technical reports =
+
+ * Souza, C.R., "[http://www2.dc.ufscar.br/~cesar.souza/publications/pca-tutorial.pdf A Tutorial on Principal Component Analysis with the Accord.NET Framework]". Department of Computing, Federal University of Sao Carlos, Technical Report, 2012:
+  A technical report and a complete tutorial on Principal Component Analysis, a common and popular dimensionality reduction technique found in many real-world solutions. This report aims not only to explain PCA in the same molds as given by Lindsay I Smith, but to present many of the features of the Accord.NET Framework which can help performing this analysis.
+
+
 = Online articles =
 
  * [http://www.codeproject.com/Articles/441226/Haar-feature-Object-Detection-in-Csharp Haar-feature Object Detection in C#] - A description of how it was possible to achieve real-time face detection with some clever ideas back in 2001.
@@ -17,8 +24,3 @@ This page lists works published featuring specifics of the Accord.NET Framework.
  * [http://crsouza.blogspot.com.br/2010/10/gaussian-mixture-models-and-expectation.html Gaussian Mixture Models and Expectation-Maximization] - Gaussian Mixture Models (GMM) can be seen as a type of unsupervised learning or clustering methods. They are among the most statistically mature methods for clustering. But unlike K-Means, GMMs are able to build soft clustering boundaries, i.e., points in space can belong to any class with a given probability.
 
  * [http://crsouza.blogspot.com.br/2010/01/kernel-principal-component-analysis-in.html Kernel Principal Component Analysis in C#] - KPCA is an extension of principal component analysis (PCA) using techniques of kernel methods. Using a kernel, the originally linear operations of PCA are done in a reproducing kernel Hilbert space with a non-linear mapping. This article details the method and its implementation in the Accord.NET Framework.
-
-= Technical reports =
-
- * Souza, C.R., "[http://www2.dc.ufscar.br/~cesar.souza/publications/pca-tutorial.pdf A Tutorial on Principal Component Analysis with the Accord.NET Framework]". Department of Computing, Federal University of Sao Carlos, Technical Report, 2012:
-  A technical report and a complete tutorial on Principal Component Analysis, a common and popular dimensionality reduction technique found in many real-world solutions. This report aims not only to explain PCA in the same molds as given by Lindsay I Smith, but to present many of the features of the Accord.NET Framework which can help performing this analysis.
