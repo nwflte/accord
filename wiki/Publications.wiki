@@ -1,9 +1,1 @@
-#summary One-sentence summary of this page.
-
-For a list of works referencing the framework, please see the [Showcase] page of the wiki.
-
-= Technical Reports =
-
-Souza, C.R., "[http://www2.dc.ufscar.br/~cesar.souza/publications/pca-tutorial.pdf A Tutorial on Principal Component Analysis with the Accord.NET Framework]". Department of Computing, Federal University of Sao Carlos, Technical Report, 2012.
-
-  A technical report and a complete tutorial on Principal Component Analysis, a common and popular dimensionality reduction technique found in many real-world solutions. This report aims not only to explain PCA in the same molds as given by Lindsay I Smith, but to present many of the features of the Accord.NET Framework which can help performing this analysis.
+#Showcase
