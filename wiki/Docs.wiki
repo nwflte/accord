@@ -27,12 +27,21 @@ A complete list of the more than 25+ sample applications available within the fr
 </tr>
 
 <tr><td width="70px">
+<img width="64" height="64" src="http://accord.googlecode.com/svn/wiki/images/internet.png"/>
+</td><td>
+<font size="3">[http://code.google.com/p/accord/wiki/Publications?tm=6 Publications]</font>
+</td><td>
+[ Publications, papers and technical reports] referencing the framework.</td>
+</tr>
+
+<tr><td width="70px">
 <img width="64" height="64" src="http://accord.googlecode.com/svn/wiki/images/design.png"/>
 </td><td>
 <font size="3">[http://code.google.com/p/accord/wiki/DevelopmentGuide?tm=6 Development]</font>
 </td><td>
 How to contribute and help in development.</td>
 </tr>
+
 </table>
 
 <br />
