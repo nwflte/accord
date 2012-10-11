@@ -1,16 +1,16 @@
 #summary Sample Application: Levenverg-Marquardt Neural Learning
 #labels Type-SampleApps
 
- * Download [http://dl.dropbox.com/u/32601472/accord-neuro-levenberg-approximation-bin.zip Approximation application]
- * Download [http://dl.dropbox.com/u/32601472/accord-neuro-levenberg-approximation-src.zip Approximation source code]
+ * Download [http://dl.dropbox.com/u/32601472/accord/samples/accord-neuro-levenberg-approximation-bin.zip Approximation application]
+ * Download [http://dl.dropbox.com/u/32601472/accord/samples/accord-neuro-levenberg-approximation-src.zip Approximation source code]
  * Browse [http://code.google.com/p/accord/source/browse/trunk/#trunk%2FSamples%2FNeuro%2FLevenberg%2FApproximation Approximation source code online]
 
- * Download [http://dl.dropbox.com/u/32601472/accord-neuro-levenberg-timeseries-bin.zip Time-Series application]
- * Download [http://dl.dropbox.com/u/32601472/accord-neuro-levenberg-timeseries-src.zip Time-Series source code]
+ * Download [http://dl.dropbox.com/u/32601472/accord/samples/accord-neuro-levenberg-timeseries-bin.zip Time-Series application]
+ * Download [http://dl.dropbox.com/u/32601472/accord/samples/accord-neuro-levenberg-timeseries-src.zip Time-Series source code]
  * Browse [http://code.google.com/p/accord/source/browse/trunk/#trunk%2FSamples%2FNeuro%2FLevenberg%2FTimeSeries Time-Series source code online]
 
- * Download [http://dl.dropbox.com/u/32601472/accord-neuro-levenberg-xorproblem-bin.zip XOR application]
- * Download [http://dl.dropbox.com/u/32601472/accord-neuro-levenberg-xorproblem-src.zip XOR source code]
+ * Download [http://dl.dropbox.com/u/32601472/accord/samples/accord-neuro-levenberg-xorproblem-bin.zip XOR application]
+ * Download [http://dl.dropbox.com/u/32601472/accord/samples/accord-neuro-levenberg-xorproblem-src.zip XOR source code]
  * Browse [http://code.google.com/p/accord/source/browse/trunk/#trunk%2FSamples%2FNeuro%2FLevenberg%2FXORProblem XOR source code online]
 
 
