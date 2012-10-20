@@ -112,11 +112,11 @@ The framework comes with over 25 sample applications demonstrating the framework
 
 <table cellspacing="12px" width="840px">
 <tr>
-  <td width="104px">[Sample_App_LevenbergMarquardt Levenberg-Marquardt]</td>
+  <td width="104px">[SampleApp_LevenbergMarquardt Levenberg-Marquardt]</td>
   <td>An adaptation of the original AForge.NET Neuro sample applications to work with Levenberg-Marquardt instead of Backpropagation. Includes solutions for approximation, time-series prediction and the exclusive-or (XOR) problem using neural networks trained by Levenberg-Marquardt.</td>
 </tr>
 <tr>
-  <td width="104px">[Sample_App_ResilientBackpropagation Resilient Backpropagation (RProp)]</td>
+  <td width="104px">[SampleApp_ResilientBackpropagation Resilient Backpropagation (RProp)]</td>
   <td>An adaptation of the original AForge.NET Neuro sample applications to work with the parallel Resilient Backpropagation instead of the standard Backpropagation. Includes solutions for approximation, time-series prediction and the exclusive-or (XOR) problem using neural networks trained by RProp.</td>
 </tr>
 </table>
