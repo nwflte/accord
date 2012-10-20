@@ -1,0 +1,13 @@
+#summary Sample Application: Camshift Face tracking
+#labels Type-SampleApps
+
+ * Download [http://dl.dropbox.com/u/32601472/accord/samples/accord-vision-facetracking-bin.zip application]
+ * Download [http://dl.dropbox.com/u/32601472/accord/samples/accord-vision-facetracking-src.zip source code]
+ * Browse [https://code.google.com/p/accord/source/browse/trunk#trunk%2FSamples%2FVision%2FFaceTracking source code online].
+
+This sample application shows the Camshift face tracking algorithm working in real-time using your webcam or any other video source.
+
+<br /><p align="center">
+http://accord.googlecode.com/svn/wiki/samples/accord-vision-facetracking-img.png
+<br />Camshift Face-tracking application showing the histogram backprojection of the tracked image.
+</p><br />
