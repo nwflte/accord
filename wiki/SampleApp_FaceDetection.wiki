@@ -1,0 +1,4 @@
+#summary Object detection with Haar-features
+#labels Type-SampleApps
+
+http://www.codeproject.com/Articles/441226/Haar-feature-Object-Detection-in-Csharp
