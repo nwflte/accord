@@ -1,4 +1,4 @@
-#summary Sample Application: Camshift Face tracking
+#summary Sample Application: Haar-feature object detection
 #labels Type-SampleApps
 
  * Download [http://dl.dropbox.com/u/32601472/accord/samples/accord-vision-facedetection-bin.zip application]
