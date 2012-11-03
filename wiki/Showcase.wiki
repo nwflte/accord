@@ -30,6 +30,9 @@ The following papers include at least a citation to the framework, reference mat
 
  * Guido Soetens, Estimating the limitations of single-handed multi-touch input. Master Thesis, Utrecht University. September, 2012.
 
+ * K. N. Pushpalatha, A. K. Gautham, D. R. Shashikumar, K. B. ShivaKumar. Iris Recognition System with Frequency Domain Features  Iris Recognition System with Frequency Domain Features 
+optimized with PCA and PCA and  PCA andPCA and SVM Classifier, IJCSI International Journal of Computer Science Issues, Vol. 9, Issue 5, No 1, September 2012.
+
  * Arnaud Ogier, Thierry Dorval. HCS-Analyzer: Open source software for High-Content Screening data correction and analysis. Bioinformatics. First published online May 13, 2012. 
 
  * Ludovico Buffon, Evelina Lamma, Fabrizio Riguzzi, and Davide Forment. Un sistema di vision inspection basato su reti neurali. In Matteo Baldoni, Federico Chesani, Bernardo Magnini, Paola Mello, and Marco Montai, editors, Popularize Artificial Intelligence. Proceedings of the AI*IA Workshop and Prize for Celebrating 100th Anniversary of Alan Turing's Birth (PAI 2012), Rome, Italy, June 15, 2012, number 860 in CEUR Workshop Proceedings, pages 1-6, Aachen, Germany, 2012.
