@@ -6,6 +6,7 @@
  * Sandcastle Help File Builder
  * WinRAR (for automatic packaging)
  * InnoSetup (for automatic packaging)
+ * T4 Toolbox (for generating code)
 
 == Contributing ==
 
