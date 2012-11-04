@@ -31,7 +31,7 @@ A complete list of the more than 25+ sample applications available within the fr
 </td><td>
 <font size="3">[http://code.google.com/p/accord/wiki/Publications?tm=6 Publications]</font>
 </td><td>
-Publications, papers and technical reports describing the framework. You may also want to check what [Showcase others have done using the framework] in the project's [Showcase] page.</td>
+Publications, papers and technical reports describing the framework. You may also want to check what [Showcase others have done using the framework] in the project's [Showcase] page (includes academic publications).</td>
 </tr>
 
 <tr><td width="70px">
