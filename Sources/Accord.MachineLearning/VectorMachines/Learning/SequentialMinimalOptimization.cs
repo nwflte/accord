@@ -593,8 +593,31 @@ namespace Accord.MachineLearning.VectorMachines.Learning
             if (useComplexityHeuristic)
                 c = EstimateComplexity(kernel, inputs);
 
+            int[] positives = outputs.Find(x => x == +1);
+            int[] negatives = outputs.Find(x => x == -1);
+
+
+            // If all examples are positive or negative, terminate
+            //   learning early by directly setting the threshold.
+
+            if (positives.Length == 0)
+            {
+                machine.SupportVectors = new double[0][];
+                machine.Weights = new double[0];
+                machine.Threshold = -1;
+                return 0;
+            }
+            if (negatives.Length == 0)
+            {
+                machine.SupportVectors = new double[0][];
+                machine.Weights = new double[0];
+                machine.Threshold = +1;
+                return 0;
+            }
+
+
             if (useClassLabelProportion)
-                WeightRatio = outputs.Count(x => x == +1) / (double)outputs.Count(x => x == -1);
+                WeightRatio = positives.Length / (double)negatives.Length;
 
 
             // Lagrange multipliers
@@ -612,12 +635,12 @@ namespace Accord.MachineLearning.VectorMachines.Learning
             // [Keerthi] Initialize b_up to -1 and 
             //   i_up to any one index of class 1:
             this.b_upper = -1;
-            this.i_upper = outputs.First(x => x == +1);
+            this.i_upper = positives[0];
 
             // [Keerthi] Initialize b_low to +1 and 
             //   i_low to any one index of class 2:
             this.b_lower = +1;
-            this.i_lower = outputs.First(x => x == -1);
+            this.i_lower = negatives[0];
 
             // [Keerthi] Set error cache for i_low and i_up:
             this.errors[i_lower] = +1;

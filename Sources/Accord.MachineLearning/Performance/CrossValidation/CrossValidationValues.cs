@@ -31,13 +31,58 @@ namespace Accord.MachineLearning
     /// <typeparam name="TModel">The type of the model.</typeparam>
     /// 
     [Serializable]
-    public class CrossValidationValues<TModel> where TModel : class
+    public class CrossValidationValues<TModel> : CrossValidationValues
+        where TModel : class
     {
+
         /// <summary>
         ///   Gets the model.
         /// </summary>
         /// 
         public TModel Model { get; private set; }
+
+
+        /// <summary>
+        ///   Creates a new Cross-Validation Values class.
+        /// </summary>
+        /// 
+        /// <param name="model">The fitted model.</param>
+        /// <param name="trainingValue">The training value for the model.</param>
+        /// <param name="validationValue">The validation value for the model.</param>
+        /// 
+        public CrossValidationValues(TModel model,
+            double trainingValue, double validationValue)
+            : base(trainingValue, validationValue)
+        {
+            this.Model = model;
+        }
+
+        /// <summary>
+        ///   Creates a new Cross-Validation Values class.
+        /// </summary>
+        /// 
+        /// <param name="model">The fitted model.</param>
+        /// <param name="trainingValue">The training value for the model.</param>
+        /// <param name="validationValue">The validation value for the model.</param>
+        /// <param name="trainingVariance">The variance of the training values.</param>
+        /// <param name="validationVariance">The variance of the validation values.</param>
+        /// 
+        public CrossValidationValues(TModel model,
+            double trainingValue, double trainingVariance,
+            double validationValue, double validationVariance)
+            : base(trainingValue, trainingVariance, validationValue, validationVariance)
+        {
+            this.Model = model;
+        }
+    }
+
+    /// <summary>
+    ///   Information class to store the training and validation errors of a model. 
+    /// </summary>
+    /// 
+    [Serializable]
+    public class CrossValidationValues
+    {
 
         /// <summary>
         ///   Gets the validation value for the model.
@@ -75,15 +120,11 @@ namespace Accord.MachineLearning
         ///   Creates a new Cross-Validation Values class.
         /// </summary>
         /// 
-        /// <param name="model">The fitted model.</param>
         /// <param name="trainingValue">The training value for the model.</param>
         /// <param name="validationValue">The validation value for the model.</param>
         /// 
-        public CrossValidationValues(TModel model,
-            double trainingValue, double validationValue)
+        public CrossValidationValues(double trainingValue, double validationValue)
         {
-            this.Model = model;
-
             this.TrainingValue = trainingValue;
             this.ValidationValue = validationValue;
         }
@@ -92,57 +133,21 @@ namespace Accord.MachineLearning
         ///   Creates a new Cross-Validation Values class.
         /// </summary>
         /// 
-        /// <param name="model">The fitted model.</param>
         /// <param name="trainingValue">The training value for the model.</param>
         /// <param name="validationValue">The validation value for the model.</param>
         /// <param name="trainingVariance">The variance of the training values.</param>
         /// <param name="validationVariance">The variance of the validation values.</param>
         /// 
-        public CrossValidationValues(TModel model,
+        public CrossValidationValues(
             double trainingValue, double trainingVariance,
             double validationValue, double validationVariance)
         {
-            this.Model = model;
-
             this.TrainingValue = trainingValue;
             this.ValidationValue = validationValue;
 
             this.TrainingVariance = trainingVariance;
             this.ValidationVariance = validationVariance;
         }
-    }
-
-    /// <summary>
-    ///   Information class to store the training and validation errors of a model. 
-    /// </summary>
-    /// 
-    public class CrossValidationValues : CrossValidationValues<object>
-    {
-        /// <summary>
-        ///   Creates a new Cross-Validation Values class.
-        /// </summary>
-        /// 
-        /// <param name="model">The fitted model.</param>
-        /// <param name="trainingValue">The training value for the model.</param>
-        /// <param name="validationValue">The validation value for the model.</param>
-        /// 
-        public CrossValidationValues(object model, double trainingValue, double validationValue)
-            : base(model, trainingValue, validationValue) { }
-
-        /// <summary>
-        ///   Creates a new Cross-Validation Values class.
-        /// </summary>
-        /// 
-        /// <param name="model">The fitted model.</param>
-        /// <param name="trainingValue">The training value for the model.</param>
-        /// <param name="validationValue">The validation value for the model.</param>
-        /// <param name="trainingVariance">The variance of the training values.</param>
-        /// <param name="validationVariance">The variance of the validation values.</param>
-        /// 
-        public CrossValidationValues(object model,
-            double trainingValue, double trainingVariance,
-            double validationValue, double validationVariance)
-            : base(model, trainingValue, trainingVariance, validationValue, validationVariance) { }
 
         /// <summary>
         ///   Creates a new Cross-Validation Values class.
