@@ -101,8 +101,15 @@ namespace Accord.Statistics.Filters
                     column.DataType == typeof(Decimal))
                 {
                     string name = column.ColumnName;
-                    double max = (double)data.Compute("MAX([" + name + "])", String.Empty);
-                    double min = (double)data.Compute("MIN([" + name + "])", String.Empty);
+
+                    object objMax = data.Compute("MAX([" + name + "])", String.Empty);
+                    object objMin = data.Compute("MIN([" + name + "])", String.Empty);
+
+                    double max = 0, min = 0;
+                    if (objMax != DBNull.Value)
+                        max = (double)objMax;
+                    if (objMin != DBNull.Value)
+                        min = (double)objMin;
 
                     if (!Columns.Contains(name))
                         Columns.Add(new Options(name));

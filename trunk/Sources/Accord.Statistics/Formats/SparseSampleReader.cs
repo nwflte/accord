@@ -357,8 +357,10 @@ namespace Accord.Statistics.Formats
 
         #region IDisposable members
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        ///   Performs application-defined tasks associated with
+        ///   freeing, releasing, or resetting unmanaged resources.
         /// </summary>
+        /// 
         public void Dispose()
         {
             Dispose(true);
@@ -368,7 +370,10 @@ namespace Accord.Statistics.Formats
         /// <summary>
         ///   Releases unmanaged and - optionally - managed resources
         /// </summary>
-        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        /// 
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged
+        ///   resources; <c>false</c> to release only unmanaged resources.</param>
+        /// 
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
@@ -380,6 +385,16 @@ namespace Accord.Statistics.Formats
                     reader = null;
                 }
             }
+        }
+
+        /// <summary>
+        ///   Releases unmanaged resources and performs other cleanup operations before the
+        ///   <see cref="SparseSampleReader"/> is reclaimed by garbage collection.
+        /// </summary>
+        /// 
+        ~SparseSampleReader()
+        {
+            Dispose(false);
         }
         #endregion
 
