@@ -45,7 +45,7 @@ namespace Accord.Statistics.Models.Fields.Features
         ///   Gets the potential factor to which this feature belongs.
         /// </summary>
         /// 
-        public int OwnerFactorIndex { get; private set; }
+        public int FactorIndex { get; private set; }
 
         /// <summary>
         ///   Creates a new feature.
@@ -57,7 +57,7 @@ namespace Accord.Statistics.Models.Fields.Features
         protected FeatureBase(IPotentialFunction<T> owner, int factorIndex)
         {
             this.Owner = owner;
-            this.OwnerFactorIndex = factorIndex;
+            this.FactorIndex = factorIndex;
         }
 
 

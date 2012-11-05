@@ -24,6 +24,7 @@ namespace Accord.Statistics.Models.Fields.Features
 {
     using System;
     using Accord.Statistics.Models.Fields.Functions;
+    using Accord.Math;
 
     /// <summary>
     ///   State feature for first moment Gaussian emission probabilities.
@@ -87,7 +88,7 @@ namespace Accord.Statistics.Models.Fields.Features
         {
             // Assume the simplifying structure that each
             // factor is responsible for single output y.
-            if (y != OwnerFactorIndex) return 0;
+            if (y != FactorIndex) return 0;
 
             double marginal = 0;
             for (int t = 0; t < x.Length; t++)
@@ -112,13 +113,17 @@ namespace Accord.Statistics.Models.Fields.Features
         {
             // Assume the simplifying structure that each
             // factor is responsible for single output y.
-            if (y != OwnerFactorIndex) return Double.NegativeInfinity;
+            if (y != FactorIndex) return Double.NegativeInfinity;
 
-            double marginal = 0;
+            double marginal = Double.NegativeInfinity;
             for (int t = 0; t < x.Length; t++)
-                marginal += Math.Exp(lnFwd[t, state] + lnBwd[t, state]) * x[t];
+            {
+                double obs = x[t];
+                if (obs < 0) throw new ArgumentOutOfRangeException("x", "Values should be positive.");
+                marginal = Special.LogSum(marginal, lnFwd[t, state] + lnBwd[t, state] + Math.Log(obs));
+            }
 
-            return Math.Log(marginal);
+            return marginal;
         }
 
         /// <summary>

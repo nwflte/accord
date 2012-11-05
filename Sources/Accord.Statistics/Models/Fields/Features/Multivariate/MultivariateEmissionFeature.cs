@@ -27,30 +27,33 @@ namespace Accord.Statistics.Models.Fields.Features
     using Accord.Statistics.Models.Fields.Functions;
 
     /// <summary>
-    ///   State feature for first moment multivariate Gaussian emission probabilities.
+    ///   State feature for Hidden Markov Model symbol emission probabilities.
     /// </summary>
     /// 
     [Serializable]
-    public sealed class MultivariateFirstMomentFeature : FeatureBase<double[]>, IFeature<double[]>
+    public sealed class MultivariateEmissionFeature : FeatureBase<double[]>, IFeature<double[]>
     {
 
         private int state;
+        private int symbol;
         private int dimension;
 
         /// <summary>
-        ///   Constructs a new first moment emission feature.
+        ///   Constructs a new symbol emission feature.
         /// </summary>
         /// 
         /// <param name="owner">The potential function to which this feature belongs.</param>
         /// <param name="factorIndex">The index of the potential factor to which this feature belongs.</param>
         /// <param name="state">The state for the emission.</param>
-        /// <param name="dimension">The multivariate dimension to consider in the computation.</param>
+        /// <param name="symbol">The emission symbol.</param>
+        /// <param name="dimension">The observation dimension this emission feature applies to.</param>
         /// 
-        public MultivariateFirstMomentFeature(IPotentialFunction<double[]> owner, int factorIndex,
-            int state, int dimension)
+        public MultivariateEmissionFeature(IPotentialFunction<double[]> owner, int factorIndex,
+            int state, int symbol, int dimension)
             : base(owner, factorIndex)
         {
             this.state = state;
+            this.symbol = symbol;
             this.dimension = dimension;
         }
 
@@ -64,12 +67,16 @@ namespace Accord.Statistics.Models.Fields.Features
         /// <param name="observationIndex">The index of the current observation.</param>
         /// <param name="outputClass">The output class label for the sequence.</param>
         /// 
-        public override double Compute(int previousState, int currentState, double[][] observations, int observationIndex, int outputClass = 0)
+        public override double Compute(int previousState, int currentState, double[][] observations,
+            int observationIndex, int outputClass = 0)
         {
             if (currentState == this.state)
             {
                 if (observationIndex >= 0 && observationIndex < observations.Length)
-                    return observations[observationIndex][dimension];
+                {
+                    if (observations[observationIndex][dimension] == this.symbol)
+                        return 1.0;
+                }
             }
 
             return 0.0;
@@ -91,12 +98,15 @@ namespace Accord.Statistics.Models.Fields.Features
         {
             // Assume the simplifying structure that each
             // factor is responsible for single output y.
-            if (y != OwnerFactorIndex) return 0;
+            if (y != FactorIndex) return 0;
 
             double marginal = 0;
 
             for (int t = 0; t < x.Length; t++)
-                marginal += fwd[t, state] * bwd[t, state] * (x[t][dimension]);
+            {
+                if (x[t][dimension] == this.symbol)
+                    marginal += fwd[t, state] * bwd[t, state];
+            }
 
             return marginal;
         }
@@ -117,12 +127,14 @@ namespace Accord.Statistics.Models.Fields.Features
         {
             // Assume the simplifying structure that each
             // factor is responsible for single output y.
-            if (y != OwnerFactorIndex) return Double.NegativeInfinity;
+            if (y != FactorIndex) return Double.NegativeInfinity;
 
-            double marginal = Double.NegativeInfinity;
+            double marginal = double.NegativeInfinity;
             for (int t = 0; t < x.Length; t++)
-                marginal = Special.LogSum(marginal, lnFwd[t, state] + lnBwd[t, state] 
-                    + Math.Log(x[t][dimension]));
+            {
+                if (x[t][dimension] == this.symbol)
+                    marginal = Special.LogSum(marginal, lnFwd[t, state] + lnBwd[t, state]);
+            }
 
             return marginal;
         }
@@ -137,7 +149,7 @@ namespace Accord.Statistics.Models.Fields.Features
         /// 
         public IFeature<double[]> Clone(IPotentialFunction<double[]> newOwner)
         {
-            var clone = (MultivariateFirstMomentFeature)MemberwiseClone();
+            var clone = (MultivariateEmissionFeature)MemberwiseClone();
             clone.Owner = newOwner;
             return clone;
         }

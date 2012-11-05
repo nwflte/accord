@@ -27,27 +27,31 @@ namespace Accord.Statistics.Models.Fields.Features
     using Accord.Statistics.Models.Fields.Functions;
 
     /// <summary>
-    ///   State feature for second moment Gaussian emission probabilities.
+    ///   State feature for first moment multivariate Gaussian emission probabilities.
     /// </summary>
     /// 
     [Serializable]
-    public sealed class SecondMomentFeature : FeatureBase<double>, IFeature<double>
+    public sealed class MultivariateFirstMomentFeature : FeatureBase<double[]>, IFeature<double[]>
     {
 
         private int state;
+        private int dimension;
 
         /// <summary>
-        ///   Constructs a new second moment emission feature.
+        ///   Constructs a new first moment emission feature.
         /// </summary>
         /// 
         /// <param name="owner">The potential function to which this feature belongs.</param>
         /// <param name="factorIndex">The index of the potential factor to which this feature belongs.</param>
         /// <param name="state">The state for the emission.</param>
+        /// <param name="dimension">The multivariate dimension to consider in the computation.</param>
         /// 
-        public SecondMomentFeature(IPotentialFunction<double> owner, int factorIndex, int state)
+        public MultivariateFirstMomentFeature(IPotentialFunction<double[]> owner, int factorIndex,
+            int state, int dimension)
             : base(owner, factorIndex)
         {
             this.state = state;
+            this.dimension = dimension;
         }
 
         /// <summary>
@@ -60,13 +64,12 @@ namespace Accord.Statistics.Models.Fields.Features
         /// <param name="observationIndex">The index of the current observation.</param>
         /// <param name="outputClass">The output class label for the sequence.</param>
         /// 
-        public override double Compute(int previousState, int currentState, double[] observations,
-            int observationIndex, int outputClass = 0)
+        public override double Compute(int previousState, int currentState, double[][] observations, int observationIndex, int outputClass = 0)
         {
             if (currentState == this.state)
             {
                 if (observationIndex >= 0 && observationIndex < observations.Length)
-                    return observations[observationIndex] * observations[observationIndex];
+                    return observations[observationIndex][dimension];
             }
 
             return 0.0;
@@ -84,16 +87,16 @@ namespace Accord.Statistics.Models.Fields.Features
         /// 
         /// <returns>The probability of occurance of this feature.</returns>
         /// 
-        public override double Marginal(double[,] fwd, double[,] bwd, double[] x, int y)
+        public override double Marginal(double[,] fwd, double[,] bwd, double[][] x, int y)
         {
             // Assume the simplifying structure that each
             // factor is responsible for single output y.
-            if (y != OwnerFactorIndex) return 0;
+            if (y != FactorIndex) return 0;
 
             double marginal = 0;
 
             for (int t = 0; t < x.Length; t++)
-                marginal += fwd[t, state] * bwd[t, state] * (x[t] * x[t]);
+                marginal += fwd[t, state] * bwd[t, state] * (x[t][dimension]);
 
             return marginal;
         }
@@ -110,15 +113,19 @@ namespace Accord.Statistics.Models.Fields.Features
         /// 
         /// <returns>The probability of occurance of this feature.</returns>
         /// 
-        public override double LogMarginal(double[,] lnFwd, double[,] lnBwd, double[] x, int y)
+        public override double LogMarginal(double[,] lnFwd, double[,] lnBwd, double[][] x, int y)
         {
             // Assume the simplifying structure that each
             // factor is responsible for single output y.
-            if (y != OwnerFactorIndex) return Double.NegativeInfinity;
+            if (y != FactorIndex) return Double.NegativeInfinity;
 
             double marginal = Double.NegativeInfinity;
             for (int t = 0; t < x.Length; t++)
-                marginal = Special.LogSum(marginal, lnFwd[t, state] + lnBwd[t, state] + Math.Log(x[t] * x[t]));
+            {
+                double obs = x[t][dimension];
+                if (obs < 0) throw new ArgumentOutOfRangeException("x", "Values should be positive.");
+                marginal = Special.LogSum(marginal, lnFwd[t, state] + lnBwd[t, state] + Math.Log(obs));
+            }
 
             return marginal;
         }
@@ -131,9 +138,9 @@ namespace Accord.Statistics.Models.Fields.Features
         ///   A new object that is a copy of this instance.
         /// </returns>
         /// 
-        public IFeature<double> Clone(IPotentialFunction<double> newOwner)
+        public IFeature<double[]> Clone(IPotentialFunction<double[]> newOwner)
         {
-            var clone = (SecondMomentFeature)MemberwiseClone();
+            var clone = (MultivariateFirstMomentFeature)MemberwiseClone();
             clone.Owner = newOwner;
             return clone;
         }

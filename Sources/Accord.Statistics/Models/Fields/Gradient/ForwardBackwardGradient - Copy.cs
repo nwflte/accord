@@ -30,13 +30,14 @@ namespace Accord.Statistics.Models.Fields.Learning
     using Accord.Statistics.Models.Fields.Functions;
 
     /// <summary>
-    ///   Base class for <see cref="IHiddenConditionalRandomFieldLearning{T}">
-    ///   Hidden Conditional Random Fields learning algorithms</see>.
+    ///   Linear Gradient calculator class for <see cref="HiddenConditionalRandomField{T}">
+    ///   Hidden Conditional Random Fields</see>.
     /// </summary>
     /// 
     /// <typeparam name="T">The type of the observations being modeled.</typeparam>
     /// 
-    public abstract class BaseHiddenConditionalRandomFieldLearning<T> : IDisposable
+    public class ForwardBackwardGradient<T> : IHiddenRandomFieldGradient,
+        IDisposable
     {
         private HiddenConditionalRandomField<T> model;
         private IPotentialFunction<T> function;
@@ -56,7 +57,7 @@ namespace Accord.Statistics.Models.Fields.Learning
         ///   call to the Objective or Gradient functions.
         /// </summary>
         /// 
-        protected T[][] Inputs
+        public T[][] Inputs
         {
             get { return inputs.Value; }
             set
@@ -77,7 +78,7 @@ namespace Accord.Statistics.Models.Fields.Learning
         ///   call to the Objective or Gradient functions.
         /// </summary>
         /// 
-        protected int[] Outputs
+        public int[] Outputs
         {
             get { return outputs.Value; }
             set { outputs.Value = value; }
@@ -88,7 +89,7 @@ namespace Accord.Statistics.Models.Fields.Learning
         ///   vector for the model being learned.
         /// </summary>
         /// 
-        protected double[] Parameters
+        public double[] Parameters
         {
             get { return model.Function.Weights; }
             set { model.Function.Weights = value; }
@@ -99,7 +100,7 @@ namespace Accord.Statistics.Models.Fields.Learning
         ///   to the gradient or objective functions.
         /// </summary>
         /// 
-        protected double LastError
+        public double LastError
         {
             get { return error.Value; }
         }
@@ -127,12 +128,12 @@ namespace Accord.Statistics.Models.Fields.Learning
 
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref="BaseHiddenConditionalRandomFieldLearning&lt;T&gt;"/> class.
+        ///   Initializes a new instance of the <see cref="ForwardBackwardGradient{T}"/> class.
         /// </summary>
         /// 
         /// <param name="model">The model to be trained.</param>
         /// 
-        protected BaseHiddenConditionalRandomFieldLearning(HiddenConditionalRandomField<T> model)
+        public ForwardBackwardGradient(HiddenConditionalRandomField<T> model)
         {
             this.model = model;
             this.function = model.Function;
@@ -146,22 +147,6 @@ namespace Accord.Statistics.Models.Fields.Learning
             this.error = new ThreadLocal<double>();
         }
 
-        /// <summary>
-        ///   Computes the objective (cost) function for the Hidden
-        ///   Conditional Random Field (negative log-likelihood).
-        /// </summary>
-        /// 
-        /// <param name="parameters">The parameter vector lambda to use in the model.</param>
-        /// <param name="inputs">The inputs to compute the cost function.</param>
-        /// <param name="outputs">The respective outputs to compute the cost function.</param>
-        /// <returns>The value of the objective function for the given parameters.</returns>
-        /// 
-        public double Objective(double[] parameters, T[][] inputs, int[] outputs)
-        {
-            this.Inputs = inputs;
-            this.Outputs = outputs;
-            return Objective(parameters);
-        }
 
         /// <summary>
         ///   Computes the gradient (vector of derivatives) vector for
@@ -200,59 +185,6 @@ namespace Accord.Statistics.Models.Fields.Learning
         }
 
         /// <summary>
-        ///   Computes the objective (cost) function for the Hidden
-        ///   Conditional Random Field (negative log-likelihood) using
-        ///   the input/outputs stored in this object.
-        /// </summary>
-        /// 
-        /// <param name="parameters">The parameter vector lambda to use in the model.</param>
-        /// 
-        protected double Objective(double[] parameters)
-        {
-            this.Parameters = parameters;
-            return Objective();
-        }
-
-        /// <summary>
-        ///   Computes the objective (cost) function for the Hidden
-        ///   Conditional Random Field (negative log-likelihood) using
-        ///   the input/outputs stored in this object.
-        /// </summary>
-        /// 
-        protected double Objective()
-        {
-            var inputs = this.inputs.Value;
-            var outputs = this.outputs.Value;
-            var parameters = this.Parameters;
-            double sumSquaredWeights = 0;
-
-            // Regularization
-            if (sigma != 0)
-            {
-                for (int i = 0; i < parameters.Length; i++)
-                    if (!(Double.IsInfinity(parameters[i]) || Double.IsNaN(parameters[i])))
-                        sumSquaredWeights += parameters[i] * parameters[i];
-                sumSquaredWeights = sumSquaredWeights / (2.0 * sigma);
-            }
-
-            double[][] logLikelihoods;
-            double logLikelihood = model.LogLikelihood(inputs, outputs, out logLikelihoods);
-
-            this.logLikelihoods.Value = logLikelihoods;
-
-#if DEBUG
-            if (Double.IsNaN(logLikelihood))
-                logLikelihood = Double.NegativeInfinity;
-#endif
-
-            // Maximize the log-likelihood and minimize
-            // a portion of the sum of squared weights
-            double objective = logLikelihood - sumSquaredWeights;
-
-            return -objective; // convert to a minimization problem
-        }
-
-        /// <summary>
         ///   Computes the gradient using the 
         ///   input/outputs stored in this object.
         /// </summary>
@@ -260,7 +192,7 @@ namespace Accord.Statistics.Models.Fields.Learning
         /// <param name="parameters">The parameter vector lambda to use in the model.</param>
         /// <returns>The value of the gradient vector for the given parameters.</returns>
         /// 
-        protected double[] Gradient(double[] parameters)
+        public double[] Gradient(double[] parameters)
         {
             this.Parameters = parameters;
             return Gradient();
@@ -273,7 +205,7 @@ namespace Accord.Statistics.Models.Fields.Learning
         /// 
         /// <returns>The value of the gradient vector for the given parameters.</returns>
         /// 
-        protected double[] Gradient()
+        public double[] Gradient()
         {
             // Localize thread locals
             var logLikelihoods = this.logLikelihoods.Value;
@@ -310,15 +242,17 @@ namespace Accord.Statistics.Models.Fields.Learning
 
                 // compute and return the negative
                 // log-likelihood as error function
-                error -= lnZxy[i] - lnZx[i];
+                if (lnZx[i] != lnZxy[i])
+                    error -= lnZxy[i] - lnZx[i];
+
+                System.Diagnostics.Debug.Assert(!Double.IsNaN(error));
             }
 
             // Now start computing the gradient w.r.t to the
             // feature functions. Each feature function belongs
             // to a factor potential function, so:
 
-            // For each clique potential (factor potential function)
-#if DEBUG
+#if SERIAL  // For each clique potential (factor potential function)
             for (int c = 0; c < function.Factors.Length; c++)
 #else
             Parallel.For(0, function.Factors.Length, c =>
@@ -342,8 +276,8 @@ namespace Accord.Statistics.Models.Fields.Learning
                 double[] marginals = new double[function.Outputs];
 
                 // For each feature in the factor potential function
-                int end = factor.ParameterIndex + factor.ParameterCount;
-                for (int k = factor.ParameterIndex; k < end; k++)
+                int end = factor.FactorParameters.Offset + factor.FactorParameters.Count;
+                for (int k = factor.FactorParameters.Offset; k < end; k++)
                 {
                     IFeature<T> feature = function.Features[k];
                     double parameter = function.Weights[k];
@@ -378,17 +312,17 @@ namespace Accord.Statistics.Models.Fields.Learning
 
                         // The first term contains a marginal probability p(w|x,y), which is
                         // exactly a marginal distribution of the clamped CRF (eq. 1.46).
-                        lnsum1 = Special.LogSum(lnsum1, marginals[y] - lnZxy[i]);
+                        lnsum1 = Special.LogSum(lnsum1, (marginals[y] == lnZxy[i]) ? 0 : marginals[y] - lnZxy[i]);
 
                         // The second term contains a different marginal p(w,y|x) which is the
                         // same marginal probability required in as fully-observed CRF.
                         for (int j = 0; j < marginals.Length; j++)
-                            lnsum2 = Special.LogSum(lnsum2, marginals[j] - lnZx[i]);
+                            if (marginals[j] != lnZxy[i])
+                                lnsum2 = Special.LogSum(lnsum2, marginals[j] - lnZx[i]);
 
-#if DEBUG
-                        if (Double.IsNaN(lnsum1) || Double.IsNaN(lnsum2))
-                            throw new Exception();
-#endif
+                        System.Diagnostics.Debug.Assert(!marginals.HasNaN());
+                        System.Diagnostics.Debug.Assert(!Double.IsNaN(lnsum1));
+                        System.Diagnostics.Debug.Assert(!Double.IsNaN(lnsum2));
                     }
 
                     // Compute the current derivative
@@ -398,10 +332,7 @@ namespace Accord.Statistics.Models.Fields.Learning
 
                     if (sum1 == sum2) derivative = 0;
 
-#if DEBUG
-                    if (Double.IsNaN(derivative))
-                        throw new Exception();
-#endif
+                    System.Diagnostics.Debug.Assert(!Double.IsNaN(derivative));
 
                     // Include regularization derivative if required
                     if (sigma != 0) derivative -= parameter / sigma;
@@ -409,7 +340,7 @@ namespace Accord.Statistics.Models.Fields.Learning
                     gradient[k] = -derivative;
                 }
             }
-#if !DEBUG
+#if !SERIAL
 );
 #endif
 
@@ -419,33 +350,76 @@ namespace Accord.Statistics.Models.Fields.Learning
             this.logLikelihoods.Value = null;
             this.error.Value = error;
 
+            System.Diagnostics.Debug.Assert(!Double.IsNaN(error));
+
             return gradient; // return the gradient.
         }
 
-
         /// <summary>
-        ///   Compute model error for a given data set.
+        ///   Computes the objective (cost) function for the Hidden
+        ///   Conditional Random Field (negative log-likelihood).
         /// </summary>
         /// 
-        /// <param name="inputs">The input points.</param>
-        /// <param name="outputs">The output points.</param>
+        /// <param name="parameters">The parameter vector lambda to use in the model.</param>
+        /// <param name="inputs">The inputs to compute the cost function.</param>
+        /// <param name="outputs">The respective outputs to compute the cost function.</param>
+        /// <returns>The value of the objective function for the given parameters.</returns>
         /// 
-        /// <returns>The percent of misclassification errors for the data.</returns>
-        /// 
-        public double ComputeError(T[][] inputs, int[] outputs)
+        public double Objective(double[] parameters, T[][] inputs, int[] outputs)
         {
-            int errors = 0;
-            Parallel.For(0, inputs.Length, i =>
-            {
-                int actualOutput = model.Compute(inputs[i]);
-                int expectedOutput = outputs[i];
-
-                if (actualOutput != expectedOutput)
-                    Interlocked.Increment(ref errors);
-            });
-
-            return errors / (double)inputs.Length;
+            this.Inputs = inputs;
+            this.Outputs = outputs;
+            return Objective(parameters);
         }
+
+        /// <summary>
+        ///   Computes the objective (cost) function for the Hidden
+        ///   Conditional Random Field (negative log-likelihood) using
+        ///   the input/outputs stored in this object.
+        /// </summary>
+        /// 
+        /// <param name="parameters">The parameter vector lambda to use in the model.</param>
+        /// 
+        public double Objective(double[] parameters)
+        {
+            this.Parameters = parameters;
+            return Objective();
+        }
+
+        /// <summary>
+        ///   Computes the objective (cost) function for the Hidden
+        ///   Conditional Random Field (negative log-likelihood) using
+        ///   the input/outputs stored in this object.
+        /// </summary>
+        /// 
+        public double Objective()
+        {
+            var inputs = this.inputs.Value;
+            var outputs = this.outputs.Value;
+            var parameters = this.Parameters;
+            double sumSquaredWeights = 0;
+
+            // Regularization
+            if (sigma != 0)
+            {
+                for (int i = 0; i < parameters.Length; i++)
+                    if (!(Double.IsInfinity(parameters[i]) || Double.IsNaN(parameters[i])))
+                        sumSquaredWeights += parameters[i] * parameters[i];
+                sumSquaredWeights = sumSquaredWeights / (2.0 * sigma);
+            }
+
+            double[][] logLikelihoods;
+            double logLikelihood = model.LogLikelihood(inputs, outputs, out logLikelihoods);
+
+            this.logLikelihoods.Value = logLikelihoods;
+
+            // Maximize the log-likelihood and minimize
+            // a portion of the sum of squared weights
+            double objective = logLikelihood - sumSquaredWeights;
+
+            return -objective; // convert to a minimization problem
+        }
+
 
 
         #region IDisposable Members
@@ -463,11 +437,11 @@ namespace Accord.Statistics.Models.Fields.Learning
 
         /// <summary>
         ///   Releases unmanaged resources and performs other cleanup operations before
-        ///   the <see cref="BaseHiddenConditionalRandomFieldLearning{T}"/> is reclaimed by garbage
+        ///   the <see cref="ForwardBackwardGradient{T}"/> is reclaimed by garbage
         ///   collection.
         /// </summary>
         /// 
-        ~BaseHiddenConditionalRandomFieldLearning()
+        ~ForwardBackwardGradient()
         {
             Dispose(false);
         }
@@ -485,13 +459,28 @@ namespace Accord.Statistics.Models.Fields.Learning
             if (disposing)
             {
                 // free managed resources
-                inputs.Dispose();
-                outputs.Dispose();
-                logLikelihoods.Dispose();
-                gradient.Dispose();
-                lnZx.Dispose();
-                lnZxy.Dispose();
-                error.Dispose();
+                if (inputs != null)
+                    inputs.Dispose();
+                if (outputs != null)
+                    outputs.Dispose();
+                if (logLikelihoods != null)
+                    logLikelihoods.Dispose();
+                if (gradient != null)
+                    gradient.Dispose();
+                if (lnZx != null)
+                    lnZx.Dispose();
+                if (lnZxy != null)
+                    lnZxy.Dispose();
+                if (error != null)
+                    error.Dispose();
+
+                inputs = null;
+                outputs = null;
+                gradient = null;
+                logLikelihoods = null;
+                lnZxy = null;
+                lnZx = null;
+                error = null;
             }
         }
 

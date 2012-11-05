@@ -22,24 +22,33 @@
 
 namespace Accord.Statistics.Models.Fields.Features
 {
+    using System;
+    using Accord.Math;
     using Accord.Statistics.Models.Fields.Functions;
 
     /// <summary>
-    ///   Common interface for <see cref="ConditionalRandomField{T}">Conditional Random Fields</see>
-    ///   <see cref="IFeature{T}">feature functions</see>
+    ///   State feature for second moment Gaussian emission probabilities.
     /// </summary>
     /// 
-    /// <typeparam name="TObservation">The type of the observations being modeled.</typeparam>
-    /// 
-    public interface IFeature<TObservation>
+    [Serializable]
+    public sealed class SecondMomentFeature : FeatureBase<double>, IFeature<double>
     {
 
+        private int state;
+
         /// <summary>
-        ///   Gets the potential function containing this feature.
+        ///   Constructs a new second moment emission feature.
         /// </summary>
         /// 
-        IPotentialFunction<TObservation> Owner { get; }
-
+        /// <param name="owner">The potential function to which this feature belongs.</param>
+        /// <param name="factorIndex">The index of the potential factor to which this feature belongs.</param>
+        /// <param name="state">The state for the emission.</param>
+        /// 
+        public SecondMomentFeature(IPotentialFunction<double> owner, int factorIndex, int state)
+            : base(owner, factorIndex)
+        {
+            this.state = state;
+        }
 
         /// <summary>
         ///   Computes the feature for the given parameters.
@@ -51,19 +60,17 @@ namespace Accord.Statistics.Models.Fields.Features
         /// <param name="observationIndex">The index of the current observation.</param>
         /// <param name="outputClass">The output class label for the sequence.</param>
         /// 
-        double Compute(int previousState, int currentState, TObservation[] observations, int observationIndex, int outputClass = 0);
+        public override double Compute(int previousState, int currentState, double[] observations,
+            int observationIndex, int outputClass = 0)
+        {
+            if (currentState == this.state)
+            {
+                if (observationIndex >= 0 && observationIndex < observations.Length)
+                    return observations[observationIndex] * observations[observationIndex];
+            }
 
-        /// <summary>
-        ///   Computes the feature for the given parameters.
-        /// </summary>
-        /// 
-        /// <param name="states">The sequence of states.</param>
-        /// <param name="observations">The sequence of observations.</param>
-        /// <param name="output">The output class label for the sequence.</param>
-        /// 
-        /// <returns>The result of the feature.</returns>
-        /// 
-        double Compute(int[] states, TObservation[] observations, int output);
+            return 0.0;
+        }
 
         /// <summary>
         ///   Computes the probability of occurance of this 
@@ -77,7 +84,19 @@ namespace Accord.Statistics.Models.Fields.Features
         /// 
         /// <returns>The probability of occurance of this feature.</returns>
         /// 
-        double Marginal(double[,] fwd, double[,] bwd, TObservation[] x, int y);
+        public override double Marginal(double[,] fwd, double[,] bwd, double[] x, int y)
+        {
+            // Assume the simplifying structure that each
+            // factor is responsible for single output y.
+            if (y != FactorIndex) return 0;
+
+            double marginal = 0;
+
+            for (int t = 0; t < x.Length; t++)
+                marginal += fwd[t, state] * bwd[t, state] * (x[t] * x[t]);
+
+            return marginal;
+        }
 
         /// <summary>
         ///   Computes the log-probability of occurance of this 
@@ -91,7 +110,18 @@ namespace Accord.Statistics.Models.Fields.Features
         /// 
         /// <returns>The probability of occurance of this feature.</returns>
         /// 
-        double LogMarginal(double[,] lnFwd, double[,] lnBwd, TObservation[] x, int y);
+        public override double LogMarginal(double[,] lnFwd, double[,] lnBwd, double[] x, int y)
+        {
+            // Assume the simplifying structure that each
+            // factor is responsible for single output y.
+            if (y != FactorIndex) return Double.NegativeInfinity;
+
+            double marginal = Double.NegativeInfinity;
+            for (int t = 0; t < x.Length; t++)
+                marginal = Special.LogSum(marginal, lnFwd[t, state] + lnBwd[t, state] + Math.Log(x[t] * x[t]));
+
+            return marginal;
+        }
 
         /// <summary>
         ///   Creates a new object that is a copy of the current instance.
@@ -101,7 +131,12 @@ namespace Accord.Statistics.Models.Fields.Features
         ///   A new object that is a copy of this instance.
         /// </returns>
         /// 
-        IFeature<TObservation> Clone(IPotentialFunction<TObservation> newOwner);
+        public IFeature<double> Clone(IPotentialFunction<double> newOwner)
+        {
+            var clone = (SecondMomentFeature)MemberwiseClone();
+            clone.Owner = newOwner;
+            return clone;
+        }
 
     }
 }

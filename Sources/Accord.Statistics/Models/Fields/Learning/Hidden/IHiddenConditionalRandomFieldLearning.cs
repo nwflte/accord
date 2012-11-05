@@ -31,28 +31,42 @@ namespace Accord.Statistics.Models.Fields.Learning
     {
 
         /// <summary>
-        ///   Runs the learning algorithm with the specified input
-        ///   training observations and corresponding output labels.
-        /// </summary>
-        /// 
-        /// <param name="observations">The training observations.</param>
-        /// <param name="outputs">The observation's labels.</param>
-        /// 
-        /// <returns>The error in the last iteration.</returns>
-        /// 
-        double RunEpoch(T[][] observations, int[] outputs);
-
-        /// <summary>
         ///   Runs one iteration of the learning algorithm with the
         ///   specified input training observation and corresponding
         ///   output label.
         /// </summary>
         /// 
         /// <param name="observations">The training observations.</param>
-        /// <param name="output">The observation's labels.</param>
+        /// <param name="output">The observation labels.</param>
         /// 
         /// <returns>The error in the last iteration.</returns>
         /// 
         double Run(T[] observations, int output);
+
+        /// <summary>
+        ///   Runs one iteration of learning algorithm with the specified
+        ///   input training observations and corresponding output labels.
+        /// </summary>
+        /// 
+        /// <param name="observations">The training observations.</param>
+        /// <param name="outputs">The observations' labels.</param>
+        /// 
+        /// <returns>The error in the last iteration.</returns>
+        /// 
+        double RunEpoch(T[][] observations, int[] outputs);
+
+        /// <summary>
+        ///   Runs the learning algorithm with the specified input
+        ///   training observation and corresponding output label
+        ///   until convergence.
+        /// </summary>
+        /// 
+        /// <param name="observations">The training observations.</param>
+        /// <param name="outputs">The observations' labels.</param>
+        /// 
+        /// <returns>The error in the last iteration.</returns>
+        /// 
+        double Run(T[][] observations, int[] outputs);
+
     }
 }

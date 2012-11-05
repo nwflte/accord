@@ -240,16 +240,14 @@ namespace Accord.Statistics.Models.Fields
 
             double logZxy = logLikelihoods[output];
 
-#if DEBUG
-            if (Double.IsNaN(logZx) || Double.IsNaN(logLikelihoods[output]))
-                throw new Exception();
-
-            if (Double.IsInfinity(logZx))
-                throw new Exception();
-#endif
-
+            System.Diagnostics.Debug.Assert(!Double.IsNaN(logZx));
+            System.Diagnostics.Debug.Assert(!Double.IsNaN(logZxy));
+            System.Diagnostics.Debug.Assert(!Double.IsNaN(logLikelihoods[output]));
+           // System.Diagnostics.Debug.Assert(!Double.IsInfinity(logZx));
 
             // Return the marginal
+            if (logZx == logZxy)
+                return 0;
             return logZxy - logZx;
         }
 
@@ -297,10 +295,7 @@ namespace Accord.Statistics.Models.Fields
 
             double z = Math.Exp(logLikelihood);
 
-#if DEBUG
-            if (Double.IsNaN(z))
-                throw new Exception();
-#endif
+            System.Diagnostics.Debug.Assert(!Double.IsNaN(z));
 
             return z;
         }
@@ -317,10 +312,7 @@ namespace Accord.Statistics.Models.Fields
 
             double z = logLikelihood;
 
-#if DEBUG
-            if (Double.IsNaN(z))
-                throw new Exception();
-#endif
+            System.Diagnostics.Debug.Assert(!Double.IsNaN(z));
 
             return z;
         }
@@ -342,10 +334,7 @@ namespace Accord.Statistics.Models.Fields
                 sum += Math.Exp(logLikelihood);
             }
 
-#if DEBUG
-            if (Double.IsNaN(sum))
-                throw new Exception();
-#endif
+            System.Diagnostics.Debug.Assert(!Double.IsNaN(sum));
 
             return sum;
         }
@@ -367,10 +356,7 @@ namespace Accord.Statistics.Models.Fields
                 sum += Math.Exp(logLikelihood);
             }
 
-#if DEBUG
-            if (Double.IsNaN(sum))
-                throw new Exception();
-#endif
+            System.Diagnostics.Debug.Assert(!Double.IsNaN(sum));
 
             return Math.Log(sum);
         }
@@ -380,8 +366,9 @@ namespace Accord.Statistics.Models.Fields
         {
             double[] logLikelihoods = new double[Outputs];
 
-            // For all possible outputs for the model,
-#if DEBUG
+
+#if SERIAL  // For all possible outputs for the model,
+
             for (int y = 0; y < logLikelihoods.Length; y++)
 #else
             Parallel.For(0, logLikelihoods.Length, y =>
@@ -396,13 +383,10 @@ namespace Accord.Statistics.Models.Fields
                 // Accumulate output's likelihood
                 logLikelihoods[y] = logLikelihood;
 
-#if DEBUG
-                if (Double.IsNaN(logLikelihood))
-                    throw new Exception();
-#endif
+                System.Diagnostics.Debug.Assert(!Double.IsNaN(logLikelihood));
             }
-#if !DEBUG
-            );
+#if !SERIAL
+);
 #endif
 
             return logLikelihoods;

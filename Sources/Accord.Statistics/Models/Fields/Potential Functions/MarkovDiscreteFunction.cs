@@ -26,14 +26,14 @@ namespace Accord.Statistics.Models.Fields.Functions
     using System.Collections.Generic;
     using Accord.Statistics.Models.Markov;
     using Accord.Statistics.Models.Fields.Features;
+    using Accord.Statistics.Models.Fields.Functions.Specialized;
 
     /// <summary>
     ///   Potential function modeling Hidden Markov Models.
     /// </summary>
     /// 
     [Serializable]
-    public sealed class DiscreteMarkovClassifierFunction : BasePotentialFunction<int>,
-        IPotentialFunction<int>, ICloneable
+    public sealed class MarkovDiscreteFunction : PotentialFunctionBase<int>, IPotentialFunction<int>, ICloneable
     {
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace Accord.Statistics.Models.Fields.Functions
         /// <param name="symbols">The number of symbols.</param>
         /// <param name="outputClasses">The number of output classes.</param>
         /// 
-        public DiscreteMarkovClassifierFunction(int states, int symbols, int outputClasses)
+        public MarkovDiscreteFunction(int states, int symbols, int outputClasses)
         {
             this.Outputs = outputClasses;
             this.Symbols = symbols;
@@ -60,6 +60,14 @@ namespace Accord.Statistics.Models.Fields.Functions
             var factorFeatures = new List<IFeature<int>>();
 
             this.Factors = new FactorPotential<int>[Outputs];
+
+            int[] classOffset = new int[outputClasses];
+            int[] edgeOffset = new int[outputClasses];
+            int[] stateOffset = new int[outputClasses];
+            int[] classCount = new int[outputClasses];
+            int[] edgeCount = new int[outputClasses];
+            int[] stateCount = new int[outputClasses];
+
 
             // Create features for initial class probabilities
             for (int c = 0; c < outputClasses; c++)
@@ -105,15 +113,14 @@ namespace Accord.Statistics.Models.Fields.Functions
                     }
                 }
 
-                int startClassIndex = factorIndex;
-                int startEdgeIndex = factorIndex + classParams.Count;
-                int startStateIndex = factorIndex + classParams.Count + edgeParams.Count;
+                classOffset[c] = factorIndex;
+                edgeOffset[c] = factorIndex + classParams.Count;
+                stateOffset[c] = factorIndex + classParams.Count + edgeParams.Count;
 
-                // First features and params are always belonging to classes
-                Factors[c] = new DiscreteMarkovModelFactor(this, states, c, symbols,
-                    startClassIndex, classParams.Count,  // 1. classes
-                    startEdgeIndex, edgeParams.Count,    // 2. edges
-                    startStateIndex, stateParams.Count); // 3. states
+                classCount[c] = classParams.Count;
+                edgeCount[c] = edgeParams.Count;
+                stateCount[c] = stateParams.Count;
+
 
                 // 1. classes
                 factorFeatures.AddRange(classFeatures);
@@ -135,6 +142,14 @@ namespace Accord.Statistics.Models.Fields.Functions
 
             this.Weights = factorParams.ToArray();
             this.Features = factorFeatures.ToArray();
+
+            for (int c = 0; c < outputClasses; c++)
+            {
+                Factors[c] = new MarkovDiscreteFactor(this, states, c, symbols,
+                    classIndex: classOffset[c], classCount: classCount[c],  // 1. classes
+                    edgeIndex: edgeOffset[c], edgeCount: edgeCount[c],      // 2. edges
+                    stateIndex: stateOffset[c], stateCount: stateCount[c]); // 3. states
+            }
         }
 
         /// <summary>
@@ -142,9 +157,9 @@ namespace Accord.Statistics.Models.Fields.Functions
         /// </summary>
         /// 
         /// <param name="classifier">The classifier model.</param>
-        /// <param name="includeClassFeatures">True to include class features (priors), false otherwise.</param>
+        /// <param name="includePriors">True to include class features (priors), false otherwise.</param>
         /// 
-        public DiscreteMarkovClassifierFunction(HiddenMarkovClassifier classifier, bool includeClassFeatures = true)
+        public MarkovDiscreteFunction(HiddenMarkovClassifier classifier, bool includePriors = true)
         {
             this.Symbols = classifier.Symbols;
             this.Outputs = classifier.Classes;
@@ -154,6 +169,14 @@ namespace Accord.Statistics.Models.Fields.Functions
             var factorFeatures = new List<IFeature<int>>();
 
             this.Factors = new FactorPotential<int>[Outputs];
+
+            int[] classOffset = new int[classifier.Classes];
+            int[] edgeOffset = new int[classifier.Classes];
+            int[] stateOffset = new int[classifier.Classes];
+            int[] classCount = new int[classifier.Classes];
+            int[] edgeCount = new int[classifier.Classes];
+            int[] stateCount = new int[classifier.Classes];
+
 
             // Create features for initial class probabilities
             for (int c = 0; c < classifier.Classes; c++)
@@ -169,7 +192,7 @@ namespace Accord.Statistics.Models.Fields.Functions
 
                 var model = classifier[c];
 
-                if (includeClassFeatures)
+                if (includePriors)
                 {
                     // Create features for class labels
                     classParams.Add(Math.Log(classifier.Priors[c]));
@@ -203,15 +226,15 @@ namespace Accord.Statistics.Models.Fields.Functions
                     }
                 }
 
-                int startClassIndex = factorIndex;
-                int startEdgeIndex = factorIndex + classParams.Count;
-                int startStateIndex = factorIndex + classParams.Count + edgeParams.Count;
 
-                // First features and params are always belonging to classes
-                Factors[c] = new DiscreteMarkovModelFactor(this, model.States, c, Symbols,
-                    startClassIndex, classParams.Count,  // 1. classes
-                    startEdgeIndex, edgeParams.Count,    // 2. edges
-                    startStateIndex, stateParams.Count); // 3. states
+                classOffset[c] = factorIndex;
+                edgeOffset[c] = factorIndex + classParams.Count;
+                stateOffset[c] = factorIndex + classParams.Count + edgeParams.Count;
+
+                classCount[c] = classParams.Count;
+                edgeCount[c] = edgeParams.Count;
+                stateCount[c] = stateParams.Count;
+
 
                 // 1. classes
                 factorFeatures.AddRange(classFeatures);
@@ -233,13 +256,161 @@ namespace Accord.Statistics.Models.Fields.Functions
 
             this.Weights = factorParams.ToArray();
             this.Features = factorFeatures.ToArray();
+
+
+            for (int c = 0; c < classifier.Models.Length; c++)
+            {
+                Factors[c] = new MarkovDiscreteFactor(this, classifier.Models[c].States, c, classifier.Symbols,
+                    classIndex: classOffset[c], classCount: classCount[c],  // 1. classes
+                    edgeIndex: edgeOffset[c], edgeCount: edgeCount[c],      // 2. edges
+                    stateIndex: stateOffset[c], stateCount: stateCount[c]); // 3. states
+            }
+        }
+
+        /// <summary>
+        ///   Constructs a new potential function modeling Hidden Markov Models.
+        /// </summary>
+        /// 
+        /// <param name="states">The number of states.</param>
+        /// <param name="symbols">The number of symbols.</param>
+        /// 
+        public MarkovDiscreteFunction(int states, int symbols)
+        {
+            this.Symbols = symbols;
+
+            var factorParams = new List<double>();
+            var factorFeatures = new List<IFeature<int>>();
+
+            var stateParams = new List<double>();
+            var stateFeatures = new List<IFeature<int>>();
+
+            var edgeParams = new List<double>();
+            var edgeFeatures = new List<IFeature<int>>();
+
+
+            // Create features for initial state probabilities
+            for (int i = 0; i < states; i++)
+            {
+                edgeParams.Add(0);
+                edgeFeatures.Add(new InitialFeature<int>(this, 0, i));
+            }
+
+            // Create features for state transition probabilities
+            for (int i = 0; i < states; i++)
+            {
+                for (int j = 0; j < states; j++)
+                {
+                    edgeParams.Add(0);
+                    edgeFeatures.Add(new TransitionFeature<int>(this, 0, i, j));
+                }
+            }
+
+            // Create features for symbol emission probabilities
+            for (int i = 0; i < states; i++)
+            {
+                for (int k = 0; k < symbols; k++)
+                {
+                    stateParams.Add(0);
+                    stateFeatures.Add(new EmissionFeature(this, 0, i, k));
+                }
+            }
+
+
+            // 1. edges
+            factorFeatures.AddRange(edgeFeatures);
+            factorParams.AddRange(edgeParams);
+
+            // 2. states
+            factorFeatures.AddRange(stateFeatures);
+            factorParams.AddRange(stateParams);
+
+            this.Features = factorFeatures.ToArray();
+            this.Weights = factorParams.ToArray();
+
+
+            // First features and params are always belonging to edges
+            this.Factors = new[] 
+            { 
+                new MarkovDiscreteFactor(this, states, 0, symbols,
+                  edgeIndex: 0, edgeCount: edgeParams.Count,                    // 1. edges
+                  stateIndex: edgeParams.Count, stateCount: stateParams.Count)  // 2. states
+            };  
+        }
+
+        /// <summary>
+        ///   Constructs a new potential function modeling Hidden Markov Models.
+        /// </summary>
+        /// 
+        /// <param name="model">The hidden Markov model.</param>
+        /// 
+        public MarkovDiscreteFunction(HiddenMarkovModel model)
+        {
+            int states = model.States;
+            this.Symbols = model.Symbols;
+
+            var factorParams = new List<double>();
+            var factorFeatures = new List<IFeature<int>>();
+
+            var stateParams = new List<double>();
+            var stateFeatures = new List<IFeature<int>>();
+
+            var edgeParams = new List<double>();
+            var edgeFeatures = new List<IFeature<int>>();
+
+
+            // Create features for initial state probabilities
+            for (int i = 0; i < states; i++)
+            {
+                edgeParams.Add(model.Probabilities[i]);
+                edgeFeatures.Add(new InitialFeature<int>(this, 0, i));
+            }
+
+            // Create features for state transition probabilities
+            for (int i = 0; i < states; i++)
+            {
+                for (int j = 0; j < states; j++)
+                {
+                    edgeParams.Add(model.Transitions[i, j]);
+                    edgeFeatures.Add(new TransitionFeature<int>(this, 0, i, j));
+                }
+            }
+
+            // Create features for symbol emission probabilities
+            for (int i = 0; i < states; i++)
+            {
+                for (int k = 0; k < Symbols; k++)
+                {
+                    stateParams.Add(model.Emissions[i, k]);
+                    stateFeatures.Add(new EmissionFeature(this, 0, i, k));
+                }
+            }
+
+
+            // 1. edges
+            factorFeatures.AddRange(edgeFeatures);
+            factorParams.AddRange(edgeParams);
+
+            // 2. states
+            factorFeatures.AddRange(stateFeatures);
+            factorParams.AddRange(stateParams);
+
+            this.Features = factorFeatures.ToArray();
+            this.Weights = factorParams.ToArray();
+
+
+            this.Factors = new[] 
+            {
+                new MarkovDiscreteFactor(this, states, 0, Symbols,
+                  edgeIndex: 0, edgeCount: edgeParams.Count,                   // 1. edges
+                  stateIndex: edgeParams.Count, stateCount: stateParams.Count) // 2. states
+            };  
         }
 
 
 
         #region ICloneable Members
 
-        private DiscreteMarkovClassifierFunction() { }
+        private MarkovDiscreteFunction() { }
 
         /// <summary>
         ///   Creates a new object that is a copy of the current instance.
@@ -251,7 +422,7 @@ namespace Accord.Statistics.Models.Fields.Functions
         /// 
         public object Clone()
         {
-            var clone = new DiscreteMarkovClassifierFunction();
+            var clone = new MarkovDiscreteFunction();
 
             clone.Factors = new FactorPotential<int>[Factors.Length];
             for (int i = 0; i < Factors.Length; i++)
@@ -263,7 +434,7 @@ namespace Accord.Statistics.Models.Fields.Functions
 
             clone.Outputs = Outputs;
             clone.Symbols = Symbols;
-            
+
             clone.Weights = (double[])Weights.Clone();
 
             return clone;
