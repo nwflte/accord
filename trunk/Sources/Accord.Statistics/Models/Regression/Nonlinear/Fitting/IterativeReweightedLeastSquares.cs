@@ -209,11 +209,13 @@ namespace Accord.Statistics.Models.Regression.Fitting
         /// <summary>
         ///   Runs one iteration of the Reweighted Least Squares algorithm.
         /// </summary>
-        /// <param name="input">The input data.</param>
+        /// 
+        /// <param name="inputs">The input data.</param>
         /// <param name="outputs">The outputs associated with each input vector.</param>
+        /// 
         /// <returns>The maximum relative change in the parameters after the iteration.</returns>
         /// 
-        public double Run(double[][] input, double[][] outputs)
+        public double Run(double[][] inputs, double[][] outputs)
         {
             if (outputs[0].Length != 1)
                 throw new ArgumentException("Function must have a single output.", "outputs");
@@ -222,7 +224,7 @@ namespace Accord.Statistics.Models.Regression.Fitting
             for (int i = 0; i < outputs.Length; i++)
                 output[i] = outputs[i][0];
 
-            return Run(input, output);
+            return Run(inputs, output);
         }
 
         /// <summary>
@@ -275,12 +277,8 @@ namespace Accord.Statistics.Models.Regression.Fitting
 
 
             // Reset Hessian matrix and gradient
-            for (int i = 0; i < gradient.Length; i++)
-            {
-                gradient[i] = 0;
-                for (int j = 0; j < gradient.Length; j++)
-                    hessian[i, j] = 0;
-            }
+            Array.Clear(gradient, 0, gradient.Length);
+            Array.Clear(hessian, 0, hessian.Length);
 
 
             // (Re-) Compute error gradient

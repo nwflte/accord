@@ -163,9 +163,8 @@ namespace Accord.Statistics.Models.Regression.Linear
             if (inputs.Length != outputs.Length)
                 throw new ArgumentException("Number of input and output samples does not match", "outputs");
 
-            double[,] X;
-
-            return regress(inputs, outputs, out X);
+            double[,] design;
+            return regress(inputs, outputs, out design);
         }
 
         /// <summary>
@@ -184,42 +183,78 @@ namespace Accord.Statistics.Models.Regression.Linear
             if (inputs.Length != outputs.Length)
                 throw new ArgumentException("Number of input and output samples does not match", "outputs");
 
-            double[,] X;
+            double[,] design;
 
-            double error = regress(inputs, outputs, out X);
+            double error = regress(inputs, outputs, out design);
 
-            //hatMatrix = X.Multiply(svd.Inverse());
-            informationMatrix = new SingularValueDecomposition(X.TransposeAndMultiply(X),
-                true, true, true, true).Inverse();
+            double[,] cov = design.TransposeAndMultiply(design);
+            informationMatrix = new SingularValueDecomposition(cov,
+                computeLeftSingularVectors: true,
+                computeRightSingularVectors: true,
+                autoTranspose: true, inPlace: true).Inverse();
 
             return error;
         }
 
 
-        private double regress(double[][] inputs, double[] outputs, out double[,] X)
+        private double regress(double[][] inputs, double[] outputs, out double[,] designMatrix)
         {
             if (inputs.Length != outputs.Length)
                 throw new ArgumentException("Number of input and output samples does not match", "outputs");
 
-            int rows = inputs.Length;     // inputs
-            int cols = inputs[0].Length;        // points
+            int rows = inputs.Length;   // number of instance points
+            int cols = Inputs;          // dimension of each point
+
+            ISolverMatrixDecomposition<double> solver;
 
 
-            if (addIntercept)
+            // Create the problem's design matrix. If we
+            //  have to add an intercept term, add a new
+            //  extra column at the end and fill with 1s.
+
+            if (!addIntercept)
             {
-                X = new double[rows, cols + 1];
-                for (int i = 0; i < rows; i++)
-                    X[i, cols] = 1;
+                // Just copy values over
+                designMatrix = new double[rows, cols];
+                for (int i = 0; i < inputs.Length; i++)
+                    for (int j = 0; j < inputs[i].Length; j++)
+                        designMatrix[i, j] = inputs[i][j];
             }
-            else X = new double[rows, cols];
+            else
+            {
+                // Add an intercept term
+                designMatrix = new double[rows, cols + 1];
+                for (int i = 0; i < inputs.Length; i++)
+                {
+                    for (int j = 0; j < inputs[i].Length; j++)
+                        designMatrix[i, j] = inputs[i][j];
+                    designMatrix[i, cols] = 1;
+                }
+            }
 
-            for (int i = 0; i < inputs.Length; i++)
-                for (int j = 0; j < inputs[i].Length; j++)
-                    X[i, j] = inputs[i][j];
+            // Check if we have an overdetermined or underdetermined
+            //  system to select an appropriate matrix solver method.
+
+            if (rows > cols)
+            {
+                // We have more equations than variables, an
+                // overdetermined system. Solve using the QR:
+                solver = new QrDecomposition(designMatrix);
+            }
+            else
+            {
+                // We have more variables than equations, an
+                // underdetermined system. Solve using a SVD:
+                solver = new SingularValueDecomposition(designMatrix,
+                    computeLeftSingularVectors: true,
+                    computeRightSingularVectors: true,
+                    autoTranspose: true);
+            }
 
 
             // Solve V*C = B to find C (the coefficients)
-            coefficients = new SingularValueDecomposition(X).Solve(outputs);
+            coefficients = solver.Solve(outputs);
+
 
             // Calculate Sum-Of-Squares error
             double error = 0.0;
