@@ -20,46 +20,44 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-namespace Accord.Statistics.Distributions.Multivariate
+namespace Accord.Statistics.Distributions.Fitting
 {
     using System;
-    using Accord.Math;
-    using Accord.Statistics.Distributions.Fitting;
 
     /// <summary>
-    ///   Independent joint distribution.
+    ///   Estimation options for <see cref="Accord.Statistics.Distributions.Multivariate.Independent{T}">
+    ///   multivariate independent distributions</see>.
     /// </summary>
     /// 
     [Serializable]
-    public class Independent : Independent<IUnivariateDistribution>
+    public class IndependentOptions : IFittingOptions
     {
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref="Independent&lt;TDistribution&gt;"/> class.
+        ///   Gets or sets the fitting options for the inner
+        ///   independent components in the joint distribution.
         /// </summary>
         /// 
-        /// <param name="components">The components.</param>
-        /// 
-        public Independent(params IUnivariateDistribution[] components)
-            : base(components) { }
-
+        public IFittingOptions[] InnerOptions { get; set; }
 
         /// <summary>
-        ///   Creates a new object that is a copy of the current instance.
+        ///   Initializes a new instance of the <see cref="IndependentOptions"/> class.
         /// </summary>
         /// 
-        /// <returns>
-        ///   A new object that is a copy of this instance.
-        /// </returns>
-        /// 
-        public override object Clone()
+        /// <param name="innerOptions">The fitting options for the inner
+        ///   component distributions of the independent distributions.</param>
+        ///   
+        public IndependentOptions(IFittingOptions[] innerOptions)
         {
-            var clone = new IUnivariateDistribution[Components.Length];
-            for (int i = 0; i < clone.Length; i++)
-                clone[i] = (IUnivariateDistribution)Components[i].Clone();
-
-            return new Independent(clone);
+            InnerOptions = innerOptions;
         }
 
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="IndependentOptions"/> class.
+        /// </summary>
+        /// 
+        public IndependentOptions()
+        {
+        }
     }
 }
