@@ -139,10 +139,19 @@ namespace Accord.Controls.Imaging
         /// 
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
-                pen.Dispose();
+                if (components != null)
+                {
+                    components.Dispose();
+                    components = null; 
+                }
+
+                if (pen != null)
+                {
+                    pen.Dispose();
+                    pen = null;
+                }
             }
             base.Dispose(disposing);
         }

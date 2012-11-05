@@ -77,6 +77,18 @@ namespace Accord.Controls
         public event ListChangedEventHandler ListChanged;
 
 
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="ConfusionMatrixView"/> class.
+        /// </summary>
+        /// 
+        /// <param name="matrix">The confusion matrix.</param>
+        /// 
+        public ConfusionMatrixView(ConfusionMatrix matrix)
+        {
+            GeneralConfusionMatrix m = new GeneralConfusionMatrix(matrix.Matrix);
+
+            init(m);
+        }
 
         /// <summary>
         ///   Initializes a new instance of the <see cref="ConfusionMatrixView"/> class.
@@ -85,6 +97,11 @@ namespace Accord.Controls
         /// <param name="matrix">The confusion matrix.</param>
         /// 
         public ConfusionMatrixView(GeneralConfusionMatrix matrix)
+        {
+            init(matrix);
+        }
+
+        private void init(GeneralConfusionMatrix matrix)
         {
             this.Matrix = matrix;
 
@@ -97,8 +114,8 @@ namespace Accord.Controls
             for (int i = 0; i < classes; i++)
             {
                 rows[i] = new ConfusionMatrixRowView(this, i);
-                RowNames[i] = i.ToString();
-                ColumnNames[i] = i.ToString();
+                RowNames[i] = "Expected " + i;
+                ColumnNames[i] = "Actual " + i;
             }
 
             rows[classes] = new ConfusionMatrixRowView(this, -1);

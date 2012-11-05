@@ -42,7 +42,7 @@ namespace Accord.Controls
     ///   // Display it onscreen
     ///   DataGridBox.Show(data);</code>
     ///   
-    ///   <img src="../Images/scatterplot-box.png"/>
+    ///   <img src="../images/scatterplot-box.png"/>
     /// </example>
     /// 
     public partial class DataGridBox : Form
