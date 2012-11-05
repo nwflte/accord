@@ -131,8 +131,8 @@ namespace Accord.Controls
             PropertyDescriptor[] columns = new PropertyDescriptor[classes + 1];
 
             for (int i = 0; i < classes; i++)
-                columns[i] = new ConfusionMatrixPropertyDescriptor(Owner.RowNames[i], i);
-            columns[classes] = new ConfusionMatrixPropertyDescriptor(Owner.RowNames[classes], -1);
+                columns[i] = new ConfusionMatrixPropertyDescriptor(Owner.ColumnNames[i], i);
+            columns[classes] = new ConfusionMatrixPropertyDescriptor(Owner.ColumnNames[classes], -1);
 
             return new PropertyDescriptorCollection(columns);
         }

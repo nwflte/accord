@@ -11,3 +11,5 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix", Scope = "type", Target = "Accord.Controls.ConfusionMatrixView")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1039:ListsAreStronglyTyped", Scope = "type", Target = "Accord.Controls.ConfusionMatrixView")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1010:CollectionsShouldImplementGenericInterface", Scope = "type", Target = "Accord.Controls.ConfusionMatrixView")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2123:OverrideLinkDemandsShouldBeIdenticalToBase", Scope = "member", Target = "Accord.Controls.Editors.NumericCollectionEditor.#GetEditStyle(System.ComponentModel.ITypeDescriptorContext)")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2123:OverrideLinkDemandsShouldBeIdenticalToBase", Scope = "member", Target = "Accord.Controls.Editors.NumericCollectionEditor.#EditValue(System.ComponentModel.ITypeDescriptorContext,System.IServiceProvider,System.Object)")]
