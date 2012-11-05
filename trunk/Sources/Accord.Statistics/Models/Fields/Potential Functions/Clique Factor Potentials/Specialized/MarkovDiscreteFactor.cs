@@ -20,18 +20,19 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-namespace Accord.Statistics.Models.Fields.Functions
+namespace Accord.Statistics.Models.Fields.Functions.Specialized
 {
     using System;
     using System.Collections.Generic;
     using Accord.Statistics.Models.Fields.Features;
+    using System.Runtime.Serialization;
 
     /// <summary>
     ///   Discrete-density Markov Factor Potential (Clique Potential) function.
     /// </summary>
     /// 
     [Serializable]
-    public class DiscreteMarkovModelFactor : FactorPotential<int>
+    public class MarkovDiscreteFactor : FactorPotential<int>
     {
 
         /// <summary>
@@ -41,18 +42,6 @@ namespace Accord.Statistics.Models.Fields.Functions
         /// 
         public int Symbols { get; private set; }
 
-        /// <summary>
-        ///   Gets the index of the first class feature function
-        ///   belonging to this factor in the potential function.
-        /// </summary>
-        /// 
-        public int ClassParameterIndex { get; protected set; }
-
-        /// <summary>
-        ///   Gets the number of class features in the factor potential.
-        /// </summary>
-        /// 
-        public int ClassParameterCount { get; protected set; }
 
         /// <summary>
         ///   Creates a new factor (clique) potential function.
@@ -69,42 +58,15 @@ namespace Accord.Statistics.Models.Fields.Functions
         /// <param name="stateIndex">The index of the first state feature in the <paramref name="owner"/>'s parameter vector.</param>
         /// <param name="stateCount">The number of state features in this factor.</param>
         /// 
-        public DiscreteMarkovModelFactor(IPotentialFunction<int> owner, int states, int factorIndex, int symbols,
-            int classIndex, int classCount,
+        public MarkovDiscreteFactor(IPotentialFunction<int> owner, int states, int factorIndex, int symbols,
             int edgeIndex, int edgeCount,
-            int stateIndex, int stateCount)
-            : base(owner, states, factorIndex, edgeIndex, edgeCount, stateIndex, stateCount)
-        {
-            this.Symbols = symbols;
-
-            ClassParameterIndex = classIndex;
-            ClassParameterCount = classCount;
-
-            ParameterIndex = Math.Min(Math.Min(edgeIndex, stateIndex), classIndex);
-            ParameterCount = edgeCount + stateCount + classCount;
-        }
-
-
-
-        /// <summary>
-        ///   Creates a new factor (clique) potential function.
-        /// </summary>
-        /// 
-        /// <param name="owner">The owner <see cref="IPotentialFunction{T}"/>.</param>
-        /// <param name="states">The number of states in this clique potential.</param>
-        /// <param name="factorIndex">The index of this factor potential in the <paramref name="owner"/>.</param>
-        /// <param name="symbols">The number of symbols in the discrete alphabet.</param>
-        /// <param name="edgeIndex">The index of the first edge feature in the <paramref name="owner"/>'s parameter vector.</param>
-        /// <param name="edgeCount">The number of edge features in this factor.</param>
-        /// <param name="stateIndex">The index of the first state feature in the <paramref name="owner"/>'s parameter vector.</param>
-        /// <param name="stateCount">The number of state features in this factor.</param>
-        /// 
-        public DiscreteMarkovModelFactor(IPotentialFunction<int> owner, int states, int factorIndex, int symbols,
-            int edgeIndex, int edgeCount, int stateIndex, int stateCount)
-            : base(owner, states, factorIndex, edgeIndex, edgeCount, stateIndex, stateCount)
+            int stateIndex, int stateCount,
+            int classIndex=0, int classCount=0)
+            : base(owner, states, factorIndex, edgeIndex, edgeCount, stateIndex, stateCount, classIndex, classCount)
         {
             this.Symbols = symbols;
         }
+
 
         /// <summary>
         ///   Computes the factor potential function for the given parameters.
@@ -128,11 +90,11 @@ namespace Accord.Statistics.Models.Fields.Functions
 
 
             // If a output feature exists,
-            if (ClassParameterCount != 0)
+            if (OutputParameters.Count != 0)
             {
                 // it will be activated for every state
                 //   in the state/observation sequence
-                int i = ClassParameterIndex;
+                int i = OutputParameters.Offset;
                 double w = parameters[i];
 
                 if (Double.IsNaN(w) || Double.IsNegativeInfinity(w))
@@ -143,7 +105,7 @@ namespace Accord.Statistics.Models.Fields.Functions
 
             // The state occupancy feature is activated for the current state.
             {
-                int i = StateParameterIndex + currentState * Symbols + observations[index];
+                int i = StateParameters.Offset + currentState * Symbols + observations[index];
                 double b = parameters[i];
 
                 if (Double.IsNaN(b) || Double.IsNegativeInfinity(b))
@@ -156,7 +118,7 @@ namespace Accord.Statistics.Models.Fields.Functions
             if (previousState == -1)
             {
                 // Compute the initial transition feature
-                int i = EdgeParameterIndex + currentState;
+                int i = EdgeParameters.Offset + currentState;
                 double p = parameters[i];
 
                 if (Double.IsNaN(p))
@@ -167,7 +129,7 @@ namespace Accord.Statistics.Models.Fields.Functions
             else
             {
                 // Compute the transition feature
-                int i = EdgeParameterIndex + States + previousState * States + currentState;
+                int i = EdgeParameters.Offset + States + previousState * States + currentState;
                 double a = parameters[i];
 
                 if (Double.IsNaN(a))
@@ -176,8 +138,11 @@ namespace Accord.Statistics.Models.Fields.Functions
                 sum += a;
             }
 
+            System.Diagnostics.Debug.Assert(!Double.IsNaN(sum));
+
             return sum;
         }
+
 
     }
 }

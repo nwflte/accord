@@ -24,17 +24,17 @@ namespace Accord.Statistics.Models.Fields.Functions
 {
     using System;
     using System.Collections.Generic;
-    using Accord.Statistics.Models.Markov;
-    using Accord.Statistics.Models.Fields.Features;
-    using Accord.Statistics.Distributions.Multivariate;
     using Accord.Statistics.Distributions.Univariate;
+    using Accord.Statistics.Models.Fields.Features;
+    using Accord.Statistics.Models.Fields.Functions.Specialized;
+    using Accord.Statistics.Models.Markov;
 
     /// <summary>
     ///   Potential function modeling <see cref="HiddenMarkovClassifier">Hidden Markov Classifiers</see>.
     /// </summary>
     /// 
     [Serializable]
-    public sealed class NormalMarkovClassifierFunction : BasePotentialFunction<double>, IPotentialFunction<double>
+    public sealed class MarkovContinuousFunction : PotentialFunctionBase<double>, IPotentialFunction<double>
     {
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace Accord.Statistics.Models.Fields.Functions
         /// 
         /// <param name="classifier">A hidden Markov sequence classifier.</param>
         /// 
-        public NormalMarkovClassifierFunction(HiddenMarkovClassifier<NormalDistribution> classifier)
+        public MarkovContinuousFunction(HiddenMarkovClassifier<NormalDistribution> classifier)
         {
             this.Outputs = classifier.Classes;
 
@@ -52,6 +52,14 @@ namespace Accord.Statistics.Models.Fields.Functions
             var factorFeatures = new List<IFeature<double>>();
 
             this.Factors = new FactorPotential<double>[Outputs];
+
+            int[] classOffset = new int[classifier.Classes];
+            int[] edgeOffset = new int[classifier.Classes];
+            int[] stateOffset = new int[classifier.Classes];
+            int[] classCount = new int[classifier.Classes];
+            int[] edgeCount = new int[classifier.Classes];
+            int[] stateCount = new int[classifier.Classes];
+
 
             // Create features for initial class probabilities
             for (int c = 0; c < classifier.Classes; c++)
@@ -107,15 +115,15 @@ namespace Accord.Statistics.Models.Fields.Functions
                     stateFeatures.Add(new SecondMomentFeature(this, c, i));
                 }
 
-                int startClassIndex = factorIndex;
-                int startEdgeIndex = factorIndex + classParams.Count;
-                int startStateIndex = factorIndex + classParams.Count + edgeParams.Count;
 
-                // First features and params are always belonging to classes
-                Factors[c] = new NormalMarkovModelFactor(this, model.States, c,
-                    startClassIndex, classParams.Count,  // 1. classes
-                    startEdgeIndex, edgeParams.Count,    // 2. edges
-                    startStateIndex, stateParams.Count); // 3. states
+                classOffset[c] = factorIndex;
+                edgeOffset[c] = factorIndex + classParams.Count;
+                stateOffset[c] = factorIndex + classParams.Count + edgeParams.Count;
+
+                classCount[c] = classParams.Count;
+                edgeCount[c] = edgeParams.Count;
+                stateCount[c] = stateParams.Count;
+
 
                 // 1. classes
                 factorFeatures.AddRange(classFeatures);
@@ -137,11 +145,20 @@ namespace Accord.Statistics.Models.Fields.Functions
 
             this.Weights = factorParams.ToArray();
             this.Features = factorFeatures.ToArray();
+
+
+            for (int c = 0; c < classifier.Classes; c++)
+            {
+                Factors[c] = new MarkovNormalFactor(this, classifier.Models[c].States, c,
+                    classIndex: classOffset[c], classCount: classCount[c],  // 1. classes
+                    edgeIndex: edgeOffset[c], edgeCount: edgeCount[c],      // 2. edges
+                    stateIndex: stateOffset[c], stateCount: stateCount[c]); // 3. states
+            }
         }
 
         #region ICloneable Members
 
-        private NormalMarkovClassifierFunction() { }
+        private MarkovContinuousFunction() { }
 
         /// <summary>
         ///   Creates a new object that is a copy of the current instance.
@@ -153,7 +170,7 @@ namespace Accord.Statistics.Models.Fields.Functions
         /// 
         public object Clone()
         {
-            var clone = new NormalMarkovClassifierFunction();
+            var clone = new MarkovContinuousFunction();
 
             clone.Factors = new FactorPotential<double>[Factors.Length];
             for (int i = 0; i < Factors.Length; i++)
@@ -170,5 +187,6 @@ namespace Accord.Statistics.Models.Fields.Functions
         }
 
         #endregion
+
     }
 }

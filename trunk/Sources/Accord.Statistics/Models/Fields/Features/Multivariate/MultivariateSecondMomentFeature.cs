@@ -93,7 +93,7 @@ namespace Accord.Statistics.Models.Fields.Features
         {
             // Assume the simplifying structure that each
             // factor is responsible for single output y.
-            if (y != OwnerFactorIndex) return 0;
+            if (y != FactorIndex) return 0;
 
             double marginal = 0;
 
@@ -119,7 +119,7 @@ namespace Accord.Statistics.Models.Fields.Features
         {
             // Assume the simplifying structure that each
             // factor is responsible for single output y.
-            if (y != OwnerFactorIndex) return Double.NegativeInfinity;
+            if (y != FactorIndex) return Double.NegativeInfinity;
 
             double marginal = double.NegativeInfinity;
             for (int t = 0; t < x.Length; t++)

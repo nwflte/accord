@@ -32,7 +32,7 @@ namespace Accord.Statistics.Models.Fields.Functions
     /// <typeparam name="T">The type of the observations modeled.</typeparam>
     /// 
     [Serializable]
-    public abstract class BasePotentialFunction<T> 
+    public abstract class PotentialFunctionBase<T> 
     {
 
         /// <summary>

@@ -93,9 +93,9 @@ namespace Accord.Statistics.Models.Fields.Features
         {
             // Assume the simplifying structure that each
             // factor is responsible for single output y.
-            if (y != OwnerFactorIndex) return 0;
+            if (y != FactorIndex) return 0;
 
-            FactorPotential<T> owner = Owner.Factors[OwnerFactorIndex];
+            FactorPotential<T> owner = Owner.Factors[FactorIndex];
 
             double marginal = 0;
             for (int t = 0; t < x.Length - 1; t++)
@@ -123,9 +123,9 @@ namespace Accord.Statistics.Models.Fields.Features
         {
             // Assume the simplifying structure that each
             // factor is responsible for single output y.
-            if (y != OwnerFactorIndex) return Double.NegativeInfinity;
+            if (y != FactorIndex) return Double.NegativeInfinity;
 
-            FactorPotential<T> owner = Owner.Factors[OwnerFactorIndex];
+            FactorPotential<T> owner = Owner.Factors[FactorIndex];
 
             double marginal = double.NegativeInfinity;
             for (int t = 0; t < x.Length - 1; t++)

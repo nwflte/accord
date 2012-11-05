@@ -20,10 +20,10 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-namespace Accord.Statistics.Models.Fields.Functions
+namespace Accord.Statistics.Models.Fields.Functions.Specialized
 {
     using System;
-    using System.Collections.Generic;
+    using System.Runtime.Serialization;
     using Accord.Statistics.Models.Fields.Features;
 
     /// <summary>
@@ -31,23 +31,11 @@ namespace Accord.Statistics.Models.Fields.Functions
     /// </summary>
     /// 
     [Serializable]
-    public class MultivariateNormalMarkovModelFactor : FactorPotential<double[]>
+    public class MarkovMultivariateNormalFactor : FactorPotential<double[]>
     {
 
         private int dimensions;
 
-        /// <summary>
-        ///   Gets the index of the first class feature function
-        ///   belonging to this factor in the potential function.
-        /// </summary>
-        /// 
-        public int ClassParameterIndex { get; protected set; }
-
-        /// <summary>
-        ///   Gets the number of class features in the factor potential.
-        /// </summary>
-        /// 
-        public int ClassParameterCount { get; protected set; }
 
         /// <summary>
         ///   Creates a new factor (clique) potential function.
@@ -64,43 +52,15 @@ namespace Accord.Statistics.Models.Fields.Functions
         /// <param name="stateIndex">The index of the first state feature in the <paramref name="owner"/>'s parameter vector.</param>
         /// <param name="stateCount">The number of state features in this factor.</param>
         /// 
-        public MultivariateNormalMarkovModelFactor(IPotentialFunction<double[]> owner, int states, int factorIndex, int dimensions,
-            int classIndex, int classCount,
+        public MarkovMultivariateNormalFactor(IPotentialFunction<double[]> owner, int states, int factorIndex, int dimensions,
             int edgeIndex, int edgeCount,
-            int stateIndex, int stateCount)
-            : base(owner, states, factorIndex, edgeIndex, edgeCount, stateIndex, stateCount)
-        {
-            this.dimensions = dimensions;
-
-            ClassParameterIndex = classIndex;
-            ClassParameterCount = classCount;
-
-            ParameterIndex = Math.Min(Math.Min(edgeIndex, stateIndex), classIndex);
-            ParameterCount = edgeCount + stateCount + classCount;
-        }
-
-
-
-        /// <summary>
-        ///   Creates a new factor (clique) potential function.
-        /// </summary>
-        /// 
-        /// <param name="owner">The owner <see cref="IPotentialFunction{T}"/>.</param>
-        /// <param name="states">The number of states in this clique potential.</param>
-        /// <param name="factorIndex">The index of this factor potential in the <paramref name="owner"/>.</param>
-        /// <param name="dimensions">The number of dimensions for the multivariate observations.</param>
-        /// <param name="edgeIndex">The index of the first edge feature in the <paramref name="owner"/>'s parameter vector.</param>
-        /// <param name="edgeCount">The number of edge features in this factor.</param>
-        /// <param name="stateIndex">The index of the first state feature in the <paramref name="owner"/>'s parameter vector.</param>
-        /// <param name="stateCount">The number of state features in this factor.</param>
-        /// 
-        public MultivariateNormalMarkovModelFactor(IPotentialFunction<double[]> owner, int states, int factorIndex, int dimensions,
-            int edgeIndex, int edgeCount,
-            int stateIndex, int stateCount)
-            : base(owner, states, factorIndex, edgeIndex, edgeCount, stateIndex, stateCount)
+            int stateIndex, int stateCount,
+            int classIndex = 0, int classCount = 0)
+            : base(owner, states, factorIndex, edgeIndex, edgeCount, stateIndex, stateCount, classIndex, classCount)
         {
             this.dimensions = dimensions;
         }
+
 
         /// <summary>
         ///   Computes the factor potential function for the given parameters.
@@ -125,11 +85,11 @@ namespace Accord.Statistics.Models.Fields.Functions
             double sum = 0;
 
 
-            if (ClassParameterCount != 0)
+            if (OutputParameters.Count != 0)
             {
                 if (previousState == -1)
                 {
-                    int cindex = ClassParameterIndex;
+                    int cindex = OutputParameters.Offset;
                     double w = parameters[cindex];
                     if (Double.IsNaN(w) || Double.IsNegativeInfinity(w))
                         return parameters[cindex] = Double.NegativeInfinity;
@@ -137,7 +97,7 @@ namespace Accord.Statistics.Models.Fields.Functions
                 }
             }
 
-            int bindex = StateParameterIndex + currentState * dimensions * 3;
+            int bindex = StateParameters.Offset + currentState * dimensions * 3;
             double[] observation = observations[index];
 
             // For each dimension of the observation
@@ -174,7 +134,7 @@ namespace Accord.Statistics.Models.Fields.Functions
 
             if (previousState == -1)
             {
-                int pindex = EdgeParameterIndex + currentState;
+                int pindex = EdgeParameters.Offset + currentState;
                 double pi = parameters[pindex];
                 if (Double.IsNaN(pi) || Double.IsNegativeInfinity(pi))
                     return parameters[pindex] = Double.NegativeInfinity;
@@ -182,7 +142,7 @@ namespace Accord.Statistics.Models.Fields.Functions
             }
             else
             {
-                int aindex = EdgeParameterIndex + States + previousState * States + currentState;
+                int aindex = EdgeParameters.Offset + States + previousState * States + currentState;
                 double a = parameters[aindex];
                 if (Double.IsNaN(a) || Double.IsNegativeInfinity(a))
                     return parameters[aindex] = Double.NegativeInfinity;
@@ -191,6 +151,7 @@ namespace Accord.Statistics.Models.Fields.Functions
 
             return sum;
         }
+
 
     }
 }

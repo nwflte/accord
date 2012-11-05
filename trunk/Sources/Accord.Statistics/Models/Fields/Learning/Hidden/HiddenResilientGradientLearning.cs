@@ -23,9 +23,10 @@
 namespace Accord.Statistics.Models.Fields.Learning
 {
     using System;
-    using System.Threading.Tasks;
-    using System.Threading;
     using System.ComponentModel;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Accord.Math;
 
     /// <summary>
     ///   Resilient Gradient Learning.
@@ -33,14 +34,16 @@ namespace Accord.Statistics.Models.Fields.Learning
     /// 
     /// <typeparam name="T">The type of the observations being modeled.</typeparam>
     ///
-    public class ResilientGradientHiddenLearning<T> : BaseHiddenConditionalRandomFieldLearning<T>,
-        IHiddenConditionalRandomFieldLearning<T>
+    public class HiddenResilientGradientLearning<T> : IHiddenConditionalRandomFieldLearning<T>,
+        IConvergenceLearning, IDisposable
     {
+
+        private ForwardBackwardGradient<T> calculator;
+        private AbsoluteConvergence convergence;
 
         private double initialStep = 0.0125;
         private double deltaMax = 50.0;
         private double deltaMin = 1e-6;
-        private int iterations = 0;
 
         private double etaMinus = 0.5;
         private double etaPlus = 1.2;
@@ -56,7 +59,13 @@ namespace Accord.Statistics.Models.Fields.Learning
 
 
         /// <summary>
-        ///   Gets or sets a value indicating whether this <see cref="GradientDescentHiddenLearning&lt;T&gt;"/>
+        ///   Gets or sets the model being trained.
+        /// </summary>
+        /// 
+        public HiddenConditionalRandomField<T> Model { get; private set; }
+
+        /// <summary>
+        ///   Gets or sets a value indicating whether this <see cref="HiddenGradientDescentLearning&lt;T&gt;"/>
         ///   should use stochastic gradient updates. Default is true.
         /// </summary>
         /// 
@@ -128,16 +137,42 @@ namespace Accord.Statistics.Models.Fields.Learning
             }
         }
 
+        /// <summary>
+        ///   Gets or sets the maximum change in the average log-likelihood
+        ///   after an iteration of the algorithm used to detect convergence.
+        /// </summary>
+        /// 
+        public double Tolerance
+        {
+            get { return convergence.Tolerance; }
+            set { convergence.Tolerance = value; }
+        }
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref="ResilientGradientHiddenLearning{T}"/> class.
+        ///   Gets or sets the maximum number of iterations
+        ///   performed by the learning algorithm.
+        /// </summary>
+        /// 
+        public int Iterations
+        {
+            get { return convergence.Iterations; }
+            set { convergence.Iterations = value; }
+        }
+
+
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="HiddenResilientGradientLearning{T}"/> class.
         /// </summary>
         /// 
         /// <param name="model">Model to teach.</param>
         /// 
-        public ResilientGradientHiddenLearning(HiddenConditionalRandomField<T> model)
-            : base(model)
+        public HiddenResilientGradientLearning(HiddenConditionalRandomField<T> model)
         {
+            Model = model;
+
+            calculator = new ForwardBackwardGradient<T>(model);
+            convergence = new AbsoluteConvergence();
+
             int parameters = Model.Function.Weights.Length;
             gradient = new double[parameters];
             previousGradient = new double[parameters];
@@ -156,13 +191,25 @@ namespace Accord.Statistics.Models.Fields.Learning
         /// </summary>
         /// 
         /// <param name="observations">The training observations.</param>
-        /// <param name="output">The observation's labels.</param>
+        /// <param name="outputs">The observation's labels.</param>
         /// 
         /// <returns>The error in the last iteration.</returns>
         /// 
-        public double Run(T[] observations, int output)
+        public double Run(T[][] observations, int[] outputs)
         {
-            throw new NotImplementedException();
+            convergence.CurrentIteration = 0;
+
+            do
+            {
+                convergence.OldValue = convergence.NewValue;
+
+                RunEpoch(observations, outputs);
+
+                convergence.NewValue = -Model.LogLikelihood(observations, outputs);
+            }
+            while (!convergence.HasConverged);
+
+            return convergence.NewValue;
         }
 
         /// <summary>
@@ -177,8 +224,7 @@ namespace Accord.Statistics.Models.Fields.Learning
         /// 
         public double RunEpoch(T[][] observations, int[] outputs)
         {
-
-            iterations++;
+            convergence.CurrentIteration++;
 
             double error = 0;
 
@@ -191,38 +237,34 @@ namespace Accord.Statistics.Models.Fields.Learning
 
                 int progress = 0;
 
-                // For each training point
-#if DEBUG
+
+#if SERIAL      // For each training point
                 for (int i = 0; i < observations.Length; i++)
 #else
                 Parallel.For(0, observations.Length, i =>
 #endif
                 {
-                    base.Inputs = new[] { observations[i] };
-                    base.Outputs = new[] { outputs[i] };
+                    calculator.Inputs = new[] { observations[i] };
+                    calculator.Outputs = new[] { outputs[i] };
 
                     // Compute the estimated gradient
-                    double[] estimate = base.Gradient();
+                    double[] estimate = calculator.Gradient();
 
                     lock (lockObj)
                     {
                         // Accumulate
                         for (int j = 0; j < estimate.Length; j++)
                             gradient[j] += estimate[j];
-                        error += LastError;
+                        error += calculator.LastError;
                     }
 
                     int current = Interlocked.Increment(ref progress);
                     double percent = current / (double)observations.Length * 100.0;
                     OnProgressChanged(new ProgressChangedEventArgs((int)percent, i));
-#if DEBUG
-                    for (int j = 0; j < gradient.Length; j++)
-                        if (Double.IsNaN(gradient[j]))
-                            throw new Exception();
-#endif
 
+                    System.Diagnostics.Debug.Assert(!gradient.HasNaN());
                 }
-#if !DEBUG
+#if !SERIAL
 );
 #endif
 
@@ -232,18 +274,18 @@ namespace Accord.Statistics.Models.Fields.Learning
             }
             else
             {
-                base.Inputs = observations;
-                base.Outputs = outputs;
+                calculator.Inputs = observations;
+                calculator.Outputs = outputs;
 
                 // Compute the true gradient
-                gradient = base.Gradient();
+                gradient = calculator.Gradient();
 
-                error = LastError;
+                error = calculator.LastError;
             }
 
             double[] parameters = Model.Function.Weights;
 
-            for (int k = 0; k < Parameters.Length; k++)
+            for (int k = 0; k < calculator.Parameters.Length; k++)
             {
                 if (Double.IsInfinity(parameters[k])) continue;
 
@@ -267,13 +309,25 @@ namespace Accord.Statistics.Models.Fields.Learning
                 }
             }
 
-#if DEBUG
-            for (int j = 0; j < Model.Function.Weights.Length; j++)
-                if (Double.IsNaN(Model.Function.Weights[j]))
-                    throw new Exception();
-#endif
+            System.Diagnostics.Debug.Assert(!Model.Function.Weights.HasNaN());
 
             return error;
+        }
+
+        /// <summary>
+        ///   Runs one iteration of the learning algorithm with the
+        ///   specified input training observation and corresponding
+        ///   output label.
+        /// </summary>
+        /// 
+        /// <param name="observations">The training observations.</param>
+        /// <param name="output">The observation's labels.</param>
+        /// 
+        /// <returns>The error in the last iteration.</returns>
+        /// 
+        public double Run(T[] observations, int output)
+        {
+            return RunEpoch(new[] { observations }, new[] { output });
         }
 
         /// <summary>
@@ -294,12 +348,63 @@ namespace Accord.Statistics.Models.Fields.Learning
         /// 
         public void Reset(double rate)
         {
+            convergence.Clear();
+
             Parallel.For(0, weightsUpdates.Length, i =>
             {
                 for (int j = 0; j < weightsUpdates.Length; j++)
                     weightsUpdates[i] = rate;
             });
         }
+
+
+
+        #region IDisposable Members
+
+        /// <summary>
+        ///   Performs application-defined tasks associated with freeing,
+        ///   releasing, or resetting unmanaged resources.
+        /// </summary>
+        /// 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        ///   Releases unmanaged resources and performs other cleanup operations before
+        ///   the <see cref="HiddenResilientGradientLearning{T}"/> is reclaimed by garbage
+        ///   collection.
+        /// </summary>
+        /// 
+        ~HiddenResilientGradientLearning()
+        {
+            Dispose(false);
+        }
+
+        /// <summary>
+        ///   Releases unmanaged and - optionally - managed resources
+        /// </summary>
+        /// 
+        /// <param name="disposing"><c>true</c> to release both managed 
+        /// and unmanaged resources; <c>false</c> to release only unmanaged
+        /// resources.</param>
+        /// 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                // free managed resources
+                if (calculator != null)
+                {
+                    calculator.Dispose();
+                    calculator = null;
+                }
+            }
+        }
+
+        #endregion
 
     }
 }

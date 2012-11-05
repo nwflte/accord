@@ -144,7 +144,7 @@ namespace Accord.Statistics.Models.Fields
         }
 
         /// <summary>
-        ///   Computes Forward probabilitiesfor a given potential function and a set of observations.
+        ///   Computes Forward probabilities for a given potential function and a set of observations.
         /// </summary>
         /// 
         public static double[,] Forward<TObservation>(FactorPotential<TObservation> function,
@@ -159,7 +159,7 @@ namespace Accord.Statistics.Models.Fields
         }
 
         /// <summary>
-        ///   Computes Forward probabilitiesfor a given potential function and a set of observations.
+        ///   Computes Forward probabilities for a given potential function and a set of observations.
         /// </summary>
         /// 
         public static double[,] Forward<TObservation>(FactorPotential<TObservation> function,
@@ -341,6 +341,8 @@ namespace Accord.Statistics.Models.Fields
             logLikelihood = Double.NegativeInfinity;
             for (int j = 0; j < states; j++)
                 logLikelihood = Special.LogSum(logLikelihood, lnFwd[T - 1, j]);
+
+            System.Diagnostics.Debug.Assert(!Double.IsNaN(logLikelihood));
 
             return lnFwd;
         }

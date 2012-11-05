@@ -24,6 +24,7 @@ namespace Accord.Statistics.Models.Fields.Functions
 {
     using System;
     using System.Collections.Generic;
+    using System.Runtime.Serialization;
     using Accord.Statistics.Models.Fields.Features;
 
     /// <summary>
@@ -35,6 +36,14 @@ namespace Accord.Statistics.Models.Fields.Functions
     [Serializable]
     public class FactorPotential<T> : IEnumerable<IFeature<T>>
     {
+
+        /// <summary>
+        ///   Gets the <see cref="IPotentialFunction{T}"/> 
+        ///   to which this factor potential belongs.
+        /// </summary>
+        /// 
+        public IPotentialFunction<T> Owner { get; private set; }
+
         /// <summary>
         ///   Gets the number of model states
         ///   assumed by this function.
@@ -49,73 +58,35 @@ namespace Accord.Statistics.Models.Fields.Functions
         /// 
         public int Index { get; private set; }
 
-        /// <summary>
-        ///   Gets the index of the first edge feature function
-        ///   belonging to this factor in the potential function.
-        /// </summary>
-        /// 
-        public int EdgeParameterIndex { get; protected set; }
 
         /// <summary>
-        ///   Gets the number of edge features in the factor potential.
+        ///   Gets the segment of the parameter vector which contains
+        ///   parameters respective to all features from this factor.
         /// </summary>
         /// 
-        public int EdgeParameterCount { get; protected set; }
+        public ArraySegment<double> FactorParameters { get; protected set; }
 
         /// <summary>
-        ///   Gets the index of the first state feature function
-        ///   belonging to this factor in the potential function.
+        ///   Gets the segment of the parameter vector which contains
+        ///   parameters respective to the edge features.
         /// </summary>
         /// 
-        public int StateParameterIndex { get; protected set; }
+        public ArraySegment<double> EdgeParameters { get; protected set; }
 
         /// <summary>
-        ///   Gets the number of state features in the factor potential.
+        ///   Gets the segment of the parameter vector which contains
+        ///   parameters respective to the state features.
         /// </summary>
         /// 
-        public int StateParameterCount { get; protected set; }
+        public ArraySegment<double> StateParameters { get; protected set; }
 
         /// <summary>
-        ///   Gets the <see cref="IPotentialFunction{T}"/> 
-        ///   to which this factor potential belongs.
+        ///   Gets the segment of the parameter vector which contains
+        ///   parameters respective to the output features.
         /// </summary>
         /// 
-        public IPotentialFunction<T> Owner { get; private set; }
+        public ArraySegment<double> OutputParameters { get; protected set; }
 
-        /// <summary>
-        ///   Gets the index of the first parameter relative
-        ///   to this factor potential in the parameter vector.
-        /// </summary>
-        /// 
-        public int ParameterIndex { get; protected set; }
-
-        /// <summary>
-        ///   Gets the number of parameters (and features)
-        ///   contained in this factor potential.
-        /// </summary>
-        /// 
-        public int ParameterCount { get; protected set; }
-
-        /// <summary>
-        ///   Gets the index of the last edge parameter for
-        ///   this factor potential in the parameter vector.
-        /// </summary>
-        /// 
-        protected int EdgeParameterEnd { get; private set; }
-
-        /// <summary>
-        ///   Gets the index of the last state parameter for
-        ///   this factor potential in the parameter vector.
-        /// </summary>
-        /// 
-        protected int StateParameterEnd { get; private set; }
-
-        /// <summary>
-        ///   Gets the index of the last edge parameter for
-        ///   this factor potential in the parameter vector.
-        /// </summary>
-        /// 
-        protected int ParameterEnd { get; private set; }
 
         /// <summary>
         ///   Creates a new factor (clique) potential function.
@@ -128,23 +99,20 @@ namespace Accord.Statistics.Models.Fields.Functions
         /// <param name="edgeCount">The number of edge features in this factor.</param>
         /// <param name="stateIndex">The index of the first state feature in the <paramref name="owner"/>'s parameter vector.</param>
         /// <param name="stateCount">The number of state features in this factor.</param>
+        /// <param name="classIndex">The index of the first class feature in the <paramref name="owner"/>'s parameter vector.</param>
+        /// <param name="classCount">The number of class features in this factor.</param>
         /// 
         public FactorPotential(IPotentialFunction<T> owner, int states, int factorIndex,
-            int edgeIndex, int edgeCount,
-            int stateIndex, int stateCount)
+            int edgeIndex, int edgeCount, int stateIndex, int stateCount, int classIndex = 0, int classCount = 0)
             : this(owner, states, factorIndex)
         {
-            EdgeParameterIndex = edgeIndex;
-            EdgeParameterCount = edgeCount;
-            EdgeParameterEnd = edgeIndex + edgeCount;
+            EdgeParameters = new ArraySegment<double>(owner.Weights, edgeIndex, edgeCount);
+            StateParameters = new ArraySegment<double>(owner.Weights, stateIndex, stateCount);
+            OutputParameters = new ArraySegment<double>(owner.Weights, classIndex, classCount);
 
-            StateParameterIndex = stateIndex;
-            StateParameterCount = stateCount;
-            StateParameterEnd = stateIndex + stateCount;
-
-            ParameterIndex = Math.Min(edgeIndex, stateIndex);
-            ParameterCount = edgeCount + stateCount;
-            ParameterEnd = ParameterIndex + ParameterCount;
+            FactorParameters = new ArraySegment<double>(owner.Weights,
+                Math.Min(Math.Min(edgeIndex, stateIndex), classIndex),
+                edgeCount + stateCount + classCount);
         }
 
         /// <summary>
@@ -191,12 +159,9 @@ namespace Accord.Statistics.Models.Fields.Functions
         /// 
         public virtual double[] GetFeatureVector(int[] states, T[] observations, int output = 0)
         {
-            double[] featureVector = new double[ParameterCount];
+            double[] featureVector = new double[FactorParameters.Count];
 
-            int start = ParameterIndex;
-            int end = ParameterEnd;
-
-            for (int i = 0, k = start; i < featureVector.Length; i++, k++)
+            for (int i = 0, k = FactorParameters.Offset; i < featureVector.Length; i++, k++)
                 featureVector[i] = Owner.Features[k].Compute(states, observations, output);
 
             return featureVector;
@@ -216,8 +181,8 @@ namespace Accord.Statistics.Models.Fields.Functions
         public virtual double Compute(int previousState, int currentState, T[] observations, int index,
             int outputClass = 0)
         {
-            int start = ParameterIndex;
-            int end = ParameterEnd;
+            int start = FactorParameters.Offset;
+            int end = FactorParameters.Offset + FactorParameters.Count;
 
             double sum = 0;
             for (int k = start; k < end; k++)
@@ -253,13 +218,11 @@ namespace Accord.Statistics.Models.Fields.Functions
         /// </returns>
         public IEnumerator<IFeature<T>> GetEnumerator()
         {
-            int start = ParameterIndex;
-            int end = ParameterEnd;
+            int start = FactorParameters.Offset;
+            int end = FactorParameters.Offset + FactorParameters.Count;
 
             for (int k = start; k < end; k++)
-            {
                 yield return Owner.Features[k];
-            }
 
             yield break;
         }
@@ -267,9 +230,11 @@ namespace Accord.Statistics.Models.Fields.Functions
         /// <summary>
         ///   Returns an enumerator that iterates through all features in this factor potential function.
         /// </summary>
+        /// 
         /// <returns>
         /// An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
         /// </returns>
+        /// 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
@@ -289,6 +254,40 @@ namespace Accord.Statistics.Models.Fields.Functions
             clone.Owner = newOwner;
             return clone;
         }
+
+
+
+        #region Backward compatibility
+
+        [OnDeserialized]
+        private void OnDeserializedMethod(StreamingContext context)
+        {
+#pragma warning disable 618,612
+            EdgeParameters = new ArraySegment<double>(Owner.Weights, EdgeParameterIndex, EdgeParameterCount);
+            StateParameters = new ArraySegment<double>(Owner.Weights, StateParameterIndex, StateParameterCount);
+            FactorParameters = new ArraySegment<double>(Owner.Weights, ParameterIndex, ParameterCount);
+#pragma warning restore 618,612
+        }
+
+        [Obsolete]
+        private int EdgeParameterIndex { get; set; }
+        [Obsolete]
+        private int EdgeParameterCount { get; set; }
+        [Obsolete]
+        private int StateParameterIndex { get; set; }
+        [Obsolete]
+        private int StateParameterCount { get; set; }
+        [Obsolete]
+        private int ParameterIndex { get; set; }
+        [Obsolete]
+        private int ParameterCount { get; set; }
+        [Obsolete]
+        private int EdgeParameterEnd { get; set; }
+        [Obsolete]
+        private int StateParameterEnd { get; set; }
+        [Obsolete]
+        private int ParameterEnd { get; set; }
+        #endregion
 
     }
 }

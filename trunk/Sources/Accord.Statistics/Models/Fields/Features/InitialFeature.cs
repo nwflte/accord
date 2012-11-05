@@ -82,7 +82,7 @@ namespace Accord.Statistics.Models.Fields.Features
         {
             // Assume the simplifying structure that each
             // factor is responsible for single output y.
-            if (y != OwnerFactorIndex) return 0;
+            if (y != FactorIndex) return 0;
 
             return fwd[0, current] * bwd[0, current];
         }
@@ -103,7 +103,7 @@ namespace Accord.Statistics.Models.Fields.Features
         {
             // Assume the simplifying structure that each
             // factor is responsible for single output y.
-            if (y != OwnerFactorIndex) return Double.NegativeInfinity;
+            if (y != FactorIndex) return Double.NegativeInfinity;
 
             return lnFwd[0, current] + lnBwd[0, current];
         }

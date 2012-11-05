@@ -115,13 +115,11 @@ namespace Accord.Statistics.Models.Fields
             if (double.IsInfinity(z))
                 return 0;
 
-#if DEBUG
-            if (Double.IsNaN(p) || Double.IsInfinity(p))
-                throw new Exception();
+            System.Diagnostics.Debug.Assert(!Double.IsNaN(p));
+            System.Diagnostics.Debug.Assert(!Double.IsInfinity(p));
 
-            if (Double.IsNaN(z) || Double.IsInfinity(z))
-                throw new Exception();
-#endif
+            System.Diagnostics.Debug.Assert(!Double.IsNaN(z));
+            System.Diagnostics.Debug.Assert(!Double.IsInfinity(z));
 
             return p - z;
         }
@@ -220,10 +218,8 @@ namespace Accord.Statistics.Models.Fields
             for (int i = 0; i < observations.Length; i++)
                 logLikelihood += LogLikelihood(observations[i], labels[i]);
 
-#if DEBUG
-            if (Double.IsNaN(logLikelihood) || Double.IsInfinity(logLikelihood))
-                throw new Exception();
-#endif
+            System.Diagnostics.Debug.Assert(!Double.IsNaN(logLikelihood));
+            System.Diagnostics.Debug.Assert(!Double.IsInfinity(logLikelihood));
 
             return logLikelihood;
         }
