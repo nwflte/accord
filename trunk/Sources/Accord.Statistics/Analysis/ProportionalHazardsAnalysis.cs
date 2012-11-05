@@ -33,38 +33,24 @@ namespace Accord.Statistics.Analysis
     using AForge;
 
     /// <summary>
-    ///   Logistic Regression Analysis.
+    ///   Cox's Proportional Hazards Survival Analysis.
     /// </summary>
     /// 
     /// <remarks>
     /// <para>
-    ///   The Logistic Regression Analysis tries to extract useful
-    ///   information about a logistic regression model. </para>
-    /// 
-    /// <para>
-    ///   References:
-    ///   <list type="bullet">
-    ///     <item><description>
-    ///       E. F. Connor. Logistic Regression. Available on:
-    ///       http://userwww.sfsu.edu/~efc/classes/biol710/logistic/logisticreg.htm </description></item>
-    ///     <item><description>
-    ///       C. Shalizi. Logistic Regression and Newton's Method. Lecture notes. Available on:
-    ///       http://www.stat.cmu.edu/~cshalizi/350/lectures/26/lecture-26.pdf </description></item>
-    ///     <item><description>
-    ///       A. Storkey. Learning from Data: Learning Logistic Regressors. Available on:
-    ///       http://www.inf.ed.ac.uk/teaching/courses/lfd/lectures/logisticlearn-print.pdf </description></item>
-    ///   </list></para>  
+    ///   The Proportional Hazards Analysis tries to extract useful
+    ///   information about a proportional hazards model. </para>
     /// </remarks>
     /// 
     [Serializable]
-    public class LogisticRegressionAnalysis : IRegressionAnalysis
+    public class ProportionalHazardsAnalysis : IRegressionAnalysis
     {
-        private LogisticRegression regression;
+        private ProportionalHazards regression;
 
         private int inputCount;
         private double[] coefficients;
         private double[] standardErrors;
-        private double[] oddsRatios;
+        private double[] hazardRatios;
 
         private WaldTest[] waldTests;
         private ChiSquareTest[] ratioTests;
@@ -76,87 +62,95 @@ namespace Accord.Statistics.Analysis
         private ChiSquareTest chiSquare;
 
         private double[][] inputData;
-        private double[] outputData;
+        private double[] timeData;
+        private int[] censorData;
 
         private string[] inputNames;
-        private string outputName;
+        private string timeName;
+        private string censorName;
 
         private double[,] source;
         private double[] result;
 
-        private LogisticCoefficientCollection coefficientCollection;
+        private HazardCoefficientCollection coefficientCollection;
 
 
         //---------------------------------------------
 
 
         #region Constructors
+
         /// <summary>
-        ///   Constructs a Logistic Regression Analysis.
+        ///   Constructs a new Cox's Proportional Hazards Analysis.
         /// </summary>
         /// 
         /// <param name="inputs">The input data for the analysis.</param>
-        /// <param name="outputs">The output data for the analysis.</param>
+        /// <param name="times">The output data for the analysis.</param>
+        /// <param name="censor">The right-censoring indicative values.</param>
         /// 
-        public LogisticRegressionAnalysis(double[][] inputs, double[] outputs)
+        public ProportionalHazardsAnalysis(double[][] inputs, double[] times, int[] censor)
         {
             // Initial argument checking
             if (inputs == null) throw new ArgumentNullException("inputs");
-            if (outputs == null) throw new ArgumentNullException("outputs");
+            if (times == null) throw new ArgumentNullException("times");
 
-            if (inputs.Length != outputs.Length)
+            if (inputs.Length != times.Length)
                 throw new ArgumentException("The number of rows in the input array must match the number of given outputs.");
 
-
-            initialize(inputs, outputs);
+            initialize(inputs, times, censor);
 
             // Start regression using the Null Model
-            this.regression = new LogisticRegression(inputCount);
+            this.regression = new ProportionalHazards(inputCount);
         }
 
-        private void initialize(double[][] inputs, double[] outputs)
+        /// <summary>
+        ///   Constructs a new Cox's Proportional Hazards Analysis.
+        /// </summary>
+        /// 
+        /// <param name="inputs">The input data for the analysis.</param>
+        /// <param name="times">The output, binary data for the analysis.</param>
+        /// <param name="censor">The right-censoring indicative values.</param>
+        /// <param name="inputNames">The names of the input variables.</param>
+        /// <param name="timeName">The name of the time variable.</param>
+        /// <param name="censorName">The name of the event indication variable.</param>
+        /// 
+        public ProportionalHazardsAnalysis(double[][] inputs, double[] times, int[] censor,
+            String[] inputNames, String timeName, String censorName)
+            : this(inputs, times, censor)
+        {
+            this.inputNames = inputNames;
+            this.timeName = timeName;
+            this.censorName = censorName;
+        }
+
+        private void initialize(double[][] inputs, double[] outputs, int[] censor)
         {
             this.inputCount = inputs[0].Length;
-            int coefficientCount = inputCount + 1;
+            int coefficientCount = inputCount;
 
             // Store data sets
             this.inputData = inputs;
-            this.outputData = outputs;
+            this.timeData = outputs;
+            this.censorData = censor;
 
 
             // Create additional structures
             this.coefficients = new double[coefficientCount];
             this.waldTests = new WaldTest[coefficientCount];
             this.standardErrors = new double[coefficientCount];
-            this.oddsRatios = new double[coefficientCount];
+            this.hazardRatios = new double[coefficientCount];
             this.confidences = new DoubleRange[coefficientCount];
             this.ratioTests = new ChiSquareTest[coefficientCount];
 
             // Create object-oriented structure to represent the analysis
-            var logCoefs = new List<LogisticCoefficient>(coefficientCount);
+            var logCoefs = new List<HazardCoefficient>(coefficientCount);
             for (int i = 0; i < coefficientCount; i++)
-                logCoefs.Add(new LogisticCoefficient(this, i));
-            this.coefficientCollection = new LogisticCoefficientCollection(logCoefs);
+                logCoefs.Add(new HazardCoefficient(this, i));
+            this.coefficientCollection = new HazardCoefficientCollection(logCoefs);
 
             this.source = inputs.ToMatrix();
         }
 
-        /// <summary>
-        ///   Constructs a Logistic Regression Analysis.
-        /// </summary>
-        /// 
-        /// <param name="inputs">The input data for the analysis.</param>
-        /// <param name="outputs">The output, binary data for the analysis.</param>
-        /// <param name="inputNames">The names of the input variables.</param>
-        /// <param name="outputName">The name of the output variable.</param>
-        /// 
-        public LogisticRegressionAnalysis(double[][] inputs, double[] outputs,
-            String[] inputNames, String outputName)
-            : this(inputs, outputs)
-        {
-            this.inputNames = inputNames;
-            this.outputName = outputName;
-        }
         #endregion
 
 
@@ -175,13 +169,34 @@ namespace Accord.Statistics.Analysis
         }
 
         /// <summary>
+        ///   Gets the time passed until the event
+        ///   ocurred or until the observation was
+        ///   censored.
+        /// </summary>
+        /// 
+        public double[] TimeToEvent
+        {
+            get { return timeData; }
+        }
+
+        /// <summary>
+        ///   Gets wether the event of
+        ///   interest happened or not.
+        /// </summary>
+        /// 
+        public int[] Events
+        {
+            get { return censorData; }
+        }
+
+        /// <summary>
         ///   Gets the the dependent variable value
         ///   for each of the source input points.
         /// </summary>
         /// 
         public double[] Outputs
         {
-            get { return outputData; }
+            get { return censorData.ToDouble(); }
         }
 
         /// <summary>
@@ -196,11 +211,11 @@ namespace Accord.Statistics.Analysis
 
 
         /// <summary>
-        ///   Gets the Logistic Regression model created
+        ///   Gets the Proportional Hazards model created
         ///   and evaluated by this analysis.
         /// </summary>
         /// 
-        public LogisticRegression Regression
+        public ProportionalHazards Regression
         {
             get { return regression; }
         }
@@ -209,7 +224,7 @@ namespace Accord.Statistics.Analysis
         ///   Gets the collection of coefficients of the model.
         /// </summary>
         /// 
-        public ReadOnlyCollection<LogisticCoefficient> Coefficients
+        public ReadOnlyCollection<HazardCoefficient> Coefficients
         {
             get { return coefficientCollection; }
         }
@@ -245,7 +260,7 @@ namespace Accord.Statistics.Analysis
         ///   Gets the name of the input variables for the model.
         /// </summary>
         /// 
-        public String[] Inputs
+        public String[] InputNames
         {
             get { return inputNames; }
         }
@@ -254,24 +269,33 @@ namespace Accord.Statistics.Analysis
         ///   Gets the name of the output variable for the model.
         /// </summary>
         /// 
-        public String Output
+        public String TimeName
         {
-            get { return outputName; }
+            get { return timeName; }
         }
 
         /// <summary>
-        ///   Gets the Odds Ratio for each coefficient
-        ///   found during the logistic regression.
+        ///   Gets the name of event occurence variable in the model.
         /// </summary>
         /// 
-        public double[] OddsRatios
+        public String EventName
         {
-            get { return this.oddsRatios; }
+            get { return censorName; }
+        }
+
+        /// <summary>
+        ///   Gets the Hazard Ratio for each coefficient
+        ///   found during the proportional hazards.
+        /// </summary>
+        /// 
+        public double[] HazardRatios
+        {
+            get { return this.hazardRatios; }
         }
 
         /// <summary>
         ///   Gets the Standard Error for each coefficient
-        ///   found during the logistic regression.
+        ///   found during the proportional hazards.
         /// </summary>
         /// 
         public double[] StandardErrors
@@ -327,60 +351,38 @@ namespace Accord.Statistics.Analysis
         ///   Gets the Log-Likelihood Ratio between this model and another model.
         /// </summary>
         /// 
-        /// <param name="model">Another logistic regression model.</param>
+        /// <param name="model">Another proportional hazards model.</param>
+        /// 
         /// <returns>The Likelihood-Ratio between the two models.</returns>
         /// 
-        public double GetLikelihoodRatio(LogisticRegression model)
+        public double GetLikelihoodRatio(ProportionalHazards model)
         {
-            return regression.GetLogLikelihoodRatio(inputData, outputData, model);
-        }
-
-
-        /// <summary>
-        ///   Computes the Logistic Regression Analysis.
-        /// </summary>
-        /// 
-        /// <remarks>The likelihood surface for the
-        ///   logistic regression learning is convex, so there will be only one
-        ///   peak. Any local maxima will be also a global maxima.
-        /// </remarks>
-        /// 
-        /// <returns>
-        ///   True if the model converged, false otherwise.
-        /// </returns>
-        /// 
-        public bool Compute()
-        {
-            return Compute(10e-4, 50);
+            return regression.GetLogLikelihoodRatio(inputData, timeData, censorData, model);
         }
 
         /// <summary>
-        ///   Computes the Logistic Regression Analysis for an already computed regression.
+        ///   Computes the Proportional Hazards Analysis for an already computed regression.
         /// </summary>
         /// 
-        /// 
-        public void Compute(LogisticRegression regression, double limit = 1e-5, int maxIterations = 50)
+        public void Compute(ProportionalHazards regression, double limit = 1e-4, int maxIterations = 50)
         {
             this.regression = regression;
 
             computeInformation();
 
-            computeInner(limit, maxIterations);
+            if (inputCount > 0)
+                computeInner(limit, maxIterations);
         }
 
+
         /// <summary>
-        ///   Computes the Logistic Regression Analysis.
+        ///   Computes the Proportional Hazards Analysis.
         /// </summary>
-        /// 
-        /// <remarks>The likelihood surface for the
-        ///   logistic regression learning is convex, so there will be only one
-        ///   peak. Any local maxima will be also a global maxima.
-        /// </remarks>
         /// 
         /// <param name="limit">
         ///   The difference between two iterations of the regression algorithm
         ///   when the algorithm should stop. If not specified, the value of
-        ///   10e-4 will be used. The difference is calculated based on the largest
+        ///   1e-4 will be used. The difference is calculated based on the largest
         ///   absolute parameter change of the regression.
         /// </param>
         /// 
@@ -393,27 +395,28 @@ namespace Accord.Statistics.Analysis
         ///   True if the model converged, false otherwise.
         /// </returns>
         /// 
-        public bool Compute(double limit = 1e-5, int maxIterations = 50)
+        public bool Compute(double limit = 1e-4, int maxIterations = 50)
         {
-            double delta;
-            int iteration = 0;
+            ProportionalHazardsNewtonRaphson learning =
+                new ProportionalHazardsNewtonRaphson(regression);
 
-            var learning = new IterativeReweightedLeastSquares(regression);
+            Array.Clear(regression.Coefficients, 0, regression.Coefficients.Length);
 
-            do // learning iterations until convergence
-            {
-                delta = learning.Run(inputData, outputData);
-                iteration++;
 
-            } while (delta > limit && iteration < maxIterations);
+            learning.Iterations = maxIterations;
+            learning.Tolerance = limit;
+
+            learning.Run(inputData, timeData, censorData);
 
             // Check if the full model has converged
-            bool converged = iteration < maxIterations;
+            bool converged = learning.CurrentIteration < maxIterations;
 
 
             computeInformation();
 
-            computeInner(limit, maxIterations);
+            if (inputCount > 0)
+                computeInner(limit, maxIterations);
+
 
             // Returns true if the full model has converged, false otherwise.
             return converged;
@@ -422,36 +425,34 @@ namespace Accord.Statistics.Analysis
         private void computeInner(double limit, int maxIterations)
         {
             // Perform likelihood-ratio tests against diminished nested models
-            LogisticRegression innerModel = new LogisticRegression(inputCount - 1);
-            IterativeReweightedLeastSquares learning = new IterativeReweightedLeastSquares(innerModel);
+            ProportionalHazards innerModel = new ProportionalHazards(inputCount - 1);
+            ProportionalHazardsNewtonRaphson learning = new ProportionalHazardsNewtonRaphson(innerModel);
 
             for (int i = 0; i < inputCount; i++)
             {
                 // Create a diminished inner model without the current variable
                 double[][] data = inputData.RemoveColumn(i);
 
-                int iteration = 0;
-                double delta = 0;
+                Array.Clear(innerModel.Coefficients, 0, inputCount - 1);
 
-                do // learning iterations until convergence
-                {
-                    delta = learning.Run(data, outputData);
-                    iteration++;
+                learning.Iterations = maxIterations;
+                learning.Tolerance = limit;
 
-                } while (delta > limit && iteration < maxIterations);
+                learning.Run(data, timeData, censorData);
 
-                double ratio = 2.0 * (logLikelihood - innerModel.GetLogLikelihood(data, outputData));
-                ratioTests[i + 1] = new ChiSquareTest(ratio, 1);
+
+                double ratio = 2.0 * (logLikelihood - innerModel.GetPartialLogLikelihood(data, timeData, censorData));
+                ratioTests[i] = new ChiSquareTest(ratio, 1);
             }
         }
 
         private void computeInformation()
         {
             // Store model information
-            this.result = regression.Compute(inputData);
-            this.deviance = regression.GetDeviance(inputData, outputData);
-            this.logLikelihood = regression.GetLogLikelihood(inputData, outputData);
-            this.chiSquare = regression.ChiSquare(inputData, outputData);
+            this.result = regression.Compute(inputData, timeData);
+            this.deviance = regression.GetDeviance(inputData, timeData, censorData);
+            this.logLikelihood = regression.GetPartialLogLikelihood(inputData, timeData, censorData);
+            this.chiSquare = regression.ChiSquare(inputData, timeData, censorData);
 
             // Store coefficient information
             for (int i = 0; i < regression.Coefficients.Length; i++)
@@ -461,7 +462,7 @@ namespace Accord.Statistics.Analysis
                 this.waldTests[i] = regression.GetWaldTest(i);
                 this.coefficients[i] = regression.Coefficients[i];
                 this.confidences[i] = regression.GetConfidenceInterval(i);
-                this.oddsRatios[i] = regression.GetOddsRatio(i);
+                this.hazardRatios[i] = regression.GetHazardRatio(i);
             }
         }
         #endregion
@@ -472,10 +473,12 @@ namespace Accord.Statistics.Analysis
         /// <summary>
         ///   Computes the analysis using given source data and parameters.
         /// </summary>
+        /// 
         void IAnalysis.Compute()
         {
             Compute();
         }
+
 
     }
 
@@ -483,19 +486,19 @@ namespace Accord.Statistics.Analysis
     #region Support Classes
 
     /// <summary>
-    ///   Represents a Logistic Regression Coefficient found in the Logistic Regression,
+    ///   Represents a Proportional Hazards Coefficient found in the Cox's Hazards model,
     ///   allowing it to be bound to controls like the DataGridView. This class cannot
     ///   be instantiated outside the <see cref="LogisticRegressionAnalysis"/>.
     /// </summary>
     /// 
     [Serializable]
-    public class LogisticCoefficient
+    public class HazardCoefficient
     {
-        private LogisticRegressionAnalysis analysis;
+        private ProportionalHazardsAnalysis analysis;
         private int index;
 
 
-        internal LogisticCoefficient(LogisticRegressionAnalysis analysis, int index)
+        internal HazardCoefficient(ProportionalHazardsAnalysis analysis, int index)
         {
             this.analysis = analysis;
             this.index = index;
@@ -509,8 +512,10 @@ namespace Accord.Statistics.Analysis
         {
             get
             {
-                if (index == 0) return "Intercept";
-                else return analysis.Inputs[index - 1];
+                if (analysis.InputNames.Length == 0)
+                    return String.Empty;
+
+                return analysis.InputNames[index];
             }
         }
 
@@ -518,10 +523,10 @@ namespace Accord.Statistics.Analysis
         ///   Gets the Odds ratio for the current coefficient.
         /// </summary>
         /// 
-        [DisplayName("Odds ratio")]
-        public double OddsRatio
+        [DisplayName("Hazard ratio")]
+        public double HazardRatio
         {
-            get { return analysis.OddsRatios[index]; }
+            get { return analysis.HazardRatios[index]; }
         }
 
         /// <summary>
@@ -598,14 +603,14 @@ namespace Accord.Statistics.Analysis
     }
 
     /// <summary>
-    ///   Represents a collection of Logistic Coefficients found in the
-    ///   <see cref="LogisticRegressionAnalysis"/>. This class cannot be instantiated.
+    ///   Represents a collection of Hazard Coefficients found in the
+    ///   <see cref="ProportionalHazardsAnalysis"/>. This class cannot be instantiated.
     /// </summary>
     /// 
     [Serializable]
-    public class LogisticCoefficientCollection : ReadOnlyCollection<LogisticCoefficient>
+    public class HazardCoefficientCollection : ReadOnlyCollection<HazardCoefficient>
     {
-        internal LogisticCoefficientCollection(IList<LogisticCoefficient> coefficients)
+        internal HazardCoefficientCollection(IList<HazardCoefficient> coefficients)
             : base(coefficients) { }
     }
     #endregion

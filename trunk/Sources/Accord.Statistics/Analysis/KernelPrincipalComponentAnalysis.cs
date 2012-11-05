@@ -520,7 +520,7 @@ namespace Accord.Statistics.Analysis
             // row mean and column means should be equal on a symmetric matrix
             double[] colMean = Accord.Statistics.Tools.Mean(K, 0);
             for (int i = 0; i < colMean.Length; i++)
-                if (colMean[i] != rowMean[i]) throw new Exception();
+               System.Diagnostics.Debug.Assert(colMean[i] == rowMean[i]);
 #endif
             double mean = Accord.Statistics.Tools.Mean(K, -1)[0];
 

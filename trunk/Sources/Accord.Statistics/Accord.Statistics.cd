@@ -235,12 +235,12 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Statistics.Formats.ExcelReader">
-    <Position X="17.5" Y="10.25" Width="2.25" />
+    <Position X="17.5" Y="9.75" Width="2.25" />
     <Members>
       <Field Name="strConnection" Hidden="true" />
     </Members>
     <TypeIdentifier>
-      <HashCode>IABAAAAACAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>IABAAAAACAEECAAAAAAABAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Formats\ExcelReader.cs</FileName>
     </TypeIdentifier>
   </Class>

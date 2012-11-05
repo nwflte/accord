@@ -280,6 +280,7 @@ namespace Accord.Statistics.Testing
         /// <summary>
         ///   Constructs a T-Test.
         /// </summary>
+        /// 
         protected ZTest() { }
 
         private void power(double stdDev, int samples)

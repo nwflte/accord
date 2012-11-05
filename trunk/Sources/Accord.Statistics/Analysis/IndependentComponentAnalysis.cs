@@ -654,11 +654,8 @@ namespace Accord.Statistics.Analysis
                     iterations++;
 
 
-#if DEBUG           // For each component (in parallel)
-                    for (int i = 0; i < components; i++)
-#else
+                   // For each component (in parallel)
                     Parallel.For(0, components, i =>
-#endif
                     {
                         double[] wx = new double[n];
                         double[] dgwx = new double[n];
@@ -698,10 +695,7 @@ namespace Accord.Statistics.Analysis
 
                         // The normalization to w* will be performed
                         //  in the beginning of the next iteration.
-                    }
-#if !DEBUG
-);
-#endif
+                    });
                 }
 
             } while (!stop);

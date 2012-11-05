@@ -180,10 +180,10 @@ namespace Accord.Statistics.Visualizations
             }
             else
             {
-                LabelValues = LabelAxis.Distinct().ToArray();
+                LabelValues = LabelAxis.Distinct();
             }
 
-            ScatterplotClassValueCollection[] classes = new ScatterplotClassValueCollection[LabelValues.Length];
+            var classes = new ScatterplotClassValueCollection[LabelValues.Length];
             for (int i = 0; i < classes.Length; i++)
                 classes[i] = new ScatterplotClassValueCollection(this, i);
             Classes = new ReadOnlyCollection<ScatterplotClassValueCollection>(classes);

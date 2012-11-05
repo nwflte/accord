@@ -26,11 +26,9 @@ namespace Accord.Statistics.Analysis
     using System.ComponentModel;
     using Accord.Math;
     using Accord.Statistics.Testing;
-    using System.Runtime.Serialization;
 
     /// <summary>
-    ///   General confusion matrix for 
-    ///   multi-class decision problems.
+    ///   General confusion matrix for multi-class decision problems.
     /// </summary>
     /// 
     /// <remarks>
@@ -157,8 +155,8 @@ namespace Accord.Statistics.Analysis
                 // Make sure the expected and predicted
                 // values are from valid classes.
 
-                int i = expected[k];
-                int j = predicted[k];
+                int i = expected[k];  // rows contain expected values
+                int j = predicted[k]; // cols contain predicted values
 
                 if (i < 0 || i >= classes)
                     throw new ArgumentOutOfRangeException("expected");
@@ -256,7 +254,7 @@ namespace Accord.Statistics.Analysis
             get
             {
                 if (diagMax == null)
-                    diagMax = Diagonal.Max() / (double)Samples;
+                    diagMax = Diagonal.Max() ;
                 return diagMax.Value;
             }
         }
@@ -272,7 +270,7 @@ namespace Accord.Statistics.Analysis
             get
             {
                 if (diagMin == null)
-                    diagMin = Diagonal.Min() / (double)Samples;
+                    diagMin = Diagonal.Min() ;
                 return diagMin.Value;
             }
         }
