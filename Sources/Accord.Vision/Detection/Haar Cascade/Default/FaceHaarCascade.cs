@@ -24,6 +24,7 @@ namespace Accord.Vision.Detection.Cascades
 {
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using System.CodeDom.Compiler;
 
     /// <summary>
     ///   Default Face Haar Cascade for using with Haar Classifiers.
@@ -35,7 +36,7 @@ namespace Accord.Vision.Detection.Cascades
     ///   class, however, has been re-created using <see cref="HaarCascadeWriter"/>.
     /// </remarks>
     /// 
-    [SuppressMessage("Microsoft.Maintainability", "CA1505:AvoidUnmaintainableCode")]
+    [GeneratedCode("Accord.NET HaarCascadeWriter", "2.7")]
     public class FaceHaarCascade : HaarCascade
     {
 
@@ -44,7 +45,6 @@ namespace Accord.Vision.Detection.Cascades
         ///   based on code by Mario Klingemann.
         /// </summary>
         /// 
-        [SuppressMessage("Microsoft.Maintainability", "CA1505:AvoidUnmaintainableCode")]
         public FaceHaarCascade()
             : base(20,20)
         {

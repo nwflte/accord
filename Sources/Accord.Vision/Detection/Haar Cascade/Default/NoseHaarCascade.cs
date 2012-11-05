@@ -28,6 +28,7 @@ namespace Accord.Vision.Detection.Cascades
 {
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
+    using System.CodeDom.Compiler;
 
     /// <summary>
     ///   Automatic transcription of haar cascade definitions 
@@ -75,7 +76,7 @@ namespace Accord.Vision.Detection.Cascades
     /// 
     /// </remarks>
     /// 
-    [SuppressMessage("Microsoft.Maintainability", "CA1505:AvoidUnmaintainableCode")]
+    [GeneratedCode("Accord.NET HaarCascadeWriter", "2.7")]
     public class NoseHaarCascade : Accord.Vision.Detection.HaarCascade
     {
 
@@ -83,7 +84,6 @@ namespace Accord.Vision.Detection.Cascades
         ///   Creates a new cascade for nose detection.
         /// </summary>
         /// 
-        [SuppressMessage("Microsoft.Maintainability", "CA1505:AvoidUnmaintainableCode")]
         public NoseHaarCascade()
             : base(18, 15)
         {

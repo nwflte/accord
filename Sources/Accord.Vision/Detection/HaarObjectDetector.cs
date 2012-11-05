@@ -35,7 +35,6 @@
 namespace Accord.Vision.Detection
 {
     using System;
-    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Drawing;
     using System.Threading.Tasks;
@@ -465,9 +464,12 @@ namespace Accord.Vision.Detection
 
                 else
                 {
+#if NET35
+                    throw new NotSupportedException();
+#else
                     // Parallel mode. Scan the integral image searching
                     // for objects in the window with parallelization.
-                    ConcurrentBag<Rectangle> bag = new ConcurrentBag<Rectangle>();
+                    var bag = new System.Collections.Concurrent.ConcurrentBag<Rectangle>();
 
                     int numSteps = (int)Math.Ceiling((double)yEnd / yStep);
 
@@ -521,6 +523,7 @@ namespace Accord.Vision.Detection
                         foreach (Rectangle obj in bag)
                             detectedObjects.Add(obj);
                     }
+#endif
                 }
             }
 

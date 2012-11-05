@@ -40,11 +40,13 @@ namespace Accord.Vision.Tracking
         /// <summary>
         ///   Horizontal axis.
         /// </summary>
+        /// 
         Horizontal,
 
         /// <summary>
         ///   Vertical axis.
         /// </summary>
+        /// 
         Vertical
 
     }
@@ -73,7 +75,9 @@ namespace Accord.Vision.Tracking
         public Rectangle Rectangle { get; set; }
 
         /// <summary>
-        ///   Gets or sets the center of the object.
+        ///   Gets or sets the center of gravity of the object 
+        ///   relative to the original image from where it has 
+        ///   been extracted.
         /// </summary>
         /// 
         public IntPoint Center { get; set; }
@@ -123,6 +127,8 @@ namespace Accord.Vision.Tracking
         ///   Constructs a new tracking object.
         /// </summary>
         /// 
+        /// <param name="center">The center of gravity of the object.</param>
+        /// 
         public TrackingObject(IntPoint center)
         {
             this.Center = center;
@@ -132,11 +138,32 @@ namespace Accord.Vision.Tracking
         ///   Constructs a new tracking object.
         /// </summary>
         /// 
+        /// <param name="angle">The angle of orientation for the object.</param>
+        /// <param name="center">The center of gravity of the object.</param>
+        /// <param name="rectangle">The rectangle containing the object.</param>
+        /// 
         public TrackingObject(Rectangle rectangle, IntPoint center, float angle)
         {
             this.Rectangle = rectangle;
             this.Center = center;
             this.Angle = angle;
+        }
+
+        /// <summary>
+        ///   Constructs a new tracking object.
+        /// </summary>
+        /// 
+        /// <param name="rectangle">The rectangle containing the object.</param>
+        /// <param name="angle">The angle of the object.</param>
+        /// 
+        public TrackingObject(Rectangle rectangle, float angle)
+        {
+            this.Rectangle = rectangle;
+            this.Angle = angle;
+
+            this.Center = new IntPoint(
+                rectangle.X + rectangle.Width / 2,
+                rectangle.Y - rectangle.Height / 2);
         }
 
         /// <summary>
@@ -196,8 +223,7 @@ namespace Accord.Vision.Tracking
         }
 
 
-
-
+        
         #region ICloneable Members
 
         /// <summary>
@@ -239,5 +265,6 @@ namespace Accord.Vision.Tracking
         }
 
         #endregion
+
     }
 }
