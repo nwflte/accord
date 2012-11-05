@@ -70,7 +70,7 @@ namespace Accord.Imaging.Converters
     /// <para>
     ///   The resulting image is shown below.</para>
     ///   
-    /// <img src="..\Images\matrix-to-image.png" />
+    /// <img src="..\images\matrix-to-image.png" />
     /// 
     /// </example>
     /// 

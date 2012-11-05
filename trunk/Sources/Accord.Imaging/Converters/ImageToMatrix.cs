@@ -61,7 +61,7 @@ namespace Accord.Imaging.Converters
     /// <para>
     ///   The resulting image is shown below.</para>
     /// 
-    /// <img src="..\Images\image-to-matrix.png" />
+    /// <img src="..\images\image-to-matrix.png" />
     /// 
     /// <para>
     ///   Additionally, the image can also be shown in alternative
@@ -83,8 +83,8 @@ namespace Accord.Imaging.Converters
     ///  <para>
     ///   The resulting images are shown below.</para>
     ///   
-    /// <img src="..\Images\image-to-matrix-string.png" />
-    /// <img src="..\Images\image-to-matrix-table.png" />
+    /// <img src="..\images\image-to-matrix-string.png" />
+    /// <img src="..\images\image-to-matrix-table.png" />
     /// 
     /// </example>
     /// 

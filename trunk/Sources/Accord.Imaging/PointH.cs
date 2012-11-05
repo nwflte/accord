@@ -138,9 +138,13 @@ namespace Accord.Imaging
         /// 
         public void Transform(float[,] matrix)
         {
-            px = matrix[0, 0] * px + matrix[0, 1] * py + matrix[0, 2] * pw;
-            py = matrix[1, 0] * px + matrix[1, 1] * py + matrix[1, 2] * pw;
-            pw = matrix[2, 0] * px + matrix[2, 1] * py + matrix[2, 2] * pw;
+            float x = matrix[0, 0] * px + matrix[0, 1] * py + matrix[0, 2] * pw;
+            float y = matrix[1, 0] * px + matrix[1, 1] * py + matrix[1, 2] * pw;
+            float w = matrix[2, 0] * px + matrix[2, 1] * py + matrix[2, 2] * pw;
+
+            px = x;
+            py = y;
+            pw = w;
         }
 
         /// <summary>

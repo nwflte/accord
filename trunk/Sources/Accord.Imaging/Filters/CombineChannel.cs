@@ -111,7 +111,7 @@ namespace Accord.Imaging.Filters
                     // for each channel
                     for (int c = 0; c < channels.Length; c++)
                     {
-                        byte* dst = (byte*)(image.ImageData + c);
+                        byte* dst = (byte*)((int)image.ImageData + c);
                         byte* src = (byte*)channels[c].ImageData;
 
                         // copy channel to image
@@ -129,7 +129,7 @@ namespace Accord.Imaging.Filters
                     // for each channel
                     for (int c = 0; c < channels.Length; c++)
                     {
-                        short* dst = (short*)(image.ImageData + c);
+                        short* dst = (short*)((int)image.ImageData + c);
                         short* src = (short*)channels[c].ImageData;
 
                         // copy channel to image

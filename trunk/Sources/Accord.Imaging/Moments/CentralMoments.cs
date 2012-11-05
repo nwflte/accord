@@ -129,6 +129,17 @@ namespace Accord.Imaging.Moments
         /// </summary>
         /// 
         /// <param name="image">The image.</param>
+        /// 
+        public unsafe void Compute(UnmanagedImage image)
+        {
+            Compute(image, new Rectangle(0, 0, image.Width, image.Height));
+        }
+
+        /// <summary>
+        ///   Computes the center moments for the specified image.
+        /// </summary>
+        /// 
+        /// <param name="image">The image.</param>
         /// <param name="area">The region of interest in the image to compute moments for.</param>
         /// 
         public unsafe void Compute(UnmanagedImage image, Rectangle area)
