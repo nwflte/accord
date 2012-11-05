@@ -487,7 +487,6 @@ namespace Accord.Audio
             if (disposing)
             {
                 // free managed resources
-                // (i.e. IDisposable objects)
             }
 
             // free native resources

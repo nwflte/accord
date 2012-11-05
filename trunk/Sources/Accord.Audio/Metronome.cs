@@ -40,7 +40,7 @@ namespace Accord.Audio
     ///   framework.
     /// </remarks>
     /// 
-    public sealed class Metronome : IDisposable
+    public class Metronome : IDisposable
     {
         private int taps;
         private List<TimeSpan> timeSpan;
@@ -112,6 +112,7 @@ namespace Accord.Audio
             timeUp.Elapsed += timeUp_Elapsed;
         }
 
+
         /// <summary>
         ///   Taps the metronome (for tempo detection)
         /// </summary>
@@ -151,16 +152,52 @@ namespace Accord.Audio
         }
 
         /// <summary>
-        ///   Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        ///   Performs application-defined tasks associated with
+        ///   freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         /// 
         public void Dispose()
         {
-            //GC.SuppressFinalize(this);
-
-            timeUp.Dispose();
-            metronome.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
+
+        /// <summary>
+        ///   Releases unmanaged and - optionally - managed resources
+        /// </summary>
+        /// 
+        /// <param name="disposing"><c>true</c> to release both managed
+        /// and unmanaged resources; <c>false</c> to release only unmanaged
+        /// resources.</param>
+        ///
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                // free managed resources
+                if (timeUp != null)
+                {
+                    timeUp.Dispose();
+                    timeUp = null;
+                }
+                if (metronome != null)
+                {
+                    metronome.Dispose();
+                    metronome = null;
+                }
+            }
+        }
+
+        /// <summary>
+        ///   Releases unmanaged resources and performs other cleanup operations before the
+        ///   <see cref="Metronome"/> is reclaimed by garbage collection.
+        /// </summary>
+        /// 
+        ~Metronome()
+        {
+            Dispose(false);
+        }
+
 
         private void timeUp_Elapsed(object sender, ElapsedEventArgs e)
         {
