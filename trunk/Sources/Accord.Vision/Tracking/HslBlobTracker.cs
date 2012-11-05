@@ -47,6 +47,7 @@ namespace Accord.Vision.Tracking
         /// <summary>
         /// Gets or sets the maximum width of tracked objects.
         /// </summary>
+        /// 
         public int MaxWidth
         {
             get { return blobCounter.MaxWidth; }
@@ -56,6 +57,7 @@ namespace Accord.Vision.Tracking
         /// <summary>
         /// Gets or sets the maximum height of tracked objects.
         /// </summary>
+        /// 
         public int MaxHeight
         {
             get { return blobCounter.MaxHeight; }
@@ -65,6 +67,7 @@ namespace Accord.Vision.Tracking
         /// <summary>
         /// Gets or sets the minimum width of tracked objects.
         /// </summary>
+        /// 
         public int MinWidth
         {
             get { return blobCounter.MinWidth; }
@@ -74,6 +77,7 @@ namespace Accord.Vision.Tracking
         /// <summary>
         /// Gets or sets the minimum height of tracked objects.
         /// </summary>
+        /// 
         public int MinHeight
         {
             get { return blobCounter.MinHeight; }
@@ -85,6 +89,7 @@ namespace Accord.Vision.Tracking
         ///   should extract the object image from the source. The
         ///   extracted image will be available in <see cref="Accord.Vision.Tracking.TrackingObject.Image"/>.
         /// </summary>
+        /// 
         public bool Extract
         {
             get { return extract; }
@@ -94,6 +99,7 @@ namespace Accord.Vision.Tracking
         /// <summary>
         ///   Gets or sets whether the tracker should compute blob's orientation.
         /// </summary>
+        /// 
         public bool ComputeOrientation
         {
             get { return rotation; }
@@ -103,7 +109,9 @@ namespace Accord.Vision.Tracking
         /// <summary>
         ///   Gets the HSL filter used in color segmentation.
         /// </summary>
+        /// 
         /// <value>The HSL filter used in segmentation.</value>
+        /// 
         public HSLFiltering Filter
         {
             get { return filter; }
@@ -112,6 +120,7 @@ namespace Accord.Vision.Tracking
         /// <summary>
         ///   Gets the HSL filtered image.
         /// </summary>
+        /// 
         public UnmanagedImage FilterImage
         {
             get { return filterImage; }
@@ -120,7 +129,7 @@ namespace Accord.Vision.Tracking
         /// <summary>
         /// Gets the current location of the object being tracked.
         /// </summary>
-        /// <value></value>
+        /// 
         public TrackingObject TrackingObject
         {
             get { return trackingObject; }
@@ -130,6 +139,7 @@ namespace Accord.Vision.Tracking
         /// <summary>
         ///   Initializes a new instance of the <see cref="HslBlobTracker"/> class.
         /// </summary>
+        /// 
         public HslBlobTracker()
         {
             this.filter = new HSLFiltering();
@@ -143,7 +153,9 @@ namespace Accord.Vision.Tracking
         /// <summary>
         ///   Initializes a new instance of the <see cref="HslBlobTracker"/> class.
         /// </summary>
+        /// 
         /// <param name="filter">The filter.</param>
+        /// 
         public HslBlobTracker(HSLFiltering filter)
         {
             this.filter = filter;
@@ -159,6 +171,7 @@ namespace Accord.Vision.Tracking
         /// <summary>
         /// Process a new video frame.
         /// </summary>
+        /// 
         public void ProcessFrame(UnmanagedImage frame)
         {
             filterImage = filter.Apply(frame);

@@ -74,6 +74,7 @@ namespace Accord.Vision.Detection
             writer.WriteLine();
             writer.WriteLine("namespace HaarCascades");
             writer.WriteLine("{");
+            writer.WriteLine("    using System.CodeDom.Compiler;");
             writer.WriteLine("    using System.Collections.Generic;");
             writer.WriteLine();
             writer.WriteLine("    /// <summary>");
@@ -81,6 +82,7 @@ namespace Accord.Vision.Detection
             writer.WriteLine("    ///   to use with the Accord.NET Framework object detectors.");
             writer.WriteLine("    /// </summary>");
             writer.WriteLine("    /// ");
+            writer.WriteLine("    [GeneratedCode(\"Accord.NET HaarCascadeWriter\", \"2.7\")]");
             writer.WriteLine("    public class {0} : Accord.Vision.Detection.HaarCascade", className);
             writer.WriteLine("    {");
             writer.WriteLine();

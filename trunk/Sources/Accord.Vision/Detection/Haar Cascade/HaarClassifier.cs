@@ -156,16 +156,15 @@ namespace Accord.Vision.Detection
             int h = rectangle.Height;
 
             double mean = image.GetSum(x, y, w, h) * invArea;
-            double factor = image.GetSum2(x, y, w, h) * invArea - (mean * mean);
-
-            factor = (factor >= 0) ? Math.Sqrt(factor) : 1;
+            double var = image.GetSum2(x, y, w, h) * invArea - (mean * mean);
+            double sdev = (var >= 0) ? Math.Sqrt(var) : 1;
 
 
             // For each classification stage in the cascade
             foreach (HaarCascadeStage stage in cascade.Stages)
             {
                 // Check if the stage has rejected the image
-                if (stage.Classify(image, x, y, factor) == false)
+                if (stage.Classify(image, x, y, sdev) == false)
                 {
                     return false; // The image has been rejected.
                 }
