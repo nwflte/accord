@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Panorama")]
-[assembly: AssemblyDescription("Panorama Sample Application")]
+[assembly: AssemblyTitle("Regression")]
+[assembly: AssemblyDescription("Linear and Logistic Regression Sample Application")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Accord.NET")]
-[assembly: AssemblyProduct("Accord.NET Framework")]
-[assembly: AssemblyCopyright("Copyright © César Souza, 2009-2012")]
+[assembly: AssemblyProduct("Accord.Controls.Statistics")]
+[assembly: AssemblyCopyright("Copyright © César Souza 2009-2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("fb8be126-8a5f-4f22-9979-d644cc59c91d")]
+[assembly: Guid("e083a41e-bb73-4711-8c2e-71cbdf338c71")]
 
 // Version information for an assembly consists of the following four values:
 //

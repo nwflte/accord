@@ -20,467 +20,279 @@
 //
 
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Windows.Forms;
-using System.Xml.Serialization;
-using Accord.Controls;
-using Accord.Math;
-using Accord.Statistics.Formats;
+
+using Accord.Statistics.Distributions.Fitting;
+using Accord.Statistics.Distributions.Multivariate;
+
+using Accord.Statistics.Models.Fields;
+using Accord.Statistics.Models.Fields.Functions;
+using Accord.Statistics.Models.Fields.Learning;
+
 using Accord.Statistics.Models.Markov;
 using Accord.Statistics.Models.Markov.Learning;
 using Accord.Statistics.Models.Markov.Topology;
-using ZedGraph;
 
 namespace Gestures
 {
     public partial class MainForm : Form
     {
 
-        HiddenMarkovClassifier classifier;
+        Database database;
 
+        HiddenMarkovClassifier<MultivariateNormalDistribution> hmm;
+        HiddenConditionalRandomField<double[]> hcrf;
 
-        private Bitmap ToBitmap(double[][] sequence)
-        {
-            if (sequence.Length == 0)
-                return null;
-
-            int xmax = (int)sequence.Max(x => x[0]);
-            int xmin = (int)sequence.Min(x => x[0]);
-
-            int ymax = (int)sequence.Max(x => x[1]);
-            int ymin = (int)sequence.Min(x => x[1]);
-
-            int width = xmax - xmin;
-            int height = ymax - ymin;
-
-            Bitmap bmp = new Bitmap(width + 1, height + 1);
-            for (int i = 0; i < sequence.Length; i++)
-            {
-                int x = (int)sequence[i][0] - xmin;
-                int y = (int)sequence[i][1] - ymin;
-                int p = (int)Accord.Math.Tools.Scale(0, sequence.Length, 0, 255, i);
-                bmp.SetPixel(x, y, Color.FromArgb(255 - p, 0, p));
-            }
-
-            return bmp;
-        }
-
-        private void addSequence(int label)
-        {
-            var sequence = inputCanvas.GetSequence();
-            var bitmap = ToBitmap(sequence);
-
-            var row = dataGridView1.Rows.Add(bitmap, label, null);
-            dataGridView1.Rows[row].Tag = sequence;
-        }
 
 
         public MainForm()
         {
             InitializeComponent();
 
-            openFileDialog.InitialDirectory = Path.Combine(Application.StartupPath, "Resources");
+            gvSamples.AutoGenerateColumns = false;
+
+            database = new Database();
+            cbClasses.DataSource = database.Classes;
+            gvSamples.DataSource = database.Samples;
+
+            openDataDialog.InitialDirectory = Path.Combine(Application.StartupPath, "Resources");
         }
 
-        public int[] GetFeatures(double[][] sequence)
+
+        private void btnLearnHMM_Click(object sender, EventArgs e)
         {
-            if (sequence.Length == 0)
-                return new int[0];
-
-            int[] features = new int[sequence.Length];
-
-            features[0] = (int)System.Math.Floor(
-                    Accord.Math.Tools.Angle(sequence[0][0], sequence[0][1]) * 3.183098861837907);
-
-            for (int i = 1; i < sequence.Length; i++)
-            {
-                double[] prev = sequence[i - 1];
-                double[] next = sequence[i];
-
-                double dy = next[1] - prev[1];
-                double dx = next[0] - prev[0];
-
-                features[i] = (int)System.Math.Floor(
-                    Accord.Math.Tools.Angle(dx, dy) * 3.183098861837907);
-            }
-
-            return features;
-        }
-
-        private void btnTrain_Click(object sender, EventArgs e)
-        {
-            if (dataGridView1.Rows.Count == 0)
+            if (gvSamples.Rows.Count == 0)
             {
                 MessageBox.Show("Please load or insert some data first.");
                 return;
             }
 
-            int states = (int)numStates.Value;
-            int iterations = (int)numIterations.Value;
-            double tolerance = (double)numConvergence.Value;
+            BindingList<Sequence> samples = database.Samples;
+            BindingList<String> classes = database.Classes;
 
-            if (rbStopIterations.Checked) tolerance = 0.0;
-            if (rbStopConvergence.Checked) iterations = 0;
+            double[][][] inputs = new double[samples.Count][][];
+            int[] outputs = new int[samples.Count];
 
-
-            // Retrieve the training data from the data grid view
-
-            int rows = dataGridView1.Rows.Count;
-            int[] outputs = new int[rows];
-            var sequences = new int[rows][];
-            for (int i = 0; i < rows; i++)
+            for (int i = 0; i < inputs.Length; i++)
             {
-                outputs[i] = (int)dataGridView1.Rows[i].Cells["colLabel"].Value - 1;
-                sequences[i] = GetFeatures((double[][])dataGridView1.Rows[i].Tag);
+                inputs[i] = samples[i].Input;
+                outputs[i] = samples[i].Output;
             }
 
-            int classes = outputs.Distinct().Count();
+            int states = 5;
+            int iterations = 0;
+            double tolerance = 0.01;
+            bool rejection = false;
 
 
-            string[] labels = new string[classes];
-            for (int i = 0; i < labels.Length; i++)
-                labels[i] = (i+1).ToString();
-
-
-            // Create a sequence classifier for 3 classes
-            classifier = new HiddenMarkovClassifier(labels.Length,
-                new Forward(states), symbols: 20, names: labels);
+            hmm = new HiddenMarkovClassifier<MultivariateNormalDistribution>(classes.Count,
+                new Forward(states), new MultivariateNormalDistribution(2), classes.ToArray());
 
 
             // Create the learning algorithm for the ensemble classifier
-            var teacher = new HiddenMarkovClassifierLearning(classifier,
+            var teacher = new HiddenMarkovClassifierLearning<MultivariateNormalDistribution>(hmm,
 
                 // Train each model using the selected convergence criteria
-                i => new BaumWelchLearning(classifier.Models[i])
+                i => new BaumWelchLearning<MultivariateNormalDistribution>(hmm.Models[i])
                 {
                     Tolerance = tolerance,
                     Iterations = iterations,
+
+                    FittingOptions = new NormalOptions()
+                    {
+                        Regularization = 1e-5
+                    }
                 }
             );
 
             // Create and use a rejection threshold model
-            teacher.Rejection = cbRejection.Checked;
             teacher.Empirical = true;
-            teacher.Smoothing = (double)numSmoothing.Value;
+            teacher.Rejection = rejection;
 
 
             // Run the learning algorithm
-            teacher.Run(sequences, outputs);
+            double error = teacher.Run(inputs, outputs);
 
-            double error = classifier.LogLikelihood(sequences, outputs);
-
-
-            int hits = 0;
-            toolStripProgressBar1.Visible = true;
-            toolStripProgressBar1.Value = 0;
-            toolStripProgressBar1.Step = 1;
-            toolStripProgressBar1.Maximum = dataGridView1.Rows.Count;
-
-            for (int i = 0; i < rows; i++)
+            foreach (var sample in database.Samples)
             {
-                double likelihood;
-                int index = classifier.Compute(sequences[i], out likelihood);
-
-                DataGridViewRow row = dataGridView1.Rows[i];
-
-                if (index == -1)
-                {
-                    row.Cells["colClassification"].Value = String.Empty;
-                }
-                else
-                {
-                    row.Cells["colClassification"].Value = classifier.Models[index].Tag;
-                }
-
-                int expected = (int)row.Cells["colLabel"].Value;
-
-                if (expected == index + 1)
-                {
-                    row.Cells[0].Style.BackColor = Color.LightGreen;
-                    row.Cells[1].Style.BackColor = Color.LightGreen;
-                    row.Cells[2].Style.BackColor = Color.LightGreen;
-                    hits++;
-                }
-                else
-                {
-                    row.Cells[0].Style.BackColor = Color.White;
-                    row.Cells[1].Style.BackColor = Color.White;
-                    row.Cells[2].Style.BackColor = Color.White;
-                }
-
-                toolStripProgressBar1.PerformStep();
+                sample.RecognizedAs = hmm.Compute(sample.Input);
             }
 
-            dgvModels.DataSource = classifier.Models;
-
-            toolStripProgressBar1.Visible = false;
-
-            toolStripStatusLabel1.Text = String.Format("Training complete. Hits: {0}/{1} ({2:0%})",
-                hits, dataGridView1.Rows.Count, (double)hits / dataGridView1.Rows.Count);
-        }
-
-        private void dgvModels_CurrentCellChanged(object sender, EventArgs e)
-        {
-            if (dgvModels.CurrentRow != null)
+            foreach (DataGridViewRow row in gvSamples.Rows)
             {
-                HiddenMarkovModel model = dgvModels.CurrentRow.DataBoundItem as HiddenMarkovModel;
-                dgvProbabilities.DataSource = new ArrayDataView(model.Probabilities);
-                dgvTransitions.DataSource = new ArrayDataView(model.Transitions);
+                var sample = row.DataBoundItem as Sequence;
+                row.DefaultCellStyle.BackColor = (sample.RecognizedAs == sample.Output) ?
+                    Color.LightGreen : Color.White;
             }
+
+            btnLearnHCRF.Enabled = true;
         }
 
-
-
-        private void btnCanvasClear_Click(object sender, EventArgs e)
+        private void btnLearnHCRF_Click(object sender, EventArgs e)
         {
-            inputCanvas.Clear();
-        }
-
-        private void canvas2_MouseUp(object sender, MouseEventArgs e)
-        {
-            classify(canvas2, graphClassification, lbClassification);
-        }
-
-        private void classify(Canvas canvas, ZedGraphControl graph,
-            System.Windows.Forms.Label output)
-        {
-            int[] sequence = GetFeatures(canvas.GetSequence());
-
-            if (classifier == null || sequence.Length <= 10)
+            if (gvSamples.Rows.Count == 0)
             {
-                output.Text = "-";
+                MessageBox.Show("Please load or insert some data first.");
                 return;
             }
 
+            var samples = database.Samples;
+            var classes = database.Classes;
 
-            double[] responses;
-            int index = classifier.Compute(sequence, out responses);
+            double[][][] inputs = new double[samples.Count][][];
+            int[] outputs = new int[samples.Count];
 
-            output.Text = (index == -1) ?
-                "-" : classifier.Models[index].Tag as string;
-
-            // Scale the responses to a [0,1] interval
-            double max = responses.Max();
-            double min = responses.Min();
-
-            for (int i = 0; i < responses.Length; i++)
-                responses[i] = Accord.Math.Tools.Scale(min, max, 0, 1, responses[i]);
-
-            // Create the bar graph to show the relative responses
-            CreateBarGraph(graph, responses);
-        }
-
-        private void button12_Click(object sender, EventArgs e)
-        {
-            canvas2.Clear();
-        }
-
-        private void button11_Click(object sender, EventArgs e)
-        {
-            classify(canvas2, graphClassification, lbClassification);
-        }
-
-        private void canvas2_MouseDown(object sender, MouseEventArgs e)
-        {
-            canvas2.Clear();
-        }
-
-
-
-        public void CreateBarGraph(ZedGraphControl zgc, double[] responses)
-        {
-            GraphPane myPane = zgc.GraphPane;
-
-            myPane.CurveList.Clear();
-
-            myPane.Title.IsVisible = false;
-            myPane.Legend.IsVisible = false;
-            myPane.Border.IsVisible = false;
-            myPane.Border.IsVisible = false;
-            myPane.Margin.Bottom = 20f;
-            myPane.Margin.Right = 20f;
-            myPane.Margin.Left = 20f;
-            myPane.Margin.Top = 30f;
-
-            myPane.YAxis.Title.IsVisible = true;
-            myPane.YAxis.IsVisible = true;
-            myPane.YAxis.MinorGrid.IsVisible = false;
-            myPane.YAxis.MajorGrid.IsVisible = false;
-            myPane.YAxis.IsAxisSegmentVisible = false;
-            myPane.YAxis.Scale.Max = responses.Length + 0.5;
-            myPane.YAxis.Scale.Min = -0.5;
-            myPane.YAxis.MajorGrid.IsZeroLine = false;
-            myPane.YAxis.Title.Text = "Classes";
-            myPane.YAxis.MinorTic.IsOpposite = false;
-            myPane.YAxis.MajorTic.IsOpposite = false;
-            myPane.YAxis.MinorTic.IsInside = false;
-            myPane.YAxis.MajorTic.IsInside = false;
-            myPane.YAxis.MinorTic.IsOutside = false;
-            myPane.YAxis.MajorTic.IsOutside = false;
-
-            myPane.XAxis.MinorTic.IsOpposite = false;
-            myPane.XAxis.MajorTic.IsOpposite = false;
-            myPane.XAxis.Title.IsVisible = true;
-            myPane.XAxis.Title.Text = "Relative class response";
-            myPane.XAxis.IsVisible = true;
-            myPane.XAxis.Scale.Min = 0;
-            myPane.XAxis.Scale.Max = 100;
-            myPane.XAxis.IsAxisSegmentVisible = false;
-            myPane.XAxis.MajorGrid.IsVisible = false;
-            myPane.XAxis.MajorGrid.IsZeroLine = false;
-            myPane.XAxis.MinorTic.IsOpposite = false;
-            myPane.XAxis.MinorTic.IsInside = false;
-            myPane.XAxis.MinorTic.IsOutside = false;
-            myPane.XAxis.Scale.Format = "0'%";
-
-
-            // Create data points for three BarItems using Random data
-            PointPairList list = new PointPairList();
-
-            for (int i = 0; i < responses.Length; i++)
-                list.Add(responses[i] * 100, i + 1);
-
-            BarItem myCurve = myPane.AddBar("b", list, Color.DarkBlue);
-
-
-            // Set BarBase to the YAxis for horizontal bars
-            myPane.BarSettings.Base = BarBase.Y;
-
-
-            zgc.AxisChange();
-            zgc.Invalidate();
-
-        }
-
-        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            saveFileDialog1.ShowDialog();
-        }
-
-        private void saveFileDialog1_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            // Extract data
-            int rows = dataGridView1.Rows.Count;
-            TrainingSample[] samples = new TrainingSample[rows];
-            for (int i = 0; i < rows; i++)
+            for (int i = 0; i < inputs.Length; i++)
             {
-                samples[i] = new TrainingSample();
-                samples[i].Output = (int)dataGridView1.Rows[i].Cells["colLabel"].Value - 1;
-                samples[i].Sequence = (double[][])dataGridView1.Rows[i].Tag;
+                inputs[i] = samples[i].Input;
+                outputs[i] = samples[i].Output;
             }
 
+            int iterations = 100;
+            double tolerance = 0.01;
 
-            XmlSerializer serializer = new XmlSerializer(typeof(TrainingSample[]));
-            using (var stream = saveFileDialog1.OpenFile())
+
+            hcrf = new HiddenConditionalRandomField<double[]>(
+                new MarkovMultivariateFunction(hmm));
+
+
+            // Create the learning algorithm for the ensemble classifier
+            var teacher = new HiddenResilientGradientLearning<double[]>(hcrf)
             {
-                serializer.Serialize(stream, samples);
+                Iterations = iterations,
+                Tolerance = tolerance
+            };
+
+
+            // Run the learning algorithm
+            double error = teacher.Run(inputs, outputs);
+
+
+            foreach (var sample in database.Samples)
+            {
+                sample.RecognizedAs = hcrf.Compute(sample.Input);
+            }
+
+            foreach (DataGridViewRow row in gvSamples.Rows)
+            {
+                var sample = row.DataBoundItem as Sequence;
+                row.DefaultCellStyle.BackColor = (sample.RecognizedAs == sample.Output) ?
+                    Color.LightGreen : Color.White;
             }
         }
 
-        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+
+        private void openDataStripMenuItem_Click(object sender, EventArgs e)
         {
-            openFileDialog.ShowDialog();
+            openDataDialog.ShowDialog();
+        }
+
+        private void saveDataStripMenuItem_Click(object sender, EventArgs e)
+        {
+            saveDataDialog.ShowDialog();
         }
 
 
-
-        private void openFileDialog1_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
+        private void openDataDialog_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            TrainingSample[] samples = null;
+            using (var stream = openDataDialog.OpenFile())
+                database.Load(stream);
 
-            string filename = openFileDialog.FileName;
-            string extension = Path.GetExtension(filename);
-            if (extension == ".xls" || extension == ".xlsx")
-            {
-                ExcelReader db = new ExcelReader(filename, true, false);
-                TableSelectDialog t = new TableSelectDialog(db.GetWorksheetList());
+            btnLearnHMM.Enabled = true;
+        }
 
-                if (t.ShowDialog(this) == DialogResult.OK)
-                {
-                    var sampleTable = db.GetWorksheet(t.Selection);
-                    samples = new TrainingSample[sampleTable.Rows.Count];
-                    for (int i = 0; i < samples.Length; i++)
-                    {
-                        samples[i] = new TrainingSample();
-                        samples[i].Sequence = new double[(sampleTable.Columns.Count - 1) / 2][];
-                        for (int j = 0; j < samples[i].Sequence.Length; j++)
-                        {
-                            samples[i].Sequence[j] =
-                            new double[] 
-                            { 
-                                    (double)sampleTable.Rows[i][j] * 50, 
-                                    (double)sampleTable.Rows[i][j+1] * 50
-                            };
-                        }
-                        samples[i].Output = (int)(double)sampleTable.Rows[i][sampleTable.Columns.Count - 1] - 1;
-                    }
-                }
-            }
-            else if (extension == ".xml")
-            {
-                using (var stream = openFileDialog.OpenFile())
-                {
-                    XmlSerializer serializer = new XmlSerializer(typeof(TrainingSample[]));
-                    samples = (TrainingSample[])serializer.Deserialize(stream);
-                }
-            }
-
-
-            dataGridView1.Rows.Clear();
-            for (int i = 0; i < samples.Length; i++)
-            {
-                var sequence = samples[i].Sequence;
-                var label = samples[i].Output + 1;
-                var bitmap = ToBitmap(sequence);
-
-                var row = dataGridView1.Rows.Add(bitmap, label, null);
-                dataGridView1.Rows[row].Tag = sequence;
-            }
+        private void saveDataDialog_FileOk(object sender, CancelEventArgs e)
+        {
+            using (var stream = saveDataDialog.OpenFile())
+                database.Save(stream);
         }
 
 
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            dataGridView1.Rows.Clear();
+            database.Clear();
+            hmm = null;
+            hcrf = null;
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
         }
 
 
-        [Serializable]
-        public class TrainingSample
-        {
-            public int Output;
-            public double[][] Sequence;
-        }
-
-        private void canvas1_SequenceChanged(object sender, EventArgs e)
-        {
-            classify(canvas1, zedGraphControl1, label9);
-        }
 
 
-        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void btnYes_Click(object sender, EventArgs e)
         {
-            saveFileDialog2.ShowDialog();
-        }
+            string selectedItem = cbClasses.SelectedItem as String;
+            string classLabel = String.IsNullOrEmpty(selectedItem) ?
+                cbClasses.Text : selectedItem;
 
-        private void saveFileDialog2_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            using (Stream stream = saveFileDialog2.OpenFile())
+            if (database.Add(inputCanvas.GetSequence(), classLabel) != null)
             {
-                BinaryFormatter fmt = new BinaryFormatter();
-                fmt.Serialize(stream, classifier);
+                inputCanvas.Clear();
+                btnLearnHMM.Enabled = true;
             }
         }
 
-        private void btnAddToClass_Click(object sender, EventArgs e)
+        private void btnNo_Click(object sender, EventArgs e)
         {
-            Button btn = (Button)sender;
-            int c = int.Parse((string)btn.Tag);
-            addSequence(c);
+            showQuestion();
+        }
+
+
+
+
+        private void inputCanvas_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (hmm == null)
+            {
+                showQuestion();
+            }
+            else if (hcrf == null)
+            {
+                showConfirm(hmm.Compute(Sequence.Preprocess(inputCanvas.GetSequence())));
+            }
+            else
+            {
+                showConfirm(hcrf.Compute(Sequence.Preprocess(inputCanvas.GetSequence())));
+            }
+        }
+
+        private void btnClear_Click(object sender, EventArgs e)
+        {
             inputCanvas.Clear();
         }
+
+
+
+        private void showQuestion()
+        {
+            lbWhat.Text = "What's this?";
+            lbQuestion.Visible = false;
+            btnNo.Visible = false;
+            btnOK.Text = "OK";
+        }
+
+        private void showConfirm(int index)
+        {
+            if (index < 0) return;
+
+            string label = database.Classes[index];
+
+            lbWhat.Text = "Is this a ";
+            cbClasses.Text = label;
+            lbQuestion.Visible = true;
+            btnOK.Text = "Yes";
+            btnNo.Visible = true;
+        }
+
+
+
     }
 }

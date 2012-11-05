@@ -25,7 +25,6 @@ using System.Windows.Forms;
 using Accord.Audio;
 using Accord.Audition.Beat;
 using Accord.DirectSound;
-using AForge.Video.DirectShow;
 using AForge;
 using System.Collections.Generic;
 
