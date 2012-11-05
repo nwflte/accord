@@ -433,6 +433,7 @@ namespace Accord.Math
         /// <summary>
         ///   Creates a index vector.
         /// </summary>
+        /// 
         public static int[] Indices(int from, int to)
         {
             int[] vector = new int[to - from];
@@ -444,6 +445,7 @@ namespace Accord.Math
         /// <summary>
         ///   Creates an interval vector.
         /// </summary>
+        /// 
         public static int[] Interval(int from, int to)
         {
             int[] vector = new int[to - from + 1];
@@ -455,6 +457,7 @@ namespace Accord.Math
         /// <summary>
         ///   Creates an interval vector.
         /// </summary>
+        /// 
         public static double[] Interval(DoubleRange range, double stepSize)
         {
             return Interval(range.Min, range.Max, stepSize);
@@ -463,6 +466,7 @@ namespace Accord.Math
         /// <summary>
         ///   Creates an interval vector.
         /// </summary>
+        /// 
         public static double[] Interval(double from, double to, double stepSize)
         {
             double range = to - from;
@@ -478,6 +482,7 @@ namespace Accord.Math
         /// <summary>
         ///   Creates an interval vector.
         /// </summary>
+        /// 
         public static float[] Interval(float from, float to, double stepSize)
         {
             float[] r;
@@ -509,6 +514,7 @@ namespace Accord.Math
         /// <summary>
         ///   Creates an interval vector.
         /// </summary>
+        /// 
         public static double[] Interval(DoubleRange range, int steps)
         {
             return Interval(range.Min, range.Max, steps);
@@ -517,6 +523,7 @@ namespace Accord.Math
         /// <summary>
         ///   Creates an interval vector.
         /// </summary>
+        /// 
         public static double[] Interval(double from, double to, int steps)
         {
             double range = to - from;
@@ -809,14 +816,15 @@ namespace Accord.Math
         /// </summary>
         public static T[][] Stack<T>(params T[][][] matrices)
         {
-            // TODO: Rename to "Stack<T>" or similar
-
             int rows = 0;
             int cols = 0;
 
             for (int i = 0; i < matrices.Length; i++)
             {
                 rows += matrices[i].Length;
+                if (matrices[i].Length == 0)
+                    continue;
+
                 if (matrices[i][0].Length > cols)
                     cols = matrices[i][0].Length;
             }
@@ -830,7 +838,7 @@ namespace Accord.Math
             {
                 for (int j = 0; j < matrices[i].Length; j++)
                 {
-                    for (int k = 0; k < matrices[i][0].Length; k++)
+                    for (int k = 0; k < matrices[i][j].Length; k++)
                         r[c][k] = matrices[i][j][k];
                     c++;
                 }

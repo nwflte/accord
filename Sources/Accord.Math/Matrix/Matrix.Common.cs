@@ -469,6 +469,33 @@ namespace Accord.Math
 
 
         #region Matrix Characteristics
+
+        /// <summary>
+        ///   Returns true if a vector of real-valued observations
+        ///   is ordered in ascending or descending order.
+        /// </summary>
+        /// 
+        /// <param name="values">An array of values.</param>
+        /// <param name="direction">The sort order direction.</param>
+        /// 
+        public static bool IsSorted<T>(this T[] values, ComparerDirection direction) where T : IComparable<T>
+        {
+            if (direction == ComparerDirection.Descending)
+            {
+                for (int i = 1; i < values.Length; i++)
+                    if (values[i - 1].CompareTo(values[i]) >= 0)
+                        return false;
+            }
+            else
+            {
+                for (int i = 1; i < values.Length; i++)
+                    if (values[i - 1].CompareTo(values[i]) <= 0)
+                        return false;
+            }
+
+            return true;
+        }
+
         /// <summary>
         ///   Returns true if a matrix is square.
         /// </summary>
@@ -1303,7 +1330,8 @@ namespace Accord.Math
         /// <summary>
         ///   Rounds a double-precision floating-point matrix to a specified number of fractional digits.
         /// </summary>
-        public static double[,] Round(this double[,] matrix, int decimals)
+        /// 
+        public static double[,] Round(this double[,] matrix, int decimals = 0)
         {
             if (matrix == null) throw new ArgumentNullException("matrix");
 
@@ -1323,6 +1351,7 @@ namespace Accord.Math
         ///   Returns the largest integer less than or equal than to the specified 
         ///   double-precision floating-point number for each element of the matrix.
         /// </summary>
+        /// 
         public static double[,] Floor(this double[,] matrix)
         {
             if (matrix == null) throw new ArgumentNullException("matrix");
@@ -1362,7 +1391,7 @@ namespace Accord.Math
         /// <summary>
         ///   Rounds a double-precision floating-point number array to a specified number of fractional digits.
         /// </summary>
-        public static double[] Round(double[] vector, int decimals)
+        public static double[] Round(double[] vector, int decimals = 0)
         {
             if (vector == null) throw new ArgumentNullException("vector");
 

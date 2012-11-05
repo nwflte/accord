@@ -1064,6 +1064,29 @@ namespace Accord.Math
 
             return r;
         }
+
+        /// <summary>
+        ///   Elementwise divides a scalar by a matrix.
+        /// </summary>
+        /// 
+        /// <param name="x">A scalar.</param>
+        /// <param name="matrix">A matrix.</param>
+        /// 
+        /// <returns>The elementwise division of the given scalar and matrix.</returns>
+        /// 
+        public static double[,] Divide(this int x, double[,] matrix)
+        {
+            int rows = matrix.GetLength(0);
+            int cols = matrix.GetLength(1);
+
+            double[,] r = new double[rows, cols];
+
+            for (int i = 0; i < rows; i++)
+                for (int j = 0; j < cols; j++)
+                    r[i, j] = x / matrix[i, j];
+
+            return r;
+        }
         #endregion
 
         #region Products
@@ -1372,6 +1395,28 @@ namespace Accord.Math
         }
 
         /// <summary>
+        ///   Adds a matrix and a scalar.
+        /// </summary>
+        /// 
+        /// <param name="a">A matrix.</param>
+        /// <param name="x">A scalar.</param>
+        /// 
+        /// <returns>The sum of the given matrix and scalar.</returns>
+        /// 
+        public static double[][] Add(this double[][] a, double x)
+        {
+            double[][] r = new double[a.Length][];
+            for (int i = 0; i < a.Length; i++)
+            {
+                r[i] = new double[a[i].Length];
+                for (int j = 0; j < a[i].Length; j++)
+                    r[i][j] = a[i][j] + x;
+            }
+
+            return r;
+        }
+
+        /// <summary>
         ///   Adds a vector to a column or row of a matrix.
         /// </summary>
         /// 
@@ -1467,6 +1512,46 @@ namespace Accord.Math
                 for (int i = 0; i < rows; i++)
                     for (int j = 0; j < cols; j++)
                         r[i, j] = a[i, j] - b[j];
+            }
+
+            return r;
+        }
+
+        /// <summary>
+        ///   Adds a vector to a column or row of a matrix.
+        /// </summary>
+        /// 
+        /// <param name="a">A matrix.</param>
+        /// <param name="b">A vector.</param>
+        /// <param name="dimension">The dimension to add the vector to.</param>
+        /// 
+        public static double[][] Subtract(this double[][] a, double[] b, int dimension = 0)
+        {
+            int rows = a.Length;
+            int cols = a[0].Length;
+
+            double[][] r = new double[rows][];
+            for (int i = 0; i < r.Length; i++)
+                r[i] = new double[cols];
+
+
+            if (dimension == 1)
+            {
+                if (rows != b.Length) throw new ArgumentException(
+                    "Length of B should equal the number of rows in A", "b");
+
+                for (int j = 0; j < cols; j++)
+                    for (int i = 0; i < rows; i++)
+                        r[i][j] = a[i][j] - b[i];
+            }
+            else
+            {
+                if (cols != b.Length) throw new ArgumentException(
+                    "Length of B should equal the number of cols in A", "b");
+
+                for (int i = 0; i < rows; i++)
+                    for (int j = 0; j < cols; j++)
+                        r[i][j] = a[i][j] - b[j];
             }
 
             return r;
@@ -1607,6 +1692,31 @@ namespace Accord.Math
         /// <returns>The elementwise subtraction of scalar a and matrix b.</returns>
         /// 
         public static double[,] Subtract(this double x, double[,] matrix)
+        {
+            if (matrix == null) throw new ArgumentNullException("matrix");
+
+            int rows = matrix.GetLength(0);
+            int cols = matrix.GetLength(1);
+
+            double[,] r = new double[rows, cols];
+
+            for (int i = 0; i < rows; i++)
+                for (int j = 0; j < cols; j++)
+                    r[i, j] = x - matrix[i, j];
+
+            return r;
+        }
+
+        /// <summary>
+        ///   Elementwise subtracts an element of a matrix from a scalar.
+        /// </summary>
+        /// 
+        /// <param name="x">A scalar.</param>
+        /// <param name="matrix">A matrix.</param>
+        /// 
+        /// <returns>The elementwise subtraction of scalar a and matrix b.</returns>
+        /// 
+        public static double[,] Subtract(this int x, double[,] matrix)
         {
             if (matrix == null) throw new ArgumentNullException("matrix");
 

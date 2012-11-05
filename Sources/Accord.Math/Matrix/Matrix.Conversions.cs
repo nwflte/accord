@@ -81,6 +81,19 @@ namespace Accord.Math
         }
 
         /// <summary>
+        ///   Converts an array into a multidimensional array.
+        /// </summary>
+        /// 
+        public static T[][] ToArray<T>(this T[] array)
+        {
+            T[][] m = new T[array.Length][];
+            for (int i = 0; i < array.Length; i++)
+                m[i] = new[] { array[i] };
+
+            return m;
+        }
+
+        /// <summary>
         ///   Converts a multidimensional array into a jagged array.
         /// </summary>
         /// 
@@ -264,6 +277,25 @@ namespace Accord.Math
 
                 for (int i = 0; i < length; i++, src++, dst++)
                     *dst = (int)*src;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        ///   Truncates a double matrix to integer values.
+        /// </summary>
+        /// <param name="matrix">The matrix to be truncated.</param>
+        /// 
+        public static int[][] ToInt32(this double[][] matrix)
+        {
+            int[][] result = new int[matrix.Length][];
+
+            for (int i = 0; i < matrix.Length; i++)
+            {
+                result[i] = new int[matrix[i].Length];
+                for (int j = 0; j < matrix[i].Length; j++)
+                    result[i][j] = (int)matrix[i][j];
             }
 
             return result;
