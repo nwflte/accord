@@ -26,46 +26,27 @@ namespace Gestures
     using System.Drawing;
     using System.Linq;
     using System.Windows.Forms;
+    using System.Drawing.Drawing2D;
 
     public partial class Canvas : UserControl
     {
         private bool capturing;
-        private List<double[]> sequence;
+        private List<Point> sequence;
 
-        private bool continuous;
-        private int capacity;
-
-        public event EventHandler SequenceChanged;
-
-        public bool Continuous
-        {
-            get { return continuous; }
-            set { continuous = value; }
-        }
-
-        public int Capacity
-        {
-            get { return capacity; }
-            set { capacity = value; }
-        }
 
 
         public Canvas()
         {
             InitializeComponent();
 
-            sequence = new List<double[]>();
+            sequence = new List<Point>();
             this.DoubleBuffered = true;
         }
 
-        public double[][] GetSequence()
+        public Point[] GetSequence()
         {
-            double[][] s = new double[sequence.Count][];
-            for (int i = 0; i < s.Length; i++)
-                s[i] = (double[])sequence[i].Clone();
-            return s;
+            return sequence.ToArray();
         }
-
 
 
         public void Clear()
@@ -78,15 +59,27 @@ namespace Gestures
         {
             if (!this.DesignMode)
             {
-                for (int i = 0; i < sequence.Count; i++)
+                if (sequence.Count > 1)
                 {
-                    int x = (int)sequence[i][0];
-                    int y = (int)sequence[i][1];
-                    int p = (int)Accord.Math.Tools.Scale(0, sequence.Count, 0, 255, i);
-
-                    using (Brush brush = new SolidBrush(Color.FromArgb(255 - p, 0, p)))
+                    for (int i = 1; i < sequence.Count; i++)
                     {
-                        e.Graphics.FillRectangle(brush, x * 4, y * 4, 4, 4);
+                        int x = (int)sequence[i].X;
+                        int y = (int)sequence[i].Y;
+                        int p = (int)Accord.Math.Tools.Scale(0, sequence.Count, 0, 255, i);
+
+                        int prevX = (int)sequence[i - 1].X;
+                        int prevY = (int)sequence[i - 1].Y;
+                        int prevP = (int)Accord.Math.Tools.Scale(0, sequence.Count, 0, 255, i - 1);
+
+                        using (Brush brush = new LinearGradientBrush(new Point(prevX, prevY), new Point(x, y),
+                            Color.FromArgb(255 - p, 0, p), Color.FromArgb(255 - prevP, 0, prevP)))
+                        using (Pen pen = new Pen(brush, 10))
+                        {
+                            pen.StartCap = LineCap.Round;
+                            pen.EndCap = LineCap.Round;
+
+                            e.Graphics.DrawLine(pen, prevX, prevY, x, y);
+                        }
                     }
                 }
             }
@@ -96,8 +89,9 @@ namespace Gestures
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            if (!continuous)
-                capturing = true;
+            Clear();
+
+            capturing = true;
 
             base.OnMouseDown(e);
         }
@@ -109,100 +103,19 @@ namespace Gestures
             base.OnMouseUp(e);
         }
 
-        protected override void OnMouseEnter(EventArgs e)
-        {
-            if (continuous)
-            {
-                timer.Enabled = true;
-                timeout.Enabled = true;
-            }
-
-            base.OnMouseHover(e);
-        }
-
-        protected override void OnMouseLeave(EventArgs e)
-        {
-            timer.Enabled = false;
-            timeout.Enabled = false;
-
-            base.OnMouseLeave(e);
-        }
-
         protected override void OnMouseMove(MouseEventArgs e)
         {
             if (capturing)
             {
                 if (e.X > 0 && e.Y > 0)
                 {
-                    double[] h = { e.X / 4.0, e.Y / 4.0 };
-
-                    sequence.Add(h);
+                    sequence.Add(new Point(e.X, e.Y));
                     this.Refresh();
                 }
             }
 
             base.OnMouseMove(e);
         }
-
-        private void timer_Tick(object sender, EventArgs e)
-        {
-            Point p = PointToClient(Cursor.Position);
-
-            if (p.X > 0 && p.Y > 0)
-            {
-                
-
-                double[] h = { p.X / 4.0, p.Y / 4.0 };
-
-                if (sequence.Count > 0)
-                {
-                    if (sequence.Count == capacity)
-                        sequence.RemoveAt(0);
-
-                    double[] l = sequence.Last();
-
-                    if (h[0] != l[0] || h[1] != l[1])
-                    {
-                        sequence.Add(h);
-                        timeout.Stop();
-                        timeout.Start();
-
-                        if (SequenceChanged != null)
-                            SequenceChanged(this, EventArgs.Empty);
-
-                        this.Refresh();
-                    }
-                    else
-                    {
-                        sequence.RemoveAt(0);
-                    }
-                }
-                else
-                {
-                    sequence.Add(h);
-                    timeout.Stop();
-                    timeout.Start();
-
-                    if (SequenceChanged != null)
-                        SequenceChanged(this, EventArgs.Empty);
-
-                    this.Refresh();
-                }
-
-            }
-        }
-
-        private void timeout_Tick(object sender, EventArgs e)
-        {
-            if (sequence.Count > 0)
-                sequence.RemoveAt(0);
-
-            if (SequenceChanged != null)
-                SequenceChanged(this, EventArgs.Empty);
-
-            this.Refresh();
-        }
-
 
     }
 }

@@ -30,7 +30,6 @@ using Accord.MachineLearning.VectorMachines.Learning;
 using Accord.Math;
 using Accord.Statistics.Kernels;
 using ZedGraph;
-using AForge;
 
 namespace Handwriting
 {
@@ -557,8 +556,7 @@ namespace Handwriting
             for (int i = 0; i < rows; i++)
                 input[i] = (double[])dgvTrainingSource.Rows[i].Cells["colTrainingFeatures"].Value;
 
-            DoubleRange range;
-            Gaussian g = Gaussian.Estimate(input, input.Length / 4, out range);
+            Gaussian g = Gaussian.Estimate(input, input.Length / 4);
 
             numSigma.Value = (decimal)g.Sigma;
         }

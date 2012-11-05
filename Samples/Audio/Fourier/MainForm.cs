@@ -27,7 +27,6 @@ using Accord.Audio.Windows;
 using Accord.DirectSound;
 using AForge;
 using AForge.Controls;
-using AForge.Video.DirectShow;
 using Accord.Math;
 using AForge.Math;
 

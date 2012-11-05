@@ -50,24 +50,13 @@ namespace Gestures
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.timer = new System.Windows.Forms.Timer(this.components);
-            this.timeout = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
-            // 
-            // timer
-            // 
-            this.timer.Interval = 25;
-            this.timer.Tick += new System.EventHandler(this.timer_Tick);
-            // 
-            // timeout
-            // 
-            this.timeout.Tick += new System.EventHandler(this.timeout_Tick);
             // 
             // Canvas
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.MaximumSize = new System.Drawing.Size(128, 128);
+            this.BackColor = System.Drawing.Color.White;
             this.MinimumSize = new System.Drawing.Size(128, 128);
             this.Name = "Canvas";
             this.Size = new System.Drawing.Size(128, 128);
@@ -77,7 +66,5 @@ namespace Gestures
 
         #endregion
 
-        private System.Windows.Forms.Timer timer;
-        private System.Windows.Forms.Timer timeout;
     }
 }
