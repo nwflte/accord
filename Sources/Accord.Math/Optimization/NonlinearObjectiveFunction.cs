@@ -92,8 +92,18 @@ namespace Accord.Math.Optimization
             this.NumberOfVariables = numberOfVariables;
             this.Function = function;
             this.Gradient = gradient;
+
+            variables = new Dictionary<string, int>();
+            indices = new Dictionary<int, string>();
+            for (int i = 0; i < numberOfVariables; i++)
+            {
+                string name = "x" + i;
+                variables.Add(name, i);
+                indices.Add(i, name);
+            }
         }
 
+#if !NET35
         /// <summary>
         ///   Creates a new objective function specified through a string.
         /// </summary>
@@ -110,7 +120,7 @@ namespace Accord.Math.Optimization
             variables = new Dictionary<string, int>();
             indices = new Dictionary<int, string>();
 
-            var list = new SortedSet<string>();
+            SortedSet<string> list = new SortedSet<string>();
             ExpressionParser.Parse(list, function.Body);
 
             int index = 0;
@@ -130,6 +140,7 @@ namespace Accord.Math.Optimization
             this.Function = func.Compile();
             this.Gradient = grad.Compile();
         }
+#endif
 
     }
 }
