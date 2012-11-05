@@ -323,7 +323,7 @@ namespace Accord.MachineLearning
             validationCount = 0;
 
             for (int j = 0; j < folds.Length; j++)
-                if (validationFoldIndex != j) trainingCount++;
+                if (validationFoldIndex != j) trainingCount += folds[j].Length;
 
             validationCount = folds[validationFoldIndex].Length;
         }

@@ -28,6 +28,7 @@ namespace Accord.MachineLearning.VectorMachines
     using System.Threading.Tasks;
     using Accord.Math;
     using Accord.Statistics.Kernels;
+    using System.Collections.Generic;
 
 
     /// <summary>
@@ -108,7 +109,8 @@ namespace Accord.MachineLearning.VectorMachines
     /// <seealso cref="Learning.MultilabelSupportVectorLearning"/>
     ///
     [Serializable]
-    public class MultilabelSupportVectorMachine : ISupportVectorMachine
+    public class MultilabelSupportVectorMachine : ISupportVectorMachine, 
+        IEnumerable<KernelSupportVectorMachine>
     {
 
         // Underlying classifiers
@@ -311,5 +313,32 @@ namespace Accord.MachineLearning.VectorMachines
         }
 
         #endregion
+
+
+        /// <summary>
+        ///   Returns an enumerator that iterates through all machines in the classifier.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
+        /// </returns>
+        /// 
+        public IEnumerator<KernelSupportVectorMachine> GetEnumerator()
+        {
+            return (machines as IEnumerable<KernelSupportVectorMachine>).GetEnumerator();
+        }
+
+        /// <summary>
+        ///   Returns an enumerator that iterates through all machines in the classifier.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
+        /// </returns>
+        /// 
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return machines.GetEnumerator();
+        }
     }
 }

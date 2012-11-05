@@ -122,7 +122,8 @@ namespace Accord.MachineLearning.VectorMachines
     /// <seealso cref="Learning.MulticlassSupportVectorLearning"/>
     ///
     [Serializable]
-    public class MulticlassSupportVectorMachine : ISupportVectorMachine
+    public class MulticlassSupportVectorMachine : ISupportVectorMachine,
+        IEnumerable<KeyValuePair<Tuple<int, int>, KernelSupportVectorMachine>>
     {
 
         // Underlying classifiers
@@ -137,8 +138,10 @@ namespace Accord.MachineLearning.VectorMachines
         [NonSerialized]
         private double[] sharedVectorCache;
 
+#if !NET35
         [NonSerialized]
         private SpinLock[] syncObjects;
+#endif
 
         [NonSerialized]
         private int kernelEvaluations = 0;
@@ -547,11 +550,7 @@ namespace Accord.MachineLearning.VectorMachines
             int[] voting = new int[Classes];
 
             // For each class
-#if DEBUG
-            for (int i = 0; i < Classes; i++)
-#else
             Parallel.For(0, Classes, i =>
-#endif
             {
                 // For each other class
                 for (int j = 0; j < i; j++)
@@ -567,10 +566,7 @@ namespace Accord.MachineLearning.VectorMachines
                     // Increment votes for the winner
                     Interlocked.Increment(ref voting[y]);
                 }
-            }
-#if !DEBUG
-);
-#endif
+            });
 
             // Voting finished.
             votes = voting;
@@ -641,7 +637,7 @@ namespace Accord.MachineLearning.VectorMachines
                 int answer = computeParallel(classA, classB, inputs, out output);
 
                 if (decisionPath != null)
-                    decisionPath[progress++] = new Tuple<int, int>(classA, classB);
+                    decisionPath[progress++] = Tuple.Create(classA, classB);
 
                 // Check who won and update
 
@@ -805,6 +801,44 @@ namespace Accord.MachineLearning.VectorMachines
             }
             else
             {
+
+#if NET35
+                #region Backward compatibility
+                for (int i = 0; i < vectors.Length; i++)
+                {
+                    double value;
+
+                    // Check if it is a shared vector
+                    int j = vectors[i];
+
+                    if (j >= 0)
+                    {
+                        // This is a shared vector. Check
+                        // if it has already been computed
+
+                        if (!Double.IsNaN(sharedVectorCache[j]))
+                        {
+                            // Yes, it has. Retrieve the value from the cache
+                            value = sharedVectorCache[j];
+                        }
+                        else
+                        {
+                            // No, it has not. Compute and store the computed value in the cache
+                            value = sharedVectorCache[j] = machine.Kernel.Function(machine.SupportVectors[i], input);
+                            kernelEvaluations++;
+                        }
+                    }
+                    else
+                    {
+                        // This vector is not shared by any other machine. No need to cache
+                        value = machine.Kernel.Function(machine.SupportVectors[i], input);
+                        Interlocked.Increment(ref kernelEvaluations);
+                    }
+
+                    sum += machine.Weights[i] * value;
+                }
+                #endregion
+#else
                 // For each support vector in the machine
                 Parallel.For<double>(0, vectors.Length,
 
@@ -854,6 +888,7 @@ namespace Accord.MachineLearning.VectorMachines
                     // Reduce
                     (partialSum) => { lock (syncObjects) sum += partialSum; }
                 );
+#endif
             }
 
             // Produce probabilities if required
@@ -869,7 +904,7 @@ namespace Accord.MachineLearning.VectorMachines
             }
         }
 
-     
+
 
         private void createCache()
         {
@@ -940,10 +975,12 @@ namespace Accord.MachineLearning.VectorMachines
                 }
             }
 
+#if !NET35
             // Create synchronization objects
             syncObjects = new SpinLock[shared.Count];
             for (int i = 0; i < syncObjects.Length; i++)
                 syncObjects[i] = new SpinLock();
+#endif
         }
 
 
@@ -1012,5 +1049,32 @@ namespace Accord.MachineLearning.VectorMachines
         }
         #endregion
 
+
+        /// <summary>
+        ///   Returns an enumerator that iterates through all machines
+        ///   contained inside this multi-class support vector machine.
+        /// </summary>
+        /// 
+        public IEnumerator<KeyValuePair<Tuple<int, int>, KernelSupportVectorMachine>> GetEnumerator()
+        {
+            for (int i = 0; i < machines.Length; i++)
+            {
+                for (int j = 0; j < machines[i].Length; j++)
+                {
+                    yield return new KeyValuePair<Tuple<int, int>, KernelSupportVectorMachine>(
+                        Tuple.Create(i + 1, j), machines[i][j]);
+                }
+            }
+        }
+
+        /// <summary>
+        ///   Returns an enumerator that iterates through all machines
+        ///   contained inside this multi-class support vector machine.
+        /// </summary>
+        /// 
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
     }
 }

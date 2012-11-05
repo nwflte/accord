@@ -147,6 +147,7 @@ namespace Accord.MachineLearning.DecisionTrees
         }
 
 
+#if !NET35
         /// <summary>
         ///   Creates an <see cref="Expression">Expression Tree</see> representation
         ///   of this decision tree, which can in turn be compiled into code.
@@ -159,6 +160,7 @@ namespace Accord.MachineLearning.DecisionTrees
             DecisionTreeExpressionCreator compiler = new DecisionTreeExpressionCreator(this);
             return compiler.Create();
         }
+#endif
     }
 
 

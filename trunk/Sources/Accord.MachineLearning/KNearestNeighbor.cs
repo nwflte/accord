@@ -45,6 +45,19 @@ namespace Accord.MachineLearning
         public KNearestNeighbor(int k, double[][] inputs, int[] outputs)
             : base(k, inputs, outputs, Accord.Math.Distance.Euclidean) { }
 
+        /// <summary>
+        ///   Creates a new <see cref="KNearestNeighbor"/>.
+        /// </summary>
+        /// 
+        /// <param name="k">The number of nearest neighbors to be used in the decision.</param>
+        /// <param name="classes">The number of classes in the classification problem.</param>
+        /// 
+        /// <param name="inputs">The input data points.</param>
+        /// <param name="outputs">The associated labels for the input points.</param>
+        /// 
+        public KNearestNeighbor(int k, int classes, double[][] inputs, int[] outputs)
+            : base(k, classes, inputs, outputs, Accord.Math.Distance.Euclidean) { }
+
     }
 
     /// <summary>
@@ -66,6 +79,7 @@ namespace Accord.MachineLearning
 
         private double[] distances;
 
+
         /// <summary>
         ///   Creates a new <see cref="KNearestNeighbor"/>.
         /// </summary>
@@ -78,14 +92,63 @@ namespace Accord.MachineLearning
         /// 
         public KNearestNeighbor(int k, T[][] inputs, int[] outputs, Func<T[], T[], double> distance)
         {
+            checkArgs(k, null, inputs, outputs, distance);
+
+            int classCount = outputs.Distinct().Count();
+
+            initialize(k, classCount, inputs, outputs, distance);
+        }
+
+        /// <summary>
+        ///   Creates a new <see cref="KNearestNeighbor"/>.
+        /// </summary>
+        /// 
+        /// <param name="k">The number of nearest neighbors to be used in the decision.</param>
+        /// <param name="classes">The number of classes in the classification problem.</param>
+        /// 
+        /// <param name="inputs">The input data points.</param>
+        /// <param name="outputs">The associated labels for the input points.</param>
+        /// <param name="distance">The distance measure to use in the decision.</param>
+        /// 
+        public KNearestNeighbor(int k, int classes, T[][] inputs, int[] outputs, Func<T[], T[], double> distance)
+        {
+            checkArgs(k, classes, inputs, outputs, distance);
+
+            initialize(k, classes, inputs, outputs, distance);
+        }
+
+        private void initialize(int k, int classes, T[][] inputs, int[] outputs, Func<T[], T[], double> distance)
+        {
             this.inputs = inputs;
             this.outputs = outputs;
 
             this.k = k;
-            this.classCount = outputs.Distinct().Count();
+            this.classCount = classes;
 
             this.distance = distance;
             this.distances = new double[inputs.Length];
+        }
+
+        private static void checkArgs(int k, int? classes, T[][] inputs, int[] outputs, Func<T[], T[], double> distance)
+        {
+            if (k <= 0)
+                throw new ArgumentOutOfRangeException("k", "Number of neighbors should be greater than zero.");
+
+            if (classes != null && classes <= 0)
+                throw new ArgumentOutOfRangeException("k", "Number of classes should be greater than zero.");
+
+            if (inputs == null)
+                throw new ArgumentNullException("inputs");
+
+            if (outputs == null)
+                throw new ArgumentNullException("inputs");
+
+            if (inputs.Length != outputs.Length)
+                throw new DimensionMismatchException("outputs",
+                    "The number of input vectors should match the number of correspoding output labels");
+
+            if (distance == null)
+                throw new ArgumentNullException("distance");
         }
 
 
@@ -109,6 +172,16 @@ namespace Accord.MachineLearning
         public int[] Outputs
         {
             get { return outputs; }
+        }
+
+        /// <summary>
+        ///   Gets the number of class labels
+        ///   handled by this classifier.
+        /// </summary>
+        /// 
+        public int ClassCount
+        {
+            get { return classCount; }
         }
 
         /// <summary>

@@ -56,7 +56,7 @@ namespace Accord.MachineLearning
         ///   Gets the collection of clusters currently modeled by the clustering algorithm.
         /// </summary>
         /// 
-        IClusterCollection<TData> Clusters { get; } 
+        IClusterCollection<TData> Clusters { get; }
     }
 
     /// <summary>
@@ -93,7 +93,11 @@ namespace Accord.MachineLearning
     /// <typeparam name="TData">The type of the data being clustered, such as <see cref="T:double[]"/>.</typeparam>
     /// <typeparam name="TCluster">The type of the clusters considered by a clustering algorithm.</typeparam>
     /// 
-    public interface IClusterCollection<TData, out TCluster>
+    public interface IClusterCollection<TData,
+#if !NET35
+        out
+#endif
+ TCluster>
         : IEnumerable<TCluster>, IClusterCollection<TData>
     {
         /// <summary>

@@ -307,25 +307,15 @@ namespace Accord.MachineLearning.VectorMachines.Learning
 
             msvm.Reset();
 
-#if DEBUG
-            for (int i = 0; i < msvm.Classes; i++)
-            {
-                for (int j = 0; j < i; j++)
-                {
-#else
+
             // For each class i
             Parallel.For(0, msvm.Classes, i =>
             {
                 // For each class j
                 Parallel.For(0, i, j =>
                 {
-#endif
                     if (token.IsCancellationRequested) 
-#if DEBUG
-                        break;
-#else
                         return;
-#endif
 
                     // We will start the binary sub-problem
                     var args = new SubproblemEventArgs(i, j);
@@ -359,14 +349,8 @@ namespace Accord.MachineLearning.VectorMachines.Learning
                     args.Maximum = total;
 
                     OnSubproblemFinished(args);
-                }
-#if !DEBUG
-);
-#endif
-            }
-#if !DEBUG
-);
-#endif
+                });
+            });
 
             // Compute error if required.
             return (computeError) ? ComputeError(inputs, outputs) : 0.0;

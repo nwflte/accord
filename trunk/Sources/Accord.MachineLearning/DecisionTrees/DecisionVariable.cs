@@ -25,7 +25,6 @@ namespace Accord.MachineLearning.DecisionTrees
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Linq.Expressions;
     using AForge;
 
     /// <summary>
@@ -133,6 +132,7 @@ namespace Accord.MachineLearning.DecisionTrees
     ///   Collection of decision attributes.
     /// </summary>
     /// 
+    [Serializable]
     public class DecisionAttributeCollection : ReadOnlyCollection<DecisionVariable>
     {
         /// <summary>
