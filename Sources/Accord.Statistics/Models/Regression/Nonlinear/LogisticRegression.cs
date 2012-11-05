@@ -338,10 +338,7 @@ namespace Accord.Statistics.Models.Regression
                 if (actualOutput != 1)
                     sum += (1 - expectedOutput) * Math.Log(1 - actualOutput);
 
-#if DEBUG
-                if (Double.IsNaN(sum))
-                    throw new Exception();
-#endif
+                System.Diagnostics.Debug.Assert(!Double.IsNaN(sum));
             }
 
             return sum;
@@ -378,6 +375,7 @@ namespace Accord.Statistics.Models.Regression
         /// <param name="input">A set of input data.</param>
         /// <param name="output">A set of output data.</param>
         /// <param name="regression">Another Logistic Regression model.</param>
+        /// 
         /// <returns>The Log-Likelihood ratio (a measure of performance
         /// between two models) calculated over the given data sets.</returns>
         /// 
@@ -390,6 +388,9 @@ namespace Accord.Statistics.Models.Regression
         /// <summary>
         ///   The likelihood ratio test of the overall model, also called the model chi-square test.
         /// </summary>
+        /// 
+        /// <param name="input">A set of input data.</param>
+        /// <param name="output">A set of output data.</param>
         /// 
         /// <remarks>
         ///   <para>
