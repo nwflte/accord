@@ -1,3 +1,49 @@
+Accord.NET Framework 2.8.0 release notes
+-----------------------------------------
+05.11.2012.    
+
+Version updates and fixes:
+
+* General
+  - Adding support for previous versions of the .NET framework (3.5).
+
+* Accord.Audio
+  - Fixing finalizers to avoid disposing null object references.
+
+* Accord.Math
+  - Adding Absolute and Relative convergence classes;
+  - Adding Algorithm Environments to the Math project;
+  - Fixing SVD precision when solving ill-conditioned problems.
+
+* Accord.Statistics
+  - Reorganizing the (Hidden) Conditional Random Fields namespace;
+  - Adding Forward-Backward Gradient calculator for linear-chain HCRFs;
+  - Adding Cox's Proportional Hazards and Partial Newton-Raphson estimation algorithm;
+  - Adding Gompertz and Empirical Hazard Distributions;
+  - Adding Weighted Confusion Matrix and Weighted Kappa;
+  - Adding support for Weighted Kappa in Kappa tests;
+  - Fixing class balancing in the Grouping filter;
+
+* Accord.MachineLearning
+  - Marking DecisionAttributeCollection as Serializable;
+  - Updating Multi-class and Multi-label SVMs to implement the IEnumerable interface;
+  - Adding explicit class count parameter to KNearestNeighbor;
+  - Adding Bag-of-Words model for text categorization;
+  - Fixing SMO when there is only one class label in outputs;
+  - Fixing set size counting in Cross-Validation.
+
+* Accord.Controls
+  - Updating Confusion Matrix View to display Actual and Expected labels.
+
+* Accord.Imaging
+  - Fixing an issue with PointH transform method.
+
+* AForge Compatibility
+  - Compiled against AForge.NET Framework 2.2.4. May work with newer versions.
+
+
+
+
 Accord.NET Framework 2.7.1 release notes
 -----------------------------------------
 01.09.2012.    
@@ -33,7 +79,7 @@ Version updates and fixes:
 * Accord.Imaging
   - Adding Mean and Standard Deviation for images.
 
-  * Accord.Vision
+* Accord.Vision
   - Marking TrackingObject as Serializable.
 
 * AForge Compatibility
