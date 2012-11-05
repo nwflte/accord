@@ -22,13 +22,12 @@
 
 namespace Accord.Tests.Statistics
 {
-    using System.Data;
     using Accord.Statistics.Filters;
-    using AForge;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System.Data;
     
     [TestClass()]
-    public class LinearScalingFilterTest
+    public class StratificationFilterTest
     {
 
 
@@ -80,43 +79,43 @@ namespace Accord.Tests.Statistics
         [TestMethod()]
         public void ApplyTest()
         {
-            DataTable input = new DataTable("Sample data");
-            input.Columns.Add("x", typeof(double));
-            input.Columns.Add("y", typeof(double));
-            input.Rows.Add(0.0, 0);
-            input.Rows.Add(0.2, -20);
-            input.Rows.Add(0.8, -80);
-            input.Rows.Add(1.0, -100);
+            DataTable data = new DataTable("Sample data");
+            data.Columns.Add("x", typeof(double));
+            data.Columns.Add("Class", typeof(int));
+            data.Rows.Add(0.21, 0);
+            data.Rows.Add(0.25, 0);
+            data.Rows.Add(0.54, 0);
+            data.Rows.Add(0.19, 1);
 
             DataTable expected = new DataTable("Sample data");
             expected.Columns.Add("x", typeof(double));
-            expected.Columns.Add("y", typeof(double));
-            expected.Rows.Add(0, 1);
-            expected.Rows.Add(20, 0.8);
-            expected.Rows.Add(80, 0.2);
-            expected.Rows.Add(100, 0.0);
+            expected.Columns.Add("Class", typeof(int));
+            expected.Rows.Add(0.21, 0);
+            expected.Rows.Add(0.25, 0);
+            expected.Rows.Add(0.54, 0);
+            expected.Rows.Add(0.19, 1);
+            expected.Rows.Add(0.19, 1);
+            expected.Rows.Add(0.19, 1);
 
 
+            DataTable actual;
+
+            Stratification target = new Stratification("Class");
+            target.Columns["Class"].Classes = new int[] { 0, 1 };
             
-            LinearScaling target = new LinearScaling("x","y");
-            target.Columns["x"].OutputRange = new DoubleRange(0, 100);
-            target.Columns["y"].OutputRange = new DoubleRange(0, 1);
-
-
-            target.Detect(input);
-
-            DataTable actual = target.Apply(input);
+            actual = target.Apply(data);
 
             for (int i = 0; i < actual.Rows.Count; i++)
             {
                 double ex = (double)expected.Rows[i][0];
-                double ey = (double)expected.Rows[i][1];
+                int ec = (int)expected.Rows[i][1];
 
                 double ax = (double)actual.Rows[i][0];
-                double ay = (double)actual.Rows[i][1];
+                int ac = (int)actual.Rows[i][1];
 
                 Assert.AreEqual(ex, ax);
-                Assert.AreEqual(ey, ay);
+                Assert.AreEqual(ec, ac);                    
+                
             }
             
         }

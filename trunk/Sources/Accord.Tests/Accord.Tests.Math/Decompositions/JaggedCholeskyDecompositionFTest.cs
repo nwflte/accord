@@ -333,7 +333,7 @@ namespace Accord.Tests.Math
             float[] actual = chol.InverseDiagonal();
 
             for (int i = 0; i < actual.Length; i++)
-                Assert.AreEqual(expected[i], actual[i], 1e-5f);
+                Assert.AreEqual(expected[i], actual[i], 1e-4f);
         }
 
         [TestMethod()]

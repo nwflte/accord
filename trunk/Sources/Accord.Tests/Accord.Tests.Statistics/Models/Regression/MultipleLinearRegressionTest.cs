@@ -113,7 +113,9 @@ namespace Accord.Tests.Statistics
         [TestMethod()]
         public void RegressTest2()
         {
-            MultipleLinearRegression target = new MultipleLinearRegression(1, false);
+            MultipleLinearRegression target = new MultipleLinearRegression(2, false);
+
+            Assert.IsFalse(target.HasIntercept);
 
             double[][] inputs = 
             {
@@ -192,5 +194,74 @@ namespace Accord.Tests.Statistics
 
         }
 
+        [TestMethod()]
+        public void RegressTest4()
+        {
+            int count = 1000;
+            double[][] inputs = new double[count][];
+            double[] output = new double[count];
+
+            for (int i = 0; i < inputs.Length; i++)
+            {
+                double x = i + 1;
+                double y = 2 * (i + 1) - 1;
+                inputs[i] = new[] { x, y };
+                output[i] = 4 * x - y + 3;
+            }
+
+            {
+                MultipleLinearRegression target = new MultipleLinearRegression(2, true);
+
+                double error = target.Regress(inputs, output);
+
+                Assert.AreEqual(3, target.Coefficients.Length);
+                Assert.IsTrue(target.HasIntercept);
+                Assert.AreEqual(0, error, 1e-10);
+            }
+
+            {
+                MultipleLinearRegression target = new MultipleLinearRegression(2, false);
+
+                double error = target.Regress(inputs, output);
+
+                Assert.AreEqual(2, target.Coefficients.Length);
+                Assert.IsFalse(target.HasIntercept);
+                Assert.AreEqual(0, error, 1e-10);
+            }
+        }
+
+        [TestMethod()]
+        public void RegressTest5()
+        {
+            int count= 1000;
+            double[][] inputs = new double[count][];
+            double[] output = new double[count];
+
+            for (int i = 0; i < inputs.Length; i++)
+            {
+                double x = i + 1;
+                double y = 2 * (i + 1) - 1;
+                inputs[i] = new[] { x, y };
+                output[i] = 4 * x - y; // no constant term
+            }
+
+            {
+                MultipleLinearRegression target = new MultipleLinearRegression(2, true);
+                
+                double error = target.Regress(inputs, output);
+
+                Assert.IsTrue(target.HasIntercept);
+                Assert.AreEqual(0, error, 1e-10);
+            }
+
+            {
+                MultipleLinearRegression target = new MultipleLinearRegression(2, false);
+                
+                double error = target.Regress(inputs, output);
+
+                Assert.IsFalse(target.HasIntercept);
+                Assert.AreEqual(0, error, 1e-10);
+            }
+        }
     }
 }

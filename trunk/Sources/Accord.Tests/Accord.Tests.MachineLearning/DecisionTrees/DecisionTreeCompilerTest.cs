@@ -69,6 +69,7 @@ namespace Accord.Tests.MachineLearning
         #endregion
 
 
+#if !NET35
         [TestMethod()]
         public void CreateTest()
         {
@@ -90,7 +91,8 @@ namespace Accord.Tests.MachineLearning
                 int y = func(inputs[i].ToDouble());
                 Assert.AreEqual(outputs[i], y);
             }
-
         }
+#endif
+
     }
 }

@@ -183,7 +183,7 @@ namespace Accord.Tests.Statistics
             LognormalDistribution target = new LognormalDistribution(1.7, 4.2);
 
             double x = 2.2;
-            double expected = 0.0421705870979553; 
+            double expected = 0.0421705870979553;
             double actual = target.ProbabilityDensityFunction(x);
 
             Assert.AreEqual(expected, actual, 1e-15);
@@ -206,7 +206,8 @@ namespace Accord.Tests.Statistics
         {
             LognormalDistribution target = new LognormalDistribution(0.42, 0.56);
             double actual = target.Mean;
-            Assert.AreEqual(1.7803322425420858, actual);
+            Assert.AreEqual(1.7803322425420858, actual, 1e-10);
+            Assert.IsFalse(Double.IsNaN(actual));
         }
 
         [TestMethod()]

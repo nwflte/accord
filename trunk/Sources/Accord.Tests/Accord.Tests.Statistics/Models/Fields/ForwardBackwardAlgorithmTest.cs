@@ -87,7 +87,7 @@ namespace Accord.Tests.Statistics.Models.Fields
             HiddenMarkovModel hmm = Accord.Tests.Statistics.Models.Markov.
                 ForwardBackwardAlgorithmTest.CreateModel2();
 
-            DiscreteMarkovModelFunction function = new DiscreteMarkovModelFunction(hmm);
+            var function = new MarkovDiscreteFunction(hmm);
 
 
             //                     A  B  B  A
@@ -147,7 +147,7 @@ namespace Accord.Tests.Statistics.Models.Fields
             HiddenMarkovModel hmm = Accord.Tests.Statistics.Models.Markov.
                 ForwardBackwardAlgorithmTest.CreateModel3();
 
-            DiscreteMarkovModelFunction function = new DiscreteMarkovModelFunction(hmm);
+            MarkovDiscreteFunction function = new MarkovDiscreteFunction(hmm);
 
             //                     L  L  R  R
             int[] observations = { 0, 0, 1, 1 };
@@ -183,7 +183,7 @@ namespace Accord.Tests.Statistics.Models.Fields
             HiddenMarkovModel hmm = Accord.Tests.Statistics.Models.Markov.
                 ForwardBackwardAlgorithmTest.CreateModel1();
 
-            DiscreteMarkovModelFunction function = new DiscreteMarkovModelFunction(hmm);
+            MarkovDiscreteFunction function = new MarkovDiscreteFunction(hmm);
 
 
             //                     G  G  C  A
@@ -237,7 +237,7 @@ namespace Accord.Tests.Statistics.Models.Fields
             HiddenMarkovModel hmm = Accord.Tests.Statistics.Models.Markov.
                 ForwardBackwardAlgorithmTest.CreateModel2();
 
-            DiscreteMarkovModelFunction function = new DiscreteMarkovModelFunction(hmm);
+            MarkovDiscreteFunction function = new MarkovDiscreteFunction(hmm);
 
 
             //                     A  B  B  A
@@ -292,7 +292,7 @@ namespace Accord.Tests.Statistics.Models.Fields
             HiddenMarkovModel hmm = Accord.Tests.Statistics.Models.Markov.
                 ForwardBackwardAlgorithmTest.CreateModel3();
 
-            DiscreteMarkovModelFunction function = new DiscreteMarkovModelFunction(hmm);
+            MarkovDiscreteFunction function = new MarkovDiscreteFunction(hmm);
 
             //                     L  L  R  R
             int[] observations = { 0, 0, 1, 1 };
@@ -328,7 +328,7 @@ namespace Accord.Tests.Statistics.Models.Fields
             HiddenMarkovModel hmm = Accord.Tests.Statistics.Models.Markov.
                 ForwardBackwardAlgorithmTest.CreateModel1();
 
-            DiscreteMarkovModelFunction function = new DiscreteMarkovModelFunction(hmm);
+            MarkovDiscreteFunction function = new MarkovDiscreteFunction(hmm);
 
 
             //                     G  G  C  A
@@ -399,7 +399,7 @@ namespace Accord.Tests.Statistics.Models.Fields
             HiddenMarkovModel hmm = Accord.Tests.Statistics.Models.Markov.
                 ForwardBackwardAlgorithmTest.CreateModel2();
 
-            DiscreteMarkovModelFunction function = new DiscreteMarkovModelFunction(hmm);
+            MarkovDiscreteFunction function = new MarkovDiscreteFunction(hmm);
 
             //                     A  B  B  A
             int[] observations = { 0, 1, 1, 0 };
@@ -421,7 +421,7 @@ namespace Accord.Tests.Statistics.Models.Fields
             HiddenMarkovModel hmm = Accord.Tests.Statistics.Models.Markov.
                 ForwardBackwardAlgorithmTest.CreateModel1();
 
-            DiscreteMarkovModelFunction function = new DiscreteMarkovModelFunction(hmm);
+            MarkovDiscreteFunction function = new MarkovDiscreteFunction(hmm);
 
             //                     G  G  C  A
             int[] observations = { 2, 2, 1, 0 };
@@ -447,7 +447,7 @@ namespace Accord.Tests.Statistics.Models.Fields
             HiddenMarkovModel hmm = Accord.Tests.Statistics.Models.Markov.
                 ForwardBackwardAlgorithmTest.CreateModel2();
 
-            DiscreteMarkovModelFunction function = new DiscreteMarkovModelFunction(hmm);
+            MarkovDiscreteFunction function = new MarkovDiscreteFunction(hmm);
 
 
             int[] observations = { 0, 1, 1, 0 };
@@ -476,7 +476,7 @@ namespace Accord.Tests.Statistics.Models.Fields
             HiddenMarkovModel hmm = Accord.Tests.Statistics.Models.Markov.
                 ForwardBackwardAlgorithmTest.CreateModel3();
 
-            DiscreteMarkovModelFunction function = new DiscreteMarkovModelFunction(hmm);
+            MarkovDiscreteFunction function = new MarkovDiscreteFunction(hmm);
 
             int[] observations = { 0, 0, 1, 1 };
 
@@ -498,7 +498,7 @@ namespace Accord.Tests.Statistics.Models.Fields
             HiddenMarkovModel hmm = Accord.Tests.Statistics.Models.Markov.
                 ForwardBackwardAlgorithmTest.CreateModel1();
 
-            DiscreteMarkovModelFunction function = new DiscreteMarkovModelFunction(hmm);
+            MarkovDiscreteFunction function = new MarkovDiscreteFunction(hmm);
 
 
             int[] observations = { 2, 2, 1, 0 };
@@ -526,7 +526,7 @@ namespace Accord.Tests.Statistics.Models.Fields
             HiddenMarkovModel hmm = Accord.Tests.Statistics.Models.Markov.
                 ForwardBackwardAlgorithmTest.CreateModel2();
 
-            DiscreteMarkovModelFunction function = new DiscreteMarkovModelFunction(hmm);
+            MarkovDiscreteFunction function = new MarkovDiscreteFunction(hmm);
 
             int[] observations = { 0, 1, 1, 0 };
 
@@ -566,7 +566,7 @@ namespace Accord.Tests.Statistics.Models.Fields
                 0, 0, 1
             };
 
-            var function = new MultivariateNormalMarkovClassifierFunction(hmm);
+            var function = new MarkovMultivariateFunction(hmm);
 
             var observations = inputs[0];
 
@@ -595,7 +595,7 @@ namespace Accord.Tests.Statistics.Models.Fields
 
             var hmm = hmmc[0];
 
-            var function = new MultivariateNormalMarkovModelFunction(hmm);
+            var function = new MarkovMultivariateFunction(hmm);
 
             var observations = Accord.Tests.Statistics.Models.Fields.
                 MultivariateNormalHiddenMarkovClassifierPotentialFunctionTest.inputTest[3];
@@ -627,7 +627,7 @@ namespace Accord.Tests.Statistics.Models.Fields
             {
                 var hmm = hmmc[c];
 
-                var function = new MultivariateNormalMarkovModelFunction(hmm);
+                var function = new MarkovMultivariateFunction(hmm);
 
                 var sequences = Accord.Tests.Statistics.Models.Fields.
                     MultivariateNormalHiddenMarkovClassifierPotentialFunctionTest.inputTest;
@@ -659,7 +659,7 @@ namespace Accord.Tests.Statistics.Models.Fields
             HiddenMarkovModel hmm = Accord.Tests.Statistics.Models.Markov.
                 ForwardBackwardAlgorithmTest.CreateModel1();
 
-            DiscreteMarkovModelFunction function = new DiscreteMarkovModelFunction(hmm);
+            MarkovDiscreteFunction function = new MarkovDiscreteFunction(hmm);
 
             //                     G  G  C  A
             int[] observations = { 2, 2, 1, 0 };

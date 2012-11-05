@@ -98,10 +98,10 @@ namespace Accord.Tests.Statistics.Models.Fields
         public void RunTest()
         {
             var hmm = NormalHiddenMarkovClassifierPotentialFunctionTest.CreateModel1();
-            var function = new NormalMarkovClassifierFunction(hmm);
+            var function = new MarkovContinuousFunction(hmm);
 
             var model = new HiddenConditionalRandomField<double>(function);
-            var target = new QuasiNewtonHiddenLearning<double>(model);
+            var target = new HiddenQuasiNewtonLearning<double>(model);
 
             double[] actual = new double[inputs.Length];
             double[] expected = new double[inputs.Length];
@@ -121,7 +121,7 @@ namespace Accord.Tests.Statistics.Models.Fields
             Assert.IsFalse(Double.IsNaN(llm));
             Assert.IsFalse(Double.IsNaN(ll0));
 
-            double error = target.RunEpoch(inputs, outputs);
+            double error = target.Run(inputs, outputs);
             double ll1 = model.LogLikelihood(inputs, outputs);
             Assert.AreEqual(-ll1, error, 1e-10);
             Assert.IsFalse(Double.IsNaN(ll1));
@@ -148,10 +148,10 @@ namespace Accord.Tests.Statistics.Models.Fields
         public void GradientTest2()
         {
             var hmm = NormalHiddenMarkovClassifierPotentialFunctionTest.CreateModel1();
-            var function = new NormalMarkovClassifierFunction(hmm);
+            var function = new MarkovContinuousFunction(hmm);
 
             var model = new HiddenConditionalRandomField<double>(function);
-            var target = new QuasiNewtonHiddenLearning<double>(model);
+            var target = new ForwardBackwardGradient<double>(model);
 
             FiniteDifferences diff = new FiniteDifferences(function.Weights.Length);
 
@@ -173,10 +173,10 @@ namespace Accord.Tests.Statistics.Models.Fields
         public void GradientTest3()
         {
             var hmm = NormalHiddenMarkovClassifierPotentialFunctionTest.CreateModel1();
-            var function = new NormalMarkovClassifierFunction(hmm);
+            var function = new MarkovContinuousFunction(hmm);
 
             var model = new HiddenConditionalRandomField<double>(function);
-            var target = new QuasiNewtonHiddenLearning<double>(model);
+            var target = new ForwardBackwardGradient<double>(model);
             target.Regularization = 2;
 
             FiniteDifferences diff = new FiniteDifferences(function.Weights.Length);

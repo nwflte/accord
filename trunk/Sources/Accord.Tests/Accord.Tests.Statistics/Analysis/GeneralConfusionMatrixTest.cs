@@ -475,7 +475,23 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(1 + 4 + 7, colTotals[0]);
             Assert.AreEqual(2 + 5 + 8, colTotals[1]);
             Assert.AreEqual(3 + 6 + 9, colTotals[2]);
+        }
 
+        [TestMethod()]
+        public void GeometricAgreementTest()
+        {
+            int[,] matrix = 
+            {
+                { 462,	241 },
+                { 28,	 59 },
+            };
+
+            GeneralConfusionMatrix target = new GeneralConfusionMatrix(matrix);
+
+            double actual = target.GeometricAgreement;
+            double expected = Math.Sqrt(462 * 59);
+            Assert.AreEqual(expected, actual, 1e-10);
+            Assert.IsFalse(Double.IsNaN(actual));
         }
 
         [TestMethod()]

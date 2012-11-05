@@ -20,17 +20,12 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Math.Decompositions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Accord.Math;
 namespace Accord.Tests.Math
 {
+    using Accord.Math.Decompositions;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Accord.Math;
 
-
-    /// <summary>
-    ///This is a test class for SingularValueDecompositionTest and is intended
-    ///to contain all SingularValueDecompositionTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class SingularValueDecompositionTest
     {
@@ -38,10 +33,6 @@ namespace Accord.Tests.Math
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -86,9 +77,6 @@ namespace Accord.Tests.Math
 
 
 
-        /// <summary>
-        ///A test for Inverse
-        ///</summary>
         [TestMethod()]
         public void InverseTest()
         {
@@ -113,9 +101,6 @@ namespace Accord.Tests.Math
             Assert.IsTrue(Matrix.IsEqual(expected, actual, 0.001));
         }
 
-        /// <summary>
-        ///A test for SingularValueDecomposition Constructor
-        ///</summary>
         [TestMethod()]
         public void SingularValueDecompositionConstructorTest1()
         {
@@ -178,9 +163,6 @@ namespace Accord.Tests.Math
         }
 
 
-        /// <summary>
-        ///A test for SingularValueDecomposition Constructor
-        ///</summary>
         [TestMethod()]
         public void SingularValueDecompositionConstructorTest3()
         {
@@ -239,9 +221,6 @@ namespace Accord.Tests.Math
         }
 
 
-        /// <summary>
-        ///A test for SingularValueDecomposition Constructor
-        ///</summary>
         [TestMethod()]
         public void SingularValueDecompositionConstructorTest2()
         {
@@ -299,9 +278,6 @@ namespace Accord.Tests.Math
         }
 
 
-        /// <summary>
-        ///A test for SingularValueDecomposition Constructor
-        ///</summary>
         [TestMethod()]
         public void SingularValueDecompositionConstructorTest4()
         {
@@ -353,9 +329,6 @@ namespace Accord.Tests.Math
             Assert.IsTrue(Matrix.IsEqual(target.Diagonal, Matrix.Diagonal(S), 0.001));
         }
 
-        /// <summary>
-        ///A test for SingularValueDecomposition Constructor
-        ///</summary>
         [TestMethod()]
         public void SingularValueDecompositionConstructorTest5()
         {
@@ -408,9 +381,6 @@ namespace Accord.Tests.Math
         }
 
 
-        /// <summary>
-        ///A test for SingularValueDecomposition Constructor
-        ///</summary>
         [TestMethod()]
         public void SingularValueDecompositionConstructorTest6()
         {
@@ -439,6 +409,48 @@ namespace Accord.Tests.Math
             Assert.IsTrue(target1.RightSingularVectors.IsEqual(target2.LeftSingularVectors));
             Assert.IsTrue(target1.DiagonalMatrix.IsEqual(target2.DiagonalMatrix));
 
+        }
+
+        [TestMethod()]
+        public void SingularValueDecompositionConstructorTest7()
+        {
+            int count = 100;
+            double[,] value = new double[count, 3];
+            double[] output = new double[count];
+
+            for (int i = 0; i < count; i++)
+            {
+                double x = i + 1;
+                double y = 2 * (i + 1) - 1;
+                value[i, 0] = x;
+                value[i, 1] = y;
+                value[i, 2] = 1;
+                output[i] = 4 * x - y + 3;
+            }
+
+
+
+            SingularValueDecomposition target = new SingularValueDecomposition(value,
+                computeLeftSingularVectors: true,
+                computeRightSingularVectors: true);
+
+            {
+                double[,] expected = value;
+                double[,] actual = target.LeftSingularVectors.Multiply(
+                    Matrix.Diagonal(target.Diagonal)).Multiply(target.RightSingularVectors.Transpose());
+
+                // Checking the decomposition
+                Assert.IsTrue(Matrix.IsEqual(actual, expected, 1e-8));
+            }
+
+            {
+                double[] solution = target.Solve(output);
+
+                double[] expected= output;
+                double[] actual = value.Multiply(solution);
+
+                Assert.IsTrue(Matrix.IsEqual(actual, expected, 1e-8));
+            }
         }
     }
 }

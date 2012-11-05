@@ -20,29 +20,20 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics.Filters;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Data;
-
 namespace Accord.Tests.Statistics
 {
-    
-    
-    /// <summary>
-    ///This is a test class for CategoryFilterTest and is intended
-    ///to contain all CategoryFilterTest Unit Tests
-    ///</summary>
+    using Accord.Statistics.Analysis;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System;
+    using Accord.Math;
+
     [TestClass()]
-    public class CategoryFilterTest
+    public class WeightedConfusionMatrixTest
     {
 
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -86,65 +77,60 @@ namespace Accord.Tests.Statistics
         #endregion
 
 
-        /// <summary>
-        ///A test for Apply
-        ///</summary>
         [TestMethod()]
-        public void ApplyTest()
+        public void WeightedConfusionMatrixConstructorTest()
         {
-            Codification target = new Codification();
-            
+            // Sample data from Fleiss, Cohen and Everitt (1968), Large sample standard errors
+            // of kappa and weighted kappa. Psychological Bulletin, Vol. 72, No. 5, 323-327
 
-            DataTable input = new DataTable("Sample data");
-            
-            input.Columns.Add("Age", typeof(int));
-            input.Columns.Add("Classification", typeof(string));
-
-            input.Rows.Add(10, "child");
-            input.Rows.Add(7,  "child");
-            input.Rows.Add(4,  "child");
-            input.Rows.Add(21, "adult");
-            input.Rows.Add(27, "adult");
-            input.Rows.Add(12, "child");
-            input.Rows.Add(79, "elder");
-            input.Rows.Add(40, "adult");
-            input.Rows.Add(30, "adult");
-
-
-
-            DataTable expected = new DataTable("Sample data");
-
-            expected.Columns.Add("Age", typeof(int));
-            expected.Columns.Add("Classification", typeof(int));
-
-            expected.Rows.Add(10, 0);
-            expected.Rows.Add(7, 0);
-            expected.Rows.Add(4, 0);
-            expected.Rows.Add(21, 1);
-            expected.Rows.Add(27, 1);
-            expected.Rows.Add(12, 0);
-            expected.Rows.Add(79, 2);
-            expected.Rows.Add(40, 1);
-            expected.Rows.Add(30, 1);
-
-
-
-            // Detect the mappings
-            target.Detect(input);
-
-            // Apply the categorization
-            DataTable actual = target.Apply(input);
-
-
-            for (int i = 0; i < actual.Rows.Count; i++)
+            double[,] matrix =
             {
-                for (int j = 0; j < actual.Columns.Count; j++)
-                {
-                    Assert.AreEqual(expected.Rows[i][j], actual.Rows[i][j]);
-                }
-            }
+                { 0.53, 0.05, 0.02 },
+                { 0.11, 0.14, 0.05 },
+                { 0.01, 0.06, 0.03 },
+            };
 
+            double[,] weights =
+            {
+                { 1.0000, 0.0000, 0.4444 },
+                { 0.0000, 1.0000, 0.6667 },
+                { 0.4444, 0.6667, 1.0000 },
+            };
+
+            WeightedConfusionMatrix target = new WeightedConfusionMatrix(matrix, weights, samples: 200);
+
+
+            Assert.AreEqual(0.787, target.WeightedOverallAgreement, 1e-3);
+            Assert.AreEqual(0.567, target.WeightedChanceAgreement, 1e-3);
+            Assert.AreEqual(0.508, target.WeightedKappa, 1e-3);
+
+            Assert.AreEqual(0.00324823, target.WeightedVariance, 1e-5);
+            Assert.AreEqual(0.004270, target.WeightedVarianceUnderNull, 1e-3);
         }
 
+        [TestMethod()]
+        public void WeightedConfusionMatrixConstructorTest2()
+        {
+            double[,] matrix =
+            {
+                { 0.53, 0.05, 0.02 },
+                { 0.11, 0.14, 0.05 },
+                { 0.01, 0.06, 0.03 },
+            };
+
+            double[,] weights =
+            {
+                { 1.00, 0.50, 0.44 },
+                { 0.90, 1.00, 0.56 },
+                { 0.75, 0.66, 1.00 },
+            };
+
+            WeightedConfusionMatrix target = new WeightedConfusionMatrix(matrix, 
+                weights, samples: 200);
+
+
+            Assert.AreEqual(0.4453478, target.WeightedKappa, 1e-5);
+            Assert.AreEqual(0.005535633, target.WeightedVariance, 1e-5);
+        }
     }
 }

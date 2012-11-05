@@ -24,11 +24,13 @@ namespace Accord.Tests.Imaging
 {
     using System.Drawing;
     using Accord.Imaging.Converters;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Accord.Controls.Imaging;
-    using AForge.Imaging.Filters;
-    using System.Windows.Forms;
     using Accord.Math;
+    using AForge.Imaging.Filters;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using AForge.Imaging;
+    using Accord.Controls.Imaging;
+    using Accord.Statistics.Distributions.Multivariate;
+    using Accord.Statistics.Distributions.Fitting;
 
     [TestClass()]
     public class ImageToArrayTest
@@ -141,7 +143,6 @@ namespace Accord.Tests.Imaging
             Assert.AreEqual(1, array.Max());
             Assert.AreEqual(16 * 16, array.Length);
         }
-
 
     }
 }

@@ -121,7 +121,7 @@ namespace Accord.Tests.Statistics.Models.Fields
         {
             HiddenMarkovClassifier<NormalDistribution> model = CreateModel1();
 
-            var target = new NormalMarkovClassifierFunction(model);
+            var target = new MarkovContinuousFunction(model);
 
             var features = target.Features;
             double[] weights = target.Weights;
@@ -165,7 +165,7 @@ namespace Accord.Tests.Statistics.Models.Fields
         {
             var model = CreateModel1();
 
-            var target = new NormalMarkovClassifierFunction(model);
+            var target = new MarkovContinuousFunction(model);
 
             double actual;
             double expected;

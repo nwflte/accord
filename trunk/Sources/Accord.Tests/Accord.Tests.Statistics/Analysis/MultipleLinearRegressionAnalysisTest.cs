@@ -118,30 +118,47 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(14, target.Table[1].DegreesOfFreedom);
             Assert.AreEqual(16, target.Table[2].DegreesOfFreedom);
 
-            Assert.AreEqual(12816.345909673832, target.Table[0].SumOfSquares);
-            Assert.AreEqual(423.37409032616614, target.Table[1].SumOfSquares);
-            Assert.AreEqual(13239.719999999998, target.Table[2].SumOfSquares);
+            Assert.AreEqual(12816.345909673832, target.Table[0].SumOfSquares, 1e-10);
+            Assert.AreEqual(423.37409032616614, target.Table[1].SumOfSquares, 1e-10);
+            Assert.AreEqual(13239.719999999998, target.Table[2].SumOfSquares, 1e-10);
 
-            Assert.AreEqual(6408.1729548369158, target.Table[0].MeanSquares);
-            Assert.AreEqual(30.241006451869008, target.Table[1].MeanSquares);
+            Assert.IsFalse(Double.IsNaN(target.Table[0].SumOfSquares));
+            Assert.IsFalse(Double.IsNaN(target.Table[1].SumOfSquares));
+            Assert.IsFalse(Double.IsNaN(target.Table[2].SumOfSquares));
 
-            Assert.AreEqual(211.90342871147618, target.Table[0].Statistic);
+            Assert.AreEqual(6408.1729548369158, target.Table[0].MeanSquares, 1e-10);
+            Assert.AreEqual(30.241006451869008, target.Table[1].MeanSquares, 1e-10);
+
+            Assert.IsFalse(Double.IsNaN(target.Table[0].MeanSquares));
+            Assert.IsFalse(Double.IsNaN(target.Table[1].MeanSquares));
+
+            Assert.AreEqual(211.90342871147618, target.Table[0].Statistic.Value, 1e-10);
             Assert.AreEqual(0.000000000034191538489380946, target.Table[0].Significance.PValue, 1e-16);
             Assert.IsFalse(Double.IsNaN(target.Table[0].Significance.PValue));
 
-            Assert.AreEqual(1.2387232694931045, target.Coefficients[0].Value);
-            Assert.AreEqual(12.082353323342893, target.Coefficients[1].Value);
-            Assert.AreEqual(-153.51169396147372, target.Coefficients[2].Value);
+            Assert.AreEqual(1.2387232694931045, target.Coefficients[0].Value, 1e-10);
+            Assert.AreEqual(12.082353323342893, target.Coefficients[1].Value, 1e-10);
+            Assert.AreEqual(-153.51169396147372, target.Coefficients[2].Value, 1e-10);
+
+            Assert.IsFalse(Double.IsNaN(target.Coefficients[0].Value));
+            Assert.IsFalse(Double.IsNaN(target.Coefficients[1].Value));
+            Assert.IsFalse(Double.IsNaN(target.Coefficients[2].Value));
 
             Assert.IsFalse(target.Coefficients[0].IsIntercept);
             Assert.IsFalse(target.Coefficients[1].IsIntercept);
             Assert.IsTrue(target.Coefficients[2].IsIntercept);
 
-            Assert.AreEqual(0.394590262021004, target.Coefficients[0].StandardError);
-            Assert.AreEqual(3.9322914100115307, target.Coefficients[1].StandardError);
+            Assert.AreEqual(0.394590262021004, target.Coefficients[0].StandardError, 1e-10);
+            Assert.AreEqual(3.9322914100115307, target.Coefficients[1].StandardError, 1e-10);
 
-            Assert.AreEqual(3.1392646720388844, target.Coefficients[0].TTest.Statistic);
-            Assert.AreEqual(3.0725986615797285, target.Coefficients[1].TTest.Statistic);
+            Assert.IsFalse(Double.IsNaN(target.Coefficients[0].StandardError));
+            Assert.IsFalse(Double.IsNaN(target.Coefficients[1].StandardError));
+
+            Assert.AreEqual(3.1392646720388844, target.Coefficients[0].TTest.Statistic, 1e-10);
+            Assert.AreEqual(3.0725986615797285, target.Coefficients[1].TTest.Statistic, 1e-10);
+
+            Assert.IsFalse(Double.IsNaN(target.Coefficients[0].TTest.Statistic));
+            Assert.IsFalse(Double.IsNaN(target.Coefficients[1].TTest.Statistic));
 
             DoubleRange range;
 

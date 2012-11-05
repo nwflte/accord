@@ -31,10 +31,6 @@ namespace Accord.Tests.Statistics.Models.Fields
     using System;
     using Accord.Statistics.Models.Markov.Topology;
 
-    /// <summary>
-    ///This is a test class for ConditionalRandomFieldTest and is intended
-    ///to contain all ConditionalRandomFieldTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class HiddenConditionalRandomFieldTest
     {
@@ -42,10 +38,6 @@ namespace Accord.Tests.Statistics.Models.Fields
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -97,7 +89,7 @@ namespace Accord.Tests.Statistics.Models.Fields
         {
             HiddenMarkovClassifier hmm = HiddenMarkovClassifierPotentialFunctionTest.CreateModel1();
 
-            var function = new DiscreteMarkovClassifierFunction(hmm);
+            var function = new MarkovDiscreteFunction(hmm);
             var target = new HiddenConditionalRandomField<int>(function);
 
             Assert.AreEqual(function, target.Function);
@@ -130,7 +122,7 @@ namespace Accord.Tests.Statistics.Models.Fields
             };
 
 
-            var function = new DiscreteMarkovClassifierFunction(hmm);
+            var function = new MarkovDiscreteFunction(hmm);
             var target = new HiddenConditionalRandomField<int>(function);
 
 

@@ -29,6 +29,7 @@ namespace Accord.Tests.MachineLearning
     using Accord.MachineLearning.VectorMachines.Learning;
     using System.IO;
     using Accord.Math;
+using System.Threading.Tasks;
 
     [TestClass()]
     public class MulticlassSupportVectorMachineTest
@@ -127,6 +128,36 @@ namespace Accord.Tests.MachineLearning
             Assert.AreNotEqual(target[0, 1], target[0, 2]);
             Assert.AreNotEqual(target[1, 2], target[0, 2]);
             Assert.AreNotEqual(target[1, 2], target[0, 1]);
+        }
+
+        [TestMethod()]
+        public void MulticlassSupportVectorMachineConstructorTest3()
+        {
+            MulticlassSupportVectorMachine SupportVectorMachine =
+                new MulticlassSupportVectorMachine(2, new Gaussian(), 5);
+
+            int[] list = Matrix.Vector(0, 5);
+
+            Parallel.For(0, list.Length, i =>
+            {
+
+                double[] data = new double[2];
+                double[] responses;
+
+                // .. load some stuff ..
+                // here we get a NullReferenceException inside createCache() method.
+                int num = SupportVectorMachine.Compute(data, MulticlassComputeMethod.Voting, out responses);
+
+                if (!SupportVectorMachine.IsProbabilistic)
+                {
+                    // Normalize responses
+                    double max = responses.Max();
+                    double min = responses.Min();
+
+                    responses = Accord.Math.Tools.Scale(min, max, 0, 1, responses);
+                }
+                // .. do something ..
+            });
         }
 
         [TestMethod()]

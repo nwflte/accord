@@ -104,10 +104,10 @@ namespace Accord.Tests.Statistics.Models.Fields
         public void RunTest()
         {
             HiddenMarkovClassifier hmm = HiddenMarkovClassifierPotentialFunctionTest.CreateModel1();
-            var function = new DiscreteMarkovClassifierFunction(hmm);
+            var function = new MarkovDiscreteFunction(hmm);
 
             var model = new HiddenConditionalRandomField<int>(function);
-            var target = new QuasiNewtonHiddenLearning<int>(model);
+            var target = new HiddenQuasiNewtonLearning<int>(model);
 
             double[] actual = new double[inputs.Length];
             double[] expected = new double[inputs.Length];
@@ -123,7 +123,7 @@ namespace Accord.Tests.Statistics.Models.Fields
 
             double ll0 = model.LogLikelihood(inputs, outputs);
 
-            double error = target.RunEpoch(inputs, outputs);
+            double error = target.Run(inputs, outputs);
 
             double ll1 = model.LogLikelihood(inputs, outputs);
 
@@ -150,10 +150,10 @@ namespace Accord.Tests.Statistics.Models.Fields
         {
             Accord.Math.Tools.SetupGenerator(0);
 
-            var function = new DiscreteMarkovClassifierFunction(2, 2, 2);
+            var function = new MarkovDiscreteFunction(2, 2, 2);
 
             var model = new HiddenConditionalRandomField<int>(function);
-            var target = new QuasiNewtonHiddenLearning<int>(model);
+            var target = new HiddenQuasiNewtonLearning<int>(model);
 
             double[] actual = new double[inputs.Length];
             double[] expected = new double[inputs.Length];
@@ -166,7 +166,7 @@ namespace Accord.Tests.Statistics.Models.Fields
 
 
             double ll0 = model.LogLikelihood(inputs, outputs);
-            double error = target.RunEpoch(inputs, outputs);
+            double error = target.Run(inputs, outputs);
             double ll1 = model.LogLikelihood(inputs, outputs);
 
             for (int i = 0; i < inputs.Length; i++)
@@ -192,9 +192,9 @@ namespace Accord.Tests.Statistics.Models.Fields
         [TestMethod()]
         public void GradientTest()
         {
-            var function = new DiscreteMarkovClassifierFunction(2, 2, 2);
+            var function = new MarkovDiscreteFunction(2, 2, 2);
             var model = new HiddenConditionalRandomField<int>(function);
-            var target = new QuasiNewtonHiddenLearning<int>(model);
+            var target = new ForwardBackwardGradient<int>(model);
 
             FiniteDifferences diff = new FiniteDifferences(function.Weights.Length);
 
@@ -216,10 +216,10 @@ namespace Accord.Tests.Statistics.Models.Fields
         public void GradientTest2()
         {
             HiddenMarkovClassifier hmm = HiddenMarkovClassifierPotentialFunctionTest.CreateModel1();
-            var function = new DiscreteMarkovClassifierFunction(hmm);
+            var function = new MarkovDiscreteFunction(hmm);
 
             var model = new HiddenConditionalRandomField<int>(function);
-            var target = new QuasiNewtonHiddenLearning<int>(model);
+            var target = new ForwardBackwardGradient<int>(model);
 
             FiniteDifferences diff = new FiniteDifferences(function.Weights.Length);
 
@@ -241,10 +241,10 @@ namespace Accord.Tests.Statistics.Models.Fields
         public void GradientTest3()
         {
             HiddenMarkovClassifier hmm = HiddenMarkovClassifierPotentialFunctionTest.CreateModel1();
-            var function = new DiscreteMarkovClassifierFunction(hmm);
+            var function = new MarkovDiscreteFunction(hmm);
 
             var model = new HiddenConditionalRandomField<int>(function);
-            var target = new QuasiNewtonHiddenLearning<int>(model);
+            var target = new ForwardBackwardGradient<int>(model);
             target.Regularization = 2;
 
             FiniteDifferences diff = new FiniteDifferences(function.Weights.Length);
@@ -264,9 +264,47 @@ namespace Accord.Tests.Statistics.Models.Fields
             }
         }
 
+        [TestMethod()]
+        public void GradientTest4()
+        {
+            var hmm = IndependentMarkovClassifierPotentialFunctionTest.CreateModel2();
+            var function = new MarkovMultivariateFunction(hmm);
+
+            var model = new HiddenConditionalRandomField<double[]>(function);
+            var target = new ForwardBackwardGradient<double[]>(model);
+            target.Regularization = 0;
+
+            FiniteDifferences diff = new FiniteDifferences(function.Weights.Length);
+
+            diff.Function = parameters => func(model, parameters,
+                IndependentMarkovClassifierPotentialFunctionTest.sequences,
+                IndependentMarkovClassifierPotentialFunctionTest.labels);
+
+            double[] expected = diff.Compute(function.Weights);
+            double[] actual = target.Gradient(function.Weights,
+                IndependentMarkovClassifierPotentialFunctionTest.sequences,
+                IndependentMarkovClassifierPotentialFunctionTest.labels);
+
+
+            for (int i = 0; i < actual.Length; i++)
+            {
+                if (double.IsNaN(expected[i]))
+                    continue;
+
+                Assert.AreEqual(expected[i], actual[i], 1e-5);
+                Assert.IsFalse(double.IsNaN(actual[i]));
+            }
+        }
 
 
         private double func(HiddenConditionalRandomField<int> model, double[] parameters)
+        {
+            model.Function.Weights = parameters;
+            return -model.LogLikelihood(inputs, outputs);
+        }
+
+        private double func(HiddenConditionalRandomField<double[]> model, double[] parameters,
+            double[][][] inputs, int[] outputs)
         {
             model.Function.Weights = parameters;
             return -model.LogLikelihood(inputs, outputs);

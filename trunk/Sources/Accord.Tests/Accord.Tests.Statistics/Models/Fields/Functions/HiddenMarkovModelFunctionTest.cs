@@ -140,7 +140,7 @@ namespace Accord.Tests.Statistics.Models.Fields
         {
             HiddenMarkovModel model = CreateModel1();
 
-            DiscreteMarkovModelFunction target = new DiscreteMarkovModelFunction(model);
+            MarkovDiscreteFunction target = new MarkovDiscreteFunction(model);
 
             var features = target.Features;
             double[] weights = target.Weights;
@@ -168,7 +168,7 @@ namespace Accord.Tests.Statistics.Models.Fields
         {
             HiddenMarkovModel model = CreateModel1();
 
-            DiscreteMarkovModelFunction target = new DiscreteMarkovModelFunction(model);
+            MarkovDiscreteFunction target = new MarkovDiscreteFunction(model);
 
             double actual;
             double expected;

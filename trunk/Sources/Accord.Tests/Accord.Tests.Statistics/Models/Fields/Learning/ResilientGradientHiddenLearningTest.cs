@@ -85,10 +85,10 @@ namespace Accord.Tests.Statistics.Models.Fields
             var outputs = QuasiNewtonHiddenLearningTest.outputs;
 
             HiddenMarkovClassifier hmm = HiddenMarkovClassifierPotentialFunctionTest.CreateModel1();
-            var function = new DiscreteMarkovClassifierFunction(hmm);
+            var function = new MarkovDiscreteFunction(hmm);
 
             var model = new HiddenConditionalRandomField<int>(function);
-            var target = new ResilientGradientHiddenLearning<int>(model);
+            var target = new HiddenResilientGradientLearning<int>(model);
 
             double[] actual = new double[inputs.Length];
             double[] expected = new double[inputs.Length];
@@ -129,6 +129,57 @@ namespace Accord.Tests.Statistics.Models.Fields
         }
 
         [TestMethod()]
+        public void RunTest3()
+        {
+            var inputs = QuasiNewtonHiddenLearningTest.inputs;
+            var outputs = QuasiNewtonHiddenLearningTest.outputs;
+
+            HiddenMarkovClassifier hmm = HiddenMarkovClassifierPotentialFunctionTest.CreateModel1();
+            var function = new MarkovDiscreteFunction(hmm);
+
+            var model = new HiddenConditionalRandomField<int>(function);
+            var target = new HiddenResilientGradientLearning<int>(model);
+
+            double[] actual = new double[inputs.Length];
+            double[] expected = new double[inputs.Length];
+
+            for (int i = 0; i < inputs.Length; i++)
+            {
+                actual[i] = model.Compute(inputs[i]);
+                expected[i] = outputs[i];
+            }
+
+            for (int i = 0; i < inputs.Length; i++)
+                Assert.AreEqual(expected[i], actual[i]);
+
+            double ll0 = model.LogLikelihood(inputs, outputs);
+
+            double error = Double.NegativeInfinity;
+            for (int i = 0; i < 50; i++)
+                error = target.RunEpoch(inputs, outputs);
+
+            double ll1 = model.LogLikelihood(inputs, outputs);
+
+            for (int i = 0; i < inputs.Length; i++)
+            {
+                actual[i] = model.Compute(inputs[i]);
+                expected[i] = outputs[i];
+            }
+
+            Assert.AreEqual(-0.00046872579976353634, ll0, 1e-10);
+            Assert.AreEqual(0, error, 1e-10);
+            Assert.AreEqual(error, ll1);
+            Assert.IsFalse(Double.IsNaN(ll0));
+            Assert.IsFalse(Double.IsNaN(error));
+
+            for (int i = 0; i < inputs.Length; i++)
+                Assert.AreEqual(expected[i], actual[i]);
+
+            Assert.IsTrue(ll1 > ll0);
+        }
+
+
+        [TestMethod()]
         public void RunTest2()
         {
             var inputs = QuasiNewtonHiddenLearningTest.inputs;
@@ -137,10 +188,10 @@ namespace Accord.Tests.Statistics.Models.Fields
 
             Accord.Math.Tools.SetupGenerator(0);
 
-            var function = new DiscreteMarkovClassifierFunction(2, 2, 2);
+            var function = new MarkovDiscreteFunction(2, 2, 2);
 
             var model = new HiddenConditionalRandomField<int>(function);
-            var target = new ResilientGradientHiddenLearning<int>(model);
+            var target = new HiddenResilientGradientLearning<int>(model);
 
             double[] actual = new double[inputs.Length];
             double[] expected = new double[inputs.Length];

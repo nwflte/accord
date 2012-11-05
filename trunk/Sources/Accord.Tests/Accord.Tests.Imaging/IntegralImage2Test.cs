@@ -20,20 +20,15 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Imaging;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Windows.Forms;
-using System.Drawing;
-using Accord.Math;
-using AForge.Imaging;
 namespace Accord.Tests.Imaging
 {
+    using Accord.Imaging;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System.Windows.Forms;
+    using System.Drawing;
+    using Accord.Math;
+    using AForge.Imaging;
 
-
-    /// <summary>
-    ///This is a test class for IntegralImage2Test and is intended
-    ///to contain all IntegralImage2Test Unit Tests
-    ///</summary>
     [TestClass()]
     public class IntegralImage2Test
     {
@@ -41,10 +36,6 @@ namespace Accord.Tests.Imaging
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -88,9 +79,6 @@ namespace Accord.Tests.Imaging
         #endregion
 
 
-        /// <summary>
-        ///A test for GetSum
-        ///</summary>
         [TestMethod()]
         public void GetSumTest()
         {
@@ -120,12 +108,8 @@ namespace Accord.Tests.Imaging
             int actual = ii.GetSum(x, y, w, h);
 
             Assert.AreEqual(expected, actual);
-
         }
 
-        /// <summary>
-        ///A test for GetSum
-        ///</summary>
         [TestMethod()]
         public void GetSumTest3()
         {
@@ -186,9 +170,6 @@ namespace Accord.Tests.Imaging
 
         }
 
-        /// <summary>
-        ///A test for GetSum
-        ///</summary>
         [TestMethod()]
         public void GetSumTest2()
         {
@@ -221,9 +202,6 @@ namespace Accord.Tests.Imaging
 
         }
 
-        /// <summary>
-        ///A test for GetSum
-        ///</summary>
         [TestMethod()]
         public void GetSumTest4()
         {

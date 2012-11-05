@@ -95,6 +95,7 @@ namespace Accord.Tests.Statistics
         [TestMethod()]
         public void ConstructorExcel10Test()
         {
+            // If a 64-bit ACE is installed, this test requires a 64-bit process to run correctly.
             string path = @"..\..\..\Accord.Tests\Accord.Tests.Statistics\Resources\sample.xlsx";
             ExcelReader target = new ExcelReader(path);
 
@@ -135,17 +136,17 @@ namespace Accord.Tests.Statistics
 
             cols = target.GetColumnsList("Plan2");
             Assert.AreEqual(3, cols.Length);
-            if (xlsx)
-            {
-                Assert.AreEqual("1", cols[0]);
-                Assert.AreEqual("2", cols[1]);
-                Assert.AreEqual("3", cols[2]);
-            }
-            else
+            if (target.Provider == "Microsoft.Jet.OLEDB.4.0")
             {
                 Assert.AreEqual("F1", cols[0]);
                 Assert.AreEqual("F2", cols[1]);
                 Assert.AreEqual("F3", cols[2]);
+            }
+            else
+            {
+                Assert.AreEqual("1", cols[0]);
+                Assert.AreEqual("2", cols[1]);
+                Assert.AreEqual("3", cols[2]);
             }
 
             cols = target.GetColumnsList("Plan3");

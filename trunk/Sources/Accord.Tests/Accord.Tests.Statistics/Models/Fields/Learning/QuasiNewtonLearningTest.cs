@@ -126,8 +126,8 @@ namespace Accord.Tests.Statistics
                 new int[] { 0, 1, 1, 2, 2, 2 },
             };
 
-         
-            var function = new DiscreteMarkovModelFunction(nstates, symbols);
+
+            var function = new MarkovDiscreteFunction(nstates, symbols);
             var model = new ConditionalRandomField<int>(nstates, function);
 
 

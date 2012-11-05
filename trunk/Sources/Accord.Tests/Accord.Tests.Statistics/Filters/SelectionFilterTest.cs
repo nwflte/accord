@@ -20,18 +20,13 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics.Filters;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Data;
-
 namespace Accord.Tests.Statistics
 {
+
+    using Accord.Statistics.Filters;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System.Data;
     
-    
-    /// <summary>
-    ///This is a test class for SelectionFilterTest and is intended
-    ///to contain all SelectionFilterTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class SelectionFilterTest
     {
@@ -39,10 +34,6 @@ namespace Accord.Tests.Statistics
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -86,9 +77,6 @@ namespace Accord.Tests.Statistics
         #endregion
 
 
-        /// <summary>
-        ///A test for Apply
-        ///</summary>
         [TestMethod()]
         public void ApplyTest()
         {

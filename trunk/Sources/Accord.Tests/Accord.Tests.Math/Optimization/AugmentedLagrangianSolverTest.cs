@@ -184,6 +184,7 @@ namespace Accord.Tests.Math
 
         }
 
+#if !NET35
         [TestMethod()]
         public void AugmentedLagrangianSolverConstructorTest3()
         {
@@ -470,6 +471,7 @@ namespace Accord.Tests.Math
             Assert.AreEqual(-4.42433, solver.Solution[0], 1e-5);
             Assert.AreEqual(5.42433, solver.Solution[1], 1e-5);
         }
+#endif
 
     }
 }

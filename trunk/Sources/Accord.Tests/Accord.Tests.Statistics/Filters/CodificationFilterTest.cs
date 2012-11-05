@@ -20,29 +20,19 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics.Filters;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Data;
-
 namespace Accord.Tests.Statistics
 {
+    using Accord.Statistics.Filters;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System.Data;
     
-    
-    /// <summary>
-    ///This is a test class for EqualizingFilterTest and is intended
-    ///to contain all EqualizingFilterTest Unit Tests
-    ///</summary>
     [TestClass()]
-    public class EqualizingFilterTest
+    public class CodificationFilterTest
     {
 
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -86,51 +76,62 @@ namespace Accord.Tests.Statistics
         #endregion
 
 
-        /// <summary>
-        ///A test for Apply
-        ///</summary>
         [TestMethod()]
         public void ApplyTest()
         {
-            DataTable data = new DataTable("Sample data");
-            data.Columns.Add("x", typeof(double));
-            data.Columns.Add("Class", typeof(int));
-            data.Rows.Add(0.21, 0);
-            data.Rows.Add(0.25, 0);
-            data.Rows.Add(0.54, 0);
-            data.Rows.Add(0.19, 1);
+            Codification target = new Codification();
+            
+
+            DataTable input = new DataTable("Sample data");
+            
+            input.Columns.Add("Age", typeof(int));
+            input.Columns.Add("Classification", typeof(string));
+
+            input.Rows.Add(10, "child");
+            input.Rows.Add(7,  "child");
+            input.Rows.Add(4,  "child");
+            input.Rows.Add(21, "adult");
+            input.Rows.Add(27, "adult");
+            input.Rows.Add(12, "child");
+            input.Rows.Add(79, "elder");
+            input.Rows.Add(40, "adult");
+            input.Rows.Add(30, "adult");
+
+
 
             DataTable expected = new DataTable("Sample data");
-            expected.Columns.Add("x", typeof(double));
-            expected.Columns.Add("Class", typeof(int));
-            expected.Rows.Add(0.21, 0);
-            expected.Rows.Add(0.25, 0);
-            expected.Rows.Add(0.54, 0);
-            expected.Rows.Add(0.19, 1);
-            expected.Rows.Add(0.19, 1);
-            expected.Rows.Add(0.19, 1);
+
+            expected.Columns.Add("Age", typeof(int));
+            expected.Columns.Add("Classification", typeof(int));
+
+            expected.Rows.Add(10, 0);
+            expected.Rows.Add(7, 0);
+            expected.Rows.Add(4, 0);
+            expected.Rows.Add(21, 1);
+            expected.Rows.Add(27, 1);
+            expected.Rows.Add(12, 0);
+            expected.Rows.Add(79, 2);
+            expected.Rows.Add(40, 1);
+            expected.Rows.Add(30, 1);
 
 
-            DataTable actual;
 
-            Stratification target = new Stratification("Class");
-            target.Columns["Class"].Classes = new int[] { 0, 1 };
-            
-            actual = target.Apply(data);
+            // Detect the mappings
+            target.Detect(input);
+
+            // Apply the categorization
+            DataTable actual = target.Apply(input);
+
 
             for (int i = 0; i < actual.Rows.Count; i++)
             {
-                double ex = (double)expected.Rows[i][0];
-                int ec = (int)expected.Rows[i][1];
-
-                double ax = (double)actual.Rows[i][0];
-                int ac = (int)actual.Rows[i][1];
-
-                Assert.AreEqual(ex, ax);
-                Assert.AreEqual(ec, ac);                    
-                
+                for (int j = 0; j < actual.Columns.Count; j++)
+                {
+                    Assert.AreEqual(expected.Rows[i][j], actual.Rows[i][j]);
+                }
             }
-            
+
         }
+
     }
 }
