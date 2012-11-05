@@ -59,16 +59,33 @@
     <CodeAnalysisIgnoreGeneratedCode>true</CodeAnalysisIgnoreGeneratedCode>
     <CodeAnalysisRuleSet>..\Accord.NET.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release 3.5|AnyCPU'">
+    <OutputPath>..\..\Release (3.5)\</OutputPath>
+    <DefineConstants>CODE_ANALYSIS;TRACE;NET35</DefineConstants>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>..\..\Release (3.5)\Accord.Math.XML</DocumentationFile>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <CodeAnalysisLogFile>..\..\Release (3.5)\Accord.Math.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <CodeAnalysisRuleSet>..\Accord.NET.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+  </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
   <ItemGroup>
-    <Reference Include="AForge, Version=2.1.5.0, Culture=neutral, PublicKeyToken=c1db6ff4eaa06aeb, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\AForge.NET\Framework\Release\AForge.dll</HintPath>
+    <Reference Include="AForge">
+      <HintPath>..\..\Externals\AForge.NET\AForge.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="AForge.Math, Version=2.2.1.0, Culture=neutral, PublicKeyToken=abba2e25397ee8c9, processorArchitecture=MSIL">
-      <HintPath>C:\Program Files (x86)\AForge.NET\Framework\Release\AForge.Math.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="AForge.Math">
+      <HintPath>..\..\Externals\AForge.NET\AForge.Math.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -80,9 +97,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Combinatorics.cs" />
+    <Compile Include="Convergence\AbsoluteConvergence.cs" />
+    <Compile Include="Convergence\RelativeParameterConvergence.cs" />
     <Compile Include="Decompositions\Base\ISolverArrayDecomposition.cs" />
     <Compile Include="Decompositions\Base\ISolverMatrixDecomposition.cs" />
     <None Include="Decompositions\CholeskyDecomposition.tt" />
+    <None Include="Decompositions\Accord.Math.Decompositions.cd" />
     <None Include="Decompositions\JaggedCholeskyDecomposition.tt" />
     <None Include="Decompositions\JaggedLuDecomposition.tt">
       <LastGenOutput>JaggedLuDecomposition.cs</LastGenOutput>
@@ -150,6 +170,7 @@
       <DependentUpon>SingularValueDecomposition.tt</DependentUpon>
     </Compile>
     <Compile Include="Distance.cs" />
+    <Compile Include="Environments\OctaveEnvironment.cs" />
     <Compile Include="Formats\Base\IMatrixFormatProvider.cs" />
     <Compile Include="Formats\Base\MatrixFormatProviderBase.cs">
       <SubType>Code</SubType>

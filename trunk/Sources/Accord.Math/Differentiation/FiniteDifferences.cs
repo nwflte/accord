@@ -174,10 +174,13 @@ namespace Accord.Math.Differentiation
             }
 
             // Interpolate the points to obtain an
-            //   estimation of the derivative at x.
+            //   estimative of the derivative at x.
             double derivative = 0.0;
             for (int j = 0; j < coef.Length; j++)
-                derivative += coef[center][1, j] * points[j];
+            {
+                double c = coef[center][1, j];
+                if (c != 0) derivative += c * points[j];
+            }
             derivative /= Math.Pow(stepSize[i], 1);
 
             // Reverts the modified value

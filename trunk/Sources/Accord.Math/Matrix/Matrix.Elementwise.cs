@@ -274,20 +274,12 @@ namespace Accord.Math
             return r;
         }
 
-        /// <summary>
-        ///   Elementwise division.
-        /// </summary>
-        /// 
-        public static double[,] ElementwiseDivide(this double[,] a, double[] b, bool inPlace = false)
-        {
-            return ElementwiseDivide(a, b, 0, inPlace);
-        }
 
         /// <summary>
         ///   Elementwise division.
         /// </summary>
         /// 
-        public static double[,] ElementwiseDivide(this double[,] a, double[] b, int dimension, bool inPlace = false)
+        public static double[,] ElementwiseDivide(this double[,] a, double[] b, int dimension = 0, bool inPlace = false)
         {
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
@@ -320,12 +312,52 @@ namespace Accord.Math
         ///   Elementwise division.
         /// </summary>
         /// 
+        public static double[][] ElementwiseDivide(this double[][] a, double[] b, int dimension = 0, bool inPlace = false)
+        {
+            int rows = a.Length;
+            int cols = a[0].Length;
+
+            double[][] r = a;
+
+            if (!inPlace)
+            {
+                r = new double[rows][];
+                for (int i = 0; i < r.Length; i++)
+                    r[i] = new double[cols];
+            }
+
+            if (dimension == 0)
+            {
+                if (cols != b.Length) throw new ArgumentException(
+                        "Length of B should be equals to the number of columns in A", "b");
+
+                for (int i = 0; i < rows; i++)
+                    for (int j = 0; j < cols; j++)
+                        r[i][j] = a[i][j] / b[j];
+            }
+            else
+            {
+                if (rows != b.Length) throw new ArgumentException(
+                        "Length of B should be equals to the number of rows in A", "b");
+
+                for (int j = 0; j < cols; j++)
+                    for (int i = 0; i < rows; i++)
+                        r[i][j] = a[i][j] / b[i];
+            }
+
+            return r;
+        }
+
+        /// <summary>
+        ///   Elementwise division.
+        /// </summary>
+        /// 
         public static double[,] ElementwiseDivide(this int[,] a, int[] b, int dimension)
         {
             int rows = a.GetLength(0);
             int cols = a.GetLength(1);
 
-            double[,] r =  new double[rows, cols];
+            double[,] r = new double[rows, cols];
 
             if (dimension == 1)
             {

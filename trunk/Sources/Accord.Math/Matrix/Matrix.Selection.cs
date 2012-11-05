@@ -86,6 +86,7 @@ namespace Accord.Math
         /// <remarks>
         ///   Routine adapted from Lutz Roeder's Mapack for .NET, September 2000.
         /// </remarks>
+        /// 
         public static T[,] Submatrix<T>(this T[,] data, int startRow, int endRow, int startColumn, int endColumn)
         {
             int rows = data.GetLength(0);
@@ -214,9 +215,7 @@ namespace Accord.Math
         /// <summary>Returns a subvector extracted from the current vector.</summary>
         /// <param name="data">The vector to return the subvector from.</param>
         /// <param name="indexes">Array of indices.</param>
-        /// <remarks>
-        ///   Routine adapted from Lutz Roeder's Mapack for .NET, September 2000.
-        /// </remarks>
+        /// 
         public static T[] Submatrix<T>(this T[] data, int[] indexes)
         {
             T[] X = new T[indexes.Length];
@@ -230,9 +229,7 @@ namespace Accord.Math
         /// <summary>Returns a subvector extracted from the current vector.</summary>
         /// <param name="data">The vector to return the subvector from.</param>
         /// <param name="indexes">Array of indices.</param>
-        /// <remarks>
-        ///   Routine adapted from Lutz Roeder's Mapack for .NET, September 2000.
-        /// </remarks>
+        /// 
         public static List<T> Submatrix<T>(this List<T> data, int[] indexes)
         {
             T[] X = new T[indexes.Length];
@@ -247,9 +244,7 @@ namespace Accord.Math
         /// <param name="data">The vector to return the subvector from.</param>
         /// <param name="indexes">Array of indices.</param>
         /// <param name="transpose">True to return a transposed matrix; false otherwise.</param>
-        /// <remarks>
-        ///   Routine adapted from Lutz Roeder's Mapack for .NET, September 2000.
-        /// </remarks>
+        /// 
         public static T[][] Submatrix<T>(this T[][] data, int[] indexes, bool transpose = false)
         {
             T[][] X;
@@ -302,6 +297,7 @@ namespace Accord.Math
         /// <remarks>
         ///   Routine adapted from Lutz Roeder's Mapack for .NET, September 2000.
         /// </remarks>
+        /// 
         public static T[] Submatrix<T>(this T[] data, int first)
         {
             if (first < 0 || first > data.Length)
@@ -321,6 +317,7 @@ namespace Accord.Math
         /// <remarks>
         ///   Routine adapted from Lutz Roeder's Mapack for .NET, September 2000.
         /// </remarks>
+        /// 
         public static T[,] Submatrix<T>(this T[,] data, int startRow, int endRow, int[] columnIndexes)
         {
             if ((startRow > endRow) || (startRow < 0) || (startRow >= data.GetLength(0))
@@ -358,6 +355,7 @@ namespace Accord.Math
         /// <remarks>
         ///   Routine adapted from Lutz Roeder's Mapack for .NET, September 2000.
         /// </remarks>
+        /// 
         public static T[,] Submatrix<T>(this T[,] data, int[] rowIndexes, int startColumn, int endColumn)
         {
             if ((startColumn > endColumn) || (startColumn < 0) || (startColumn >= data.GetLength(1)) || (endColumn < 0)
@@ -400,6 +398,7 @@ namespace Accord.Math
         /// <remarks>
         ///   Routine adapted from Lutz Roeder's Mapack for .NET, September 2000.
         /// </remarks>
+        /// 
         public static T[][] Submatrix<T>(this T[][] data, int[] rowIndexes, int j0, int j1)
         {
             if ((j0 > j1) || (j0 < 0) || (j0 >= data[0].Length) ||
@@ -439,6 +438,7 @@ namespace Accord.Math
         /// <remarks>
         ///   Routine adapted from Lutz Roeder's Mapack for .NET, September 2000.
         /// </remarks>
+        /// 
         public static T[][] Submatrix<T>(this T[][] data, int i0, int i1, int[] columnIndexes)
         {
             if ((i0 > i1) || (i0 < 0) || (i0 >= data.Length)
@@ -1377,6 +1377,22 @@ namespace Accord.Math
 
 
         /// <summary>
+        ///   Performs an in-place re-ordering of elements in 
+        ///   a given array using the given vector of indices.
+        /// </summary>
+        /// 
+        /// <param name="values">The values to be ordered.</param>
+        /// <param name="indices">The new index positions.</param>
+        /// 
+        public static void Swap<T>(this T[] values, int[] indices)
+        {
+            T[] newValues = values.Submatrix(indices);
+
+            for (int i = 0; i < values.Length; i++)
+                values[i] = newValues[i];
+        }
+
+        /// <summary>
         ///   Retrieves a list of the distinct values for each matrix column.
         /// </summary>
         /// 
@@ -1421,6 +1437,25 @@ namespace Accord.Math
             return set.ToArray();
         }
 
+        /// <summary>
+        ///   Retrieves only distinct values contained in an array.
+        /// </summary>
+        /// 
+        /// <param name="values">The array.</param>
+        /// <param name="property">The property of the object used to determine distinct instances.</param>
+        /// 
+        /// <returns>An array containing only the distinct values in <paramref name="values"/>.</returns>
+        /// 
+        public static T[] Distinct<T, TProperty>(this T[] values, Func<T, TProperty> property)
+            where TProperty : IComparable<TProperty>
+        {
+            CustomComparer<T> comparer = new CustomComparer<T>(
+                (a, b) => property(a).CompareTo(property(b)));
+
+            var set = new HashSet<T>(values, comparer);
+
+            return set.ToArray();
+        }
 
         /// <summary>
         ///   Sorts the columns of a matrix by sorting keys.

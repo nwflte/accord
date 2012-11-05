@@ -264,7 +264,10 @@ namespace Accord.Math
         /// 
         public static double[,] PseudoInverse(this double[,] matrix)
         {
-            return new SingularValueDecomposition(matrix, true, true, true).Inverse();
+            return new SingularValueDecomposition(matrix,
+                computeLeftSingularVectors: true,
+                computeRightSingularVectors: true,
+                autoTranspose: true).Inverse();
         }
 
     }
