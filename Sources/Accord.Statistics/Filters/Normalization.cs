@@ -96,8 +96,12 @@ namespace Accord.Statistics.Filters
                 if (column.DataType == typeof(Double) || column.DataType == typeof(Decimal))
                 {
                     string name = column.ColumnName;
-                    double sdev = (double)data.Compute("STDEV(" + name + ")", String.Empty);
-                    double mean = (double)data.Compute("AVG(" + name + ")", String.Empty);
+
+                    string safeName = name
+                        .Replace("]", @"\]");
+
+                    double sdev = (double)data.Compute("STDEV([" + safeName + "])", String.Empty);
+                    double mean = (double)data.Compute("AVG([" + safeName + "])", String.Empty);
 
                     if (!Columns.Contains(name))
                         Columns.Add(new Options(name));

@@ -33,8 +33,20 @@ namespace Accord.Statistics.Formats
     /// </summary>
     /// 
     /// <remarks>
-    ///   This class requires either the Jet engine for 32-bit
-    ///   applications or the ACE 14.0 for 64 bit applications.
+    /// <para>
+    ///   This class requires the Microsoft Access Database Engine
+    ///   to work. The download is available from Microsoft under
+    ///   the name "Microsoft Access Database Engine 2010 Redistributable",
+    ///   available in both 32-bit (x86) and 64-bit (x64) versions.</para>
+    ///   
+    /// <para>
+    ///   By default, the redistributable package will only install 
+    ///   if it is the same as the current version of Microsoft Office
+    ///   installed in the machine (i.e. ACE 32-bit can not be installed
+    ///   with 64-bit office and vice-versa). To overcome this limitation
+    ///   and install both versions of the ACE drivers, specify /passive
+    ///   as a command line argument when installing the packages.
+    /// </para>
     /// </remarks>
     /// 
     public class ExcelReader
@@ -52,39 +64,64 @@ namespace Accord.Statistics.Formats
         /// 
         public ExcelReader(string path, bool hasHeaders = true, bool hasMixedData = true)
         {
-            OleDbConnectionStringBuilder strBuilder = new OleDbConnectionStringBuilder();
-
             string fullPath = Path.GetFullPath(path);
+            string extension = Path.GetExtension(path);
 
             if (!File.Exists(fullPath))
                 throw new FileNotFoundException("File could not be found.", fullPath);
 
-            string temp = Path.GetTempFileName();
-            File.Copy(fullPath, temp, true);
+            string tempFileName = Path.GetTempFileName();
+            File.Copy(fullPath, tempFileName, true);
 
-            if (Path.GetExtension(path) == ".xls")
+            // Reader Settings
+            HasHeaders = hasHeaders;
+            HasMixedData = hasMixedData;
+
+            switch (extension)
             {
-                // Settings for MS Office formats prior to 2007
-                strBuilder.Provider = "Microsoft.Jet.OLEDB.4.0";
-                strBuilder.DataSource = temp;
-                strBuilder.Add("Extended Properties", "Excel 8.0;" +
-                    "HDR=" + (hasHeaders ? "Yes" : "No") + ';' +
-                    "Imex=" + (hasMixedData ? "2" : "0") + ';' +
-                  "");
-            }
-            else
-            {
-                // Settings for MS Office 2007 and beyond
-                strBuilder.Provider = "Microsoft.ACE.OLEDB.12.0";
-                strBuilder.DataSource = temp;
-                strBuilder.Add("Extended Properties", "Excel 12.0;" +
-                    "HDR=" + (hasHeaders ? "Yes" : "No") + ';' +
-                    "Imex=" + (hasMixedData ? "2" : "0") + ';' +
-                  "");
+                case ".xls": Version = "Excel 8.0"; break; // Excel 95-2003
+                case ".xlsx": Version = "Excel 12.0"; break; // Excel 2007+
+                default: throw new ArgumentException("File type could not be determined by file extension.", "path");
             }
 
+            if (IntPtr.Size == 4 && extension == ".xls")
+                Provider = "Microsoft.Jet.OLEDB.4.0";   // for x86/95-2003
+            else Provider = "Microsoft.ACE.OLEDB.12.0"; // for x64/95-2007+
+
+            OleDbConnectionStringBuilder strBuilder
+                = new OleDbConnectionStringBuilder();
+
+            strBuilder.Provider = Provider;
+            strBuilder.DataSource = tempFileName;
+            strBuilder.Add("Extended Properties", Version + ";" +
+                "HDR=" + (HasHeaders ? "Yes" : "No") + ';' +
+                "Imex=" + (HasMixedData ? "2" : "0") + ';');
             strConnection = strBuilder.ToString();
         }
+
+        /// <summary>
+        ///   Gets the data provider used by the reader.
+        /// </summary>
+        /// 
+        public string Provider { get; private set; }
+
+        /// <summary>
+        ///   Gets the Excel version used by the reader.
+        /// </summary>
+        /// 
+        public String Version { get; private set; }
+
+        /// <summary>
+        ///   Gets whether the workbook has column headers.
+        /// </summary>
+        /// 
+        public bool HasHeaders { get; private set; }
+
+        /// <summary>
+        ///   Gets whether the data contains mixed string and numeric data.
+        /// </summary>
+        /// 
+        public bool HasMixedData { get; private set; }
 
         /// <summary>
         ///   Gets the list of worksheets in the spreadsheet.
@@ -144,19 +181,18 @@ namespace Accord.Statistics.Formats
         {
             DataTable ws;
 
-            OleDbConnection connection = new OleDbConnection(strConnection);
+            using (OleDbConnection connection = new OleDbConnection(strConnection))
+            {
+                OleDbCommand command = new OleDbCommand("SELECT * FROM [" + worksheet + "$]", connection);
 
-            OleDbCommand command = new OleDbCommand("SELECT * FROM [" + worksheet + "$]", connection);
-
-            OleDbDataAdapter adaptor = new OleDbDataAdapter(command);
-
-            ws = new DataTable(worksheet);
-            ws.Locale = CultureInfo.InvariantCulture;
-            adaptor.FillSchema(ws, SchemaType.Source);
-            adaptor.Fill(ws);
-
-            adaptor.Dispose();
-            connection.Close();
+                using (OleDbDataAdapter adaptor = new OleDbDataAdapter(command))
+                {
+                    ws = new DataTable(worksheet);
+                    ws.Locale = CultureInfo.InvariantCulture;
+                    adaptor.FillSchema(ws, SchemaType.Source);
+                    adaptor.Fill(ws);
+                }
+            }
 
             return ws;
         }

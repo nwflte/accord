@@ -71,6 +71,7 @@ namespace Accord.Statistics.Filters
         /// <summary>
         ///   Gets or sets the two-group proportions.
         /// </summary>
+        /// 
         public double Proportion { get; set; }
 
         /// <summary>
@@ -108,14 +109,14 @@ namespace Accord.Statistics.Filters
         /// 
         protected override DataTable ProcessFilter(DataTable data)
         {
-            
+
             if (!lockGroups)
             {
                 // Check if we should balance label proportions
                 if (Columns.Count == 0)
                 {
                     // No. Just generate assign groups at random
-                    groupIndices = Accord.Statistics.Tools.RandomGroups(data.Rows.Count, 2);
+                    groupIndices = Accord.Statistics.Tools.RandomGroups(data.Rows.Count, Proportion);
                 }
 
                 else
@@ -150,8 +151,8 @@ namespace Accord.Statistics.Filters
             int totalNegatives = subsets[1].Count;
 
 
-            int firstGroupPositives = (int)((subsets[0].Count / (double)groupCount) * Proportion);
-            int firstGroupNegatives = (int)((subsets[1].Count / (double)groupCount) * Proportion);
+            int firstGroupPositives = (int)((subsets[0].Count / (double)groupCount) * 2 * Proportion);
+            int firstGroupNegatives = (int)((subsets[1].Count / (double)groupCount) * 2 * Proportion);
 
 
             int[] groupIndices = new int[data.Rows.Count];
