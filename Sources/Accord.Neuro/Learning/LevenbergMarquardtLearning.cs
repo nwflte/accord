@@ -460,8 +460,8 @@ namespace Accord.Neuro.Learning
                         gsum += jacobian[i][j] * errors[j];
                     gradient[i] += (float)gsum;
                 }
-                
-                
+
+
                 // Compute Quasi-Hessian Matrix approximation
                 //  using the outer project Jacobian (H ~ J'J)
                 Trace.TraceInformation("Updating Hessian.");
@@ -600,7 +600,21 @@ namespace Accord.Neuro.Learning
         public double ComputeError(double[][] input, double[][] output)
         {
             double sumOfSquaredErrors = 0;
-            object lockSum = new Object();
+
+#if NET35
+            for (int i = 0; i < input.Length; i++)
+            {
+                // Compute network answer
+                double[] y = network.Compute(input[i]);
+
+                for (int j = 0; j < y.Length; j++)
+                {
+                    double e = (y[j] - output[i][j]);
+                    sumOfSquaredErrors += e * e;
+                }
+            }
+#else
+            Object lockSum = new Object();
 
             Parallel.For(0, input.Length,
 
@@ -628,6 +642,7 @@ namespace Accord.Neuro.Learning
                     lock (lockSum) sumOfSquaredErrors += partialSum;
                 }
             );
+#endif
 
             return sumOfSquaredErrors / 2.0;
         }
@@ -795,7 +810,7 @@ namespace Accord.Neuro.Learning
             // Assume all network neurons have the same activation function
             var function = (network.Layers[0].Neurons[0] as ActivationNeuron).ActivationFunction;
 
-            
+
             // Start by the output layer first
             int outputLayerIndex = network.Layers.Length - 1;
             ActivationLayer outputLayer = network.Layers[outputLayerIndex] as ActivationLayer;
