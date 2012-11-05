@@ -25,6 +25,8 @@ namespace Accord.Statistics.Analysis
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using Accord.Math;
+    using System.Runtime.Serialization;
 
     /// <summary>
     ///   Receiver Operating Characteristic (ROC) Curve.
@@ -79,6 +81,13 @@ namespace Accord.Statistics.Analysis
         double dtrue;
         double dfalse;
 
+        [OptionalField]
+        double min;
+
+        [OptionalField]
+        double max;
+
+
 
         // The collection to hold our curve point information
         private ReceiverOperatingCharacteristicPointCollection collection;
@@ -110,10 +119,8 @@ namespace Accord.Statistics.Analysis
             dtrue = dfalse = expected[0];
             for (int i = 1; i < expected.Length; i++)
             {
-                if (dtrue < expected[i])
-                    dtrue = expected[i];
-                if (dfalse > expected[i])
-                    dfalse = expected[i];
+                if (dtrue < expected[i]) dtrue = expected[i];
+                if (dfalse > expected[i]) dfalse = expected[i];
             }
 
             // Count the real number of positive and negative cases
@@ -122,6 +129,9 @@ namespace Accord.Statistics.Analysis
                 if (expected[i] == dtrue)
                     this.positiveCount++;
             }
+
+            min = actual.Min();
+            max = actual.Max();
 
             // Negative cases is just the number of cases minus the number of positives
             this.negativeCount = this.measurement.Length - this.positiveCount;
@@ -200,7 +210,7 @@ namespace Accord.Statistics.Analysis
         /// 
         public void Compute(int points)
         {
-            Compute((dtrue - dfalse) / points);
+            Compute((max - min) / points);
         }
 
         /// <summary>
@@ -227,7 +237,7 @@ namespace Accord.Statistics.Analysis
             double cutoff;
 
             // Create the curve, computing a point for each cutoff value
-            for (cutoff = dfalse; cutoff <= dtrue; cutoff += increment)
+            for (cutoff = min; cutoff <= max; cutoff += increment)
                 points.Add(ComputePoint(cutoff));
 
 
@@ -325,7 +335,9 @@ namespace Accord.Statistics.Analysis
             int falsePositives = negativeCount - trueNegatives;
             int falseNegatives = positiveCount - truePositives;
 
-            return new ReceiverOperatingCharacteristicPoint(threshold, truePositives, falseNegatives, falsePositives, trueNegatives);
+            return new ReceiverOperatingCharacteristicPoint(threshold,
+                truePositives: truePositives, falseNegatives: falseNegatives,
+                falsePositives: falsePositives, trueNegatives: trueNegatives);
         }
 
 
@@ -424,6 +436,18 @@ namespace Accord.Statistics.Analysis
         #endregion
 
 
+        [OnDeserialized]
+        private void onDeserialized(StreamingContext context)
+        {
+            min = dfalse;
+            max = dtrue;
+        }
+
+        [OnDeserializing]
+        private void onDeserializing(StreamingContext context)
+        {
+            min = max = 0;
+        }
     }
 
 
@@ -446,7 +470,8 @@ namespace Accord.Statistics.Analysis
         internal ReceiverOperatingCharacteristicPoint(double cutoff,
             int truePositives, int falseNegatives,
             int falsePositives, int trueNegatives)
-            : base(truePositives, falseNegatives, falsePositives, trueNegatives)
+            : base(truePositives: truePositives, falseNegatives: falseNegatives,
+                   falsePositives: falsePositives, trueNegatives: trueNegatives)
         {
             this.cutoff = cutoff;
         }
@@ -484,7 +509,6 @@ namespace Accord.Statistics.Analysis
             : base(points)
         {
         }
-
     }
 
 }

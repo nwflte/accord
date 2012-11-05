@@ -230,6 +230,28 @@ namespace Accord.Statistics.Kernels
         /// 
         /// <param name="inputs">The data set.</param>
         /// <param name="samples">The number of random samples to analyze.</param>
+        /// 
+        /// <returns>A Gaussian kernel initialized with an appropriate sigma value.</returns>
+        /// 
+        public static Gaussian Estimate(double[][] inputs, int samples)
+        {
+            DoubleRange range;
+            return Estimate(inputs, samples, out range);
+        }
+
+        /// <summary>
+        ///   Estimates appropriate values for sigma given a data set.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   This method uses a simple heuristic to obtain appropriate values
+        ///   for sigma in a radial basis function kernel. The heristic is shown
+        ///   by Caputo, Sim, Furesjo and Smola, "Appearance-based object
+        ///   recognition using SVMs: which kernel should I use?", 2002.
+        /// </remarks>
+        /// 
+        /// <param name="inputs">The data set.</param>
+        /// <param name="samples">The number of random samples to analyze.</param>
         /// <param name="range">The range of suitable values for sigma.</param>
         /// 
         /// <returns>A Gaussian kernel initialized with an appropriate sigma value.</returns>

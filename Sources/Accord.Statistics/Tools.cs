@@ -1574,12 +1574,16 @@ namespace Accord.Statistics
         /// 
         /// <param name="matrix">A matrix whose deviations will be calculated.</param>
         /// <param name="means">The mean vector containing already calculated means for each column of the matix.</param>
-        /// 
+        /// <param name="unbiased">
+        ///   True to compute the unbiased estimate of the population standard
+        ///   deviation, false for the sample deviation. Default is true
+        ///   (compute the unbiased estimator).</param>
+        ///   
         /// <returns>Returns a vector containing the standard deviations of the given matrix.</returns>
         /// 
-        public static double[] StandardDeviation(this double[][] matrix, double[] means)
+        public static double[] StandardDeviation(this double[][] matrix, double[] means, bool unbiased = true)
         {
-            return Matrix.Sqrt(Variance(matrix, means));
+            return Matrix.Sqrt(Variance(matrix, means, unbiased));
         }
 
         /// <summary>
@@ -1587,12 +1591,16 @@ namespace Accord.Statistics
         /// </summary>
         /// 
         /// <param name="matrix">A matrix whose deviations will be calculated.</param>
+        /// <param name="unbiased">
+        ///   True to compute the unbiased estimate of the population standard
+        ///   deviation, false for the sample deviation. Default is true
+        ///   (compute the unbiased estimator).</param>
         /// 
         /// <returns>Returns a vector containing the standard deviations of the given matrix.</returns>
         /// 
-        public static double[] StandardDeviation(this double[][] matrix)
+        public static double[] StandardDeviation(this double[][] matrix, bool unbiased = true)
         {
-            return StandardDeviation(matrix, Mean(matrix));
+            return StandardDeviation(matrix, Mean(matrix), unbiased);
         }
 
 
@@ -1687,10 +1695,14 @@ namespace Accord.Statistics
         /// 
         /// <param name="matrix">A matrix whose variances will be calculated.</param>
         /// <param name="means">The mean vector containing already calculated means for each column of the matix.</param>
-        /// 
+        /// <param name="unbiased">
+        ///   True to compute the unbiased estimate of the population
+        ///   variance, false for the sample variance. Default is true
+        ///   (compute the unbiased estimator).</param>
+        ///   
         /// <returns>Returns a vector containing the variances of the given matrix.</returns>
         /// 
-        public static double[] Variance(this double[][] matrix, double[] means)
+        public static double[] Variance(this double[][] matrix, double[] means, bool unbiased = true)
         {
             int rows = matrix.Length;
             if (rows == 0) return new double[0];
@@ -1714,8 +1726,16 @@ namespace Accord.Statistics
                     sum2 += x * x;
                 }
 
-                // calculate the variance
-                variance[j] = (sum2 - ((sum1 * sum1) / N)) / (N - 1);
+                if (unbiased)
+                {
+                    // calculate the population variance
+                    variance[j] = (sum2 - ((sum1 * sum1) / N)) / (N - 1);
+                }
+                else
+                {
+                    // calculate the sample variance
+                    variance[j] = (sum2 - ((sum1 * sum1) / N)) / N;
+                }
             }
 
             return variance;
@@ -2962,7 +2982,8 @@ namespace Accord.Statistics
 
             for (int i = 0; i < rows; i++)
                 for (int j = 0; j < cols; j++)
-                    result[i, j] = matrix[i, j] / standardDeviations[j];
+                    if (standardDeviations[j] != 0 && !Double.IsNaN(standardDeviations[j]))
+                        result[i, j] = matrix[i, j] / standardDeviations[j];
 
             return result;
         }
@@ -3008,7 +3029,8 @@ namespace Accord.Statistics
                 double[] resultRow = result[i];
                 double[] sourceRow = matrix[i];
                 for (int j = 0; j < resultRow.Length; j++)
-                    resultRow[j] = sourceRow[i] / standardDeviations[j];
+                    if (standardDeviations[j] != 0 && !Double.IsNaN(standardDeviations[j]))
+                        resultRow[j] = sourceRow[j] / standardDeviations[j];
             }
 
             return result;
@@ -3371,6 +3393,7 @@ namespace Accord.Statistics
         /// <summary>
         ///   Gets the coefficient of determination, as known as the R-Squared (R²)
         /// </summary>
+        /// 
         /// <remarks>
         ///    The coefficient of determination is used in the context of statistical models
         ///    whose main purpose is the prediction of future outcomes on the basis of other
@@ -3382,23 +3405,23 @@ namespace Accord.Statistics
         ///    regression approximates the real data points. An R^2 of 1.0 indicates that the
         ///    regression perfectly fits the data.
         /// </remarks>
+        /// 
         public static double Determination(double[] actual, double[] expected)
         {
             // R-squared = 100 * SS(regression) / SS(total)
 
-            int N = actual.Length;
             double SSe = 0.0;
             double SSt = 0.0;
             double avg = 0.0;
             double d;
 
             // Calculate expected output mean
-            for (int i = 0; i < N; i++)
+            for (int i = 0; i < expected.Length; i++)
                 avg += expected[i];
-            avg /= N;
+            avg /= expected.Length;
 
             // Calculate SSe and SSt
-            for (int i = 0; i < N; i++)
+            for (int i = 0; i < expected.Length; i++)
             {
                 d = expected[i] - actual[i];
                 SSe += d * d;
@@ -3624,7 +3647,7 @@ namespace Accord.Statistics
         }
 
 
-      
+
 
         /// <summary>
         ///   Gets the number of distinct values 

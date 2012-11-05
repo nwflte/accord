@@ -154,6 +154,36 @@ namespace Accord.Statistics.Testing
             }
         }
 
+        /// <summary>
+        ///   Creates a new Kappa test.
+        /// </summary>
+        /// 
+        /// <param name="matrix">The contingency table to test.</param>
+        /// <param name="alternate">The alternative hypothesis (research hypothesis) to test. If the
+        /// hypothesized kappa is left unspecified, a one-tailed test will be used. Otherwise, the 
+        /// default is to use a two-sided test.</param>
+        /// <param name="hypothesizedWeightedKappa">The hypothesized value for the Kappa statistic. If the test
+        /// is being used to assert independency between two raters (i.e. testing the null hypothesis
+        /// that the underlying Kappa is zero), then the <see cref="AsymptoticKappaVariance(GeneralConfusionMatrix)">
+        /// standard error will be computed with the null hypothesis parameter set to true</see>.</param>
+        /// 
+        public KappaTest(WeightedConfusionMatrix matrix, double hypothesizedWeightedKappa,
+            OneSampleHypothesis alternate = OneSampleHypothesis.ValueIsDifferentFromHypothesis)
+        {
+            if (hypothesizedWeightedKappa == 0)
+            {
+                // Use the null hypothesis variance
+                Compute(matrix.WeightedKappa, hypothesizedWeightedKappa, matrix.WeightedStandardErrorUnderNull, alternate);
+                Variance = matrix.WeightedVarianceUnderNull;
+            }
+            else
+            {
+                // Use the default variance
+                Compute(matrix.WeightedKappa, hypothesizedWeightedKappa, matrix.WeightedStandardError, alternate);
+                Variance = matrix.WeightedVariance;
+            }
+        }
+
 
         /// <summary>
         ///   Compute Cohen's Kappa variance using the large sample approximation
@@ -317,11 +347,82 @@ namespace Accord.Statistics.Testing
                 stdDev = (1.0 / ((1.0 - Pe) * Math.Sqrt(n))) * Math.Sqrt(Pe + Pe * Pe - sum);
             }
 
+            System.Diagnostics.Debug.Assert(!(Math.Abs(variance - stdDev * stdDev) > 1e-10 * variance));
 
-#if DEBUG
-            if (Math.Abs(variance - stdDev * stdDev) > 1e-10 * variance)
-                throw new Exception();
-#endif
+            return variance;
+        }
+
+        /// <summary>
+        ///   Computes the asymptotic variance for Fleiss's Kappa variance using the formulae
+        ///   by (Fleiss et al, 1969). If <paramref name="nullHypothesis"/> is set to true, the
+        ///   method will return the variance under the null hypothesis.
+        /// </summary>
+        /// 
+        /// <param name="matrix">A <see cref="GeneralConfusionMatrix"/> representing the ratings.</param>
+        /// <param name="stdDev">Kappa's standard deviation.</param>
+        /// <param name="nullHypothesis">True to compute Kappa's variance when the null hypothesis
+        /// is true (i.e. that the underlying kappa is zer). False otherwise. Default is false.</param>
+        /// 
+        /// <returns>Kappa's variance.</returns>
+        /// 
+        public static double AsymptoticKappaVariance(WeightedConfusionMatrix matrix, out double stdDev,
+            bool nullHypothesis = false)
+        {
+            double n = matrix.Samples;
+            double k = matrix.Kappa;
+
+            double[,] p = matrix.ProportionMatrix;
+            double[,] w = matrix.Weights;
+
+            double[] pj = matrix.ColumnProportions;
+            double[] pi = matrix.RowProportions;
+            double[] wi = matrix.WeightedColumnProportions;
+            double[] wj = matrix.WeightedRowProportions;
+
+            double Po = matrix.WeightedOverallAgreement;
+            double Pc = matrix.WeightedChanceAgreement;
+
+            double variance;
+
+
+            if (!nullHypothesis)
+            {
+                // References: Statistical Methods for Rates and Proportions, pg 610.
+                double a = 0;
+                for (int i = 0; i < pi.Length; i++)
+                {
+                    for (int j = 0; j < pj.Length; j++)
+                    {
+                        double t = w[i, j] * (1.0 - Pc) - (wi[i] + wj[j]) * (1.0 - Po);
+                        a += p[i, j] * (t * t);
+                    }
+                }
+
+                double b = (Po * Pc - 2 * Pc + Po) * (Po * Pc - 2 * Pc + Po);
+                double c = (1.0 - Pc) * (1.0 - Pc);
+
+                stdDev = (a - b) / (c * Math.Sqrt(n));
+                variance = (a - b) / (c * c * n);
+            }
+            else
+            {
+                double a = 0;
+                for (int i = 0; i < pi.Length; i++)
+                {
+                    for (int j = 0; j < pj.Length; j++)
+                    {
+                        double t = w[i, j] - (wj[i] + wi[j]);
+                        a += pj[i] * pi[j] * t * t;
+                    }
+                }
+
+                double b = (Pc * Pc);
+                double c = (1.0 - Pc);
+
+                stdDev = (a - b) / (c * Math.Sqrt(n));
+                variance = (a - b) / (c * c *n );
+            }
+
 
             return variance;
         }
