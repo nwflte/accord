@@ -232,7 +232,7 @@ namespace Accord.Tests.Statistics.Models.Fields
         {
             var model = CreateModel1();
 
-            var target = new MultivariateNormalMarkovClassifierFunction(model);
+            var target = new MarkovMultivariateFunction(model);
 
             var features = target.Features;
             double[] weights = target.Weights;
@@ -273,7 +273,7 @@ namespace Accord.Tests.Statistics.Models.Fields
         {
             var model = CreateModel2();
 
-            var target = new MultivariateNormalMarkovClassifierFunction(model);
+            var target = new MarkovMultivariateFunction(model);
 
             var features = target.Features;
             double[] weights = target.Weights;
@@ -315,7 +315,7 @@ namespace Accord.Tests.Statistics.Models.Fields
         {
             var model = CreateModel1();
 
-            var target = new MultivariateNormalMarkovClassifierFunction(model);
+            var target = new MarkovMultivariateFunction(model);
 
             double actual;
             double expected;
@@ -355,7 +355,7 @@ namespace Accord.Tests.Statistics.Models.Fields
         {
             var model = CreateModel2();
 
-            var target = new MultivariateNormalMarkovClassifierFunction(model);
+            var target = new MarkovMultivariateFunction(model);
 
             double actual;
             double expected;
@@ -397,7 +397,7 @@ namespace Accord.Tests.Statistics.Models.Fields
         {
             var model = CreateModel3(priors: false);
 
-            var target = new MultivariateNormalMarkovClassifierFunction(model, includeClassFeatures: false);
+            var target = new MarkovMultivariateFunction(model, includePriors: false);
 
             double actual;
             double expected;
@@ -446,7 +446,7 @@ namespace Accord.Tests.Statistics.Models.Fields
         {
             var model = CreateModel3();
 
-            var target = new MultivariateNormalMarkovClassifierFunction(model);
+            var target = new MarkovMultivariateFunction(model);
 
             double actual;
             double expected;
@@ -495,7 +495,7 @@ namespace Accord.Tests.Statistics.Models.Fields
         {
             var model = CreateModel3(states: 7);
 
-            var target = new MultivariateNormalMarkovClassifierFunction(model);
+            var target = new MarkovMultivariateFunction(model);
 
             double actual;
             double expected;

@@ -78,6 +78,7 @@ namespace Accord.Tests.Neuro
         #endregion
 
 
+#if NET35
         [TestMethod()]
         public void RunEpochTest1()
         {
@@ -118,8 +119,7 @@ namespace Accord.Tests.Neuro
                 Assert.IsFalse(Double.IsNaN(actual));
             }
         }
-
-
+#endif
 
 
     }

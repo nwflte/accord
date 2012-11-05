@@ -80,6 +80,73 @@ namespace Accord.Tests.MachineLearning
 
 
         [TestMethod()]
+        public void SplittingsTest()
+        {
+
+            int[] folds = CrossValidation.Splittings(100, 10);
+
+            for (int i = 0; i < 10; i++)
+            {
+                int actual = folds.Count(x => x == i);
+                int expected = 10;
+
+                Assert.AreEqual(expected, actual);
+            }
+        }
+
+        [TestMethod()]
+        public void FittingTest()
+        {
+
+            int[] folds = CrossValidation.Splittings(100, 10);
+
+            int[] samples = Matrix.Indices(0, 100);
+
+            CrossValidation val = new CrossValidation(folds, 10);
+
+            val.RunInParallel = false;
+
+            int current = 0;
+            val.Fitting = (k, trainingSamples, validationSamples) =>
+            {
+                Assert.AreEqual(current, k);
+                Assert.AreEqual(90, trainingSamples.Length);
+                Assert.AreEqual(10, validationSamples.Length);
+
+                int[] trainingSet = samples.Submatrix(trainingSamples);
+                int[] validationSet = samples.Submatrix(validationSamples);
+
+                for (int i = 0; i < trainingSet.Length; i++)
+                    Assert.AreEqual(samples[trainingSamples[i]], trainingSet[i]);
+
+                for (int i = 0; i < validationSet.Length; i++)
+                    Assert.AreEqual(samples[validationSamples[i]], validationSet[i]);
+
+                current++;
+
+                return new CrossValidationValues<object>(new object(), k, 2 * k);
+            };
+
+            var result = val.Compute();
+
+            Assert.AreEqual(10, current);
+            Assert.AreEqual(4.5, result.Training.Mean);
+            Assert.AreEqual(9.0, result.Validation.Mean);
+            Assert.AreEqual(
+                2 * result.Training.StandardDeviation,      
+                result.Validation.StandardDeviation);
+
+            Assert.AreEqual(val.Folds.Length, result.Training.Sizes.Length);
+            Assert.AreEqual(val.Folds.Length, result.Validation.Sizes.Length);
+
+            for (int i = 0; i < result.Training.Sizes.Length; i++)
+                Assert.AreEqual(90, result.Training.Sizes[i]);
+
+            for (int i = 0; i < result.Validation.Sizes.Length; i++)
+                Assert.AreEqual(10, result.Validation.Sizes[i]);
+        }
+
+        [TestMethod()]
         public void CrossvalidationConstructorTest()
         {
 

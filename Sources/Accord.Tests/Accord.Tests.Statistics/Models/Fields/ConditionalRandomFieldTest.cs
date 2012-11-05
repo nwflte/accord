@@ -111,7 +111,7 @@ namespace Accord.Tests.Statistics.Models.Fields
             HiddenMarkovModel hmm = createHMM();
 
             int states = 2;
-            var function = new DiscreteMarkovModelFunction(hmm);
+            var function = new MarkovDiscreteFunction(hmm);
             var target = new ConditionalRandomField<int>(states, function);
 
 
@@ -128,7 +128,7 @@ namespace Accord.Tests.Statistics.Models.Fields
             int states = hmm.States;
 
 
-            var function = new DiscreteMarkovModelFunction(hmm);
+            var function = new MarkovDiscreteFunction(hmm);
             var target = new ConditionalRandomField<int>(states, function);
             double p1, p2;
 
@@ -159,10 +159,10 @@ namespace Accord.Tests.Statistics.Models.Fields
             int symbols = hmm.Symbols;
 
 
-            var function1 = new DiscreteMarkovModelFunction(hmm);
+            var function1 = new MarkovDiscreteFunction(hmm);
             var target1 = new ConditionalRandomField<int>(states, function1);
 
-            var function2 = new DiscreteMarkovModelFunction(states, symbols);
+            var function2 = new MarkovDiscreteFunction(states, symbols);
             var target2 = new ConditionalRandomField<int>(states, function2);
 
 

@@ -20,18 +20,13 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Vision.Detection.Cascades;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Accord.Vision.Detection;
-using System.IO;
 namespace Accord.Tests.Vision
 {
+    using Accord.Vision.Detection.Cascades;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Accord.Vision.Detection;
+    using System.IO;
 
-
-    /// <summary>
-    ///This is a test class for NoseHaarCascadeTest and is intended
-    ///to contain all NoseHaarCascadeTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class NoseHaarCascadeTest
     {
@@ -39,10 +34,6 @@ namespace Accord.Tests.Vision
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -86,9 +77,6 @@ namespace Accord.Tests.Vision
         #endregion
 
 
-        /// <summary>
-        ///A test for NoseHaarCascade Constructor
-        ///</summary>
         [TestMethod()]
         public void NoseHaarCascadeConstructorTest()
         {
@@ -133,7 +121,8 @@ namespace Accord.Tests.Vision
                         Assert.AreEqual(eNode.LeftValue, aNode.LeftValue);
                         Assert.AreEqual(eNode.RightNodeIndex, aNode.RightNodeIndex);
                         Assert.AreEqual(eNode.RightValue, aNode.RightValue, 1e-16);
-                        Assert.AreEqual(eNode.Threshold, aNode.Threshold);
+                        Assert.AreEqual(eNode.Threshold, aNode.Threshold, 1e-16);
+                        Assert.IsFalse(double.IsNaN(aNode.Threshold));
 
                         Assert.AreEqual(eNode.Feature.Tilted, aNode.Feature.Tilted);
                         Assert.AreEqual(eNode.Feature.Rectangles.Length, aNode.Feature.Rectangles.Length);
@@ -144,12 +133,16 @@ namespace Accord.Tests.Vision
                             var eRect = eNode.Feature.Rectangles[l];
 
                             Assert.AreNotEqual(eRect, aRect);
-                            Assert.AreEqual(eRect.Area, aRect.Area);
-                            Assert.AreEqual(eRect.Height, aRect.Height);
-                            Assert.AreEqual(eRect.Weight, aRect.Weight);
-                            Assert.AreEqual(eRect.Width, aRect.Width);
+                            Assert.AreEqual(eRect.Area, aRect.Area, 1e-16);
+                            Assert.AreEqual(eRect.Height, aRect.Height, 1e-16);
+                            Assert.AreEqual(eRect.Weight, aRect.Weight, 1e-16);
+                            Assert.AreEqual(eRect.Width, aRect.Width, 1e-16);
                             Assert.AreEqual(eRect.X, aRect.X);
                             Assert.AreEqual(eRect.Y, aRect.Y);
+
+                            Assert.IsFalse(double.IsNaN(aRect.Height));
+                            Assert.IsFalse(double.IsNaN(aRect.Width));
+                            Assert.IsFalse(double.IsNaN(aRect.Area));
                         }
                     }
                 }

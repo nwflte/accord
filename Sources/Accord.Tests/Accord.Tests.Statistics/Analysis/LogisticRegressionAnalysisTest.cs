@@ -128,7 +128,9 @@ namespace Accord.Tests.Statistics
             foreach (var coefficient in target.Coefficients)
                 Assert.IsFalse(double.IsNaN(coefficient.Value));
 
-            Assert.AreEqual(0, target.Regression.Compute(testInput));
+            double output = target.Regression.Compute(testInput);
+            Assert.AreEqual(0, output, 1e-10);
+            Assert.IsFalse(double.IsNaN(output));
 
             // Test instance 02
             trainInput = new double[][]

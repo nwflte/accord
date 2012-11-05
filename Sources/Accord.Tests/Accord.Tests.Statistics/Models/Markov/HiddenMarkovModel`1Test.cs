@@ -323,6 +323,83 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(path[2], 0);
         }
 
+        [TestMethod()]
+        public void DecodeTest3()
+        {
+            double[,] transitions = 
+            {  
+                { 0.7, 0.3 },
+                { 0.4, 0.6 }
+            };
+
+            double[,] emissions = 
+            {  
+                { 0.1, 0.4, 0.5 },
+                { 0.6, 0.3, 0.1 }
+            };
+
+            double[] initial = { 0.6, 0.4 };
+
+            var hmm = HiddenMarkovModel.CreateGeneric(transitions, emissions, initial);
+
+            bool thrown = false;
+            try
+            {
+                double logLikelihood;
+                int[] path = hmm.Decode(new double[][]
+                {
+                    new double[] { 0, 1, 2 },
+                    new double[] { 0, 1, 2 },
+                }, out logLikelihood);
+            }
+            catch
+            {
+                thrown = true;
+            }
+
+            Assert.IsTrue(thrown);
+        }
+
+        [TestMethod()]
+        public void DecodeTest4()
+        {
+            var density = new MultivariateNormalDistribution(3);
+
+            var hmm = new HiddenMarkovModel<MultivariateNormalDistribution>(2, density);
+
+            bool thrown = false;
+            try
+            {
+                double logLikelihood;
+                int[] path = hmm.Decode(new double[] { 0, 1, 2 }, out logLikelihood);
+            }
+            catch
+            {
+                thrown = true;
+            }
+
+            Assert.IsTrue(thrown);
+        }
+
+        [TestMethod()]
+        public void DecodeTest5()
+        {
+            var density = new MultivariateNormalDistribution(3);
+
+            var hmm = new HiddenMarkovModel<MultivariateNormalDistribution>(2, density);
+
+
+            double logLikelihood;
+            int[] path = hmm.Decode(new double[][]
+                {
+                    new double[] { 0, 1, 2 },
+                    new double[] { 0, 1, 2 },
+                }, out logLikelihood);
+
+            Assert.AreEqual(-11.206778379787982, logLikelihood);
+        }
+
+
 
         [TestMethod()]
         public void LearnTest5()
@@ -882,18 +959,18 @@ namespace Accord.Tests.Statistics
             double logLikelihood = teacher.Run(sequences);
 
             // See the likelihood of the sequences learned
-            double a1 = Math.Exp(model.Evaluate(new [] { 
+            double a1 = Math.Exp(model.Evaluate(new[] { 
                 new double[] { 1, 2 }, 
                 new double[] { 6, 7 },
                 new double[] { 2, 3 }})); // 0.000208
 
-            double a2 = Math.Exp(model.Evaluate(new [] { 
+            double a2 = Math.Exp(model.Evaluate(new[] { 
                 new double[] { 2, 2 }, 
                 new double[] { 9, 8  },
                 new double[] { 1, 0 }})); // 0.0000376
 
             // See the likelihood of an unrelated sequence
-            double a3 = Math.Exp(model.Evaluate(new [] { 
+            double a3 = Math.Exp(model.Evaluate(new[] { 
                 new double[] { 8, 7 }, 
                 new double[] { 9, 8  },
                 new double[] { 1, 0 }})); // 2.10 x 10^(-89)
@@ -903,7 +980,156 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(2.1031924118199194E-89, a3);
         }
 
+        [TestMethod()]
+        public void LearnTest11()
+        {
 
+            // Suppose we have a set of six sequences and we would like to
+            // fit a hidden Markov model with mixtures of Normal distributions
+            // as the emission densities. 
+
+            // First, let's consider a set of univariate sequences:
+            double[][] sequences =
+            {
+                new double[] { 1, 1, 2, 2, 2, 3, 3, 3 },
+                new double[] { 1, 2, 2, 2, 3, 3 },
+                new double[] { 1, 2, 2, 3, 3, 5 },
+                new double[] { 2, 2, 2, 2, 3, 3, 3, 4, 5, 5, 1 },
+                new double[] { 1, 1, 1, 2, 2, 5 },
+                new double[] { 1, 2, 2, 4, 4, 5 },
+            };
+
+
+            // Now we can begin specifing a initial Gaussian mixture distribution. It is
+            // better to add some different initial parameters to the mixture components:
+            var density = new Mixture<NormalDistribution>(
+                new NormalDistribution(mean: 2, stdDev: 1.0), // 1st component in the mixture
+                new NormalDistribution(mean: 0, stdDev: 0.6), // 2nd component in the mixture
+                new NormalDistribution(mean: 4, stdDev: 0.4), // 3rd component in the mixture
+                new NormalDistribution(mean: 6, stdDev: 1.1)  // 4th component in the mixture
+            );
+
+            // Let's then create a continuous hidden Markov Model with two states organized in a forward
+            //  topology with the underlying univariate Normal mixture distribution as probability density.
+            var model = new HiddenMarkovModel<Mixture<NormalDistribution>>(new Forward(2), density);
+
+            // Now we should configure the learning algorithms to train the sequence classifier. We will
+            // learn until the difference in the average log-likelihood changes only by as little as 0.0001
+            var teacher = new BaumWelchLearning<Mixture<NormalDistribution>>(model)
+            {
+                Tolerance = 0.0001,
+                Iterations = 0,
+
+                // Note, however, that since this example is extremely simple and we have only a few
+                // data points, a full-blown mixture wouldn't really be needed. Thus we will have a
+                // great chance that the mixture would become degenerated quickly. We can avoid this
+                // by specifying some regularization constants in the Normal distribution fitting:
+
+                FittingOptions = new MixtureOptions()
+                {
+                    Iterations = 1, // limit the inner e-m to a single iteration
+
+                    InnerOptions = new NormalOptions()
+                    {
+                        Regularization = 1e-5 // specify a regularization constant
+                    }
+                }
+            };
+
+            // Finally, we can fit the model
+            double logLikelihood = teacher.Run(sequences);
+
+            // And now check the likelihood of some approximate sequences.
+            double a1 = Math.Exp(model.Evaluate(new double[] { 1, 1, 2, 2, 3 })); // 2.3413833128741038E+45
+            double a2 = Math.Exp(model.Evaluate(new double[] { 1, 1, 2, 5, 5 })); // 9.94607618459872E+19
+
+            // We can see that the likelihood of an unrelated sequence is much smaller:
+            double a3 = Math.Exp(model.Evaluate(new double[] { 8, 2, 6, 4, 1 })); // 1.5063654166181737E-44
+
+            Assert.AreEqual(2.3413833128741038E+45, a1);
+            Assert.AreEqual(9.94607618459872E+19, a2);
+            Assert.AreEqual(1.5063654166181737E-44, a3);
+
+            Assert.IsFalse(Double.IsNaN(a1));
+            Assert.IsFalse(Double.IsNaN(a2));
+            Assert.IsFalse(Double.IsNaN(a3));
+        }
+
+        [TestMethod()]
+        public void LearnTest12()
+        {
+
+            // Suppose we have a set of six sequences and we would like to
+            // fit a hidden Markov model with mixtures of Normal distributions
+            // as the emission densities. 
+
+            // First, let's consider a set of univariate sequences:
+            double[][] sequences =
+            {
+                new double[] { -0.223, -1.05, -0.574, 0.965, -0.448, 0.265, 0.087, 0.362, 0.717, -0.032 },
+                new double[] { -1.05, -0.574, 0.965, -0.448, 0.265, 0.087, 0.362, 0.717, -0.032, -0.346 },
+                new double[] { -0.574, 0.965, -0.448, 0.265, 0.087, 0.362, 0.717, -0.032, -0.346, -0.989 },
+                new double[] { 0.965, -0.448, 0.265, 0.087, 0.362, 0.717, -0.032, -0.346, -0.989, -0.619 },
+                new double[] { -0.448, 0.265, 0.087, 0.362, 0.717, -0.032, -0.346, -0.989, -0.619, 0.02 },
+                new double[] { 0.265, 0.087, 0.362, 0.717, -0.032, -0.346, -0.989, -0.619, 0.02, -0.297 },
+            };
+
+
+            // Now we can begin specifing a initial Gaussian mixture distribution. It is
+            // better to add some different initial parameters to the mixture components:
+            var density = new Mixture<NormalDistribution>(
+                new NormalDistribution(mean: 2, stdDev: 1.0), // 1st component in the mixture
+                new NormalDistribution(mean: 0, stdDev: 0.6), // 2nd component in the mixture
+                new NormalDistribution(mean: 4, stdDev: 0.4), // 3rd component in the mixture
+                new NormalDistribution(mean: 6, stdDev: 1.1)  // 4th component in the mixture
+            );
+
+            // Let's then create a continuous hidden Markov Model with two states organized in a forward
+            //  topology with the underlying univariate Normal mixture distribution as probability density.
+            var model = new HiddenMarkovModel<Mixture<NormalDistribution>>(new Forward(2), density);
+
+            // Now we should configure the learning algorithms to train the sequence classifier. We will
+            // learn until the difference in the average log-likelihood changes only by as little as 0.0001
+            var teacher = new BaumWelchLearning<Mixture<NormalDistribution>>(model)
+            {
+                Tolerance = 0.0001,
+                Iterations = 0,
+
+                // Note, however, that since this example is extremely simple and we have only a few
+                // data points, a full-blown mixture wouldn't really be needed. Thus we will have a
+                // great chance that the mixture would become degenerated quickly. We can avoid this
+                // by specifying some regularization constants in the Normal distribution fitting:
+
+                FittingOptions = new MixtureOptions()
+                {
+                    Iterations = 1, // limit the inner e-m to a single iteration
+
+                    InnerOptions = new NormalOptions()
+                    {
+                        Regularization = 1e-5 // specify a regularization constant
+                    }
+                }
+            };
+
+            // Finally, we can fit the model
+            double logLikelihood = teacher.Run(sequences);
+
+            // And now check the likelihood of some approximate sequences.
+            double[] newSequence = { -0.223, -1.05, -0.574, 0.965, -0.448, 0.265, 0.087, 0.362, 0.717, -0.032 };
+            double a1 = Math.Exp(model.Evaluate(newSequence)); // 11729312967893.566
+
+            int[] path = model.Decode(newSequence);
+
+            // We can see that the likelihood of an unrelated sequence is much smaller:
+            double a3 = Math.Exp(model.Evaluate(new double[] { 8, 2, 6, 4, 1 })); // 0.0
+
+
+            Assert.AreEqual(11729312967893.566, a1);
+            Assert.AreEqual(0.0, a3);
+
+            Assert.IsFalse(Double.IsNaN(a1));
+            Assert.IsFalse(Double.IsNaN(a3));
+        }
 
         [TestMethod()]
         public void FittingOptionsTest()
@@ -1174,7 +1400,6 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(2, prediction);
         }
 
-
         [TestMethod()]
         public void GenerateTest()
         {
@@ -1211,6 +1436,6 @@ namespace Accord.Tests.Statistics
 
         }
 
-        
+
     }
 }

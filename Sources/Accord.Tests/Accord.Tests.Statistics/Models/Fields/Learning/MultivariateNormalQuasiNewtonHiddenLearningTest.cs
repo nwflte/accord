@@ -124,10 +124,10 @@ namespace Accord.Tests.Statistics
         public void RunTest()
         {
             var hmm = MultivariateNormalHiddenMarkovClassifierPotentialFunctionTest.CreateModel1();
-            var function = new MultivariateNormalMarkovClassifierFunction(hmm);
+            var function = new MarkovMultivariateFunction(hmm);
 
             var model = new HiddenConditionalRandomField<double[]>(function);
-            var target = new QuasiNewtonHiddenLearning<double[]>(model);
+            var target = new HiddenQuasiNewtonLearning<double[]>(model);
 
             var inputs = inputs1;
             var outputs = outputs1;
@@ -150,7 +150,7 @@ namespace Accord.Tests.Statistics
             Assert.IsFalse(double.IsNaN(llm));
             Assert.IsFalse(double.IsNaN(ll0));
 
-            double error = target.RunEpoch(inputs, outputs);
+            double error = target.Run(inputs, outputs);
             double ll1 = model.LogLikelihood(inputs, outputs);
             Assert.AreEqual(-ll1, error, 1e-10);
             Assert.IsFalse(double.IsNaN(ll1));
@@ -196,10 +196,10 @@ namespace Accord.Tests.Statistics
                 0, 0, 1
             };
 
-            var function = new MultivariateNormalMarkovClassifierFunction(hmm);
+            var function = new MarkovMultivariateFunction(hmm);
 
             var model = new HiddenConditionalRandomField<double[]>(function);
-            var target = new QuasiNewtonHiddenLearning<double[]>(model);
+            var target = new ForwardBackwardGradient<double[]>(model);
 
             FiniteDifferences diff = new FiniteDifferences(function.Weights.Length);
 
@@ -221,10 +221,10 @@ namespace Accord.Tests.Statistics
         public void GradientTest2()
         {
             var hmm = MultivariateNormalHiddenMarkovClassifierPotentialFunctionTest.CreateModel1();
-            var function = new MultivariateNormalMarkovClassifierFunction(hmm);
+            var function = new MarkovMultivariateFunction(hmm);
 
             var model = new HiddenConditionalRandomField<double[]>(function);
-            var target = new QuasiNewtonHiddenLearning<double[]>(model);
+            var target = new ForwardBackwardGradient<double[]>(model);
 
             var inputs = inputs1;
             var outputs = outputs1;
@@ -249,10 +249,10 @@ namespace Accord.Tests.Statistics
         public void GradientTest3()
         {
             var hmm = MultivariateNormalHiddenMarkovClassifierPotentialFunctionTest.CreateModel1();
-            var function = new MultivariateNormalMarkovClassifierFunction(hmm);
+            var function = new MarkovMultivariateFunction(hmm);
 
             var model = new HiddenConditionalRandomField<double[]>(function);
-            var target = new QuasiNewtonHiddenLearning<double[]>(model);
+            var target = new ForwardBackwardGradient<double[]>(model);
             target.Regularization = 2;
 
             var inputs = inputs1;

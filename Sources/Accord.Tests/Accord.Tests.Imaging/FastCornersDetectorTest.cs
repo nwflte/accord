@@ -20,24 +20,18 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Imaging;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using AForge.Imaging;
-using AForge;
-using System.Collections.Generic;
-using System.Drawing;
-using Accord.Controls;
-using System.Windows.Forms;
-using Accord.Imaging.Filters;
-
 namespace Accord.Tests.Imaging
 {
+    using Accord.Imaging;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using AForge.Imaging;
+    using AForge;
+    using System.Collections.Generic;
+    using System.Drawing;
+    using Accord.Controls;
+    using System.Windows.Forms;
+    using Accord.Imaging.Filters;
 
-
-    /// <summary>
-    ///This is a test class for HarrisCornersDetectorTest and is intended
-    ///to contain all HarrisCornersDetectorTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class FastCornersDetectorTest
     {
@@ -45,10 +39,6 @@ namespace Accord.Tests.Imaging
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -92,9 +82,6 @@ namespace Accord.Tests.Imaging
         #endregion
 
 
-        /// <summary>
-        ///A test for ProcessImage
-        ///</summary>
         [TestMethod()]
         public void ProcessImageTest()
         {
@@ -126,9 +113,6 @@ namespace Accord.Tests.Imaging
             Assert.AreEqual(137, actual[73].Y);
         }
 
-        /// <summary>
-        ///A test for ProcessImage
-        ///</summary>
         [TestMethod()]
         public void ProcessImageTest2()
         {

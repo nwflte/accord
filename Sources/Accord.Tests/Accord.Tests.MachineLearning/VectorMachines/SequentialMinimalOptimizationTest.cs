@@ -81,7 +81,7 @@ namespace Accord.Tests.MachineLearning
 
 
         [TestMethod()]
-        public void TrainTest()
+        public void Learnest()
         {
 
             double[][] inputs =
@@ -117,7 +117,7 @@ namespace Accord.Tests.MachineLearning
         }
 
         [TestMethod()]
-        public void TrainTest2()
+        public void LearnTest2()
         {
 
             double[][] inputs =
@@ -157,6 +157,131 @@ namespace Accord.Tests.MachineLearning
             }
 
 
+        }
+
+
+        [TestMethod()]
+        public void LearnTest3()
+        {
+
+            double[][] inputs =
+            {
+                new double[] { -1, -1 },
+                new double[] { -1,  1 },
+                new double[] {  1, -1 },
+                new double[] {  1,  1 }
+            };
+
+            int[] xor =
+            {
+                -1,
+                 1,
+                 1,
+                -1
+            };
+
+            // Create Kernel Support Vector Machine with a Polynomial Kernel of 2nd degree
+            KernelSupportVectorMachine machine = new KernelSupportVectorMachine(new Polynomial(2), inputs[0].Length);
+
+            // Create the sequential minimal optimization teacher
+            SequentialMinimalOptimization learn = new SequentialMinimalOptimization(machine, inputs, xor);
+
+            // Run the learning algorithm
+            learn.Run();
+
+
+            int[] output = inputs.Apply(p => Math.Sign(machine.Compute(p)));
+
+            for (int i = 0; i < output.Length; i++)
+                Assert.AreEqual(System.Math.Sign(xor[i]), System.Math.Sign(output[i]));
+        }
+
+        [TestMethod()]
+        public void LearnTest4()
+        {
+
+            double[][] inputs =
+            {
+                new double[] { -1, -1 },
+                new double[] { -1,  1 },
+                new double[] {  1, -1 },
+                new double[] {  1,  1 }
+            };
+
+            int[] negatives =
+            {
+                -1,
+                -1,
+                -1,
+                -1
+            };
+
+            // Create Kernel Support Vector Machine with a Polynomial Kernel of 2nd degree
+            SupportVectorMachine machine = new SupportVectorMachine(inputs[0].Length);
+
+            // Create the sequential minimal optimization teacher
+            SequentialMinimalOptimization learn = new SequentialMinimalOptimization(machine, inputs, negatives);
+            learn.Complexity = 1;
+
+            // Run the learning algorithm
+            double error = learn.Run();
+
+            Assert.AreEqual(0, error);
+
+
+            int[] output = inputs.Apply(p => (int)machine.Compute(p));
+
+            for (int i = 0; i < output.Length; i++)
+            {
+                bool sor = negatives[i] >= 0;
+                bool sou = output[i] >= 0;
+                Assert.AreEqual(sor, sou);
+            }
+
+
+        }
+
+        [TestMethod()]
+        public void LearnTest5()
+        {
+
+            double[][] inputs =
+            {
+                new double[] { -1, -1 },
+                new double[] { -1,  1 },
+                new double[] {  1, -1 },
+                new double[] {  1,  1 }
+            };
+
+            int[] positives =
+            {
+                1,
+                1,
+                1,
+                1
+            };
+
+            // Create Kernel Support Vector Machine with a Polynomial Kernel of 2nd degree
+            SupportVectorMachine machine = new SupportVectorMachine(inputs[0].Length);
+
+            // Create the sequential minimal optimization teacher
+            SequentialMinimalOptimization learn = new SequentialMinimalOptimization(machine, inputs, positives);
+            learn.Complexity = 1;
+
+            // Run the learning algorithm
+            double error = learn.Run();
+
+            Assert.AreEqual(0, error);
+
+
+            int[] output = inputs.Apply(p => (int)machine.Compute(p));
+
+            for (int i = 0; i < output.Length; i++)
+            {
+                bool sor = positives[i] >= 0;
+                bool sou = output[i] >= 0;
+                Assert.AreEqual(sor, sou);
+            }
         }
 
         [TestMethod()]

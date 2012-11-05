@@ -84,7 +84,7 @@ namespace Accord.Tests.Statistics.Models.Fields
         {
             var hmm = HiddenMarkovClassifierPotentialFunctionTest.CreateModel1();
 
-            IPotentialFunction<int> owner = new DiscreteMarkovClassifierFunction(hmm);
+            IPotentialFunction<int> owner = new MarkovDiscreteFunction(hmm);
 
             int[] x = new int[] { 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0 };
 
@@ -131,10 +131,10 @@ namespace Accord.Tests.Statistics.Models.Fields
         {
             var hmm = NormalHiddenMarkovClassifierPotentialFunctionTest.CreateModel1();
 
-            IPotentialFunction<double> owner = new NormalMarkovClassifierFunction(hmm);
+            IPotentialFunction<double> owner = new MarkovContinuousFunction(hmm);
 
 
-            double[] x = new double[] { 0, 1, 2, 1, 7, 2, 1, -2, 5, 3, 4 };
+            double[] x = new double[] { 0, 1, 2, 1, 7, 2, 1, 2, 5, 3, 4 };
 
             foreach (var factor in owner.Factors)
             {
@@ -178,7 +178,7 @@ namespace Accord.Tests.Statistics.Models.Fields
         {
             var hmm = MultivariateNormalHiddenMarkovClassifierPotentialFunctionTest.CreateModel1();
 
-            var owner = new MultivariateNormalMarkovClassifierFunction(hmm);
+            var owner = new MarkovMultivariateFunction(hmm);
 
 
             double[][] x = 

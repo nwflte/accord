@@ -86,10 +86,10 @@ namespace Accord.Tests.Statistics.Models.Fields
             var outputs = QuasiNewtonHiddenLearningTest.outputs;
 
             HiddenMarkovClassifier hmm = HiddenMarkovClassifierPotentialFunctionTest.CreateModel1();
-            var function = new DiscreteMarkovClassifierFunction(hmm);
+            var function = new MarkovDiscreteFunction(hmm);
 
             var model = new HiddenConditionalRandomField<int>(function);
-            var target = new GradientDescentHiddenLearning<int>(model);
+            var target = new HiddenGradientDescentLearning<int>(model);
             target.LearningRate = 1000;
 
             double[] actual = new double[inputs.Length];
@@ -138,10 +138,10 @@ namespace Accord.Tests.Statistics.Models.Fields
 
             Accord.Math.Tools.SetupGenerator(0);
 
-            var function = new DiscreteMarkovClassifierFunction(2, 2, 2);
+            var function = new MarkovDiscreteFunction(2, 2, 2);
 
             var model = new HiddenConditionalRandomField<int>(function);
-            var target = new GradientDescentHiddenLearning<int>(model);
+            var target = new HiddenGradientDescentLearning<int>(model);
 
             double[] actual = new double[inputs.Length];
             double[] expected = new double[inputs.Length];

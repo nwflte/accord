@@ -145,7 +145,7 @@ namespace Accord.Tests.Statistics.Models.Fields
         {
             HiddenMarkovClassifier model = CreateModel1();
 
-            DiscreteMarkovClassifierFunction target = new DiscreteMarkovClassifierFunction(model);
+            MarkovDiscreteFunction target = new MarkovDiscreteFunction(model);
 
             var features = target.Features;
             double[] weights = target.Weights;
@@ -178,7 +178,7 @@ namespace Accord.Tests.Statistics.Models.Fields
         {
             HiddenMarkovClassifier model = CreateModel1();
 
-            DiscreteMarkovClassifierFunction target = new DiscreteMarkovClassifierFunction(model);
+            MarkovDiscreteFunction target = new MarkovDiscreteFunction(model);
 
             double actual;
             double expected;

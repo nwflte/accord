@@ -20,18 +20,14 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics.Filters;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Data;
+
 
 namespace Accord.Tests.Statistics
 {
+    using Accord.Statistics.Filters;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System.Data;
 
-
-    /// <summary>
-    ///This is a test class for NormalizationFilterTest and is intended
-    ///to contain all NormalizationFilterTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class NormalizationFilterTest
     {
@@ -39,10 +35,6 @@ namespace Accord.Tests.Statistics
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -86,9 +78,6 @@ namespace Accord.Tests.Statistics
         #endregion
 
 
-        /// <summary>
-        ///A test for Apply
-        ///</summary>
         [TestMethod()]
         public void ApplyTest()
         {
@@ -129,5 +118,46 @@ namespace Accord.Tests.Statistics
 
             }
         }
+
+        [TestMethod()]
+        public void ApplyTest2()
+        {
+            string colName = "(test ['a'])";
+
+            DataTable input = new DataTable("Sample data");
+            input.Columns.Add(colName, typeof(double));
+            input.Rows.Add(-2);
+            input.Rows.Add(-1);
+            input.Rows.Add(0);
+            input.Rows.Add(1);
+            input.Rows.Add(2);
+
+            DataTable expected = new DataTable("Sample data");
+            expected.Columns.Add(colName, typeof(double));
+            expected.Rows.Add(-1.2649110640673518);
+            expected.Rows.Add(-0.63245553203367588);
+            expected.Rows.Add(0);
+            expected.Rows.Add(0.63245553203367588);
+            expected.Rows.Add(1.2649110640673518);
+
+
+
+            Normalization target = new Normalization(colName);
+
+            target.Detect(input);
+
+            DataTable actual = target.Apply(input);
+
+            for (int i = 0; i < actual.Rows.Count; i++)
+            {
+                double ex = (double)expected.Rows[i][0];
+
+                double ax = (double)actual.Rows[i][0];
+
+                Assert.AreEqual(ex, ax, 0.001);
+
+            }
+        }
+
     }
 }
