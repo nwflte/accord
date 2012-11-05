@@ -20,12 +20,14 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+
 namespace Accord.Math.Optimization
 {
     using System;
     using System.Collections.Generic;
     using System.Linq.Expressions;
 
+#if !NET35
     internal static class ExpressionParser
     {
         public static void Parse(SortedSet<string> list, Expression expr)
@@ -89,6 +91,7 @@ namespace Accord.Math.Optimization
         public static Expression Replace(ParameterExpression parameter,
             Expression expr, IDictionary<string, int> variables)
         {
+
             if (expr == null)
                 return null;
 
@@ -139,6 +142,7 @@ namespace Accord.Math.Optimization
                 return expr;
             }
         }
-
     }
+#endif
 }
+

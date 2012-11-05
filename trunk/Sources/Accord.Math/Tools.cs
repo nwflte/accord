@@ -25,6 +25,7 @@ namespace Accord.Math
     using System;
     using System.Collections.Generic;
     using AForge;
+    using System.Collections;
 
     /// <summary>
     ///   Set of mathematical tools.
@@ -600,7 +601,7 @@ namespace Accord.Math
     /// 
     /// <typeparam name="T">The type of objects to compare.</typeparam>
     /// 
-    public class CustomComparer<T> : IComparer<T>
+    public class CustomComparer<T> : IComparer<T>, IEqualityComparer<T>
     {
 
         private Func<T, T, int> comparer;
@@ -632,6 +633,36 @@ namespace Accord.Math
         {
             return comparer(x, y);
         }
+
+        /// <summary>
+        ///   Determines whether the specified objects are equal.
+        /// </summary>
+        /// 
+        /// <param name="x">The first object of type T to compare.</param>
+        /// <param name="y">The second object of type T to compare.</param>
+        /// 
+        /// <returns>true if the specified objects are equal; otherwise, false.</returns>
+        /// 
+        public bool Equals(T x, T y)
+        {
+            return comparer(x, y) == 0;
+        }
+
+        /// <summary>
+        ///   Returns a hash code for the given object.
+        /// </summary>
+        /// 
+        /// <param name="obj">The object.</param>
+        /// 
+        /// <returns>
+        ///   A hash code for the given object, suitable for use in
+        ///   hashing algorithms and data structures like a hash table. 
+        /// </returns>
+        /// 
+        public int GetHashCode(T obj)
+        {
+            return obj.GetHashCode();
+        }
     }
 
     /// <summary>
@@ -639,7 +670,7 @@ namespace Accord.Math
     ///   and comparison of absolute values.
     /// </summary>
     /// 
-    public class GeneralComparer : IComparer<double>
+    public class GeneralComparer : IComparer<double>, IComparer<int>
     {
         private bool absolute;
         private int direction = 1;
@@ -692,5 +723,22 @@ namespace Accord.Math
             else
                 return direction * (x.CompareTo(y));
         }
+
+        /// <summary>
+        ///   Compares two objects and returns a value indicating whether one is less than,
+        ///    equal to, or greater than the other.
+        /// </summary>
+        /// 
+        /// <param name="x">The first object to compare.</param>
+        /// <param name="y">The second object to compare.</param>
+        /// 
+        public int Compare(int x, int y)
+        {
+            if (absolute)
+                return direction * (System.Math.Abs(x).CompareTo(System.Math.Abs(y)));
+            else
+                return direction * (x.CompareTo(y));
+        }
+
     }
 }

@@ -96,7 +96,7 @@ namespace Accord.Math.Optimization
         /// </summary>
         /// 
         public double Tolerance { get; set; }
-
+#if !NET35
         /// <summary>
         ///   Constructs a new nonlinear constraint.
         /// </summary>
@@ -137,6 +137,7 @@ namespace Accord.Math.Optimization
                     "The length of the gradient vector must match the number of variables in the objective function.");
             }
         }
+#endif
 
         /// <summary>
         ///   Constructs a new nonlinear constraint.
