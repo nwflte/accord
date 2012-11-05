@@ -5,7 +5,8 @@
 
 :: Build compressed archive
 cd Archiver
-cmd /c Build.cmd
+cmd /c "Build (v4.0).cmd"
+cmd /c "Build (v3.5).cmd"
 cd ..
 
 echo.
