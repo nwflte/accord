@@ -44,9 +44,10 @@ namespace Accord.Statistics.Models.Markov.Learning
     /// <seealso cref="BaumWelchLearning{T}"/>
     /// </remarks>
     /// 
-    public abstract class BaseBaumWelchLearning : BaseIterativeLearning
+    public abstract class BaseBaumWelchLearning : IConvergenceLearning
     {
 
+        private AbsoluteConvergence convergence;
         private IHiddenMarkovModel model;
 
         /// <summary>
@@ -55,9 +56,45 @@ namespace Accord.Statistics.Models.Markov.Learning
         /// 
         protected BaseBaumWelchLearning(IHiddenMarkovModel model)
         {
+            this.convergence = new AbsoluteConvergence();
             this.model = model;
         }
 
+        /// <summary>
+        ///   Gets or sets the maximum change in the average log-likelihood
+        ///   after an iteration of the algorithm used to detect convergence.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   This is the likelihood convergence limit L between two iterations of the algorithm. The
+        ///   algorithm will stop when the change in the likelihood for two consecutive iterations
+        ///   has not changed by more than L percent of the likelihood. If left as zero, the
+        ///   algorithm will ignore this parameter and iterate over a number of fixed iterations
+        ///   specified by the previous parameter.
+        /// </remarks>
+        /// 
+        public double Tolerance
+        {
+            get { return convergence.Tolerance; }
+            set { convergence.Tolerance = value; }
+        }
+
+        /// <summary>
+        ///   Gets or sets the maximum number of iterations
+        ///   performed by the learning algorithm.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   This is the maximum number of iterations to be performed by the learning algorithm. If
+        ///   specified as zero, the algorithm will learn until convergence of the model average
+        ///   likelihood respecting the desired limit.
+        /// </remarks>
+        /// 
+        public int Iterations
+        {
+            get { return convergence.Iterations; }
+            set { convergence.Iterations = value; }
+        }
 
         /// <summary>
         ///   Gets the Ksi matrix of log probabilities created during
@@ -252,9 +289,12 @@ namespace Accord.Statistics.Models.Markov.Learning
                 // Average the likelihood for all sequences
                 newLogLikelihood /= observations.Length;
 
+                convergence.CurrentIteration = iteration;
+                convergence.OldValue = oldLogLikelihood;
+                convergence.NewValue = newLogLikelihood;
 
-                // Check if the model has converged or if we should stop
-                if (!HasConverged(oldLogLikelihood, newLogLikelihood, iteration))
+                // Check for convergence
+                if (!convergence.HasConverged)
                 {
                     // We haven't converged yet
 

@@ -28,6 +28,7 @@ namespace Accord.Statistics.Models.Markov
     using Accord.Statistics.Models.Markov.Topology;
     using Accord.Statistics.Models.Markov.Learning;
     using Accord.Statistics.Distributions.Univariate;
+    using System.Collections.Generic;
 
     /// <summary>
     ///   Discrete-density Hidden Markov Model Set for Sequence Classification.
@@ -50,7 +51,7 @@ namespace Accord.Statistics.Models.Markov
     /// 
     [Serializable]
     public class HiddenMarkovClassifier : BaseHiddenMarkovClassifier<HiddenMarkovModel>,
-        IHiddenMarkovClassifier
+        IEnumerable<HiddenMarkovModel>, IHiddenMarkovClassifier
     {
 
         /// <summary>
@@ -347,6 +348,7 @@ namespace Accord.Statistics.Models.Markov
         {
             return Load(new FileStream(path, FileMode.Open));
         }
+
 
     }
 }

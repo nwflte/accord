@@ -181,15 +181,8 @@ namespace Accord.Statistics.Models.Markov.Learning
                 for (int j = 0; j < states; j++)
                     model.Transitions[i, j] = Math.Log(transitions[i, j] / (double)transitionCount[i]);
 
-
-#if DEBUG
-            for (int i = 0; i < initial.Length; i++)
-                if (Double.IsNaN(model.Probabilities[i])) throw new Exception();
-
-            for (int i = 0; i < transitionCount.Length; i++)
-                for (int j = 0; j < states; j++)
-                    if (Double.IsNaN(model.Transitions[i, j])) throw new Exception();
-#endif
+            System.Diagnostics.Debug.Assert(!model.Probabilities.HasNaN());
+            System.Diagnostics.Debug.Assert(!model.Transitions.HasNaN());
 
 
             // 5. Compute log-likelihood

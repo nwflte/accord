@@ -28,6 +28,7 @@ namespace Accord.Statistics.Models.Markov
     using Accord.Statistics.Distributions;
     using Accord.Statistics.Models.Markov.Topology;
     using Accord.Statistics.Models.Markov.Learning;
+    using System.Collections.Generic;
 
     /// <summary>
     ///   Arbitrary-density Hidden Markov Model Set for Sequence Classification.
@@ -51,11 +52,20 @@ namespace Accord.Statistics.Models.Markov
     /// <seealso cref="HiddenMarkovClassifier"/>
     ///   
     [Serializable]
-    public class HiddenMarkovClassifier<TDistribution> :
-        BaseHiddenMarkovClassifier<HiddenMarkovModel<TDistribution>>,
-        IHiddenMarkovClassifier where TDistribution : IDistribution
+    public class HiddenMarkovClassifier<TDistribution> : BaseHiddenMarkovClassifier<HiddenMarkovModel<TDistribution>>,
+        IEnumerable<HiddenMarkovModel<TDistribution>>,  IHiddenMarkovClassifier where TDistribution : IDistribution
     {
 
+        /// <summary>
+        ///   Gets the number of dimensions of the 
+        ///   observations handled by this classifier.
+        /// </summary>
+        /// 
+        public int Dimension
+        {
+            get { return Models[0].Dimension; }
+        }
+    
         /// <summary>
         ///   Creates a new Sequence Classifier with the given number of classes.
         /// </summary>
@@ -133,12 +143,68 @@ namespace Accord.Statistics.Models.Markov
         ///   Creates a new Sequence Classifier with the given number of classes.
         /// </summary>
         /// 
+        /// <param name="classes">The number of classes in the classifier.</param>
+        /// <param name="topology">The topology of the hidden states. A forward-only topology
+        /// is indicated to sequence classification problems, such as speech recognition.</param>
+        /// <param name="initial">The initial probability distributions for the hidden states.
+        /// For multivariate continuous density distributions, such as Normal mixtures, the
+        /// choice of initial values is crucial for a good performance.</param>
+        /// 
+        public HiddenMarkovClassifier(int classes, ITopology[] topology, TDistribution initial)
+            : base(classes)
+        {
+            for (int i = 0; i < classes; i++)
+                Models[i] = new HiddenMarkovModel<TDistribution>(topology[i], initial);
+        }
+
+        /// <summary>
+        ///   Creates a new Sequence Classifier with the given number of classes.
+        /// </summary>
+        /// 
+        /// <param name="classes">The number of classes in the classifier.</param>
+        /// <param name="topology">The topology of the hidden states. A forward-only topology
+        /// is indicated to sequence classification problems, such as speech recognition.</param>
+        /// <param name="initial">The initial probability distributions for the hidden states.
+        /// For multivariate continuous density distributions, such as Normal mixtures, the
+        /// choice of initial values is crucial for a good performance.</param>
+        /// <param name="names">The class labels for each of the models.</param>
+        /// 
+        public HiddenMarkovClassifier(int classes, ITopology[] topology, TDistribution initial, string[] names)
+            : base(classes)
+        {
+            for (int i = 0; i < classes; i++)
+                Models[i] = new HiddenMarkovModel<TDistribution>(topology[i], initial) { Tag = names[i] };
+        }
+
+        /// <summary>
+        ///   Creates a new Sequence Classifier with the given number of classes.
+        /// </summary>
+        /// 
         /// <param name="models">
         ///   The models specializing in each of the classes of 
         ///   the classification problem.</param>
         /// 
         public HiddenMarkovClassifier(HiddenMarkovModel<TDistribution>[] models)
             : base(models) { }
+
+        /// <summary>
+        ///   Creates a new Sequence Classifier with the given number of classes.
+        /// </summary>
+        /// 
+        /// <param name="classes">The number of classes in the classifier.</param>
+        /// <param name="topology">The topology of the hidden states. A forward-only topology
+        /// is indicated to sequence classification problems, such as speech recognition.</param>
+        /// <param name="initial">The initial probability distributions for the hidden states.
+        /// For multivariate continuous density distributions, such as Normal mixtures, the
+        /// choice of initial values is crucial for a good performance.</param>
+        /// <param name="names">The class labels for each of the models.</param>
+        /// 
+        public HiddenMarkovClassifier(int classes, ITopology topology, TDistribution initial, string[] names)
+            : base(classes)
+        {
+            for (int i = 0; i < classes; i++)
+                Models[i] = new HiddenMarkovModel<TDistribution>(topology, initial) { Tag = names[i] };
+        }
 
 
         /// <summary>

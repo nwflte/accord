@@ -140,7 +140,7 @@ namespace Accord.Statistics.Models.Markov
     /// <seealso cref="HiddenMarkovModel">Discrete-density Hidden Markov Model</seealso>
     /// 
     [Serializable]
-    public class HiddenMarkovModel<TDistribution> : BaseHiddenMarkovModel, IHiddenMarkovModel
+    public class HiddenMarkovModel<TDistribution> : BaseHiddenMarkovModel, IHiddenMarkovModel, ICloneable
         where TDistribution : IDistribution
     {
 
@@ -342,13 +342,8 @@ namespace Accord.Statistics.Models.Markov
                 return new int[0];
             }
 
-            if (!(observations is double[][] || observations is double[]))
-                throw new ArgumentException("Argument should be either of type " +
-                    "double[] (for univariate observation) or double[][] (for " +
-                    "multivariate observation).", "observations");
-
-
-            double[][] x = convert(observations);
+            // Argument check
+            double[][] x = checkAndConvert(observations);
 
 
             // Viterbi-forward algorithm.
@@ -451,19 +446,15 @@ namespace Accord.Statistics.Models.Markov
             if (observations.Length == 0)
                 return Double.NegativeInfinity;
 
-            if (!(observations is double[][] || observations is double[]))
-                throw new ArgumentException("Argument should be either of type " +
-                    "double[] (for univariate observation) or double[][] (for " +
-                    "multivariate observation).", "observations");
+            
+            double[][] x = checkAndConvert(observations);
 
-
-            double[][] obs = convert(observations);
 
             // Forward algorithm
             double logLikelihood;
 
             // Compute forward probabilities
-            ForwardBackwardAlgorithm.LogForward(this, obs, out logLikelihood);
+            ForwardBackwardAlgorithm.LogForward(this, x, out logLikelihood);
 
             // Return the sequence probability
             return logLikelihood;
@@ -493,21 +484,17 @@ namespace Accord.Statistics.Models.Markov
             if (observations.Length == 0)
                 return Double.NegativeInfinity;
 
-            if (!(observations is double[][] || observations is double[]))
-                throw new ArgumentException("Argument should be either of type " +
-                    "double[] (for univariate observation) or double[][] (for " +
-                    "multivariate observation).", "observations");
-
-            double[][] obs = convert(observations);
+           
+            double[][] x = checkAndConvert(observations);
 
 
             double logLikelihood = Probabilities[path[0]]
-                + Emissions[path[0]].LogProbabilityFunction(obs[0]);
+                + Emissions[path[0]].LogProbabilityFunction(x[0]);
 
             for (int i = 1; i < observations.Length; i++)
             {
                 logLikelihood = Accord.Math.Special.LogSum(logLikelihood, Transitions[path[i - 1],
-                    path[i]] + Emissions[path[i]].LogProbabilityFunction(obs[i]));
+                    path[i]] + Emissions[path[i]].LogProbabilityFunction(x[i]));
             }
 
             // Return the sequence probability
@@ -525,6 +512,9 @@ namespace Accord.Statistics.Models.Markov
             if (!multivariate)
                 throw new ArgumentException("Model is univariate.", "observations");
 
+            if (observations == null)
+                throw new ArgumentNullException("observations");
+
             double logLikelihood;
             return Predict(observations, out logLikelihood);
         }
@@ -538,6 +528,10 @@ namespace Accord.Statistics.Models.Markov
             if (multivariate)
                 throw new ArgumentException("Model is multivariate.", "observations");
 
+            if (observations == null)
+                throw new ArgumentNullException("observations");
+
+
             double logLikelihood;
             return Predict(observations, out logLikelihood);
         }
@@ -550,6 +544,10 @@ namespace Accord.Statistics.Models.Markov
         {
             if (!multivariate)
                 throw new ArgumentException("Model is univariate.", "observations");
+
+            if (observations == null)
+                throw new ArgumentNullException("observations");
+
 
             // Matrix to store the probabilities in assuming the next
             // observations (prediction) will belong to each state.
@@ -570,8 +568,12 @@ namespace Accord.Statistics.Models.Markov
             if (multivariate)
                 throw new ArgumentException("Model is multivariate.", "observations");
 
+            if (observations == null)
+                throw new ArgumentNullException("observations");
+
+
             // Convert to multivariate observations
-            double[][] obs = convert(observations);
+            double[][] obs = convertNoCheck(observations);
 
             // Matrix to store the probabilities in assuming the next
             // observations (prediction) will belong to each state.
@@ -683,8 +685,12 @@ namespace Accord.Statistics.Models.Markov
             if (multivariate)
                 throw new ArgumentException("Model is multivariate.", "observations");
 
+            if (observations == null)
+                throw new ArgumentNullException("observations");
+
+
             // Convert to multivariate observations
-            double[][] obs = convert(observations);
+            double[][] obs = convertNoCheck(observations);
 
             // Matrix to store the probabilities in assuming the next
             // observations (prediction) will belong to each state.
@@ -828,7 +834,7 @@ namespace Accord.Statistics.Models.Markov
             where TUnivariate : DistributionBase, TDistribution, IUnivariateDistribution
         {
             // Convert to multivariate observations
-            double[][] obs = convert(observations);
+            double[][] obs = convertNoCheck(observations);
 
             // Matrix to store the probabilities in assuming the next
             // observations (prediction) will belong to each state.
@@ -935,7 +941,8 @@ namespace Accord.Statistics.Models.Markov
         ///   Converts a univariate or multivariate array
         ///   of observations into a two-dimensional jagged array.
         /// </summary>
-        private double[][] convert(Array array)
+        /// 
+        private double[][] convertNoCheck(Array array)
         {
             double[][] multivariate = array as double[][];
             if (multivariate != null) return multivariate;
@@ -945,7 +952,62 @@ namespace Accord.Statistics.Models.Markov
 
             throw new ArgumentException("Invalid array argument type.", "array");
         }
+
+        /// <summary>
+        ///   Converts a univariate or multivariate array
+        ///   of observations into a two-dimensional jagged array.
+        /// </summary>
+        /// 
+        private double[][] checkAndConvert(Array observations)
+        {
+            if (observations == null)
+                throw new ArgumentNullException("observations");
+
+            // Test if the observations are multivariate
+            double[][] multivariate = observations as double[][];
+            if (multivariate != null)
+            {
+                for (int i = 0; i < multivariate.Length; i++)
+                    if (multivariate[i].Length != Dimension)
+                        throw new DimensionMismatchException("observations", "This model expects observations of length " + Dimension);
+                return multivariate;
+            }
+
+            // Test if the observations are univariate
+            double[] univariate = observations as double[];
+            if (univariate != null)
+            {
+                if (Dimension != 1)
+                    throw new DimensionMismatchException("observations", "This model expects univariate observations");
+                return Accord.Math.Matrix.Split(univariate, Dimension);
+            }
+
+            // else
+            throw new ArgumentException("Argument should be either of type " +
+                    "double[] (for univariate observation) or double[][] (for " +
+                    "multivariate observation).", "observations");
+        }
         #endregion
 
+
+        /// <summary>
+        ///   Creates a new object that is a copy of the current instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A new object that is a copy of this instance.
+        /// </returns>
+        /// 
+        public object Clone()
+        {
+            double[,] A = (double[,])Transitions.Clone();
+            double[] pi = (double[])Probabilities.Clone();
+
+            TDistribution[] B = new TDistribution[Emissions.Length];
+            for (int i = 0; i < Emissions.Length; i++)
+                B[i] = (TDistribution)Emissions[i].Clone();
+
+            return new HiddenMarkovModel<TDistribution>(A, B, pi, logarithm: true);
+        }
     }
 }
