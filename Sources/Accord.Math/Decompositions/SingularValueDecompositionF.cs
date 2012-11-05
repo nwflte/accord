@@ -84,7 +84,7 @@ namespace Accord.Math.Decompositions
         ///
         public Single Threshold
         {
-            get { return Single.Epsilon * System.Math.Max(m, n) * s[0]; }
+            get { return Constants.SingleEpsilon * System.Math.Max(m, n) * s[0]; }
         }
 
         /// <summary>

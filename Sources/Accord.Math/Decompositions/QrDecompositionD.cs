@@ -46,7 +46,7 @@ namespace Accord.Math.Decompositions
     ///   This will fail if <see cref="FullRank"/> returns <see langword="false"/>.</para>  
     /// </remarks>
     /// 
-    public sealed class QrDecompositionD : ICloneable
+    public sealed class QrDecompositionD : ICloneable, ISolverMatrixDecomposition<decimal>
     {
         private decimal[,] qr;
         private decimal[] Rdiag;
