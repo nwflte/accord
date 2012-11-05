@@ -2,18 +2,18 @@
 
 [Setup]
 AppName=Accord.NET Framework
-AppVersion=2.7.1
-AppVerName=Accord.NET Framework 2.7.1
+AppVersion=2.8.0
+AppVerName=Accord.NET Framework 2.8.0
 AppPublisher=Accord.NET
 AppPublisherURL=http://accord.googlecode.com
 AppSupportURL=http://accord.googlecode.com
 AppUpdatesURL=http://accord.googlecode.com
 AppCopyright=Copyright (c) 2009-2012 Cesar Souza
-VersionInfoVersion=2.7.1
+VersionInfoVersion=2.8.0
 DefaultDirName={pf}\Accord.NET\Framework
 DefaultGroupName=Accord.NET\Framework
 AllowNoIcons=yes
-OutputBaseFilename=Accord.NET Framework-2.7.1
+OutputBaseFilename=Accord.NET Framework-2.8.0
 OutputDir=..\bin
 
 Compression=lzma2/ultra64
@@ -38,8 +38,8 @@ Source: "..\..\Release notes.txt"; DestDir: "{app}";           Components: libs
 Source: "..\..\Release\*";         DestDir: "{app}\Release";   Components: libs;                            Excludes: "*.~*,*.lastcodeanalysissucceeded,*.CodeAnalysisLog.xml,SlimDX.pdb"
 Source: "..\..\Release\GPL\*";     DestDir: "{app}\Release";   Components: libs/gpl; Flags: recursesubdirs; Excludes: "*.~*,*.lastcodeanalysissucceeded,*.CodeAnalysisLog.xml"
 Source: "..\..\Docs\*.chm";        DestDir: "{app}\Docs";      Components: docs;     Flags: skipifsourcedoesntexist; Excludes: "*.~*"
-Source: "..\..\Sources\*";         DestDir: "{app}\Sources";   Components: sources;  Flags: recursesubdirs; Excludes: "*.~*,\TestResults,*\bin,*\obj,*.sdf,*.suo,*.user,*.vsp,*.shfbproj_*"
-Source: "..\..\Samples\*";         DestDir: "{app}\Samples";   Components: samples;  Flags: recursesubdirs; Excludes: "*.~*,*\obj,*\bin\x64\,*\bin\Debug,*\bin\Release,*\bin\x86\Debug,*.pdb,*.user"
+Source: "..\..\Sources\*";         DestDir: "{app}\Sources";   Components: sources;  Flags: recursesubdirs; Excludes: "*.~*,\TestResults,*\bin,*\obj,*.sdf,*.suo,*.user,*.vsp,*.shfbproj_*,*.pidb"
+Source: "..\..\Samples\*";         DestDir: "{app}\Samples";   Components: samples;  Flags: recursesubdirs; Excludes: "*.~*,*\obj,*\bin\x64\,*\bin\Debug,*\bin\Release,*\bin\x86\Debug,*\bin\x86\Release 3.5,*.pdb,*.user,*.pidb"
 Source: "..\..\Setup\*";           DestDir: "{app}\Setup";     Components: sources;  Flags: recursesubdirs; Excludes: "\bin,\obj,*.user,*.vsp"
 Source: "..\..\Externals\*";       DestDir: "{app}\Externals"; Components: libs;     Flags: recursesubdirs; Excludes: "*.~*,*.pdb"
 

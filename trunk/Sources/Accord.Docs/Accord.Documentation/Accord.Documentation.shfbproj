@@ -8,7 +8,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{048acc63-3b91-4e14-b5a3-38e7898426fe}</ProjectGuid>
-    <SHFBSchemaVersion>1.9.3.0</SHFBSchemaVersion>
+    <SHFBSchemaVersion>1.9.5.0</SHFBSchemaVersion>
     <!-- AssemblyName, Name, and RootNamespace are not used by SHFB but Visual
          Studio adds them anyway -->
     <AssemblyName>Documentation</AssemblyName>
@@ -174,7 +174,7 @@
           <!-- Logo image file (optional).  Filename is required. The height,
                  width, altText, placement, and alignment attributes are
                  optional. -->
-          <logoFile filename="D:\Projects\Accord.NET\Sources\Accord.Docs\Accord.Documentation\Resources\Accord.NET.png" height="0" width="0" altText="" placement="right" alignment="left" />
+          <logoFile filename="D:\Projects\Accord.NET\Assembla\Sources\Accord.Docs\Accord.Documentation\Resources\Accord.NET.png" height="0" width="0" altText="" placement="right" alignment="left" />
         </component>
       </ComponentConfig>
       <ComponentConfig id="Code Block Component" enabled="True">
@@ -233,8 +233,8 @@
     <PresentationStyle>vs2010</PresentationStyle>
     <SyntaxFilters>CSharp</SyntaxFilters>
     <NamingMethod>MemberName</NamingMethod>
-    <HelpFileVersion>2.7.1.0</HelpFileVersion>
-    <FrameworkVersion>.NET 4.0.30319</FrameworkVersion>
+    <HelpFileVersion>2.8.0.0</HelpFileVersion>
+    <FrameworkVersion>.NET Framework 4.0</FrameworkVersion>
     <VisibleItems>Attributes, InheritedMembers, InheritedFrameworkMembers, Protected, SealedProtected</VisibleItems>
     <PlugInNamespaces>ms.vsipcc+, ms.vsexpresscc+</PlugInNamespaces>
     <CollectionTocStyle>Hierarchical</CollectionTocStyle>
@@ -250,7 +250,10 @@
           <toc minParts="2" insertBelow="False" />
         </configuration>
       </PlugInConfig>
-<PlugInConfig id="Bibliography Support" enabled="False"><configuration /></PlugInConfig></PlugInConfigurations>
+      <PlugInConfig id="Bibliography Support" enabled="False">
+        <configuration />
+      </PlugInConfig>
+    </PlugInConfigurations>
     <HeaderText>&amp;lt%3ba href=&amp;quot%3bhttp://accord.googlecode.com/svn/docs/Index.html&amp;quot%3b target=&amp;quot%3b_top&amp;quot%3b&amp;gt%3bShow table of contents %28goes to the online documentation index%29.&amp;lt%3b/a&amp;gt%3b&amp;lt%3bbr /&amp;gt%3b</HeaderText>
     <HelpAttributes />
     <IndentHtml>True</IndentHtml>
@@ -261,6 +264,9 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release 3.5' ">
+    <OutputPath>bin\Release 3.5\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="images\" />
@@ -276,71 +282,71 @@
       <CopyToMedia>True</CopyToMedia>
       <ExcludeFromToc>True</ExcludeFromToc>
     </Content>
-    <Content Include="diagrams\classes\Accord.Audio.Formats.png">
+    <Image Include="diagrams\classes\Accord.Audio.Formats.png">
       <ImageId>Accord.Audio.Formats</ImageId>
       <AlternateText>Accord.Audio.Formats</AlternateText>
       <CopyToMedia>True</CopyToMedia>
-    </Content>
-    <Content Include="diagrams\classes\Accord.Audio.png">
+    </Image>
+    <Image Include="diagrams\classes\Accord.Audio.png">
       <ImageId>Accord.Audio</ImageId>
       <AlternateText>Accord.Audio</AlternateText>
       <CopyToMedia>True</CopyToMedia>
-    </Content>
-    <Content Include="diagrams\classes\Accord.Audition.png">
+    </Image>
+    <Image Include="diagrams\classes\Accord.Audition.png">
       <ImageId>Accord.Audition</ImageId>
       <AlternateText>Accord.Audition</AlternateText>
       <CopyToMedia>True</CopyToMedia>
-    </Content>
-    <Content Include="diagrams\classes\Accord.Controls.png">
+    </Image>
+    <Image Include="diagrams\classes\Accord.Controls.png">
       <ImageId>Accord.Controls</ImageId>
       <AlternateText>Accord.Controls</AlternateText>
       <CopyToMedia>True</CopyToMedia>
-    </Content>
-    <Content Include="diagrams\classes\Accord.Controls.Vision.png">
+    </Image>
+    <Image Include="diagrams\classes\Accord.Controls.Vision.png">
       <ImageId>Accord.Controls.Vision</ImageId>
       <AlternateText>Accord.Controls.Vision</AlternateText>
       <CopyToMedia>True</CopyToMedia>
-    </Content>
-    <Content Include="diagrams\classes\Accord.Core.png">
+    </Image>
+    <Image Include="diagrams\classes\Accord.Core.png">
       <ImageId>Accord.Core</ImageId>
       <AlternateText>Accord.Core</AlternateText>
       <CopyToMedia>True</CopyToMedia>
-    </Content>
-    <Content Include="diagrams\classes\Accord.DirectSound.png">
+    </Image>
+    <Image Include="diagrams\classes\Accord.DirectSound.png">
       <ImageId>Accord.DirectSound</ImageId>
       <AlternateText>Accord.Direct Sound</AlternateText>
       <CopyToMedia>True</CopyToMedia>
-    </Content>
-    <Content Include="diagrams\classes\Accord.Imaging.png">
+    </Image>
+    <Image Include="diagrams\classes\Accord.Imaging.png">
       <ImageId>Accord.Imaging</ImageId>
       <AlternateText>Accord.Imaging</AlternateText>
       <CopyToMedia>True</CopyToMedia>
-    </Content>
-    <Content Include="diagrams\classes\Accord.MachineLearning.png">
+    </Image>
+    <Image Include="diagrams\classes\Accord.MachineLearning.png">
       <ImageId>Accord.MachineLearning</ImageId>
       <AlternateText>Accord.Machine Learning</AlternateText>
       <CopyToMedia>True</CopyToMedia>
-    </Content>
-    <Content Include="diagrams\classes\Accord.Math.png">
+    </Image>
+    <Image Include="diagrams\classes\Accord.Math.png">
       <ImageId>Accord.Math</ImageId>
       <AlternateText>Accord.Math</AlternateText>
       <CopyToMedia>True</CopyToMedia>
-    </Content>
-    <Content Include="diagrams\classes\Accord.Neuro.png">
+    </Image>
+    <Image Include="diagrams\classes\Accord.Neuro.png">
       <ImageId>Accord.Neuro</ImageId>
       <AlternateText>Accord.Neuro</AlternateText>
       <CopyToMedia>True</CopyToMedia>
-    </Content>
-    <Content Include="diagrams\classes\Accord.Statistics.png">
+    </Image>
+    <Image Include="diagrams\classes\Accord.Statistics.png">
       <ImageId>Accord.Statistics</ImageId>
       <AlternateText>Accord.Statistics</AlternateText>
       <CopyToMedia>True</CopyToMedia>
-    </Content>
-    <Content Include="diagrams\classes\Accord.Vision.png">
+    </Image>
+    <Image Include="diagrams\classes\Accord.Vision.png">
       <ImageId>Accord.Vision</ImageId>
       <AlternateText>Accord.Vision</AlternateText>
       <CopyToMedia>True</CopyToMedia>
-    </Content>
+    </Image>
     <Content Include="Resources\Accord.NET (logo small).png">
       <ImageId>Accord.NET (logo small)</ImageId>
       <AlternateText>Accord.NET (logo small)</AlternateText>
@@ -381,34 +387,60 @@
       <ImageId>matrix-to-image</ImageId>
       <AlternateText>matrix-to-image</AlternateText>
     </Content>
-    <Content Include="diagrams\classes\Accord.Imaging.Converters.png">
+    <Image Include="diagrams\classes\Accord.Imaging.Converters.png">
       <ImageId>Accord.Imaging.Converters</ImageId>
       <AlternateText>Accord.Imaging.Converters</AlternateText>
-    </Content>
-    <Content Include="diagrams\classes\Accord.Statistics.Analysis.png">
+      <CopyToMedia>True</CopyToMedia>
+    </Image>
+    <Image Include="diagrams\classes\Accord.Statistics.Analysis.png">
       <ImageId>Accord.Statistics.Analysis</ImageId>
       <AlternateText>Accord.Statistics.Analysis</AlternateText>
-    </Content>
-    <Content Include="diagrams\classes\Accord.Statistics.Distributions.png">
+      <CopyToMedia>True</CopyToMedia>
+    </Image>
+    <Image Include="diagrams\classes\Accord.Statistics.Distributions.png">
       <ImageId>Accord.Statistics.Distributions</ImageId>
       <AlternateText>Accord.Statistics.Distributions</AlternateText>
-    </Content>
-    <Content Include="diagrams\classes\Accord.Statistics.Kernels.png">
+      <CopyToMedia>True</CopyToMedia>
+    </Image>
+    <Image Include="diagrams\classes\Accord.Statistics.Kernels.png">
       <ImageId>Accord.Statistics.Kernels</ImageId>
       <AlternateText>Accord.Statistics.Kernels</AlternateText>
-    </Content>
-    <Content Include="diagrams\classes\Accord.Statistics.Models.png">
+      <CopyToMedia>True</CopyToMedia>
+    </Image>
+    <Image Include="diagrams\classes\Accord.Statistics.Models.png">
       <ImageId>Accord.Statistics.Models</ImageId>
       <AlternateText>Accord.Statistics.Models</AlternateText>
-    </Content>
-    <Content Include="diagrams\classes\Accord.Statistics.Testing.png">
+      <CopyToMedia>True</CopyToMedia>
+    </Image>
+    <Image Include="diagrams\classes\Accord.Statistics.Testing.png">
       <ImageId>Accord.Statistics.Testing</ImageId>
       <AlternateText>Accord.Statistics.Testing</AlternateText>
-    </Content>
+      <CopyToMedia>True</CopyToMedia>
+    </Image>
     <Content Include="images\border-following.png">
       <ImageId>border-following</ImageId>
       <AlternateText>border-following</AlternateText>
     </Content>
+    <Image Include="diagrams\classes\Accord.MachineLearning.GPL.png">
+      <ImageId>Accord.MachineLearning.GPL</ImageId>
+      <AlternateText>Accord.Machine Learning.GPL</AlternateText>
+      <CopyToMedia>True</CopyToMedia>
+    </Image>
+    <Image Include="diagrams\classes\Accord.Math.Decompositions.png">
+      <ImageId>Accord.Math.Decompositions</ImageId>
+      <AlternateText>Accord.Math.Decompositions</AlternateText>
+      <CopyToMedia>True</CopyToMedia>
+    </Image>
+    <Image Include="diagrams\classes\Accord.Statistics.Models.Fields.png">
+      <ImageId>Accord.Statistics.Models.Fields</ImageId>
+      <AlternateText>Accord.Statistics.Models.Fields</AlternateText>
+      <CopyToMedia>True</CopyToMedia>
+    </Image>
+    <Image Include="diagrams\classes\Accord.Statistics.Models.Markov.png">
+      <ImageId>Accord.Statistics.Models.Markov</ImageId>
+      <AlternateText>Accord.Statistics.Models.Markov</AlternateText>
+      <CopyToMedia>True</CopyToMedia>
+    </Image>
     <Image Include="resources\Accord.NET.png">
       <CopyToMedia>True</CopyToMedia>
       <AlternateText>Accord.NET</AlternateText>

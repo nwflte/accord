@@ -89,7 +89,7 @@ for /r %sampleDir% %%f in (*.csproj) do (
    echo - Processing !srcFileName!
    pushd .
    cd !srcFolder!   
-   %rar% %opts% -r %outputDir%\!srcFileName! *.* -x*\.svn* -x*\obj -x*\bin -x*.suo -x*.user
+   %rar% %opts% -r %outputDir%\!srcFileName! *.* -x*\.svn* -x*\obj -x*\bin -x*.suo -x*.user -x"*\bin\x86\Release 3.5"
    popd
 )
 
