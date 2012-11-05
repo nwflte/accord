@@ -168,12 +168,25 @@ namespace Accord.Controls
             if (disposing)
             {
                 if (components != null)
+                {
                     components.Dispose();
+                    components = null;
+                }
 
                 // free graphics resources
-                bordersPen.Dispose();
-                backgroundBrush.Dispose();
+                if (bordersPen != null)
+                {
+                    bordersPen.Dispose();
+                    bordersPen = null;
+                }
+
+                if (backgroundBrush != null)
+                {
+                    backgroundBrush.Dispose();
+                    backgroundBrush = null;
+                }
             }
+
             base.Dispose(disposing);
         }
 
