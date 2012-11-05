@@ -365,7 +365,7 @@ namespace Accord.Statistics.Distributions.Univariate
 #if DEBUG
                 for (int i = 0; i < weights.Length; i++)
                     if (Double.IsNaN(weights[i]) || Double.IsInfinity(weights[i]))
-                        throw new Exception("Invalid numbers in the weight vector.");
+                        throw new ArgumentException("Invalid numbers in the weight vector.", "weights");
 #endif
 
                 // Compute weighted mean

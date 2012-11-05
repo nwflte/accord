@@ -241,7 +241,7 @@ namespace Accord.Statistics.Distributions.Univariate
             if (weights != null)
                 for (int i = 0; i < weights.Length; i++)
                     if (Double.IsNaN(weights[i]) || Double.IsInfinity(weights[i]))
-                        throw new Exception("Invalid numbers in the weight vector.");
+                        throw new ArgumentException("Invalid numbers in the weight vector.", "weights");
 #endif
 
             if (options != null)
@@ -309,6 +309,16 @@ namespace Accord.Statistics.Distributions.Univariate
                 for (int k = 0; k < gamma.Length; k++)
                 {
                     double sum = gamma[k].Sum();
+
+                    if (sum == 0)
+                    {
+                        pi[k] = 0.0;
+                        continue;
+                    }
+
+                    System.Diagnostics.Debug.Assert(sum != 0);
+                    System.Diagnostics.Debug.Assert(weightSum != 0);
+                    System.Diagnostics.Debug.Assert(!gamma[k].HasNaN());
 
                     for (int i = 0; i < gamma[k].Length; i++)
                         gamma[k][i] /= sum;

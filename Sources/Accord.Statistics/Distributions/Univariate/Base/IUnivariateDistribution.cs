@@ -136,7 +136,56 @@ namespace Accord.Statistics.Distributions
         /// 
         double InverseDistributionFunction(double p);
 
+         /// <summary>
+        ///   Gets the complementary cumulative distribution function
+        ///   (ccdf) for this distribution evaluated at point <c>x</c>.
+        ///   This function is also known as the Survival function.
+        /// </summary>
+        /// 
+        /// <param name="x">
+        ///   A single point in the distribution range.</param>
+        ///   
+        /// <remarks>
+        ///   The Complementary Cumulative Distribution Function (CCDF) is
+        ///   the complement of the Cumulative Distribution Function, or 1
+        ///   minus the CDF.
+        /// </remarks>
+        /// 
+        double ComplementaryDistributionFunction(double x);
 
+        /// <summary>
+        ///   Gets the hazard function, also known as the failure rate or
+        ///   the conditional failure density function for this distribution
+        ///   evaluated at point <c>x</c>.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   The hazard function is the ratio of the probability
+        ///   density function f(x) to the survival function, S(x).
+        /// </remarks>
+        /// 
+        /// <param name="x">
+        ///   A single point in the distribution range.</param>
+        ///   
+        /// <returns>
+        ///   The conditional failure density function <c>h(x)</c>
+        ///   evaluated at <c>x</c> in the current distribution.</returns>
+        /// 
+        double HazardFunction(double x);
+
+        /// <summary>
+        ///   Gets the cumulative hazard function for this
+        ///   distribution evaluated at point <c>x</c>.
+        /// </summary>
+        /// 
+        /// <param name="x">
+        ///   A single point in the distribution range.</param>
+        /// 
+        /// <returns>
+        ///   The cumulative hazard function <c>H(x)</c>  
+        ///   evaluated at <c>x</c> in the current distribution.</returns>
+        /// 
+        double CumulativeHazardFunction(double x);
+        
     }
-
 }

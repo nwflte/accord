@@ -36,8 +36,9 @@ namespace Accord.Statistics.Distributions.Univariate
     {
 
         // Distribution parameters
-        private double a;
-        private double b;
+        private double shape;
+        private double scale;
+        private double location;
 
 
         /// <summary>
@@ -49,8 +50,9 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public WeibullDistribution(double shape, double scale)
         {
-            this.a = shape;
-            this.b = scale;
+            this.shape = shape;
+            this.scale = scale;
+            this.location = 0;
         }
 
         /// <summary>
@@ -61,7 +63,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override double Mean
         {
-            get { return b * Gamma.Function(1 + 1 / a); }
+            get { return scale * Gamma.Function(1 + 1 / shape); }
         }
 
         /// <summary>
@@ -72,7 +74,33 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override double Variance
         {
-            get { return b * b * Gamma.Function(1 + 2 / a) - Mean * Mean; }
+            get { return scale * scale * Gamma.Function(1 + 2 / shape) - Mean * Mean; }
+        }
+
+        /// <summary>
+        ///   Gets the median for this distribution.
+        /// </summary>
+        /// 
+        /// <value>
+        ///   The distribution's median value.
+        /// </value>
+        /// 
+        public override double Median
+        {
+            get { return Math.Pow(Math.Log(2), 1 / shape); }
+        }
+
+        /// <summary>
+        ///   Gets the mode for this distribution.
+        /// </summary>
+        /// 
+        /// <value>
+        ///   The distribution's mode value.
+        /// </value>
+        /// 
+        public override double Mode
+        {
+            get { return shape > 1 ? Math.Pow(1 - 1 / shape, 1 / shape) : 0; }
         }
 
         /// <summary>
@@ -83,7 +111,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override double Entropy
         {
-            get { return Constants.EulerGamma * (1 - 1 / a) + Math.Log(b / a) + 1; }
+            get { return Constants.EulerGamma * (1 - 1 / shape) + Math.Log(scale / shape) + 1; }
         }
 
         /// <summary>
@@ -101,7 +129,7 @@ namespace Accord.Statistics.Distributions.Univariate
         public override double DistributionFunction(double x)
         {
             if (x > 0)
-                return 1.0 - Math.Exp(-Math.Pow(x / b, a));
+                return 1.0 - Math.Exp(-Math.Pow((x - location) / scale, shape));
             if (x == 0)
                 return Double.PositiveInfinity;
             else return 0;
@@ -127,7 +155,7 @@ namespace Accord.Statistics.Distributions.Univariate
         public override double ProbabilityDensityFunction(double x)
         {
             if (x > 0)
-                return (a / b) * Math.Pow(x / b, a - 1) * Math.Exp(-Math.Pow(x / b, a));
+                return (shape / scale) * Math.Pow((x - location) / scale, shape - 1) * Math.Exp(-Math.Pow((x - location) / scale, shape));
             else return 0;
         }
 
@@ -151,8 +179,67 @@ namespace Accord.Statistics.Distributions.Univariate
         public override double LogProbabilityDensityFunction(double x)
         {
             if (x >= 0)
-                return Math.Log(a / b) + (a - 1) * Math.Log(x / b) - Math.Pow(x / b, a);
+                return Math.Log(shape / scale) + (shape - 1) * Math.Log((x - location) / scale) - Math.Pow((x - location) / scale, shape);
             else return Double.NegativeInfinity;
+        }
+
+        /// <summary>
+        ///   Gets the hazard function, also known as the failure rate or
+        ///   the conditional failure density function for this distribution
+        ///   evaluated at point <c>x</c>.
+        /// </summary>
+        /// 
+        /// <param name="x">A single point in the distribution range.</param>
+        /// 
+        /// <returns>
+        ///   The conditional failure density function <c>h(x)</c>
+        ///   evaluated at <c>x</c> in the current distribution.
+        /// </returns>
+        /// 
+        public override double HazardFunction(double x)
+        {
+            return Math.Pow(shape * (x - location), shape - 1);
+        }
+
+        /// <summary>
+        ///   Gets the cumulative hazard function for this
+        ///   distribution evaluated at point <c>x</c>.
+        /// </summary>
+        /// 
+        /// <param name="x">A single point in the distribution range.</param>
+        /// 
+        /// <returns>
+        ///   The cumulative hazard function <c>H(x)</c>
+        ///   evaluated at <c>x</c> in the current distribution.
+        /// </returns>
+        /// 
+        public override double CumulativeHazardFunction(double x)
+        {
+            return Math.Pow((x - location), shape);
+        }
+
+        /// <summary>
+        ///   Gets the complementary cumulative distribution function
+        ///   (ccdf) for this distribution evaluated at point <c>x</c>.
+        ///   This function is also known as the Survival function.
+        /// </summary>
+        /// 
+        /// <param name="x">A single point in the distribution range.</param>
+        /// 
+        public override double ComplementaryDistributionFunction(double x)
+        {
+            return Math.Exp(-Math.Pow((x - location), shape));
+        }
+
+        /// <summary>
+        ///   Gets the inverse of the <see cref="ComplementaryDistributionFunction"/>. 
+        ///   The inverse complementary distribution function is also known as the 
+        ///   inverse survival Function.
+        /// </summary>
+        /// 
+        public double InverseComplementaryDistributionFunction(double p)
+        {
+            return Math.Pow(-Math.Log(p), 1 / shape);
         }
 
         /// <summary>
@@ -188,7 +275,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override object Clone()
         {
-            return new WeibullDistribution(b, a);
+            return new WeibullDistribution(scale, shape);
         }
 
 
@@ -203,7 +290,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public double[] Generate(int samples)
         {
-            return Random(a, b, samples);
+            return Random(shape, scale, samples);
         }
 
         /// <summary>
@@ -214,7 +301,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public double Generate()
         {
-            return Random(a, b);
+            return Random(shape, scale);
         }
 
         /// <summary>
@@ -256,5 +343,6 @@ namespace Accord.Statistics.Distributions.Univariate
             return scale * Math.Pow(-Math.Log(u), 1 / shape);
         }
         #endregion
+
     }
 }

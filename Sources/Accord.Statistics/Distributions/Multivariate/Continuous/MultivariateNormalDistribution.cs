@@ -340,12 +340,12 @@ namespace Accord.Statistics.Distributions.Multivariate
                 for (int i = 0; i < weights.Length; i++)
                 {
                     if (Double.IsNaN(weights[i]) || Double.IsInfinity(weights[i]))
-                        throw new Exception("Invalid numbers in the weight vector.");
+                        throw new ArgumentException("Invalid numbers in the weight vector.", "weights");
                     sum += weights[i];
                 }
 
                 if (Math.Abs(sum - 1.0) > 1e-10)
-                    throw new Exception("Weights do not sum to one.");
+                    throw new ArgumentException("Weights do not sum to one.","weights");
 #endif
                 // Compute weighted mean vector
                 means = Statistics.Tools.Mean(observations, weights);
@@ -419,6 +419,17 @@ namespace Accord.Statistics.Distributions.Multivariate
         public static MultivariateNormalDistribution Estimate(double[][] observations, NormalOptions options)
         {
             return Estimate(observations, null, options);
+        }
+
+        /// <summary>
+        ///   Estimates a new Normal distribution from a given set of observations.
+        /// </summary>
+        /// 
+        public static MultivariateNormalDistribution Estimate(double[][] observations, double[] weights)
+        {
+            MultivariateNormalDistribution n = new MultivariateNormalDistribution(observations[0].Length);
+            n.Fit(observations, weights, null);
+            return n;
         }
 
         /// <summary>

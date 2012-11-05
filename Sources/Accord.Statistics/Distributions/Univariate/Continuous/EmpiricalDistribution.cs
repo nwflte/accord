@@ -221,18 +221,22 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
-        /// Gets the log-probability density function (pdf) for
-        /// this distribution evaluated at point <c>x</c>.
+        ///   Gets the log-probability density function (pdf) for
+        ///   this distribution evaluated at point <c>x</c>.
         /// </summary>
+        /// 
         /// <param name="x">A single point in the distribution range.</param>
+        /// 
         /// <returns>
-        /// The logarithm of the probability of <c>x</c>
-        /// occurring in the current distribution.
+        ///   The logarithm of the probability of <c>x</c>
+        ///   occurring in the current distribution.
         /// </returns>
+        /// 
         /// <remarks>
-        /// The Probability Density Function (PDF) describes the
-        /// probability that a given value <c>x</c> will occur.
+        ///   The Probability Density Function (PDF) describes the
+        ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
+        /// 
         public override double LogProbabilityDensityFunction(double x)
         {
             // References:

@@ -303,6 +303,21 @@ namespace Accord.Statistics.Distributions.Univariate
             return LogProbabilityMassFunction((int)x);
         }
 
+        double IUnivariateDistribution.ComplementaryDistributionFunction(double x)
+        {
+            return ComplementaryDistributionFunction((int)x);
+        }
+
+        double IUnivariateDistribution.HazardFunction(double x)
+        {
+            return HazardFunction((int)x);
+        }
+
+        double IUnivariateDistribution.CumulativeHazardFunction(double x)
+        {
+            return CumulativeHazardFunction((int)x);
+        }
+
         /// <summary>
         ///   Fits the underlying distribution to a given set of observations.
         /// </summary>
@@ -553,6 +568,46 @@ namespace Accord.Statistics.Distributions.Univariate
         public abstract double LogProbabilityMassFunction(int k);
 
         /// <summary>
+        ///   Gets the hazard function, also known as the failure rate or
+        ///   the conditional failure density function for this distribution
+        ///   evaluated at point <c>x</c>.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   The hazard function is the ratio of the probability
+        ///   density function f(x) to the survival function, S(x).
+        /// </remarks>
+        /// 
+        /// <param name="x">
+        ///   A single point in the distribution range.</param>
+        ///   
+        /// <returns>
+        ///   The conditional failure density function <c>h(x)</c>
+        ///   evaluated at <c>x</c> in the current distribution.</returns>
+        /// 
+        public virtual double HazardFunction(int x)
+        {
+            return ProbabilityMassFunction(x) / ComplementaryDistributionFunction(x);
+        }
+
+        /// <summary>
+        ///   Gets the cumulative hazard function for this
+        ///   distribution evaluated at point <c>x</c>.
+        /// </summary>
+        /// 
+        /// <param name="x">
+        ///   A single point in the distribution range.</param>
+        /// 
+        /// <returns>
+        ///   The cumulative hazard function <c>H(x)</c>  
+        ///   evaluated at <c>x</c> in the current distribution.</returns>
+        /// 
+        public virtual double CumulativeHazardFunction(int x)
+        {
+            return -Math.Log(ComplementaryDistributionFunction(x));
+        }
+
+        /// <summary>
         ///   Fits the underlying distribution to a given set of observations.
         /// </summary>
         /// 
@@ -630,6 +685,6 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public abstract object Clone();
 
-    }
 
+    }
 }
