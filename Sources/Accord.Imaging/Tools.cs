@@ -1056,12 +1056,84 @@ namespace Accord.Imaging
         ///   Computes the maximum pixel value in the given image.
         /// </summary>
         /// 
+        public unsafe static int Max(this UnmanagedImage image, int channel)
+        {
+            if ((image.PixelFormat != PixelFormat.Format32bppArgb) &&
+                (image.PixelFormat != PixelFormat.Format24bppRgb))
+                throw new UnsupportedImageFormatException("Only 32 and 24-bit images are supported");
+
+            int width = image.Width;
+            int height = image.Height;
+            int stride = image.Stride;
+            int offset = image.Stride - image.Width;
+            int pixelSize = System.Drawing.Image.GetPixelFormatSize(image.PixelFormat) / 8;
+
+            int max = 0;
+
+            byte* src = (byte*)image.ImageData.ToPointer() + channel;
+
+            for (int y = 0; y < height; y++)
+                for (int x = 0; x < width; x++, src += pixelSize)
+                    if (*src > max) max = *src;
+
+
+            return max;
+        }
+
+        /// <summary>
+        ///   Computes the maximum pixel value in the given image.
+        /// </summary>
+        /// 
+        public unsafe static int Min(this UnmanagedImage image, int channel)
+        {
+            if ((image.PixelFormat != PixelFormat.Format32bppArgb) &&
+                (image.PixelFormat != PixelFormat.Format24bppRgb))
+                throw new UnsupportedImageFormatException("Only 32 and 24-bit images are supported");
+
+            int width = image.Width;
+            int height = image.Height;
+            int stride = image.Stride;
+            int offset = image.Stride - image.Width;
+            int pixelSize = System.Drawing.Image.GetPixelFormatSize(image.PixelFormat) / 8;
+
+            int min = int.MaxValue;
+
+            byte* src = (byte*)image.ImageData.ToPointer() + channel;
+
+            for (int y = 0; y < height; y++)
+                for (int x = 0; x < width; x++, src += pixelSize)
+                    if (*src < min) min = *src;
+
+
+            return min;
+        }
+
+        /// <summary>
+        ///   Computes the maximum pixel value in the given image.
+        /// </summary>
+        /// 
         public static int Max(this Bitmap image)
         {
             BitmapData data = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
                 ImageLockMode.ReadOnly, image.PixelFormat);
 
             int max = Max(data, new Rectangle(0, 0, image.Width, image.Height));
+
+            image.UnlockBits(data);
+
+            return max;
+        }
+
+        /// <summary>
+        ///   Computes the maximum pixel value in the given image.
+        /// </summary>
+        /// 
+        public static int Max(this Bitmap image, int channel)
+        {
+            BitmapData data = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
+                ImageLockMode.ReadOnly, image.PixelFormat);
+
+            int max = Max(new UnmanagedImage(data), channel);
 
             image.UnlockBits(data);
 
@@ -1223,6 +1295,22 @@ namespace Accord.Imaging
                 ImageLockMode.ReadOnly, image.PixelFormat);
 
             int min = Min(data, new Rectangle(0, 0, data.Width, data.Height));
+
+            image.UnlockBits(data);
+
+            return min;
+        }
+
+        /// <summary>
+        ///   Computes the maximum pixel value in the given image.
+        /// </summary>
+        /// 
+        public static int Min(this Bitmap image, int channel)
+        {
+            BitmapData data = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
+                ImageLockMode.ReadOnly, image.PixelFormat);
+
+            int min = Min(new UnmanagedImage(data), channel);
 
             image.UnlockBits(data);
 

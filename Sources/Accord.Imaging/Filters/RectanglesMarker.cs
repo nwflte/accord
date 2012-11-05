@@ -35,6 +35,7 @@ namespace Accord.Imaging.Filters
     public class RectanglesMarker : BaseInPlaceFilter
     {
         private Color markerColor = Color.White;
+        private Color fillColor = Color.Transparent;
         private IEnumerable<Rectangle> rectangles;
         private Dictionary<PixelFormat, PixelFormat> formatTranslations = new Dictionary<PixelFormat, PixelFormat>();
 
@@ -48,6 +49,18 @@ namespace Accord.Imaging.Filters
             get { return markerColor; }
             set { markerColor = value; }
         }
+
+        /// <summary>
+        ///   Gets or sets the color used to fill
+        ///   rectangles. Default is Transparent.
+        /// </summary>
+        /// 
+        public Color FillColor
+        {
+            get { return fillColor; }
+            set { fillColor = value; }
+        }
+            
 
         /// <summary>
         ///   The set of rectangles.
@@ -117,6 +130,7 @@ namespace Accord.Imaging.Filters
 
             formatTranslations[PixelFormat.Format8bppIndexed] = PixelFormat.Format8bppIndexed;
             formatTranslations[PixelFormat.Format24bppRgb] = PixelFormat.Format24bppRgb;
+            formatTranslations[PixelFormat.Format32bppArgb] = PixelFormat.Format32bppArgb;
         }
 
         /// <summary>
@@ -128,6 +142,8 @@ namespace Accord.Imaging.Filters
             foreach (Rectangle rectangle in rectangles)
             {
                 Drawing.Rectangle(image, rectangle, markerColor);
+                if (fillColor != Color.Transparent)
+                    Drawing.FillRectangle(image, rectangle, fillColor);
             }
         }
     }

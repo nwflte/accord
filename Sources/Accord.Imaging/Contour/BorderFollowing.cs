@@ -50,7 +50,7 @@ namespace Accord.Imaging
     /// <para>
     ///   The resulting image is shown below.</para>
     ///   
-    /// <img src="..\Images\border-following.png" /> 
+    /// <img src="..\images\border-following.png" /> 
     /// 
     /// </example>
     /// 
