@@ -210,11 +210,9 @@ namespace Accord.Statistics.Models.Markov.Learning
 
                     for (int k = 0; k < Models[i].States; k++)
                         if (j != k) transition[j + m, k + m] = (1.0 - D) / (s - 1.0);
-#if DEBUG
-                    double[] row = transition.GetRow(m);
-                    double rowSum = row.Sum();
-                    if (rowSum != 1) throw new Exception();
-#endif
+
+                    System.Diagnostics.Debug.Assert(transition.GetRow(m).Sum() == 1);
+
                     emissions.SetRow(j + m, B.GetRow(j));
                 }
 

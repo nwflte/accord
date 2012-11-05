@@ -23,9 +23,10 @@
 namespace Accord.Statistics.Models.Markov
 {
     using System;
-    using Accord.Math;
-    using System.Threading.Tasks;
     using System.Runtime.Serialization;
+    using System.Threading.Tasks;
+    using Accord.Math;
+    using System.Collections.Generic;
 
     /// <summary>
     ///   Base class for (HMM) Sequence Classifiers. This class cannot
@@ -33,14 +34,15 @@ namespace Accord.Statistics.Models.Markov
     /// </summary>
     /// 
     [Serializable]
-    public abstract class BaseHiddenMarkovClassifier<TModel> where TModel : IHiddenMarkovModel
+    public abstract class BaseHiddenMarkovClassifier<TModel> : IEnumerable<TModel>
+        where TModel : IHiddenMarkovModel
     {
 
         private TModel[] models;
         private double[] classPriors;
 
         // Threshold (rejection) model
-        private TModel threshold; 
+        private TModel threshold;
         private double weight = 1;
 
 
@@ -218,10 +220,10 @@ namespace Accord.Statistics.Models.Markov
 
 
             // For every model in the set (including the threshold model)
-#if !DEBUG
-            Parallel.For(0, models.Length + 1, i =>
+#if SERIAL
+            for (int i = 0; i < models.Length+1; i++)
 #else
-            for (int i = 0; i < models.Length + 1; i++)
+            Parallel.For(0, models.Length + 1, i =>
 #endif
             {
                 if (i < models.Length)
@@ -235,7 +237,7 @@ namespace Accord.Statistics.Models.Markov
                     thresholdValue = threshold.Evaluate(sequence);
                 }
             }
-#if !DEBUG
+#if !SERIAL
             );
 #endif
 
@@ -323,6 +325,36 @@ namespace Accord.Statistics.Models.Markov
             // configurable rejection threshold, initialize it with 1.
 
             this.weight = 1;
+        }
+
+        /// <summary>
+        ///   Returns an enumerator that iterates through the models in the classifier.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that 
+        ///   can be used to iterate through the collection.
+        /// </returns>
+        /// 
+        public IEnumerator<TModel> GetEnumerator()
+        {
+            foreach (var model in models)
+                yield return model;
+        }
+
+        /// <summary>
+        ///   Returns an enumerator that iterates through the models in the classifier.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that 
+        ///   can be used to iterate through the collection.
+        /// </returns>
+        /// 
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            foreach (var model in models)
+                yield return model;
         }
 
     }

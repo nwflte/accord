@@ -144,9 +144,10 @@ namespace Accord.Statistics.Models.Markov.Learning
     ///   </code>
     ///   
     /// <para>
-    ///   Finally, the next example shows how to create a multivariate model
-    ///   using a multivariate normal distribution. In this example, sequences
-    ///   contain vector-valued observations, such as in the case of (x,y) pairs.</para>
+    ///   The next example shows how to create a multivariate model using
+    ///   a multivariate normal distribution. In this example, sequences
+    ///   contain vector-valued observations, such as in the case of (x,y)
+    ///   pairs.</para>
     ///   
     /// <code>
     /// // Create sequences of vector-valued observations. In the
@@ -213,6 +214,75 @@ namespace Accord.Statistics.Models.Markov.Learning
     ///     new double[] { 9, 8  },
     ///     new double[] { 1, 0 }})); // 2.10 x 10^(-89)
     /// </code>
+    /// 
+    /// <para>
+    ///   Finally, the last example shows how to fit a mixture-density
+    ///   hidden Markov models.
+    /// </para>
+    /// 
+    /// <code>
+    /// // Suppose we have a set of six sequences and we would like to
+    /// // fit a hidden Markov model with mixtures of Normal distributions
+    /// // as the emission densities. 
+    /// 
+    /// // First, let's consider a set of univariate sequences:
+    /// double[][] sequences =
+    /// {
+    ///     new double[] { 1, 1, 2, 2, 2, 3, 3, 3 },
+    ///     new double[] { 1, 2, 2, 2, 3, 3 },
+    ///     new double[] { 1, 2, 2, 3, 3, 5 },
+    ///     new double[] { 2, 2, 2, 2, 3, 3, 3, 4, 5, 5, 1 },
+    ///     new double[] { 1, 1, 1, 2, 2, 5 },
+    ///     new double[] { 1, 2, 2, 4, 4, 5 },
+    /// };
+    /// 
+    /// 
+    /// // Now we can begin specifing a initial Gaussian mixture distribution. It is
+    /// // better to add some different initial parameters to the mixture components:
+    /// var density = new Mixture&lt;NormalDistribution>(
+    ///     new NormalDistribution(mean: 2, stdDev: 1.0), // 1st component in the mixture
+    ///     new NormalDistribution(mean: 0, stdDev: 0.6), // 2nd component in the mixture
+    ///     new NormalDistribution(mean: 4, stdDev: 0.4), // 3rd component in the mixture
+    ///     new NormalDistribution(mean: 6, stdDev: 1.1)  // 4th component in the mixture
+    /// );
+    /// 
+    /// // Let's then create a continuous hidden Markov Model with two states organized in a forward
+    /// //  topology with the underlying univariate Normal mixture distribution as probability density.
+    /// var model = new HiddenMarkovModel&lt;Mixture&lt;NormalDistribution>>(new Forward(2), density);
+    /// 
+    /// // Now we should configure the learning algorithms to train the sequence classifier. We will
+    /// // learn until the difference in the average log-likelihood changes only by as little as 0.0001
+    /// var teacher = new BaumWelchLearning&lt;Mixture&lt;NormalDistribution>>(model)
+    /// {
+    ///     Tolerance = 0.0001,
+    ///     Iterations = 0,
+    /// 
+    ///     // Note, however, that since this example is extremely simple and we have only a few
+    ///     // data points, a full-blown mixture wouldn't really be needed. Thus we will have a
+    ///     // great chance that the mixture would become degenerated quickly. We can avoid this
+    ///     // by specifying some regularization constants in the Normal distribution fitting:
+    /// 
+    ///     FittingOptions = new MixtureOptions()
+    ///     {
+    ///         Iterations = 1, // limit the inner e-m to a single iteration
+    /// 
+    ///         InnerOptions = new NormalOptions()
+    ///         {
+    ///             Regularization = 1e-5 // specify a regularization constant
+    ///         }
+    ///     }
+    /// };
+    /// 
+    /// // Finally, we can fit the model
+    /// double logLikelihood = teacher.Run(sequences);
+    /// 
+    /// // And now check the likelihood of some approximate sequences.
+    /// double a1 = Math.Exp(model.Evaluate(new double[] { 1, 1, 2, 2, 3 })); // 2.3413833128741038E+45
+    /// double a2 = Math.Exp(model.Evaluate(new double[] { 1, 1, 2, 5, 5 })); // 9.94607618459872E+19
+    /// 
+    /// // We can see that the likelihood of an unrelated sequence is much smaller:
+    /// double a3 = Math.Exp(model.Evaluate(new double[] { 8, 2, 6, 4, 1 })); // 1.5063654166181737E-44
+    /// </code>
     /// </example>
     /// 
     /// <seealso cref="HiddenMarkovModel"/>
@@ -220,7 +290,7 @@ namespace Accord.Statistics.Models.Markov.Learning
     /// <seealso cref="BaumWelchLearning"/>
     /// <seealso cref="BaumWelchLearning{TDistribution}"/>
     /// 
-    public class BaumWelchLearning<TDistribution> : BaseBaumWelchLearning, IUnsupervisedLearning
+    public class BaumWelchLearning<TDistribution> : BaseBaumWelchLearning, IUnsupervisedLearning, IConvergenceLearning
         where TDistribution : IDistribution
     {
 

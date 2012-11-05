@@ -49,9 +49,11 @@ namespace Accord.Statistics.Models.Markov.Learning
     /// 
     /// </remarks>
     /// 
-    public class ViterbiLearning<TDistribution> : BaseIterativeLearning, IUnsupervisedLearning
+    public class ViterbiLearning<TDistribution> : IUnsupervisedLearning, IConvergenceLearning
         where TDistribution : IDistribution
     {
+
+        private AbsoluteConvergence convergence;
         private MaximumLikelihoodLearning<TDistribution> mle;
 
         /// <summary>
@@ -95,11 +97,48 @@ namespace Accord.Statistics.Models.Markov.Learning
         }
 
         /// <summary>
+        ///   Gets or sets the maximum change in the average log-likelihood
+        ///   after an iteration of the algorithm used to detect convergence.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   This is the likelihood convergence limit L between two iterations of the algorithm. The
+        ///   algorithm will stop when the change in the likelihood for two consecutive iterations
+        ///   has not changed by more than L percent of the likelihood. If left as zero, the
+        ///   algorithm will ignore this parameter and iterate over a number of fixed iterations
+        ///   specified by the previous parameter.
+        /// </remarks>
+        /// 
+        public double Tolerance
+        {
+            get { return convergence.Tolerance; }
+            set { convergence.Tolerance = value; }
+        }
+
+        /// <summary>
+        ///   Gets or sets the maximum number of iterations
+        ///   performed by the learning algorithm.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   This is the maximum number of iterations to be performed by the learning algorithm. If
+        ///   specified as zero, the algorithm will learn until convergence of the model average
+        ///   likelihood respecting the desired limit.
+        /// </remarks>
+        /// 
+        public int Iterations
+        {
+            get { return convergence.Iterations; }
+            set { convergence.Iterations = value; }
+        }
+
+        /// <summary>
         ///   Creates a new instance of the Viterbi learning algorithm.
         /// </summary>
         /// 
         public ViterbiLearning(HiddenMarkovModel<TDistribution> model)
         {
+            this.convergence = new AbsoluteConvergence();
             this.mle = new MaximumLikelihoodLearning<TDistribution>(model);
         }
 
@@ -148,7 +187,12 @@ namespace Accord.Statistics.Models.Markov.Learning
                 for (int i = 0; i < observations.Length; i++)
                     newLogLikelihood = Special.LogSum(newLogLikelihood, model.Evaluate(observations[i]));
 
-            } while (!HasConverged(logLikelihood, newLogLikelihood, currentIteration));
+                // Check convergence
+                convergence.NewValue = newLogLikelihood;
+                convergence.OldValue = logLikelihood;
+                convergence.CurrentIteration = currentIteration;
+
+            } while (!convergence.HasConverged);
 
             return newLogLikelihood;
         }

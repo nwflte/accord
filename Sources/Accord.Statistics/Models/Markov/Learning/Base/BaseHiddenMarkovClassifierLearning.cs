@@ -144,7 +144,7 @@ namespace Accord.Statistics.Models.Markov.Learning
             if (outputs == null) throw new ArgumentNullException("outputs");
 
             if (inputs.Length != outputs.Length)
-                throw new DimensionMismatchException("outputs", 
+                throw new DimensionMismatchException("outputs",
                     "The number of inputs and outputs does not match.");
 
             for (int i = 0; i < outputs.Length; i++)
@@ -158,11 +158,7 @@ namespace Accord.Statistics.Models.Markov.Learning
 
 
             // For each model,
-#if !DEBUG
             Parallel.For(0, classes, i =>
-#else
-            for (int i = 0; i < classes; i++)
-#endif
             {
                 // We will start the class model learning problem
                 var args = new GenerativeLearningEventArgs(i, classes);
@@ -186,10 +182,7 @@ namespace Accord.Statistics.Models.Markov.Learning
 
                 // Update and report progress
                 OnGenerativeClassModelLearningFinished(args);
-            }
-#if !DEBUG
-            );
-#endif
+            });
 
             if (Empirical)
             {

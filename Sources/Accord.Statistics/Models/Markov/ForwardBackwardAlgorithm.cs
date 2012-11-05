@@ -92,10 +92,7 @@ namespace Accord.Statistics.Models.Markov
                 }
             }
 
-#if DEBUG
-            foreach (var value in fwd)
-                if (Double.IsNaN(value)) throw new Exception();
-#endif
+            System.Diagnostics.Debug.Assert(!fwd.HasNaN());
         }
 
         /// <summary>
@@ -129,10 +126,7 @@ namespace Accord.Statistics.Models.Markov
                 }
             }
 
-#if DEBUG
-            foreach (var value in fwd)
-                if (Double.IsNaN(value)) throw new Exception();
-#endif
+            System.Diagnostics.Debug.Assert(!fwd.HasNaN());
 
             return fwd;
         }
@@ -243,10 +237,7 @@ namespace Accord.Statistics.Models.Markov
                 }
             }
 
-#if DEBUG
-            foreach (var value in fwd)
-                if (Double.IsNaN(value)) throw new Exception();
-#endif
+            System.Diagnostics.Debug.Assert(!fwd.HasNaN());
         }
 
         /// <summary>
@@ -335,10 +326,7 @@ namespace Accord.Statistics.Models.Markov
                 }
             }
 
-#if DEBUG
-            foreach (var value in bwd)
-                if (Double.IsNaN(value)) throw new Exception();
-#endif
+            System.Diagnostics.Debug.Assert(!bwd.HasNaN());
         }
 
         /// <summary>
@@ -370,10 +358,7 @@ namespace Accord.Statistics.Models.Markov
                 }
             }
 
-#if DEBUG
-            foreach (var value in bwd)
-                if (Double.IsNaN(value)) throw new Exception();
-#endif
+            System.Diagnostics.Debug.Assert(!bwd.HasNaN());
 
             return bwd;
         }
@@ -445,10 +430,7 @@ namespace Accord.Statistics.Models.Markov
                 }
             }
 
-#if DEBUG
-            foreach (var value in bwd)
-                if (Double.IsNaN(value)) throw new Exception();
-#endif
+            System.Diagnostics.Debug.Assert(!bwd.HasNaN());
         }
 
         /// <summary>
@@ -503,10 +485,7 @@ namespace Accord.Statistics.Models.Markov
                 }
             }
 
-#if DEBUG
-            foreach (var value in lnFwd)
-                if (Double.IsNaN(value)) throw new Exception();
-#endif
+            System.Diagnostics.Debug.Assert(!lnFwd.HasNaN());
         }
 
         /// <summary>
@@ -578,10 +557,7 @@ namespace Accord.Statistics.Models.Markov
                 }
             }
 
-#if DEBUG
-            foreach (var value in lnFwd)
-                if (Double.IsNaN(value)) throw new Exception();
-#endif
+            System.Diagnostics.Debug.Assert(!lnFwd.HasNaN());
         }
 
         /// <summary>
@@ -638,10 +614,7 @@ namespace Accord.Statistics.Models.Markov
                 }
             }
 
-#if DEBUG
-            foreach (var value in lnBwd)
-                if (Double.IsNaN(value)) throw new Exception();
-#endif
+            System.Diagnostics.Debug.Assert(!lnBwd.HasNaN());
         }
 
         /// <summary>
@@ -714,10 +687,7 @@ namespace Accord.Statistics.Models.Markov
                 }
             }
 
-#if DEBUG
-            foreach (var value in lnBwd)
-                if (Double.IsNaN(value)) throw new Exception();
-#endif
+            System.Diagnostics.Debug.Assert(!lnBwd.HasNaN());
         }
 
         /// <summary>
