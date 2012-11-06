@@ -1,0 +1,13 @@
+#summary Sample Application: Linear Discriminant Analysis (LCA) Sample Application
+#labels Type-SampleApps
+
+ * Download [http://dl.dropbox.com/u/32601472/accord/samples/accord-statistics-lda-bin.zip application]
+ * Download [http://dl.dropbox.com/u/32601472/accord/samples/accord-statistics-lda-src.zip source code]
+ * Browse [https://code.google.com/p/accord/source/browse/trunk#trunk%2FSamples%2FStatistics%2FLDA source code online].
+
+This sample application shows how to compute and use [http://accord.googlecode.com/svn/docs/html/T_Accord_Statistics_Analysis_LinearDiscriminantAnalysis.htm Linear Discriminant Analysis (LDA)] to perform classification-oriented dimensionality reduction. The application can perform the classification of new samples using a linear classifier, perform the projection and revert input points from the linear discriminant space.
+
+<br /><p align="center">
+http://accord.googlecode.com/svn/wiki/samples/accord-statistics-lda-img.png
+<br />Linear Discriminant Analysis sample application
+</p><br />
