@@ -23,13 +23,13 @@
 namespace Accord.Tests.MachineLearning
 {
 
-    using Accord.MachineLearning.VectorMachines;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Accord.Statistics.Kernels;
-    using Accord.MachineLearning.VectorMachines.Learning;
     using System.IO;
+    using System.Threading.Tasks;
+    using Accord.MachineLearning.VectorMachines;
+    using Accord.MachineLearning.VectorMachines.Learning;
     using Accord.Math;
-using System.Threading.Tasks;
+    using Accord.Statistics.Kernels;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass()]
     public class MulticlassSupportVectorMachineTest
@@ -131,36 +131,6 @@ using System.Threading.Tasks;
         }
 
         [TestMethod()]
-        public void MulticlassSupportVectorMachineConstructorTest3()
-        {
-            MulticlassSupportVectorMachine SupportVectorMachine =
-                new MulticlassSupportVectorMachine(2, new Gaussian(), 5);
-
-            int[] list = Matrix.Vector(0, 5);
-
-            Parallel.For(0, list.Length, i =>
-            {
-
-                double[] data = new double[2];
-                double[] responses;
-
-                // .. load some stuff ..
-                // here we get a NullReferenceException inside createCache() method.
-                int num = SupportVectorMachine.Compute(data, MulticlassComputeMethod.Voting, out responses);
-
-                if (!SupportVectorMachine.IsProbabilistic)
-                {
-                    // Normalize responses
-                    double max = responses.Max();
-                    double min = responses.Min();
-
-                    responses = Accord.Math.Tools.Scale(min, max, 0, 1, responses);
-                }
-                // .. do something ..
-            });
-        }
-
-        [TestMethod()]
         public void ComputeTest1()
         {
             double[][] inputs =
@@ -183,27 +153,123 @@ using System.Threading.Tasks;
                 3, 3,
             };
 
+
             IKernel kernel = new Polynomial(2);
             var msvm = new MulticlassSupportVectorMachine(5, kernel, 4);
             var smo = new MulticlassSupportVectorLearning(msvm, inputs, outputs);
             smo.Algorithm = (svm, classInputs, classOutputs, i, j) =>
                 new SequentialMinimalOptimization(svm, classInputs, classOutputs);
 
+            Assert.AreEqual(0, msvm.GetLastKernelEvaluations());
+
             double error = smo.Run();
 
+            Assert.AreEqual(6, msvm.GetLastKernelEvaluations());
+
+            int[] evals = new int[inputs.Length];
+            int[] evalexp = { 8, 8, 7, 7, 7, 7, 6, 6 };
             for (int i = 0; i < inputs.Length; i++)
             {
                 double expected = outputs[i];
                 double actual = msvm.Compute(inputs[i], MulticlassComputeMethod.Elimination);
                 Assert.AreEqual(expected, actual);
+                evals[i] = msvm.GetLastKernelEvaluations();
             }
+
+            for (int i = 0; i < evals.Length; i++)
+                Assert.AreEqual(evals[i], evalexp[i]);
 
             for (int i = 0; i < inputs.Length; i++)
             {
                 double expected = outputs[i];
                 double actual = msvm.Compute(inputs[i], MulticlassComputeMethod.Voting);
                 Assert.AreEqual(expected, actual);
+                evals[i] = msvm.GetLastKernelEvaluations();
             }
+
+            for (int i = 0; i < evals.Length; i++)
+                Assert.AreEqual(msvm.SupportVectorUniqueCount, evals[i]);
+        }
+
+        [TestMethod()]
+        public void ComputeTest2()
+        {
+            double[][] input =
+            {
+                new double[] { 1, 4, 2, 0, 1 },
+                new double[] { 1, 3, 2, 0, 1 },
+                new double[] { 3, 0, 1, 1, 1 },
+                new double[] { 3, 0, 1, 0, 1 },
+                new double[] { 0, 5, 5, 5, 5 },
+                new double[] { 1, 5, 5, 5, 5 },
+                new double[] { 1, 0, 0, 0, 0 },
+                new double[] { 1, 0, 0, 0, 0 },
+            };
+
+            int[] output =
+            {
+                0, 0,
+                1, 1,
+                2, 2,
+                3, 3,
+            };
+
+
+            IKernel kernel = new Polynomial(2);
+            int classes = 4;
+            int inputs = 5;
+
+
+            // Create the Multi-class Support Vector Machine using the selected Kernel
+            MulticlassSupportVectorMachine msvm = new MulticlassSupportVectorMachine(inputs, kernel, classes);
+
+            // Create the learning algorithm using the machine and the training data
+            MulticlassSupportVectorLearning ml = new MulticlassSupportVectorLearning(msvm, input, output);
+
+            // Configure the learning algorithm
+            ml.Algorithm = (svm, classInputs, classOutputs, i, j) =>
+            {
+                var smo = new SequentialMinimalOptimization(svm, classInputs, classOutputs);
+                return smo;
+            };
+
+            Assert.AreEqual(0, msvm.GetLastKernelEvaluations());
+
+            // Executes the training algorithm
+            double error = ml.Run();
+
+            Assert.AreEqual(6, msvm.GetLastKernelEvaluations());
+
+            int[] evals = new int[input.Length];
+            int[] evalexp = { 8, 8, 7, 7, 7, 7, 6, 6 };
+
+            Parallel.For(0, input.Length, i =>
+            {
+                double[] data = input[i];
+                double[] responses;
+
+                int num = msvm.Compute(data, MulticlassComputeMethod.Elimination, out responses);
+                Assert.AreEqual(output[i], num);
+
+                evals[i] = msvm.GetLastKernelEvaluations();
+            });
+
+            for (int i = 0; i < evals.Length; i++)
+                Assert.AreEqual(evals[i], evalexp[i]);
+
+            Parallel.For(0, input.Length, i =>
+            {
+                double[] data = input[i];
+                double[] responses;
+
+                int num = msvm.Compute(data, MulticlassComputeMethod.Voting, out responses);
+                Assert.AreEqual(output[i], num);
+
+                evals[i] = msvm.GetLastKernelEvaluations();
+            });
+
+            for (int i = 0; i < evals.Length; i++)
+                Assert.AreEqual(msvm.SupportVectorUniqueCount, evals[i]);
         }
 
         [TestMethod()]
