@@ -29,8 +29,8 @@ namespace Accord
     using System.Text;
 
     /// <summary>
-    ///   Minimum ThreadLocal implementation for .NET 3.5 to
-    ///   make Accord.NET work. This is not a complete implementation.
+    ///   Minimum ThreadLocal implementation for .NET 3.5 to make
+    ///   Accord.NET work. This is not a complete implementation.
     /// </summary>
     /// 
     internal class ThreadLocal<T> : IDisposable

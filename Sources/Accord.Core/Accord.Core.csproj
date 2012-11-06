@@ -86,8 +86,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compatibility\CancellationToken.cs" />
+    <Compile Include="Compatibility\Lazy.cs" />
     <Compile Include="Compatibility\Parallel.cs" />
     <Compile Include="Compatibility\SortedSet.cs" />
+    <Compile Include="Compatibility\SpinLock.cs" />
     <Compile Include="Compatibility\ThreadLocal.cs" />
     <Compile Include="Compatibility\Tuple.cs" />
     <Compile Include="DataSetExtensions.cs" />
