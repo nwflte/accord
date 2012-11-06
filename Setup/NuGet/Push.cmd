@@ -5,7 +5,7 @@ echo Accord.NET Framework NuGet package publisher
 echo =========================================================
 echo. 
 echo This Windows batch file uses NuGet to automatically
-echo push the NuGet framework packages to the gallery.
+echo push the Accord.NET Framework packages to the gallery.
 echo. 
 
 timeout /T 5
