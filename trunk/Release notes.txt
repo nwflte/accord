@@ -1,6 +1,6 @@
 Accord.NET Framework 2.8.0 release notes
 -----------------------------------------
-05.11.2012.    
+06.11.2012.    
 
 Version updates and fixes:
 
@@ -27,6 +27,7 @@ Version updates and fixes:
 * Accord.MachineLearning
   - Marking DecisionAttributeCollection as Serializable;
   - Updating Multi-class and Multi-label SVMs to implement the IEnumerable interface;
+  - Updating Multi-class SVM decision to be thread-safe in multithreaded environments;
   - Adding explicit class count parameter to KNearestNeighbor;
   - Adding Bag-of-Words model for text categorization;
   - Fixing SMO when there is only one class label in outputs;

@@ -759,11 +759,13 @@ namespace Accord.Math
         /// <summary>
         ///   Gets the trace of a matrix.
         /// </summary>
+        /// 
         /// <remarks>
         ///   The trace of an n-by-n square matrix A is defined to be the sum of the
         ///   elements on the main diagonal (the diagonal from the upper left to the
         ///   lower right) of A.
         /// </remarks>
+        /// 
         public static float Trace(this float[,] matrix)
         {
             if (matrix == null) throw new ArgumentNullException("matrix");
@@ -779,11 +781,13 @@ namespace Accord.Math
         /// <summary>
         ///   Gets the trace of a matrix.
         /// </summary>
+        /// 
         /// <remarks>
         ///   The trace of an n-by-n square matrix A is defined to be the sum of the
         ///   elements on the main diagonal (the diagonal from the upper left to the
         ///   lower right) of A.
         /// </remarks>
+        /// 
         public static float Trace(this float[][] matrix)
         {
             if (matrix == null) throw new ArgumentNullException("matrix");
@@ -797,8 +801,11 @@ namespace Accord.Math
         /// <summary>
         ///   Gets the diagonal vector from a matrix.
         /// </summary>
+        /// 
         /// <param name="matrix">A matrix.</param>
+        /// 
         /// <returns>The diagonal vector from the given matrix.</returns>
+        /// 
         public static T[] Diagonal<T>(this T[][] matrix)
         {
             if (matrix == null) throw new ArgumentNullException("matrix");
@@ -813,8 +820,11 @@ namespace Accord.Math
         /// <summary>
         ///   Gets the diagonal vector from a matrix.
         /// </summary>
+        /// 
         /// <param name="matrix">A matrix.</param>
+        /// 
         /// <returns>The diagonal vector from the given matrix.</returns>
+        /// 
         public static T[] Diagonal<T>(this T[,] matrix)
         {
             if (matrix == null) throw new ArgumentNullException("matrix");
@@ -829,6 +839,7 @@ namespace Accord.Math
         /// <summary>
         ///   Gets the determinant of a matrix.
         /// </summary>
+        /// 
         public static double Determinant(this double[,] matrix)
         {
             // Assume the most general case
@@ -838,6 +849,7 @@ namespace Accord.Math
         /// <summary>
         ///   Gets the determinant of a matrix.
         /// </summary>
+        /// 
         public static double Determinant(this double[,] matrix, bool symmetric)
         {
             if (matrix == null) throw new ArgumentNullException("matrix");
@@ -852,6 +864,7 @@ namespace Accord.Math
         /// <summary>
         ///   Gets the determinant of a matrix.
         /// </summary>
+        /// 
         public static int Rank(this double[,] matrix)
         {
             return new SingularValueDecomposition(matrix,
@@ -862,6 +875,7 @@ namespace Accord.Math
         /// <summary>
         ///   Gets the determinant of a matrix.
         /// </summary>
+        /// 
         public static int Rank(this float[,] matrix)
         {
             return new SingularValueDecompositionF(matrix,
