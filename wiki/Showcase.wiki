@@ -26,7 +26,9 @@ This page enlists several works which have used Accord.NET in some point of thei
 
 == Academical studies ==
 
-The following papers include at least a citation to the framework, reference material published based on the framework or have used standalone code which now has been incorporated in the framework.
+The following papers include at least a citation to the framework, reference material published based on the framework or have used standalone code which now has been incorporated in the framework. Some of those have been found using search engines or automatic alerts. If your paper has been incorrectly incorporated in this collection, please let me know.
+
+ * César Roberto de Souza, Ednaldo Brigante Pizzolato, Mauro dos Santos Anjo. Fingerspelling Recognition with Support Vector Machines and Hidden Conditional Random Fields. Advances in Artificial Intelligence – IBERAMIA 2012. Lecture Notes in Computer Science Volume 7637, 2012, pp 561-570. DOI: http://dx.doi.org/10.1007/978-3-642-34654-5_57
 
  * Guido Soetens, Estimating the limitations of single-handed multi-touch input. Master Thesis, Utrecht University. September, 2012.
 
