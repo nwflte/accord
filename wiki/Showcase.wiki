@@ -34,6 +34,8 @@ The following papers include at least a citation to the framework, reference mat
 
  * K. N. Pushpalatha, A. K. Gautham, D. R. Shashikumar, K. B. ShivaKumar. Iris Recognition System with Frequency Domain Features optimized with PCA and SVM Classifier, IJCSI International Journal of Computer Science Issues, Vol. 9, Issue 5, No 1, September 2012.
 
+ * Reza Taherkhani, Mohammad Kia. Designing a high accuracy 3D auto stereoscopic eye tracking display, using a common LCD monitor. Journal of 3D Research, July 2012, 3:2.
+
  * Arnaud Ogier, Thierry Dorval. HCS-Analyzer: Open source software for High-Content Screening data correction and analysis. Bioinformatics. First published online May 13, 2012. 
 
  * Ludovico Buffon, Evelina Lamma, Fabrizio Riguzzi, and Davide Forment. Un sistema di vision inspection basato su reti neurali. In Matteo Baldoni, Federico Chesani, Bernardo Magnini, Paola Mello, and Marco Montai, editors, Popularize Artificial Intelligence. Proceedings of the AI*IA Workshop and Prize for Celebrating 100th Anniversary of Alan Turing's Birth (PAI 2012), Rome, Italy, June 15, 2012, number 860 in CEUR Workshop Proceedings, pages 1-6, Aachen, Germany, 2012.
