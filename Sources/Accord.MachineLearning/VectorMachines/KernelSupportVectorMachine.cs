@@ -204,7 +204,10 @@ namespace Accord.MachineLearning.VectorMachines
         /// 
         public static new KernelSupportVectorMachine Load(string path)
         {
-            return Load(new FileStream(path, FileMode.Open));
+            using (FileStream fs = new FileStream(path, FileMode.Open))
+            {
+                return Load(fs);
+            }
         }
 
     }

@@ -605,7 +605,7 @@ namespace Accord.MachineLearning.VectorMachines
         /// 
         /// <returns>The decision label for the given input.</returns>
         /// 
-        private int computeElimination(double[] inputs, out double[] responses,
+        private int computeElimination(double[] inputs, out double[] responses, 
             out double output, Tuple<int, int>[] decisionPath)
         {
             // Compute decision by Directed Acyclic Graph
@@ -635,6 +635,7 @@ namespace Accord.MachineLearning.VectorMachines
             // Navigate decision path
             while (classA != classB)
             {
+                
                 // Compute the two-class decision problem to decide for A x B
                 int answer = computeParallel(classA, classB, inputs, out output, cache);
 
@@ -710,6 +711,7 @@ namespace Accord.MachineLearning.VectorMachines
 
             return classA;
         }
+
         #endregion
 
 
@@ -815,7 +817,7 @@ namespace Accord.MachineLearning.VectorMachines
             }
             else
             {
-                
+
 #if NET35
                 #region Backward compatibility
                 for (int i = 0; i < vectors.Length; i++)
@@ -926,7 +928,7 @@ namespace Accord.MachineLearning.VectorMachines
 
             // First of all, check if the shared vectors in this machine
             // already have been identified. If they don't, identify them.
-            
+
             cache.Vectors = sharedVectors.Value; // use lazy instantiation
             int vectorCount = SupportVectorSharedCount;
 
@@ -1089,7 +1091,10 @@ namespace Accord.MachineLearning.VectorMachines
         /// 
         public void Save(string path)
         {
-            Save(new FileStream(path, FileMode.Create));
+            using (FileStream fs = new FileStream(path, FileMode.Create))
+            {
+                Save(fs);
+            }
         }
 
         /// <summary>
@@ -1116,7 +1121,10 @@ namespace Accord.MachineLearning.VectorMachines
         /// 
         public static MulticlassSupportVectorMachine Load(string path)
         {
-            return Load(new FileStream(path, FileMode.Open));
+            using (FileStream fs = new FileStream(path, FileMode.Open))
+            {
+                return Load(fs);
+            }
         }
 
         [OnDeserialized]

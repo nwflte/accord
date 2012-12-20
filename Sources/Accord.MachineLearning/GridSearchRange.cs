@@ -27,7 +27,7 @@ namespace Accord.MachineLearning
     using Accord.Math;
 
     /// <summary>
-    ///   Represents a range of parameters to be tried during a grid search.
+    ///   Range of parameters to be tested in a grid search.
     /// </summary>
     /// 
     [Serializable]
