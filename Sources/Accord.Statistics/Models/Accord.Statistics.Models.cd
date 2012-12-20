@@ -113,7 +113,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Statistics.Models.Regression.Fitting.ProportionalHazardsNewtonRaphson" BaseTypeListCollapsed="true">
-    <Position X="8.5" Y="9.75" Width="2.75" />
+    <Position X="7.25" Y="9.75" Width="2.75" />
     <Members>
       <Field Name="computeBaselineFunction" Hidden="true" />
       <Field Name="computeStandardErrors" Hidden="true" />
@@ -141,7 +141,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Statistics.Models.Regression.Fitting.IterativeReweightedLeastSquares" BaseTypeListCollapsed="true">
-    <Position X="5.75" Y="9.75" Width="2.5" />
+    <Position X="4.25" Y="10.25" Width="2.5" />
     <Members>
       <Field Name="computeStandardErrors" Hidden="true" />
       <Field Name="decomposition" Hidden="true" />
@@ -158,7 +158,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Statistics.Models.Regression.Fitting.LowerBoundNewtonRaphson" BaseTypeListCollapsed="true">
-    <Position X="3.25" Y="9.75" Width="2.25" />
+    <Position X="1.75" Y="10" Width="2.25" />
     <Members>
       <Field Name="computeStandardErrors" Hidden="true" />
       <Field Name="decomposition" Hidden="true" />
@@ -180,6 +180,23 @@
     <TypeIdentifier>
       <HashCode>AECQAhEAAAFQQgAAQAMAAAEACAAAQABAAYAAAMJAgAI=</HashCode>
       <FileName>Models\Regression\Nonlinear\Fitting\LowerBoundNewtonRaphson.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Accord.Statistics.Models.Regression.Fitting.LogisticGradientDescent">
+    <Position X="9.25" Y="5.5" Width="2" />
+    <Members>
+      <Field Name="deltas" Hidden="true" />
+      <Field Name="gradient" Hidden="true" />
+      <Field Name="parameterCount" Hidden="true" />
+      <Field Name="previous" Hidden="true" />
+      <Field Name="rate" Hidden="true" />
+      <Field Name="regression" Hidden="true" />
+      <Field Name="stochastic" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAQQAFAAAABAAgAEQAIABAAAAAAAAAAAAYAAAGAAAAI=</HashCode>
+      <FileName>Models\Regression\Nonlinear\Fitting\LogisticGradientDescent.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>

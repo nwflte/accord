@@ -267,6 +267,18 @@ namespace Accord.Statistics.Models.Markov
             return base.LogLikelihood(sequences, outputs);
         }
 
+        /// <summary>
+        ///   Computes the log-likelihood that a sequence
+        ///   belongs any of the classes in the classifier.
+        /// </summary>
+        /// <param name="sequence">The sequence of observations.</param>
+        /// 
+        /// <returns>The log-likelihood of the sequence belonging to the classifier.</returns>
+        /// 
+        public double LogLikelihood(int[] sequence)
+        {
+            return base.LogLikelihood(sequence);
+        }
 
         /// <summary>
         ///   Creates a new Sequence Classifier with the given number of classes.
@@ -319,7 +331,10 @@ namespace Accord.Statistics.Models.Markov
         /// 
         public void Save(string path)
         {
-            Save(new FileStream(path, FileMode.Create));
+            using (FileStream fs = new FileStream(path, FileMode.Create))
+            {
+                Save(fs);
+            }
         }
 
         /// <summary>
@@ -346,7 +361,10 @@ namespace Accord.Statistics.Models.Markov
         /// 
         public static HiddenMarkovClassifier Load(string path)
         {
-            return Load(new FileStream(path, FileMode.Open));
+            using (FileStream fs = new FileStream(path, FileMode.Open))
+            {
+                return Load(fs);
+            }
         }
 
 

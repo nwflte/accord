@@ -53,7 +53,7 @@ namespace Accord.Statistics.Models.Markov
     ///   
     [Serializable]
     public class HiddenMarkovClassifier<TDistribution> : BaseHiddenMarkovClassifier<HiddenMarkovModel<TDistribution>>,
-        IEnumerable<HiddenMarkovModel<TDistribution>>,  IHiddenMarkovClassifier where TDistribution : IDistribution
+        IEnumerable<HiddenMarkovModel<TDistribution>>, IHiddenMarkovClassifier where TDistribution : IDistribution
     {
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace Accord.Statistics.Models.Markov
         {
             get { return Models[0].Dimension; }
         }
-    
+
         /// <summary>
         ///   Creates a new Sequence Classifier with the given number of classes.
         /// </summary>
@@ -277,6 +277,19 @@ namespace Accord.Statistics.Models.Markov
         }
 
         /// <summary>
+        ///   Computes the log-likelihood that a sequence
+        ///   belongs any of the classes in the classifier.
+        /// </summary>
+        /// <param name="sequence">The sequence of observations.</param>
+        /// 
+        /// <returns>The log-likelihood of the sequence belonging to the classifier.</returns>
+        /// 
+        public new double LogLikelihood(Array sequence)
+        {
+            return base.LogLikelihood(sequence);
+        }
+
+        /// <summary>
         ///   Computes the log-likelihood of a set of sequences
         ///   belonging to their given respective classes according
         ///   to this classifier.
@@ -320,7 +333,10 @@ namespace Accord.Statistics.Models.Markov
         /// 
         public void Save(string path)
         {
-            Save(new FileStream(path, FileMode.Create));
+            using (FileStream fs = new FileStream(path, FileMode.Create))
+            {
+                Save(fs);
+            }
         }
 
         /// <summary>
@@ -347,7 +363,10 @@ namespace Accord.Statistics.Models.Markov
         /// 
         public static HiddenMarkovClassifier<TDistribution> Load(string path)
         {
-            return Load(new FileStream(path, FileMode.Open));
+            using (FileStream fs = new FileStream(path, FileMode.Open))
+            {
+                return Load(fs);
+            }
         }
 
     }

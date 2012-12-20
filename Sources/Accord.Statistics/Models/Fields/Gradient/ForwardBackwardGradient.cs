@@ -208,12 +208,12 @@ namespace Accord.Statistics.Models.Fields.Learning
         public double[] Gradient()
         {
             // Localize thread locals
-            var logLikelihoods = this.logLikelihoods.Value;
-            var inputs = this.inputs.Value;
-            var outputs = this.outputs.Value;
-            var lnZx = this.lnZx.Value;
-            var lnZxy = this.lnZxy.Value;
-            var gradient = this.gradient.Value;
+            double[][] logLikelihoods = this.logLikelihoods.Value;
+            T[][] inputs = this.inputs.Value;
+            int[] outputs = this.outputs.Value;
+            double[] lnZx = this.lnZx.Value;
+            double[] lnZxy = this.lnZxy.Value;
+            double[] gradient = this.gradient.Value;
 
             double error = 0;
 
@@ -264,8 +264,8 @@ namespace Accord.Statistics.Models.Fields.Learning
                 // Compute all forward and backward matrices to be
                 //  used in the feature functions marginal computations.
 
-                var lnFwds = new double[inputs.Length][,];
-                var lnBwds = new double[inputs.Length][,];
+                double[][,] lnFwds = new double[inputs.Length][,];
+                double[][,] lnBwds = new double[inputs.Length][,];
                 for (int i = 0; i < inputs.Length; i++)
                 {
                     lnFwds[i] = ForwardBackwardAlgorithm.LogForward(factor, inputs[i], factorIndex);
