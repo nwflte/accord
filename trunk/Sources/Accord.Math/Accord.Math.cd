@@ -7,7 +7,7 @@
       <Method Name="mean" Hidden="true" />
     </Members>
     <TypeIdentifier>
-      <HashCode>AgAAAAAAAAAECAABAAAAAQCgAAQAAACAAAAAAAAABAA=</HashCode>
+      <HashCode>AoAAAAAAAAAECAABAAAAAQCgAAQAAACAAAAAAAAABAA=</HashCode>
       <FileName>Distance.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -27,7 +27,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>QY4j0BACiViAyR00mcIXBCYIyAxJDPAViVAI4GpREYY=</HashCode>
+      <HashCode>QY4j0BACiViAyR00mcIXBCYIyAxJDPAVidAI4GpREYY=</HashCode>
       <FileName>Matrix\Matrix.Algebra.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -50,24 +50,6 @@
       <HashCode>AAAIAAAAAAAAAAAEQCIAAAAAAAYABABAAUQAUAAgACQ=</HashCode>
       <FileName>Tools.cs</FileName>
     </TypeIdentifier>
-  </Class>
-  <Class Name="Accord.Math.GeneralComparer" BaseTypeListCollapsed="true">
-    <Position X="9.75" Y="11.5" Width="2.5" />
-    <Members>
-      <Field Name="absolute" Hidden="true" />
-      <Field Name="direction" Hidden="true" />
-    </Members>
-    <Compartments>
-      <Compartment Name="Fields" Collapsed="true" />
-    </Compartments>
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAIAAAACAAAAAAAAAAAAAAIABAAAAAAAA=</HashCode>
-      <FileName>Tools.cs</FileName>
-    </TypeIdentifier>
-    <ShowAsAssociation>
-      <Property Name="Direction" />
-    </ShowAsAssociation>
-    <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Math.Formats.MatrixFormatProviderBase" Collapsed="true">
     <Position X="14.75" Y="15.25" Width="2.25" />
@@ -141,7 +123,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Math.Optimization.LineSearchFailedException">
-    <Position X="25" Y="14" Width="3" />
+    <Position X="25" Y="15.25" Width="3" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
@@ -151,7 +133,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Math.Optimization.OptimizationProgressEventArgs">
-    <Position X="22" Y="11.25" Width="2.5" />
+    <Position X="22" Y="12.5" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAABAAAABCAAQAAAQAAAAAAAAAAAAAJAAgAAAACAA=</HashCode>
       <FileName>Optimization\Unconstrained\OptimizationProgressEventHandler.cs</FileName>
@@ -211,7 +193,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Math.Optimization.BroydenFletcherGoldfarbShanno" BaseTypeListCollapsed="true">
-    <Position X="24.75" Y="9" Width="3.5" />
+    <Position X="24.75" Y="10.25" Width="3.5" />
     <Members>
       <Field Name="corrections" Hidden="true" />
       <Method Name="createWorkVector" Hidden="true" />
@@ -245,7 +227,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Math.Optimization.ConjugateGradient" BaseTypeListCollapsed="true">
-    <Position X="28.75" Y="9" Width="2.5" />
+    <Position X="28.75" Y="10.25" Width="2.5" />
     <Members>
       <Field Name="brackt" Hidden="true" />
       <Method Name="cvsmod" Hidden="true" />
@@ -532,6 +514,56 @@
       <FileName>Combinatorics.cs</FileName>
     </TypeIdentifier>
   </Class>
+  <Class Name="Accord.Math.Comparers.CustomComparer&lt;T&gt;" BaseTypeListCollapsed="true">
+    <Position X="33.25" Y="2" Width="1.75" />
+    <Members>
+      <Field Name="comparer" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAgAAAAAAAAAAAAIAAAABBAAAAAAA=</HashCode>
+      <FileName>Comparers\CustomComparer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Accord.Math.Comparers.ElementComparer" BaseTypeListCollapsed="true">
+    <Position X="35.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAgAAAAAAAAAAAAIAAAAFAAAAAAAA=</HashCode>
+      <FileName>Comparers\ElementComparer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Accord.Math.Comparers.GeneralComparer" BaseTypeListCollapsed="true">
+    <Position X="38" Y="2" Width="2.5" />
+    <Members>
+      <Field Name="absolute" Hidden="true" />
+      <Field Name="direction" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAIAAAACAAAAAAAAAAAAAAIABAAAAAAAA=</HashCode>
+      <FileName>Comparers\GeneralComparer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Accord.Math.Comparers.IntegerArrayComparer" BaseTypeListCollapsed="true">
+    <Position X="35.75" Y="4.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAgAAAAAAAAAAAAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>Comparers\IntegerArrayComparer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Accord.Math.Comparers.StableComparer&lt;T&gt;" BaseTypeListCollapsed="true">
+    <Position X="33.25" Y="4.5" Width="1.75" />
+    <Members>
+      <Field Name="comparison" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAABAAAAAAAA=</HashCode>
+      <FileName>Comparers\StableComparer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
   <Interface Name="Accord.Math.Formats.IMatrixFormatProvider" Collapsed="true">
     <Position X="17.5" Y="15.25" Width="2" />
     <TypeIdentifier>
@@ -547,7 +579,7 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="Accord.Math.Optimization.IOptimizationMethod">
-    <Position X="22.5" Y="9.25" Width="1.75" />
+    <Position X="22.5" Y="10.5" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgA=</HashCode>
       <FileName>Optimization\Unconstrained\IOptimizationMethod.cs</FileName>
@@ -560,15 +592,8 @@
       <FileName>Optimization\IObjectiveFunction.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Enum Name="Accord.Math.ComparerDirection">
-    <Position X="13.25" Y="11.5" Width="1.75" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAACAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Tools.cs</FileName>
-    </TypeIdentifier>
-  </Enum>
   <Enum Name="Accord.Math.Optimization.ConjugateGradientMethod">
-    <Position X="28.75" Y="13.75" Width="2.5" />
+    <Position X="28.75" Y="15" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAgAAAAAAABAAAgAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Optimization\Unconstrained\ConjugateGradient.cs</FileName>
@@ -579,6 +604,13 @@
     <TypeIdentifier>
       <HashCode>AAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAIAAAAAA=</HashCode>
       <FileName>Optimization\Constrained\LinearConstraint.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Accord.Math.Comparers.ComparerDirection">
+    <Position X="38.5" Y="4.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Comparers\GeneralComparer.cs</FileName>
     </TypeIdentifier>
   </Enum>
   <Font Name="Segoe UI" Size="9" />
