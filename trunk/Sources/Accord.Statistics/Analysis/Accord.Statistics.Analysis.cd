@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="Accord.Statistics.Analysis.IndependentComponentAnalysis">
-    <Position X="22.5" Y="10.25" Width="3.5" />
+    <Position X="20.25" Y="9.25" Width="3.5" />
     <Members>
       <Method Name="Adjust" Hidden="true" />
       <Field Name="algorithm" Hidden="true" />
@@ -10,7 +10,6 @@
       <Field Name="columnStdDev" Hidden="true" />
       <Field Name="componentCollection" Hidden="true" />
       <Field Name="contrast" Hidden="true" />
-      <Method Name="convert" Hidden="true" />
       <Method Name="deflation" Hidden="true" />
       <Field Name="maxIterations" Hidden="true" />
       <Field Name="mixingArray" Hidden="true" />
@@ -29,12 +28,12 @@
     </Compartments>
     <AssociationLine Name="Components" Type="Accord.Statistics.Analysis.IndependentComponent" FixedFromPoint="true">
       <Path>
-        <Point X="26" Y="13.938" />
-        <Point X="27.25" Y="13.938" />
+        <Point X="23.75" Y="12.938" />
+        <Point X="25" Y="12.938" />
       </Path>
     </AssociationLine>
     <TypeIdentifier>
-      <HashCode>DMBBICIAAgACgMyAIAQDAAcABAAAKAQAIAABAA0AQAA=</HashCode>
+      <HashCode>DMBBICIAAgACAMyAIAQDAAcABAAAKAQAYAABAA0AQAA=</HashCode>
       <FileName>Analysis\IndependentComponentAnalysis.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -47,7 +46,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Statistics.Analysis.IndependentComponent">
-    <Position X="27.25" Y="13" Width="2.5" />
+    <Position X="25" Y="12" Width="2.5" />
     <Members>
       <Field Name="analysis" Hidden="true" />
       <Field Name="index" Hidden="true" />
@@ -61,7 +60,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Statistics.Analysis.ContrastFunctions.Exponential" BaseTypeListCollapsed="true">
-    <Position X="30.25" Y="9.75" Width="2.25" />
+    <Position X="28" Y="8.75" Width="2.25" />
     <Members>
       <Field Name="alpha" Hidden="true" />
     </Members>
@@ -75,7 +74,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Statistics.Analysis.ContrastFunctions.Logcosh" BaseTypeListCollapsed="true">
-    <Position X="30.25" Y="13.75" Width="2.25" />
+    <Position X="28" Y="12.75" Width="2.25" />
     <Members>
       <Field Name="alpha" Hidden="true" />
     </Members>
@@ -86,7 +85,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Statistics.Analysis.ContrastFunctions.Kurtosis" BaseTypeListCollapsed="true">
-    <Position X="30.25" Y="12" Width="2.25" />
+    <Position X="28" Y="11" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Analysis\IndependentComponentAnalysis.cs</FileName>
@@ -94,7 +93,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Statistics.Analysis.KernelPrincipalComponentAnalysis">
-    <Position X="2.75" Y="20.5" Width="3.5" />
+    <Position X="0.5" Y="19.5" Width="3.5" />
     <Members>
       <Method Name="centerKernel" Hidden="true" />
     </Members>
@@ -108,7 +107,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Statistics.Analysis.PrincipalComponentAnalysis">
-    <Position X="2.75" Y="14.25" Width="3.5" />
+    <Position X="0.5" Y="13.25" Width="3.5" />
     <Compartments>
       <Compartment Name="Protected" Collapsed="true" />
       <Compartment Name="Private" Collapsed="true" />
@@ -124,7 +123,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Statistics.Analysis.PrincipalComponent">
-    <Position X="7.5" Y="15.5" Width="2" />
+    <Position X="5.25" Y="14.5" Width="2" />
     <Members>
       <Field Name="index" Hidden="true" />
       <Field Name="principalComponentAnalysis" Hidden="true" />
@@ -139,7 +138,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Statistics.Analysis.PartialLeastSquaresAnalysis">
-    <Position X="12.25" Y="19" Width="3" />
+    <Position X="10" Y="18" Width="3" />
     <Members>
       <Method Name="Adjust" Hidden="true" />
       <Field Name="algorithm" Hidden="true" />
@@ -174,20 +173,12 @@
       <Compartment Name="Protected" Collapsed="true" />
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
-    <AssociationLine Name="Predictors" Type="Accord.Statistics.Analysis.PartialLeastSquaresVariables" FixedToPoint="true">
-      <Path>
-        <Point X="13.125" Y="22.545" />
-        <Point X="13.125" Y="23.5" />
-      </Path>
+    <AssociationLine Name="Predictors" Type="Accord.Statistics.Analysis.PartialLeastSquaresVariables">
       <MemberNameLabel ManuallyPlaced="true">
         <Position X="0.158" Y="0.123" />
       </MemberNameLabel>
     </AssociationLine>
-    <AssociationLine Name="Dependents" Type="Accord.Statistics.Analysis.PartialLeastSquaresVariables" FixedToPoint="true">
-      <Path>
-        <Point X="14.625" Y="22.545" />
-        <Point X="14.625" Y="23.5" />
-      </Path>
+    <AssociationLine Name="Dependents" Type="Accord.Statistics.Analysis.PartialLeastSquaresVariables">
       <MemberNameLabel ManuallyPlaced="true">
         <Position X="0.126" Y="0.108" />
       </MemberNameLabel>
@@ -207,7 +198,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Statistics.Analysis.PartialLeastSquaresVariables">
-    <Position X="12.25" Y="23.5" Width="3" />
+    <Position X="10" Y="22.5" Width="3" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
@@ -217,7 +208,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Statistics.Analysis.PartialLeastSquaresFactor">
-    <Position X="16.75" Y="20.5" Width="3.25" />
+    <Position X="14.5" Y="19.5" Width="3.25" />
     <Members>
       <Field Name="analysis" Hidden="true" />
       <Field Name="index" Hidden="true" />
@@ -235,7 +226,7 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="Accord.Statistics.Analysis.KernelDiscriminantAnalysis">
-    <Position X="13" Y="14.5" Width="2.25" />
+    <Position X="10.75" Y="13.5" Width="2.25" />
     <Members>
       <Field Name="kernel" Hidden="true" />
       <Field Name="regularization" Hidden="true" />
@@ -251,7 +242,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Statistics.Analysis.LinearDiscriminantAnalysis">
-    <Position X="13" Y="9" Width="2.25" />
+    <Position X="10.75" Y="8" Width="2.25" />
     <Members>
       <Field Name="classCollection" Hidden="true" />
       <Field Name="classCount" Hidden="true" />
@@ -287,7 +278,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AEAAACAEBgEoBAYDBAQQFgRBLFTAAQAAgAAFJAQCAAA=</HashCode>
+      <HashCode>AEAAACAEBgEoBAYDBAQQFgRBLFTAAQIAgAAFJAQCAAA=</HashCode>
       <FileName>Analysis\LinearDiscriminantAnalysis.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -297,7 +288,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Statistics.Analysis.DiscriminantAnalysisClass">
-    <Position X="16.75" Y="9" Width="2.25" />
+    <Position X="14.5" Y="8" Width="2.25" />
     <Members>
       <Field Name="analysis" Hidden="true" />
       <Field Name="classNumber" Hidden="true" />
@@ -314,7 +305,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Statistics.Analysis.Discriminant">
-    <Position X="16.75" Y="12.75" Width="2.25" />
+    <Position X="14.5" Y="11.75" Width="2.25" />
     <Members>
       <Field Name="analysis" Hidden="true" />
       <Method Name="Discriminant" Hidden="true" />
@@ -330,7 +321,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Statistics.Analysis.ConfusionMatrix">
-    <Position X="26" Y="19.5" Width="2.75" />
+    <Position X="23.75" Y="18.5" Width="2.75" />
     <Members>
       <Field Name="falseNegatives" Hidden="true" />
       <Field Name="falsePositives" Hidden="true" />
@@ -342,12 +333,12 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAQAAAAEABAABEAEAECIAgkABASgBAEgAEgDACCIEgQ=</HashCode>
+      <HashCode>AAQAAgAEABEABMAEAECIAgkABASgBAEggEgDAyCIEgQ=</HashCode>
       <FileName>Analysis\Performance\ConfusionMatrix.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Statistics.Analysis.DescriptiveAnalysis">
-    <Position X="2.75" Y="6.25" Width="2.5" />
+    <Position X="0.5" Y="5.25" Width="2.5" />
     <Compartments>
       <Compartment Name="Private" Collapsed="true" />
       <Compartment Name="Fields" Collapsed="true" />
@@ -363,19 +354,31 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Statistics.Analysis.ReceiverOperatingCharacteristic">
-    <Position X="30" Y="22.75" Width="2.5" />
+    <Position X="27.75" Y="21.75" Width="2.5" />
     <Members>
       <Field Name="area" Hidden="true" />
       <Method Name="calculateAreaUnderCurve" Hidden="true" />
+      <Method Name="calculatePlacements" Hidden="true" />
       <Method Name="calculateStandardError" Hidden="true" />
       <Field Name="collection" Hidden="true" />
       <Field Name="dfalse" Hidden="true" />
       <Field Name="dtrue" Hidden="true" />
       <Field Name="error" Hidden="true" />
+      <Method Name="init" Hidden="true" />
+      <Field Name="max" Hidden="true" />
       <Field Name="measurement" Hidden="true" />
+      <Field Name="min" Hidden="true" />
+      <Field Name="negativeAccuracy" Hidden="true" />
       <Field Name="negativeCount" Hidden="true" />
+      <Field Name="negativeResults" Hidden="true" />
+      <Method Name="onDeserialized" Hidden="true" />
+      <Method Name="onDeserializing" Hidden="true" />
+      <Method Name="order" Hidden="true" />
+      <Field Name="positiveAccuracy" Hidden="true" />
       <Field Name="positiveCount" Hidden="true" />
+      <Field Name="positiveResults" Hidden="true" />
       <Field Name="prediction" Hidden="true" />
+      <Method Name="v" Hidden="true" />
     </Members>
     <Compartments>
       <Compartment Name="Private" Collapsed="true" />
@@ -383,7 +386,7 @@
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>BMEAggABAAAAgQAEIEEQAAAAAAAAABAAAADAAQiAAAU=</HashCode>
+      <HashCode>B8EAkoABACAQgABkIEkSAAAgAgAAABIAgFCAAQyCAAU=</HashCode>
       <FileName>Analysis\Performance\ReceiverOperatingCharacteristic.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -391,7 +394,7 @@
     </ShowAsCollectionAssociation>
   </Class>
   <Class Name="Accord.Statistics.Analysis.ReceiverOperatingCharacteristicPoint">
-    <Position X="30" Y="20" Width="2.75" />
+    <Position X="27.75" Y="19" Width="2.75" />
     <Members>
       <Field Name="cutoff" Hidden="true" />
     </Members>
@@ -405,7 +408,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Statistics.Analysis.DescriptiveMeasures">
-    <Position X="6.5" Y="6.5" Width="2" />
+    <Position X="4.25" Y="5.5" Width="2" />
     <Compartments>
       <Compartment Name="Internal" Collapsed="true" />
       <Compartment Name="Private" Collapsed="true" />
@@ -417,7 +420,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Statistics.Analysis.LogisticRegressionAnalysis" BaseTypeListCollapsed="true">
-    <Position X="36" Y="11.75" Width="3" />
+    <Position X="33.75" Y="10.75" Width="3" />
     <Members>
       <Field Name="chiSquare" Hidden="true" />
       <Field Name="coefficientCollection" Hidden="true" />
@@ -439,7 +442,7 @@
       <Field Name="waldTests" Hidden="true" />
     </Members>
     <TypeIdentifier>
-      <HashCode>BUAYAIEAAjCgEQIIBAEIQAQQUMAAAECARAAAFEAQEAQ=</HashCode>
+      <HashCode>FUAYAIEAAjCgEQIIBAEIQAQQUMAAAECARAAAFEAQEAQ=</HashCode>
       <FileName>Analysis\LogisticRegressionAnalysis.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
@@ -448,7 +451,7 @@
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="Accord.Statistics.Analysis.LogisticCoefficient">
-    <Position X="40.25" Y="12.25" Width="1.75" />
+    <Position X="38" Y="11.25" Width="1.75" />
     <Members>
       <Field Name="analysis" Hidden="true" />
       <Field Name="index" Hidden="true" />
@@ -459,7 +462,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Statistics.Analysis.MultipleLinearRegressionAnalysis" BaseTypeListCollapsed="true">
-    <Position X="35.25" Y="4.75" Width="3.25" />
+    <Position X="21" Y="1" Width="3.25" />
     <Members>
       <Field Name="anovaTable" Hidden="true" />
       <Field Name="chiSquareTest" Hidden="true" />
@@ -504,7 +507,7 @@
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="Accord.Statistics.Analysis.LinearRegressionCoefficient">
-    <Position X="39.75" Y="5.5" Width="3" />
+    <Position X="25.5" Y="1.75" Width="3" />
     <Members>
       <Field Name="analysis" Hidden="true" />
       <Field Name="index" Hidden="true" />
@@ -518,7 +521,7 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="Accord.Statistics.Analysis.GeneralConfusionMatrix">
-    <Position X="22.5" Y="19.5" Width="3" />
+    <Position X="20.25" Y="18.5" Width="3" />
     <Members>
       <Field Name="chiSquare" Hidden="true" />
       <Field Name="classes" Hidden="true" />
@@ -545,7 +548,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Statistics.Analysis.StepwiseLogisticRegressionAnalysis" BaseTypeListCollapsed="true">
-    <Position X="36" Y="17.5" Width="2.75" />
+    <Position X="33.75" Y="16.5" Width="2.75" />
     <Members>
       <Field Name="currentModel" Hidden="true" />
       <Method Name="fit" Hidden="true" />
@@ -572,7 +575,7 @@
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="Accord.Statistics.Analysis.StepwiseLogisticRegressionModel">
-    <Position X="39.75" Y="17.5" Width="2.5" />
+    <Position X="37.5" Y="16.5" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQABAAAEAA=</HashCode>
       <FileName>Analysis\StepwiseLogisticRegressionAnalysis.cs</FileName>
@@ -583,81 +586,153 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="Accord.Statistics.Models.Regression.LogisticRegression" Collapsed="true">
-    <Position X="40" Y="20" Width="2" />
+    <Position X="37.75" Y="19" Width="2" />
     <TypeIdentifier>
       <HashCode>AEAAAAAAAAAAACAQAAACQIAIEEAAAAAAYAAABEAAABA=</HashCode>
       <FileName>Models\Regression\Nonlinear\LogisticRegression.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
+  <Class Name="Accord.Statistics.Analysis.WeightedConfusionMatrix">
+    <Position X="20.25" Y="25.25" Width="3" />
+    <Members>
+      <Field Name="kappa" Hidden="true" />
+      <Field Name="kappaStdError" Hidden="true" />
+      <Field Name="kappaStdError0" Hidden="true" />
+      <Field Name="kappaVariance" Hidden="true" />
+      <Field Name="kappaVariance0" Hidden="true" />
+      <Field Name="weightedColProportion" Hidden="true" />
+      <Field Name="weightedRowProportion" Hidden="true" />
+      <Field Name="weights" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAkAAgAIkAAJAAAAAAACAAgAEAQAAIYEAAAzAAAAA=</HashCode>
+      <FileName>Analysis\Performance\WeightedConfusionMatrix.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Accord.Statistics.Analysis.ProportionalHazardsAnalysis" BaseTypeListCollapsed="true">
+    <Position X="32.25" Y="1.5" Width="2.25" />
+    <Members>
+      <Field Name="censorData" Hidden="true" />
+      <Field Name="censorName" Hidden="true" />
+      <Field Name="chiSquare" Hidden="true" />
+      <Field Name="coefficientCollection" Hidden="true" />
+      <Field Name="coefficients" Hidden="true" />
+      <Method Name="computeInformation" Hidden="true" />
+      <Method Name="computeInner" Hidden="true" />
+      <Field Name="confidences" Hidden="true" />
+      <Field Name="deviance" Hidden="true" />
+      <Field Name="hazardRatios" Hidden="true" />
+      <Method Name="IAnalysis.Compute" Hidden="true" />
+      <Method Name="initialize" Hidden="true" />
+      <Field Name="inputCount" Hidden="true" />
+      <Field Name="inputData" Hidden="true" />
+      <Field Name="inputNames" Hidden="true" />
+      <Field Name="logLikelihood" Hidden="true" />
+      <Field Name="ratioTests" Hidden="true" />
+      <Field Name="regression" Hidden="true" />
+      <Field Name="result" Hidden="true" />
+      <Field Name="source" Hidden="true" />
+      <Field Name="standardErrors" Hidden="true" />
+      <Field Name="timeData" Hidden="true" />
+      <Field Name="timeName" Hidden="true" />
+      <Field Name="waldTests" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>FcAQAIAACjCSEQIIBIFASAQQQsAAAECARAAAFEAQEBQ=</HashCode>
+      <FileName>Analysis\ProportionalHazardsAnalysis.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Coefficients" />
+    </ShowAsCollectionAssociation>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Accord.Statistics.Analysis.HazardCoefficient">
+    <Position X="35.75" Y="2" Width="1.75" />
+    <Members>
+      <Field Name="analysis" Hidden="true" />
+      <Field Name="index" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AIAAAgAIAAAAAAAAAAAAAAQAAIACBAAAAAAgAQABAAQ=</HashCode>
+      <FileName>Analysis\ProportionalHazardsAnalysis.cs</FileName>
+    </TypeIdentifier>
+  </Class>
   <Interface Name="Accord.Statistics.Analysis.IAnalysis">
-    <Position X="19.5" Y="1.5" Width="1.75" />
+    <Position X="12.25" Y="0.5" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Analysis\Base\IAnalysis.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Accord.Statistics.Analysis.IDiscriminantAnalysis">
-    <Position X="16.75" Y="5" Width="1.75" />
+    <Position X="9.5" Y="4" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Analysis\Base\IDiscriminantAnalysis.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Accord.Statistics.Analysis.IMultivariateAnalysis">
-    <Position X="19.5" Y="3" Width="1.75" />
+    <Position X="12.25" Y="2" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Analysis\Base\IMultivariateAnalysis.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Accord.Statistics.Analysis.IProjectionAnalysis">
-    <Position X="20.5" Y="5" Width="1.75" />
+    <Position X="13.25" Y="4" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Analysis\Base\IProjectionAnalysis.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Accord.Statistics.Analysis.IRegressionAnalysis">
-    <Position X="22.5" Y="5" Width="1.75" />
+    <Position X="15.25" Y="4" Width="1.75" />
     <TypeIdentifier>
       <HashCode>BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Analysis\Base\IRegressionAnalysis.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Accord.Statistics.Analysis.ContrastFunctions.IContrastFunction">
-    <Position X="27.25" Y="10" Width="2.5" />
+    <Position X="25" Y="9" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Analysis\IndependentComponentAnalysis.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Accord.Statistics.Analysis.IMultivariateRegressionAnalysis">
-    <Position X="18.75" Y="5" Width="1.5" />
+    <Position X="11.5" Y="4" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Analysis\Base\IMultivariateRegressionAnalysis.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Enum Name="Accord.Statistics.Analysis.IndependentComponentAlgorithm">
-    <Position X="27.25" Y="11.5" Width="2.5" />
+    <Position X="25" Y="10.5" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAQAA=</HashCode>
       <FileName>Analysis\IndependentComponentAnalysis.cs</FileName>
     </TypeIdentifier>
   </Enum>
   <Enum Name="Accord.Statistics.Analysis.PartialLeastSquaresAlgorithm">
-    <Position X="17" Y="19" Width="2.5" />
+    <Position X="14.75" Y="18" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAEAAAAAABAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Analysis\PartialLeastSquaresAnalysis.cs</FileName>
     </TypeIdentifier>
   </Enum>
   <Enum Name="Accord.Statistics.Analysis.AnalysisMethod">
-    <Position X="26.25" Y="3.75" Width="1.5" />
+    <Position X="15.5" Y="1.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAIAAA=</HashCode>
       <FileName>Analysis\Base\IAnalysis.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Accord.Statistics.Analysis.RocAreaMethod">
+    <Position X="30.75" Y="23" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAA=</HashCode>
+      <FileName>Analysis\Performance\ReceiverOperatingCharacteristic.cs</FileName>
     </TypeIdentifier>
   </Enum>
   <Font Name="Segoe UI" Size="9" />
