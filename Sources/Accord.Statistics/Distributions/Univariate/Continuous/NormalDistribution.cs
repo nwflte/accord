@@ -26,6 +26,7 @@ namespace Accord.Statistics.Distributions.Univariate
     using Accord.Math;
     using Accord.Statistics.Distributions.Fitting;
     using Accord.Statistics.Distributions;
+    using Accord.Statistics.Distributions.Multivariate;
 
     /// <summary>
     ///   Normal (Gaussian) distribution.
@@ -482,6 +483,17 @@ namespace Accord.Statistics.Distributions.Univariate
         public string ToString(string format, IFormatProvider formatProvider)
         {
             return String.Format(formatProvider, "{0} ± {1}", mean, StandardDeviation);
+        }
+
+        /// <summary>
+        ///   Converts this univariate distribution into a
+        ///   1-dimensional multivariate distribution.
+        /// </summary>
+        /// 
+        public MultivariateNormalDistribution ToMultivariateDistribution()
+        {
+            return new MultivariateNormalDistribution(
+                new double[] { mean }, new double[,] { { variance } });
         }
 
         /// <summary>
