@@ -22,6 +22,8 @@
 
 namespace Accord.Math
 {
+    using System;
+
     /// <summary>
     ///   Static class Distance. Defines a set of extension methods defining distance measures.
     /// </summary>
@@ -267,6 +269,59 @@ namespace Accord.Math
                 + (0.5) * System.Math.Log(detP / System.Math.Sqrt(detP1 * detP2));
         }
 
+
+        /// <summary>
+        ///   Levenshtein distance between two strings.
+        /// </summary>
+        /// 
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// 
+        /// <remarks>
+        ///   Based on the standard implementation available on Wikibooks:
+        ///   http://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/Levenshtein_distance
+        /// </remarks>
+        /// 
+        /// <returns></returns>
+        /// 
+        public static double Levenshtein(string x, string y)
+        {
+            if (x == null || x.Length == 0)
+            {
+                if (y == null || y.Length != 0)
+                    return 0;
+                return y.Length;
+            }
+            else
+            {
+                if (y == null || y.Length == 0)
+                    return x.Length;
+            }
+
+            int[,] d = new int[x.Length + 1, y.Length + 1];
+
+            for (int i = 0; i <= x.Length; i++)
+                d[i, 0] = i;
+
+            for (int i = 0; i <= y.Length; i++)
+                d[0, i] = i;
+
+            for (int i = 0; i < x.Length; i++)
+            {
+                for (int j = 0; j < y.Length; j++)
+                {
+                    int cost = (x[i] == y[j]) ? 0 : 1;
+
+                    int a = d[i, j + 1] + 1;
+                    int b = d[i + 1, j] + 1;
+                    int c = d[i, j] + cost;
+
+                    d[i + 1, j + 1] = Math.Min(Math.Min(a, b), c);
+                }
+            }
+
+            return d[x.Length, y.Length];
+        }
 
         #region Private methods
         private static double[] mean(double[,] matrix)

@@ -26,6 +26,7 @@ namespace Accord.Math
     using System.Collections.Generic;
     using AForge;
     using System.Linq;
+    using Accord.Math.Comparers;
 
     public static partial class Matrix
     {
@@ -102,11 +103,41 @@ namespace Accord.Math
 
             T[,] X = new T[endRow - startRow + 1, endColumn - startColumn + 1];
             for (int i = startRow; i <= endRow; i++)
-            {
                 for (int j = startColumn; j <= endColumn; j++)
-                {
                     X[i - startRow, j - startColumn] = data[i, j];
-                }
+
+            return X;
+        }
+
+        /// <summary>Returns a sub matrix extracted from the current matrix.</summary>
+        /// <param name="data">The matrix to return the submatrix from.</param>
+        /// <param name="startRow">Start row index</param>
+        /// <param name="endRow">End row index</param>
+        /// <param name="startColumn">Start column index</param>
+        /// <param name="endColumn">End column index</param>
+        /// <remarks>
+        ///   Routine adapted from Lutz Roeder's Mapack for .NET, September 2000.
+        /// </remarks>
+        /// 
+        public static T[][] Submatrix<T>(this T[][] data, int startRow, int endRow, int startColumn, int endColumn)
+        {
+            int rows = data.Length;
+            int cols = data[0].Length;
+
+            if ((startRow > endRow) || (startColumn > endColumn) || (startRow < 0) ||
+                (startRow >= rows) || (endRow < 0) || (endRow >= rows) ||
+                (startColumn < 0) || (startColumn >= cols) || (endColumn < 0) ||
+                (endColumn >= cols))
+            {
+                throw new ArgumentException("Argument out of range.");
+            }
+
+            T[][] X = new T[endRow - startRow + 1][];
+            for (int i = startRow; i <= endRow; i++)
+            {
+                X[i] = new T[endColumn - startColumn + 1];
+                for (int j = startColumn; j <= endColumn; j++)
+                    X[i - startRow][j - startColumn] = data[i][j];
             }
 
             return X;
@@ -469,6 +500,24 @@ namespace Accord.Math
 
             return X;
         }
+
+        /// <summary>Returns subgroups extracted from the given vector.</summary>
+        /// <param name="values">The vector to extract the groups from.</param>
+        /// <param name="groups">The vector of indices for the groups.</param>
+        /// 
+        public static T[][] Subgroups<T>(this T[] values, int[] groups)
+        {
+            int distinct = groups.Distinct().Length;
+
+            T[][] result = new T[distinct][];
+            for (int i = 0; i < distinct; i++)
+            {
+                int[] idx = groups.Find(x => x == i);
+                result[i] = values.Submatrix(idx);
+            }
+
+            return result;
+        }
         #endregion
 
 
@@ -498,6 +547,42 @@ namespace Accord.Math
                 column[i] = m[i][index];
 
             return column;
+        }
+
+        /// <summary>
+        ///   Gets a column vector from a matrix.
+        /// </summary>
+        public static T[][] GetColumns<T>(this T[][] m, params int[] index)
+        {
+            T[][] columns = new T[m.Length][];
+
+            for (int i = 0; i < columns.Length; i++)
+            {
+                columns[i] = new T[index.Length];
+                for (int j = 0; j < index.Length; j++)
+                    columns[i][j] = m[i][index[j]];
+            }
+
+            return columns;
+        }
+
+
+        /// <summary>
+        ///   Gets a column vector from a matrix.
+        /// </summary>
+        public static T[,] GetColumns<T>(this T[,] m, params int[] index)
+        {
+            int rows = m.GetLength(0);
+
+            T[,] columns = new T[rows, index.Length];
+
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < index.Length; j++)
+                    columns[i, j] = m[i, index[j]];
+            }
+
+            return columns;
         }
 
         /// <summary>
@@ -592,14 +677,25 @@ namespace Accord.Math
         /// <summary>
         ///   Returns a new matrix with a given column vector inserted at the end of the original matrix.
         /// </summary>
+        /// 
         public static T[,] InsertColumn<T>(this T[,] m, T[] column)
         {
             return InsertColumn(m, column, m.GetLength(1));
         }
 
         /// <summary>
+        ///   Returns a new matrix with a given column vector inserted at the end of the original matrix.
+        /// </summary>
+        /// 
+        public static T[][] InsertColumn<T>(this T[][] m, T[] column)
+        {
+            return InsertColumn(m, column, m[0].Length);
+        }
+
+        /// <summary>
         ///   Returns a new matrix with a given column vector inserted at a given index.
         /// </summary>
+        /// 
         public static T[,] InsertColumn<T>(this T[,] m, T[] column, int index)
         {
             int rows = m.GetLength(0);
@@ -627,8 +723,41 @@ namespace Accord.Math
         }
 
         /// <summary>
+        ///   Returns a new matrix with a given column vector inserted at a given index.
+        /// </summary>
+        /// 
+        public static T[][] InsertColumn<T>(this T[][] m, T[] column, int index)
+        {
+            int rows = m.Length;
+            int cols = m[0].Length;
+
+            T[][] X = new T[rows][];
+
+            for (int i = 0; i < rows; i++)
+            {
+                X[i] = new T[cols + 1];
+
+                // Copy original matrix
+                for (int j = 0; j < index; j++)
+                {
+                    X[i][j] = m[i][j];
+                }
+                for (int j = index; j < cols; j++)
+                {
+                    X[i][j + 1] = m[i][j];
+                }
+
+                // Copy additional column
+                X[i][index] = column[i];
+            }
+
+            return X;
+        }
+
+        /// <summary>
         ///   Returns a new matrix with a given row vector inserted at the end of the original matrix.
         /// </summary>
+        /// 
         public static T[,] InsertRow<T>(this T[,] m, T[] row)
         {
             return InsertColumn(m, row, m.GetLength(0));
@@ -637,6 +766,7 @@ namespace Accord.Math
         /// <summary>
         ///   Returns a new matrix with a given row vector inserted at a given index.
         /// </summary>
+        /// 
         public static T[,] InsertRow<T>(this T[,] m, T[] row, int index)
         {
             if (m == null) throw new ArgumentNullException("m");
@@ -699,6 +829,7 @@ namespace Accord.Math
         /// <summary>
         ///   Removes an element from a vector.
         /// </summary>
+        /// 
         public static T[] RemoveAt<T>(this T[] array, int index)
         {
             T[] r = new T[array.Length - 1];
@@ -1373,6 +1504,7 @@ namespace Accord.Math
 
             return ranges;
         }
+
         #endregion
 
 
@@ -1474,5 +1606,51 @@ namespace Accord.Math
 
             return values.Submatrix(0, values.GetLength(0) - 1, indices);
         }
+
+        /// <summary>
+        ///   Retrieves the top <c>count</c> values of an array.
+        /// </summary>
+        /// 
+        public static int[] Top<T>(this T[] values, int count, bool inPlace = false)
+        {
+            if (!inPlace)
+                values = (T[])values.Clone();
+
+            int[] idx = new int[values.Length];
+            for (int i = 0; i < idx.Length; i++)
+                idx[i] = i;
+
+            Array.Sort(values, idx);
+
+            int[] r = new int[count];
+            for (int i = 0; i < r.Length; i++)
+                r[i] = idx[idx.Length - i - 1];
+
+            return r;
+        }
+
+        /// <summary>
+        ///   Retrieves the bottom <c>count</c> values of an array.
+        /// </summary>
+        /// 
+        public static int[] Bottom<T>(this T[] values, int count, bool inPlace = false)
+        {
+            if (!inPlace)
+                values = (T[])values.Clone();
+
+            int[] idx = new int[values.Length];
+            for (int i = 0; i < idx.Length; i++)
+                idx[i] = i;
+
+            Array.Sort(values, idx);
+
+            int[] r = new int[count];
+            for (int i = 0; i < r.Length; i++)
+                r[i] = idx[i];
+
+            return r;
+        }
+
+     
     }
 }
