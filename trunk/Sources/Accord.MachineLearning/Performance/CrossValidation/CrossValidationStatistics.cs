@@ -25,7 +25,7 @@ namespace Accord.MachineLearning
     using System;
 
     /// <summary>
-    ///   Summary statistics for a Cross-validation trial.
+    ///   Summary statistics for a cross-validation trial.
     /// </summary>
     /// 
     [Serializable]
