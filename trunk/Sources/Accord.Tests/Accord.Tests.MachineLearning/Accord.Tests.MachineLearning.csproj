@@ -135,6 +135,8 @@
   <ItemGroup>
     <Compile Include="BagOfWordsTest.cs" />
     <Compile Include="BootstrapTest.cs" />
+    <Compile Include="MeanShiftTest.cs" />
+    <Compile Include="KDTreeTest.cs" />
     <Compile Include="SplitSetTest.cs" />
     <Compile Include="DecisionTrees\C45LearningTest.cs" />
     <Compile Include="DecisionTrees\DecisionTreeCompilerTest.cs" />
@@ -212,9 +214,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\iris.scale.txt" />
+    <None Include="Resources\svm2.svm" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\SVM-014.svm" />
+    <None Include="Resources\svm1.svm" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

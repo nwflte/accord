@@ -20,23 +20,19 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-namespace Accord.Tests.MachineLearning
+namespace Accord.Tests.Statistics
 {
-    using Accord.MachineLearning;
+    using Accord.Statistics.Testing;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
-    using Accord.Math;
-    using Accord.Statistics;
-    
     
     [TestClass()]
-    public class KModesTest
+    public class LeveneTestTest
     {
 
 
         private TestContext testContextInstance;
 
-        
         public TestContext TestContext
         {
             get
@@ -81,62 +77,18 @@ namespace Accord.Tests.MachineLearning
 
 
         [TestMethod()]
-        public void KModesConstructorTest()
+        public void LeveneTestConstructorTest()
         {
-            Accord.Math.Tools.SetupGenerator(0);
+            // Example from NIST/SEMATECH e-Handbook of Statistical Methods,
+            // http://www.itl.nist.gov/div898/handbook/eda/section3/eda35a.htm
 
+            double[][] samples = BartlettTestTest.samples;
+            LeveneTest target = new LeveneTest(samples, median: true);
 
-            // Declare some observations
-            int[][] observations = 
-            {
-                new int[] { 0, 0   }, // a
-                new int[] { 0, 1   }, // a
-                new int[] { 1, 1   }, // a
- 
-                new int[] { 5, 3   }, // b
-                new int[] { 6, 8   }, // b
-                new int[] { 6, 7   }, // b
-                new int[] { 5, 8   }, // b
-
-                new int[] { 12, 14 }, // c
-                new int[] { 13, 14 }, // c
-            };
-
-            int[][] orig = observations.MemberwiseClone();
-
-            // Create a new K-Modes algorithm with 3 clusters 
-            KModes kmodes = new KModes(3);
-
-            // Compute the algorithm, retrieving an integer array
-            //  containing the labels for each of the observations
-            int[] labels = kmodes.Compute(observations);
-
-            // As a result, the first three observations should belong to the
-            //  same cluster (thus having the same label). The same should
-            //  happen to the next four observations and to the last two.
-
-            Assert.AreEqual(labels[0], labels[1]);
-            Assert.AreEqual(labels[0], labels[2]);
-
-            Assert.AreEqual(labels[3], labels[4]);
-            Assert.AreEqual(labels[3], labels[5]);
-            Assert.AreEqual(labels[3], labels[6]);
-
-            Assert.AreEqual(labels[7], labels[8]);
-
-            Assert.AreNotEqual(labels[0], labels[3]);
-            Assert.AreNotEqual(labels[0], labels[7]);
-            Assert.AreNotEqual(labels[3], labels[7]);
-
-
-            int[] labels2 = kmodes.Clusters.Compute(observations);
-            Assert.IsTrue(labels.IsEqual(labels2));
-
-            // the data must not have changed!
-            Assert.IsTrue(orig.IsEqual(observations));
+            Assert.AreEqual(9, target.DegreesOfFreedom1);
+            Assert.AreEqual(90, target.DegreesOfFreedom2);
+            Assert.AreEqual(1.7059176930008935, target.Statistic, 1e-10);
+            Assert.IsFalse(double.IsNaN(target.Statistic));
         }
-
-        
-       
     }
 }

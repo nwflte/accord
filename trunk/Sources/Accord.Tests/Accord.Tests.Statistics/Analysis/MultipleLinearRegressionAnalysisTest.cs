@@ -1,11 +1,36 @@
-﻿using Accord.Statistics.Analysis;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using AForge;
-using Accord.Statistics.Models.Regression.Linear;
+﻿// Accord Unit Tests
+// The Accord.NET Framework
+// http://accord.googlecode.com
+//
+// Copyright © César Souza, 2009-2012
+// cesarsouza at gmail.com
+//
+//    This library is free software; you can redistribute it and/or
+//    modify it under the terms of the GNU Lesser General Public
+//    License as published by the Free Software Foundation; either
+//    version 2.1 of the License, or (at your option) any later version.
+//
+//    This library is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+//    Lesser General Public License for more details.
+//
+//    You should have received a copy of the GNU Lesser General Public
+//    License along with this library; if not, write to the Free Software
+//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+//
+
 
 namespace Accord.Tests.Statistics
 {
+    using Accord.Statistics.Analysis;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System;
+    using AForge;
+    using Accord.Statistics.Models.Regression.Linear;
+    using Accord.Math;
+    using Accord.Controls;
+    using Accord.Statistics.Testing;
 
     [TestClass()]
     public class MultipleLinearRegressionAnalysisTest
@@ -180,6 +205,87 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(r2a, target.RSquareAdjusted);
         }
 
+        [TestMethod()]
+        public void ComputeTest2()
+        {
+            // Consider the following data. An experimenter would
+            // like to infer a relationship between two variables
+            // A and B and a corresponding outcome variable R.
+
+            double[][] example = 
+            {
+                //                A    B      R
+                new double[] {  6.41, 10.11, 26.1 },
+                new double[] {  6.61, 22.61, 33.8 },
+                new double[] {  8.45, 11.11, 52.7 },
+                new double[] {  1.22, 18.11, 16.2 },
+                new double[] {  7.42, 12.81, 87.3 },
+                new double[] {  4.42, 10.21, 12.5 },
+                new double[] {  8.61, 11.94, 77.5 },
+                new double[] {  1.73, 13.13, 12.1 },
+                new double[] {  7.47, 17.11, 86.5 },
+                new double[] {  6.11, 15.13, 62.8 },
+                new double[] {  1.42, 16.11, 17.5 },
+            };
+
+            // For this, we first extract the input and output
+            // pairs. The first two columns have values for the
+            // input variables, and the last for the output:
+
+            double[][] inputs = example.GetColumns(0, 1);
+            double[] output = example.GetColumn(2);
+
+            // Next, we can create a new multiple linear regression for the variables
+            var regression = new MultipleLinearRegressionAnalysis(inputs, output, intercept: true);
+
+            regression.Compute(); // compute the analysis
+
+            // Now we can show a summary of analysis
+            // DataGridBox.Show(regression.Coefficients);
+
+            // We can also show a summary ANOVA
+            // DataGridBox.Show(regression.Table);
+
+
+            // And also extract other useful information, such
+            // as the linear coefficients' values and std errors:
+            double[] coef = regression.CoefficientValues;
+            double[] stde = regression.StandardErrors;
+
+            // Coefficients of performance, such as r²
+            double rsquared = regression.RSquared;
+
+            // Hypothesis tests for the whole model
+            ZTest ztest = regression.ZTest;
+            FTest ftest = regression.FTest;
+
+            // and for individual coefficients
+            TTest ttest0 = regression.Coefficients[0].TTest;
+            TTest ttest1 = regression.Coefficients[1].TTest;
+
+            // and also extract confidence intervals
+            DoubleRange ci = regression.Coefficients[0].Confidence;
+
+            Assert.AreEqual(3, coef.Length);
+            Assert.AreEqual(8.7405051051757816, coef[0]);
+            Assert.AreEqual(1.1198079243314365, coef[1]);
+            Assert.AreEqual(-19.604474518407862, coef[2]);
+
+            Assert.AreEqual(2.375916659234715, stde[0]);
+            Assert.AreEqual(1.7268508921418664, stde[1]);
+            Assert.AreEqual(30.989640986710953, stde[2]);
+
+            Assert.AreEqual(0.62879941171298959, rsquared);
+
+            Assert.AreEqual(0.99999999999999822, ztest.PValue);
+            Assert.AreEqual(0.018986050133298293, ftest.PValue, 1e-10);
+
+            Assert.AreEqual(0.0062299844256985537, ttest0.PValue);
+            Assert.AreEqual(0.53484850318449118, ttest1.PValue);
+
+            Assert.AreEqual(3.2616314640800592, ci.Min);
+            Assert.AreEqual(14.219378746271504, ci.Max);
+        }
 
     }
 }

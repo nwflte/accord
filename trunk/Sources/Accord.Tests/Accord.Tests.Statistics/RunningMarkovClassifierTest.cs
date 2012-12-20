@@ -20,23 +20,26 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-namespace Accord.Tests.MachineLearning
+namespace Accord.Tests.Statistics
 {
-    using Accord.MachineLearning;
+    using Accord.Statistics.Running;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
+    using Accord.Statistics.Distributions;
+    using Accord.Statistics.Models.Markov;
+    using Accord.Statistics.Distributions.Univariate;
+    using Accord.Statistics.Distributions.Multivariate;
+    using Accord.Statistics.Models.Markov.Learning;
     using Accord.Math;
-    using Accord.Statistics;
-    
+    using Accord.Statistics.Models.Markov.Topology;
     
     [TestClass()]
-    public class KModesTest
+    public class RunningMarkovClassifierTest
     {
 
 
         private TestContext testContextInstance;
 
-        
         public TestContext TestContext
         {
             get
@@ -80,63 +83,62 @@ namespace Accord.Tests.MachineLearning
         #endregion
 
 
+
         [TestMethod()]
-        public void KModesConstructorTest()
+        public void PushTest()
         {
-            Accord.Math.Tools.SetupGenerator(0);
+            double[][] sequences;
+            
+            var classifier = createClassifier(out sequences);
+            var running = new RunningMarkovClassifier<NormalDistribution>(classifier);
 
-
-            // Declare some observations
-            int[][] observations = 
+            for (int i = 0; i < sequences.Length; i++)
             {
-                new int[] { 0, 0   }, // a
-                new int[] { 0, 1   }, // a
-                new int[] { 1, 1   }, // a
- 
-                new int[] { 5, 3   }, // b
-                new int[] { 6, 8   }, // b
-                new int[] { 6, 7   }, // b
-                new int[] { 5, 8   }, // b
+                double[] sequence = sequences[i];
 
-                new int[] { 12, 14 }, // c
-                new int[] { 13, 14 }, // c
-            };
+                running.Clear();
+                for (int j = 0; j < sequence.Length; j++)
+                    running.Push(sequence[j]);
 
-            int[][] orig = observations.MemberwiseClone();
+                double actualLikelihood;
+                int actual = running.Classification;
+                actualLikelihood = Math.Exp(running.Responses[actual]) / running.Responses.Exp().Sum();
 
-            // Create a new K-Modes algorithm with 3 clusters 
-            KModes kmodes = new KModes(3);
+                double expectedLikelihood;
+                int expected = classifier.Compute(sequence, out expectedLikelihood);
 
-            // Compute the algorithm, retrieving an integer array
-            //  containing the labels for each of the observations
-            int[] labels = kmodes.Compute(observations);
-
-            // As a result, the first three observations should belong to the
-            //  same cluster (thus having the same label). The same should
-            //  happen to the next four observations and to the last two.
-
-            Assert.AreEqual(labels[0], labels[1]);
-            Assert.AreEqual(labels[0], labels[2]);
-
-            Assert.AreEqual(labels[3], labels[4]);
-            Assert.AreEqual(labels[3], labels[5]);
-            Assert.AreEqual(labels[3], labels[6]);
-
-            Assert.AreEqual(labels[7], labels[8]);
-
-            Assert.AreNotEqual(labels[0], labels[3]);
-            Assert.AreNotEqual(labels[0], labels[7]);
-            Assert.AreNotEqual(labels[3], labels[7]);
-
-
-            int[] labels2 = kmodes.Clusters.Compute(observations);
-            Assert.IsTrue(labels.IsEqual(labels2));
-
-            // the data must not have changed!
-            Assert.IsTrue(orig.IsEqual(observations));
+                Assert.AreEqual(expected, actual);
+                Assert.AreEqual(expectedLikelihood, actualLikelihood, 1e-8);
+            }
         }
 
-        
-       
+        private static HiddenMarkovClassifier<NormalDistribution> createClassifier(out double[][] sequences)
+        {
+            sequences = new double[][] 
+            {
+                new double[] { 0,1,2,3,4 }, 
+                new double[] { 4,3,2,1,0 }, 
+            };
+
+            int[] labels = { 0, 1 };
+
+            NormalDistribution density = new NormalDistribution();
+            HiddenMarkovClassifier<NormalDistribution>  classifier =
+                new HiddenMarkovClassifier<NormalDistribution>(2, new Ergodic(2), density);
+
+            var teacher = new HiddenMarkovClassifierLearning<NormalDistribution>(classifier,
+
+                modelIndex => new BaumWelchLearning<NormalDistribution>(classifier.Models[modelIndex])
+                {
+                    Tolerance = 0.0001,
+                    Iterations = 0
+                }
+            );
+
+            teacher.Run(sequences, labels);
+
+            return classifier;
+        }
+
     }
 }

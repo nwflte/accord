@@ -80,6 +80,71 @@ namespace Accord.Tests.Statistics
         [TestMethod()]
         public void ClassifyTest()
         {
+            // Create some sample input data instances. This is the same
+            // data used in the Gutierrez-Osuna's example available on:
+            // http://research.cs.tamu.edu/prism/lectures/pr/pr_l10.pdf
+
+            double[][] inputs = 
+            {
+                // Class 0
+                new double[] {  4,  1 }, 
+                new double[] {  2,  4 },
+                new double[] {  2,  3 },
+                new double[] {  3,  6 },
+                new double[] {  4,  4 },
+
+                // Class 1
+                new double[] {  9, 10 },
+                new double[] {  6,  8 },
+                new double[] {  9,  5 },
+                new double[] {  8,  7 },
+                new double[] { 10,  8 }
+            };
+
+            int[] output = 
+            {
+                0, 0, 0, 0, 0, // The first five are from class 0
+                1, 1, 1, 1, 1  // The last five are from class 1
+            };
+
+            // Now we can chose a kernel function to 
+            // use, such as a linear kernel function.
+            IKernel kernel = new Linear();
+
+            // Then, we will create a KDA using this linear kernel.
+            var kda = new KernelDiscriminantAnalysis(inputs, output, kernel);
+
+            kda.Compute(); // Compute the analysis
+
+
+            // Now we can project the data into KDA space:
+            double[][] projection = kda.Transform(inputs);
+
+            // Or perform classification using:
+            int[] results = kda.Classify(inputs);
+
+
+            // Test the classify method
+            for (int i = 0; i < 5; i++)
+            {
+                int expected = 0;
+                int actual = results[i];
+                Assert.AreEqual(expected, actual);
+            }
+
+            for (int i = 5; i < 10; i++)
+            {
+                int expected = 1;
+                int actual = results[i];
+                Assert.AreEqual(expected, actual);
+            }
+
+        }
+
+
+        [TestMethod()]
+        public void ClassifyTest1()
+        {
             // Create some sample input data
 
             // This is the same data used in the example by Gutierrez-Osuna
@@ -204,6 +269,37 @@ namespace Accord.Tests.Statistics
         public void ComputeTest2()
         {
             // Scholkopf KPCA toy example
+            double[,] inputs = scholkopf();
+
+            int[] output = Matrix.Expand(new int[,] { { 1 }, { 2 }, { 3 } }, new int[] { 30, 30, 30 }).GetColumn(0);
+
+            IKernel kernel = new Gaussian(0.2);
+            KernelDiscriminantAnalysis target = new KernelDiscriminantAnalysis(inputs, output, kernel);
+
+            target.Compute();
+
+
+            double[,] actual = target.Transform(inputs, 2);
+
+            double[,] expected1 =
+            {
+                { 1.2785801485080475, 0.20539157505913622},
+                { 1.2906613255489541, 0.20704272225753775},
+                { 1.2978134597266808, 0.20802649628632208},
+            };
+
+            double[,] actual1 = actual.Submatrix(0, 2, 0, 1);
+
+            Assert.IsTrue(Matrix.IsEqual(actual1, expected1, 0.0000001));
+
+            // Assert the result equals the transformation of the input
+            double[,] result = target.Result;
+            double[,] projection = target.Transform(inputs);
+            Assert.IsTrue(Matrix.IsEqual(result, projection));
+        }
+
+        private static double[,] scholkopf()
+        {
             double[,] inputs =
             {
                #region Scholkopf KPCA Toy Example
@@ -254,6 +350,14 @@ namespace Accord.Tests.Statistics
                 {  0.347237735, -0.104842345 },  {  0.596493896,  0.042272368 },
 #endregion
             };
+            return inputs;
+        }
+
+        [TestMethod()]
+        public void ComputeTest3()
+        {
+            // Scholkopf KPCA toy example
+            double[][] inputs = scholkopf().ToArray();
 
             int[] output = Matrix.Expand(new int[,] { { 1 }, { 2 }, { 3 } }, new int[] { 30, 30, 30 }).GetColumn(0);
 
@@ -263,24 +367,25 @@ namespace Accord.Tests.Statistics
             target.Compute();
 
 
-            double[,] actual = target.Transform(inputs, 2);
+            double[][] actual = target.Transform(inputs, 2);
 
-            double[,] expected1 =
+            double[][] expected1 =
             {
-                { 1.2785801485080475, 0.20539157505913622},
-                { 1.2906613255489541, 0.20704272225753775},
-                { 1.2978134597266808, 0.20802649628632208},
+                new double[] { 1.2785801485080475, 0.20539157505913622},
+                new double[] { 1.2906613255489541, 0.20704272225753775},
+                new double[] { 1.2978134597266808, 0.20802649628632208},
             };
 
-            double[,] actual1 = actual.Submatrix(0, 2, 0, 1);
+            double[][] actual1 = actual.Submatrix(0, 2, 0, 1);
 
             Assert.IsTrue(Matrix.IsEqual(actual1, expected1, 0.0000001));
 
             // Assert the result equals the transformation of the input
-            double[,] result = target.Result;
-            double[,] projection = target.Transform(inputs);
+            double[][] result = target.Result.ToArray();
+            double[][] projection = target.Transform(inputs);
             Assert.IsTrue(Matrix.IsEqual(result, projection));
         }
+
 
         [TestMethod()]
         public void ThresholdTest()

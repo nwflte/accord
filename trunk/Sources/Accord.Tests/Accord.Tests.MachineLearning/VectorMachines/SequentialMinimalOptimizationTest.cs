@@ -81,7 +81,7 @@ namespace Accord.Tests.MachineLearning
 
 
         [TestMethod()]
-        public void Learnest()
+        public void LearnTest()
         {
 
             double[][] inputs =
@@ -283,6 +283,50 @@ namespace Accord.Tests.MachineLearning
                 Assert.AreEqual(sor, sou);
             }
         }
+
+        [TestMethod, Ignore]
+        public void LargeLearningTest1()
+        {
+            // Create large input vectors
+
+            int rows = 1000;
+            int dimension = 10000;
+
+            double[][] inputs = new double[rows][];
+            int[] outputs = new int[rows];
+
+            Random rnd = new Random();
+
+            for (int i = 0; i < inputs.Length; i++)
+            {
+                inputs[i] = new double[dimension];
+
+                if (i > rows / 2)
+                {
+                    for (int j = 0; j < dimension; j++)
+                        inputs[i][j] = rnd.NextDouble();
+                    outputs[i] = -1;
+                }
+                else
+                {
+                    for (int j = 0; j < dimension; j++)
+                        inputs[i][j] = rnd.NextDouble() * 4.21 + 5;
+                    outputs[i] = +1;
+                }
+            }
+
+            KernelSupportVectorMachine svm = new KernelSupportVectorMachine(new Polynomial(2), dimension);
+
+            SequentialMinimalOptimization smo = new SequentialMinimalOptimization(svm, inputs, outputs)
+            {
+                UseComplexityHeuristic = true
+            };
+
+
+            double error = smo.Run();
+
+            Assert.AreEqual(0, error);
+         }
 
         [TestMethod()]
         public void SequentialMinimalOptimizationConstructorTest()

@@ -20,39 +20,28 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Accord.Imaging.Filters;
-using Accord.Imaging;
-using Accord.Controls;
-using System.Windows.Forms;
-using System.Drawing.Imaging;
-using System.Drawing;
-
 namespace Accord.Tests.Imaging
 {
-    /// <summary>
-    /// Summary description for BlendTest
-    /// </summary>
+    using System;
+    using System.Text;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Accord.Imaging.Filters;
+    using Accord.Imaging;
+    using Accord.Controls;
+    using System.Windows.Forms;
+    using System.Drawing.Imaging;
+    using System.Drawing;
+
+    
     [TestClass]
     public class BlendTest
     {
-        public BlendTest()
-        {
-            //
-            // TODO: Add constructor logic here
-            //
-        }
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
+      
         public TestContext TestContext
         {
             get
@@ -181,23 +170,6 @@ namespace Accord.Tests.Imaging
             Assert.AreEqual(64, img15.Height);
 
         }
-/*
-        [TestMethod]
-        public void ApplyTest3()
-        {
-            var img1 = Properties.Resources.sample_trans;
-            var img2 = Properties.Resources.sample_trans;
 
-            MatrixH homography = new MatrixH(1, 0, 16,
-                                             0, 1, 0,
-                                             0, 0);
-
-            Blend blend = new Blend(homography, img1);
-            var actual = blend.Apply(img2);
-
-
-            ImageBox.Show(actual, PictureBoxSizeMode.Zoom, Color.White);
-        }
-*/
     }
 }
