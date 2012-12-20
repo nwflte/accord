@@ -350,5 +350,33 @@ namespace Accord.Tests.MachineLearning
                 }
             }
         }
+
+        [TestMethod()]
+        public void LoadTest1()
+        {
+            MemoryStream stream = new MemoryStream(Properties.Resources.svm1);
+            var svm = MulticlassSupportVectorMachine.Load(stream);
+
+            Assert.IsNotNull(svm.Machines);
+            Assert.IsFalse(svm.IsProbabilistic);
+            Assert.AreEqual(351, svm.MachinesCount);
+        }
+
+        [TestMethod()]
+        public void LoadTest2()
+        {
+            byte[] blob = Properties.Resources.svm2;
+            MemoryStream stream = new MemoryStream(blob);
+
+            var ksvm = MulticlassSupportVectorMachine.Load(stream);
+
+            Assert.AreEqual(3, ksvm.Classes);
+            Assert.AreEqual(21, ksvm.Inputs);
+            Assert.AreEqual(2334, ksvm.SupportVectorCount);
+            Assert.AreEqual(1542, ksvm.SupportVectorSharedCount);
+            Assert.AreEqual(1542, ksvm.SupportVectorUniqueCount);
+            Assert.AreEqual(false, ksvm.IsProbabilistic);
+        }
+
     }
 }

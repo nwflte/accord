@@ -22,9 +22,12 @@
 
 namespace Accord.Tests.MachineLearning
 {
-    using Accord.MachineLearning;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
+    using System.IO;
+    using System.Runtime.Serialization.Formatters.Binary;
+    using Accord.MachineLearning;
+    using Accord.Math;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 
     [TestClass()]
@@ -140,7 +143,30 @@ namespace Accord.Tests.MachineLearning
                 if (i != actualIdx)
                     Assert.IsTrue(actual[i] == 0);
             }
+        }
 
+        [TestMethod()]
+        public void SerializationTest()
+        {
+            BagOfWords target = new BagOfWords();
+
+            target.Compute(texts);
+
+            int[][] expected = new int[texts.Length][];
+            for (int i = 0; i < expected.Length; i++)
+                expected[i] = target.GetFeatureVector(texts[i]);
+
+            MemoryStream stream = new MemoryStream();
+            BinaryFormatter fmt = new BinaryFormatter();
+            fmt.Serialize(stream, target);
+            stream.Seek(0, SeekOrigin.Begin);
+            target = (BagOfWords)fmt.Deserialize(stream);
+
+            int[][] actual = new int[expected.Length][];
+            for (int i = 0; i < actual.Length; i++)
+                actual[i] = target.GetFeatureVector(texts[i]);
+
+            Assert.IsTrue(expected.IsEqual(actual));
         }
     }
 }

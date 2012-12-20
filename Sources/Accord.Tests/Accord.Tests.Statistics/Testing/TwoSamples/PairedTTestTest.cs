@@ -20,23 +20,22 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-namespace Accord.Tests.MachineLearning
+namespace Accord.Tests.Statistics
 {
-    using Accord.MachineLearning;
+
+    using Accord.Statistics.Testing;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Accord.Statistics.Testing.Power;
     using System;
     using Accord.Math;
-    using Accord.Statistics;
-    
-    
+
     [TestClass()]
-    public class KModesTest
+    public class PairedTTestTest
     {
 
 
         private TestContext testContextInstance;
 
-        
         public TestContext TestContext
         {
             get
@@ -81,62 +80,51 @@ namespace Accord.Tests.MachineLearning
 
 
         [TestMethod()]
-        public void KModesConstructorTest()
+        public void TTestConstructorTest()
         {
-            Accord.Math.Tools.SetupGenerator(0);
+            // Suppose we would like to know the effect of a treatment (such
+            // as a new drug) in improving the well-being of 9 patients. The
+            // well-being is measured in a discrete scale, going from 0 to 10.
+            //
+            // To do so, we need to register the initial state of each patient
+            // and then register their state after a given time under treatment.
 
-
-            // Declare some observations
-            int[][] observations = 
+            double[,] patients =
             {
-                new int[] { 0, 0   }, // a
-                new int[] { 0, 1   }, // a
-                new int[] { 1, 1   }, // a
- 
-                new int[] { 5, 3   }, // b
-                new int[] { 6, 8   }, // b
-                new int[] { 6, 7   }, // b
-                new int[] { 5, 8   }, // b
-
-                new int[] { 12, 14 }, // c
-                new int[] { 13, 14 }, // c
+                 //                 before      after
+                 //                treatment  treatment
+                 /* Patient 1.*/ {     0,         1     },
+                 /* Patient 2.*/ {     6,         5     },
+                 /* Patient 3.*/ {     4,         9     },
+                 /* Patient 4.*/ {     8,         6     },
+                 /* Patient 5.*/ {     1,         6     },
+                 /* Patient 6.*/ {     6,         7     },
+                 /* Patient 7.*/ {     3,         4     },
+                 /* Patient 8.*/ {     8,         7     },
+                 /* Patient 9.*/ {     6,         5     },
             };
 
-            int[][] orig = observations.MemberwiseClone();
+            // Extect the before and after columns
+            double[] before = patients.GetColumn(0);
+            double[] after = patients.GetColumn(1);
 
-            // Create a new K-Modes algorithm with 3 clusters 
-            KModes kmodes = new KModes(3);
+            // Create the paired-sample T-test. Our research hypothesis is
+            // that the treatment does improve the patient's well-being. So
+            // we will be testing the hypothesis that the well-being of the
+            // "before" sample, the first sample, is "smaller" in comparison
+            // to the "after" treatment group.
 
-            // Compute the algorithm, retrieving an integer array
-            //  containing the labels for each of the observations
-            int[] labels = kmodes.Compute(observations);
+            PairedTTest test = new PairedTTest(before, after,
+                TwoSampleHypothesis.FirstValueIsSmallerThanSecond);
 
-            // As a result, the first three observations should belong to the
-            //  same cluster (thus having the same label). The same should
-            //  happen to the next four observations and to the last two.
+            bool significant = test.Significant; //    false
+            double pvalue = test.PValue;         //  ~ 0.165
 
-            Assert.AreEqual(labels[0], labels[1]);
-            Assert.AreEqual(labels[0], labels[2]);
-
-            Assert.AreEqual(labels[3], labels[4]);
-            Assert.AreEqual(labels[3], labels[5]);
-            Assert.AreEqual(labels[3], labels[6]);
-
-            Assert.AreEqual(labels[7], labels[8]);
-
-            Assert.AreNotEqual(labels[0], labels[3]);
-            Assert.AreNotEqual(labels[0], labels[7]);
-            Assert.AreNotEqual(labels[3], labels[7]);
-
-
-            int[] labels2 = kmodes.Clusters.Compute(observations);
-            Assert.IsTrue(labels.IsEqual(labels2));
-
-            // the data must not have changed!
-            Assert.IsTrue(orig.IsEqual(observations));
+            Assert.IsFalse(significant);
+            Assert.AreEqual(0.16500, pvalue, 1e-5);
+            Assert.AreEqual(-1.03712, test.Statistic, 1e-5);
+            Assert.AreEqual(-0.8888889, test.ObservedDifference,1e-6);
         }
 
-        
-       
     }
 }

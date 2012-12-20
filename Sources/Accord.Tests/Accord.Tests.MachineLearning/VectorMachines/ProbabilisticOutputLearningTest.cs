@@ -1,12 +1,32 @@
-﻿
+﻿// Accord Unit Tests
+// The Accord.NET Framework
+// http://accord.googlecode.com
+//
+// Copyright © César Souza, 2009-2012
+// cesarsouza at gmail.com
+//
+//    This library is free software; you can redistribute it and/or
+//    modify it under the terms of the GNU Lesser General Public
+//    License as published by the Free Software Foundation; either
+//    version 2.1 of the License, or (at your option) any later version.
+//
+//    This library is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+//    Lesser General Public License for more details.
+//
+//    You should have received a copy of the GNU Lesser General Public
+//    License along with this library; if not, write to the Free Software
+//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+//
 
 namespace Accord.Tests.MachineLearning
 {
-    using Accord.MachineLearning.VectorMachines.Learning;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
     using Accord.MachineLearning.VectorMachines;
+    using Accord.MachineLearning.VectorMachines.Learning;
     using Accord.Statistics.Kernels;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 
     [TestClass()]
@@ -121,6 +141,55 @@ namespace Accord.Tests.MachineLearning
             foreach (var p in probs)
                 Assert.IsFalse(Double.IsNaN(p));
 
+        }
+
+        [TestMethod()]
+        public void RunTest3()
+        {
+            // Example XOR problem
+            double[][] inputs =
+            {
+                new double[] { 0, 0 }, // 0 xor 0: 1 (label +1)
+                new double[] { 0, 1 }, // 0 xor 1: 0 (label -1)
+                new double[] { 1, 0 }, // 1 xor 0: 0 (label -1)
+                new double[] { 1, 1 }  // 1 xor 1: 1 (label +1)
+            };
+
+            // Dichotomy SVM outputs should be given as [-1;+1]
+            int[] labels =
+            {
+                1, -1, -1, 1
+            };
+
+            // Create a Kernel Support Vector Machine for the given inputs
+            KernelSupportVectorMachine svm = new KernelSupportVectorMachine(new Gaussian(0.1), inputs[0].Length);
+
+            // Instantiate a new learning algorithm for SVMs
+            SequentialMinimalOptimization smo = new SequentialMinimalOptimization(svm, inputs, labels);
+
+            // Set up the learning algorithm
+            smo.Complexity = 1.0;
+
+            // Run the learning algorithm
+            double error = smo.Run();
+
+            // Instantiate the probabilistic learning calibration
+            ProbabilisticOutputLearning calibration = new ProbabilisticOutputLearning(svm, inputs, labels);
+
+            // Run the calibration algorithm
+            double loglikelihood = calibration.Run();
+
+
+            // Compute the decision output for one of the input vectors,
+            // while also retrieving the probability of the answer
+
+            double probability;
+            int decision = svm.Compute(inputs[0], out probability);
+
+            // At this point, decision is +1 with a probability of 75%
+
+            Assert.AreEqual(1, decision);
+            Assert.AreEqual(0.74999975815069375, probability);
         }
 
 

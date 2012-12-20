@@ -26,6 +26,7 @@ namespace Accord.Tests.Statistics
     using Accord.Statistics;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
+    using Accord.Statistics.Distributions.Multivariate;
 
     [TestClass()]
     public class NormalDistributionTest
@@ -100,7 +101,6 @@ namespace Accord.Tests.Statistics
             target.Fit(observations2, weights2);
 
             Assert.AreEqual(expectedMean, target.Mean);
-            // Assert.AreEqual(expectedSigma, target.StandardDeviation, 1e-6);
         }
 
         [TestMethod()]
@@ -203,6 +203,29 @@ namespace Accord.Tests.Statistics
 
             double expected = 0.0579383105522966;
             double actual = target.ProbabilityDensityFunction(x);
+
+            Assert.IsFalse(double.IsNaN(actual));
+            Assert.AreEqual(expected, actual, 1e-15);
+        }
+
+        [TestMethod()]
+        public void ToMultivariateTest()
+        {
+            double x = 3;
+            double mean = 7;
+            double dev = 5;
+
+            NormalDistribution target = new NormalDistribution(mean, dev);
+
+            MultivariateNormalDistribution multi = 
+                target.ToMultivariateDistribution();
+
+            Assert.AreEqual(target.Mean, multi.Mean[0]);
+            Assert.AreEqual(target.Variance, multi.Covariance[0, 0]);
+            Assert.AreEqual(target.Variance, multi.Variance[0]);
+
+            double expected = 0.0579383105522966;
+            double actual = multi.ProbabilityDensityFunction(x);
 
             Assert.IsFalse(double.IsNaN(actual));
             Assert.AreEqual(expected, actual, 1e-15);
