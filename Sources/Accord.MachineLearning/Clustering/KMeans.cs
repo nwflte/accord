@@ -30,7 +30,7 @@ namespace Accord.MachineLearning
     using Accord.Statistics.Distributions.Univariate;
 
     /// <summary>
-    ///   K-Means algorithm.
+    ///   k-Means clustering algorithm.
     /// </summary>
     /// 
     /// <remarks>
@@ -110,6 +110,9 @@ namespace Accord.MachineLearning
     ///   // happen to the next four observations and to the last three.
     ///   </code>
     /// </example>
+    /// 
+    /// <seealso cref="KModes{T}"/>
+    /// <seealso cref="MeanShift"/>
     ///
     [Serializable]
     public class KMeans : IClusteringAlgorithm<double[]>
@@ -188,12 +191,12 @@ namespace Accord.MachineLearning
         ///   Randomizes the clusters inside a dataset.
         /// </summary>
         /// 
-        /// <param name="data">The data to randomize the algorithm.</param>
+        /// <param name="points">The data to randomize the algorithm.</param>
         /// <param name="useSeeding">True to use the k-means++ seeding algorithm. False otherwise.</param>
         /// 
-        public void Randomize(double[][] data, bool useSeeding = true)
+        public void Randomize(double[][] points, bool useSeeding = true)
         {
-            if (data == null) throw new ArgumentNullException("data");
+            if (points == null) throw new ArgumentNullException("points");
 
             double[][] centroids = clusters.Centroids;
 
@@ -203,7 +206,7 @@ namespace Accord.MachineLearning
                 // http://en.wikipedia.org/wiki/K-means%2B%2B
 
                 // 1. Choose one center uniformly at random from among the data points.
-                centroids[0] = (double[])data[Accord.Math.Tools.Random.Next(0, data.Length)].Clone();
+                centroids[0] = (double[])points[Accord.Math.Tools.Random.Next(0, points.Length)].Clone();
 
                 for (int c = 1; c < centroids.Length; c++)
                 {
@@ -211,10 +214,10 @@ namespace Accord.MachineLearning
                     //    x and the nearest center that has already been chosen.
 
                     double sum = 0;
-                    double[] D = new double[data.Length];
+                    double[] D = new double[points.Length];
                     for (int i = 0; i < D.Length; i++)
                     {
-                        double[] x = data[i];
+                        double[] x = points[i];
 
                         double min = Distance(x, centroids[0]);
                         for (int j = 1; j < c; j++)
@@ -233,16 +236,16 @@ namespace Accord.MachineLearning
                     // 3. Choose one new data point at random as a new center, using a weighted
                     //    probability distribution where a point x is chosen with probability 
                     //    proportional to D(x)^2.
-                    centroids[c] = (double[])data[GeneralDiscreteDistribution.Random(D)].Clone();
+                    centroids[c] = (double[])points[GeneralDiscreteDistribution.Random(D)].Clone();
                 }
             }
             else
             {
                 // pick K unique random indexes in the range 0..n-1
-                int[] idx = Accord.Statistics.Tools.RandomSample(data.Length, K);
+                int[] idx = Accord.Statistics.Tools.RandomSample(points.Length, K);
 
                 // assign centroids from data set
-                centroids = data.Submatrix(idx).MemberwiseClone();
+                centroids = points.Submatrix(idx).MemberwiseClone();
             }
 
             this.clusters.Centroids = centroids;
@@ -252,13 +255,13 @@ namespace Accord.MachineLearning
         ///   Divides the input data into K clusters. 
         /// </summary>     
         /// 
-        /// <param name="data">The data where to compute the algorithm.</param>
+        /// <param name="points">The data where to compute the algorithm.</param>
         /// <param name="threshold">The relative convergence threshold
         ///   for the algorithm. Default is 1e-5.</param>
         /// 
-        public int[] Compute(double[][] data, double threshold)
+        public int[] Compute(double[][] points, double threshold)
         {
-            return Compute(data, threshold, true);
+            return Compute(points, threshold, true);
         }
 
         /// <summary>
@@ -334,7 +337,7 @@ namespace Accord.MachineLearning
                     double[] point = data[i];
 
                     // Get the nearest cluster centroid
-                    int c = labels[i] = Clusters.Nearest(point);
+                    int c = labels[i] = Clusters.Compute(point);
 
                     // Increase the cluster's sample counter
                     count[c]++;
@@ -500,7 +503,7 @@ namespace Accord.MachineLearning
         [Obsolete("Usage of Clusters.Nearest() is preferred.")]
         public int Nearest(double[] point)
         {
-            return Clusters.Nearest(point);
+            return Clusters.Compute(point);
         }
 
         /// <summary>

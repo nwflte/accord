@@ -42,7 +42,7 @@ namespace Accord.MachineLearning
         ///   Divides the input data into a number of clusters. 
         /// </summary>  
         /// 
-        /// <param name="data">The data where to compute the algorithm.</param>
+        /// <param name="points">The data where to compute the algorithm.</param>
         /// <param name="threshold">The relative convergence threshold
         /// for the algorithm. Default is 1e-5.</param>
         /// 
@@ -50,7 +50,7 @@ namespace Accord.MachineLearning
         ///   The labelings for the input data.
         /// </returns>
         /// 
-        int[] Compute(TData[] data, double threshold);
+        int[] Compute(TData[] points, double threshold);
 
         /// <summary>
         ///   Gets the collection of clusters currently modeled by the clustering algorithm.
@@ -83,7 +83,7 @@ namespace Accord.MachineLearning
         ///   The index of the nearest cluster
         ///   to the given data point. </returns>
         ///   
-        int Nearest(TData point);
+        int Compute(TData point);
     }
 
     /// <summary>

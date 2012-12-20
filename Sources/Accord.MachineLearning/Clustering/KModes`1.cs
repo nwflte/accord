@@ -28,8 +28,19 @@ namespace Accord.MachineLearning
     using Accord.Math;
 
     /// <summary>
-    ///   K-Modes algorithm.
+    ///   k-Modes algorithm.
     /// </summary>
+    /// 
+    /// <remarks>
+    ///   The k-Modes algorithm is a variant of the k-Means which instead of 
+    ///   locating means attempts to locate the modes of a set of points. As
+    ///   the algorithm does not require explicit numeric manipulation of the
+    ///   input points (such as addition and division to compute the means),
+    ///   the algorithm can be used with arbitrary (generic) data structures.
+    /// </remarks>
+    /// 
+    /// <seealso cref="KMeans"/>
+    /// <seealso cref="MeanShift"/>
     /// 
     [Serializable]
     public class KModes<TData> : IClusteringAlgorithm<TData>
@@ -108,29 +119,30 @@ namespace Accord.MachineLearning
         ///   Divides the input data into K clusters. 
         /// </summary>     
         /// 
-        /// <param name="data">The data where to compute the algorithm.</param>
+        /// <param name="points">The data where to compute the algorithm.</param>
         /// <param name="threshold">The relative convergence threshold
         /// for the algorithm. Default is 1e-5.</param>
         /// 
-        public int[] Compute(TData[] data, double threshold = 1e-5)
+        public int[] Compute(TData[] points, double threshold = 1e-5)
         {
             // Initial argument checking
-            if (data == null)
-                throw new ArgumentNullException("data");
+            if (points == null)
+                throw new ArgumentNullException("points");
 
             if (threshold < 0)
                 throw new ArgumentException("Threshold should be a positive number.", "threshold");
 
 
             int k = this.K;
-            int rows = data.Length;
+            int rows = points.Length;
 
 
             // Perform a random initialization of the clusters
             // if the algorithm has not been initialized before.
+            
             if (Clusters.Centroids[0] == null)
             {
-                Randomize(data);
+                Randomize(points);
             }
 
 
@@ -158,13 +170,13 @@ namespace Accord.MachineLearning
                 // information into the newClusters variable.
 
                 // For each point in the data set,
-                for (int i = 0; i < data.Length; i++)
+                for (int i = 0; i < points.Length; i++)
                 {
                     // Get the point
-                    TData point = data[i];
+                    TData point = points[i];
 
                     // Compute the nearest cluster centroid
-                    int c = labels[i] = Clusters.Nearest(data[i]);
+                    int c = labels[i] = Clusters.Compute(points[i]);
 
                     // Accumulate in the corresponding centroid
                     clusters[c].Add(point);
@@ -193,7 +205,7 @@ namespace Accord.MachineLearning
             for (int i = 0; i < k; i++)
             {
                 // Compute the proportion of samples in the cluster
-                proportions[i] = clusters[i].Count / (double)data.Length;
+                proportions[i] = clusters[i].Count / (double)points.Length;
             }
 
 

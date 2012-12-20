@@ -27,8 +27,10 @@ namespace Accord.MachineLearning
     using System.Collections.Generic;
 
     /// <summary>
-    ///   K-modes Cluster Collection.
+    ///   k-Modes cluster collection.
     /// </summary>
+    /// 
+    /// <seealso cref="KModes{T}"/>
     /// 
     [Serializable]
     public class KModesClusterCollection<TData> : IClusterCollection<TData, KModesCluster<TData>>
@@ -122,7 +124,7 @@ namespace Accord.MachineLearning
         ///   The index of the nearest cluster
         ///   to the given data point. </returns>
         ///   
-        public int Nearest(TData point)
+        public int Compute(TData point)
         {
             int min_cluster = 0;
             double min_distance = distance(point, centroids[0]);
@@ -154,7 +156,7 @@ namespace Accord.MachineLearning
         {
             int[] labels = new int[points.Length];
             for (int i = 0; i < points.Length; i++)
-                labels[i] = Nearest(points[i]);
+                labels[i] = Compute(points[i]);
 
             return labels;
         }
@@ -182,7 +184,7 @@ namespace Accord.MachineLearning
             double error = 0.0;
 
             for (int i = 0; i < data.Length; i++)
-                error += distance(data[i], centroids[Nearest(data[i])]);
+                error += distance(data[i], centroids[Compute(data[i])]);
 
             return error / (double)data.Length;
         }
@@ -265,7 +267,7 @@ namespace Accord.MachineLearning
     }
 
     /// <summary>
-    ///   K-modes' Cluster
+    ///   k-Modes' cluster.
     /// </summary>
     /// 
     [Serializable]
