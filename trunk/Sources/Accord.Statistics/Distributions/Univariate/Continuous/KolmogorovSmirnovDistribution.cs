@@ -92,7 +92,7 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   Gets the number of samples distribution parameter.
         /// </summary>
         /// 
-        public int NumberOfSamples { get; private set; }
+        public double NumberOfSamples { get; private set; }
 
         /// <summary>
         ///   Creates a new Kolmogorov-Smirnov distribution.
@@ -100,7 +100,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         /// <param name="samples">The number of samples.</param>
         /// 
-        public KolmogorovSmirnovDistribution(int samples)
+        public KolmogorovSmirnovDistribution(double samples)
         {
             this.NumberOfSamples = samples;
         }
@@ -292,9 +292,11 @@ namespace Accord.Statistics.Distributions.Univariate
         ///
         /// </remarks>
         /// 
-        public static double CumulativeFunction(int n, double x)
+        public static double CumulativeFunction(double n, double x)
         {
             double nxx = n * x * x; // nx²
+
+            int nn = (int)Math.Ceiling(n);
 
             // First of all, check if the given values do not represent
             // a special case. There are some combination of values for
@@ -328,11 +330,11 @@ namespace Accord.Statistics.Distributions.Univariate
 
                 // Durbin
                 if (nxx < 0.754693)
-                    return Durbin(n, x);
+                    return Durbin(nn, x);
 
                 // Pomeranz
                 if (nxx < 4.0)
-                    return Pomeranz(n, x);
+                    return Pomeranz(nn, x);
 
                 // Complementary CDF
                 return 1.0 - ComplementaryDistributionFunction(n, x);
@@ -358,7 +360,7 @@ namespace Accord.Statistics.Distributions.Univariate
                     //
 
                     if (n * nxx * x <= 1.96)
-                        return Durbin(n, x);
+                        return Durbin(nn, x);
                     else return PelzGood(n, x);
                 }
                 else
@@ -380,7 +382,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// <returns>Returns the complementary cumulative probability of the statistic 
         /// <paramref name="x"/> under a sample size <paramref name="n"/>.</returns>
         /// 
-        public static double ComplementaryDistributionFunction(int n, double x)
+        public static double ComplementaryDistributionFunction(double n, double x)
         {
             double nxx = n * x * x; // nx²
 
@@ -462,7 +464,7 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   Statistical Society, Series B. Vol. 38, No. 2 (1976), pp. 152-156</para> 
         /// </remarks>
         /// 
-        public static double PelzGood(int n, double x)
+        public static double PelzGood(double n, double x)
         {
             const int maxTerms = 20;
             const double eps = 1.0e-10;
@@ -564,7 +566,7 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   distribution using the one-sided Kolmogorov-Smirnov statistic.
         /// </remarks>
         ///
-        public static double OneSideUpperTail(int n, double x)
+        public static double OneSideUpperTail(double n, double x)
         {
             if (n > 200000)
             {

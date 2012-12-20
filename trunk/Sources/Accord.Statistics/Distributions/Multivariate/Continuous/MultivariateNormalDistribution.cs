@@ -80,9 +80,7 @@ namespace Accord.Statistics.Distributions.Multivariate
         /// <param name="dimension">The number of dimensions in the distribution.</param>
         /// 
         public MultivariateNormalDistribution(int dimension)
-            : this(dimension, true)
-        {
-        }
+            : this(dimension, true) { }
 
         /// <summary>
         ///   Constructs a multivariate Gaussian distribution
@@ -97,7 +95,8 @@ namespace Accord.Statistics.Distributions.Multivariate
                 // init is set to false during cloning
                 double[] mean = new double[dimension];
                 double[,] cov = Matrix.Identity(dimension);
-                CholeskyDecomposition chol = new CholeskyDecomposition(cov, false, true);
+                CholeskyDecomposition chol = new CholeskyDecomposition(cov,
+                    robust: false, lowerTriangular: true);
                 initialize(mean, cov, chol);
             }
         }
@@ -122,7 +121,8 @@ namespace Accord.Statistics.Distributions.Multivariate
             if (mean.Length != rows)
                 throw new DimensionMismatchException("covariance", "Covariance matrix should have the same dimensions as mean vector's length.");
 
-            CholeskyDecomposition chol = new CholeskyDecomposition(covariance, false, true);
+            CholeskyDecomposition chol = new CholeskyDecomposition(covariance, 
+                robust: false, lowerTriangular: true);
 
             if (!chol.PositiveDefinite)
                 throw new NonPositiveDefiniteMatrixException("Covariance matrix is not positive definite.");
@@ -345,10 +345,10 @@ namespace Accord.Statistics.Distributions.Multivariate
                 }
 
                 if (Math.Abs(sum - 1.0) > 1e-10)
-                    throw new ArgumentException("Weights do not sum to one.","weights");
+                    throw new ArgumentException("Weights do not sum to one.", "weights");
 #endif
                 // Compute weighted mean vector
-                means = Statistics.Tools.Mean(observations, weights);
+                means = Statistics.Tools.WeightedMean(observations, weights);
 
                 // Compute weighted covariance matrix
                 if (options != null && options.Diagonal)
@@ -366,7 +366,8 @@ namespace Accord.Statistics.Distributions.Multivariate
                 cov = Statistics.Tools.Covariance(observations, means);
             }
 
-            CholeskyDecomposition chol = new CholeskyDecomposition(cov, false, true);
+            CholeskyDecomposition chol = new CholeskyDecomposition(cov, 
+                robust: false, lowerTriangular: true);
 
             if (options != null)
             {

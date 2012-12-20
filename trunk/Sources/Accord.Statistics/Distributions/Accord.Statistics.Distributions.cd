@@ -39,7 +39,7 @@
       <Compartment Name="Private" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAAgQAIAEAAmCAAAABAIIBAIAAAAEgAAAIAAAIBQ=</HashCode>
+      <HashCode>AAAAAAgQAIAEAAmCAACABAIIBAIAAAAEgAAAIAAAIBQ=</HashCode>
       <FileName>Distributions\Univariate\Base\UnivariateContinuousDistribution.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -111,7 +111,7 @@
       <Compartment Name="Private" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAAAAAgQAIAEAAmCAAAAMAIIBAIAgAAEgAAAAAAAIBY=</HashCode>
+      <HashCode>AAAAAAgQAIAEAAmCAICAMAIIBAIAgAAEgAAAIAAAIFY=</HashCode>
       <FileName>Distributions\Univariate\Base\UnivariateDiscreteDistribution.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -259,7 +259,7 @@
     <Position X="29.75" Y="15.25" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAgICAAICABAAAAAQAAAAEgAAAIIAAIBA=</HashCode>
-      <FileName>Distributions\Multivariate\Independent.cs</FileName>
+      <FileName>Distributions\Multivariate\Independent`1.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Statistics.Distributions.Univariate.CauchyDistribution" Collapsed="true">
@@ -271,7 +271,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Statistics.Distributions.Univariate.UniformContinuousDistribution" Collapsed="true">
-    <Position X="15.75" Y="21" Width="2.5" />
+    <Position X="15.75" Y="21.25" Width="2.5" />
     <TypeIdentifier>
       <HashCode>gAAAAACAAAAAAAiAAAAAhAJAAIAABAAkgQgAIEAAIBA=</HashCode>
       <FileName>Distributions\Univariate\Continuous\UniformContinuousDistribution.cs</FileName>
@@ -286,7 +286,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Statistics.Distributions.Univariate.ExponentialDistribution" Collapsed="true">
-    <Position X="19.25" Y="21" Width="2" />
+    <Position X="19.25" Y="21.25" Width="2" />
     <TypeIdentifier>
       <HashCode>QAAAAAAIAIAAAAiAAAACBAIAAAAABAIEgAAAIEAAIBQ=</HashCode>
       <FileName>Distributions\Univariate\Continuous\ExponentialDistribution.cs</FileName>
@@ -310,7 +310,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Statistics.Distributions.Univariate.KolmogorovSmirnovDistribution" Collapsed="true">
-    <Position X="23" Y="21" Width="2.5" />
+    <Position X="23" Y="21.25" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAABBAIOAAQEABAIAAAAAQAAEgIAAIEAgIBA=</HashCode>
       <FileName>Distributions\Univariate\Continuous\KolmogorovSmirnovDistribution.cs</FileName>
@@ -327,7 +327,7 @@
   <Class Name="Accord.Statistics.Distributions.Univariate.NormalDistribution" Collapsed="true">
     <Position X="15.75" Y="17.25" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>EAAAAAAAAAAAAAiEAAEAhAIABIQCAAAEgAwAIMAAIBA=</HashCode>
+      <HashCode>EABAAAAAAAAAAAiEAAEAhAIABIQCAAAEgAwAIMAAIBA=</HashCode>
       <FileName>Distributions\Univariate\Continuous\NormalDistribution.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -350,7 +350,7 @@
   <Class Name="Accord.Statistics.Distributions.Univariate.WeibullDistribution" Collapsed="true">
     <Position X="25.5" Y="15.75" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAACAAAAABAIAAAAABAAkgQAAIEAAIBA=</HashCode>
+      <HashCode>AAAAAAAAAIAAAAGAAACABAICgAAABAAEgAAAIEAAJBQ=</HashCode>
       <FileName>Distributions\Univariate\Continuous\WeibullDistribution.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -458,7 +458,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Statistics.Distributions.Univariate.LaplaceDistribution" Collapsed="true">
-    <Position X="25.75" Y="21" Width="2" />
+    <Position X="25.75" Y="21.25" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAABAIAAAAAAAAEgQIIIAAAIBA=</HashCode>
       <FileName>Distributions\Univariate\Continuous\LaplaceDistribution.cs</FileName>
@@ -478,6 +478,62 @@
       <FileName>Distributions\Univariate\Discrete\NegativeBinomial.cs</FileName>
     </TypeIdentifier>
   </Class>
+  <Class Name="Accord.Statistics.Distributions.Fitting.IndependentOptions" Collapsed="true">
+    <Position X="30.75" Y="3.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Distributions\Fitting\IndependentOptions.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Accord.Statistics.Distributions.Fitting.SurvivalOptions" Collapsed="true">
+    <Position X="28.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Distributions\Fitting\SurvivalOptions.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Accord.Statistics.Distributions.Fitting.EmpiricalHazardOptions" Collapsed="true">
+    <Position X="28.25" Y="5.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAIAAAAAIAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Distributions\Fitting\SurvivalOptions.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Estimator" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Accord.Statistics.Distributions.Multivariate.Independent" Collapsed="true">
+    <Position X="29.75" Y="16.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABA=</HashCode>
+      <FileName>Distributions\Multivariate\Independent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Accord.Statistics.Distributions.Univariate.EmpiricalHazardDistribution" Collapsed="true">
+    <Position X="15.75" Y="22.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAGAACCABAIAAAQRAAIEgAAAIIAAIBA=</HashCode>
+      <FileName>Distributions\Univariate\Continuous\EmpiricalHazardDistribution.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Accord.Statistics.Distributions.Univariate.WrappedCauchyDistribution" Collapsed="true">
+    <Position X="23" Y="22.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAABAAAAAACAAAAABAIAAAAAAAAEgAAAIAAAIBA=</HashCode>
+      <FileName>Distributions\Univariate\Continuous\WrappedCauchyDistribution.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Accord.Statistics.Distributions.Univariate.GompertzDistribution" Collapsed="true">
+    <Position X="25.75" Y="22.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAABAIAAAAAAAAEgQgAIAAAIBA=</HashCode>
+      <FileName>Distributions\Univariate\GompertzDistribution.cs</FileName>
+    </TypeIdentifier>
+  </Class>
   <Interface Name="Accord.Statistics.Distributions.IDistribution">
     <Position X="11.25" Y="0.5" Width="1.75" />
     <TypeIdentifier>
@@ -488,7 +544,7 @@
   <Interface Name="Accord.Statistics.Distributions.IUnivariateDistribution">
     <Position X="7.5" Y="3.25" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAIIAAAgAAAAAAAIAAAAAAAAEgAAAAAEAIAQ=</HashCode>
+      <HashCode>AAAAAAAAAIIAAAkAAACAAAIAAAAAAAAEgAAAIAEAIAQ=</HashCode>
       <FileName>Distributions\Univariate\Base\IUnivariateDistribution.cs</FileName>
     </TypeIdentifier>
   </Interface>
@@ -532,6 +588,13 @@
     <TypeIdentifier>
       <HashCode>AAAAIAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Distributions\Fitting\HypergeometricOptions.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Accord.Statistics.Distributions.Univariate.HazardEstimator">
+    <Position X="31.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAgAA=</HashCode>
+      <FileName>Distributions\Univariate\Continuous\EmpiricalHazardDistribution.cs</FileName>
     </TypeIdentifier>
   </Enum>
   <Font Name="Segoe UI" Size="9" />
