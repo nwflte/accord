@@ -60,14 +60,14 @@ namespace Accord.Statistics.Testing
     ///         //                 before      after
     ///         //                treatment  treatment
     ///         /* Patient 1.*/ {     0,         1     },
-    ///         /* Patient 1.*/ {     6,         5     },
-    ///         /* Patient 1.*/ {     4,         9     },
-    ///         /* Patient 1.*/ {     8,         6     },
-    ///         /* Patient 1.*/ {     1,         6     },
-    ///         /* Patient 1.*/ {     6,         7     },
-    ///         /* Patient 1.*/ {     3,         4     },
-    ///         /* Patient 1.*/ {     8,         7     },
-    ///         /* Patient 1.*/ {     6,         5     },
+    ///         /* Patient 2.*/ {     6,         5     },
+    ///         /* Patient 3.*/ {     4,         9     },
+    ///         /* Patient 4.*/ {     8,         6     },
+    ///         /* Patient 5.*/ {     1,         6     },
+    ///         /* Patient 6.*/ {     6,         7     },
+    ///         /* Patient 7.*/ {     3,         4     },
+    ///         /* Patient 8.*/ {     8,         7     },
+    ///         /* Patient 9.*/ {     6,         5     },
     /// };
     /// 
     /// // Extect the before and after columns
@@ -83,8 +83,9 @@ namespace Accord.Statistics.Testing
     /// PairedTTest test = new PairedTTest(before, after,
     ///     TwoSampleHypothesis.FirstValueIsSmallerThanSecond);
     /// 
-    /// bool significant = test.Significant; //    true
-    /// double pvalue = test.PValue;         // ~ 0.0239
+    /// bool significant = test.Significant; //   not significant
+    /// double pvalue = test.PValue;         //  p-value =  0.1650
+    /// double tstat  = test.Statistic;      //  t-stat  = -1.0371
     /// </code>
     /// </example>
     /// 
@@ -171,18 +172,18 @@ namespace Accord.Statistics.Testing
                 throw new DimensionMismatchException("sample2", "Paired samples must have the same size.");
 
             int n = sample1.Length;
+
+            double[] delta = new double[sample1.Length];
+            for (int i = 0; i < delta.Length; i++)
+                delta[i] = sample1[i] - sample2[i];
+
+            double mean = delta.Mean();
+            double std = delta.StandardDeviation();
+
+            StandardError = std / Math.Sqrt(n);
+            ObservedDifference = mean;
             Mean1 = sample1.Mean();
             Mean2 = sample2.Mean();
-
-            double sum = 0;
-            for (int i = 0; i < sample1.Length; i++)
-            {
-                double u = (sample1[i] - Mean1) * (sample2[i] - Mean2);
-                sum += u * u;
-            }
-
-            StandardError = Math.Sqrt(n * (n - 1) / sum);
-            ObservedDifference = (Mean1 - Mean2);
 
             SampleSize = n;
             Statistic = ObservedDifference / StandardError;

@@ -76,8 +76,7 @@ namespace Accord.Statistics.Testing
         public int DegreesOfFreedom2 { get { return StatisticDistribution.DegreesOfFreedom2; } }
 
         /// <summary>
-        ///   Creates a new F-Test for a given statistic
-        ///   with given degrees of freedom.
+        ///   Creates a new F-Test for a given statistic with given degrees of freedom.
         /// </summary>
         /// 
         /// <param name="var1">The variance of the first sample.</param>
@@ -93,8 +92,7 @@ namespace Accord.Statistics.Testing
         }
 
         /// <summary>
-        ///   Creates a new F-Test for a given statistic
-        ///   with given degrees of freedom.
+        ///   Creates a new F-Test for a given statistic with given degrees of freedom.
         /// </summary>
         /// 
         /// <param name="statistic">The test statistic.</param>
@@ -145,7 +143,7 @@ namespace Accord.Statistics.Testing
             switch (Tail)
             {
                 case DistributionTail.TwoTail:
-                    p = 2.0 * StatisticDistribution.ComplementaryDistributionFunction(Math.Abs(x));
+                    p = 2.0 * StatisticDistribution.DistributionFunction(Math.Abs(x));
                     break;
 
                 case DistributionTail.OneUpper:
