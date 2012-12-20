@@ -61,12 +61,20 @@ namespace Accord.Vision.Detection
 
         /// <summary>
         ///   If a object has already been detected inside an area,
-        ///   it will not be scanned twice for inner/overlapping objects.
+        ///   it will not be scanned twice for inner or overlapping
+        ///   objects, saving computation time.
         /// </summary>
         /// 
         NoOverlap,
 
-        // TODO: Add mode for maximum/fixed number of faces
+        /// <summary>
+        ///   If several objects are located within one another, 
+        ///   they will be averaged. Additionally, objects which
+        ///   have not been detected sufficient times may be dropped
+        ///   by setting <see cref="HaarObjectDetector.Suppression"/>.
+        /// </summary>
+        /// 
+        Average,
     }
 
     /// <summary>
@@ -150,6 +158,8 @@ namespace Accord.Vision.Detection
         private int lastWidth;
         private int lastHeight;
         private float[] steps;
+
+        private GroupMatching match;
 
 
         #region Constructors
@@ -245,6 +255,8 @@ namespace Accord.Vision.Detection
 
             this.baseWidth = cascade.Width;
             this.baseHeight = cascade.Height;
+
+            this.match = new GroupMatching(0, 0.2);
         }
         #endregion
 
@@ -334,6 +346,30 @@ namespace Accord.Vision.Detection
         }
 
         /// <summary>
+        ///   Gets or sets the minimum threshold used to supress rectangles which
+        ///   have not been detected sufficient number of times. This property only
+        ///   has effect when <see cref="SearchMode"/> is set to <see cref="ObjectDetectorSearchMode.Average"/>.
+        /// </summary>
+        /// 
+        /// <remarks>
+        /// <para>
+        ///   The value of this property represets the minimum amount of detections
+        ///   made inside a region to report this region as an actual detection. For
+        ///   example, setting this property to two will discard all regions which 
+        ///   had not achieved at least two detected rectangles within it.</para>
+        ///   
+        /// <para>
+        ///   Setting this property to a value higher than zero may decrease the
+        ///   number of false positives.</para>
+        /// </remarks>
+        /// 
+        public int Suppression
+        {
+            get { return match.MinimumNeighbors; }
+            set { match.MinimumNeighbors = value; }
+        }
+
+        /// <summary>
         ///   Gets the detected objects bounding boxes.
         /// </summary>
         /// 
@@ -345,6 +381,7 @@ namespace Accord.Vision.Detection
         /// <summary>
         ///   Gets the internal Cascade Classifier used by this detector.
         /// </summary>
+        /// 
         public HaarClassifier Classifier
         {
             get { return classifier; }
@@ -462,10 +499,10 @@ namespace Accord.Vision.Detection
                     }
                 }
 
-                else
+                else // use parallel processing
                 {
 #if NET35
-                    throw new NotSupportedException();
+                    throw new NotSupportedException("Parallel processing is not available on .NET 3.5");
 #else
                     // Parallel mode. Scan the integral image searching
                     // for objects in the window with parallelization.
@@ -531,6 +568,9 @@ namespace Accord.Vision.Detection
         EXIT:
 
             Rectangle[] objects = detectedObjects.ToArray();
+
+            if (searchMode == ObjectDetectorSearchMode.Average)
+                objects = match.Group(objects);
 
             checkSteadiness(objects);
             lastObjects = objects;
