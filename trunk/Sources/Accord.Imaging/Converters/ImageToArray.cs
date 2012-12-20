@@ -26,7 +26,6 @@ namespace Accord.Imaging.Converters
     using System.Drawing.Imaging;
     using AForge.Imaging;
 
-
     /// <summary>
     ///   Bitmap to jagged array converter.
     /// </summary>
