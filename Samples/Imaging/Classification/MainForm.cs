@@ -130,7 +130,7 @@ namespace Classification
             BagOfVisualWords bow = new BagOfVisualWords(bs);
 
             if (cbExtended.Checked)
-                bow.Surf.ComputeDescriptors = SpeededUpRobustFeatureDescriptorType.Extended;
+                bow.Detector.ComputeDescriptors = SpeededUpRobustFeatureDescriptorType.Extended;
 
             Stopwatch sw1 = Stopwatch.StartNew();
 

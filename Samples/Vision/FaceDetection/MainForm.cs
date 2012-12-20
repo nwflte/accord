@@ -60,6 +60,7 @@ namespace FaceDetection
             detector.ScalingMode = (ObjectDetectorScalingMode)cbScaling.SelectedValue;
             detector.ScalingFactor = 1.5f;
             detector.UseParallelProcessing = cbParallel.Checked;
+            detector.Suppression = 2;
 
             Stopwatch sw = Stopwatch.StartNew();
 
