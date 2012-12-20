@@ -26,7 +26,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>EACAMAAigSAAYIAQACBAEAgACAADAAAAAwEQAAAFCIA=</HashCode>
+      <HashCode>EACAMAAigSAAYIAQACBAEAgACAADAAAAAwEQAAAFKII=</HashCode>
       <FileName>Detection\HaarObjectDetector.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -76,9 +76,10 @@
   <Class Name="Accord.Vision.Tracking.TrackingObject">
     <Position X="14.75" Y="2.5" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AABAAAAAAAAgBQAAAAAAAAAAAAAgABAAAEAAAQAIAAA=</HashCode>
+      <HashCode>AABAAAAAAAAgBQAIAAAAAAAAEAAgABAAAEAAAQAIABA=</HashCode>
       <FileName>Tracking\TrackingObject.cs</FileName>
     </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Vision.Detection.HaarFeatureNode">
     <Position X="13.25" Y="8" Width="2.5" />
@@ -199,6 +200,20 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
+  <Class Name="Accord.Vision.Detection.HaarCascadeWriter">
+    <Position X="11.5" Y="11.75" Width="1.75" />
+    <Members>
+      <Method Name="writeFeature" Hidden="true" />
+      <Field Name="writer" Hidden="true" />
+      <Method Name="writeRectangle" Hidden="true" />
+      <Method Name="writeStage" Hidden="true" />
+      <Method Name="writeTrees" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQAAAEAAQAAAAAAAAAAgAAAAAQAAAAEAAAA=</HashCode>
+      <FileName>Detection\Haar Cascade\HaarCascadeWriter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
   <Interface Name="Accord.Vision.Detection.IObjectDetector">
     <Position X="6" Y="0.5" Width="1.5" />
     <TypeIdentifier>
@@ -216,12 +231,12 @@
   <Enum Name="Accord.Vision.Detection.ObjectDetectorSearchMode">
     <Position X="0.75" Y="4.25" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAAACAAAAAAAAAAAAIACAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>ACAAAAACAAAAAAAAAAAAIACAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Detection\HaarObjectDetector.cs</FileName>
     </TypeIdentifier>
   </Enum>
   <Enum Name="Accord.Vision.Tracking.CamshiftMode">
-    <Position X="15" Y="1" Width="1.75" />
+    <Position X="15" Y="0.75" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAIAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAg=</HashCode>
       <FileName>Tracking\Camshift.cs</FileName>
@@ -232,6 +247,13 @@
     <TypeIdentifier>
       <HashCode>AABAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Detection\HaarObjectDetector.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Accord.Vision.Tracking.AxisOrientation">
+    <Position X="15.5" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Tracking\TrackingObject.cs</FileName>
     </TypeIdentifier>
   </Enum>
   <Font Name="Segoe UI" Size="9" />
