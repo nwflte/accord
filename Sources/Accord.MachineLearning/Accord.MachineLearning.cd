@@ -4,7 +4,7 @@
     <Position X="17.317" Y="10.474" Height="0.651" Width="2.832" />
   </Comment>
   <Class Name="Accord.MachineLearning.VectorMachines.KernelSupportVectorMachine">
-    <Position X="13.25" Y="15.25" Width="2.25" />
+    <Position X="13.25" Y="15" Width="2.25" />
     <Members>
       <Field Name="kernel" Hidden="true" />
     </Members>
@@ -106,34 +106,51 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.MachineLearning.VectorMachines.MulticlassSupportVectorMachine">
-    <Position X="17" Y="11.75" Width="3.25" />
+    <Position X="17" Y="11.5" Width="3.25" />
     <Members>
       <Method Name="computeElimination" Hidden="true" />
       <Method Name="computeParallel" Hidden="true" />
       <Method Name="computeSequential" Hidden="true" />
+      <Method Name="computeSharedVectors" Hidden="true" />
       <Method Name="computeVoting" Hidden="true" />
-      <Method Name="createCache" Hidden="true" />
-      <Field Name="kernelEvaluations" Hidden="true" />
+      <Method Name="createOrResetCache" Hidden="true" />
+      <Method Name="initialize" Hidden="true" />
       <Field Name="machines" Hidden="true" />
-      <Method Name="resetCache" Hidden="true" />
-      <Field Name="sharedVectorCache" Hidden="true" />
+      <Method Name="onDeserialized" Hidden="true" />
       <Field Name="sharedVectors" Hidden="true" />
-      <Field Name="syncObjects" Hidden="true" />
-      <Field Name="totalVectors" Hidden="true" />
-      <Field Name="uniqueVectors" Hidden="true" />
+      <Field Name="sharedVectorsCount" Hidden="true" />
+      <Method Name="System.Collections.IEnumerable.GetEnumerator" Hidden="true" />
+      <Field Name="totalVectorsCount" Hidden="true" />
+      <Field Name="uniqueVectorsCount" Hidden="true" />
+      <Field Name="vectorCache" Hidden="true" />
     </Members>
     <Compartments>
       <Compartment Name="Private" Collapsed="true" />
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
+    <NestedTypes>
+      <Class Name="Accord.MachineLearning.VectorMachines.MulticlassSupportVectorMachine.Cache" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>VectorMachines\MulticlassSupportVectorMachine.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <AssociationLine Name="Machines" Type="Accord.MachineLearning.VectorMachines.KernelSupportVectorMachine" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="17" Y="15.062" />
+        <Point X="16.625" Y="15.062" />
+        <Point X="16.625" Y="15.687" />
+        <Point X="15.5" Y="15.687" />
+      </Path>
+    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>EGAAgKAAAAUgBBAECAAAgAWgEAACQCQAEAAAAAQYgAA=</HashCode>
+      <HashCode>EWAgwKBAACUgBBAECCEAAAUAEAAKQCQDAAAAAAQAAAA=</HashCode>
       <FileName>VectorMachines\MulticlassSupportVectorMachine.cs</FileName>
     </TypeIdentifier>
     <ShowAsCollectionAssociation>
       <Property Name="Machines" />
     </ShowAsCollectionAssociation>
-    <Lollipop Position="0.2" />
+    <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="Accord.MachineLearning.VectorMachines.Learning.MulticlassSupportVectorLearning">
     <Position X="24.75" Y="10.75" Width="2.5" />
@@ -230,7 +247,7 @@
   <Class Name="Accord.MachineLearning.GaussianMixtureModelOptions">
     <Position X="8.5" Y="29.75" Width="2.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAEAgAAAAAAA=</HashCode>
       <FileName>Clustering\GaussianMixtureModel.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -675,11 +692,20 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="Accord.MachineLearning.VectorMachines.MultilabelSupportVectorMachine" BaseTypeListCollapsed="true">
-    <Position X="17" Y="16.5" Width="3.25" />
+    <Position X="17" Y="16.25" Width="3.25" />
     <Members>
       <Method Name="ISupportVectorMachine.Compute" Hidden="true" />
       <Field Name="machines" Hidden="true" />
+      <Method Name="System.Collections.IEnumerable.GetEnumerator" Hidden="true" />
     </Members>
+    <AssociationLine Name="Machines" Type="Accord.MachineLearning.VectorMachines.KernelSupportVectorMachine" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="17" Y="17.536" />
+        <Point X="16.625" Y="17.536" />
+        <Point X="16.625" Y="16.438" />
+        <Point X="15.5" Y="16.438" />
+      </Path>
+    </AssociationLine>
     <TypeIdentifier>
       <HashCode>AGAAgKAAAAEgABgAAAAAAAAAEAAAAAQAAAAAAAAAAAA=</HashCode>
       <FileName>VectorMachines\MultilabelSupportVectorMachine.cs</FileName>
@@ -687,7 +713,7 @@
     <ShowAsAssociation>
       <Property Name="Machines" />
     </ShowAsAssociation>
-    <Lollipop Position="0.2" />
+    <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="Accord.MachineLearning.VectorMachines.Learning.SubproblemEventArgs">
     <Position X="24.75" Y="16.5" Width="2" />
@@ -729,31 +755,6 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Accord.MachineLearning.KNearestNeighbor">
-    <Position X="30.5" Y="29.25" Width="2" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>KNearestNeighbor.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Accord.MachineLearning.KNearestNeighbor&lt;T&gt;">
-    <Position X="30.5" Y="26.25" Width="2" />
-    <Members>
-      <Field Name="classCount" Hidden="true" />
-      <Field Name="distance" Hidden="true" />
-      <Field Name="distances" Hidden="true" />
-      <Field Name="inputs" Hidden="true" />
-      <Field Name="k" Hidden="true" />
-      <Field Name="outputs" Hidden="true" />
-    </Members>
-    <TypeIdentifier>
-      <HashCode>BEAAAAAAAAAAAAAAAAEAABAAEECAABBAgAAAAIQAAAA=</HashCode>
-      <FileName>KNearestNeighbor.cs</FileName>
-    </TypeIdentifier>
-    <ShowAsAssociation>
-      <Property Name="Distance" />
-    </ShowAsAssociation>
-  </Class>
   <Class Name="Accord.MachineLearning.BagOfWords">
     <Position X="37.25" Y="4.75" Width="2.25" />
     <Members>
@@ -761,9 +762,10 @@
       <Field Name="stringToCode" Hidden="true" />
     </Members>
     <TypeIdentifier>
-      <HashCode>AEAAQAAAAAAAAQAAACEAgBAAABAAAAAAACAAAAABAAA=</HashCode>
+      <HashCode>AEAAQAAAAAAAAQAAACEAgBAAABAAAAAAACAAAAABEAA=</HashCode>
       <FileName>BagOfWords.cs</FileName>
     </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.MachineLearning.GridSearchParameterCollection">
     <Position X="39.25" Y="8.5" Width="3.25" />
@@ -778,6 +780,132 @@
       <HashCode>AAIAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>GridSearchRange.cs</FileName>
     </TypeIdentifier>
+  </Class>
+  <Class Name="Accord.MachineLearning.KNearestNeighbors&lt;T&gt;">
+    <Position X="30.5" Y="26.25" Width="2.5" />
+    <Members>
+      <Method Name="checkArgs" Hidden="true" />
+      <Field Name="classCount" Hidden="true" />
+      <Field Name="distance" Hidden="true" />
+      <Field Name="distances" Hidden="true" />
+      <Method Name="initialize" Hidden="true" />
+      <Field Name="inputs" Hidden="true" />
+      <Field Name="k" Hidden="true" />
+      <Field Name="outputs" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>BEAAAAAAAAAAAAAAAAEAABAAEECAABBAgAAAAIQAAAA=</HashCode>
+      <FileName>KNearestNeighbors`1.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Distance" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Accord.MachineLearning.KNearestNeighbors">
+    <Position X="30.5" Y="29" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>KNearestNeighbors.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Accord.MachineLearning.MeanShift" BaseTypeListCollapsed="true">
+    <Position X="36" Y="23.75" Width="2" />
+    <Members>
+      <Field Name="bandwidth" Hidden="true" />
+      <Method Name="classifySeeds" Hidden="true" />
+      <Field Name="clusters" Hidden="true" />
+      <Method Name="computeMeanShift" Hidden="true" />
+      <Method Name="createSeeds" Hidden="true" />
+      <Field Name="dimension" Hidden="true" />
+      <Field Name="distance" Hidden="true" />
+      <Property Name="IClusteringAlgorithm&lt;double[]&gt;.Clusters" Hidden="true" />
+      <Field Name="kernel" Hidden="true" />
+      <Method Name="supress" Hidden="true" />
+      <Field Name="tree" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAEAIAAgAQAAAFEAEAAYAAACCAAAAAAAAI=</HashCode>
+      <FileName>Clustering\MeanShift.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Clusters" />
+    </ShowAsCollectionAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Accord.MachineLearning.MeanShiftClusterCollection" BaseTypeListCollapsed="true">
+    <Position X="39" Y="25" Width="2.25" />
+    <Members>
+      <Field Name="clusters" Hidden="true" />
+      <Field Name="modes" Hidden="true" />
+      <Field Name="tree" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAABAAiAAAAAQAQAAAIEAEAAAAAAAAAAA=</HashCode>
+      <FileName>Clustering\MeanShiftCluster.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Accord.MachineLearning.MeanShiftCluster">
+    <Position X="39.5" Y="22.75" Width="1.5" />
+    <Members>
+      <Field Name="index" Hidden="true" />
+      <Field Name="owner" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIAAgAAAAAAAAAAAAAAAAAAAAAEAAAABAAA=</HashCode>
+      <FileName>Clustering\MeanShiftCluster.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Accord.MachineLearning.Structures.KDTree">
+    <Position X="38" Y="12.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Structures\KDTree.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Accord.MachineLearning.Structures.KDTree&lt;T&gt;" BaseTypeListCollapsed="true">
+    <Position X="36.25" Y="14" Width="2" />
+    <Members>
+      <Field Name="count" Hidden="true" />
+      <Method Name="create" Hidden="true" />
+      <Field Name="dimensions" Hidden="true" />
+      <Field Name="distance" Hidden="true" />
+      <Method Name="find" Hidden="true" />
+      <Method Name="insert" Hidden="true" />
+      <Field Name="root" Hidden="true" />
+      <Method Name="System.Collections.IEnumerable.GetEnumerator" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>ACIAAAAAAABAADAABgAgAAYAAEAAEABACABAAABAIAA=</HashCode>
+      <FileName>Structures\KDTree`1.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Root" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Accord.MachineLearning.Structures.KDTreeNode&lt;T&gt;">
+    <Position X="39.5" Y="13.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAgAAAAEAAAAAAAAAAACACgAAAAAAA=</HashCode>
+      <FileName>Structures\KDTreeNode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Accord.MachineLearning.Structures.KDTreeNodeCollection&lt;T&gt;" BaseTypeListCollapsed="true">
+    <Position X="39.25" Y="16.5" Width="2.75" />
+    <Members>
+      <Field Name="list" Hidden="true" />
+      <Method Name="System.Collections.IEnumerable.GetEnumerator" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>gCIAAgAQAABAABAQCAAABASAABAAAAAAAAAAAABQIAA=</HashCode>
+      <FileName>Structures\KDTreeNodeCollection.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Farthest" />
+      <Property Name="Nearest" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
   </Class>
   <Struct Name="Accord.MachineLearning.GridSearchParameter">
     <Position X="6" Y="10.75" Width="1.75" />
@@ -794,6 +922,19 @@
       <FileName>GridSearchParameter.cs</FileName>
     </TypeIdentifier>
   </Struct>
+  <Struct Name="Accord.MachineLearning.Structures.KDTreeNodeDistance&lt;T&gt;">
+    <Position X="36.25" Y="17.75" Width="2" />
+    <Members>
+      <Field Name="distance" Hidden="true" />
+      <Field Name="node" Hidden="true" />
+      <Method Name="operator !=" Hidden="true" />
+      <Method Name="operator ==" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAAAAAAAgAAAAAAAAEAAAIBAAAAAAAEAAiA=</HashCode>
+      <FileName>Structures\KDTreeNodeDistance.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
   <Interface Name="Accord.MachineLearning.VectorMachines.Learning.ISupportVectorMachineLearning">
     <Position X="23" Y="8.25" Width="3" />
     <TypeIdentifier>
@@ -802,7 +943,7 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="Accord.MachineLearning.VectorMachines.ISupportVectorMachine">
-    <Position X="17.75" Y="9" Width="2" />
+    <Position X="17.5" Y="9" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>VectorMachines\ISupportVectorMachine.cs</FileName>
@@ -920,8 +1061,8 @@
       <FileName>VectorMachines\Learning\MulticlassSupportVectorLearning.cs</FileName>
     </TypeIdentifier>
   </Delegate>
-  <Delegate Name="System.Func&lt;T1, T2, TResult&gt;" Collapsed="true">
-    <Position X="33.75" Y="26.75" Width="1.5" />
+  <Delegate Name="System.Func&lt;T1, T2, TResult&gt;">
+    <Position X="34.25" Y="26.75" Width="1.5" />
     <TypeIdentifier />
   </Delegate>
   <Font Name="Segoe UI" Size="9" />
