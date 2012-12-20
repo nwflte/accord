@@ -119,12 +119,18 @@
     <Compile Include="Analysis\Performance\ReceiverOperatingCharacteristic.cs" />
     <Compile Include="Analysis\StepwiseLogisticRegressionAnalysis.cs" />
     <Compile Include="Circular.cs" />
+    <Compile Include="Distributions\Density Kernels\IDensityKernel.cs" />
     <Compile Include="Distributions\Fitting\IndependentOptions.cs" />
     <Compile Include="Distributions\Fitting\HiddenMarkovOptions.cs" />
     <Compile Include="Distributions\Fitting\SurvivalOptions.cs" />
     <Compile Include="Distributions\IFittableDistribution.cs" />
     <Compile Include="Distributions\ISampleableDistribution.cs" />
+    <Compile Include="Distributions\Density Kernels\EpanechnikovKernel.cs" />
+    <Compile Include="Distributions\Density Kernels\GaussianKernel.cs" />
+    <Compile Include="Distributions\Density Kernels\IRadiallySymmetricKernel.cs" />
+    <Compile Include="Distributions\Density Kernels\UniformKernel.cs" />
     <Compile Include="Distributions\Multivariate\Base\IMultivariateDistribution.cs" />
+    <Compile Include="Distributions\Multivariate\Continuous\MultivariateEmpiricalDistribution.cs" />
     <Compile Include="Distributions\Multivariate\Continuous\InverseWishartDistribution.cs" />
     <Compile Include="Distributions\Multivariate\Continuous\WishartDistribution.cs" />
     <Compile Include="Distributions\Multivariate\Independent.cs" />
@@ -176,7 +182,7 @@
     <Compile Include="Distributions\Univariate\Continuous\EmpiricalDistribution.cs" />
     <Compile Include="Distributions\Univariate\Continuous\FDistribution.cs" />
     <Compile Include="Distributions\Univariate\Continuous\EmpiricalHazardDistribution.cs" />
-    <Compile Include="Distributions\Univariate\GompertzDistribution.cs" />
+    <Compile Include="Distributions\Univariate\Continuous\GompertzDistribution.cs" />
     <Compile Include="Distributions\Univariate\Mixture.cs" />
     <Compile Include="Distributions\Multivariate\Continuous\MultivariateNormalDistribution.cs" />
     <Compile Include="Distributions\Univariate\Discrete\GeneralDiscreteDistribution.cs" />
@@ -256,6 +262,7 @@
     <Compile Include="Links\LogLinkFunction.cs" />
     <Compile Include="Links\InverseSquaredLinkFunction.cs" />
     <Compile Include="Links\ProbitLinkFunction.cs" />
+    <Compile Include="Models\Regression\Nonlinear\Fitting\LogisticGradientDescent.cs" />
     <Compile Include="Models\Survival\ProportionalHazards.cs" />
     <Compile Include="Models\Fields\ConditionalRandomField.cs" />
     <Compile Include="Models\Fields\Features\Base\IFeature.cs">
@@ -342,18 +349,27 @@
     <Compile Include="Models\Regression\Nonlinear\LogisticRegression.cs" />
     <Compile Include="Models\Regression\Linear\PolynomialRegression.cs" />
     <Compile Include="Models\Survival\Fitting\PartialNewtonRaphson.cs" />
+    <Compile Include="Running\Markov\IRunningMarkovStatistics.cs" />
+    <Compile Include="Running\Markov\RunningMarkovClassifier.cs" />
+    <Compile Include="Running\Markov\RunningMarkovClassifier`1.cs" />
+    <Compile Include="Running\Markov\RunningMarkovStatistics`1.cs" />
     <Compile Include="Running\IRunningStatistics.cs" />
     <Compile Include="Moving\IMovingStatistics.cs" />
     <Compile Include="Moving\MovingCircularStatistics.cs" />
+    <Compile Include="Running\Markov\RunningMarkovStatistics.cs" />
     <Compile Include="Running\RunningNormalStatistics.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Moving\MovingNormalStatistics.cs" />
+    <Compile Include="Testing\Contingency\ReceiverOperatingCurveTest.cs" />
     <Compile Include="Testing\Contingency\TwoAverageKappaTest.cs" />
     <Compile Include="Testing\Contingency\AverageKappaTest.cs" />
     <Compile Include="Testing\Contingency\FisherExactTest.cs" />
     <Compile Include="Testing\MultinomialTest.cs" />
+    <Compile Include="Testing\Multiple Samples\BartlettTest.cs" />
+    <Compile Include="Testing\Multiple Samples\LeveneTest.cs" />
     <Compile Include="Testing\TwoSample\PairedTTest.cs" />
     <Compile Include="Testing\TwoSample\TwoProportionZTest.cs" />
+    <Compile Include="Testing\Contingency\TwoReceiverOperatingCurveTest.cs" />
     <Compile Include="Testing\WilcoxonTest.cs" />
     <Compile Include="Testing\TwoSample\MannWhitneyWilcoxonTest.cs" />
     <Compile Include="Testing\Power\Base\IPowerAnalysis.cs" />
@@ -441,5 +457,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Running\Markov\Base\" />
+  </ItemGroup>
 </Project>

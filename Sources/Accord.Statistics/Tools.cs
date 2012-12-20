@@ -218,12 +218,15 @@ namespace Accord.Statistics
         /// </summary>
         /// 
         /// <param name="values">A double array containing the vector members.</param>
-        /// 
+        /// <param name="unbiased">
+        ///   True to compute the unbiased estimate of the population
+        ///   standard deviation, false for the sample standard deviation.</param>
+        ///   
         /// <returns>The standard deviation of the given data.</returns>
         /// 
-        public static double StandardDeviation(this double[] values)
+        public static double StandardDeviation(this double[] values, bool unbiased = true)
         {
-            return StandardDeviation(values, Mean(values));
+            return StandardDeviation(values, Mean(values), unbiased);
         }
 
         /// <summary>
@@ -242,12 +245,18 @@ namespace Accord.Statistics
         /// <summary>
         ///   Computes the Standard Deviation of the given values.
         /// </summary>
+        /// 
         /// <param name="values">A double array containing the vector members.</param>
         /// <param name="mean">The mean of the vector, if already known.</param>
+        /// <param name="unbiased">
+        ///   True to compute the unbiased estimate of the population
+        ///   standard deviation, false for the sample standard deviation.</param>
+        ///   
         /// <returns>The standard deviation of the given data.</returns>
-        public static double StandardDeviation(this double[] values, double mean)
+        /// 
+        public static double StandardDeviation(this double[] values, double mean, bool unbiased=true)
         {
-            return System.Math.Sqrt(Variance(values, mean));
+            return System.Math.Sqrt(Variance(values, mean, unbiased));
         }
 
         /// <summary>
@@ -1502,20 +1511,6 @@ namespace Accord.Statistics
             }
 
             return mean;
-        }
-
-        /// <summary>
-        ///   Calculates the weighted matrix Mean vector.
-        /// </summary>
-        /// 
-        /// <param name="matrix">A matrix whose means will be calculated.</param>
-        /// <param name="weights">A vector containing the importance of each sample in the matrix.</param>
-        /// 
-        /// <returns>Returns a vector containing the means of the given matrix.</returns>
-        /// 
-        public static double[] Mean(this double[][] matrix, double[] weights)
-        {
-            return WeightedMean(matrix, weights, 0);
         }
 
         /// <summary>
@@ -3039,6 +3034,21 @@ namespace Accord.Statistics
         #endregion
 
         #region Weighted Matrix Measures
+
+        /// <summary>
+        ///   Calculates the weighted matrix Mean vector.
+        /// </summary>
+        /// 
+        /// <param name="matrix">A matrix whose means will be calculated.</param>
+        /// <param name="weights">A vector containing the importance of each sample in the matrix.</param>
+        /// 
+        /// <returns>Returns a vector containing the means of the given matrix.</returns>
+        /// 
+        public static double[] WeightedMean(this double[][] matrix, double[] weights)
+        {
+            return WeightedMean(matrix, weights, 0);
+        }
+
         /// <summary>
         ///   Calculates the weighted matrix Mean vector.
         /// </summary>
@@ -3096,6 +3106,7 @@ namespace Accord.Statistics
 
             return mean;
         }
+
 
         /// <summary>
         ///   Calculates the scatter matrix of a sample matrix.
