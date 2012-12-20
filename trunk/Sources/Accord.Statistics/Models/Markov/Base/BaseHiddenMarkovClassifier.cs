@@ -23,14 +23,14 @@
 namespace Accord.Statistics.Models.Markov
 {
     using System;
+    using System.Collections.Generic;
     using System.Runtime.Serialization;
     using System.Threading.Tasks;
     using Accord.Math;
-    using System.Collections.Generic;
 
     /// <summary>
-    ///   Base class for (HMM) Sequence Classifiers. This class cannot
-    ///   be instantiated.
+    ///   Base class for (HMM) Sequence Classifiers. 
+    ///   This class cannot be instantiated.
     /// </summary>
     /// 
     [Serializable]
@@ -278,8 +278,8 @@ namespace Accord.Statistics.Models.Markov
         }
 
         /// <summary>
-        ///   Computes the log-likelihood of a sequence
-        ///   belong to a given class according to this
+        ///   Computes the log-likelihood that a sequence
+        ///   belongs to a given class according to this
         ///   classifier.
         /// </summary>
         /// <param name="sequence">The sequence of observations.</param>
@@ -293,6 +293,31 @@ namespace Accord.Statistics.Models.Markov
             Compute(sequence, out responsabilities);
             return Math.Log(responsabilities[output]);
         }
+
+        /// <summary>
+        ///   Computes the log-likelihood that a sequence
+        ///   belongs any of the classes in the classifier.
+        /// </summary>
+        /// <param name="sequence">The sequence of observations.</param>
+        /// 
+        /// <returns>The log-likelihood of the sequence belonging to the classifier.</returns>
+        /// 
+        protected double LogLikelihood(Array sequence)
+        {
+            double sum = Double.NegativeInfinity;
+
+            for (int i = 0; i < models.Length; i++)
+            {
+                double prior = Math.Log(classPriors[i]);
+                double model = models[i].Evaluate(sequence);
+                double result = Special.LogSum(prior, model);
+
+                sum = Special.LogSum(sum, result);
+            }
+
+            return sum;
+        }
+
 
         /// <summary>
         ///   Computes the log-likelihood of a set of sequences

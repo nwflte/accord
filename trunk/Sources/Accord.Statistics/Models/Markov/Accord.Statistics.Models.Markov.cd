@@ -167,14 +167,6 @@
       <Method Name="Load" Hidden="true" />
       <Method Name="Save" Hidden="true" />
     </Members>
-    <InheritanceLine Type="Accord.Statistics.Models.Markov.BaseHiddenMarkovClassifier&lt;TModel&gt;" ManuallyRouted="true">
-      <Path>
-        <Point X="5.25" Y="11.017" />
-        <Point X="5.25" Y="11.457" />
-        <Point X="7.375" Y="11.457" />
-        <Point X="7.375" Y="12" />
-      </Path>
-    </InheritanceLine>
     <TypeIdentifier>
       <HashCode>AEAAgIAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAQAAA=</HashCode>
       <FileName>Models\Markov\HiddenMarkovClassifier`1.cs</FileName>
@@ -189,14 +181,6 @@
       <Method Name="Load" Hidden="true" />
       <Method Name="Save" Hidden="true" />
     </Members>
-    <InheritanceLine Type="Accord.Statistics.Models.Markov.BaseHiddenMarkovClassifier&lt;TModel&gt;" ManuallyRouted="true">
-      <Path>
-        <Point X="5.25" Y="11.017" />
-        <Point X="5.25" Y="11.436" />
-        <Point X="3.5" Y="11.436" />
-        <Point X="3.5" Y="12" />
-      </Path>
-    </InheritanceLine>
     <TypeIdentifier>
       <HashCode>AEQAgIAAAABAAAAAAAAAAAAAAAAAAAQAAAAAAAAQAAA=</HashCode>
       <FileName>Models\Markov\HiddenMarkovClassifier.cs</FileName>
@@ -223,7 +207,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Statistics.Models.Markov.Learning.HiddenMarkovClassifierLearning">
-    <Position X="14.75" Y="12.25" Width="3" />
+    <Position X="13.5" Y="12" Width="3" />
     <Members>
       <Method Name="ComputeError" Hidden="true" />
       <Method Name="createSmoothingKernel" Hidden="true" />
@@ -241,7 +225,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Statistics.Models.Markov.Learning.HiddenMarkovClassifierLearning&lt;TDistribution&gt;">
-    <Position X="18" Y="12.5" Width="3.5" />
+    <Position X="17.25" Y="12.25" Width="3.5" />
     <Members>
       <Method Name="ComputeError" Hidden="true" />
       <Method Name="Threshold" Hidden="true" />
