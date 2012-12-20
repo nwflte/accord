@@ -25,6 +25,7 @@
 
 namespace Accord.Imaging
 {
+    using System;
 
     /// <summary>
     ///   Speeded-Up Robust Feature (SURF) Point.
@@ -33,6 +34,7 @@ namespace Accord.Imaging
     /// <seealso cref="SpeededUpRobustFeaturesDetector"/>
     /// <seealso cref="SpeededUpRobustFeaturesDescriptor"/>
     /// 
+    [Serializable]
     public class SpeededUpRobustFeaturePoint
     {
 
