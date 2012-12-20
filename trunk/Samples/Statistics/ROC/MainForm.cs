@@ -33,6 +33,7 @@ using Accord.Statistics.Analysis;
 using Accord.Controls;
 
 using ZedGraph;
+using Accord.Statistics.Formats;
 
 namespace ReceiverOperating
 {
@@ -50,8 +51,6 @@ namespace ReceiverOperating
             
             dgvSource.AutoGenerateColumns = true;
             dgvPointDetails.AutoGenerateColumns = false;
-
-            CreateCurveGraph(zedGraph1);
 
             openFileDialog.InitialDirectory = Path.Combine(Application.StartupPath, "Resources");
         }
@@ -91,15 +90,14 @@ namespace ReceiverOperating
             else
                 rocCurve.Compute((float)numIncrement.Value);
 
-            // Update graphs
-            CreateCurveGraph(zedGraph1);
+            scatterplotView1.Scatterplot = rocCurve.GetScatterplot(true);
 
             // Show point details
             dgvPointDetails.DataSource = new SortableBindingList<ReceiverOperatingCharacteristicPoint>(rocCurve.Points);
 
             // Show area and error
             tbArea.Text = rocCurve.Area.ToString();
-            tbError.Text = rocCurve.Error.ToString();
+            tbError.Text = rocCurve.StandardError.ToString();
         }
 
         #endregion
@@ -135,56 +133,6 @@ namespace ReceiverOperating
         }
 
         #endregion
-
-
-        #region Graphs
-        public void CreateCurveGraph(ZedGraphControl zgc)
-        {
-            GraphPane myPane = zgc.GraphPane;
-            
-            myPane.CurveList.Clear();
-
-            // Set the titles and axis labels
-            myPane.Title.Text = "Receiver Operating Characteristic Curve";
-            myPane.Title.FontSpec.Size = 24f;
-            myPane.Title.FontSpec.Family = "Tahoma";
-            myPane.XAxis.Title.Text = "(1-Specificity)";
-            myPane.YAxis.Title.Text = "Sensitivity";
-
-            PointPairList list = new PointPairList();
-            if (rocCurve != null)
-            {
-                for (int i = 0; i < rocCurve.Points.Count; i++)
-                {
-                    list.Add(1 - rocCurve.Points[i].Specificity, rocCurve.Points[i].Sensitivity);
-                }
-            }
-
-            // Hide the legend
-            myPane.Legend.IsVisible = false;
-
-            // Add a curve
-            LineItem curve = myPane.AddCurve("label", list, Color.Red, SymbolType.Circle);
-            curve.Line.Width = 2.0F;
-            curve.Line.IsAntiAlias = true;
-            curve.Symbol.Fill = new Fill(Color.White);
-            curve.Symbol.Size = 7;
-
-            myPane.XAxis.Scale.Max = 1.0;
-            myPane.XAxis.Scale.Min = 0.0;
-
-            myPane.YAxis.Scale.Max = 1.0;
-            myPane.YAxis.Scale.Min = 0.0;
-
-
-            // Calculate the Axis Scale Ranges
-            zgc.AxisChange();
-            zgc.Invalidate();
-        }
-
-        
-        #endregion
-
 
 
     }

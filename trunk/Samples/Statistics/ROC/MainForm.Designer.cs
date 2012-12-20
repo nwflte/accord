@@ -28,7 +28,6 @@ namespace ReceiverOperating
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
@@ -49,6 +48,7 @@ namespace ReceiverOperating
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.dgvSource = new System.Windows.Forms.DataGridView();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.scatterplotView1 = new Accord.Controls.ScatterplotView();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.tbError = new System.Windows.Forms.TextBox();
@@ -57,12 +57,10 @@ namespace ReceiverOperating
             this.numPoints = new System.Windows.Forms.NumericUpDown();
             this.rbThreshold = new System.Windows.Forms.RadioButton();
             this.rbNumPoints = new System.Windows.Forms.RadioButton();
-            this.zedGraph1 = new ZedGraph.ZedGraphControl();
             this.btnPlot = new System.Windows.Forms.Button();
             this.tabDistribution = new System.Windows.Forms.TabPage();
             this.groupBox11 = new System.Windows.Forms.GroupBox();
             this.dgvPointDetails = new System.Windows.Forms.DataGridView();
-            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.colCutoff = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colTruePositive = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colTrueNegative = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -76,9 +74,11 @@ namespace ReceiverOperating
             this.colNegativePrecision = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colFalseAlarmRate = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colMatthews = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.menuStrip1.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.tabSamples.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).BeginInit();
             this.splitContainer3.Panel1.SuspendLayout();
             this.splitContainer3.Panel2.SuspendLayout();
             this.splitContainer3.SuspendLayout();
@@ -211,6 +211,7 @@ namespace ReceiverOperating
             // 
             // groupBox6
             // 
+            this.groupBox6.Controls.Add(this.scatterplotView1);
             this.groupBox6.Controls.Add(this.label2);
             this.groupBox6.Controls.Add(this.label1);
             this.groupBox6.Controls.Add(this.tbError);
@@ -219,7 +220,6 @@ namespace ReceiverOperating
             this.groupBox6.Controls.Add(this.numPoints);
             this.groupBox6.Controls.Add(this.rbThreshold);
             this.groupBox6.Controls.Add(this.rbNumPoints);
-            this.groupBox6.Controls.Add(this.zedGraph1);
             this.groupBox6.Controls.Add(this.btnPlot);
             this.groupBox6.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox6.Location = new System.Drawing.Point(0, 0);
@@ -228,6 +228,20 @@ namespace ReceiverOperating
             this.groupBox6.TabIndex = 6;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Receiver Operating Characteristic Curve";
+            // 
+            // scatterplotView1
+            // 
+            this.scatterplotView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.scatterplotView1.LinesVisible = true;
+            this.scatterplotView1.Location = new System.Drawing.Point(3, 16);
+            this.scatterplotView1.Name = "scatterplotView1";
+            this.scatterplotView1.ScaleTight = true;
+            this.scatterplotView1.Scatterplot = ((Accord.Statistics.Visualizations.Scatterplot)(resources.GetObject("scatterplotView1.Scatterplot")));
+            this.scatterplotView1.Size = new System.Drawing.Size(458, 309);
+            this.scatterplotView1.SymbolSize = 0F;
+            this.scatterplotView1.TabIndex = 7;
             // 
             // label2
             // 
@@ -259,8 +273,8 @@ namespace ReceiverOperating
             // 
             // tbArea
             // 
-            this.tbArea.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbArea.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tbArea.Location = new System.Drawing.Point(44, 331);
             this.tbArea.Name = "tbArea";
             this.tbArea.Size = new System.Drawing.Size(201, 20);
@@ -342,27 +356,10 @@ namespace ReceiverOperating
             this.rbNumPoints.Text = "Number of points:";
             this.rbNumPoints.UseVisualStyleBackColor = true;
             // 
-            // zedGraph1
-            // 
-            this.zedGraph1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.zedGraph1.Location = new System.Drawing.Point(6, 19);
-            this.zedGraph1.Name = "zedGraph1";
-            this.zedGraph1.ScrollGrace = 0;
-            this.zedGraph1.ScrollMaxX = 0;
-            this.zedGraph1.ScrollMaxY = 0;
-            this.zedGraph1.ScrollMaxY2 = 0;
-            this.zedGraph1.ScrollMinX = 0;
-            this.zedGraph1.ScrollMinY = 0;
-            this.zedGraph1.ScrollMinY2 = 0;
-            this.zedGraph1.Size = new System.Drawing.Size(450, 301);
-            this.zedGraph1.TabIndex = 2;
-            // 
             // btnPlot
             // 
-            this.btnPlot.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnPlot.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.btnPlot.Location = new System.Drawing.Point(6, 357);
             this.btnPlot.Name = "btnPlot";
             this.btnPlot.Size = new System.Drawing.Size(251, 46);
@@ -443,14 +440,6 @@ namespace ReceiverOperating
             this.dgvPointDetails.Size = new System.Drawing.Size(717, 390);
             this.dgvPointDetails.TabIndex = 1;
             // 
-            // openFileDialog
-            // 
-            this.openFileDialog.DefaultExt = "xls";
-            this.openFileDialog.Filter = "Xml Files (*.xml) |*.xml|Excel files (*.xls)|*.xls|Text files (*.txt)|*.txt|All f" +
-                "iles (*.*)|*.*";
-            this.openFileDialog.FilterIndex = 2;
-            this.openFileDialog.Title = "Open file";
-            // 
             // colCutoff
             // 
             this.colCutoff.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
@@ -458,7 +447,7 @@ namespace ReceiverOperating
             this.colCutoff.HeaderText = "Cutoff Value";
             this.colCutoff.Name = "colCutoff";
             this.colCutoff.ReadOnly = true;
-            this.colCutoff.Width = 82;
+            this.colCutoff.Width = 76;
             // 
             // colTruePositive
             // 
@@ -469,7 +458,7 @@ namespace ReceiverOperating
             this.colTruePositive.HeaderText = "True Positives";
             this.colTruePositive.Name = "colTruePositive";
             this.colTruePositive.ReadOnly = true;
-            this.colTruePositive.Width = 89;
+            this.colTruePositive.Width = 82;
             // 
             // colTrueNegative
             // 
@@ -480,7 +469,7 @@ namespace ReceiverOperating
             this.colTrueNegative.HeaderText = "True Negatives";
             this.colTrueNegative.Name = "colTrueNegative";
             this.colTrueNegative.ReadOnly = true;
-            this.colTrueNegative.Width = 93;
+            this.colTrueNegative.Width = 86;
             // 
             // colFalsePositive
             // 
@@ -491,7 +480,7 @@ namespace ReceiverOperating
             this.colFalsePositive.HeaderText = "False Positives";
             this.colFalsePositive.Name = "colFalsePositive";
             this.colFalsePositive.ReadOnly = true;
-            this.colFalsePositive.Width = 94;
+            this.colFalsePositive.Width = 87;
             // 
             // colFalseNegative
             // 
@@ -579,6 +568,14 @@ namespace ReceiverOperating
             this.colMatthews.ToolTipText = "As known as Matthews Correlation Coefficient";
             this.colMatthews.Width = 43;
             // 
+            // openFileDialog
+            // 
+            this.openFileDialog.DefaultExt = "xls";
+            this.openFileDialog.Filter = "Xml Files (*.xml) |*.xml|Excel files (*.xls)|*.xls|Text files (*.txt)|*.txt|All f" +
+    "iles (*.*)|*.*";
+            this.openFileDialog.FilterIndex = 2;
+            this.openFileDialog.Title = "Open file";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -597,6 +594,7 @@ namespace ReceiverOperating
             this.tabSamples.ResumeLayout(false);
             this.splitContainer3.Panel1.ResumeLayout(false);
             this.splitContainer3.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
             this.splitContainer3.ResumeLayout(false);
             this.groupBox7.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvSource)).EndInit();
@@ -631,7 +629,6 @@ namespace ReceiverOperating
         private System.Windows.Forms.Button btnPlot;
         private System.Windows.Forms.TabPage tabDistribution;
         //   private Sinapse.Forms.Controls.Controls.DataHistogramView dataHistogramView2;
-        private ZedGraph.ZedGraphControl zedGraph1;
         private System.Windows.Forms.GroupBox groupBox11;
         private System.Windows.Forms.DataGridView dgvPointDetails;
         private System.Windows.Forms.RadioButton rbNumPoints;
@@ -655,5 +652,6 @@ namespace ReceiverOperating
         private System.Windows.Forms.DataGridViewTextBoxColumn colNegativePrecision;
         private System.Windows.Forms.DataGridViewTextBoxColumn colFalseAlarmRate;
         private System.Windows.Forms.DataGridViewTextBoxColumn colMatthews;
+        private Accord.Controls.ScatterplotView scatterplotView1;
     }
 }

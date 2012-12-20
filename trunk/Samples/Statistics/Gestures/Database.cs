@@ -23,16 +23,6 @@ namespace Gestures
 
         public void Save(Stream stream)
         {
-          /*  var classes = new string[Classes.Count];
-            var samples = new TrainingSample[Samples.Count];
-
-            Classes.CopyTo(classes, 0);
-            for (int i = 0; i < samples.Length; i++)
-            {
-                samples[i] = (TrainingSample)Samples[i].Clone();
-                samples[i].Classes = classes;
-            }
-            */
             var serializer = new XmlSerializer(typeof(BindingList<Sequence>));
             serializer.Serialize(stream, Samples);
         }
