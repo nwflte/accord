@@ -25,106 +25,15 @@ namespace Accord.Statistics.Analysis
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.ComponentModel;
-    using Accord.Math;
     using Accord.Statistics.Models.Regression.Linear;
     using Accord.Statistics.Testing;
     using AForge;
+    using Accord.Math;
+    using System.ComponentModel;
 
     /// <summary>
     ///   Multiple Linear Regression Analysis
     /// </summary>
-    /// 
-    /// <remarks>
-    /// <para>
-    ///   Linear regression is an approach to model the relationship between 
-    ///   a single scalar dependent variable <c>y</c> and one or more explanatory
-    ///   variables <c>x</c>. This class uses a <see cref="MultipleLinearRegression"/>
-    ///   to extract information about a given problem, such as confidence intervals,
-    ///   hypothesis tests and performance measures.</para>
-    ///   
-    /// <para>
-    ///   This class can also be bound to standard controls such as the 
-    ///   <a href="http://msdn.microsoft.com/en-us/library/system.windows.forms.datagridview.aspx">DataGridView</a>
-    ///   by setting their DataSource property to the analysis' <see cref="Coefficients"/> property.</para>
-    ///   
-    /// <para>
-    ///   References:
-    ///   <list type="bullet">
-    ///     <item><description>
-    ///       Wikipedia contributors. "Linear regression." Wikipedia, The Free Encyclopedia, 4 Nov. 2012.
-    ///       Available on: http://en.wikipedia.org/wiki/Linear_regression </description></item>
-    ///  </list></para>  
-    /// </remarks>
-    /// 
-    /// <example>
-    /// <code>
-    /// // Consider the following data. An experimenter would
-    /// // like to infer a relationship between two variables
-    /// // A and B and a corresponding outcome variable R.
-    /// 
-    /// double[][] example = 
-    /// {
-    ///     //                A    B      R
-    ///     new double[] {  6.41, 10.11, 26.1 },
-    ///     new double[] {  6.61, 22.61, 33.8 },
-    ///     new double[] {  8.45, 11.11, 52.7 },
-    ///     new double[] {  1.22, 18.11, 16.2 },
-    ///     new double[] {  7.42, 12.81, 87.3 },
-    ///     new double[] {  4.42, 10.21, 12.5 },
-    ///     new double[] {  8.61, 11.94, 77.5 },
-    ///     new double[] {  1.73, 13.13, 12.1 },
-    ///     new double[] {  7.47, 17.11, 86.5 },
-    ///     new double[] {  6.11, 15.13, 62.8 },
-    ///     new double[] {  1.42, 16.11, 17.5 },
-    /// };
-    /// 
-    /// // For this, we first extract the input and output
-    /// // pairs. The first two columns have values for the
-    /// // input variables, and the last for the output:
-    /// 
-    /// double[][] inputs = example.GetColumns(0, 1);
-    /// double[] output = example.GetColumn(2);
-    /// 
-    /// // Next, we can create a new multiple linear regression for the variables
-    /// var regression = new MultipleLinearRegressionAnalysis(inputs, output, intercept: true);
-    /// 
-    /// regression.Compute(); // compute the analysis
-    /// 
-    /// // Now we can show a summary of analysis
-    /// DataGridBox.Show(regression.Coefficients);
-    /// </code>
-    /// 
-    ///   <img src="..\images\linear-regression.png" />
-    /// 
-    /// <code>
-    /// // We can also show a summary ANOVA
-    /// DataGridBox.Show(regression.Table);
-    /// </code>
-    /// 
-    ///   <img src="..\images\linear-anova.png" />
-    ///   
-    /// <code>
-    /// // And also extract other useful information, such
-    /// // as the linear coefficients' values and std errors:
-    /// double[] coef = regression.CoefficientValues;
-    /// double[] stde = regression.StandardErrors;
-    /// 
-    /// // Coefficients of performance, such as r²
-    /// double rsquared = regression.RSquared;
-    /// 
-    /// // Hypothesis tests for the whole model
-    /// ZTest ztest = regression.ZTest;
-    /// FTest ftest = regression.FTest;
-    /// 
-    /// // and for individual coefficients
-    /// TTest ttest0 = regression.Coefficients[0].TTest;
-    /// TTest ttest1 = regression.Coefficients[1].TTest;
-    /// 
-    /// // and also extract confidence intervals
-    /// DoubleRange ci = regression.Coefficients[0].Confidence;
-    /// </code>
-    /// </example>
     /// 
     [Serializable]
     public class MultipleLinearRegressionAnalysis : IRegressionAnalysis, IAnova
@@ -368,12 +277,6 @@ namespace Accord.Statistics.Analysis
             this.ftests = new FTest[coefficientCount];
             this.ttests = new TTest[coefficientCount];
 
-            this.outputName = "Output";
-            this.inputNames = new string[inputCount];
-            for (int i = 0; i < inputNames.Length; i++)
-                inputNames[i] = "Input " + i;
-
-
             // Create object-oriented structure to represent the analysis
             var coefs = new LinearRegressionCoefficient[coefficientCount];
             for (int i = 0; i < coefs.Length; i++)
@@ -592,7 +495,6 @@ namespace Accord.Statistics.Analysis
         ///   <c>true</c> if this coefficient is the intercept; otherwise, <c>false</c>.
         /// </value>
         /// 
-        [DisplayName("Intercept?")]
         public bool IsIntercept { get { return Analysis.regression.HasIntercept && index == Analysis.regression.Coefficients.Length - 1; } }
 
         /// <summary>

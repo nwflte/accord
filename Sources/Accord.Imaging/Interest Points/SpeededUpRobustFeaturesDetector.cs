@@ -25,7 +25,6 @@
 
 namespace Accord.Imaging
 {
-    using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.Drawing;
@@ -34,6 +33,7 @@ namespace Accord.Imaging
     using AForge;
     using AForge.Imaging;
     using AForge.Imaging.Filters;
+    using System.Threading;
 
     /// <summary>
     ///   SURF Feature descriptor types.
@@ -92,7 +92,6 @@ namespace Accord.Imaging
     /// <seealso cref="SpeededUpRobustFeaturePoint"/>
     /// <seealso cref="SpeededUpRobustFeaturesDescriptor"/>
     ///
-    [Serializable]
     public class SpeededUpRobustFeaturesDetector : ICornersDetector
     {
         private int octaves = 5;
@@ -100,15 +99,11 @@ namespace Accord.Imaging
 
         private double threshold = 0.0002;
 
-        [NonSerialized]
         private ResponseLayerCollection responses;
-
-        [NonSerialized]
         private IntegralImage integral;
 
 
         // Default description options
-        [NonSerialized]
         private SpeededUpRobustFeaturesDescriptor descriptor;
         private SpeededUpRobustFeatureDescriptorType featureType = SpeededUpRobustFeatureDescriptorType.Standard;
         private bool computeOrientation = true;
@@ -742,7 +737,6 @@ namespace Accord.Imaging
         ///   Response Layer.
         /// </summary>
         /// 
-        [Serializable]
         public class ResponseLayer
         {
             /// <summary>

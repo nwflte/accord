@@ -107,7 +107,7 @@ namespace Accord.MachineLearning
     }
 
     /// <summary>
-    ///   Grid search parameter collection.
+    ///   GridsearchParameter collection.
     /// </summary>
     /// 
     [Serializable]

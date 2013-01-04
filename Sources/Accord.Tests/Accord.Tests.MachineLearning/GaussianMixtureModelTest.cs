@@ -105,19 +105,19 @@ namespace Accord.Tests.MachineLearning
             gmm.Compute(samples, 0.0001);
 
             // Classify a single sample
-            int c = gmm.Gaussians.Compute(sample);
+            int c = gmm.Gaussians.Nearest(sample);
 
             Assert.AreEqual(2, gmm.Gaussians.Count);
 
             for (int i = 0; i < samples.Length; i++)
             {
                 sample = samples[i];
-                c = gmm.Gaussians.Compute(sample);
+                c = gmm.Gaussians.Nearest(sample);
 
                 Assert.AreEqual(c, i >= 5 ? 1 : 0);
             }
         }
-
+        
         [TestMethod]
         public void GaussianMixtureModelTest2()
         {
@@ -127,7 +127,7 @@ namespace Accord.Tests.MachineLearning
             int width = 16;
 
             var gmm = new GaussianMixtureModel(3);
-            // gmm.Regularization = 0;
+           // gmm.Regularization = 0;
 
             Assert.AreEqual(3, gmm.Gaussians.Count);
             Assert.IsNull(gmm.Gaussians[0].Covariance);
@@ -160,7 +160,7 @@ namespace Accord.Tests.MachineLearning
             {
                 var result = gmm.Compute(B);
             }
-            catch (NonPositiveDefiniteMatrixException)
+            catch (NonPositiveDefiniteMatrixException )
             {
                 thrown = true;
             }
@@ -184,60 +184,5 @@ namespace Accord.Tests.MachineLearning
             var result = gmm.Compute(B);
         }
 
-        [TestMethod]
-        public void GaussianMixtureModelTest4()
-        {
-
-            // Suppose we have a weighted data set. Those are the input points:
-            double[][] points =
-            {
-                new double[] { 0 }, new double[] { 3 }, new double[] {  1 }, 
-                new double[] { 7 }, new double[] { 3 }, new double[] {  5 },
-                new double[] { 1 }, new double[] { 2 }, new double[] { -1 },
-                new double[] { 2 }, new double[] { 7 }, new double[] {  6 }, 
-                new double[] { 8 }, new double[] { 6 } // (14 points)
-            };
-
-            // And those are their respective unnormalized weights:
-            double[] weights = { 10, 1, 1, 2, 2, 1, 1, 1, 8, 1, 2, 5, 1, 1 }; // (14 weights)
-
-            // with weights
-            {
-                Accord.Math.Tools.SetupGenerator(0);
-
-                // If we need the GaussianMixtureModel functionality, we can
-                // use the estimated mixture to initialize a new model:
-                GaussianMixtureModel gmm = new GaussianMixtureModel(2);
-
-                gmm.Compute(points, new GaussianMixtureModelOptions()
-                {
-                    Weights = weights
-                });
-
-
-                Assert.AreEqual(6.420790676635443, gmm.Gaussians[0].Mean[0]);
-                Assert.AreEqual(0.290536871335858, gmm.Gaussians[1].Mean[0]);
-
-                Assert.AreEqual(0.32294476897888613, gmm.Gaussians[0].Proportion);
-                Assert.AreEqual(0.67705523102111387, gmm.Gaussians[1].Proportion);
-            }
-
-            // without weights
-            { 
-                Accord.Math.Tools.SetupGenerator(0);
-
-                // If we need the GaussianMixtureModel functionality, we can
-                // use the estimated mixture to initialize a new model:
-                GaussianMixtureModel gmm = new GaussianMixtureModel(2);
-
-                gmm.Compute(points);
-
-                Assert.AreEqual(6.5149525060859865, gmm.Gaussians[0].Mean[0]);
-                Assert.AreEqual(1.4191977895308987, gmm.Gaussians[1].Mean[0]);
-
-                Assert.AreEqual(0.42235760973845654, gmm.Gaussians[0].Proportion);
-                Assert.AreEqual(0.57764239026154351, gmm.Gaussians[1].Proportion);
-            }
-        }
     }
 }

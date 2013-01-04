@@ -169,6 +169,7 @@ namespace Accord.Tests.Statistics
             Assert.IsFalse(Double.IsNaN(target.Statistic));
         }
 
+
         [TestMethod()]
         public void EmpiricalDistributionTest()
         {

@@ -49,7 +49,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Statistics.Filters.FiltersSequence" BaseTypeListCollapsed="true">
-    <Position X="16" Y="1" Width="2.25" />
+    <Position X="16.5" Y="0.75" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Filters\FilterSequence.cs</FileName>
@@ -57,14 +57,14 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Statistics.Filters.ColumnOptionCollection&lt;T&gt;">
-    <Position X="12.75" Y="3" Width="2.25" />
+    <Position X="13.25" Y="2.75" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Filters\Base\BaseFilter.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Statistics.Filters.BaseFilter&lt;T&gt;">
-    <Position X="9.75" Y="1.75" Width="1.5" />
+    <Position X="10.25" Y="1.5" Width="1.5" />
     <Compartments>
       <Compartment Name="Protected" Collapsed="true" />
     </Compartments>
@@ -78,14 +78,14 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Statistics.Filters.ColumnOptionsBase">
-    <Position X="12.75" Y="0.75" Width="2.25" />
+    <Position X="13.25" Y="0.5" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAEAABAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Filters\Base\BaseFilter.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Statistics.Moving.MovingCircularStatistics" BaseTypeListCollapsed="true">
-    <Position X="17" Y="9.75" Width="2" />
+    <Position X="11.75" Y="9.75" Width="2" />
     <Members>
       <Field Name="cosines" Hidden="true" />
       <Field Name="sines" Hidden="true" />
@@ -97,7 +97,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Statistics.Moving.MovingNormalStatistics" BaseTypeListCollapsed="true">
-    <Position X="19.5" Y="9.75" Width="2" />
+    <Position X="14.25" Y="9.75" Width="2" />
     <Members>
       <Method Name="GetEnumerator" Hidden="true" />
       <Field Name="squares" Hidden="true" />
@@ -111,7 +111,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Statistics.Running.RunningNormalStatistics">
-    <Position X="23" Y="9" Width="2" />
+    <Position X="9.25" Y="9.75" Width="2" />
     <Members>
       <Field Name="count" Hidden="true" />
       <Field Name="lastMean" Hidden="true" />
@@ -126,7 +126,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Statistics.Filters.Codification" Collapsed="true">
-    <Position X="7" Y="5.75" Width="1.5" />
+    <Position X="7.5" Y="5.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAIAAACAAACAAAAAAAAAAAAAAEAAAAAAA=</HashCode>
       <FileName>Filters\Codification.cs</FileName>
@@ -134,7 +134,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Statistics.Filters.Discretization" Collapsed="true">
-    <Position X="11.25" Y="7" Width="1.5" />
+    <Position X="11.75" Y="6.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAIAAAAAAACAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Filters\Discretization.cs</FileName>
@@ -142,7 +142,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Statistics.Filters.LinearScaling" Collapsed="true">
-    <Position X="8.75" Y="7" Width="1.5" />
+    <Position X="9.25" Y="6.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAIAAAAAAACAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Filters\LinearScaling.cs</FileName>
@@ -150,7 +150,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Statistics.Filters.Normalization" Collapsed="true">
-    <Position X="8.75" Y="5.75" Width="1.5" />
+    <Position X="9.25" Y="5.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAIAAAAAAACAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Filters\Normalization.cs</FileName>
@@ -158,7 +158,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Statistics.Filters.PrincipalComponentProjection" Collapsed="true">
-    <Position X="5.75" Y="7" Width="2.5" />
+    <Position X="6.25" Y="6.75" Width="2.5" />
     <TypeIdentifier>
       <HashCode>ACAAAAAAAAAAIAAAAAAAKAAAAAAAAAAAAAAgBAAAAAA=</HashCode>
       <FileName>Filters\PrincipalComponentProjection.cs</FileName>
@@ -166,7 +166,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Statistics.Filters.Projection" Collapsed="true">
-    <Position X="13.25" Y="7" Width="1.5" />
+    <Position X="13.75" Y="6.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAA=</HashCode>
       <FileName>Filters\Projection.cs</FileName>
@@ -174,7 +174,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Statistics.Filters.Selection" Collapsed="true">
-    <Position X="11.25" Y="5.75" Width="1.5" />
+    <Position X="11.75" Y="5.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AIAAAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
       <FileName>Filters\Selection.cs</FileName>
@@ -182,14 +182,14 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Statistics.Filters.Branching" Collapsed="true">
-    <Position X="15.25" Y="7" Width="1.5" />
+    <Position X="15.75" Y="6.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Filters\Branching.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Statistics.Filters.Elimination" Collapsed="true">
-    <Position X="13.25" Y="5.75" Width="1.5" />
+    <Position X="13.75" Y="5.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAIAAAAAAACAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Filters\Elimination.cs</FileName>
@@ -197,14 +197,14 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Statistics.Filters.Grouping" Collapsed="true">
-    <Position X="17.25" Y="7" Width="1.5" />
+    <Position X="17.75" Y="6.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAQEAAAQAAAAAAIAAAACAAAAAAAEAABAAAAAQCAAAA=</HashCode>
       <FileName>Filters\Grouping.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Statistics.Filters.Identification" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="19.25" Y="5.75" Width="1.5" />
+    <Position X="19.75" Y="5.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAABAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Filters\Identification.cs</FileName>
@@ -212,7 +212,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Statistics.Filters.Imputation" Collapsed="true">
-    <Position X="15.25" Y="5.75" Width="1.5" />
+    <Position X="15.75" Y="5.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAIAAAAAAACAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Filters\Imputation.cs</FileName>
@@ -220,7 +220,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Statistics.Filters.Randomization" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="19.25" Y="7" Width="1.5" />
+    <Position X="19.75" Y="6.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAABAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Filters\Randomization.cs</FileName>
@@ -228,14 +228,14 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Statistics.Filters.Stratification" Collapsed="true">
-    <Position X="17.25" Y="5.75" Width="1.5" />
+    <Position X="17.75" Y="5.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Filters\Stratification.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Statistics.Formats.ExcelReader">
-    <Position X="7.25" Y="9.75" Width="2.25" />
+    <Position X="17.5" Y="9.75" Width="2.25" />
     <Members>
       <Field Name="strConnection" Hidden="true" />
     </Members>
@@ -245,7 +245,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Statistics.Formats.SparseSampleReader">
-    <Position X="9.75" Y="9.75" Width="2.75" />
+    <Position X="20" Y="9.75" Width="2.75" />
     <Members>
       <Field Name="reader" Hidden="true" />
       <Field Name="sampleSize" Hidden="true" />
@@ -256,101 +256,39 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="Accord.Statistics.Running.RunningMarkovClassifier" BaseTypeListCollapsed="true">
-    <Position X="29.25" Y="8.75" Width="2" />
-    <Members>
-      <Field Name="models" Hidden="true" />
-    </Members>
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAABEAAAAAAQAAAAAAAABAAAAAAAAAABICAA=</HashCode>
-      <FileName>Running\Markov\RunningMarkovClassifier.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="Accord.Statistics.Running.RunningMarkovClassifier&lt;TDistribution&gt;" BaseTypeListCollapsed="true">
-    <Position X="25.75" Y="8.75" Width="3" />
-    <Members>
-      <Field Name="models" Hidden="true" />
-    </Members>
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAABEAAAAAAQAAAAAAAABAAAAAAAAAABICAA=</HashCode>
-      <FileName>Running\Markov\RunningMarkovClassifier`1.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="Accord.Statistics.Running.RunningMarkovStatistics" BaseTypeListCollapsed="true">
-    <Position X="25.75" Y="4.75" Width="2" />
-    <Members>
-      <Field Name="_base" Hidden="true" />
-      <Field Name="next" Hidden="true" />
-      <Field Name="previous" Hidden="true" />
-    </Members>
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAEAAEAAAKAACAAAAIAAAAAAAkIAAJACAA=</HashCode>
-      <FileName>Running\Markov\RunningMarkovStatistics.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" />
-  </Class>
-  <Class Name="Accord.Statistics.Running.RunningMarkovStatistics&lt;TDistribution&gt;" BaseTypeListCollapsed="true">
-    <Position X="28.25" Y="4.75" Width="3" />
-    <Members>
-      <Field Name="_base" Hidden="true" />
-      <Field Name="next" Hidden="true" />
-      <Field Name="previous" Hidden="true" />
-    </Members>
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAEAAEAAAKAACAAAAIAAAAAAAkIAAJACAA=</HashCode>
-      <FileName>Running\Markov\RunningMarkovStatistics`1.cs</FileName>
-    </TypeIdentifier>
-    <Lollipop Position="0.2" Collapsed="true" />
-  </Class>
   <Interface Name="Accord.Statistics.Filters.IFilter">
-    <Position X="7" Y="1.25" Width="1.5" />
+    <Position X="7.5" Y="1" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Filters\Base\IFilter.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Accord.Statistics.Filters.IAutoConfigurableFilter">
-    <Position X="6.75" Y="3" Width="2" />
+    <Position X="7.25" Y="2.75" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Filters\Base\IFilter.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Accord.Statistics.Moving.IMovingStatistics">
-    <Position X="23.25" Y="6.25" Width="1.75" />
+    <Position X="6.75" Y="11.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAACAAAAAA=</HashCode>
       <FileName>Moving\IMovingStatistics.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Accord.Statistics.Running.IRunningStatistics">
-    <Position X="23.25" Y="3.75" Width="1.75" />
+    <Position X="6.75" Y="9" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAABAAAAAAEgAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAABAAAAAAEgAAAAABACAA=</HashCode>
       <FileName>Running\IRunningStatistics.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Accord.Statistics.Filters.IAutoConfigurableColumn">
-    <Position X="16" Y="3.25" Width="2" />
+    <Position X="16.5" Y="3" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Filters\Base\IFilter.cs</FileName>
-    </TypeIdentifier>
-  </Interface>
-  <Interface Name="Accord.Statistics.Running.IRunningMarkovStatistics">
-    <Position X="27" Y="1.75" Width="2" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAEAAACAACAAAAIAAAAAAAEAAABAAAA=</HashCode>
-      <FileName>Running\Markov\IRunningMarkovStatistics.cs</FileName>
-    </TypeIdentifier>
-  </Interface>
-  <Interface Name="Accord.Statistics.Running.IRunning&lt;TValue&gt;">
-    <Position X="23.25" Y="1.75" Width="1.75" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABACAA=</HashCode>
-      <FileName>Running\IRunningStatistics.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Font Name="Segoe UI" Size="9" />

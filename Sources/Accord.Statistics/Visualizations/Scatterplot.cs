@@ -103,17 +103,11 @@ namespace Accord.Statistics.Visualizations
         public int[] LabelAxis { get; private set; }
 
         /// <summary>
-        ///   Gets an integer array containing the integer labels
+        ///   Gets the an array containing the integer labels
         ///   associated with each of the classes in the scatterplot.
         /// </summary>
         /// 
         internal int[] LabelValues { get; private set; }
-
-        /// <summary>
-        ///   Gets the class labels for each of the classes in the plot.
-        /// </summary>
-        /// 
-        public string[] LabelNames { get; private set; }
 
         /// <summary>
         ///   Gets a collection containing information about
@@ -188,10 +182,6 @@ namespace Accord.Statistics.Visualizations
             {
                 LabelValues = LabelAxis.Distinct();
             }
-
-            LabelNames = new string[LabelValues.Length];
-            for (int i = 0; i < LabelNames.Length; i++)
-                LabelNames[i] = i.ToString();
 
             var classes = new ScatterplotClassValueCollection[LabelValues.Length];
             for (int i = 0; i < classes.Length; i++)
@@ -326,15 +316,6 @@ namespace Accord.Statistics.Visualizations
             get { return parent.YAxis.Submatrix(Indices); }
         }
 
-        /// <summary>
-        ///   Gets or sets the class' text label.
-        /// </summary>
-        /// 
-        public string Text
-        {
-            get { return parent.LabelNames[index]; }
-            set { parent.LabelNames[index] = value; }
-        }
 
         internal ScatterplotClassValueCollection(Scatterplot parent, int index)
         {

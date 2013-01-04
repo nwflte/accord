@@ -104,7 +104,7 @@ namespace Accord.Tests.MachineLearning
 
             int[][] orig = observations.MemberwiseClone();
 
-            // Create a new K-Modes algorithm with 3 clusters 
+            // Create a new K-Means algorithm with 3 clusters 
             KModes kmodes = new KModes(3);
 
             // Compute the algorithm, retrieving an integer array

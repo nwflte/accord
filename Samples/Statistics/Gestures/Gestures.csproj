@@ -125,12 +125,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AboutBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="AboutBox.Designer.cs">
-      <DependentUpon>AboutBox.cs</DependentUpon>
-    </Compile>
     <Compile Include="Canvas.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -153,9 +147,6 @@
       <DependentUpon>TableSelectDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Sequence.cs" />
-    <EmbeddedResource Include="AboutBox.resx">
-      <DependentUpon>AboutBox.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Canvas.resx">
       <DependentUpon>Canvas.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -226,9 +217,6 @@
   <ItemGroup />
   <ItemGroup>
     <Content Include="Resources\sample-mouse.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Resources\sample-numbers.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

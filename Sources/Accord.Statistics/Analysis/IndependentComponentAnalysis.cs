@@ -138,15 +138,21 @@ namespace Accord.Statistics.Analysis
         #region Constructors
         /// <summary>Constructs a new Independent Component Analysis.</summary>
         public IndependentComponentAnalysis(double[,] data)
-            : this(data, AnalysisMethod.Center, IndependentComponentAlgorithm.Parallel) { }
+            : this(data, AnalysisMethod.Center, IndependentComponentAlgorithm.Parallel)
+        {
+        }
 
         /// <summary>Constructs a new Independent Component Analysis.</summary>
         public IndependentComponentAnalysis(double[,] data, IndependentComponentAlgorithm algorithm)
-            : this(data, AnalysisMethod.Center, algorithm) { }
+            : this(data, AnalysisMethod.Center, algorithm)
+        {
+        }
 
         /// <summary>Constructs a new Independent Component Analysis.</summary>
         public IndependentComponentAnalysis(double[,] data, AnalysisMethod method)
-            : this(data, method, IndependentComponentAlgorithm.Parallel) { }
+            : this(data, method, IndependentComponentAlgorithm.Parallel)
+        {
+        }
 
         /// <summary>Constructs a new Independent Component Analysis.</summary>
         public IndependentComponentAnalysis(double[,] data, AnalysisMethod method, IndependentComponentAlgorithm algorithm)
@@ -161,22 +167,6 @@ namespace Accord.Statistics.Analysis
             this.columnMeans = Accord.Statistics.Tools.Mean(sourceMatrix);
             this.columnStdDev = Accord.Statistics.Tools.StandardDeviation(sourceMatrix, columnMeans);
         }
-
-        /// <summary>Constructs a new Independent Component Analysis.</summary>
-        public IndependentComponentAnalysis(double[][] data, AnalysisMethod method = AnalysisMethod.Center,
-          IndependentComponentAlgorithm algorithm = IndependentComponentAlgorithm.Parallel)
-        {
-            if (data == null) throw new ArgumentNullException("data");
-
-            this.sourceMatrix = data.ToMatrix();
-            this.algorithm = algorithm;
-            this.analysisMethod = method;
-
-            // Calculate common measures to speedup other calculations
-            this.columnMeans = Accord.Statistics.Tools.Mean(sourceMatrix);
-            this.columnStdDev = Accord.Statistics.Tools.StandardDeviation(sourceMatrix, columnMeans);
-        }
-
         #endregion
 
 
@@ -410,29 +400,11 @@ namespace Accord.Statistics.Analysis
             if (revertArray == null)
             {
                 // Convert reverting matrix to single
-                revertArray = convertToSingle(revertMatrix);
+                revertArray = convert(revertMatrix);
             }
 
             // Data-adjust and separate the sources
             float[][] matrix = Adjust(data, false);
-
-            return revertArray.Multiply(matrix);
-        }
-
-        /// <summary>
-        ///   Separates a mixture into its components (demixing).
-        /// </summary>
-        /// 
-        public double[][] Separate(double[][] data)
-        {
-            if (revertArray == null)
-            {
-                // Convert reverting matrix to single
-                revertArray = convertToSingle(revertMatrix);
-            }
-
-            // Data-adjust and separate the sources
-            double[][] matrix = Adjust(data, false);
 
             return revertArray.Multiply(matrix);
         }
@@ -456,7 +428,7 @@ namespace Accord.Statistics.Analysis
             if (mixingArray == null)
             {
                 // Convert mixing matrix to single
-                mixingArray = convertToSingle(mixingMatrix);
+                mixingArray = convert(mixingMatrix);
             }
 
             return mixingArray.Multiply(data);
@@ -641,7 +613,7 @@ namespace Accord.Statistics.Analysis
                 //   to U*S^(-1)*U'. 
 
                 // Perform simultaneous decorrelation of all components at once
-                var svd = new SingularValueDecomposition(W,
+                var svd = new SingularValueDecomposition(W, 
                     computeLeftSingularVectors: true,
                     computeRightSingularVectors: false,
                     autoTranspose: true);
@@ -682,7 +654,7 @@ namespace Accord.Statistics.Analysis
                     iterations++;
 
 
-                    // For each component (in parallel)
+                   // For each component (in parallel)
                     Parallel.For(0, components, i =>
                     {
                         double[] wx = new double[n];
@@ -798,6 +770,7 @@ namespace Accord.Statistics.Analysis
                     result[i] = new float[cols];
             }
 
+
             // Center the data around the mean. Will have no effect if
             //  the data is already centered (the mean will be zero).
             for (int i = 0; i < rows; i++)
@@ -821,51 +794,7 @@ namespace Accord.Statistics.Analysis
             return result;
         }
 
-        /// <summary>
-        ///   Adjusts a data matrix, centering and standardizing its values
-        ///   using the already computed column's means and standard deviations.
-        /// </summary>
-        /// 
-        protected double[][] Adjust(double[][] matrix, bool inPlace)
-        {
-            int rows = matrix.Length;
-            int cols = matrix[0].Length;
-
-            // Prepare the data, storing it in a new matrix if needed.
-            double[][] result = matrix;
-
-            if (!inPlace)
-            {
-                result = new double[rows][];
-                for (int i = 0; i < rows; i++)
-                    result[i] = new double[cols];
-            }
-
-
-            // Center the data around the mean. Will have no effect if
-            //  the data is already centered (the mean will be zero).
-            for (int i = 0; i < rows; i++)
-                for (int j = 0; j < cols; j++)
-                    result[i][j] = (matrix[i][j] - columnMeans[i]);
-
-            // Check if we also have to standardize our data (convert to Z Scores).
-            if (this.analysisMethod == AnalysisMethod.Standardize)
-            {
-                // Yes. Divide by standard deviation
-                for (int i = 0; i < rows; i++)
-                {
-                    if (columnStdDev[i] == 0)
-                        throw new ArithmeticException("Standard deviation cannot be zero (cannot standardize the constant variable at column index " + i + ").");
-
-                    for (int j = 0; j < rows; j++)
-                        result[i][j] /= columnStdDev[i];
-                }
-            }
-
-            return result;
-        }
-
-        private static Single[][] convertToSingle(double[,] matrix)
+        private static Single[][] convert(double[,] matrix)
         {
             int components = matrix.GetLength(0);
             float[][] array = new float[components][];

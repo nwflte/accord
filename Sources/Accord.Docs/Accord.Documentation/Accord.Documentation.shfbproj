@@ -441,22 +441,6 @@
       <AlternateText>Accord.Statistics.Models.Markov</AlternateText>
       <CopyToMedia>True</CopyToMedia>
     </Image>
-    <Content Include="images\roc-curve.png">
-      <ImageId>roc-curve</ImageId>
-      <AlternateText>roc-curve</AlternateText>
-    </Content>
-    <Content Include="images\logistic-regression.png">
-      <ImageId>logistic</ImageId>
-      <AlternateText>logistic</AlternateText>
-    </Content>
-    <Content Include="images\linear-anova.png">
-      <ImageId>linear-anova</ImageId>
-      <AlternateText>linear-anova</AlternateText>
-    </Content>
-    <Content Include="images\linear-regression.png">
-      <ImageId>linear-regression</ImageId>
-      <AlternateText>linear-regression</AlternateText>
-    </Content>
     <Image Include="resources\Accord.NET.png">
       <CopyToMedia>True</CopyToMedia>
       <AlternateText>Accord.NET</AlternateText>

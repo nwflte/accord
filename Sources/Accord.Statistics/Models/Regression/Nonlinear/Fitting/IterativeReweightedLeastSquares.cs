@@ -263,7 +263,7 @@ namespace Accord.Statistics.Models.Regression.Fitting
             }
 
 
-            // Compute errors and weighting matrix
+            // Compute errors and weighing matrix
             for (int i = 0; i < inputs.Length; i++)
             {
                 double y = regression.Compute(inputs[i]);

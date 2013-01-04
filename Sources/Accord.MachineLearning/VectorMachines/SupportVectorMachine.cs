@@ -277,14 +277,11 @@ namespace Accord.MachineLearning.VectorMachines
         ///   Saves the machine to a stream.
         /// </summary>
         /// 
-        /// <param name="path">The path to the file to which the machine is to be serialized.</param>
+        /// <param name="path">The stream to which the machine is to be serialized.</param>
         /// 
         public void Save(string path)
         {
-            using (FileStream fs = new FileStream(path, FileMode.Create))
-            {
-                Save(fs);
-            }
+            Save(new FileStream(path, FileMode.Create));
         }
 
         /// <summary>
@@ -311,10 +308,7 @@ namespace Accord.MachineLearning.VectorMachines
         /// 
         public static SupportVectorMachine Load(string path)
         {
-            using (FileStream fs = new FileStream(path, FileMode.Open))
-            {
-                return Load(fs);
-            }
+            return Load(new FileStream(path, FileMode.Open));
         }
 
     }

@@ -26,7 +26,6 @@ namespace Accord.Statistics.Analysis
     using Accord.Math;
     using Accord.Math.Decompositions;
     using Accord.Statistics.Kernels;
-    using Accord.Math.Comparers;
 
     /// <summary>
     ///   Kernel Principal Component Analysis.
@@ -39,11 +38,6 @@ namespace Accord.Statistics.Analysis
     ///   the originally linear operations of PCA are done in a reproducing kernel Hilbert
     ///   space with a non-linear mapping.</para>
     /// 
-    /// <para>
-    ///   This class can also be bound to standard controls such as the 
-    ///   <a href="http://msdn.microsoft.com/en-us/library/system.windows.forms.datagridview.aspx">DataGridView</a>
-    ///   by setting their DataSource property to the analysis' <see cref="PrincipalComponentAnalysis.Components"/> property.</para>
-    ///   
     /// <para>
     ///   References:
     ///   <list type="bullet">

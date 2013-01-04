@@ -2758,36 +2758,5 @@ namespace Accord.Tests.Math
                 Assert.IsTrue(expected.IsEqual(actual, 1e-10));
             }
         }
-
-        [TestMethod()]
-        public void TopBottomTest()
-        {
-            double[] values = { 9, 3, 6, 3, 1, 8, 4, 1, 8, 4, 4, 1, 0, -2, 4 };
-
-            {
-                int[] idx = values.Top(5);
-                double[] selected = values.Submatrix(idx); 
-                Assert.AreEqual(5, idx.Length);
-                Assert.AreEqual(9, selected[0]);
-                Assert.AreEqual(8, selected[1]);
-                Assert.AreEqual(8, selected[2]);
-                Assert.AreEqual(6, selected[3]);
-                Assert.AreEqual(4, selected[4]);
-            }
-
-            {
-                int[] idx = values.Bottom(5);
-                double[] selected = values.Submatrix(idx);
-                Assert.AreEqual(5, idx.Length);
-                Assert.AreEqual(-2, selected[0]);
-                Assert.AreEqual(0, selected[1]);
-                Assert.AreEqual(1, selected[2]);
-                Assert.AreEqual(1, selected[3]);
-                Assert.AreEqual(1, selected[4]);
-            }
-
-        }
-
-
     }
 }

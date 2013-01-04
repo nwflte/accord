@@ -136,15 +136,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Analysis\ProportionalHazardsAnalysisTest.cs" />
     <Compile Include="Analysis\IndependentComponentAnalysisTest.cs" />
     <Compile Include="Analysis\DescriptiveAnalysisTest.cs" />
-    <Compile Include="BartlettTestTest.cs" />
     <Compile Include="Distributions\Univariate\Continuous\EmpiricalHazardDistributionTest.cs" />
     <Compile Include="Filters\GroupingFilterTest.cs" />
-    <Compile Include="FTestTest.cs" />
-    <Compile Include="LeveneTestTest.cs" />
-    <Compile Include="Models\Regression\LogisticGradientDescentTest.cs" />
     <Compile Include="Models\Regression\CoxProportionalHazardsTest.cs" />
     <Compile Include="Distributions\Univariate\Continuous\BetaDistributionTest.cs" />
     <Compile Include="Distributions\Univariate\Continuous\MannWhitneyDistributionTest.cs" />
@@ -156,8 +151,6 @@
     <Compile Include="Models\Fields\Functions\IndependentHiddenMarkovClassifierFunctionTest.cs" />
     <Compile Include="MovingNormalStatisticsTest.cs" />
     <Compile Include="Distributions\Univariate\Continuous\ParetoDistributionTest.cs" />
-    <Compile Include="RunningMarkovClassifierTest.cs" />
-    <Compile Include="RunningMarkovModelTest.cs" />
     <Compile Include="Testing\MultinomialTestTest.cs" />
     <Compile Include="Models\Regression\NewtonRaphsonCoxLearningTest.cs" />
     <Compile Include="Testing\BinomialTestTest.cs" />
@@ -176,7 +169,7 @@
     <Compile Include="Links\LogLogLinkFunctionTest.cs" />
     <Compile Include="Links\ProbitLinkFunctionTest.cs" />
     <Compile Include="Links\SinLinkFunctionTest.cs" />
-    <Compile Include="Testing\TwoSamples\PairedTTestTest.cs" />
+    <Compile Include="Testing\PairedTTestTest.cs" />
     <Compile Include="Testing\MannWhitneyWilcoxonTestTest.cs" />
     <Compile Include="Models\Fields\Learning\GradientDescentHiddenLearningTest.cs" />
     <Compile Include="Models\Fields\Learning\ResilientGradientHiddenLearningTest.cs" />
@@ -306,7 +299,7 @@
     <Compile Include="Models\Markov\MaximumLikelihoodLearningTest.cs" />
     <Compile Include="Testing\TwoSamples\TwoSampleWilcoxonSignedRankTestTest.cs" />
     <Compile Include="Distributions\Univariate\Continuous\WilcoxonDistributionTest.cs" />
-    <Compile Include="Analysis\WeightedConfusionMatrixTest.cs" />
+    <Compile Include="WeightedConfusionMatrixTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Accord.Controls.Statistics\Accord.Controls.csproj">

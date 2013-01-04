@@ -29,7 +29,7 @@ namespace Accord.MachineLearning
     using Accord.Math;
 
     /// <summary>
-    ///   Delegate for grid search fitting functions.
+    ///   Delegate for Grid search fitting function.
     /// </summary>
     /// 
     /// <typeparam name="TModel">The type of the model to fit.</typeparam>
@@ -41,9 +41,8 @@ namespace Accord.MachineLearning
     public delegate TModel GridSearchFittingFunction<TModel>(GridSearchParameterCollection parameters, out double error);
 
     /// <summary>
-    ///   Grid search procedure for automatic parameter tuning.
+    ///   Grid Search for automatic parameter tuning.
     /// </summary>
-    /// 
     /// <remarks>
     ///   Grid Search tries to find the best combination of parameters across
     ///   a range of possible values that produces the best fit model. If there

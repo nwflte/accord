@@ -94,7 +94,6 @@ namespace Accord.Controls
             zedGraphControl.GraphPane.YAxis.Scale.MaxGrace = 0;
             zedGraphControl.GraphPane.YAxis.Scale.MinGrace = 0;
 
-            ScaleTight = true;
 
             this.scatterplot = scatterplot;
         }
@@ -206,27 +205,6 @@ namespace Accord.Controls
             get { return zedGraphControl; }
         }
 
-        /// <summary>
-        ///   Gets or sets whether to show lines connecting
-        ///   sequential points in the scatterplot.
-        /// </summary>
-        /// 
-        public bool LinesVisible { get; set; }
-
-        /// <summary>
-        ///   Gets or sets the size of the symbols displayed
-        ///   on each point. Setting to zero hides the symbols.
-        /// </summary>
-        /// 
-        public float SymbolSize { get; set; }
-
-        /// <summary>
-        ///   Gets or sets whether to remove the grace
-        ///   space between the axis labels and points.
-        /// </summary>
-        /// 
-        public bool ScaleTight { get; set; }
-
         #endregion
 
 
@@ -253,13 +231,9 @@ namespace Accord.Controls
 
                     LineItem item = new LineItem(String.Empty, list, Color.Black, SymbolType.Default);
 
-                    item.Line.IsVisible = LinesVisible;
+                    item.Line.IsVisible = false;
                     item.Symbol.Border.IsVisible = false;
                     item.Symbol.Fill = new Fill(Color.Black);
-
-                    if (SymbolSize == 0)
-                        item.Symbol.IsVisible = false;
-                    else item.Symbol.Size = SymbolSize;
 
                     classes.Add(item);
                 }
@@ -276,29 +250,21 @@ namespace Accord.Controls
                         double[] y = scatterplot.Classes[i].YAxis;
                         PointPairList list = new PointPairList(x, y);
 
-                        LineItem item = new LineItem(scatterplot.Classes[i].Text,
+                        LineItem item = new LineItem(scatterplot.Classes[i].Label.ToString(),
                             list, colors[i], SymbolType.Default);
 
-                        item.Line.IsVisible = LinesVisible;
+                        item.Line.IsVisible = false;
                         item.Symbol.Border.IsVisible = false;
                         item.Symbol.Fill = new Fill(colors[i]);
-
-                        if (SymbolSize == 0)
-                            item.Symbol.IsVisible = false;
-                        else item.Symbol.Size = SymbolSize;
 
                         classes.Add(item);
                     }
                 }
 
-
                 zedGraphControl.AxisChange();
                 zedGraphControl.Invalidate();
 
-
-                if (!ScaleTight)
-                    zedGraphControl.ZoomPane(zedGraphControl.GraphPane, 1.1, PointF.Empty, false);
-                else zedGraphControl.RestoreScale(zedGraphControl.GraphPane);
+                zedGraphControl.ZoomPane(zedGraphControl.GraphPane, 1.1, PointF.Empty, false);
             }
         }
 
@@ -381,6 +347,7 @@ namespace Accord.Controls
 
             this.UpdateGraph();
         }
+
 
     }
 }

@@ -32,7 +32,7 @@ namespace Accord.Controls
     using System;
     using System.Diagnostics;
     using System.ComponentModel;
-    using Accord.Statistics.Analysis;
+using Accord.Statistics.Analysis;
 
     /// <summary>
     ///   Provides an abstraction of the confusion matrix values.
@@ -40,7 +40,7 @@ namespace Accord.Controls
     /// 
     public class ConfusionMatrixPropertyDescriptor : PropertyDescriptor
     {
-
+        
         /// <summary>
         ///   Gets the index of the column being represented.
         /// </summary>

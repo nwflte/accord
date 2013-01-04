@@ -24,7 +24,6 @@ namespace Accord.Math
 {
     using System;
     using Accord.Math.Decompositions;
-    using Accord.Math.Comparers;
 
     public static partial class Matrix
     {

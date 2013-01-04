@@ -27,10 +27,8 @@ namespace Accord.MachineLearning
     using System.Collections.Generic;
 
     /// <summary>
-    ///   k-Means cluster collection.
+    ///   K-means Cluster Collection.
     /// </summary>
-    /// 
-    /// <seealso cref="KMeans"/>
     /// 
     [Serializable]
     public class KMeansClusterCollection : IClusterCollection<double[], KMeansCluster>
@@ -124,8 +122,7 @@ namespace Accord.MachineLearning
             this.distance = distance;
 
             clusters = new List<KMeansCluster>();
-            for (int i = 0; i < k; i++)
-                clusters.Add(new KMeansCluster(this, i));
+            for (int i = 0; i < k; i++) clusters.Add(new KMeansCluster(this, i));
         }
 
         /// <summary>
@@ -137,7 +134,7 @@ namespace Accord.MachineLearning
         ///   The index of the nearest cluster
         ///   to the given data point. </returns>
         ///   
-        public int Compute(double[] point)
+        public int Nearest(double[] point)
         {
             int min_cluster = 0;
             double min_distance = distance(point, centroids[0]);
@@ -169,7 +166,7 @@ namespace Accord.MachineLearning
         {
             int[] labels = new int[points.Length];
             for (int i = 0; i < points.Length; i++)
-                labels[i] = Compute(points[i]);
+                labels[i] = Nearest(points[i]);
 
             return labels;
         }
@@ -196,7 +193,7 @@ namespace Accord.MachineLearning
             double error = 0.0;
 
             for (int i = 0; i < data.Length; i++)
-                error += distance(data[i], centroids[Compute(data[i])]);
+                error += distance(data[i], centroids[Nearest(data[i])]);
 
             return error / (double)data.Length;
         }
@@ -279,7 +276,7 @@ namespace Accord.MachineLearning
     }
 
     /// <summary>
-    ///   k-Means' cluster.
+    ///   K-means' Cluster
     /// </summary>
     /// 
     [Serializable]

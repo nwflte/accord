@@ -28,10 +28,9 @@ namespace Accord.MachineLearning
     using Accord.Math;
     using Accord.Statistics.Distributions.Fitting;
     using Accord.Statistics.Distributions.Multivariate;
-    using Accord.Statistics.Distributions.Univariate;
 
     /// <summary>
-    ///   Gaussian mixture model clustering.
+    ///   Gaussian Mixture Model Clustering.
     /// </summary>
     /// 
     /// <remarks>
@@ -119,41 +118,6 @@ namespace Accord.MachineLearning
             Initialize(kmeans);
         }
 
-        /// <summary>
-        ///   Initializes a new instance of the <see cref="GaussianMixtureModel"/> class.
-        /// </summary>
-        /// 
-        /// <param name="mixture">
-        ///   The initial solution as a mixture of normals distribution.</param>
-        ///   
-        public GaussianMixtureModel(Mixture<NormalDistribution> mixture)
-        {
-            if (mixture == null)
-                throw new ArgumentNullException("mixture");
-
-            constructor(mixture.Components.Length);
-
-            Initialize(mixture);
-        }
-
-
-        /// <summary>
-        ///   Initializes a new instance of the <see cref="GaussianMixtureModel"/> class.
-        /// </summary>
-        /// 
-        /// <param name="mixture">
-        ///   The initial solution as a mixture of normals distribution.</param>
-        ///   
-        public GaussianMixtureModel(MultivariateMixture<MultivariateNormalDistribution> mixture)
-        {
-            if (mixture == null)
-                throw new ArgumentNullException("mixture");
-
-            constructor(mixture.Components.Length);
-
-            Initialize(mixture);
-        }
-
         private void constructor(int components)
         {
             // Create the object-oriented structure to hold
@@ -223,76 +187,12 @@ namespace Accord.MachineLearning
         /// 
         public void Initialize(MultivariateNormalDistribution[] distributions)
         {
-            if (distributions.Length != clusters.Count)
+            int components = clusters.Count;
+
+            if (distributions.Length != components)
                 throw new ArgumentException("The number of distributions and clusters does not match.", "distributions");
 
             this.model = new MultivariateMixture<MultivariateNormalDistribution>(distributions);
-        }
-
-        /// <summary>
-        ///   Initializes the model with initial values.
-        /// </summary>
-        /// 
-        public void Initialize(NormalDistribution[] distributions)
-        {
-            if (distributions.Length != clusters.Count)
-                throw new ArgumentException("The number of distributions and clusters does not match.", "distributions");
-
-            var normals = new MultivariateNormalDistribution[distributions.Length];
-            for (int i = 0; i < normals.Length; i++)
-                normals[i] = distributions[i].ToMultivariateDistribution();
-
-            this.model = new MultivariateMixture<MultivariateNormalDistribution>(normals);
-        }
-
-        /// <summary>
-        ///   Initializes the model with initial values.
-        /// </summary>
-        /// 
-        public void Initialize(double[] coefficients, MultivariateNormalDistribution[] distributions)
-        {
-            if (distributions.Length != clusters.Count)
-                throw new ArgumentException("The number of distributions and clusters does not match.", "distributions");
-
-            if (coefficients.Length != clusters.Count)
-                throw new ArgumentException("The number of coefficients and clusters does not match.", "coefficients");
-
-            this.model = new MultivariateMixture<MultivariateNormalDistribution>(coefficients, distributions);
-        }
-
-        /// <summary>
-        ///   Initializes the model with initial values.
-        /// </summary>
-        /// 
-        public void Initialize(double[] coefficients, NormalDistribution[] distributions)
-        {
-            var normals = new MultivariateNormalDistribution[distributions.Length];
-            for (int i = 0; i < normals.Length; i++)
-                normals[i] = distributions[i].ToMultivariateDistribution();
-
-            Initialize(coefficients, normals);
-        }
-
-        /// <summary>
-        ///   Initializes the model with initial values.
-        /// </summary>
-        /// 
-        public void Initialize(MultivariateMixture<MultivariateNormalDistribution> mixture)
-        {
-            Initialize(mixture.Coefficients, mixture.Components);
-        }
-
-        /// <summary>
-        ///   Initializes the model with initial values.
-        /// </summary>
-        /// 
-        public void Initialize(Mixture<NormalDistribution> mixture)
-        {
-            var normals = new MultivariateNormalDistribution[mixture.Components.Length];
-            for (int i = 0; i < normals.Length; i++)
-                normals[i] = mixture.Components[i].ToMultivariateDistribution();
-
-            Initialize(mixture.Coefficients, normals);
         }
 
         /// <summary>
@@ -360,27 +260,14 @@ namespace Accord.MachineLearning
                 double error = Initialize(data, options.Threshold);
             }
 
-            // Create the mixture options
+            // Fit a multivariate Gaussian distribution
             var mixtureOptions = new MixtureOptions()
             {
                 Threshold = options.Threshold,
                 InnerOptions = options.NormalOptions,
             };
 
-            // Check if we have weighted samples
-            double[] weights = options.Weights;
-            if (weights != null)
-            {
-                // Normalize if necessary
-                double sum = weights.Sum();
-                if (sum != 1)
-                    weights.Divide(sum, inPlace: true);
-
-                System.Diagnostics.Debug.Assert(weights.Sum() == 1);
-            }
-
-            // Fit a multivariate Gaussian distribution
-            model.Fit(data, weights, mixtureOptions);
+            model.Fit(data, mixtureOptions);
 
 
             // Return the log-likelihood as a measure of goodness-of-fit
@@ -501,14 +388,6 @@ namespace Accord.MachineLearning
         public double Threshold { get; set; }
 
         /// <summary>
-        ///   Gets or sets the sample weights. If set to null,
-        ///   the data will be assumed equal weights. Default
-        ///   is null.
-        /// </summary>
-        /// 
-        public double[] Weights { get; set; }
-
-        /// <summary>
         ///   Gets or sets the fitting options for the component
         ///   Gaussian distributions of the mixture model.
         /// </summary>
@@ -529,7 +408,7 @@ namespace Accord.MachineLearning
     }
 
     /// <summary>
-    ///   Gaussian Mixture Model cluster.
+    ///   Gaussian Mixture Model Cluster
     /// </summary>
     /// 
     [Serializable]
@@ -676,7 +555,7 @@ namespace Accord.MachineLearning
         ///   The index of the nearest cluster
         ///   to the given data point. </returns>
         ///   
-        public int Compute(double[] point)
+        public int Nearest(double[] point)
         {
             if (point == null)
                 throw new ArgumentNullException("point");
@@ -741,7 +620,7 @@ namespace Accord.MachineLearning
         {
             int[] labels = new int[points.Length];
             for (int i = 0; i < points.Length; i++)
-                labels[i] = Compute(points[i]);
+                labels[i] = Nearest(points[i]);
 
             return labels;
         }

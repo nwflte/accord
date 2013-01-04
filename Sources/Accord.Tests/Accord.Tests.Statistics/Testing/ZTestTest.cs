@@ -80,45 +80,45 @@ namespace Accord.Tests.Statistics
         [TestMethod()]
         public void ZTestConstructorTest()
         {
-            // This example has been gathered from the Wikipedia's page about
-            // the Z-Test, available from: http://en.wikipedia.org/wiki/Z-test
+    // This example has been gathered from the Wikipedia's page about
+    // the Z-Test, available from: http://en.wikipedia.org/wiki/Z-test
 
-            // Suppose there is a text comprehension test being run accross
-            // a given demographic region. The mean score of the population
-            // from this entire region are around 100 points, with a standard
-            // deviation of 12 points.
+    // Suppose there is a text comprehension test being run accross
+    // a given demographic region. The mean score of the population
+    // from this entire region are around 100 points, with a standard
+    // deviation of 12 points.
 
-            // There is a local school, however, whose 55 students attained
-            // an average score in the test of only about 96 points. Would 
-            // their scores be surprinsingly that low, or could this event
-            // have happened due to chance?
+    // There is a local school, however, whose 55 students attained
+    // an average score in the test of only about 96 points. Would 
+    // their scores be surprinsingly that low, or could this event
+    // have happened due to chance?
 
-            // So we would like to check that a sample of
-            // 55 students with a mean score of 96 points:
+    // So we would like to check that a sample of
+    // 55 students with a mean score of 96 points:
 
-            int sampleSize = 55;
-            double sampleMean = 96;
+    int sampleSize = 55;
+    double sampleMean = 96;
 
-            // Was expected to have happened by chance in a population with
-            // an hypothesized mean of 100 points and standard deviation of
-            // about 12 points:
+    // Was expected to have happened by chance in a population with
+    // an hypothesized mean of 100 points and standard deviation of
+    // about 12 points:
 
-            double standardDeviation = 12;
-            double hypothesizedMean = 100;
+    double standardDeviation = 12;
+    double hypothesizedMean = 100;
 
 
-            // So we start by creating the test:
-            ZTest test = new ZTest(sampleMean, standardDeviation, sampleSize,
-                hypothesizedMean, OneSampleHypothesis.ValueIsSmallerThanHypothesis);
+    // So we start by creating the test:
+    ZTest test = new ZTest(sampleMean, standardDeviation, sampleSize,
+        hypothesizedMean, OneSampleHypothesis.ValueIsSmallerThanHypothesis);
 
-            // Now, we can check whether this result would be
-            // unlikely under a standard significance level:
+    // Now, we can check whether this result would be
+    // unlikely under a standard significance level:
 
-            bool significant  = test.Significant;
+    bool significant  = test.Significant;
 
-            // We can also check the test statistic and its P-Value
-            double statistic = test.Statistic;
-            double pvalue = test.PValue;
+    // We can also check the test statistic and its P-Value
+    double statistic = test.Statistic;
+    double pvalue = test.PValue;
 
             Assert.AreEqual(statistic, -2.47, 0.01);
             Assert.AreEqual(pvalue, 0.0068, 0.001);

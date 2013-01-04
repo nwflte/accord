@@ -51,7 +51,7 @@ namespace Accord.MachineLearning
         where TModel : class;
 
     /// <summary>
-    ///   k-Fold cross-validation.
+    ///   k-Fold Cross-Validation.
     /// </summary>
     /// 
     /// <typeparam name="TModel">The type of the model being analysed.</typeparam>

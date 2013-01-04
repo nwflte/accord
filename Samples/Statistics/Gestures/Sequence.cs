@@ -13,14 +13,6 @@ namespace Gestures
     [Serializable]
     public class Sequence : ICloneable
     {
-        [XmlIgnore]
-        [NonSerialized]
-        private double[][] input;
-
-        [XmlIgnore]
-        [NonSerialized]
-        private Bitmap bitmap;
-
 
         public BindingList<String> Classes { get; set; }
 
@@ -30,7 +22,7 @@ namespace Gestures
 
         public int RecognizedAs { get; set; }
 
-
+     
 
         public Sequence()
         {
@@ -38,17 +30,13 @@ namespace Gestures
         }
 
 
-        public string OutputName
-        {
-            get { return Classes[Output]; }
-        }
+        public string OutputName { get { return Classes[Output]; } }
 
-        public string RecognizedAsName
-        {
-            get { return RecognizedAs >= 0 ? Classes[RecognizedAs] : "-"; }
-        }
+        public string RecognizedAsName { get { return RecognizedAs >= 0 ? Classes[RecognizedAs] : "-"; } }
 
-
+        [XmlIgnore]
+        [NonSerialized]
+        private double[][] input;
         public double[][] Input
         {
             get
@@ -59,16 +47,19 @@ namespace Gestures
             }
         }
 
-
+        [XmlIgnore]
+        [NonSerialized]
+        private Bitmap bitmap;
         public Bitmap Bitmap
         {
             get
             {
-                if (bitmap == null && SourcePath != null)
+                if (bitmap == null)
                     bitmap = ToBitmap(SourcePath);
                 return bitmap;
             }
         }
+
 
 
         public static double[][] Preprocess(Point[] sequence)

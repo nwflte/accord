@@ -24,7 +24,7 @@
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="Accord.Statistics.Models.Fields.Features.EmissionFeature" Collapsed="true">
-    <Position X="16.25" Y="9.5" Width="1.5" />
+    <Position X="16.25" Y="9" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AEAIAAAAAAAAAAAAAAEAAAAACAAAAAAEAAAAAAAAABA=</HashCode>
       <FileName>Models\Fields\Features\EmissionFeature.cs</FileName>
@@ -32,7 +32,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Statistics.Models.Fields.Features.InitialFeature&lt;T&gt;" Collapsed="true">
-    <Position X="14.5" Y="9.5" Width="1.5" />
+    <Position X="14.5" Y="9" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AEAAAAAAAAAAAAAAAAEAAAAAiAAAAAAAAAAAAAAAABA=</HashCode>
       <FileName>Models\Fields\Features\InitialFeature.cs</FileName>
@@ -40,7 +40,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Statistics.Models.Fields.Features.MultivariateFirstMomentFeature" Collapsed="true">
-    <Position X="16.75" Y="11.75" Width="2.75" />
+    <Position X="16.75" Y="11.25" Width="2.75" />
     <TypeIdentifier>
       <HashCode>AEAAAAAAAAAAAAAAAAEAAABACAAAAAAEAAAAAAAAABA=</HashCode>
       <FileName>Models\Fields\Features\Multivariate\MultivariateFirstMomentFeature.cs</FileName>
@@ -48,7 +48,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Statistics.Models.Fields.Features.MultivariateSecondMomentFeature" Collapsed="true">
-    <Position X="16.75" Y="10.75" Width="2.75" />
+    <Position X="16.75" Y="10.25" Width="2.75" />
     <TypeIdentifier>
       <HashCode>AEAAAAAAAAAAAAAAAAEAAABACAAAAAAEAAAAAAAAABA=</HashCode>
       <FileName>Models\Fields\Features\Multivariate\MultivariateSecondMomentFeature.cs</FileName>
@@ -56,7 +56,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Statistics.Models.Fields.Features.OccupancyFeature&lt;T&gt;" Collapsed="true">
-    <Position X="20" Y="9.5" Width="2" />
+    <Position X="20" Y="9" Width="2" />
     <TypeIdentifier>
       <HashCode>AEAAAAAAAAAAAAAAAAEAAAAAiAAAAAAAAAAAAAAAABA=</HashCode>
       <FileName>Models\Fields\Features\OccupancyFeature.cs</FileName>
@@ -64,7 +64,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Statistics.Models.Fields.Features.OutputFeature&lt;T&gt;" Collapsed="true">
-    <Position X="19.75" Y="10.75" Width="2.25" />
+    <Position X="19.75" Y="10.25" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AEAAAAAAAAAAAAAAAAEAAAAACAAAAAAAAAAAAAAAQBA=</HashCode>
       <FileName>Models\Fields\Features\OutputFeature.cs</FileName>
@@ -72,7 +72,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Statistics.Models.Fields.Features.TransitionFeature&lt;T&gt;" Collapsed="true">
-    <Position X="18" Y="9.5" Width="1.75" />
+    <Position X="18" Y="9" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AEAAAAAAAAAAAAAAAAMAAAAAiAAAAAAAAAAAAAAAABA=</HashCode>
       <FileName>Models\Fields\Features\TransitionFeature.cs</FileName>
@@ -80,7 +80,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Statistics.Models.Fields.Features.FirstMomentFeature" Collapsed="true">
-    <Position X="14.5" Y="10.75" Width="2" />
+    <Position X="14.5" Y="10.25" Width="2" />
     <TypeIdentifier>
       <HashCode>AEAAAAAAAAAAAAAAAAEAAAAACAAAAAAEAAAAAAAAABA=</HashCode>
       <FileName>Models\Fields\Features\FirstMomentFeature.cs</FileName>
@@ -88,7 +88,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Statistics.Models.Fields.Features.SecondMomentFeature" Collapsed="true">
-    <Position X="14.5" Y="11.75" Width="2" />
+    <Position X="14.5" Y="11.25" Width="2" />
     <TypeIdentifier>
       <HashCode>AEAAAAAAAAAAAAAAAAEAAAAACAAAAAAEAAAAAAAAABA=</HashCode>
       <FileName>Models\Fields\Features\SecondMomentFeature.cs</FileName>
@@ -120,7 +120,11 @@
       <Property Name="StateParameterIndex" Hidden="true" />
       <Method Name="System.Collections.IEnumerable.GetEnumerator" Hidden="true" />
     </Members>
-    <AssociationLine Name="Owner" Type="Accord.Statistics.Models.Fields.Functions.IPotentialFunction&lt;T&gt;">
+    <AssociationLine Name="Owner" Type="Accord.Statistics.Models.Fields.Functions.IPotentialFunction&lt;T&gt;" FixedToPoint="true">
+      <Path>
+        <Point X="6.875" Y="4.75" />
+        <Point X="6.875" Y="4.184" />
+      </Path>
       <MemberNameLabel ManuallyPlaced="true">
         <Position X="0.141" Y="0.081" />
       </MemberNameLabel>
@@ -212,7 +216,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Statistics.Models.Fields.Features.MultivariateEmissionFeature" Collapsed="true">
-    <Position X="19.75" Y="11.75" Width="2.25" />
+    <Position X="19.75" Y="11.25" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AEAIAAAAAAAAAAAAAAEAAABACAAAAAAEAAAAAAAAABA=</HashCode>
       <FileName>Models\Fields\Features\Multivariate\MultivariateEmissionFeature.cs</FileName>
@@ -358,7 +362,11 @@
   </Interface>
   <Interface Name="Accord.Statistics.Models.Fields.Functions.IPotentialFunction&lt;T&gt;">
     <Position X="6" Y="2.5" Width="2.25" />
-    <AssociationLine Name="Factors" Type="Accord.Statistics.Models.Fields.Functions.FactorPotential&lt;T&gt;">
+    <AssociationLine Name="Factors" Type="Accord.Statistics.Models.Fields.Functions.FactorPotential&lt;T&gt;" FixedToPoint="true">
+      <Path>
+        <Point X="7" Y="4.184" />
+        <Point X="7" Y="4.75" />
+      </Path>
       <MemberNameLabel ManuallyPlaced="true">
         <Position X="-1.911" Y="0.05" />
       </MemberNameLabel>

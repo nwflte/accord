@@ -1,4 +1,4 @@
-﻿// Accord Statistics Library
+﻿// Accord Neural Net Library
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
@@ -285,7 +285,6 @@ namespace Accord.Statistics.Models.Fields.Learning
 
             double[] parameters = Model.Function.Weights;
 
-            // Do the Resilient Backpropagation parameter update
             for (int k = 0; k < calculator.Parameters.Length; k++)
             {
                 if (Double.IsInfinity(parameters[k])) continue;

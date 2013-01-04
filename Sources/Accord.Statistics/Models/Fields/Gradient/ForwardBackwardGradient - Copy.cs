@@ -242,7 +242,8 @@ namespace Accord.Statistics.Models.Fields.Learning
 
                 // compute and return the negative
                 // log-likelihood as error function
-                error -= lnZxy[i] - lnZx[i];
+                if (lnZx[i] != lnZxy[i])
+                    error -= lnZxy[i] - lnZx[i];
 
                 System.Diagnostics.Debug.Assert(!Double.IsNaN(error));
             }
@@ -316,7 +317,8 @@ namespace Accord.Statistics.Models.Fields.Learning
                         // The second term contains a different marginal p(w,y|x) which is the
                         // same marginal probability required in as fully-observed CRF.
                         for (int j = 0; j < marginals.Length; j++)
-                            lnsum2 = Special.LogSum(lnsum2, marginals[j] - lnZx[i]);
+                            if (marginals[j] != lnZxy[i])
+                                lnsum2 = Special.LogSum(lnsum2, marginals[j] - lnZx[i]);
 
                         System.Diagnostics.Debug.Assert(!marginals.HasNaN());
                         System.Diagnostics.Debug.Assert(!Double.IsNaN(lnsum1));
@@ -481,7 +483,7 @@ namespace Accord.Statistics.Models.Fields.Learning
                 error = null;
             }
         }
-      
+
         #endregion
 
     }

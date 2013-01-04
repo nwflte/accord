@@ -28,7 +28,6 @@ namespace Accord.Statistics.Analysis
     using Accord.Statistics.Kernels;
     using System.Collections.Generic;
     using System;
-    using Accord.Math.Comparers;
 
     /// <summary>
     ///   Kernel (Fisher) Discriminant Analysis.
@@ -45,11 +44,6 @@ namespace Accord.Statistics.Analysis
     ///   Mika et al. in Fisher discriminant analysis with kernels (1999).</para>  
     ///   
     /// <para>
-    ///   This class can also be bound to standard controls such as the 
-    ///   <a href="http://msdn.microsoft.com/en-us/library/system.windows.forms.datagridview.aspx">DataGridView</a>
-    ///   by setting their DataSource property to the analysis' <see cref="LinearDiscriminantAnalysis.Discriminants"/> property.</para>
-    ///   
-    /// <para>
     ///   References:
     ///   <list type="bullet">
     ///     <item><description>
@@ -58,59 +52,6 @@ namespace Accord.Statistics.Analysis
     ///       http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.35.9904 </a></description></item>
     ///  </list></para>  
     /// </remarks>
-    /// 
-    /// <example>
-    /// <para>
-    ///   The following example creates an analysis for a set of 
-    ///   data specifiied as a jagged (double[][]) array. However,
-    ///   the same can also be accomplished using multidimensional
-    ///   double[,] arrays.</para>
-    ///   
-    /// <code>
-    /// // Create some sample input data instances. This is the same
-    /// // data used in the Gutierrez-Osuna's example available on:
-    /// // http://research.cs.tamu.edu/prism/lectures/pr/pr_l10.pdf
-    /// 
-    /// double[][] inputs = 
-    /// {
-    ///     // Class 0
-    ///     new double[] {  4,  1 }, 
-    ///     new double[] {  2,  4 },
-    ///     new double[] {  2,  3 },
-    ///     new double[] {  3,  6 },
-    ///     new double[] {  4,  4 },
-    /// 
-    ///     // Class 1
-    ///     new double[] {  9, 10 },
-    ///     new double[] {  6,  8 },
-    ///     new double[] {  9,  5 },
-    ///     new double[] {  8,  7 },
-    ///     new double[] { 10,  8 }
-    /// };
-    /// 
-    /// int[] output = 
-    /// {
-    ///     0, 0, 0, 0, 0, // The first five are from class 0
-    ///     1, 1, 1, 1, 1  // The last five are from class 1
-    /// };
-    /// 
-    /// // Now we can chose a kernel function to 
-    /// // use, such as a linear kernel function.
-    /// IKernel kernel = new Linear();
-    /// 
-    /// // Then, we will create a KDA using this linear kernel.
-    /// var kda = new KernelDiscriminantAnalysis(inputs, output, kernel);
-    /// 
-    /// kda.Compute(); // Compute the analysis
-    /// 
-    /// 
-    /// // Now we can project the data into KDA space:
-    /// double[][] projection = kda.Transform(inputs);
-    /// 
-    /// // Or perform classification using:
-    /// int[] results = kda.Classify(inputs);
-    /// </code>
-    /// </example>
     /// 
     [Serializable]
     public class KernelDiscriminantAnalysis : LinearDiscriminantAnalysis
@@ -134,23 +75,6 @@ namespace Accord.Statistics.Analysis
         /// <param name="kernel">The kernel to be used in the analysis.</param>
         /// 
         public KernelDiscriminantAnalysis(double[,] inputs, int[] output, IKernel kernel)
-            : base(inputs, output)
-        {
-            if (kernel == null) throw new ArgumentNullException("kernel");
-
-            this.kernel = kernel;
-        }
-
-        /// <summary>
-        ///   Constructs a new Kernel Discriminant Analysis object.
-        /// </summary>
-        /// 
-        /// <param name="inputs">The source data to perform analysis. The matrix should contain
-        /// variables as columns and observations of each variable as rows.</param>
-        /// <param name="output">The labels for each observation row in the input matrix.</param>
-        /// <param name="kernel">The kernel to be used in the analysis.</param>
-        /// 
-        public KernelDiscriminantAnalysis(double[][] inputs, int[] output, IKernel kernel)
             : base(inputs, output)
         {
             if (kernel == null) throw new ArgumentNullException("kernel");
@@ -181,12 +105,10 @@ namespace Accord.Statistics.Analysis
         public double Regularization
         {
             get { return regularization; }
-            set
-            {
+            set {
                 if (value < 0)
                     throw new ArgumentOutOfRangeException("value", "Value must be positive.");
-                regularization = value;
-            }
+                regularization = value; }
         }
 
         /// <summary>
@@ -431,60 +353,6 @@ namespace Accord.Statistics.Analysis
                 for (int j = 0; j < dimensions; j++)
                     for (int k = 0; k < N; k++)
                         result[i, j] += K[i, k] * DiscriminantMatrix[k, j];
-
-            return result;
-        }
-
-        /// <summary>
-        ///   Projects a given matrix into discriminant space.
-        /// </summary>
-        /// 
-        /// <param name="data">The matrix to be projected.</param>
-        /// <param name="dimensions">
-        ///   The number of discriminant dimensions to use in the projection.
-        /// </param>
-        /// 
-        public override double[][] Transform(double[][] data, int dimensions)
-        {
-            if (data == null)
-                throw new ArgumentNullException("data");
-
-            if (DiscriminantMatrix == null)
-                throw new InvalidOperationException("The analysis must have been computed first.");
-
-            for (int i = 0; i < data.Length; i++)
-                if (data[i].Length != Source.GetLength(1))
-                    throw new DimensionMismatchException("data", "The input data should have the same number of columns as the original data.");
-
-            if (dimensions < 0 || dimensions > Discriminants.Count)
-            {
-                throw new ArgumentOutOfRangeException("dimensions",
-                    "The specified number of dimensions must be equal or less than the " +
-                    "number of discriminants available in the Discriminants collection property.");
-            }
-
-            // Get some information
-            int rows = data.GetLength(0);
-            int N = Source.GetLength(0);
-
-            // Create the Kernel matrix
-            double[,] K = new double[rows, N];
-            for (int i = 0; i < rows; i++)
-            {
-                double[] row = data[i];
-                for (int j = 0; j < N; j++)
-                    K[i, j] = kernel.Function(Source.GetRow(j), row);
-            }
-
-            // Project into the kernel discriminant space
-            double[][] result = new double[rows][];
-            for (int i = 0; i < rows; i++)
-            {
-                result[i] = new double[dimensions];
-                for (int j = 0; j < dimensions; j++)
-                    for (int k = 0; k < N; k++)
-                        result[i][j] += K[i, k] * DiscriminantMatrix[k, j];
-            }
 
             return result;
         }

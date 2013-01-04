@@ -27,7 +27,8 @@ namespace Accord.MachineLearning
     using System.Runtime.Serialization.Formatters.Binary;
 
     /// <summary>
-    ///   Bootstrap validation analysis results.
+    ///   Class for representing results acquired
+    ///   through a bootstrap validation analysis.
     /// </summary>
     /// 
     [Serializable]

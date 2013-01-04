@@ -123,9 +123,6 @@ namespace Accord.Math
         {
             get
             {
-                if (NewValues.Length == 0 || OldValues.Length == 0)
-                    return true;
-
                 // Check if we have reached an invalid or perfectly separable answer
                 for (int i = 0; i < NewValues.Length; i++)
                     if (Double.IsNaN(NewValues[i]) || Double.IsInfinity(NewValues[i]))

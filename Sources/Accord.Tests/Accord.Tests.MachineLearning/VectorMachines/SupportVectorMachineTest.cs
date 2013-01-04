@@ -379,7 +379,16 @@ namespace Accord.Tests.MachineLearning
         }
 
 
-      
+        [TestMethod()]
+        public void LoadTest1()
+        {
+            MemoryStream stream = new MemoryStream(Properties.Resources.SVM_014);
+            var svm = MulticlassSupportVectorMachine.Load(stream);
+
+            Assert.IsNotNull(svm.Machines);
+            Assert.IsFalse(svm.IsProbabilistic);
+            Assert.AreEqual(351, svm.MachinesCount);
+        }
 
 
         private static double[][] training = new double[][]

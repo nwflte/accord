@@ -27,7 +27,7 @@ namespace Accord.MachineLearning
     using Accord.Math;
 
     /// <summary>
-    ///   Binary split clustering algorithm.
+    ///   Binary Split clustering algorithm.
     /// </summary>
     /// 
     [Serializable]
@@ -107,11 +107,11 @@ namespace Accord.MachineLearning
         ///   Divides the input data into K clusters. 
         /// </summary>     
         /// 
-        /// <param name="points">The data where to compute the algorithm.</param>
+        /// <param name="data">The data where to compute the algorithm.</param>
         /// <param name="threshold">The relative convergence threshold
         ///   for the algorithm. Default is 1e-5.</param>
         /// 
-        public int[] Compute(double[][] points, double threshold)
+        public int[] Compute(double[][] data, double threshold)
         {
             int k = Clusters.Count;
 
@@ -122,7 +122,7 @@ namespace Accord.MachineLearning
             double[] distortions = new double[k];
 
             // 1. Start with all data points in one cluster
-            clusters[0] = points;
+            clusters[0] = data;
 
             // 2. Repeat steps 3 to 6 (k-1) times to obtain K centroids
             for (int current = 1; current < k; current++)
@@ -147,7 +147,7 @@ namespace Accord.MachineLearning
                 // 6. Increment cluster count (current = current + 1)
             }
 
-            return Clusters.Compute(points);
+            return Clusters.Compute(data);
         }
 
 

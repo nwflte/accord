@@ -38,11 +38,6 @@ namespace Accord.Statistics.Analysis
     ///   every quantitative analysis of data.</para>
     ///   
     /// <para>
-    ///   This class can also be bound to standard controls such as the 
-    ///   <a href="http://msdn.microsoft.com/en-us/library/system.windows.forms.datagridview.aspx">DataGridView</a>
-    ///   by setting their DataSource property to the analysis' <see cref="Measures"/> property.</para>
-    ///   
-    /// <para>
     ///   References:
     ///   <list type="bullet">
     ///     <item><description>

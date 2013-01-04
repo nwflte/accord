@@ -27,7 +27,6 @@ namespace Accord.Controls
     using System.Windows.Forms;
     using Accord.Statistics.Visualizations;
     using ZedGraph;
-    using AForge;
 
     /// <summary>
     ///   Scatterplot Box for quickly displaying a form with a scatterplot on it
@@ -37,11 +36,14 @@ namespace Accord.Controls
     public partial class ScatterplotBox : Form
     {
 
+        private GraphPane pane;
         private Thread formThread;
 
         private ScatterplotBox()
         {
             InitializeComponent();
+
+            pane = scatterplotView1.Graph.GraphPane;
         }
 
         /// <summary>
@@ -82,8 +84,8 @@ namespace Accord.Controls
                 return this;
             }
 
-            scatterplotView1.SymbolSize = size;
-            scatterplotView1.UpdateGraph();
+            foreach (LineItem item in pane.CurveList)
+                 item.Symbol.Size = size;
 
             Refresh();
 
@@ -114,49 +116,6 @@ namespace Accord.Controls
 
             return this;
         }
-
-        /// <summary>
-        ///   Sets whether to show lines connecting
-        ///   sequential points in the scatterplot.
-        /// </summary>
-        /// 
-        public ScatterplotBox SetLinesVisible(bool visible)
-        {
-            if (this.InvokeRequired)
-            {
-                this.Invoke((Action)(() => SetLinesVisible(visible)));
-                return this;
-            }
-
-            scatterplotView1.LinesVisible = visible;
-            scatterplotView1.UpdateGraph();
-
-            Refresh();
-
-            return this;
-        }
-
-        /// <summary>
-        ///  Sets whether to remove the grace space
-        ///  between the axis labels and points.
-        /// </summary>
-        /// 
-        public ScatterplotBox SetScaleTight(bool tight)
-        {
-            if (this.InvokeRequired)
-            {
-                this.Invoke((Action)(() => SetScaleTight(tight)));
-                return this;
-            }
-
-            scatterplotView1.ScaleTight = tight;
-            scatterplotView1.UpdateGraph();
-
-            Refresh();
-
-            return this;
-        }
-
 
         /// <summary>
         ///   Displays a scatterplot with the specified data.
@@ -270,22 +229,6 @@ namespace Accord.Controls
 
             return show(scatterplot, nonBlocking);
         }
-
-        /// <summary>
-        ///   Displays a scatterplot.
-        /// </summary>
-        /// 
-        /// <param name="scatterplot">The scatterplot to show.</param>
-        /// <param name="nonBlocking">If set to <c>true</c>, the caller will continue
-        /// executing while the form is shown on screen. If set to <c>false</c>,
-        /// the caller will be blocked until the user closes the form. Default
-        /// is <c>false</c>.</param>
-        /// 
-        public static ScatterplotBox Show(Scatterplot scatterplot, bool nonBlocking = false)
-        {
-            return show(scatterplot, nonBlocking);
-        }
-
 
         private static ScatterplotBox show(Scatterplot scatterplot, bool hold)
         {

@@ -40,11 +40,6 @@ namespace Accord.Statistics.Analysis
     /// <para>
     ///   The Logistic Regression Analysis tries to extract useful
     ///   information about a logistic regression model. </para>
-    ///   
-    /// <para>
-    ///   This class can also be bound to standard controls such as the 
-    ///   <a href="http://msdn.microsoft.com/en-us/library/system.windows.forms.datagridview.aspx">DataGridView</a>
-    ///   by setting their DataSource property to the analysis' <see cref="Coefficients"/> property.</para>
     /// 
     /// <para>
     ///   References:
@@ -60,72 +55,6 @@ namespace Accord.Statistics.Analysis
     ///       http://www.inf.ed.ac.uk/teaching/courses/lfd/lectures/logisticlearn-print.pdf </description></item>
     ///   </list></para>  
     /// </remarks>
-    /// 
-    /// <example>
-    /// <code>
-    /// // Suppose we have the following data about some patients.
-    /// // The first variable is continuous and represent patient
-    /// // age. The second variable is dicotomic and give whether
-    /// // they smoke or not (this is completely fictional data).
-    /// 
-    /// double[][] inputs =
-    /// {
-    ///     //            Age  Smoking
-    ///     new double[] { 55,    0   }, 
-    ///     new double[] { 28,    0   }, 
-    ///     new double[] { 65,    1   }, 
-    ///     new double[] { 46,    0   }, 
-    ///     new double[] { 86,    1   }, 
-    ///     new double[] { 56,    1   }, 
-    ///     new double[] { 85,    0   }, 
-    ///     new double[] { 33,    0   }, 
-    ///     new double[] { 21,    1   }, 
-    ///     new double[] { 42,    1   }, 
-    /// };
-    /// 
-    /// // Additionally, we also have information about whether
-    /// // or not they those patients had lung cancer. The array
-    /// // below gives 0 for those who did not, and 1 for those
-    /// // who did.
-    /// 
-    /// double[] output =
-    /// {
-    ///     0, 0, 0, 1, 1, 1, 0, 0, 0, 1
-    /// };
-    /// 
-    /// // Create a Logistic Regression analysis
-    /// var regression = new LogisticRegressionAnalysis(inputs, output);
-    /// 
-    /// regression.Compute(); // compute the analysis.
-    /// 
-    /// // Now we can show a summary of analysis
-    /// DataGridBox.Show(regression.Coefficients);
-    /// </code>
-    /// 
-    /// <para>
-    ///   The resulting table is shown below.</para>
-    ///   <img src="..\images\logistic-regression.png" />
-    /// 
-    /// <code>
-    /// // We can also investigate all parameters individually. For
-    /// // example the coefficients values will be available at the
-    /// // vector
-    ///             
-    /// double[] coef = regression.CoefficientValues;
-    /// 
-    /// // The first value refers to the model's intercept term. We
-    /// // can also retrieve the odds ratios and standard errors:
-    /// 
-    /// double[] odds = regression.OddsRatios;
-    /// double[] stde = regression.StandardErrors;
-    /// 
-    ///             
-    /// // Finally, we can also use the analysis to classify a new patient
-    /// double y = regression.Regression.Compute(new double[] { 87, 1 });
-    ///             
-    /// // For those inputs, the answer probability is approximately 75%.
-    /// </code>
-    /// </example>
     /// 
     [Serializable]
     public class LogisticRegressionAnalysis : IRegressionAnalysis
@@ -202,11 +131,6 @@ namespace Accord.Statistics.Analysis
             this.oddsRatios = new double[coefficientCount];
             this.confidences = new DoubleRange[coefficientCount];
             this.ratioTests = new ChiSquareTest[coefficientCount];
-
-            this.outputName = "Output";
-            this.inputNames = new string[inputCount];
-            for (int i = 0; i < inputNames.Length; i++)
-                inputNames[i] = "Input " + i;
 
             // Create object-oriented structure to represent the analysis
             var logCoefs = new List<LogisticCoefficient>(coefficientCount);
@@ -285,7 +209,7 @@ namespace Accord.Statistics.Analysis
         ///   Gets the collection of coefficients of the model.
         /// </summary>
         /// 
-        public LogisticCoefficientCollection Coefficients
+        public ReadOnlyCollection<LogisticCoefficient> Coefficients
         {
             get { return coefficientCollection; }
         }
@@ -548,7 +472,6 @@ namespace Accord.Statistics.Analysis
         /// <summary>
         ///   Computes the analysis using given source data and parameters.
         /// </summary>
-        /// 
         void IAnalysis.Compute()
         {
             Compute();

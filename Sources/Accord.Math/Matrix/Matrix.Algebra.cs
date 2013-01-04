@@ -96,27 +96,6 @@ namespace Accord.Math
             return r;
         }
 
-        /// <summary>
-        ///   Computes the product <c>A*B</c> of two matrices <c>A</c> and <c>B</c>.
-        /// </summary>
-        /// 
-        /// <param name="a">The left matrix <c>A</c>.</param>
-        /// <param name="b">The right matrix <c>B</c>.</param>
-        /// <returns>The product <c>A*B</c> of the given matrices <c>A</c> and <c>B</c>.</returns>
-        /// 
-        public static double[][] Multiply(this float[][] a, double[][] b)
-        {
-            int rows = a.Length;
-            int cols = b[0].Length;
-
-            double[][] r = new double[rows][];
-            for (int i = 0; i < r.Length; i++)
-                r[i] = new double[cols];
-
-            Multiply(a, b, r);
-            return r;
-        }
-
 
         /// <summary>
         ///   Computes the product <c>A*B</c> of two matrices <c>A</c> and <c>B</c>.
@@ -246,46 +225,6 @@ namespace Accord.Math
                     float[] Arowi = a[i];
 
                     float s = 0;
-                    for (int k = 0; k < n; k++)
-                        s += Arowi[k] * Bcolj[k];
-
-                    result[i][j] = s;
-                }
-            }
-        }
-
-        /// <summary>
-        ///   Computes the product <c>R = A*B</c> of two matrices <c>A</c>
-        ///   and <c>B</c>, storing the result in matrix <c>R</c>.
-        /// </summary>
-        /// 
-        /// <param name="a">The left matrix <c>A</c>.</param>
-        /// <param name="b">The right matrix <c>B</c>.</param>
-        /// <param name="result">The matrix <c>R</c> to store the product <c>R = A*B</c>
-        ///   of the given matrices <c>A</c> and <c>B</c>.</param>
-        /// 
-        public static void Multiply(this float[][] a, double[][] b, double[][] result)
-        {
-            // TODO: enable argument checking
-            // if (a.GetLength(1) != b.GetLength(0))
-            //     throw new ArgumentException("Matrix dimensions must match");
-
-
-            int n = a[0].Length;
-            int m = a.Length;
-            int p = b[0].Length;
-
-            double[] Bcolj = new double[n];
-            for (int j = 0; j < p; j++)
-            {
-                for (int k = 0; k < n; k++)
-                    Bcolj[k] = b[k][j];
-
-                for (int i = 0; i < m; i++)
-                {
-                    float[] Arowi = a[i];
-
-                    double s = 0;
                     for (int k = 0; k < n; k++)
                         s += Arowi[k] * Bcolj[k];
 
@@ -459,28 +398,6 @@ namespace Accord.Math
         /// 
         /// <param name="a">The transposed left matrix <c>A</c>.</param>
         /// <param name="b">The right matrix <c>B</c>.</param>
-        /// <returns>The product <c>A'*B</c> of the given matrices <c>A</c> and <c>B</c>.</returns>
-        /// 
-        public static double[][] TransposeAndMultiply(this double[][] a, double[][] b)
-        {
-            int aCols = a[0].Length;
-            int bCols = b[0].Length;
-
-            double[][] r = new double[aCols][];
-            for (int i = 0; i < r.Length; i++)
-			 r[i] = new double[bCols];
-
-            TransposeAndMultiply(a, b, r);
-
-            return r;
-        }
-
-        /// <summary>
-        ///   Computes the product <c>A'*B</c> of matrix <c>A</c> transposed and matrix <c>B</c>.
-        /// </summary>
-        /// 
-        /// <param name="a">The transposed left matrix <c>A</c>.</param>
-        /// <param name="b">The right matrix <c>B</c>.</param>
         /// <param name="result">The matrix <c>R</c> to store the product <c>R = A'*B</c>
         ///   of the given matrices <c>A</c> and <c>B</c>.</param>
         /// 
@@ -513,46 +430,6 @@ namespace Accord.Math
                 }
             }
         }
-
-        /// <summary>
-        ///   Computes the product <c>A'*B</c> of matrix <c>A</c> transposed and matrix <c>B</c>.
-        /// </summary>
-        /// 
-        /// <param name="a">The transposed left matrix <c>A</c>.</param>
-        /// <param name="b">The right matrix <c>B</c>.</param>
-        /// <param name="result">The matrix <c>R</c> to store the product <c>R = A'*B</c>
-        ///   of the given matrices <c>A</c> and <c>B</c>.</param>
-        /// 
-        public static unsafe void TransposeAndMultiply(this double[][] a, double[][] b, double[][] result)
-        {
-            if (a == null) throw new ArgumentNullException("a");
-            if (b == null) throw new ArgumentNullException("b");
-            if (result == null) throw new ArgumentNullException("result");
-
-            // TODO: Check dimensions
-            // TODO: Change result to be an "out" value
-
-            int n = a.Length;
-            int m = a[0].Length;
-            int p = b[0].Length;
-
-            double[] Bcolj = new double[n];
-            for (int i = 0; i < p; i++)
-            {
-                for (int k = 0; k < n; k++)
-                    Bcolj[k] = b[k][i];
-
-                for (int j = 0; j < m; j++)
-                {
-                    double s = 0;
-                    for (int k = 0; k < n; k++)
-                        s += a[k][j] * Bcolj[k];
-
-                    result[j][i] = s;
-                }
-            }
-        }
-
 
         /// <summary>
         ///   Computes the product <c>A'*B</c> of matrix <c>A</c> transposed and vector <c>b</c>.

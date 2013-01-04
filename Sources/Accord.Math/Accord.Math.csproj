@@ -97,11 +97,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Combinatorics.cs" />
-    <Compile Include="Comparers\IntegerArrayComparer.cs" />
-    <Compile Include="Comparers\ElementComparer.cs" />
-    <Compile Include="Comparers\CustomComparer.cs" />
-    <Compile Include="Comparers\GeneralComparer.cs" />
-    <Compile Include="Comparers\StableComparer.cs" />
     <Compile Include="Convergence\AbsoluteConvergence.cs" />
     <Compile Include="Convergence\RelativeParameterConvergence.cs" />
     <Compile Include="Decompositions\Base\ISolverArrayDecomposition.cs" />

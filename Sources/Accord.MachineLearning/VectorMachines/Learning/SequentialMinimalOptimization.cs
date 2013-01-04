@@ -106,10 +106,10 @@ namespace Accord.MachineLearning.VectorMachines.Learning
     ///   };
     ///  
     ///   // Create a Kernel Support Vector Machine for the given inputs
-    ///   KernelSupportVectorMachine svm = new KernelSupportVectorMachine(new Gaussian(0.1), inputs[0].Length);
+    ///   KernelSupportVectorMachine machine = new KernelSupportVectorMachine(new Gaussian(0.1), inputs[0].Length);
     /// 
     ///   // Instantiate a new learning algorithm for SVMs
-    ///   SequentialMinimalOptimization smo = new SequentialMinimalOptimization(svm, inputs, labels);
+    ///   SequentialMinimalOptimization smo = new SequentialMinimalOptimization(machine, inputs, labels);
     /// 
     ///   // Set up the learning algorithm
     ///   smo.Complexity = 1.0;

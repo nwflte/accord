@@ -133,16 +133,9 @@ namespace Accord.Imaging.Filters
         /// <param name="overlayImage">The overlay image (also called the anchor).</param>
         /// 
         public Blend(double[,] homography, Bitmap overlayImage)
-            : this(new MatrixH(homography), overlayImage) { }
-
-        /// <summary>
-        ///   Constructs a new Blend filter.
-        /// </summary>
-        /// 
-        /// <param name="overlayImage">The overlay image (also called the anchor).</param>
-        /// 
-        public Blend(Bitmap overlayImage)
-            : this(Matrix.Identity(3), overlayImage) { }
+            : this(new MatrixH(homography), overlayImage)
+        {
+        }
 
         /// <summary>
         ///   Constructs a new Blend filter.

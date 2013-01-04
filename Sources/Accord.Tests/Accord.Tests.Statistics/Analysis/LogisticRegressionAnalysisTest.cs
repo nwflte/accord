@@ -26,7 +26,6 @@ namespace Accord.Tests.Statistics
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
     using Accord.Math;
-    using Accord.Controls;
 
     [TestClass()]
     public class LogisticRegressionAnalysisTest
@@ -170,78 +169,6 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(expected, actual);
         }
 
-        [TestMethod()]
-        public void ComputeTest4()
-        {
-
-            // Suppose we have the following data about some patients.
-            // The first variable is continuous and represent patient
-            // age. The second variable is dicotomic and give whether
-            // they smoke or not (this is completely fictional data).
-
-            double[][] inputs =
-            {
-                //            Age  Smoking
-                new double[] { 55,    0   }, 
-                new double[] { 28,    0   }, 
-                new double[] { 65,    1   }, 
-                new double[] { 46,    0   }, 
-                new double[] { 86,    1   }, 
-                new double[] { 56,    1   }, 
-                new double[] { 85,    0   }, 
-                new double[] { 33,    0   }, 
-                new double[] { 21,    1   }, 
-                new double[] { 42,    1   }, 
-            };
-
-            // Additionally, we also have information about whether
-            // or not they those patients had lung cancer. The array
-            // below gives 0 for those who did not, and 1 for those
-            // who did.
-
-            double[] output =
-            {
-                0, 0, 0, 1, 1, 1, 0, 0, 0, 1
-            };
-
-            // Create a Logistic Regression analysis
-            var regression = new LogisticRegressionAnalysis(inputs, output);
-
-            regression.Compute(); // compute the analysis.
-
-            // Now we can show a summary of the analysis
-            // DataGridBox.Show(regression.Coefficients);
-
-
-            // We can also investigate all parameters individually. For
-            // example the coefficients values will be available at the
-            // vector
-
-            double[] coef = regression.CoefficientValues;
-
-            // The first value refers to the model's intercept term. We
-            // can also retrieve the odds ratios and standard errors:
-
-            double[] odds = regression.OddsRatios;
-            double[] stde = regression.StandardErrors;
-
-
-            // Finally, we can also use the analysis to classify a new patient
-            double y = regression.Regression.Compute(new double[] { 87, 1 });
-
-            // For those inputs, the answer probability is approximately 75%.
-
-
-            Assert.AreEqual(0.085627701654393359, odds[0]);
-            Assert.AreEqual(1.0208597028836701, odds[1]);
-            Assert.AreEqual(5.8584748789881331, odds[2]);
-
-            Assert.AreEqual(2.15901268940475, stde[0]);
-            Assert.AreEqual(0.033789966967853677, stde[1]);
-            Assert.AreEqual(1.4729620910282104, stde[2]);
-
-            Assert.AreEqual(0.75143272827425545, y);
-        }
 
 
         private static double[][] training = new double[][]

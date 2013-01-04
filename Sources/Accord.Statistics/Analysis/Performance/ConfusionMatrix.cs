@@ -24,7 +24,6 @@ namespace Accord.Statistics.Analysis
 {
     using System;
     using System.ComponentModel;
-    using Accord.Statistics.Testing;
 
     /// <summary>
     ///   Binary decision confusion matrix.
@@ -72,13 +71,6 @@ namespace Accord.Statistics.Analysis
         private int falseNegatives; // b
         private int falsePositives; // c
         private int trueNegatives;  // d
-
-
-        // Association measures
-        private double? kappaVariance;
-        private double? kappaStdError;
-        private double? kappaVariance0;
-        private double? kappaStdError0;
 
 
 
@@ -681,94 +673,6 @@ namespace Accord.Statistics.Analysis
         }
 
         /// <summary>
-        ///   Gets the standard error of the <see cref="Kappa"/>
-        ///   coefficient of performance. 
-        /// </summary>
-        /// 
-        [DisplayName("Kappa (κ) Std. Error")]
-        public double StandardError
-        {
-            get
-            {
-                if (kappaStdError == null)
-                {
-                    double se;
-                    kappaVariance = KappaTest.AsymptoticKappaVariance(this.ToGeneralMatrix(), out se);
-                    kappaStdError = se;
-                }
-
-                return kappaStdError.Value;
-            }
-        }
-
-        /// <summary>
-        ///   Gets the variance of the <see cref="Kappa"/>
-        ///   coefficient of performance. 
-        /// </summary>
-        /// 
-        [DisplayName("Kappa (κ) Variance")]
-        public double Variance
-        {
-            get
-            {
-                if (kappaVariance == null)
-                {
-                    double se;
-                    kappaVariance = KappaTest.AsymptoticKappaVariance(this.ToGeneralMatrix(), out se);
-                    kappaStdError = se;
-                }
-
-                return kappaVariance.Value;
-            }
-        }
-
-        /// <summary>
-        ///   Gets the variance of the <see cref="Kappa"/>
-        ///   under the null hypothesis that the underlying
-        ///   Kappa value is 0. 
-        /// </summary>
-        /// 
-        [DisplayName("Kappa (κ) H₀ Variance")]
-        public double VarianceUnderNull
-        {
-            get
-            {
-                if (kappaVariance0 == null)
-                {
-                    double se;
-                    kappaVariance0 = KappaTest.AsymptoticKappaVariance(this.ToGeneralMatrix(),
-                        out se, nullHypothesis: true);
-                    kappaStdError0 = se;
-                }
-
-                return kappaVariance0.Value;
-            }
-        }
-
-        /// <summary>
-        ///   Gets the standard error of the <see cref="Kappa"/>
-        ///   under the null hypothesis that the underlying Kappa
-        ///   value is 0. 
-        /// </summary>
-        /// 
-        [DisplayName("Kappa (κ) H₀ Std. Error")]
-        public double StandardErrorUnderNull
-        {
-            get
-            {
-                if (kappaStdError0 == null)
-                {
-                    double se;
-                    kappaVariance0 = KappaTest.AsymptoticKappaVariance(this.ToGeneralMatrix(),
-                        out se, nullHypothesis: true);
-                    kappaStdError0 = se;
-                }
-
-                return kappaStdError0.Value;
-            }
-        }
-
-        /// <summary>
         ///   Diagnostic power.
         /// </summary>
         /// 
@@ -844,19 +748,6 @@ namespace Accord.Statistics.Analysis
             return String.Format(System.Globalization.CultureInfo.CurrentCulture,
                 "TP:{0} FP:{2}, FN:{3} TN:{1}",
                 truePositives, trueNegatives, falsePositives, falseNegatives);
-        }
-
-        /// <summary>
-        ///   Converts this matrix into a <see cref="GeneralConfusionMatrix"/>.
-        /// </summary>
-        /// 
-        /// <returns>
-        ///   A <see cref="GeneralConfusionMatrix"/> with the same contents as this matrix.
-        /// </returns>
-        /// 
-        public GeneralConfusionMatrix ToGeneralMatrix()
-        {
-            return new GeneralConfusionMatrix(Matrix);
         }
     }
 }

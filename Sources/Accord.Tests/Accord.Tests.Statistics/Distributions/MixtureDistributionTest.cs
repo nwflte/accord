@@ -20,14 +20,18 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
+using Accord.Statistics.Distributions.Univariate;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Accord.Math;
+using Accord.Statistics.Distributions.Fitting;
 namespace Accord.Tests.Statistics
 {
-    using Accord.Statistics.Distributions.Univariate;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Accord.Math;
-    using Accord.Statistics.Distributions.Fitting;
-    using Accord.MachineLearning;
 
+
+    /// <summary>
+    ///This is a test class for MixtureDistributionTest and is intended
+    ///to contain all MixtureDistributionTest Unit Tests
+    ///</summary>
     [TestClass()]
     public class MixtureDistributionTest
     {
@@ -35,6 +39,10 @@ namespace Accord.Tests.Statistics
 
         private TestContext testContextInstance;
 
+        /// <summary>
+        ///Gets or sets the test context which provides
+        ///information about and functionality for the current test run.
+        ///</summary>
         public TestContext TestContext
         {
             get
@@ -211,44 +219,6 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(expected, actual);
         }
 
-        [TestMethod]
-        public void MixtureWeightsFitTest()
-        {
-            // Randomly initialize some mixture components
-            NormalDistribution[] components = new NormalDistribution[2];
-            components[0] = new NormalDistribution(2, 1);
-            components[1] = new NormalDistribution(5, 1);
 
-            // Create an initial mixture
-            Mixture<NormalDistribution> mixture = new Mixture<NormalDistribution>(components);
-
-            // Now, suppose we have a weighted data
-            // set. Those will be the input points:
-
-            double[] points = { 0, 3, 1, 7, 3, 5, 1, 2, -1, 2, 7, 6, 8, 6 }; // (14 points)
-
-            // And those are their respective unnormalized weights:
-            double[] weights = { 1, 1, 1, 2, 2, 1, 1, 1, 2, 1, 2, 3, 1, 1 }; // (14 weights)
-
-            // Let's normalize the weights so they sum up to one:
-            weights = weights.Divide(weights.Sum());
-
-            // Now we can fit our model to the data:
-            mixture.Fit(points, weights);   // done!
-
-            // Our model will be:
-            double mean1 = mixture.Components[0].Mean; // 1.41126
-            double mean2 = mixture.Components[1].Mean; // 6.53301
-
-            // If we need the GaussianMixtureModel functionality, we can
-            // use the estimated mixture to initialize a new model:
-            GaussianMixtureModel gmm = new GaussianMixtureModel(mixture);
-
-            Assert.AreEqual(mean1, gmm.Gaussians[0].Mean[0]);
-            Assert.AreEqual(mean2, gmm.Gaussians[1].Mean[0]);
-
-            Assert.AreEqual(mixture.Coefficients[0], gmm.Gaussians[0].Proportion);
-            Assert.AreEqual(mixture.Coefficients[1], gmm.Gaussians[1].Proportion);
-        }
     }
 }

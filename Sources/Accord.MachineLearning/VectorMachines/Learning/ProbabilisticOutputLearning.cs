@@ -45,50 +45,6 @@ namespace Accord.MachineLearning.VectorMachines.Learning
     ///   by a proper learning algorithm such as <see cref="SequentialMinimalOptimization">
     ///   Sequential Minimal Optimization (SMO)</see>.</para>
     ///   
-    /// <code>
-    /// // Example XOR problem
-    /// double[][] inputs =
-    /// {
-    ///     new double[] { 0, 0 }, // 0 xor 0: 1 (label +1)
-    ///     new double[] { 0, 1 }, // 0 xor 1: 0 (label -1)
-    ///     new double[] { 1, 0 }, // 1 xor 0: 0 (label -1)
-    ///     new double[] { 1, 1 }  // 1 xor 1: 1 (label +1)
-    /// };
-    /// 
-    /// // Dichotomy SVM outputs should be given as [-1;+1]
-    /// int[] labels =
-    /// {
-    ///     1, -1, -1, 1
-    /// };
-    /// 
-    /// // Create a Kernel Support Vector Machine for the given inputs
-    /// KernelSupportVectorMachine svm = new KernelSupportVectorMachine(new Gaussian(0.1), inputs[0].Length);
-    /// 
-    /// // Instantiate a new learning algorithm for SVMs
-    /// SequentialMinimalOptimization smo = new SequentialMinimalOptimization(svm, inputs, labels);
-    /// 
-    /// // Set up the learning algorithm
-    /// smo.Complexity = 1.0;
-    /// 
-    /// // Run the learning algorithm
-    /// double error = smo.Run();
-    /// 
-    /// // Instantiate the probabilistic learning calibration
-    /// ProbabilisticOutputLearning calibration = new ProbabilisticOutputLearning(svm, inputs, labels);
-    /// 
-    /// // Run the calibration algorithm
-    /// double loglikelihood = calibration.Run();
-    /// 
-    /// 
-    /// // Compute the decision output for one of the input vectors,
-    /// // while also retrieving the probability of the answer
-    /// 
-    /// double probability;
-    /// int decision = svm.Compute(inputs[0], out probability);
-    /// 
-    /// // At this point, decision is +1 with a probability of 75%
-    /// </code>
-    ///   
     /// <para>
     ///   References:
     ///   <list type="bullet">

@@ -25,7 +25,7 @@ namespace Accord.MachineLearning
     using System;
 
     /// <summary>
-    ///   Training and validation errors of a model. 
+    ///   Information class to store the training and validation errors of a model. 
     /// </summary>
     /// 
     /// <typeparam name="TModel">The type of the model.</typeparam>

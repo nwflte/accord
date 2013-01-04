@@ -25,7 +25,7 @@ namespace Accord.MachineLearning
     using System;
 
     /// <summary>
-    ///   k-Fold cross-validation.
+    ///   k-Fold Cross-Validation.
     /// </summary>
     /// 
     /// <remarks>

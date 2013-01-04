@@ -103,26 +103,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Activation Functions\GaussianFunction.cs" />
-    <Compile Include="Activation Functions\IStochasticFunction.cs" />
     <Compile Include="Activation Functions\LinearFunction.cs" />
-    <Compile Include="Activation Functions\BernoulliFunction.cs" />
-    <Compile Include="Initialization\GaussianWeights.cs" />
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="Layers\StochasticLayer.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Learning\ContrastiveDivergenceLearning.cs" />
-    <Compile Include="Learning\DeepNeuralNetworkLearning.cs" />
-    <Compile Include="Learning\DeepBeliefNetworkLearning.cs" />
     <Compile Include="Learning\LevenbergMarquardtLearning.cs" />
     <Compile Include="Learning\ParallelResilientBackPropagationLearning.cs" />
-    <Compile Include="Networks\DeepBeliefNetwork.cs" />
-    <Compile Include="Networks\RestrictedBoltzmannMachine.cs" />
-    <Compile Include="Neurons\StochasticNeuron.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Initialization\NguyenWidrow.cs" />
+    <Compile Include="NguyenWidrow.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -134,10 +119,6 @@
       <Project>{F718E9A8-DB62-4785-8C49-4333A60D256A}</Project>
       <Name>Accord.Math</Name>
       <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Accord.Statistics\Accord.Statistics.csproj">
-      <Project>{FD8101DD-C95D-42D6-AD44-AE01C25F2811}</Project>
-      <Name>Accord.Statistics</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -38,124 +38,9 @@ namespace Accord.Statistics.Analysis
     /// 
     /// <remarks>
     /// <para>
-    ///   Proportional hazards models are a class of survival models in statistics. Survival models
-    ///   relate the time that passes before some event occurs to one or more covariates that may be
-    ///   associated with that quantity. In a proportional hazards model, the unique effect of a unit
-    ///   increase in a covariate is multiplicative with respect to the hazard rate.</para>
-    ///   
-    /// <para>
-    ///   For example, taking a drug may halve one's hazard rate for a stroke occurring, or, changing
-    ///   the material from which a manufactured component is constructed may double its hazard rate 
-    ///   for failure. Other types of survival models such as accelerated failure time models do not 
-    ///   exhibit proportional hazards. These models could describe a situation such as a drug that 
-    ///   reduces a subject's immediate risk of having a stroke, but where there is no reduction in 
-    ///   the hazard rate after one year for subjects who do not have a stroke in the first year of 
-    ///   analysis.</para>
-    ///   
-    /// <para>
-    ///   This class uses the <see cref="ProportionalHazards"/> to extract more detailed
-    ///   information about a given problem, such as confidence intervals, hypothesis tests
-    ///   and performance measures. </para>
-    ///   
-    /// <para>
-    ///   This class can also be bound to standard controls such as the 
-    ///   <a href="http://msdn.microsoft.com/en-us/library/system.windows.forms.datagridview.aspx">DataGridView</a>
-    ///   by setting their DataSource property to the analysis' <see cref="Coefficients"/> property.</para>
+    ///   The Proportional Hazards Analysis tries to extract useful
+    ///   information about a proportional hazards model. </para>
     /// </remarks>
-    /// 
-    /// <example>
-    /// <code>
-    /// // Consider the following example data, adapted from John C. Pezzullo's
-    /// // example for his great Cox's proportional hazards model example in
-    /// // JavaScript (http://www.sph.emory.edu/~cdckms/CoxPH/prophaz2.html). 
-    /// 
-    /// // In this data, we have three columns. The first column denotes the
-    /// // input variables for the problem. The second column, the survival
-    /// // times. And the last one is the output of the experiment (if the
-    /// // subject has died [1] or has survived [0]).
-    /// 
-    /// double[,] example =
-    /// {
-    ///     // input  time censor
-    ///     {   50,    1,    0   },
-    ///     {   70,    2,    1   },
-    ///     {   45,    3,    0   },
-    ///     {   35,    5,    0   },
-    ///     {   62,    7,    1   },
-    ///     {   50,   11,    0   },
-    ///     {   45,    4,    0   },
-    ///     {   57,    6,    0   },
-    ///     {   32,    8,    0   },
-    ///     {   57,    9,    1   },
-    ///     {   60,   10,    1   },
-    /// };
-    /// 
-    /// // First we will extract the input, times and outputs
-    /// double[,] inputs = example.GetColumns(0);
-    /// double[] times = example.GetColumn(1);
-    /// int[] output = example.GetColumn(2).ToInt32();
-    /// 
-    /// // Now we can proceed and create the analysis
-    /// var cox = new ProportionalHazardsAnalysis(inputs, times, output);
-    /// 
-    /// cox.Compute(); // compute the analysis
-    /// 
-    /// // Now we can show an analysis summary
-    /// DataGridBox.Show(cox.Coefficients);
-    /// </code>
-    /// 
-    /// <para>
-    ///   The resulting table is shown below.</para>
-    ///   <img src="..\images\cox-hazards.png" />
-    /// 
-    /// <code>
-    /// // We can also investigate all parameters individually. For
-    /// // example the coefficients values will be available at
-        /// 
-    /// double[] coef = cox.CoefficientValues;
-    /// double[] stde = cox.StandardErrors;
-    /// 
-    /// // We can also obtain the hazards ratios
-    /// double[] ratios = cox.HazardRatios;
-    /// 
-    /// // And other information such as the partial
-    /// // likelihood, the deviance and also make 
-    /// // hypothesis tests on the parameters
-    /// 
-    /// double partial = cox.LogLikelihood;
-    /// double deviance = cox.Deviance;
-    /// 
-    /// // Chi-Square for whole model
-    /// ChiSquareTest chi = cox.ChiSquare;
-    /// 
-    /// // Wald tests for individual parameters
-    /// WaldTest wald = cox.Coefficients[0].Wald;
-    /// 
-    ///             
-    /// // Finally, we can also use the model to predict
-    /// // scores for new observations (without considering time)
-    /// 
-    /// double y1 = cox.Regression.Compute(new double[] { 63 });
-    /// double y2 = cox.Regression.Compute(new double[] { 32 });
-    /// 
-    /// // Those scores can be interpreted by comparing then
-    /// // to 1. If they are greater than one, the odds are
-    /// // the patient will not survive. If the value is less
-    /// // than one, the patient is likely to survive.
-    /// 
-    /// // The first value, y1, gives approximately 86.138,
-    /// // while the second value, y2, gives about 0.00072.
-    /// 
-    /// 
-    /// // We can also consider instant estimates for a given time:
-    /// double p1 = cox.Regression.Compute(new double[] { 63 }, 2);
-    /// double p2 = cox.Regression.Compute(new double[] { 63 }, 10);
-    /// 
-    /// // Here, p1 is the score after 2 time instants, with a 
-    /// // value of 0.0656. The second value, p2, is the time
-    /// // after 10 time instants, with a value of 6.2907.
-    /// </code>
-    /// </example>
     /// 
     [Serializable]
     public class ProportionalHazardsAnalysis : IRegressionAnalysis
@@ -194,29 +79,6 @@ namespace Accord.Statistics.Analysis
 
 
         #region Constructors
-
-        /// <summary>
-        ///   Constructs a new Cox's Proportional Hazards Analysis.
-        /// </summary>
-        /// 
-        /// <param name="inputs">The input data for the analysis.</param>
-        /// <param name="times">The output data for the analysis.</param>
-        /// <param name="censor">The right-censoring indicative values.</param>
-        /// 
-        public ProportionalHazardsAnalysis(double[,] inputs, double[] times, int[] censor)
-        {
-            // Initial argument checking
-            if (inputs == null) throw new ArgumentNullException("inputs");
-            if (times == null) throw new ArgumentNullException("times");
-
-            if (inputs.GetLength(0) != times.Length)
-                throw new ArgumentException("The number of rows in the input array must match the number of given outputs.");
-
-            initialize(inputs.ToArray(), times, censor);
-
-            // Start regression using the Null Model
-            this.regression = new ProportionalHazards(inputCount);
-        }
 
         /// <summary>
         ///   Constructs a new Cox's Proportional Hazards Analysis.
@@ -279,12 +141,6 @@ namespace Accord.Statistics.Analysis
             this.hazardRatios = new double[coefficientCount];
             this.confidences = new DoubleRange[coefficientCount];
             this.ratioTests = new ChiSquareTest[coefficientCount];
-
-            this.timeName = "Time";
-            this.censorName = "Outcome";
-            this.inputNames = new string[inputCount];
-            for (int i = 0; i < inputNames.Length; i++)
-                inputNames[i] = "Input " + i;
 
             // Create object-oriented structure to represent the analysis
             var logCoefs = new List<HazardCoefficient>(coefficientCount);

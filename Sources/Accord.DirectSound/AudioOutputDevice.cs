@@ -511,16 +511,6 @@ namespace Accord.DirectSound
                 }
             }
         }
-
-        /// <summary>
-        ///   Releases unmanaged resources and performs other cleanup operations before the
-        ///   <see cref="WaveFileAudioSource"/> is reclaimed by garbage collection.
-        /// </summary>
-        /// 
-        ~AudioOutputDevice()
-        {
-            Dispose(false);
-        }
         #endregion
 
 

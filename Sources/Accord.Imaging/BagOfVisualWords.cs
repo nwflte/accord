@@ -55,12 +55,12 @@ namespace Accord.Imaging
     ///   bow.Compute(imageArray);
     ///   
     ///   // Create a fixed-length feature vector for a new image
-    ///   double[] featureVector = bow.GetFeatureVector(image);
+    ///   bow.GetFeatureVector(image);
     /// </code>
     /// </example>
     /// 
     [Serializable]
-    public class BagOfVisualWords : IBagOfWords<Bitmap>, IBagOfWords<UnmanagedImage>
+    public class BagOfVisualWords
     {
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace Accord.Imaging
         ///   feature point detector used to identify visual features in images.
         /// </summary>
         /// 
-        public SpeededUpRobustFeaturesDetector Detector { get; private set; }
+        public SpeededUpRobustFeaturesDetector Surf { get; private set; }
 
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace Accord.Imaging
         {
             this.NumberOfWords = numberOfWords;
             this.Clustering = new KMeans(numberOfWords);
-            this.Detector = new SpeededUpRobustFeaturesDetector();
+            this.Surf = new SpeededUpRobustFeaturesDetector();
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace Accord.Imaging
         {
             this.NumberOfWords = algorithm.Clusters.Count;
             this.Clustering = algorithm;
-            this.Detector = new SpeededUpRobustFeaturesDetector();
+            this.Surf = new SpeededUpRobustFeaturesDetector();
         }
 
         /// <summary>
@@ -129,9 +129,9 @@ namespace Accord.Imaging
                 Bitmap image = images[i];
 
                 // Compute the feature points
-                var points = Detector.ProcessImage(image);
+                var points = Surf.ProcessImage(image);
 
-                foreach (SpeededUpRobustFeaturePoint point in points)
+                foreach (var point in points)
                     descriptors.Add(point.Descriptor);
 
                 imagePoints[i] = points;
@@ -149,17 +149,17 @@ namespace Accord.Imaging
         ///   Gets the codeword representation of a given image.
         /// </summary>
         /// 
-        /// <param name="value">The image to be processed.</param>
+        /// <param name="image">The image to be processed.</param>
         /// 
         /// <returns>A double vector with the same length as words
         /// in the code book.</returns>
         /// 
-        public double[] GetFeatureVector(Bitmap value)
+        public double[] GetFeatureVector(Bitmap image)
         {
             // lock source image
-            BitmapData imageData = value.LockBits(
-                new Rectangle(0, 0, value.Width, value.Height),
-                ImageLockMode.ReadOnly, value.PixelFormat);
+            BitmapData imageData = image.LockBits(
+                new Rectangle(0, 0, image.Width, image.Height),
+                ImageLockMode.ReadOnly, image.PixelFormat);
 
             double[] features;
 
@@ -171,7 +171,7 @@ namespace Accord.Imaging
             finally
             {
                 // unlock image
-                value.UnlockBits(imageData);
+                image.UnlockBits(imageData);
             }
 
             return features;
@@ -181,15 +181,15 @@ namespace Accord.Imaging
         ///   Gets the codeword representation of a given image.
         /// </summary>
         /// 
-        /// <param name="value">The image to be processed.</param>
+        /// <param name="image">The image to be processed.</param>
         /// 
         /// <returns>A double vector with the same length as words
         /// in the code book.</returns>
         /// 
-        public double[] GetFeatureVector(UnmanagedImage value)
+        public double[] GetFeatureVector(UnmanagedImage image)
         {
             // Detect feature points in image
-            List<SpeededUpRobustFeaturePoint> points = Detector.ProcessImage(value);
+            List<SpeededUpRobustFeaturePoint> points = Surf.ProcessImage(image);
 
             return GetFeatureVector(points);
         }
@@ -210,7 +210,7 @@ namespace Accord.Imaging
             // Detect all activation centroids
             Parallel.For(0, points.Count, i =>
             {
-                int j = Clustering.Clusters.Compute(points[i].Descriptor);
+                int j = Clustering.Clusters.Nearest(points[i].Descriptor);
 
                 // Form feature vector
                 Interlocked.Increment(ref features[j]);

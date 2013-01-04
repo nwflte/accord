@@ -25,7 +25,6 @@ namespace Accord.Tests.Math
     using Accord.Math;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
-    using Accord.Math.Comparers;
 
     [TestClass()]
     public class GeneralComparerTest

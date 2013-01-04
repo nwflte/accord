@@ -109,6 +109,7 @@ namespace Gestures
                 }
             );
 
+            // Create and use a rejection threshold model
             teacher.Empirical = true;
             teacher.Rejection = rejection;
 
@@ -116,8 +117,6 @@ namespace Gestures
             // Run the learning algorithm
             double error = teacher.Run(inputs, outputs);
 
-
-            // Classify all training instances
             foreach (var sample in database.Samples)
             {
                 sample.RecognizedAs = hmm.Compute(sample.Input);
@@ -291,11 +290,6 @@ namespace Gestures
             lbQuestion.Visible = true;
             btnOK.Text = "Yes";
             btnNo.Visible = true;
-        }
-
-        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            new AboutBox().ShowDialog();
         }
 
 

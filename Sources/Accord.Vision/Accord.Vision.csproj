@@ -141,7 +141,6 @@
     <Compile Include="Detection\Haar Cascade\HaarRectangle.cs" />
     <Compile Include="Detection\IObjectDetector.cs" />
     <Compile Include="Detection\HaarObjectDetector.cs" />
-    <Compile Include="GroupMatching.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tracking\MatchingTracker.cs" />
     <Compile Include="Tracking\Camshift.cs" />

@@ -402,7 +402,6 @@ namespace Accord.Math
         /// <summary>
         ///   Creates a vector with the given dimension and starting values.
         /// </summary>
-        /// 
         public static T[] Vector<T>(int n, T[] values)
         {
             T[] vector = new T[n];
@@ -419,7 +418,6 @@ namespace Accord.Math
         /// <summary>
         ///   Creates a vector with the given dimension and starting values.
         /// </summary>
-        /// 
         public static T[] Vector<T>(int n, T value)
         {
             T[] vector = new T[n];
@@ -428,23 +426,6 @@ namespace Accord.Math
                 vector[i] = value;
 
             return vector;
-        }
-
-        /// <summary>
-        ///   Creates a vector with the given dimension and starting values.
-        /// </summary>
-        /// 
-        public static double[] Vector(double a, double b, double increment = 1)
-        {
-            List<double> list = new List<double>();
-
-            for (double i = a; i < b; i += increment)
-                list.Add(i);
-
-            if (list[list.Count] != b)
-                list.Add(b);
-
-            return list.ToArray();
         }
         #endregion
 

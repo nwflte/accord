@@ -28,7 +28,6 @@ namespace Accord.Statistics.Models.Regression.Fitting
     using Accord.Statistics.Distributions.Univariate;
     using Accord.Statistics.Distributions.Fitting;
     using Accord.Statistics.Distributions;
-    using Accord.Math.Comparers;
 
     /// <summary>
     ///   Newton-Raphson learning updates for Cox's Proportional Hazards models.

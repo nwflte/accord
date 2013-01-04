@@ -24,37 +24,9 @@ namespace Accord.MachineLearning
 {
     using System;
     using System.Collections.Generic;
-    using Accord.Math;
 
     /// <summary>
-    ///   Common interface for Bag of Words objects.
-    /// </summary>
-    /// 
-    /// <typeparam name="T">The type of the element to be 
-    /// converted to a fixed-length vector representation.</typeparam>
-    /// 
-    public interface IBagOfWords<T>
-    {
-        /// <summary>
-        ///   Gets the number of words in this codebook.
-        /// </summary>
-        /// 
-        int NumberOfWords { get; }
-
-        /// <summary>
-        ///   Gets the codeword representation of a given value.
-        /// </summary>
-        /// 
-        /// <param name="value">The value to be processed.</param>
-        /// 
-        /// <returns>A double vector with the same length as words
-        /// in the code book.</returns>
-        /// 
-        double[] GetFeatureVector(T value);
-    }
-
-    /// <summary>
-    ///   Bag of words.
+    ///   Bag of Words
     /// </summary>
     /// 
     /// <remarks>
@@ -63,7 +35,7 @@ namespace Accord.MachineLearning
     /// </remarks>
     /// 
     [Serializable]
-    public class BagOfWords : IBagOfWords<string[]>
+    public class BagOfWords
     {
 
         private Dictionary<string, int> stringToCode;
@@ -73,7 +45,6 @@ namespace Accord.MachineLearning
         /// <summary>
         ///   Gets the number of words in this codebook.
         /// </summary>
-        /// 
         public int NumberOfWords { get { return stringToCode.Count; } }
 
         /// <summary>
@@ -228,10 +199,5 @@ namespace Accord.MachineLearning
             return features;
         }
 
-
-        double[] IBagOfWords<string[]>.GetFeatureVector(string[] value)
-        {
-            return GetFeatureVector(value).ToDouble();
-        }
     }
 }
