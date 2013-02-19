@@ -7,7 +7,7 @@
 
 This sample application shows the Camshift face tracking algorithm working in real-time using your webcam or any other video source.
 
-<br /><p align="center">
+<p align="center">
 http://accord.googlecode.com/svn/wiki/samples/accord-vision-facetracking-img.png
 <br />Camshift Face-tracking application showing the histogram backprojection of the tracked image.
 </p><br />
