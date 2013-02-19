@@ -189,3 +189,16 @@ The framework comes with over 25 sample applications demonstrating the framework
   <td width="104px">[SampleApp_Controller Head-based Controller]</td>
   <td>Sample application demonstrating how to use the Accord.Vision.Controls.Controller component to provide joystick-like controls for a Windows Form application. Its component design makes adding support for head-based controlling as easy as dragging and dropping a component into a Form.</td>
 </tr>
+</table>
+
+
+
+<br />
+= * Video =
+
+<table cellspacing="12px" width="840px">
+<tr>
+  <td width="104px">[https://code.google.com/p/screencast-capture/ Screencast Capture Lite]</td>
+  <td>Screencast Capture Lite is a tool for recording the desktop screen and saving it to a video file, preserving quality as much as possible. It is a real application, and also a demonstration of the use of the AForge.NET and Accord.NET Frameworks to build multimedia applications, capturing video and audio streams from different sources.</td>
+</tr>
+</table>
