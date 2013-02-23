@@ -69,6 +69,7 @@
     <CodeAnalysisRules>
     </CodeAnalysisRules>
     <CodeAnalysisRuleSet>..\Accord.NET.ruleset</CodeAnalysisRuleSet>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
@@ -120,6 +121,7 @@
     <Compile Include="Events\NewFrameRequestedEventArgs.cs" />
     <Compile Include="Events\NewFrameEventArgs.cs" />
     <Compile Include="Exceptions\UnsupportedSampleFormatException.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="Filters\Base\BaseFilter.cs" />
     <Compile Include="Exceptions\InvalidSignalPropertiesException.cs" />
     <Compile Include="Events\AudioSourceErrorEventArgs.cs">
