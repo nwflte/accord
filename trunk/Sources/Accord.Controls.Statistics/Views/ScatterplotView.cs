@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -94,7 +94,9 @@ namespace Accord.Controls
             zedGraphControl.GraphPane.YAxis.Scale.MaxGrace = 0;
             zedGraphControl.GraphPane.YAxis.Scale.MinGrace = 0;
 
-            ScaleTight = true;
+            ScaleTight = false;
+            SymbolSize = 7;
+            LinesVisible = false;
 
             this.scatterplot = scatterplot;
         }
