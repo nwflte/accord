@@ -1,7 +1,7 @@
 ﻿// Accord.NET Sample Applications
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -133,7 +133,7 @@ namespace GMM
             kmeans.Compute(mixture);
 
             // Classify all instances in mixture data
-            int[] classifications = kmeans.Clusters.Compute(mixture);
+            int[] classifications = kmeans.Clusters.Nearest(mixture);
 
             // Draw the classifications
             updateGraph(classifications);

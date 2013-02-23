@@ -180,7 +180,6 @@
             this.btnBwd.TabIndex = 4;
             this.btnBwd.Text = "7";
             this.btnBwd.UseVisualStyleBackColor = true;
-            this.btnBwd.Click += new System.EventHandler(this.btnBwd_Click);
             // 
             // btnPlay
             // 
@@ -204,7 +203,6 @@
             this.btnFwd.TabIndex = 4;
             this.btnFwd.Text = "8";
             this.btnFwd.UseVisualStyleBackColor = true;
-            this.btnFwd.Click += new System.EventHandler(this.btnFwd_Click);
             // 
             // trackBar1
             // 
@@ -213,7 +211,6 @@
             this.trackBar1.Size = new System.Drawing.Size(299, 45);
             this.trackBar1.TabIndex = 8;
             this.trackBar1.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_Scroll);
             // 
             // saveFileDialog1
             // 

@@ -1,7 +1,7 @@
 ﻿// Accord.NET Sample Applications
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -91,22 +91,28 @@ namespace Recording
             trackBar1.Maximum = decoder.Samples;
 
             output = new AudioOutputDevice(this.Handle, decoder.SampleRate, decoder.Channels);
-            output.NewFrameRequested += new EventHandler<NewFrameRequestedEventArgs>(output_NewFrameRequested);
-            output.Stopped += new EventHandler(output_PlayingFinished);
-            output.FramePlayingStarted += new EventHandler<PlayFrameEventArgs>(output_FramePlayingStarted);
+
+            output.FramePlayingStarted += output_FramePlayingStarted;
+            output.NewFrameRequested += output_NewFrameRequested;
+            output.Stopped += output_PlayingFinished;
+
             output.Play();
 
             updateButtons();
         }
 
 
-
+        // Recording related functions
         private void btnRecord_Click(object sender, EventArgs e)
         {
             // Create capture device
-            source = new AudioCaptureDevice();
-            source.DesiredFrameSize = 4096;
-            source.SampleRate = 22050;
+            source = new AudioCaptureDevice()
+            {
+                DesiredFrameSize = 4096,
+                SampleRate = 22050,
+                Format = SampleFormat.Format16Bit
+            };
+
             source.NewFrame += source_NewFrame;
             source.AudioSourceError += source_AudioSourceError;
 
@@ -120,51 +126,6 @@ namespace Recording
             // Start
             source.Start();
             updateButtons();
-        }
-
-
-        private void output_FramePlayingStarted(object sender, PlayFrameEventArgs e)
-        {
-            updateTrackbar(e.FrameIndex);
-
-            if (e.FrameIndex + e.Count < decoder.Frames)
-            {
-                int previous = decoder.Position;
-                decoder.Seek(e.FrameIndex);
-                Signal s = decoder.Decode(e.Count);
-                decoder.Seek(previous);
-
-                updateWaveform(s.ToFloat(), s.Length);
-            }
-        }
-
-        private void output_PlayingFinished(object sender, EventArgs e)
-        {
-            updateButtons();
-
-            Array.Clear(current, 0, current.Length);
-            updateWaveform(current, current.Length);
-        }
-
-        private void output_NewFrameRequested(object sender, NewFrameRequestedEventArgs e)
-        {
-            e.FrameIndex = decoder.Position;
-
-            Signal s = decoder.Decode(e.Frames);
-            
-            if (s == null)
-            {
-                e.Stop = true;
-            }
-            else
-            {
-                // Inform the number of frames
-                // actually read from source
-                e.Frames = s.Length;
-
-                // Copy the signal to the buffer
-                s.CopyTo(e.Buffer);
-            }
         }
 
         private void source_AudioSourceError(object sender, AudioSourceErrorEventArgs e)
@@ -188,6 +149,57 @@ namespace Recording
             samples += eventArgs.Signal.Samples;
             frames += eventArgs.Signal.Length;
         }
+
+
+
+        // Playing related functions
+        private void output_FramePlayingStarted(object sender, PlayFrameEventArgs e)
+        {
+            updateTrackbar(e.FrameIndex);
+
+            if (e.FrameIndex + e.Count < decoder.Frames)
+            {
+                int previous = decoder.Position;
+                decoder.Seek(e.FrameIndex);
+
+                Signal s = decoder.Decode(e.Count);
+                decoder.Seek(previous);
+
+                updateWaveform(s.ToFloat(), s.Length);
+            }
+        }
+
+        private void output_PlayingFinished(object sender, EventArgs e)
+        {
+            updateButtons();
+
+            Array.Clear(current, 0, current.Length);
+            updateWaveform(current, current.Length);
+        }
+
+        private void output_NewFrameRequested(object sender, NewFrameRequestedEventArgs e)
+        {
+            e.FrameIndex = decoder.Position;
+
+            // Attempt to decode the requested number of frames from the stream
+            Signal signal = decoder.Decode(e.Frames);
+
+            if (signal == null)
+            {
+                e.Stop = true;
+            }
+            else
+            {
+                // Inform the number of frames
+                // actually read from source
+                e.Frames = signal.Length;
+
+                // Copy the signal to the buffer
+                signal.CopyTo(e.Buffer);
+            }
+        }
+
+
 
         private void updateWaveform(float[] samples, int length)
         {
@@ -238,8 +250,8 @@ namespace Recording
             }
             else if (output != null && output.IsRunning)
             {
-                btnBwd.Enabled = false;//true;
-                btnFwd.Enabled = false;//true;
+                btnBwd.Enabled = false;
+                btnFwd.Enabled = false;
                 btnPlay.Enabled = false;
                 btnStop.Enabled = true;
                 btnRecord.Enabled = false;
@@ -281,20 +293,6 @@ namespace Recording
             lbLength.Text = String.Format("Length: {0:00.00} sec.", duration / 1000.0);
         }
 
-        private void btnFwd_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void btnBwd_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void trackBar1_Scroll(object sender, EventArgs e)
-        {
-
-        }
 
     }
 }
