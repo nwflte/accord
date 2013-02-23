@@ -13,7 +13,7 @@
       <Term CompoundAlternate=""></Term>
     </Compound>
     <DiscreteExceptions>
-      <Term></Term>
+      <Term>PreOrder</Term>
     </DiscreteExceptions>
   </Words>
   <Acronyms>

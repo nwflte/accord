@@ -290,7 +290,7 @@
   <Class Name="Accord.MachineLearning.DecisionTrees.DecisionNode">
     <Position X="26.25" Y="24.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AMAAAACAAAAAAgAEAAAIUAAAAAAAAAAAAQAgAAAAAAA=</HashCode>
+      <HashCode>AMAAAAGAAAAAggBEAAAIUAAAAAAAAAAAAQAgAAAAAAA=</HashCode>
       <FileName>DecisionTrees\DecisionNode.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -308,7 +308,7 @@
   <Class Name="Accord.MachineLearning.DecisionTrees.DecisionTree">
     <Position X="23.5" Y="23.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AEAAIAAAAAAAACAAABAAAAAQAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AEAAsIEAAAAAADAAABAAAAAQAAgAAAAAAAAAIAAAAAA=</HashCode>
       <FileName>DecisionTrees\DecisionTree.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -321,7 +321,7 @@
   <Class Name="Accord.MachineLearning.DecisionTrees.DecisionVariable">
     <Position X="20" Y="24.5" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAACAAAAAAAAAQQAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAgCAAAAAAAAAQQAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>DecisionTrees\DecisionVariable.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -352,7 +352,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAQAQIAAAAAAAAAAgAAAAAAAABAAUAAIBAAAAAAAABI=</HashCode>
+      <HashCode>AAQQQIAAAAAAAAAAgAAAAAAAABAAUAAIBAAAAAAAEBI=</HashCode>
       <FileName>DecisionTrees\Learning\C45Learning.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -372,7 +372,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAQAAIAAAAAAAAAAgAAAAAAAABAAUAAIBAAAAAAAABI=</HashCode>
+      <HashCode>AAQQAIAAAAAAAAAAgAAAAAAAABAAUAAIBAAAAAAAEBI=</HashCode>
       <FileName>DecisionTrees\Learning\ID3Learning.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -528,7 +528,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AEAAEAAAAABCAJAACACAAAQAgEAAIABEAAAAAAAAABA=</HashCode>
+      <HashCode>AAAAEAAAAABCAJAACACAAAQAgEAAIABEAAAAAAAAABA=</HashCode>
       <FileName>Clustering\KMeansCluster.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -560,7 +560,7 @@
       <Field Name="proportions" Hidden="true" />
     </Members>
     <TypeIdentifier>
-      <HashCode>AEAAAAAAAABCAJAACACAAAQAgEAAIABEAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAABCAJAACACAAAQAgEAAIABEAAAAAAAAAAA=</HashCode>
       <FileName>Clustering\KModesCluster.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -573,7 +573,7 @@
     </Members>
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAEgAAAAIAAAAAAAAAAEACEAAEAAAARAAA=</HashCode>
-      <FileName>Clustering\GaussianMixtureModel.cs</FileName>
+      <FileName>Clustering\GaussianCluster.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.MachineLearning.GaussianClusterCollection">
@@ -583,7 +583,7 @@
     </Members>
     <TypeIdentifier>
       <HashCode>AAAAAAAAAABAgAAAAAAAAAAAAAAAAACAAAAAAAAAAAA=</HashCode>
-      <FileName>Clustering\GaussianMixtureModel.cs</FileName>
+      <FileName>Clustering\GaussianCluster.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
@@ -875,8 +875,16 @@
       <Field Name="root" Hidden="true" />
       <Method Name="System.Collections.IEnumerable.GetEnumerator" Hidden="true" />
     </Members>
+    <NestedTypes>
+      <Class Name="Accord.MachineLearning.Structures.KDTree&lt;T&gt;.KDTreeTraversal" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Structures\KDTree`1.cs</NewMemberFileName>
+        </TypeIdentifier>
+        <Lollipop Position="0.2" />
+      </Class>
+    </NestedTypes>
     <TypeIdentifier>
-      <HashCode>ACIAAAAAAABAADAABgAgAAYAAEAAEABACABAAABAIAA=</HashCode>
+      <HashCode>ACIAAIAAAABAADAABgAgAAYAAEAAEABACABAAABAIAA=</HashCode>
       <FileName>Structures\KDTree`1.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -887,7 +895,7 @@
   <Class Name="Accord.MachineLearning.Structures.KDTreeNode&lt;T&gt;">
     <Position X="39.5" Y="13.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAQAgAAAAEAAAAAAAAAAACACgAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAQAkAAAAEAAAAAAAAAAACACgAAAAAAA=</HashCode>
       <FileName>Structures\KDTreeNode.cs</FileName>
     </TypeIdentifier>
   </Class>
