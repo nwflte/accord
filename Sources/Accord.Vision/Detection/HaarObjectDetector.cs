@@ -2,7 +2,7 @@
 // The Accord.NET Framework (LGPL) 
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 // Copyright © Masakazu Ohtsuka, 2008
@@ -445,20 +445,26 @@ namespace Accord.Vision.Detection
                 window.Height = (int)(baseHeight * scaling);
 
                 // Check if the window is lesser than the minimum size
-                if (window.Width < minSize.Width && window.Height < minSize.Height &&
-                    window.Width > maxSize.Width && window.Height > maxSize.Height)
+                if (window.Width < minSize.Width || window.Height < minSize.Height)
                 {
                     // If we are searching in greater to smaller mode,
                     if (scalingMode == ObjectDetectorScalingMode.GreaterToSmaller)
                     {
                         goto EXIT; // it won't get bigger, so we should stop.
                     }
-                    else
-                    {
-                        continue; // continue until it gets greater.
-                    }
+                    else continue; // continue until it gets greater.
                 }
 
+                // Check if the window is greater than the maximum size
+                else if (window.Width > maxSize.Width || window.Height > maxSize.Height)
+                {
+                    // If we are searching in greater to smaller mode,
+                    if (scalingMode == ObjectDetectorScalingMode.GreaterToSmaller)
+                    {
+                        continue; // continue until it gets smaller.
+                    }
+                    else goto EXIT; // it won't get smaller, so we should stop.                    }
+                }
 
                 // Grab some scan loop parameters
                 int xStep = window.Width >> 3;
@@ -657,5 +663,4 @@ namespace Accord.Vision.Detection
 
 
     }
-
 }
