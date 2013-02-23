@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -25,6 +25,7 @@ namespace Accord.Statistics.Models.Regression.Fitting
     using System;
     using Accord.Math;
     using Accord.Math.Decompositions;
+    using Accord.Statistics.Links;
 
     /// <summary>
     ///   Iterative Reweighted Least Squares for Logistic Regression fitting.
@@ -40,6 +41,12 @@ namespace Accord.Statistics.Models.Regression.Fitting
     ///   error function (defined as the negative logarithm of the likelihood), one
     ///   arises at a weighted formulation for the Hessian matrix. </para>  
     ///   
+    /// <para>
+    ///   The Iterative Reweighted Least Squares algorithm can also be used to learn
+    ///   arbitrary generalized linear models. However, the use of this class to learn
+    ///   such models is currently experimental.
+    /// </para>
+    /// 
     /// <para>
     ///   References:
     ///   <list type="bullet">
@@ -129,7 +136,7 @@ namespace Accord.Statistics.Models.Regression.Fitting
     public class IterativeReweightedLeastSquares : IRegressionFitting
     {
 
-        private LogisticRegression regression;
+        private GeneralizedLinearRegression regression;
 
         private int parameterCount;
 
@@ -137,9 +144,10 @@ namespace Accord.Statistics.Models.Regression.Fitting
         private double[] gradient;
         private double[] previous;
 
+
         private bool computeStandardErrors = true;
         private ISolverMatrixDecomposition<double> decomposition;
-        
+
 
         /// <summary>
         ///   Gets the previous values for the coefficients which were
@@ -198,10 +206,25 @@ namespace Accord.Statistics.Models.Regression.Fitting
         /// 
         public IterativeReweightedLeastSquares(LogisticRegression regression)
         {
+            var glm = GeneralizedLinearRegression.FromLogisticRegression(regression, makeCopy: false);
+            constructor(glm);
+        }
+
+        /// <summary>
+        ///   Constructs a new Iterative Reweighted Least Squares.
+        /// </summary>
+        /// 
+        /// <param name="regression">The regression to estimate.</param>
+        /// 
+        public IterativeReweightedLeastSquares(GeneralizedLinearRegression regression)
+        {
+            constructor(regression);
+        }
+
+        private void constructor(GeneralizedLinearRegression regression)
+        {
             this.regression = regression;
-
             this.parameterCount = regression.Coefficients.Length;
-
             this.hessian = new double[parameterCount, parameterCount];
             this.gradient = new double[parameterCount];
         }
@@ -226,6 +249,7 @@ namespace Accord.Statistics.Models.Regression.Fitting
 
             return Run(inputs, output);
         }
+
 
         /// <summary>
         ///   Runs one iteration of the Reweighted Least Squares algorithm.
@@ -272,7 +296,7 @@ namespace Accord.Statistics.Models.Regression.Fitting
                 errors[i] = y - outputs[i];
 
                 // Calculate weighting matrix
-                weights[i] = y * (1.0 - y);
+                weights[i] = regression.Link.Derivative2(y);
             }
 
 
@@ -289,11 +313,10 @@ namespace Accord.Statistics.Models.Regression.Fitting
             // (Re-) Compute weighted "Hessian" matrix 
             for (int k = 0; k < weights.Length; k++)
             {
-                double[] rk = design[k];
-
-                for (int j = 0; j < rk.Length; j++)
-                    for (int i = 0; i < rk.Length; i++)
-                        hessian[j, i] += rk[i] * rk[j] * weights[k];
+                double[] row = design[k];
+                for (int j = 0; j < row.Length; j++)
+                    for (int i = 0; i < row.Length; i++)
+                        hessian[j, i] += row[i] * row[j] * weights[k];
             }
 
 
@@ -335,7 +358,7 @@ namespace Accord.Statistics.Models.Regression.Fitting
             for (int i = 0; i < coefficients.Length; i++)
                 coefficients[i] -= deltas[i];
 
-
+            
             if (computeStandardErrors)
             {
                 // Grab the regression information matrix
