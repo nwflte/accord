@@ -5,7 +5,7 @@
 // Copyright © Christopher Evans, 2009-2011
 // http://www.chrisevansdev.com/
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -93,7 +93,7 @@ namespace Accord.Imaging
     /// <seealso cref="SpeededUpRobustFeaturesDescriptor"/>
     ///
     [Serializable]
-    public class SpeededUpRobustFeaturesDetector : ICornersDetector
+    public class SpeededUpRobustFeaturesDetector : ICornersDetector, IFeatureDetector<SpeededUpRobustFeaturePoint>
     {
         private int octaves = 5;
         private int initial = 2;
@@ -118,24 +118,28 @@ namespace Accord.Imaging
         /// <summary>
         ///   Initializes a new instance of the <see cref="SpeededUpRobustFeaturesDetector"/> class.
         /// </summary>
+        /// 
         public SpeededUpRobustFeaturesDetector()
             : this(0.0002f)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SpeededUpRobustFeaturesDetector"/> class.
+        ///   Initializes a new instance of the <see cref="SpeededUpRobustFeaturesDetector"/> class.
         /// </summary>
+        /// 
         /// <param name="threshold">
         ///   The non-maximum suppression threshold. Default is 0.0002f.</param>
+        ///   
         public SpeededUpRobustFeaturesDetector(float threshold)
             : this(threshold, 5, 2)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SpeededUpRobustFeaturesDetector"/> class.
+        ///   Initializes a new instance of the <see cref="SpeededUpRobustFeaturesDetector"/> class.
         /// </summary>
+        /// 
         /// <param name="threshold">
         ///   The non-maximum suppression threshold. Default is 0.0002f.</param>
         /// <param name="octaves">
@@ -145,6 +149,7 @@ namespace Accord.Imaging
         /// <param name="initial">
         ///   The initial step to use when building the <see cref="ResponseLayerCollection">
         ///   response filter</see>. Default is 2. </param>
+        ///   
         public SpeededUpRobustFeaturesDetector(float threshold, int octaves, int initial)
         {
             this.threshold = threshold;
