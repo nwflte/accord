@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -219,7 +219,7 @@ namespace Accord.Audio
         /// 
         public Signal(int channels, int length, int sampleRate, SampleFormat format)
         {
-            int sampleSize = GetSampleSize(format);
+            int sampleSize = GetSampleSize(format) / 8;
             byte[] data = new byte[channels * length * sampleSize];
 
             init(data, channels, length, sampleRate, format);
@@ -323,10 +323,11 @@ namespace Accord.Audio
         ///   Creates a new Signal from a float array.
         /// </summary>
         /// 
-        public static Signal FromArray(Array signal, int sampleRate)
+        public static Signal FromArray(Array signal, int sampleRate, 
+            SampleFormat format = SampleFormat.Format32BitIeeeFloat)
         {
             int channels = signal.Rank == 1 ? 1 : signal.GetLength(1);
-            return FromArray(signal, channels, sampleRate);
+            return FromArray(signal, channels, sampleRate, format);
         }
 
         /// <summary>
@@ -344,22 +345,26 @@ namespace Accord.Audio
         ///   Creates a new Signal from a float array.
         /// </summary>
         /// 
-        public static Signal FromArray(Array signal, int channels, int sampleRate)
+        public static Signal FromArray(Array signal, int channels, int sampleRate, 
+            SampleFormat format = SampleFormat.Format32BitIeeeFloat)
         {
-            return FromArray(signal, signal.Length, channels, sampleRate);
+            return FromArray(signal, signal.Length, channels, sampleRate, format);
         }
 
         /// <summary>
         ///   Creates a new Signal from a float array.
         /// </summary>
         /// 
-        public static Signal FromArray(Array signal, int size, int channels, int sampleRate)
+        public static Signal FromArray(Array signal, int size, int channels, int sampleRate,
+            SampleFormat format = SampleFormat.Format32BitIeeeFloat)
         {
-            int samples = size / channels;
-            byte[] buffer = new byte[size * sizeof(float)];
-            Buffer.BlockCopy(signal, 0, buffer, 0, buffer.Length);
+            int sampleSize = GetSampleSize(format) / 8;
 
-            return new Signal(buffer, channels, samples, sampleRate, SampleFormat.Format32BitIeeeFloat);
+            byte[] buffer = new byte[size * sampleSize];
+            Buffer.BlockCopy(signal, 0, buffer, 0, buffer.Length);
+            int samples = size / channels;
+
+            return new Signal(buffer, channels, samples, sampleRate, format);
         }
 
         /// <summary>
@@ -368,7 +373,7 @@ namespace Accord.Audio
         /// 
         public void CopyTo(Array array)
         {
-            Buffer.BlockCopy(rawData, 0, array, 0, rawData.Length);
+            Buffer.BlockCopy(rawData, 0, array, 0, array.Length);
         }
 
         /// <summary>
@@ -377,7 +382,22 @@ namespace Accord.Audio
         /// 
         public void CopyTo(float[] array)
         {
-            Buffer.BlockCopy(rawData, 0, array, 0, rawData.Length);
+            if (format == Audio.SampleFormat.Format32BitIeeeFloat)
+            {
+                Buffer.BlockCopy(rawData, 0, array, 0, rawData.Length);
+            }
+
+            else if (format == Audio.SampleFormat.Format16Bit)
+            {
+                short[] source = new short[Samples];
+                Buffer.BlockCopy(rawData, 0, source, 0, rawData.Length);
+                SampleConverter.Convert(source, array);
+            }
+
+            else
+            {
+                throw new InvalidOperationException();
+            }
         }
 
         /// <summary>
@@ -389,7 +409,7 @@ namespace Accord.Audio
         public float[] ToFloat()
         {
             float[] array = new float[Samples];
-            Buffer.BlockCopy(rawData, 0, array, 0, rawData.Length);
+            CopyTo(array);
             return array;
         }
 
@@ -416,7 +436,7 @@ namespace Accord.Audio
         }
 
         /// <summary>
-        ///   Gets the size (in bytes) of a sample format.
+        ///   Gets the size (in bits) of a sample format.
         /// </summary>
         /// 
         public static int GetSampleSize(SampleFormat format)
