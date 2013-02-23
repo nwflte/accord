@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -150,7 +150,6 @@ namespace Accord.MachineLearning
             get { return ranges; }
         }
 
-
         /// <summary>
         ///   Searches for the best combination of parameters that results in the most accurate model.
         /// </summary>
@@ -160,6 +159,20 @@ namespace Accord.MachineLearning
         /// <returns>The best model found during the grid search.</returns>
         /// 
         public TModel Compute(out GridSearchParameterCollection bestParameters, out double error)
+        {
+            var result = Compute();
+            bestParameters = result.Parameter;
+            error = result.Error;
+            return result.Model;
+        }
+
+        /// <summary>
+        ///   Searches for the best combination of parameters that results in the most accurate model.
+        /// </summary>
+        /// 
+        /// <returns>The results found during the grid search.</returns>
+        /// 
+        public GridSearchResult<TModel> Compute()
         {
 
             // Get the total number of different parameters
@@ -176,7 +189,7 @@ namespace Accord.MachineLearning
             var parameters = new GridSearchParameterCollection[grid.Length];
             var models = new TModel[grid.Length];
             var errors = new double[grid.Length];
-            int best;
+            var msgs = new string[grid.Length];
 
             // Search the grid for the optimal parameters
             Parallel.For(0, grid.Length, i =>
@@ -184,17 +197,151 @@ namespace Accord.MachineLearning
                 // Get the current parameters for the current point
                 parameters[i] = new GridSearchParameterCollection(grid[i]);
 
-                // Try to fit a model using the parameters
-                models[i] = Fitting(parameters[i], out errors[i]);
+                try
+                {
+                    // Try to fit a model using the parameters
+                    models[i] = Fitting(parameters[i], out errors[i]);
+                }
+                catch (ConvergenceException ex)
+                {
+                    errors[i] = Double.NaN;
+                    msgs[i] = ex.Message;
+                }
             });
 
-            
+
             // Select the minimum error
-            error = errors.Min(out best);
-            bestParameters = parameters[best];
+            int best; errors.Min(out best);
 
             // Return the best model found.
-            return models[best];
+            return new GridSearchResult<TModel>(grid.Length,
+                parameters, models, errors, best);
+        }
+
+    }
+
+    /// <summary>
+    ///   Contains results from the grid-search procedure.
+    /// </summary>
+    /// 
+    /// <typeparam name="TModel">The type of the model to be tuned.</typeparam>
+    /// 
+    public class GridSearchResult<TModel> where TModel : class
+    {
+
+        private GridSearchParameterCollection[] parameters;
+        private TModel[] models;
+        private double[] errors;
+        private int gridSize;
+        private int bestIndex;
+
+        /// <summary>
+        ///   Gets all combination of parameters tried.
+        /// </summary>
+        /// 
+        public GridSearchParameterCollection[] Parameters
+        {
+            get { return parameters; }
+        }
+
+        /// <summary>
+        ///   Gets all models created during the search.
+        /// </summary>
+        /// 
+        public TModel[] Models
+        {
+            get { return models; }
+        }
+
+        /// <summary>
+        ///   Gets the error for each of the created models.
+        /// </summary>
+        /// 
+        public double[] Errors
+        {
+            get { return errors; }
+        }
+
+        /// <summary>
+        ///   Gets the index of the best found model
+        ///   in the <see cref="Models"/> collection.
+        /// </summary>
+        /// 
+        public int Index
+        {
+            get { return bestIndex; }
+        }
+
+        /// <summary>
+        ///   Gets the best model found.
+        /// </summary>
+        /// 
+        public TModel Model
+        {
+            get { return models[bestIndex]; }
+        }
+
+        /// <summary>
+        ///   Gets the best parameter combination found.
+        /// </summary>
+        /// 
+        public GridSearchParameterCollection Parameter
+        {
+            get { return parameters[bestIndex]; }
+        }
+
+        /// <summary>
+        ///   Gets the minimum error found.
+        /// </summary>
+        /// 
+        public double Error
+        {
+            get { return errors[bestIndex]; }
+        }
+
+
+        /// <summary>
+        ///   Gets the size of the grid used in the grid-search.
+        /// </summary>
+        /// 
+        public int Count
+        {
+            get { return gridSize; }
+        }
+
+
+
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="GridSearchResult&lt;TModel&gt;"/> class.
+        /// </summary>
+        /// 
+        public GridSearchResult(int size)
+        {
+            gridSize = size;
+            parameters = new GridSearchParameterCollection[size];
+            models = new TModel[size];
+            errors = new double[size];
+        }
+
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="GridSearchResult&lt;TModel&gt;"/> class.
+        /// </summary>
+        /// 
+        public GridSearchResult(int size, GridSearchParameterCollection[] parameters,
+            TModel[] models, double[] errors, int index)
+        {
+            this.gridSize = size;
+
+            if (parameters.Length != size || models.Length != size || errors.Length != size)
+                throw new DimensionMismatchException("size", "All array parameters must have the same length.");
+
+            if (0 > index || index >= size)
+                throw new ArgumentOutOfRangeException("index", "Index must be higher than 0 and less than size.");
+
+            this.parameters = parameters;
+            this.models = models;
+            this.errors = errors;
+            this.bestIndex = index;
         }
 
     }
