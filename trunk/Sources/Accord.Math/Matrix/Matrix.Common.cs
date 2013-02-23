@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -922,6 +922,14 @@ namespace Accord.Math
         /// <summary>Calculates the matrix Sum vector.</summary>
         /// <param name="matrix">A matrix whose sums will be calculated.</param>
         /// <returns>Returns a vector containing the sums of each variable in the given matrix.</returns>
+        public static float[] Sum(this float[,] matrix)
+        {
+            return Sum(matrix, 0);
+        }
+
+        /// <summary>Calculates the matrix Sum vector.</summary>
+        /// <param name="matrix">A matrix whose sums will be calculated.</param>
+        /// <returns>Returns a vector containing the sums of each variable in the given matrix.</returns>
         public static double[] Sum(this double[,] matrix)
         {
             return Sum(matrix, 0);
@@ -965,6 +973,57 @@ namespace Accord.Math
                 for (int j = 0; j < rows; j++)
                 {
                     double s = 0.0;
+                    for (int i = 0; i < cols; i++)
+                        s += matrix[j, i];
+                    sum[j] = s;
+                }
+            }
+            else
+            {
+                throw new ArgumentException("Invalid dimension", "dimension");
+            }
+
+            return sum;
+        }
+
+        /// <summary>Calculates the matrix Sum vector.</summary>
+        /// <param name="matrix">A matrix whose sums will be calculated.</param>
+        /// <param name="dimension">The dimension in which the sum will be calculated.</param>
+        /// <returns>Returns a vector containing the sums of each variable in the given matrix.</returns>
+        public static float[] Sum(this float[,] matrix, int dimension)
+        {
+            if (matrix == null) throw new ArgumentNullException("matrix");
+
+            int rows = matrix.GetLength(0);
+            int cols = matrix.GetLength(1);
+
+            float[] sum;
+
+            if (dimension == -1)
+            {
+                sum = new float[1];
+                foreach (float a in matrix)
+                    sum[0] += a;
+            }
+            else if (dimension == 0)
+            {
+                sum = new float[cols];
+
+                for (int j = 0; j < cols; j++)
+                {
+                    float s = 0.0f;
+                    for (int i = 0; i < rows; i++)
+                        s += matrix[i, j];
+                    sum[j] = s;
+                }
+            }
+            else if (dimension == 1)
+            {
+                sum = new float[rows];
+
+                for (int j = 0; j < rows; j++)
+                {
+                    float s = 0.0f;
                     for (int i = 0; i < cols; i++)
                         s += matrix[j, i];
                     sum[j] = s;

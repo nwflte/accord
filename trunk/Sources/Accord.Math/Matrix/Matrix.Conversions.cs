@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -26,13 +26,13 @@ namespace Accord.Math
     using System.Data;
     using System.Globalization;
 
-
     public static partial class Matrix
     {
 
         /// <summary>
         ///   Converts a jagged-array into a multidimensional array.
         /// </summary>
+        /// 
         public static T[,] ToMatrix<T>(this T[][] array)
         {
             return ToMatrix(array, false);
@@ -41,6 +41,7 @@ namespace Accord.Math
         /// <summary>
         ///   Converts a jagged-array into a multidimensional array.
         /// </summary>
+        /// 
         public static T[,] ToMatrix<T>(this T[][] array, bool transpose)
         {
             int rows = array.Length;
@@ -84,13 +85,41 @@ namespace Accord.Math
         ///   Converts an array into a multidimensional array.
         /// </summary>
         /// 
-        public static T[][] ToArray<T>(this T[] array)
+        public static T[][] ToArray<T>(this T[] array, bool asColumnVector = true)
         {
-            T[][] m = new T[array.Length][];
-            for (int i = 0; i < array.Length; i++)
-                m[i] = new[] { array[i] };
+            if (asColumnVector)
+            {
+                T[][] m = new T[array.Length][];
+                for (int i = 0; i < array.Length; i++)
+                    m[i] = new[] { array[i] };
+                return m;
+            }
+            else
+            {
+                return new T[][] { array };
+            }
+        }
 
-            return m;
+        /// <summary>
+        ///   Converts an array into a multidimensional array.
+        /// </summary>
+        /// 
+        public static T[,] ToMatrix<T>(this T[] array, bool asColumnVector = false)
+        {
+            if (asColumnVector)
+            {
+                T[,] m = new T[1, array.Length];
+                for (int i = 0; i < array.Length; i++)
+                    m[0, i] = array[i];
+                return m;
+            }
+            else
+            {
+                T[,] m = new T[array.Length, 1];
+                for (int i = 0; i < array.Length; i++)
+                    m[i, 0] = array[i];
+                return m;
+            }
         }
 
         /// <summary>
@@ -131,7 +160,9 @@ namespace Accord.Math
         }
 
 
+
         #region Type conversions
+
         /// <summary>
         ///   Converts a double-precision floating point multidimensional
         ///   array into a single-precision floating point multidimensional
@@ -158,39 +189,6 @@ namespace Accord.Math
 
             return result;
         }
-
-        /// <summary>
-        ///   Converts a double-precision floating point multidimensional
-        ///   array into a single-precision floating point multidimensional
-        ///   array.
-        /// </summary>
-        /// 
-        public static double[] ToDouble(this float[] vector)
-        {
-            double[] result = new double[vector.Length];
-
-            for (int i = 0; i < vector.Length; i++)
-                result[i] = vector[i];
-
-            return result;
-        }
-
-        /// <summary>
-        ///   Converts a double-precision floating point multidimensional
-        ///   array into a single-precision floating point multidimensional
-        ///   array.
-        /// </summary>
-        /// 
-        public static double[] ToDouble(this short[] vector)
-        {
-            double[] result = new double[vector.Length];
-
-            for (int i = 0; i < vector.Length; i++)
-                result[i] = vector[i];
-
-            return result;
-        }
-
 
         /// <summary>
         ///   Converts a double-precision floating point multidimensional
@@ -247,16 +245,6 @@ namespace Accord.Math
         }
 
         /// <summary>
-        ///   Truncates a double vector to integer values.
-        /// </summary>
-        /// <param name="vector">The vector to be truncated.</param>
-        /// 
-        public static int[] ToInt32(this double[] vector)
-        {
-            return Array.ConvertAll(vector, x => (int)x);
-        }
-
-        /// <summary>
         ///   Truncates a double matrix to integer values.
         /// </summary>
         /// <param name="matrix">The matrix to be truncated.</param>
@@ -302,13 +290,76 @@ namespace Accord.Math
         }
 
         /// <summary>
+        ///   Truncates an integer matrix to double values.
+        /// </summary>
+        /// <param name="matrix">The matrix to be converted.</param>
+        /// 
+        public static double[][] ToDouble(this int[][] matrix)
+        {
+            double[][] result = new double[matrix.Length][];
+
+            for (int i = 0; i < matrix.Length; i++)
+            {
+                result[i] = new double[matrix[i].Length];
+                for (int j = 0; j < matrix[i].Length; j++)
+                    result[i][j] = (double)matrix[i][j];
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        ///   Converts a double-precision floating point multidimensional
+        ///   array into a single-precision floating point multidimensional
+        ///   array.
+        /// </summary>
+        /// 
+        public static double[] ToDouble(this float[] vector)
+        {
+            double[] result = new double[vector.Length];
+            for (int i = 0; i < vector.Length; i++)
+                result[i] = (double)vector[i];
+            return result;
+        }
+
+        /// <summary>
+        ///   Converts a double-precision floating point multidimensional
+        ///   array into a single-precision floating point multidimensional
+        ///   array.
+        /// </summary>
+        /// 
+        public static double[] ToDouble(this short[] vector)
+        {
+            double[] result = new double[vector.Length];
+            for (int i = 0; i < vector.Length; i++)
+                result[i] = (double)vector[i];
+            return result;
+        }
+
+        /// <summary>
+        ///   Truncates a double vector to integer values.
+        /// </summary>
+        /// <param name="vector">The vector to be truncated.</param>
+        /// 
+        public static int[] ToInt32(this double[] vector)
+        {
+            int[] result = new int[vector.Length];
+            for (int i = 0; i < vector.Length; i++)
+                result[i] = (int)vector[i];
+            return result;
+        }
+
+        /// <summary>
         ///   Converts a integer vector into a double vector.
         /// </summary>
         /// <param name="vector">The vector to be converted.</param>
         /// 
         public static double[] ToDouble(this int[] vector)
         {
-            return Array.ConvertAll(vector, x => (double)x);
+            double[] result = new double[vector.Length];
+            for (int i = 0; i < vector.Length; i++)
+                result[i] = (double)vector[i];
+            return result;
         }
 
         /// <summary>
@@ -323,7 +374,53 @@ namespace Accord.Math
         {
             return Array.ConvertAll(vector, converter);
         }
+
+        /// <summary>
+        ///   Converts the values of a matrix using the given converter expression.
+        /// </summary>
+        /// <typeparam name="TInput">The type of the input.</typeparam>
+        /// <typeparam name="TOutput">The type of the output.</typeparam>
+        /// <param name="matrix">The matrix to be converted.</param>
+        /// <param name="converter">The converter function.</param>
+        /// 
+        public static TOutput[][] Convert<TInput, TOutput>(this TInput[][] matrix, Converter<TInput, TOutput> converter)
+        {
+            TOutput[][] result = new TOutput[matrix.Length][];
+
+            for (int i = 0; i < matrix.Length; i++)
+            {
+                result[i] = new TOutput[matrix[i].Length];
+                for (int j = 0; j < matrix[i].Length; j++)
+                    result[i][j] = converter(matrix[i][j]);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        ///   Converts the values of a matrix using the given converter expression.
+        /// </summary>
+        /// <typeparam name="TInput">The type of the input.</typeparam>
+        /// <typeparam name="TOutput">The type of the output.</typeparam>
+        /// <param name="matrix">The vector to be converted.</param>
+        /// <param name="converter">The converter function.</param>
+        /// 
+        public static TOutput[,] Convert<TInput, TOutput>(this TInput[,] matrix, Converter<TInput, TOutput> converter)
+        {
+            int rows = matrix.GetLength(0);
+            int cols = matrix.GetLength(1);
+
+            TOutput[,] result = new TOutput[rows, cols];
+            for (int i = 0; i < rows; i++)
+                for (int j = 0; j < cols; j++)
+                    result[i, j] = converter(matrix[i, j]);
+
+            return result;
+        }
         #endregion
+
+
+
 
 
         #region DataTable Conversions
@@ -344,13 +441,22 @@ namespace Accord.Math
         /// 
         public static double[,] ToMatrix(this DataTable table, out string[] columnNames)
         {
-            double[,] m = new double[table.Rows.Count, table.Columns.Count];
+            return ToMatrix<double>(table, out columnNames);
+        }
+
+        /// <summary>
+        ///   Converts a DataTable to a double[,] array.
+        /// </summary>
+        /// 
+        public static T[,] ToMatrix<T>(this DataTable table, out string[] columnNames)
+        {
+            T[,] m = new T[table.Rows.Count, table.Columns.Count];
             columnNames = new string[table.Columns.Count];
 
             for (int j = 0; j < table.Columns.Count; j++)
             {
                 for (int i = 0; i < table.Rows.Count; i++)
-                    m[i, j] = convertToDouble(table.Rows[i][j]);
+                    m[i, j] = (T)System.Convert.ChangeType(table.Rows[i][j], typeof(T));
 
                 columnNames[j] = table.Columns[j].Caption;
             }
@@ -424,6 +530,8 @@ namespace Accord.Math
             return table;
         }
 
+
+
         /// <summary>
         ///   Converts a DataTable to a double[][] array.
         /// </summary>
@@ -438,18 +546,69 @@ namespace Accord.Math
         ///   Converts a DataTable to a double[][] array.
         /// </summary>
         /// 
+        public static double[][] ToArray(this DataTable table, IFormatProvider provider)
+        {
+            String[] names;
+            return ToArray(table, out names, provider);
+        }
+
+        /// <summary>
+        ///   Converts a DataTable to a double[][] array.
+        /// </summary>
+        /// 
         public static double[][] ToArray(this DataTable table, out string[] columnNames)
         {
-            double[][] m = new double[table.Rows.Count][];
+            return ToArray<double>(table, out columnNames);
+        }
+
+        /// <summary>
+        ///   Converts a DataTable to a double[][] array.
+        /// </summary>
+        /// 
+        public static double[][] ToArray(this DataTable table, out string[] columnNames, IFormatProvider provider)
+        {
+            return ToArray<double>(table, out columnNames, provider);
+        }
+
+        /// <summary>
+        ///   Converts a DataTable to a double[][] array.
+        /// </summary>
+        /// 
+        public static T[][] ToArray<T>(this DataTable table, out string[] columnNames)
+        {
+            T[][] m = new T[table.Rows.Count][];
             columnNames = new string[table.Columns.Count];
 
             for (int i = 0; i < table.Rows.Count; i++)
-                m[i] = new double[table.Columns.Count];
+                m[i] = new T[table.Columns.Count];
 
             for (int j = 0; j < table.Columns.Count; j++)
             {
                 for (int i = 0; i < table.Rows.Count; i++)
-                    m[i][j] = convertToDouble(table.Rows[i][j]);
+                    m[i][j] = (T)System.Convert.ChangeType(table.Rows[i][j], typeof(T));
+
+                columnNames[j] = table.Columns[j].Caption;
+            }
+
+            return m;
+        }
+
+        /// <summary>
+        ///   Converts a DataTable to a double[][] array.
+        /// </summary>
+        /// 
+        public static T[][] ToArray<T>(this DataTable table, out string[] columnNames, IFormatProvider provider)
+        {
+            T[][] m = new T[table.Rows.Count][];
+            columnNames = new string[table.Columns.Count];
+
+            for (int i = 0; i < table.Rows.Count; i++)
+                m[i] = new T[table.Columns.Count];
+
+            for (int j = 0; j < table.Columns.Count; j++)
+            {
+                for (int i = 0; i < table.Rows.Count; i++)
+                    m[i][j] = (T)System.Convert.ChangeType(table.Rows[i][j], typeof(T), provider);
 
                 columnNames[j] = table.Columns[j].Caption;
             }
@@ -463,17 +622,26 @@ namespace Accord.Math
         /// 
         public static double[][] ToArray(this DataTable table, params string[] columnNames)
         {
-            double[][] m = new double[table.Rows.Count][];
+            return ToArray<double>(table, columnNames);
+        }
+
+        /// <summary>
+        ///   Converts a DataTable to a double[][] array.
+        /// </summary>
+        /// 
+        public static T[][] ToArray<T>(this DataTable table, params string[] columnNames)
+        {
+            T[][] m = new T[table.Rows.Count][];
 
             for (int i = 0; i < table.Rows.Count; i++)
-                m[i] = new double[columnNames.Length];
+                m[i] = new T[columnNames.Length];
 
             for (int j = 0; j < columnNames.Length; j++)
             {
                 DataColumn col = table.Columns[columnNames[j]];
 
                 for (int i = 0; i < table.Rows.Count; i++)
-                    m[i][j] = convertToDouble(table.Rows[i][col]);
+                    m[i][j] = (T)System.Convert.ChangeType(table.Rows[i][col], typeof(T));
             }
 
             return m;
@@ -485,10 +653,33 @@ namespace Accord.Math
         /// 
         public static double[] ToArray(this DataColumn column)
         {
-            double[] m = new double[column.Table.Rows.Count];
+            return ToArray<double>(column);
+        }
+
+        /// <summary>
+        ///   Converts a DataColumn to a double[] array.
+        /// </summary>
+        /// 
+        public static T[] ToArray<T>(this DataColumn column)
+        {
+            T[] m = new T[column.Table.Rows.Count];
 
             for (int i = 0; i < m.Length; i++)
-                m[i] = convertToDouble(column.Table.Rows[i][column]);
+                m[i] = (T)System.Convert.ChangeType(column.Table.Rows[i][column], typeof(T));
+
+            return m;
+        }
+
+        /// <summary>
+        ///   Converts a DataColumn to a generic array.
+        /// </summary>
+        /// 
+        public static T[] ToArray<T>(this DataRow row, params string[] colNames)
+        {
+            T[] m = new T[colNames.Length];
+
+            for (int i = 0; i < m.Length; i++)
+                m[i] = (T)System.Convert.ChangeType(row[colNames[i]], typeof(T));
 
             return m;
         }
@@ -499,96 +690,51 @@ namespace Accord.Math
         /// 
         public static double[] ToArray(this DataRow row, params string[] colNames)
         {
-            double[] m = new double[colNames.Length];
-
-            for (int i = 0; i < m.Length; i++)
-                m[i] = convertToDouble(row[colNames[i]]);
-
-            return m;
+            return ToArray<double>(row, colNames);
         }
 
         /// <summary>
         ///   Converts a DataTable to a int[][] array.
         /// </summary>
         /// 
-        public static int[][] ToIntArray(this DataTable table, params string[] columnNames)
+        public static T[] ToArray<T>(this DataTable table, string columnNames)
         {
-            int[][] m = new int[table.Rows.Count][];
+            T[] m = new T[table.Rows.Count];
+
+            DataColumn col = table.Columns[columnNames];
 
             for (int i = 0; i < table.Rows.Count; i++)
-                m[i] = new int[columnNames.Length];
-
-            for (int j = 0; j < columnNames.Length; j++)
-            {
-                DataColumn col = table.Columns[columnNames[j]];
-
-                for (int i = 0; i < table.Rows.Count; i++)
-                    m[i][j] = convertToInt32(table.Rows[i][col]);
-            }
+                m[i] = (T)System.Convert.ChangeType(table.Rows[i][col], typeof(T));
 
             return m;
         }
+        #endregion
 
+
+
+
+        #region Obsolete
         /// <summary>
         ///   Converts a DataColumn to a int[] array.
         /// </summary>
         /// 
+        [Obsolete("Use ToArray<T> instead.")]
         public static int[] ToInt32Array(this DataColumn column)
         {
-            int[] m = new int[column.Table.Rows.Count];
-
-            for (int i = 0; i < m.Length; i++)
-                m[i] = convertToInt32(column.Table.Rows[i][column]);
-
-            return m;
+            return ToArray<int>(column);
         }
 
+        /// <summary>
+        ///   Converts a DataTable to a int[][] array.
+        /// </summary>
+        /// 
+        [Obsolete("Use ToArray<T> instead.")]
+        public static int[][] ToIntArray(this DataTable table, params string[] columnNames)
+        {
+            return ToArray<int>(table, columnNames);
+        }
         #endregion
 
 
-
-        #region private methods
-        private static double convertToDouble(object obj)
-        {
-            double d;
-
-            if (obj is String)
-            {
-                d = Double.Parse((String)obj, CultureInfo.InvariantCulture);
-            }
-            else if (obj is Boolean)
-            {
-                d = (Boolean)obj ? 1.0 : 0.0;
-            }
-            else
-            {
-                if (!Double.TryParse(obj.ToString(), out d))
-                    d = Double.NaN;
-            }
-
-            return d;
-        }
-
-        private static int convertToInt32(object obj)
-        {
-            int d;
-
-            if (obj is String)
-            {
-                d = int.Parse((String)obj, CultureInfo.InvariantCulture);
-            }
-            else if (obj is Boolean)
-            {
-                d = (Boolean)obj ? 1 : 0;
-            }
-            else
-            {
-                if (!int.TryParse(obj.ToString(), out d))
-                    d = 0;
-            }
-
-            return d;
-        }
-        #endregion
     }
 }
