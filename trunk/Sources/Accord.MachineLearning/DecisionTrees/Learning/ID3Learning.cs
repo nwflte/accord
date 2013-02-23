@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -100,8 +100,8 @@ namespace Accord.MachineLearning.DecisionTrees.Learning
     ///   
     ///   // Translate our training data into integer symbols using our codebook:
     ///   DataTable symbols = codebook.Apply(data); 
-    ///   int[][] inputs  = symbols.ToIntArray("Outlook", "Temperature", "Humidity", "Wind"); 
-    ///   int[]   outputs = symbols.ToIntArray("PlayTennis").GetColumn(0);
+    ///   int[][] inputs  = symbols.ToArray&lt;int>("Outlook", "Temperature", "Humidity", "Wind"); 
+    ///   int[]   outputs = symbols.ToArray&lt;int>("PlayTennis");
     /// </code>
     /// 
     /// <para>
@@ -142,23 +142,51 @@ namespace Accord.MachineLearning.DecisionTrees.Learning
     ///   id3learning.Run(inputs, outputs); 
     /// </code>
     /// 
-    /// <para>The tree can now be queried for new examples through its <see cref="DecisionTree.Compute"/> method.
-    /// </para>
+    /// <para>The tree can now be queried for new examples through its <see cref="DecisionTree.Compute(double[])"/>
+    /// method. For example, we can use: </para>
+    /// 
+    /// <code>
+    ///   string answer = codebook.Translate("PlayTennis",
+    ///     tree.Compute(codebook.Translate("Sunny", "Hot", "High", "Strong")));
+    /// </code>
+    /// 
+    /// <para>In the above example, answer will be "No".</para>
+    /// 
     /// </example>
     /// 
     ///
     /// <see cref="C45Learning"/>
     /// 
     [Serializable]
-    public class ID3Learning 
+    public class ID3Learning
     {
 
         private DecisionTree tree;
 
+        private int maxHeight;
         private IntRange[] inputRanges;
         private int outputClasses;
 
         private bool[] attributes;
+
+
+        /// <summary>
+        ///   Gets or sets the maximum allowed 
+        ///   height when learning a tree.
+        /// </summary>
+        /// 
+        public int MaxHeight
+        {
+            get { return maxHeight; }
+            set
+            {
+                if (maxHeight <= 0 || maxHeight > attributes.Length)
+                    throw new ArgumentOutOfRangeException("value",
+                        "The height must be greater than zero and less than the number of variables in the tree.");
+                maxHeight = value;
+            }
+        }
+
 
         /// <summary>
         ///   Creates a new ID3 learning algorithm.
@@ -171,10 +199,13 @@ namespace Accord.MachineLearning.DecisionTrees.Learning
             this.tree = tree;
             this.inputRanges = new IntRange[tree.InputCount];
             this.outputClasses = tree.OutputClasses;
+            this.attributes = new bool[tree.InputCount];
+            this.maxHeight = attributes.Length;
 
             for (int i = 0; i < inputRanges.Length; i++)
                 inputRanges[i] = tree.Attributes[i].Range.ToIntRange(false);
         }
+
 
         /// <summary>
         ///   Runs the learning algorithm, creating a decision
@@ -188,7 +219,9 @@ namespace Accord.MachineLearning.DecisionTrees.Learning
         /// 
         public double Run(int[][] inputs, int[] outputs)
         {
-            attributes = new bool[tree.InputCount];
+            // Reset the usage of all attributes
+            for (int i = 0; i < attributes.Length; i++)
+                attributes[i] = false;
 
             // 1. Create a root node for the tree
             this.tree.Root = new DecisionNode(tree);
@@ -240,7 +273,7 @@ namespace Accord.MachineLearning.DecisionTrees.Learning
             //    the target attributes in the examples.
             int predictors = attributes.Count(x => x == false);
 
-            if (predictors == 0)
+            if (predictors < attributes.Length - maxHeight)
             {
                 root.Output = Statistics.Tools.Mode(output);
                 return;
@@ -261,11 +294,18 @@ namespace Accord.MachineLearning.DecisionTrees.Learning
 
 
             // For each attribute in the data set
+#if SERIAL
+            for (int i = 0; i < scores.Length; i++)
+#else
             Parallel.For(0, scores.Length, i =>
+#endif
             {
                 scores[i] = computeGainRatio(input, output, candidates[i],
                     entropy, out partitions[i]);
-            });
+            }
+#if !SERIAL
+);
+#endif
 
             // Select the attribute with maximum gain ratio
             int maxGainIndex; scores.Max(out maxGainIndex);
@@ -292,6 +332,7 @@ namespace Accord.MachineLearning.DecisionTrees.Learning
 
                 split(children[i], inputSubset, outputSubset); // recursion
             }
+
 
             attributes[maxGainAttribute] = false;
 
