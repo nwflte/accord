@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -199,29 +199,25 @@ namespace Accord.Imaging.Converters
         /// <param name="input">The input image to be converted.</param>
         /// <param name="output">The converted image.</param>
         /// 
-        public void Convert(UnmanagedImage input, out double[,] output)
+        public unsafe void Convert(UnmanagedImage input, out double[,] output)
         {
             int width = input.Width;
             int height = input.Height;
-            int offset = input.Stride - input.Width;
+            int pixelSize = Bitmap.GetPixelFormatSize(input.PixelFormat) / 8;
+            int offset = input.Stride - input.Width * pixelSize;
 
             output = new double[height, width];
 
-            unsafe
+            fixed (double* ptrData = output)
             {
-                fixed (double* ptrData = output)
-                {
-                    double* dst = ptrData;
-                    byte* src = (byte*)input.ImageData.ToPointer() + Channel;
+                double* dst = ptrData;
+                byte* src = (byte*)input.ImageData.ToPointer() + Channel;
 
-                    for (int y = 0; y < height; y++)
-                    {
-                        for (int x = 0; x < width; x++, src++, dst++)
-                        {
-                            *dst = Accord.Math.Tools.Scale(0, 255, Min, Max, *src);
-                        }
-                        src += offset;
-                    }
+                for (int y = 0; y < height; y++)
+                {
+                    for (int x = 0; x < width; x++, src += pixelSize, dst++)
+                        *dst = Accord.Math.Tools.Scale(0, 255, Min, Max, *src);
+                    src += offset;
                 }
             }
         }
@@ -237,7 +233,8 @@ namespace Accord.Imaging.Converters
         {
             int width = input.Width;
             int height = input.Height;
-            int offset = input.Stride - input.Width;
+            int pixelSize = Bitmap.GetPixelFormatSize(input.PixelFormat) / 8;
+            int offset = input.Stride - input.Width * pixelSize;
 
             output = new float[height, width];
 
@@ -253,10 +250,8 @@ namespace Accord.Imaging.Converters
 
                     for (int y = 0; y < height; y++)
                     {
-                        for (int x = 0; x < width; x++, src++, dst++)
-                        {
+                        for (int x = 0; x < width; x++, src += pixelSize, dst++)
                             *dst = Accord.Math.Tools.Scale(0, 255, min, max, *src);
-                        }
                         src += offset;
                     }
                 }

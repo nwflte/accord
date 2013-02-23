@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -284,7 +284,7 @@ namespace Accord.Imaging.Converters
         /// <param name="input">The input image to be converted.</param>
         /// <param name="output">The converted image.</param>
         /// 
-        public void Convert(UnmanagedImage input, out double[] output)
+        public unsafe void Convert(UnmanagedImage input, out double[] output)
         {
             int width = input.Width;
             int height = input.Height;
@@ -293,33 +293,30 @@ namespace Accord.Imaging.Converters
 
             output = new double[width * height];
 
-            unsafe
+            if (input.PixelFormat == PixelFormat.Format16bppGrayScale)
             {
-                if (input.PixelFormat == PixelFormat.Format16bppGrayScale)
+                short* src = (short*)input.ImageData.ToPointer();
+                int dst = 0;
+
+                for (int y = 0; y < height; y++)
                 {
-                    short* src = (short*)input.ImageData.ToPointer();
-                    int dst = 0;
+                    for (int x = 0; x < width; x++, dst++, src++)
+                        output[dst] = Accord.Math.Tools.Scale(0, 65535, Min, Max, *src);
 
-                    for (int y = 0; y < height; y++)
-                    {
-                        for (int x = 0; x < width; x++, dst++, src++)
-                            output[dst] = Accord.Math.Tools.Scale(0, 65535, Min, Max, *src);
-
-                        src += offset;
-                    }
+                    src += offset;
                 }
-                else
+            }
+            else
+            {
+                byte* src = (byte*)input.ImageData.ToPointer() + Channel;
+                int dst = 0;
+
+                for (int y = 0; y < height; y++)
                 {
-                    byte* src = (byte*)input.ImageData.ToPointer();
-                    int dst = 0;
+                    for (int x = 0; x < width; x++, dst++, src += pixelSize)
+                        output[dst] = Accord.Math.Tools.Scale(0, 255, Min, Max, *src);
 
-                    for (int y = 0; y < height; y++)
-                    {
-                        for (int x = 0; x < width; x++, dst++, src += pixelSize)
-                            output[dst] = Accord.Math.Tools.Scale(0, 255, Min, Max, *src);
-
-                        src += offset;
-                    }
+                    src += offset;
                 }
             }
         }
@@ -331,7 +328,7 @@ namespace Accord.Imaging.Converters
         /// <param name="input">The input image to be converted.</param>
         /// <param name="output">The converted image.</param>
         /// 
-        public void Convert(UnmanagedImage input, out float[] output)
+        public unsafe void Convert(UnmanagedImage input, out float[] output)
         {
             int width = input.Width;
             int height = input.Height;
@@ -343,33 +340,30 @@ namespace Accord.Imaging.Converters
             float min = (float)Min;
             float max = (float)Max;
 
-            unsafe
+            if (input.PixelFormat == PixelFormat.Format16bppGrayScale)
             {
-                if (input.PixelFormat == PixelFormat.Format16bppGrayScale)
+                short* src = (short*)input.ImageData.ToPointer();
+                int dst = 0;
+
+                for (int y = 0; y < height; y++)
                 {
-                    short* src = (short*)input.ImageData.ToPointer();
-                    int dst = 0;
+                    for (int x = 0; x < width; x++, dst++, src++)
+                        output[dst] = Accord.Math.Tools.Scale(0, 65535, min, max, *src);
 
-                    for (int y = 0; y < height; y++)
-                    {
-                        for (int x = 0; x < width; x++, dst++, src++)
-                            output[dst] = Accord.Math.Tools.Scale(0, 65535, min, max, *src);
-
-                        src += offset;
-                    }
+                    src += offset;
                 }
-                else
+            }
+            else
+            {
+                byte* src = (byte*)input.ImageData.ToPointer() + Channel;
+                int dst = 0;
+
+                for (int y = 0; y < height; y++)
                 {
-                    byte* src = (byte*)input.ImageData.ToPointer();
-                    int dst = 0;
+                    for (int x = 0; x < width; x++, dst++, src += pixelSize)
+                        output[dst] = Accord.Math.Tools.Scale(0, 255, min, max, *src);
 
-                    for (int y = 0; y < height; y++)
-                    {
-                        for (int x = 0; x < width; x++, dst++, src += pixelSize)
-                            output[dst] = Accord.Math.Tools.Scale(0, 255, min, max, *src);
-
-                        src += offset;
-                    }
+                    src += offset;
                 }
             }
         }
