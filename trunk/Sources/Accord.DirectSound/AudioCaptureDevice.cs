@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -105,6 +105,8 @@ namespace Accord.DirectSound
         private Thread thread = null;
         private ManualResetEvent stopEvent = null;
 
+        private SampleFormat sampleFormat = SampleFormat.Format32BitIeeeFloat;
+
         /// <summary>
         ///   New frame event.
         /// </summary>
@@ -138,6 +140,16 @@ namespace Accord.DirectSound
         {
             get { return device.ToString(); }
             set { device = new Guid(value); }
+        }
+
+        /// <summary>
+        ///   Gets or sets the sample format used by the device.
+        /// </summary>
+        /// 
+        public SampleFormat Format
+        {
+            get { return sampleFormat; }
+            set { sampleFormat = value; }
         }
 
         /// <summary>
@@ -349,19 +361,20 @@ namespace Accord.DirectSound
             // Get the selected capture device
             DirectSoundCapture captureDevice = new DirectSoundCapture(device);
 
+
             // Set the capture format
             WaveFormat format = new WaveFormat();
             format.Channels = 1;
-            format.FormatTag = WaveFormatTag.IeeeFloat;
-            format.BitsPerSample = 32;
-            format.BlockAlignment = (short)(format.BitsPerSample / 8);
             format.SamplesPerSecond = sampleRate;
+            format.FormatTag = sampleFormat.ToWaveFormat();
+            format.BitsPerSample = (short)Signal.GetSampleSize(sampleFormat);
+            format.BlockAlignment = (short)(format.BitsPerSample / 8);
             format.AverageBytesPerSecond = format.SamplesPerSecond * format.BlockAlignment;
 
             // Setup the capture buffer
             CaptureBufferDescription captureBufferDescription = new CaptureBufferDescription();
             captureBufferDescription.Format = format;
-            captureBufferDescription.BufferBytes = 2 * desiredCaptureSize * sizeof(float);
+            captureBufferDescription.BufferBytes = 2 * desiredCaptureSize * format.BlockAlignment;
             captureBufferDescription.WaveMapped = true;
             captureBufferDescription.ControlEffects = false;
 
@@ -383,20 +396,34 @@ namespace Accord.DirectSound
             for (int i = 0; i < notifications.Length; i++)
                 waitHandles[i] = notifications[i].Event;
 
-            float[] currentSample = new float[desiredCaptureSize];
+            
 
             // Start capturing
             captureBuffer.Start(true);
 
             try
             {
-                while (!stopEvent.WaitOne(0, true))
+                if (sampleFormat == SampleFormat.Format32BitIeeeFloat)
                 {
-                    int bufferPortionIndex = WaitHandle.WaitAny(waitHandles);
+                    float[] currentSample = new float[desiredCaptureSize];
 
-                    captureBuffer.Read(currentSample, 0, currentSample.Length, bufferPortionSize * bufferPortionIndex);
+                    while (!stopEvent.WaitOne(0, true))
+                    {
+                        int bufferPortionIndex = WaitHandle.WaitAny(waitHandles);
+                        captureBuffer.Read(currentSample, 0, currentSample.Length, bufferPortionSize * bufferPortionIndex);
+                        OnNewFrame(currentSample);
+                    }
+                }
+                else if (sampleFormat == SampleFormat.Format16Bit)
+                {
+                    short[] currentSample = new short[desiredCaptureSize];
 
-                    OnNewFrame(currentSample);
+                    while (!stopEvent.WaitOne(0, true))
+                    {
+                        int bufferPortionIndex = WaitHandle.WaitAny(waitHandles);
+                        captureBuffer.Read(currentSample, 0, currentSample.Length, bufferPortionSize * bufferPortionIndex);
+                        OnNewFrame(currentSample);
+                    }
                 }
             }
             catch (Exception ex)
@@ -417,19 +444,21 @@ namespace Accord.DirectSound
             }
         }
 
+      
+
         /// <summary>
         ///   Notifies client about new block of frames.
         /// </summary>
         /// 
         /// <param name="frame">New frame's audio.</param>
         /// 
-        protected void OnNewFrame(float[] frame)
+        protected void OnNewFrame(Array frame)
         {
             framesReceived++;
 
             if ((!stopEvent.WaitOne(0, true)) && (NewFrame != null))
             {
-                NewFrame(this, new NewFrameEventArgs(Signal.FromArray(frame, sampleRate)));
+                NewFrame(this, new NewFrameEventArgs(Signal.FromArray(frame, sampleRate, sampleFormat)));
             }
         }
 
