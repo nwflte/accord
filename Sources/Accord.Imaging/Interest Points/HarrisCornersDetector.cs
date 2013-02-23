@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -38,7 +38,7 @@ namespace Accord.Imaging
     public enum HarrisCornerMeasure
     {
         /// <summary>
-        ///   Original Harris measure. Requires the setting of
+        ///   Original Harris's measure. Requires the setting of
         ///   a parameter k (default is 0.04), which may be a
         ///   bit arbitrary and introduce more parameters to tune.
         /// </summary>
@@ -46,11 +46,11 @@ namespace Accord.Imaging
         Harris,
 
         /// <summary>
-        ///   Nobel Harris measure. Does not require a parameter
+        ///   Noble's measure. Does not require a parameter
         ///   and may be more stable.
         /// </summary>
         /// 
-        Nobel,
+        Noble,
     }
 
     /// <summary>
@@ -394,7 +394,7 @@ namespace Accord.Imaging
                         }
                         else
                         {
-                            // Harris-Nobel corner measure
+                            // Harris-Noble corner measure
                             M = (A * B - C * C) / (A + B + Constants.SingleEpsilon);
                         }
 
