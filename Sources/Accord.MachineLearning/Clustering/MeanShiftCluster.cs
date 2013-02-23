@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -125,7 +125,7 @@ namespace Accord.MachineLearning
         ///   The index of the nearest cluster
         ///   to the given data point. </returns>
         /// 
-        public int Compute(double[] point)
+        public int Nearest(double[] point)
         {
             var result = tree.Nearest(point, 1);
             if (result.Count > 0)
@@ -142,11 +142,11 @@ namespace Accord.MachineLearning
         ///   The index of the nearest cluster
         ///   to the given data point. </returns>
         /// 
-        public int[] Compute(double[][] point)
+        public int[] Nearest(double[][] point)
         {
             int[] labels = new int[point.Length];
             for (int i = 0; i < labels.Length; i++)
-                labels[i] = Compute(point[i]);
+                labels[i] = Nearest(point[i]);
             return labels;
         }
     }

@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 // Copyright © Antonino Porcino, 2010
@@ -280,10 +280,10 @@ namespace Accord.MachineLearning
             // Initial argument checking
             if (data == null)
                 throw new ArgumentNullException("data");
-
+            if (data.Length < K)
+                throw new ArgumentException("Not enough points. There should be more points than the number K of clusters.");
             if (threshold < 0)
                 throw new ArgumentException("Threshold should be a positive number.", "threshold");
-
 
             // TODO: Implement a faster version using the triangle
             // inequality to reduce the number of distance calculations
@@ -296,7 +296,7 @@ namespace Accord.MachineLearning
             int rows = data.Length;
             int cols = data[0].Length;
 
-
+            
             // Perform a random initialization of the clusters
             // if the algorithm has not been initialized before.
             if (this.Clusters.Centroids[0] == null)
@@ -337,7 +337,7 @@ namespace Accord.MachineLearning
                     double[] point = data[i];
 
                     // Get the nearest cluster centroid
-                    int c = labels[i] = Clusters.Compute(point);
+                    int c = labels[i] = Clusters.Nearest(point);
 
                     // Increase the cluster's sample counter
                     count[c]++;
@@ -500,10 +500,10 @@ namespace Accord.MachineLearning
         ///   The index of the nearest cluster
         ///   to the given data point. </returns>
         ///   
-        [Obsolete("Usage of Clusters.Nearest() is preferred.")]
+        [Obsolete("Please use Clusters.Nearest() instead.")]
         public int Nearest(double[] point)
         {
-            return Clusters.Compute(point);
+            return Clusters.Nearest(point);
         }
 
         /// <summary>
@@ -515,10 +515,10 @@ namespace Accord.MachineLearning
         ///   The index of the nearest cluster
         ///   to the given data point. </returns>
         ///   
-        [Obsolete("Usage of Clusters.Nearest() is preferred.")]
+        [Obsolete("Please use Clusters.Nearest() instead.")]
         public int[] Nearest(double[][] points)
         {
-            return Clusters.Compute(points);
+            return Clusters.Nearest(points);
         }
         #endregion
 
