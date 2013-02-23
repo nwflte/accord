@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -114,7 +114,7 @@ namespace Accord.Statistics.Testing
             int degree1 = k - 1;
             int degree2 = N - k;
 
-            Compute(W, degree1, degree2, TwoSampleHypothesis.ValuesAreDifferent);
+            Compute(W, degree1, degree2, TwoSampleHypothesis.FirstValueIsGreaterThanSecond);
         }
     }
 }
