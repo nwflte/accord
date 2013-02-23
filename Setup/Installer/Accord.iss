@@ -1,19 +1,21 @@
 ; Accord.NET setup project
 
+#define VERSION "2.8.2"
+
 [Setup]
 AppName=Accord.NET Framework
-AppVersion=2.8.1
-AppVerName=Accord.NET Framework 2.8.1
+AppVersion={#VERSION}
+AppVerName=Accord.NET Framework {#VERSION}
 AppPublisher=Accord.NET
 AppPublisherURL=http://accord.googlecode.com
 AppSupportURL=http://accord.googlecode.com
 AppUpdatesURL=http://accord.googlecode.com
-AppCopyright=Copyright (c) 2009-2012 Cesar Souza
-VersionInfoVersion=2.8.1
+AppCopyright=Copyright © César Souza, 2009-2013
+VersionInfoVersion={#VERSION}
 DefaultDirName={pf}\Accord.NET\Framework
 DefaultGroupName=Accord.NET\Framework
 AllowNoIcons=yes
-OutputBaseFilename=Accord.NET Framework-2.8.1
+OutputBaseFilename=Accord.NET Framework-{#VERSION}
 OutputDir=..\bin
 
 Compression=lzma2/ultra64
