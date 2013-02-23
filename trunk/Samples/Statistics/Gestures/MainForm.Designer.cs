@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.tabSamples = new System.Windows.Forms.TabPage();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.splitContainer7 = new System.Windows.Forms.SplitContainer();
@@ -77,28 +79,27 @@
             this.groupBox18 = new System.Windows.Forms.GroupBox();
             this.saveDataDialog = new System.Windows.Forms.SaveFileDialog();
             this.openDataDialog = new System.Windows.Forms.OpenFileDialog();
+            this.panelUserLabeling = new System.Windows.Forms.Panel();
+            this.btnClear = new System.Windows.Forms.Button();
+            this.btnInsert = new System.Windows.Forms.Button();
+            this.label7 = new System.Windows.Forms.Label();
             this.cbClasses = new System.Windows.Forms.ComboBox();
             this.lbWhat = new System.Windows.Forms.Label();
-            this.btnOK = new System.Windows.Forms.Button();
-            this.lbQuestion = new System.Windows.Forms.Label();
-            this.btnNo = new System.Windows.Forms.Button();
-            this.fileToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
-            this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.inputCanvas = new Gestures.Canvas();
+            this.lbIdle = new System.Windows.Forms.Label();
+            this.panelClassification = new System.Windows.Forms.Panel();
+            this.button3 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
+            this.lbHaveYouDrawn = new System.Windows.Forms.Label();
+            this.menuFile = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.button4 = new System.Windows.Forms.Button();
+            this.gridSamples = new System.Windows.Forms.DataGridView();
+            this.colImage = new System.Windows.Forms.DataGridViewImageColumn();
+            this.colClassification = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnLearnHMM = new System.Windows.Forms.Button();
             this.btnLearnHCRF = new System.Windows.Forms.Button();
-            this.colClassification = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colLabel = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colImage = new System.Windows.Forms.DataGridViewImageColumn();
-            this.gvSamples = new System.Windows.Forms.DataGridView();
+            this.canvas = new Gestures.Canvas();
             this.tabSamples.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).BeginInit();
             this.splitContainer3.Panel1.SuspendLayout();
@@ -132,8 +133,10 @@
             this.groupBox16.SuspendLayout();
             this.groupBox17.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
-            this.menuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.gvSamples)).BeginInit();
+            this.panelUserLabeling.SuspendLayout();
+            this.panelClassification.SuspendLayout();
+            this.menuFile.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.gridSamples)).BeginInit();
             this.SuspendLayout();
             // 
             // tabSamples
@@ -620,251 +623,257 @@
             this.openDataDialog.Filter = "XML files|*.xml|All files|*.*";
             this.openDataDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.openDataDialog_FileOk);
             // 
+            // panelUserLabeling
+            // 
+            this.panelUserLabeling.BackColor = System.Drawing.Color.White;
+            this.panelUserLabeling.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelUserLabeling.Controls.Add(this.btnClear);
+            this.panelUserLabeling.Controls.Add(this.btnInsert);
+            this.panelUserLabeling.Controls.Add(this.label7);
+            this.panelUserLabeling.Controls.Add(this.cbClasses);
+            this.panelUserLabeling.Controls.Add(this.lbWhat);
+            this.panelUserLabeling.Location = new System.Drawing.Point(39, 365);
+            this.panelUserLabeling.Name = "panelUserLabeling";
+            this.panelUserLabeling.Size = new System.Drawing.Size(461, 74);
+            this.panelUserLabeling.TabIndex = 23;
+            this.panelUserLabeling.Visible = false;
+            // 
+            // btnClear
+            // 
+            this.btnClear.Location = new System.Drawing.Point(222, 8);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(225, 21);
+            this.btnClear.TabIndex = 27;
+            this.btnClear.Text = "Forget my drawing, clear the screen.";
+            this.btnClear.UseVisualStyleBackColor = true;
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+            // 
+            // btnInsert
+            // 
+            this.btnInsert.Location = new System.Drawing.Point(222, 30);
+            this.btnInsert.Name = "btnInsert";
+            this.btnInsert.Size = new System.Drawing.Size(225, 35);
+            this.btnInsert.TabIndex = 27;
+            this.btnInsert.Text = "Insert my drawing into the database!";
+            this.btnInsert.UseVisualStyleBackColor = true;
+            this.btnInsert.Click += new System.EventHandler(this.btnInsert_Click);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(11, 38);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(64, 20);
+            this.label7.TabIndex = 26;
+            this.label7.Text = "I\'ve drawn a";
+            this.label7.UseCompatibleTextRendering = true;
+            // 
             // cbClasses
             // 
-            this.cbClasses.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cbClasses.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.cbClasses.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.cbClasses.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold);
-            this.cbClasses.Location = new System.Drawing.Point(150, 377);
+            this.cbClasses.Location = new System.Drawing.Point(81, 35);
             this.cbClasses.Name = "cbClasses";
-            this.cbClasses.Size = new System.Drawing.Size(139, 33);
-            this.cbClasses.TabIndex = 21;
-            this.cbClasses.SelectionChangeCommitted += new System.EventHandler(this.btnYes_Click);
+            this.cbClasses.Size = new System.Drawing.Size(101, 21);
+            this.cbClasses.TabIndex = 23;
             // 
             // lbWhat
             // 
-            this.lbWhat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lbWhat.AutoSize = true;
-            this.lbWhat.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold);
-            this.lbWhat.Location = new System.Drawing.Point(10, 379);
+            this.lbWhat.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbWhat.Location = new System.Drawing.Point(8, 11);
             this.lbWhat.Name = "lbWhat";
-            this.lbWhat.Size = new System.Drawing.Size(117, 25);
-            this.lbWhat.TabIndex = 22;
-            this.lbWhat.Text = "What\'s this?";
+            this.lbWhat.Size = new System.Drawing.Size(183, 27);
+            this.lbWhat.TabIndex = 25;
+            this.lbWhat.Text = "What have you drawn?";
+            this.lbWhat.UseCompatibleTextRendering = true;
             // 
-            // btnOK
+            // lbIdle
             // 
-            this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnOK.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
-            this.btnOK.Location = new System.Drawing.Point(389, 375);
-            this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(61, 39);
-            this.btnOK.TabIndex = 20;
-            this.btnOK.Text = "OK";
-            this.btnOK.UseVisualStyleBackColor = true;
-            this.btnOK.Click += new System.EventHandler(this.btnYes_Click);
+            this.lbIdle.AutoSize = true;
+            this.lbIdle.BackColor = System.Drawing.Color.White;
+            this.lbIdle.Location = new System.Drawing.Point(174, 202);
+            this.lbIdle.Name = "lbIdle";
+            this.lbIdle.Size = new System.Drawing.Size(170, 13);
+            this.lbIdle.TabIndex = 32;
+            this.lbIdle.Text = "Click here and draw something!";
             // 
-            // lbQuestion
+            // panelClassification
             // 
-            this.lbQuestion.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lbQuestion.AutoSize = true;
-            this.lbQuestion.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold);
-            this.lbQuestion.Location = new System.Drawing.Point(296, 380);
-            this.lbQuestion.Name = "lbQuestion";
-            this.lbQuestion.Size = new System.Drawing.Size(20, 25);
-            this.lbQuestion.TabIndex = 22;
-            this.lbQuestion.Text = "?";
-            this.lbQuestion.Visible = false;
+            this.panelClassification.BackColor = System.Drawing.Color.White;
+            this.panelClassification.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelClassification.Controls.Add(this.button3);
+            this.panelClassification.Controls.Add(this.button2);
+            this.panelClassification.Controls.Add(this.lbHaveYouDrawn);
+            this.panelClassification.Location = new System.Drawing.Point(39, 21);
+            this.panelClassification.Name = "panelClassification";
+            this.panelClassification.Size = new System.Drawing.Size(461, 74);
+            this.panelClassification.TabIndex = 23;
+            this.panelClassification.Visible = false;
             // 
-            // btnNo
+            // button3
             // 
-            this.btnNo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnNo.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
-            this.btnNo.Location = new System.Drawing.Point(324, 375);
-            this.btnNo.Name = "btnNo";
-            this.btnNo.Size = new System.Drawing.Size(59, 39);
-            this.btnNo.TabIndex = 20;
-            this.btnNo.Text = "No";
-            this.btnNo.UseVisualStyleBackColor = true;
-            this.btnNo.Visible = false;
-            this.btnNo.Click += new System.EventHandler(this.btnNo_Click);
+            this.button3.Location = new System.Drawing.Point(107, 43);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(75, 23);
+            this.button3.TabIndex = 26;
+            this.button3.Text = "No...";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.btnNo_Click);
             // 
-            // fileToolStripMenuItem1
+            // button2
             // 
-            this.fileToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.newToolStripMenuItem,
-            this.openToolStripMenuItem,
-            this.toolStripSeparator,
-            this.saveToolStripMenuItem,
-            this.toolStripSeparator2,
-            this.exitToolStripMenuItem});
-            this.fileToolStripMenuItem1.Name = "fileToolStripMenuItem1";
-            this.fileToolStripMenuItem1.Size = new System.Drawing.Size(37, 20);
-            this.fileToolStripMenuItem1.Text = "&File";
+            this.button2.Location = new System.Drawing.Point(26, 43);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.TabIndex = 26;
+            this.button2.Text = "Yes!";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.btnYes_Click);
             // 
-            // newToolStripMenuItem
+            // lbHaveYouDrawn
             // 
-            this.newToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-            this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
-            this.newToolStripMenuItem.Text = "&New";
-            this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
-            // 
-            // openToolStripMenuItem
-            // 
-            this.openToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
-            this.openToolStripMenuItem.Text = "&Open";
-            this.openToolStripMenuItem.Click += new System.EventHandler(this.openDataStripMenuItem_Click);
-            // 
-            // toolStripSeparator
-            // 
-            this.toolStripSeparator.Name = "toolStripSeparator";
-            this.toolStripSeparator.Size = new System.Drawing.Size(138, 6);
-            // 
-            // saveToolStripMenuItem
-            // 
-            this.saveToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
-            this.saveToolStripMenuItem.Text = "&Save";
-            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveDataStripMenuItem_Click);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(138, 6);
-            // 
-            // exitToolStripMenuItem
-            // 
-            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
-            this.exitToolStripMenuItem.Text = "E&xit";
-            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
-            // 
-            // helpToolStripMenuItem1
-            // 
-            this.helpToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.aboutToolStripMenuItem});
-            this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
-            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(44, 20);
-            this.helpToolStripMenuItem1.Text = "&Help";
-            // 
-            // aboutToolStripMenuItem
-            // 
-            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
-            this.aboutToolStripMenuItem.Text = "&About...";
-            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
-            // 
-            // menuStrip1
-            // 
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem1,
-            this.helpToolStripMenuItem1});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(773, 24);
-            this.menuStrip1.TabIndex = 5;
-            this.menuStrip1.Text = "menuStrip1";
-            // 
-            // inputCanvas
-            // 
-            this.inputCanvas.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.lbHaveYouDrawn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.inputCanvas.BackColor = System.Drawing.Color.White;
-            this.inputCanvas.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.inputCanvas.Location = new System.Drawing.Point(12, 27);
-            this.inputCanvas.MinimumSize = new System.Drawing.Size(128, 128);
-            this.inputCanvas.Name = "inputCanvas";
-            this.inputCanvas.Size = new System.Drawing.Size(438, 340);
-            this.inputCanvas.TabIndex = 19;
-            this.inputCanvas.MouseUp += new System.Windows.Forms.MouseEventHandler(this.inputCanvas_MouseUp);
+            this.lbHaveYouDrawn.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbHaveYouDrawn.Location = new System.Drawing.Point(8, 11);
+            this.lbHaveYouDrawn.Name = "lbHaveYouDrawn";
+            this.lbHaveYouDrawn.Size = new System.Drawing.Size(437, 25);
+            this.lbHaveYouDrawn.TabIndex = 25;
+            this.lbHaveYouDrawn.Text = "Have you drawn a {Foo} ?";
+            this.lbHaveYouDrawn.UseCompatibleTextRendering = true;
             // 
-            // btnLearnHMM
+            // menuFile
             // 
-            this.btnLearnHMM.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnLearnHMM.Enabled = false;
-            this.btnLearnHMM.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.btnLearnHMM.Location = new System.Drawing.Point(456, 373);
-            this.btnLearnHMM.Name = "btnLearnHMM";
-            this.btnLearnHMM.Size = new System.Drawing.Size(151, 41);
-            this.btnLearnHMM.TabIndex = 24;
-            this.btnLearnHMM.Text = "Learn a Hidden Markov Model Classifier";
-            this.btnLearnHMM.UseVisualStyleBackColor = true;
-            this.btnLearnHMM.Click += new System.EventHandler(this.btnLearnHMM_Click);
+            this.menuFile.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem1,
+            this.toolStripMenuItem2});
+            this.menuFile.Name = "contextMenuStrip1";
+            this.menuFile.Size = new System.Drawing.Size(104, 48);
             // 
-            // btnLearnHCRF
+            // toolStripMenuItem1
             // 
-            this.btnLearnHCRF.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnLearnHCRF.Enabled = false;
-            this.btnLearnHCRF.FlatAppearance.BorderColor = System.Drawing.Color.Gray;
-            this.btnLearnHCRF.Location = new System.Drawing.Point(613, 373);
-            this.btnLearnHCRF.Name = "btnLearnHCRF";
-            this.btnLearnHCRF.Size = new System.Drawing.Size(154, 41);
-            this.btnLearnHCRF.TabIndex = 24;
-            this.btnLearnHCRF.Text = "Learn a Hidden Conditional Random Field";
-            this.btnLearnHCRF.UseVisualStyleBackColor = true;
-            this.btnLearnHCRF.Click += new System.EventHandler(this.btnLearnHCRF_Click);
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(103, 22);
+            this.toolStripMenuItem1.Text = "Open";
+            this.toolStripMenuItem1.Click += new System.EventHandler(this.openDataStripMenuItem_Click);
             // 
-            // colClassification
+            // toolStripMenuItem2
             // 
-            this.colClassification.DataPropertyName = "RecognizedAsName";
-            this.colClassification.FillWeight = 40F;
-            this.colClassification.HeaderText = "Recognized as";
-            this.colClassification.Name = "colClassification";
-            this.colClassification.ReadOnly = true;
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(103, 22);
+            this.toolStripMenuItem2.Text = "Save";
+            this.toolStripMenuItem2.Click += new System.EventHandler(this.saveDataStripMenuItem_Click);
             // 
-            // colLabel
+            // button4
             // 
-            this.colLabel.DataPropertyName = "OutputName";
-            this.colLabel.FillWeight = 40F;
-            this.colLabel.HeaderText = "Label";
-            this.colLabel.Name = "colLabel";
-            this.colLabel.ReadOnly = true;
+            this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.button4.Image = ((System.Drawing.Image)(resources.GetObject("button4.Image")));
+            this.button4.Location = new System.Drawing.Point(527, 452);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(174, 40);
+            this.button4.TabIndex = 36;
+            this.button4.Text = "Database";
+            this.button4.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
+            this.button4.UseCompatibleTextRendering = true;
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.MouseDown += new System.Windows.Forms.MouseEventHandler(this.btnFile_MouseDown);
+            // 
+            // gridSamples
+            // 
+            this.gridSamples.AllowUserToAddRows = false;
+            this.gridSamples.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.gridSamples.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.gridSamples.BackgroundColor = System.Drawing.Color.White;
+            this.gridSamples.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.gridSamples.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.gridSamples.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colImage,
+            this.colClassification});
+            this.gridSamples.GridColor = System.Drawing.SystemColors.ControlLight;
+            this.gridSamples.Location = new System.Drawing.Point(527, 12);
+            this.gridSamples.Name = "gridSamples";
+            this.gridSamples.Size = new System.Drawing.Size(174, 434);
+            this.gridSamples.TabIndex = 34;
             // 
             // colImage
             // 
             this.colImage.DataPropertyName = "Bitmap";
-            this.colImage.FillWeight = 20F;
+            this.colImage.FillWeight = 30F;
             this.colImage.HeaderText = "Gesture";
             this.colImage.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
             this.colImage.Name = "colImage";
             this.colImage.ReadOnly = true;
             // 
-            // gvSamples
+            // colClassification
             // 
-            this.gvSamples.AllowUserToAddRows = false;
-            this.gvSamples.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.gvSamples.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.gvSamples.BackgroundColor = System.Drawing.Color.White;
-            this.gvSamples.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.gvSamples.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.gvSamples.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.colImage,
-            this.colLabel,
-            this.colClassification});
-            this.gvSamples.GridColor = System.Drawing.SystemColors.ControlLight;
-            this.gvSamples.Location = new System.Drawing.Point(456, 27);
-            this.gvSamples.Name = "gvSamples";
-            this.gvSamples.Size = new System.Drawing.Size(311, 340);
-            this.gvSamples.TabIndex = 25;
+            this.colClassification.DataPropertyName = "OutputName";
+            this.colClassification.FillWeight = 40F;
+            this.colClassification.HeaderText = "Class";
+            this.colClassification.Name = "colClassification";
+            this.colClassification.ReadOnly = true;
+            // 
+            // btnLearnHMM
+            // 
+            this.btnLearnHMM.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnLearnHMM.Enabled = false;
+            this.btnLearnHMM.Location = new System.Drawing.Point(12, 452);
+            this.btnLearnHMM.Name = "btnLearnHMM";
+            this.btnLearnHMM.Size = new System.Drawing.Size(144, 40);
+            this.btnLearnHMM.TabIndex = 35;
+            this.btnLearnHMM.Text = "Create a Hidden Markov Model Classifier";
+            this.btnLearnHMM.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
+            this.btnLearnHMM.UseCompatibleTextRendering = true;
+            this.btnLearnHMM.UseVisualStyleBackColor = true;
+            this.btnLearnHMM.Click += new System.EventHandler(this.btnLearnHMM_Click);
+            // 
+            // btnLearnHCRF
+            // 
+            this.btnLearnHCRF.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnLearnHCRF.Enabled = false;
+            this.btnLearnHCRF.Location = new System.Drawing.Point(162, 452);
+            this.btnLearnHCRF.Name = "btnLearnHCRF";
+            this.btnLearnHCRF.Size = new System.Drawing.Size(152, 40);
+            this.btnLearnHCRF.TabIndex = 35;
+            this.btnLearnHCRF.Text = "Create a Hidden Conditional Random Field";
+            this.btnLearnHCRF.TextImageRelation = System.Windows.Forms.TextImageRelation.TextBeforeImage;
+            this.btnLearnHCRF.UseCompatibleTextRendering = true;
+            this.btnLearnHCRF.UseVisualStyleBackColor = true;
+            this.btnLearnHCRF.Click += new System.EventHandler(this.btnLearnHCRF_Click);
+            // 
+            // canvas
+            // 
+            this.canvas.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.canvas.BackColor = System.Drawing.Color.White;
+            this.canvas.Location = new System.Drawing.Point(12, 12);
+            this.canvas.MinimumSize = new System.Drawing.Size(128, 128);
+            this.canvas.Name = "canvas";
+            this.canvas.Size = new System.Drawing.Size(516, 434);
+            this.canvas.TabIndex = 19;
+            this.canvas.MouseDown += new System.Windows.Forms.MouseEventHandler(this.canvas_MouseDown);
+            this.canvas.MouseUp += new System.Windows.Forms.MouseEventHandler(this.inputCanvas_MouseUp);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(773, 418);
-            this.Controls.Add(this.gvSamples);
-            this.Controls.Add(this.btnLearnHCRF);
+            this.ClientSize = new System.Drawing.Size(720, 499);
+            this.Controls.Add(this.panelUserLabeling);
+            this.Controls.Add(this.panelClassification);
+            this.Controls.Add(this.gridSamples);
+            this.Controls.Add(this.lbIdle);
             this.Controls.Add(this.btnLearnHMM);
-            this.Controls.Add(this.lbQuestion);
-            this.Controls.Add(this.lbWhat);
-            this.Controls.Add(this.cbClasses);
-            this.Controls.Add(this.btnNo);
-            this.Controls.Add(this.btnOK);
-            this.Controls.Add(this.inputCanvas);
-            this.Controls.Add(this.menuStrip1);
+            this.Controls.Add(this.canvas);
+            this.Controls.Add(this.button4);
+            this.Controls.Add(this.btnLearnHCRF);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F);
-            this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
             this.Text = "Continuous density Hidden Markov Models for Sequence Recognition";
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.tabSamples.ResumeLayout(false);
             this.splitContainer3.Panel1.ResumeLayout(false);
             this.splitContainer3.Panel2.ResumeLayout(false);
@@ -900,9 +909,11 @@
             this.groupBox17.ResumeLayout(false);
             this.groupBox17.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.gvSamples)).EndInit();
+            this.panelUserLabeling.ResumeLayout(false);
+            this.panelUserLabeling.PerformLayout();
+            this.panelClassification.ResumeLayout(false);
+            this.menuFile.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.gridSamples)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -959,28 +970,27 @@
         private System.Windows.Forms.GroupBox groupBox18;
         private System.Windows.Forms.SaveFileDialog saveDataDialog;
         private System.Windows.Forms.OpenFileDialog openDataDialog;
-        private Canvas inputCanvas;
-        private System.Windows.Forms.ComboBox cbClasses;
+        private Canvas canvas;
+        private System.Windows.Forms.Panel panelUserLabeling;
         private System.Windows.Forms.Label lbWhat;
-        private System.Windows.Forms.Button btnOK;
-        private System.Windows.Forms.Label lbQuestion;
-        private System.Windows.Forms.Button btnNo;
-        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem1;
-        private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator;
-        private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem1;
-        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
-        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ComboBox cbClasses;
+        private System.Windows.Forms.Label lbIdle;
+        private System.Windows.Forms.Button btnClear;
+        private System.Windows.Forms.Button btnInsert;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Panel panelClassification;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Label lbHaveYouDrawn;
+        private System.Windows.Forms.ContextMenuStrip menuFile;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
+        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.DataGridView gridSamples;
+        private System.Windows.Forms.DataGridViewImageColumn colImage;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colClassification;
         private System.Windows.Forms.Button btnLearnHMM;
         private System.Windows.Forms.Button btnLearnHCRF;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colClassification;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colLabel;
-        private System.Windows.Forms.DataGridViewImageColumn colImage;
-        private System.Windows.Forms.DataGridView gvSamples;
     }
 }
 
