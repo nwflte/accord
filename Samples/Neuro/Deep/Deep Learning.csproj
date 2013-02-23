@@ -36,45 +36,45 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Accord">
-      <HintPath>D:\Projects\Accord.NET\Assembla\Release\Accord.dll</HintPath>
+    <Reference Include="Accord, Version=2.8.1.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Release\Accord.dll</HintPath>
     </Reference>
-    <Reference Include="Accord.Controls">
-      <HintPath>D:\Projects\Accord.NET\Assembla\Release\Accord.Controls.dll</HintPath>
+    <Reference Include="Accord.Controls, Version=2.8.1.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Release\Accord.Controls.dll</HintPath>
     </Reference>
-    <Reference Include="Accord.Controls.Imaging">
-      <HintPath>D:\Projects\Accord.NET\Assembla\Release\Accord.Controls.Imaging.dll</HintPath>
+    <Reference Include="Accord.Imaging, Version=2.8.1.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Release\Accord.Imaging.dll</HintPath>
     </Reference>
-    <Reference Include="Accord.Imaging">
-      <HintPath>D:\Projects\Accord.NET\Assembla\Release\Accord.Imaging.dll</HintPath>
+    <Reference Include="Accord.MachineLearning, Version=2.8.1.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Release\Accord.MachineLearning.dll</HintPath>
     </Reference>
-    <Reference Include="Accord.MachineLearning">
-      <HintPath>D:\Projects\Accord.NET\Assembla\Release\Accord.MachineLearning.dll</HintPath>
+    <Reference Include="Accord.Math, Version=2.8.1.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Release\Accord.Math.dll</HintPath>
     </Reference>
-    <Reference Include="Accord.Math">
-      <HintPath>D:\Projects\Accord.NET\Assembla\Release\Accord.Math.dll</HintPath>
+    <Reference Include="Accord.Neuro, Version=2.8.1.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Release\Accord.Neuro.dll</HintPath>
     </Reference>
-    <Reference Include="Accord.Neuro">
-      <HintPath>D:\Projects\Accord.NET\Assembla\Release\Accord.Neuro.dll</HintPath>
-    </Reference>
-    <Reference Include="Accord.Statistics">
-      <HintPath>D:\Projects\Accord.NET\Assembla\Release\Accord.Statistics.dll</HintPath>
+    <Reference Include="Accord.Statistics, Version=2.8.1.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Release\Accord.Statistics.dll</HintPath>
     </Reference>
     <Reference Include="AForge, Version=2.2.4.0, Culture=neutral, PublicKeyToken=c1db6ff4eaa06aeb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>D:\Projects\Accord.NET\Assembla\Externals\AForge.NET\AForge.dll</HintPath>
+      <HintPath>..\..\..\Externals\AForge.NET\AForge.dll</HintPath>
     </Reference>
     <Reference Include="AForge.Imaging, Version=2.2.4.0, Culture=neutral, PublicKeyToken=ba8ddea9676ca48b, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>D:\Projects\Accord.NET\Assembla\Externals\AForge.NET\AForge.Imaging.dll</HintPath>
-    </Reference>
-    <Reference Include="AForge.Imaging.Formats, Version=2.2.4.0, Culture=neutral, PublicKeyToken=8065ed5a639199a0, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>D:\Projects\Accord.NET\Assembla\Externals\AForge.NET\AForge.Imaging.Formats.dll</HintPath>
+      <HintPath>..\..\..\Externals\AForge.NET\AForge.Imaging.dll</HintPath>
     </Reference>
     <Reference Include="AForge.Neuro, Version=2.2.4.0, Culture=neutral, PublicKeyToken=2094f4ea39731d4f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>D:\Projects\Accord.NET\Assembla\Externals\AForge.NET\AForge.Neuro.dll</HintPath>
+      <HintPath>..\..\..\Externals\AForge.NET\AForge.Neuro.dll</HintPath>
     </Reference>
     <Reference Include="MahApps.Metro">
       <HintPath>..\packages\MahApps.Metro.0.10.0.0\lib\net40\MahApps.Metro.dll</HintPath>

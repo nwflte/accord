@@ -1,7 +1,7 @@
 ﻿// Accord.NET Sample Applications
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -46,7 +46,7 @@ namespace Harris
 
             // Create a new Harris Corners Detector using the given parameters
             HarrisCornersDetector harris = new HarrisCornersDetector(k);
-            harris.Measure = checkBox1.Checked ? HarrisCornerMeasure.Harris : HarrisCornerMeasure.Nobel;
+            harris.Measure = checkBox1.Checked ? HarrisCornerMeasure.Harris : HarrisCornerMeasure.Noble;
             harris.Threshold = threshold;
             harris.Sigma = sigma;
 
