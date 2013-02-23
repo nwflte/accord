@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -513,6 +513,15 @@ namespace Accord.Statistics.Analysis
         }
 
         /// <summary>
+        ///  Prevalence of outcome occurance.
+        /// </summary>
+        /// 
+        public double Prevalence
+        {
+            get { return ActualPositives / (double)Samples; }
+        }
+
+        /// <summary>
         ///   Positive Predictive Value, also known as Positive Precision
         /// </summary>
         /// 
@@ -856,7 +865,17 @@ namespace Accord.Statistics.Analysis
         /// 
         public GeneralConfusionMatrix ToGeneralMatrix()
         {
-            return new GeneralConfusionMatrix(Matrix);
+            // Create a new matrix assuming negative instances 
+            // are class 0, and positive instances are class 1.
+
+            int[,] matrix = 
+            {
+                //   class 0          class 1
+                { trueNegatives,  falsePositives }, // class 0
+                { falseNegatives, truePositives  }, // class 1
+            };
+
+            return new GeneralConfusionMatrix(matrix);
         }
     }
 }
