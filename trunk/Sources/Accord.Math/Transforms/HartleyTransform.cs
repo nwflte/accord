@@ -45,6 +45,9 @@ namespace Accord.Math
     ///   References:
     ///   <list type="bullet">
     ///     <item><description>
+    ///       Wikipedia contributors, "Hartley transform," Wikipedia, The Free Encyclopedia,
+    ///       available at: http://en.wikipedia.org/w/index.php?title=Hartley_transform </description></item>
+    ///     <item><description>
     ///       K. R. Castleman, Digital Image Processing. Chapter 13, p.289.
     ///       Prentice. Hall, 1998.</description></item>
     ///     <item><description>
