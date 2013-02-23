@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -196,15 +196,6 @@ namespace Accord.Tests.Statistics
             // Train the sequence classifier using the algorithm
             double likelihood = teacher.Run(inputs, outputs);
 
-
-            // Will assert the models have learned the sequences correctly.
-            for (int i = 0; i < inputs.Length; i++)
-            {
-                int expected = outputs[i];
-                int actual = classifier.Compute(inputs[i], out likelihood);
-                Assert.AreEqual(expected, actual);
-            }
-
             HiddenMarkovModel threshold = classifier.Threshold;
 
             Assert.AreEqual(6, threshold.States);
@@ -217,7 +208,26 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(classifier.Models[1].Transitions[1, 1], threshold.Transitions[4, 4], 1e-10);
             Assert.AreEqual(classifier.Models[1].Transitions[2, 2], threshold.Transitions[5, 5], 1e-10);
 
+            for (int i = 0; i < 3; i++)
+                for (int j = 3; j < 6; j++)
+                    Assert.AreEqual(Double.NegativeInfinity, threshold.Transitions[i, j]);
+
+            for (int i = 3; i < 6; i++)
+                for (int j = 0; j < 3; j++)
+                    Assert.AreEqual(Double.NegativeInfinity, threshold.Transitions[i, j]);
+
             Assert.IsFalse(Matrix.HasNaN(threshold.Transitions));
+
+            classifier.Sensitivity = 0.5;
+
+            // Will assert the models have learned the sequences correctly.
+            for (int i = 0; i < inputs.Length; i++)
+            {
+                int expected = outputs[i];
+                int actual = classifier.Compute(inputs[i], out likelihood);
+                Assert.AreEqual(expected, actual);
+            }
+
 
             int[] r0 = new int[] { 1, 1, 0, 0, 2 };
 
@@ -226,11 +236,11 @@ namespace Accord.Tests.Statistics
             int c = classifier.Compute(r0, out logRejection);
 
             Assert.AreEqual(-1, c);
-            Assert.AreEqual(0.99843823530192322, logRejection);
+            Assert.AreEqual(0.99906957195279988, logRejection);
             Assert.IsFalse(double.IsNaN(logRejection));
 
             logRejection = threshold.Evaluate(r0);
-            Assert.AreEqual(-5.7770765335450172, logRejection, 1e-10);
+            Assert.AreEqual(-4.5653702970734793, logRejection, 1e-10);
             Assert.IsFalse(double.IsNaN(logRejection));
 
             threshold.Decode(r0, out logRejection);

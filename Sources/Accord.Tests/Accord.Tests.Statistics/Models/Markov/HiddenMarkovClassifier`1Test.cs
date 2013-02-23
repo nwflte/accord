@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -31,6 +31,7 @@ namespace Accord.Tests.Statistics
     using Accord.Statistics.Distributions.Multivariate;
     using Accord.Statistics.Distributions.Fitting;
     using Accord.Math;
+    using System;
 
 
     [TestClass()]
@@ -622,17 +623,7 @@ namespace Accord.Tests.Statistics
             double likelihood = teacher.Run(inputs, outputs);
 
 
-            // Will assert the models have learned the sequences correctly.
-            for (int i = 0; i < inputs.Length; i++)
-            {
-                int expected = outputs[i];
-                int actual = classifier.Compute(inputs[i], out likelihood);
-                Assert.AreEqual(expected, actual);
-            }
-
             var threshold = classifier.Threshold;
-
-            Assert.AreEqual(6, threshold.States);
 
             Assert.AreEqual(classifier.Models[0].Transitions[0, 0], threshold.Transitions[0, 0], 1e-10);
             Assert.AreEqual(classifier.Models[0].Transitions[1, 1], threshold.Transitions[1, 1], 1e-10);
@@ -642,7 +633,27 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(classifier.Models[1].Transitions[1, 1], threshold.Transitions[4, 4], 1e-10);
             Assert.AreEqual(classifier.Models[1].Transitions[2, 2], threshold.Transitions[5, 5], 1e-10);
 
+            for (int i = 0; i < 3; i++)
+                for (int j = 3; j < 6; j++)
+                    Assert.AreEqual(Double.NegativeInfinity, threshold.Transitions[i, j]);
+
+            for (int i = 3; i < 6; i++)
+                for (int j = 0; j < 3; j++)
+                    Assert.AreEqual(Double.NegativeInfinity, threshold.Transitions[i, j]);
+
             Assert.IsFalse(Matrix.HasNaN(threshold.Transitions));
+
+
+            classifier.Sensitivity = 0.5;
+
+            // Will assert the models have learned the sequences correctly.
+            for (int i = 0; i < inputs.Length; i++)
+            {
+                int expected = outputs[i];
+                int actual = classifier.Compute(inputs[i], out likelihood);
+                Assert.AreEqual(expected, actual);
+            }
+
 
             double[] r0 = new double[] { 1, 1, 0, 0, 2 };
 
@@ -651,15 +662,15 @@ namespace Accord.Tests.Statistics
             int c = classifier.Compute(r0, out logRejection);
 
             Assert.AreEqual(-1, c);
-            Assert.AreEqual(0.82188313002424151, logRejection);
+            Assert.AreEqual(0.99893048690086783, logRejection);
             Assert.IsFalse(double.IsNaN(logRejection));
 
             logRejection = threshold.Evaluate(r0);
-            Assert.AreEqual(-10.708294128747696, logRejection, 1e-10);
+            Assert.AreEqual(-4.7048235516322334, logRejection, 1e-10);
             Assert.IsFalse(double.IsNaN(logRejection));
 
             threshold.Decode(r0, out logRejection);
-            Assert.AreEqual(-12.358423850144511, logRejection, 1e-10);
+            Assert.AreEqual(-7.0705785431547579, logRejection, 1e-10);
             Assert.IsFalse(double.IsNaN(logRejection));
 
             foreach (var model in classifier.Models)

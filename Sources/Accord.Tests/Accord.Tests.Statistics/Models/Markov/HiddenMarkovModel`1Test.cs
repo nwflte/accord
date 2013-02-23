@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -290,6 +290,39 @@ namespace Accord.Tests.Statistics
         }
 
         [TestMethod()]
+        public void DecodeIntegersTest()
+        {
+            double[,] transitions = 
+            {  
+                { 0.7, 0.3 },
+                { 0.4, 0.6 }
+            };
+
+            GeneralDiscreteDistribution[] emissions = 
+            {  
+                new GeneralDiscreteDistribution(0.1, 0.4, 0.5),
+                new GeneralDiscreteDistribution(0.6, 0.3, 0.1)
+            };
+
+            double[] initial =
+            {
+                0.6, 0.4
+            };
+
+            var hmm = new HiddenMarkovModel<GeneralDiscreteDistribution>(transitions, emissions, initial);
+
+            int[] sequence = new int[] { 0, 1, 2 };
+
+            double logLikelihood = hmm.Evaluate(sequence);
+            int[] path = hmm.Decode(sequence, out logLikelihood);
+
+            Assert.AreEqual(logLikelihood, Math.Log(0.01344), 1e-10);
+            Assert.AreEqual(path[0], 1);
+            Assert.AreEqual(path[1], 0);
+            Assert.AreEqual(path[2], 0);
+        }
+
+        [TestMethod()]
         public void DecodeTest2()
         {
             double[,] transitions = 
@@ -471,6 +504,78 @@ namespace Accord.Tests.Statistics
 
             Assert.AreEqual(1, hmm.Dimension);
         }
+
+        [TestMethod()]
+        public void LearnIntegersTest5()
+        {
+
+            int[][][] sequences = new int[][][] 
+            {
+                new int[][] { new int[] { 0 }, new int[] { 3 }, new int[] { 1} },
+                new int[][] { new int[] { 0 }, new int[] { 2 } },
+                new int[][] { new int[] { 1 }, new int[] { 0 }, new int[] { 3 } },
+                new int[][] { new int[] { 3 }, new int[] { 4 } },
+                new int[][] { new int[] { 0 }, new int[] { 1 }, new int[] { 3 }, new int[] { 5 } },
+                new int[][] { new int[] { 0 }, new int[] { 3 }, new int[] { 4 } },
+                new int[][] { new int[] { 0 }, new int[] { 1 }, new int[] { 3 }, new int[] { 5 } },
+                new int[][] { new int[] { 0 }, new int[] { 1 }, new int[] { 3 }, new int[] { 5 } },
+                new int[][] { new int[] { 0 }, new int[] { 1 }, new int[] { 3 }, new int[] { 4 }, new int[] { 5 } },
+            };
+
+            var hmm = HiddenMarkovModel.CreateGeneric(3, 6);
+
+            var teacher = new BaumWelchLearning<GeneralDiscreteDistribution>(hmm) { Iterations = 100, Tolerance = 0 };
+            double ll = teacher.Run(sequences);
+
+            double l0; hmm.Decode(sequences[0], out l0);
+            double l1; hmm.Decode(sequences[1], out l1);
+            double l2; hmm.Decode(sequences[2], out l2);
+
+            double pl = System.Math.Exp(ll);
+            double p0 = System.Math.Exp(l0);
+            double p1 = System.Math.Exp(l1);
+            double p2 = System.Math.Exp(l2);
+
+            Assert.AreEqual(0.49788370872923726, pl, 1e-6);
+            Assert.AreEqual(0.014012065043262257, p0, 1e-6);
+            Assert.AreEqual(0.016930905415294066, p1, 1e-6);
+            Assert.AreEqual(0.0019365959189660638, p2, 1e-6);
+
+            Assert.AreEqual(1, hmm.Dimension);
+
+
+
+
+            int[][] sequences2 = new int[][] 
+            {
+                new int[] { 0, 3, 1 },
+                new int[] { 0, 2 },
+                new int[] { 1, 0, 3 },
+                new int[] { 3, 4 },
+                new int[] { 0, 1, 3, 5 },
+                new int[] { 0, 3, 4 },
+                new int[] { 0, 1, 3, 5 },
+                new int[] { 0, 1, 3, 5 },
+                new int[] { 0, 1, 3, 4, 5 },
+            };
+
+            hmm = HiddenMarkovModel.CreateGeneric(3, 6);
+
+            teacher = new BaumWelchLearning<GeneralDiscreteDistribution>(hmm) { Iterations = 100 };
+            double ll2 = teacher.Run(sequences2);
+
+            double l02; hmm.Decode(sequences2[0], out l02);
+            double l12; hmm.Decode(sequences2[1], out l12);
+            double l22; hmm.Decode(sequences2[2], out l22);
+
+            Assert.AreEqual(ll, ll2);
+            Assert.AreEqual(l0, l02);
+            Assert.AreEqual(l1, l12);
+            Assert.AreEqual(l2, l22);
+
+            Assert.AreEqual(1, hmm.Dimension);
+        }
+
 
         [TestMethod()]
         public void LearnTest3()

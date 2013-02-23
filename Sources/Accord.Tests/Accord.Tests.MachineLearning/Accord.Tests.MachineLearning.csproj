@@ -214,6 +214,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\iris.scale.txt" />
+    <None Include="Resources\CircleWithWeights.xls" />
+    <None Include="Resources\nursery.data">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Resources\svm2.svm" />
   </ItemGroup>
   <ItemGroup>

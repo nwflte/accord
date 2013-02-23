@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -169,7 +169,7 @@ namespace Accord.Tests.MachineLearning
             // Extract symbols from data and train the classifier
             DataTable symbols = codebook.Apply(data);
             double[][] inputs = symbols.ToArray("Outlook", "Temperature", "Humidity", "Wind");
-            int[] outputs = symbols.ToIntArray("PlayTennis").GetColumn(0);
+            int[] outputs = symbols.ToArray<int>("PlayTennis");
 
             // Compute the Naive Bayes model
             target.Estimate(inputs, outputs);
@@ -240,7 +240,7 @@ namespace Accord.Tests.MachineLearning
             // Extract symbols from data and train the classifier
             DataTable symbols = codebook.Apply(data);
             double[][] inputs = symbols.ToArray("Outlook", "Temperature", "Humidity", "Wind");
-            int[] outputs = symbols.ToIntArray("PlayTennis").GetColumn(0);
+            int[] outputs = symbols.ToArray<int>("PlayTennis");
 
             // Compute the Naive Bayes model
             target.Estimate(inputs, outputs);

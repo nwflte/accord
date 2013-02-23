@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -22,19 +22,12 @@
 
 namespace Accord.Tests.Imaging
 {
-    using System;
-    using System.Text;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Accord.Imaging.Filters;
-    using Accord.Imaging;
-    using Accord.Controls;
-    using System.Windows.Forms;
     using System.Drawing.Imaging;
-    using System.Drawing;
+    using Accord.Imaging;
+    using Accord.Imaging.Filters;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-    
+
     [TestClass]
     public class BlendTest
     {

@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -137,7 +137,7 @@ namespace Accord.Tests.Imaging
         {
             UnmanagedImage image = UnmanagedImage.FromManagedImage(Properties.Resources.sample_black);
 
-            HarrisCornersDetector target = new HarrisCornersDetector(HarrisCornerMeasure.Nobel, 700f, 1.4, 1);
+            HarrisCornersDetector target = new HarrisCornersDetector(HarrisCornerMeasure.Noble, 700f, 1.4, 1);
 
             List<IntPoint> actual = target.ProcessImage(image);
             

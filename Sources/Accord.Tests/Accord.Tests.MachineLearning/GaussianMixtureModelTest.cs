@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -25,6 +25,10 @@ namespace Accord.Tests.MachineLearning
     using Accord.MachineLearning;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Accord.Math;
+    using System.IO;
+    using Accord.Statistics.Formats;
+    using System.Data;
+    using Accord.Tests.MachineLearning.Properties;
 
     [TestClass()]
     public class GaussianMixtureModelTest
@@ -105,14 +109,14 @@ namespace Accord.Tests.MachineLearning
             gmm.Compute(samples, 0.0001);
 
             // Classify a single sample
-            int c = gmm.Gaussians.Compute(sample);
+            int c = gmm.Gaussians.Nearest(sample);
 
             Assert.AreEqual(2, gmm.Gaussians.Count);
 
             for (int i = 0; i < samples.Length; i++)
             {
                 sample = samples[i];
-                c = gmm.Gaussians.Compute(sample);
+                c = gmm.Gaussians.Nearest(sample);
 
                 Assert.AreEqual(c, i >= 5 ? 1 : 0);
             }
@@ -223,7 +227,7 @@ namespace Accord.Tests.MachineLearning
             }
 
             // without weights
-            { 
+            {
                 Accord.Math.Tools.SetupGenerator(0);
 
                 // If we need the GaussianMixtureModel functionality, we can
@@ -239,5 +243,35 @@ namespace Accord.Tests.MachineLearning
                 Assert.AreEqual(0.57764239026154351, gmm.Gaussians[1].Proportion);
             }
         }
+
+        [TestMethod]
+        public void GaussianMixtureModelTest5()
+        {
+            Accord.Math.Tools.SetupGenerator(0);
+
+            MemoryStream stream = new MemoryStream(Resources.CircleWithWeights);
+            ExcelReader reader = new ExcelReader(stream, xlsx: false);
+
+            DataTable table = reader.GetWorksheet("Sheet1");
+
+            double[,] matrix = table.ToMatrix();
+
+            double[][] points = matrix.Submatrix(null, 0, 1).ToArray();
+            double[] weights = matrix.GetColumn(2);
+
+            GaussianMixtureModel gmm = new GaussianMixtureModel(2);
+
+            gmm.Compute(points, new GaussianMixtureModelOptions()
+            {
+                Weights = weights
+            });
+
+            Assert.AreEqual(-0.010550720353814949, gmm.Gaussians[0].Mean[0]);
+            Assert.AreEqual(0.40799698773355553, gmm.Gaussians[0].Mean[1]);
+
+            Assert.AreEqual(0.011896812071918696, gmm.Gaussians[1].Mean[0]);
+            Assert.AreEqual(-0.40400708592859663, gmm.Gaussians[1].Mean[1]);
+        }
+
     }
 }

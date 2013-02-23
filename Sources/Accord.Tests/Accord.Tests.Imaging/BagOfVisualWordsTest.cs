@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -31,6 +31,7 @@ namespace Accord.Tests.Imaging
     using Accord.Math;
     using System.Runtime.Serialization.Formatters.Binary;
     using System.IO;
+    using AForge.Imaging;
 
     [TestClass()]
     public class BagOfVisualWordsTest
@@ -124,6 +125,45 @@ namespace Accord.Tests.Imaging
         }
 
         [TestMethod()]
+        public void BagOfVisualWordsConstructorTest3()
+        {
+            MoravecCornersDetector moravec = new MoravecCornersDetector();
+            CornerFeaturesDetector detector = new CornerFeaturesDetector(moravec);
+
+            var bow = new BagOfVisualWords<CornerFeaturePoint>(detector, numberOfWords: 10);
+
+            var points = bow.Compute(images, 1e-3);
+
+            double[] vector = bow.GetFeatureVector(images[0]);
+
+            Assert.AreEqual(10, bow.NumberOfWords);
+            Assert.AreEqual(6, points.Length);
+            Assert.AreEqual(10, vector.Length);
+
+            Assert.AreEqual(2800, points[0].Count);
+            Assert.AreEqual(4515, points[1].Count);
+            Assert.AreEqual(2290, points[2].Count);
+            Assert.AreEqual(1178, points[3].Count);
+            Assert.AreEqual(4860, points[4].Count);
+            Assert.AreEqual(5756, points[5].Count);
+
+            Assert.AreEqual(596, points[0][0].Descriptor[0]);
+            Assert.AreEqual(51, points[0][0].Descriptor[1]);
+            Assert.AreEqual(points[0][0].Descriptor[0], points[0][0].X);
+            Assert.AreEqual(points[0][0].Descriptor[1], points[0][0].Y);
+
+            Assert.AreEqual(485, points[3][7].Descriptor[0]);
+            Assert.AreEqual(8, points[2][3].Descriptor[1]);
+
+            Assert.AreEqual(991, points[2][52].Descriptor[0]);
+            Assert.AreEqual(83, points[1][11].Descriptor[1]);
+
+            Assert.AreEqual(640, points[0][42].Descriptor[0]);
+            Assert.AreEqual(135, points[4][125].Descriptor[1]);
+        }
+
+
+        [TestMethod()]
         public void GetFeatureVectorTest()
         {
             Accord.Math.Tools.SetupGenerator(0);
@@ -158,7 +198,7 @@ namespace Accord.Tests.Imaging
             double[][] actual = new double[expected.Length][];
             for (int i = 0; i < actual.Length; i++)
                 actual[i] = bow.GetFeatureVector(images[i]);
-            
+
             Assert.IsTrue(expected.IsEqual(actual));
         }
 

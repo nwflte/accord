@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -161,5 +161,77 @@ namespace Accord.Tests.Vision
             Assert.AreEqual(1, target.DetectedObjects.Length);
         }
 
+        [TestMethod()]
+        public void MinSizeTest()
+        {
+            HaarCascade cascade = new FaceHaarCascade();
+            HaarObjectDetector target = new HaarObjectDetector(cascade,
+                50, ObjectDetectorSearchMode.Default);
+
+            Bitmap bmp = Properties.Resources.lena_color;
+            Rectangle[] result;
+
+            target.MinSize = new Size(10, 60);
+            result = target.ProcessFrame(bmp);
+            Assert.AreEqual(3, result.Length);
+            foreach (var r in result)
+            {
+                Assert.IsTrue(r.Width >= target.MinSize.Width);
+                Assert.IsTrue(r.Height >= target.MinSize.Height);
+            }
+
+
+            target.MinSize = new Size(85, 85);
+            result = target.ProcessFrame(bmp);
+            Assert.AreEqual(2, result.Length);
+            foreach (var r in result)
+            {
+                Assert.IsTrue(r.Width >= target.MinSize.Width);
+                Assert.IsTrue(r.Height >= target.MinSize.Height);
+            }
+
+            target.MinSize = new Size(1, 1);
+            result = target.ProcessFrame(bmp);
+            Assert.AreEqual(4, result.Length);
+            foreach (var r in result)
+            {
+                Assert.IsTrue(r.Width >= target.MinSize.Width);
+                Assert.IsTrue(r.Height >= target.MinSize.Height);
+            }
+        }
+
+        [TestMethod()]
+        public void MaxSizeTest()
+        {
+            HaarCascade cascade = new FaceHaarCascade();
+            HaarObjectDetector target = new HaarObjectDetector(cascade,
+                50, ObjectDetectorSearchMode.Default);
+
+            Bitmap bmp = Properties.Resources.lena_color;
+            Rectangle[] result;
+
+            target.MaxSize = new Size(10, 60);
+            result = target.ProcessFrame(bmp);
+            Assert.AreEqual(0, result.Length);
+           
+            target.MaxSize = new Size(60, 60);
+            result = target.ProcessFrame(bmp);
+            Assert.AreEqual(1, result.Length);
+            foreach (var r in result)
+            {
+                Assert.IsTrue(r.Width <= target.MaxSize.Width);
+                Assert.IsTrue(r.Height <= target.MaxSize.Height);
+            }
+
+            target.MaxSize = new Size(80, 80);
+            result = target.ProcessFrame(bmp);
+            Assert.AreEqual(2, result.Length);
+            foreach (var r in result)
+            {
+                Assert.IsTrue(r.Width <= target.MaxSize.Width);
+                Assert.IsTrue(r.Height <= target.MaxSize.Height);
+            }
+
+        }
     }
 }

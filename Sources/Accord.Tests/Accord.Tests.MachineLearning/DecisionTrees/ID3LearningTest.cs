@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -29,6 +29,9 @@ namespace Accord.Tests.MachineLearning
     using Accord.Math;
     using System.Data;
     using Accord.MachineLearning.DecisionTrees.Learning;
+    using System.Reflection;
+    using System.Reflection.Emit;
+    using System.IO;
 
     [TestClass()]
     public class ID3LearningTest
@@ -86,20 +89,20 @@ namespace Accord.Tests.MachineLearning
 
             data.Columns.Add("Day", "Outlook", "Temperature", "Humidity", "Wind", "PlayTennis");
 
-            data.Rows.Add("D1", "Sunny",     "Hot",  "High",   "Weak",   "No");
-            data.Rows.Add("D2", "Sunny",     "Hot",  "High",   "Strong", "No");
-            data.Rows.Add("D3", "Overcast",  "Hot",  "High",   "Weak",   "Yes");
-            data.Rows.Add("D4", "Rain",      "Mild", "High",   "Weak",   "Yes");
-            data.Rows.Add("D5", "Rain",      "Cool", "Normal", "Weak",   "Yes");
-            data.Rows.Add("D6", "Rain",      "Cool", "Normal", "Strong", "No");
-            data.Rows.Add("D7", "Overcast",  "Cool", "Normal", "Strong", "Yes");
-            data.Rows.Add("D8", "Sunny",     "Mild", "High",   "Weak",   "No");
-            data.Rows.Add("D9", "Sunny",     "Cool", "Normal", "Weak",   "Yes");
-            data.Rows.Add("D10", "Rain",     "Mild", "Normal", "Weak",   "Yes");
-            data.Rows.Add("D11", "Sunny",    "Mild", "Normal", "Strong", "Yes");
-            data.Rows.Add("D12", "Overcast", "Mild", "High",   "Strong", "Yes");
-            data.Rows.Add("D13", "Overcast", "Hot",  "Normal", "Weak",   "Yes");
-            data.Rows.Add("D14", "Rain",     "Mild", "High",   "Strong", "No");
+            data.Rows.Add("D1", "Sunny", "Hot", "High", "Weak", "No");
+            data.Rows.Add("D2", "Sunny", "Hot", "High", "Strong", "No");
+            data.Rows.Add("D3", "Overcast", "Hot", "High", "Weak", "Yes");
+            data.Rows.Add("D4", "Rain", "Mild", "High", "Weak", "Yes");
+            data.Rows.Add("D5", "Rain", "Cool", "Normal", "Weak", "Yes");
+            data.Rows.Add("D6", "Rain", "Cool", "Normal", "Strong", "No");
+            data.Rows.Add("D7", "Overcast", "Cool", "Normal", "Strong", "Yes");
+            data.Rows.Add("D8", "Sunny", "Mild", "High", "Weak", "No");
+            data.Rows.Add("D9", "Sunny", "Cool", "Normal", "Weak", "Yes");
+            data.Rows.Add("D10", "Rain", "Mild", "Normal", "Weak", "Yes");
+            data.Rows.Add("D11", "Sunny", "Mild", "Normal", "Strong", "Yes");
+            data.Rows.Add("D12", "Overcast", "Mild", "High", "Strong", "Yes");
+            data.Rows.Add("D13", "Overcast", "Hot", "Normal", "Weak", "Yes");
+            data.Rows.Add("D14", "Rain", "Mild", "High", "Strong", "No");
 
             // Create a new codification codebook to
             // convert strings into integer symbols
@@ -120,10 +123,31 @@ namespace Accord.Tests.MachineLearning
 
             // Extract symbols from data and train the classifier
             DataTable symbols = codebook.Apply(data);
-            inputs = symbols.ToIntArray("Outlook", "Temperature", "Humidity", "Wind");
-            outputs = symbols.ToIntArray("PlayTennis").GetColumn(0);
+            inputs = symbols.ToArray<int>("Outlook", "Temperature", "Humidity", "Wind");
+            outputs = symbols.ToArray<int>("PlayTennis");
 
-            id3.Run(inputs, outputs);
+            double error = id3.Run(inputs, outputs);
+            Assert.AreEqual(0, error);
+
+
+            foreach (DataRow row in data.Rows)
+            {
+                var x = codebook.Translate(row, "Outlook", "Temperature", "Humidity", "Wind");
+
+                int y = tree.Compute(x);
+
+                string actual = codebook.Translate("PlayTennis", y);
+                string expected = row["PlayTennis"] as string;
+
+                Assert.AreEqual(expected, actual);
+            }
+
+            {
+                string answer = codebook.Translate("PlayTennis",
+                    tree.Compute(codebook.Translate("Sunny", "Hot", "High", "Strong")));
+
+                Assert.AreEqual("No", answer);
+            }
         }
 
         public static void CreateXORExample(out DecisionTree tree, out int[][] inputs, out int[] outputs)
@@ -138,7 +162,7 @@ namespace Accord.Tests.MachineLearning
                 new int[] { 0, 0, 1, 1 },
                 new int[] { 1, 0, 1, 1 }
             };
-            
+
             outputs = new int[]
             {
                 1, 1, 0, 0, 1, 0, 1
@@ -304,6 +328,140 @@ namespace Accord.Tests.MachineLearning
             Assert.AreEqual(2, tree.Root.Branches[0].Branches[0].Branches.Count);
             Assert.IsTrue(tree.Root.Branches[0].Branches[0].Branches[0].IsLeaf);
             Assert.IsTrue(tree.Root.Branches[0].Branches[0].Branches[1].IsLeaf);
+        }
+
+
+        [TestMethod()]
+        public void ConstantDiscreteVariableTest()
+        {
+            DecisionTree tree;
+            int[][] inputs;
+            int[] outputs;
+
+            DataTable data = new DataTable("Degenerated Tennis Example");
+
+            data.Columns.Add("Day", "Outlook", "Temperature", "Humidity", "Wind", "PlayTennis");
+
+            data.Rows.Add("D1", "Sunny", "Hot", "High", "Weak", "No");
+            data.Rows.Add("D2", "Sunny", "Hot", "High", "Strong", "No");
+            data.Rows.Add("D3", "Overcast", "Hot", "High", "Weak", "Yes");
+            data.Rows.Add("D4", "Rain", "Hot", "High", "Weak", "Yes");
+            data.Rows.Add("D5", "Rain", "Hot", "Normal", "Weak", "Yes");
+            data.Rows.Add("D6", "Rain", "Hot", "Normal", "Strong", "No");
+            data.Rows.Add("D7", "Overcast", "Hot", "Normal", "Strong", "Yes");
+            data.Rows.Add("D8", "Sunny", "Hot", "High", "Weak", "No");
+            data.Rows.Add("D9", "Sunny", "Hot", "Normal", "Weak", "Yes");
+            data.Rows.Add("D10", "Rain", "Hot", "Normal", "Weak", "Yes");
+            data.Rows.Add("D11", "Sunny", "Hot", "Normal", "Strong", "Yes");
+            data.Rows.Add("D12", "Overcast", "Hot", "High", "Strong", "Yes");
+            data.Rows.Add("D13", "Overcast", "Hot", "Normal", "Weak", "Yes");
+            data.Rows.Add("D14", "Rain", "Hot", "High", "Strong", "No");
+
+            // Create a new codification codebook to
+            // convert strings into integer symbols
+            Codification codebook = new Codification(data);
+
+            DecisionVariable[] attributes =
+            {
+               new DecisionVariable("Outlook",     codebook["Outlook"].Symbols),     // 3 possible values (Sunny, overcast, rain)
+               new DecisionVariable("Temperature", codebook["Temperature"].Symbols), // 1 constant value (Hot)
+               new DecisionVariable("Humidity",    codebook["Humidity"].Symbols),    // 2 possible values (High, normal)
+               new DecisionVariable("Wind",        codebook["Wind"].Symbols)         // 2 possible values (Weak, strong)
+            };
+
+            int classCount = codebook["PlayTennis"].Symbols; // 2 possible values (yes, no)
+
+
+            bool thrown = false;
+            try
+            {
+                tree = new DecisionTree(attributes, classCount);
+            }
+            catch
+            {
+                thrown = true;
+            }
+
+            Assert.IsTrue(thrown);
+
+
+            attributes[1] = new DecisionVariable("Temperature", 2);
+            tree = new DecisionTree(attributes, classCount);
+            ID3Learning id3 = new ID3Learning(tree);
+
+            // Extract symbols from data and train the classifier
+            DataTable symbols = codebook.Apply(data);
+            inputs = symbols.ToArray<int>("Outlook", "Temperature", "Humidity", "Wind");
+            outputs = symbols.ToArray<int>("PlayTennis");
+
+            double error = id3.Run(inputs, outputs);
+
+            for (int i = 0; i < inputs.Length; i++)
+            {
+                int y = tree.Compute(inputs[i]);
+                Assert.AreEqual(outputs[i], y);
+            }
+        }
+
+        [TestMethod()]
+        public void IncompleteDiscreteVariableTest()
+        {
+            DecisionTree tree;
+            int[][] inputs;
+            int[] outputs;
+
+            DataTable data = new DataTable("Degenerated Tennis Example");
+
+            data.Columns.Add("Day", "Outlook", "Temperature", "Humidity", "Wind", "PlayTennis");
+
+            data.Rows.Add("D1", "Sunny", "Hot", "High", "Weak", "No");
+            data.Rows.Add("D2", "Sunny", "Hot", "High", "Strong", "No");
+            data.Rows.Add("D3", "Overcast", "Hot", "High", "Weak", "Yes");
+            data.Rows.Add("D4", "Rain", "Mild", "High", "Weak", "Yes");
+            data.Rows.Add("D5", "Rain", "Cool", "Normal", "Weak", "Yes");
+            data.Rows.Add("D6", "Rain", "Cool", "Normal", "Strong", "No");
+            data.Rows.Add("D7", "Overcast", "Cool", "Normal", "Strong", "Yes");
+            data.Rows.Add("D8", "Sunny", "Mild", "High", "Weak", "No");
+            data.Rows.Add("D9", "Sunny", "Cool", "Normal", "Weak", "Yes");
+            data.Rows.Add("D10", "Rain", "Mild", "Normal", "Weak", "Yes");
+            data.Rows.Add("D11", "Sunny", "Mild", "Normal", "Strong", "Yes");
+            data.Rows.Add("D12", "Overcast", "Mild", "High", "Strong", "Yes");
+            data.Rows.Add("D13", "Overcast", "Hot", "Normal", "Weak", "Yes");
+            data.Rows.Add("D14", "Rain", "Mild", "High", "Strong", "No");
+
+            // Create a new codification codebook to
+            // convert strings into integer symbols
+            Codification codebook = new Codification(data);
+
+            DecisionVariable[] attributes =
+            {
+               new DecisionVariable("Outlook",     codebook["Outlook"].Symbols+200), // 203 possible values, 200 undefined
+               new DecisionVariable("Temperature", codebook["Temperature"].Symbols), // 3 possible values (Hot, mild, cool)
+               new DecisionVariable("Humidity",    codebook["Humidity"].Symbols),    // 2 possible values (High, normal)
+               new DecisionVariable("Wind",        codebook["Wind"].Symbols)         // 2 possible values (Weak, strong)
+            };
+
+            int classCount = codebook["PlayTennis"].Symbols; // 2 possible values (yes, no)
+
+            tree = new DecisionTree(attributes, classCount);
+            ID3Learning id3 = new ID3Learning(tree);
+
+            // Extract symbols from data and train the classifier
+            DataTable symbols = codebook.Apply(data);
+            inputs = symbols.ToArray<int>("Outlook", "Temperature", "Humidity", "Wind");
+            outputs = symbols.ToArray<int>("PlayTennis");
+
+            double error = id3.Run(inputs, outputs);
+
+            Assert.AreEqual(203, tree.Root.Branches.Count);
+            Assert.IsTrue(tree.Root.Branches[100].IsLeaf);
+            Assert.IsNull(tree.Root.Branches[100].Output);
+
+            for (int i = 0; i < inputs.Length; i++)
+            {
+                int y = tree.Compute(inputs[i]);
+                Assert.AreEqual(outputs[i], y);
+            }
         }
 
     }

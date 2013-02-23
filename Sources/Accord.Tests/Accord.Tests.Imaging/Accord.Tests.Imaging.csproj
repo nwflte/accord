@@ -117,6 +117,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Externals\AForge.NET\AForge.dll</HintPath>
     </Reference>
+    <Reference Include="AForge.Controls">
+      <HintPath>..\..\..\Externals\AForge.NET\AForge.Controls.dll</HintPath>
+    </Reference>
     <Reference Include="AForge.Imaging, Version=2.2.3.0, Culture=neutral, PublicKeyToken=ba8ddea9676ca48b, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Externals\AForge.NET\AForge.Imaging.dll</HintPath>
@@ -148,6 +151,8 @@
     <Compile Include="ConcatenateTest.cs" />
     <Compile Include="ConvexityDefectsTest.cs" />
     <Compile Include="BorderFollowingTest.cs" />
+    <Compile Include="CentralMomentsTest.cs" />
+    <Compile Include="HuMomentsTest.cs" />
     <Compile Include="OpenSURF\FastHessian.cs" />
     <Compile Include="OpenSURF\IntegralImage.cs" />
     <Compile Include="OpenSURF\IPoint.cs" />
@@ -169,6 +174,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="RansacHomographyEstimatorTest.cs" />
+    <Compile Include="RawMomentsTest.cs" />
     <Compile Include="SpeededUpRobustFeaturesDescriptorTest.cs" />
     <Compile Include="SpeededUpRobustFeaturesDetectorTest.cs" />
     <Compile Include="ToolsTest.cs" />
@@ -218,8 +224,17 @@
     <None Include="Resources\image1.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\sample.png" />
-    <Content Include="Resources\star.jpg" />
+    <None Include="Resources\tt4.png" />
+    <None Include="Resources\tt3.png" />
+    <None Include="Resources\tt2.png" />
+    <None Include="Resources\tt1.png" />
+    <None Include="Resources\hu2.bmp" />
+    <None Include="Resources\hu0.bmp" />
+    <None Include="Resources\hu1.bmp" />
+    <None Include="Resources\hu.png" />
+    <None Include="Resources\image3.png" />
+    <Content Include="Resources\dctWiki.bmp" />
+    <Content Include="Resources\dct.bmp" />
     <Content Include="Resources\SURF\flower01.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
