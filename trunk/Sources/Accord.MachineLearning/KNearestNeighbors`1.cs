@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -282,7 +282,42 @@ namespace Accord.MachineLearning
         /// 
         /// <returns>The most likely label for the given point.</returns>
         /// 
-        public virtual int Compute(T input)
+        public int Compute(T input)
+        {
+            double[] scores;
+            return Compute(input, out scores);
+        }
+
+        /// <summary>
+        ///   Computes the most likely label of a new given point.
+        /// </summary>
+        /// 
+        /// <param name="input">A point to be classificated.</param>
+        /// <param name="response">A value between 0 and 1 giving 
+        /// the strength of the classification in relation to the
+        /// other classes.</param>
+        /// 
+        /// <returns>The most likely label for the given point.</returns>
+        /// 
+        public int Compute(T input, out double response)
+        {
+            double[] scores;
+            int result = Compute(input, out scores);
+            response = scores[result] / scores.Sum();
+
+            return result;
+        }
+
+        /// <summary>
+        ///   Computes the most likely label of a new given point.
+        /// </summary>
+        /// 
+        /// <param name="input">A point to be classificated.</param>
+        /// <param name="scores">The distance score for each possible class.</param>
+        /// 
+        /// <returns>The most likely label for the given point.</returns>
+        /// 
+        public virtual int Compute(T input, out double[] scores)
         {
             for (int i = 0; i < inputs.Length; i++)
                 distances[i] = distance(input, inputs[i]);
@@ -291,7 +326,7 @@ namespace Accord.MachineLearning
 
             Array.Sort(distances, nearestIndices);
 
-            double[] scores = new double[classCount];
+            scores = new double[classCount];
 
             for (int i = 0; i < k; i++)
             {
