@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Accord.NET")]
 [assembly: AssemblyProduct("Accord.Audio")]
-[assembly: AssemblyCopyright("Copyright © César Souza 2009-2012")]
+[assembly: AssemblyCopyright("Copyright © César Souza, 2009-2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -26,6 +26,6 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("2.8.1.0")]
-[assembly: AssemblyFileVersionAttribute("2.8.1.0")]
+[assembly: AssemblyVersion("2.8.2.0")]
+[assembly: AssemblyFileVersionAttribute("2.8.2.0")]
 
