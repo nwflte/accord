@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -25,6 +25,7 @@ namespace Accord.Statistics.Filters
     using System;
     using System.Data;
     using AForge;
+    using Accord.Math;
 
     /// <summary>
     ///   Linear Scaling Filter
@@ -33,6 +34,7 @@ namespace Accord.Statistics.Filters
     [Serializable]
     public class LinearScaling : BaseFilter<LinearScaling.Options>, IAutoConfigurableFilter
     {
+
 
         /// <summary>
         ///   Creates a new Linear Scaling Filter.
@@ -48,6 +50,30 @@ namespace Accord.Statistics.Filters
         {
             foreach (String col in columns)
                 Columns.Add(new Options(col));
+        }
+
+        /// <summary>
+        ///   Creates a new Linear Scaling Filter.
+        /// </summary>
+        /// 
+        public LinearScaling(DataTable table)
+        {
+            foreach (DataColumn col in table.Columns)
+                Columns.Add(new Options(col.ColumnName));
+
+            Detect(table);
+        }
+
+        /// <summary>
+        ///   Creates a new Linear Scaling Filter.
+        /// </summary>
+        /// 
+        public LinearScaling(DataTable table, params string[] columns)
+        {
+            foreach (String col in columns)
+                Columns.Add(new Options(col));
+
+            Detect(table, columns);
         }
 
         /// <summary>
@@ -88,6 +114,51 @@ namespace Accord.Statistics.Filters
         }
 
         /// <summary>
+        ///   Gets options, including mappings and dictionaries
+        ///   associated with a given variable (data column).
+        /// </summary>
+        /// 
+        /// <param name="index">The column's index for the variable.</param>
+        /// 
+        /// <returns>
+        ///   An <see cref="Options"/> object listing the main
+        ///   properties, such as number of possible symbols and
+        ///   symbol-value mapping for the given column.</returns>
+        /// 
+        public Options this[int index]
+        {
+            get { return Columns[index]; }
+        }
+
+        /// <summary>
+        ///   Gets options, including mappings and dictionaries
+        ///   associated with a given variable (data column).
+        /// </summary>
+        /// 
+        /// <param name="columnName">The name of the variable.</param>
+        /// 
+        /// <returns>
+        ///   An <see cref="Options"/> object listing the main
+        ///   properties, such as number of possible symbols and
+        ///   symbol-value mapping for the given column.</returns>
+        /// 
+        public Options this[string columnName]
+        {
+            get { return Columns[columnName]; }
+        }
+
+        /// <summary>
+        ///   Auto detects the filter options by analyzing a given <see cref="System.Data.DataTable"/>.
+        /// </summary>  
+        /// 
+        public void Detect(DataTable data, string[] columns)
+        {
+            // For each column
+            foreach (string column in columns)
+                parseColumn(data, data.Columns[column]);
+        }
+
+        /// <summary>
         ///   Auto detects the filter options by analyzing a given <see cref="System.Data.DataTable"/>.
         /// </summary>  
         /// 
@@ -95,29 +166,38 @@ namespace Accord.Statistics.Filters
         {
             // For each column
             foreach (DataColumn column in data.Columns)
+                parseColumn(data, column);
+        }
+
+        private void parseColumn(DataTable data, DataColumn column)
+        {
+            string name = column.ColumnName;
+            double max = 0, min = 0;
+
+            // If the column has a continuous numeric type
+            if (column.DataType == typeof(Double) ||
+                column.DataType == typeof(Decimal))
             {
-                // If the column has a continuous numeric type
-                if (column.DataType == typeof(Double) ||
-                    column.DataType == typeof(Decimal))
-                {
-                    string name = column.ColumnName;
+                object objMax = data.Compute("MAX([" + name + "])", String.Empty);
+                object objMin = data.Compute("MIN([" + name + "])", String.Empty);
 
-                    object objMax = data.Compute("MAX([" + name + "])", String.Empty);
-                    object objMin = data.Compute("MIN([" + name + "])", String.Empty);
-
-                    double max = 0, min = 0;
-                    if (objMax != DBNull.Value)
-                        max = (double)objMax;
-                    if (objMin != DBNull.Value)
-                        min = (double)objMin;
-
-                    if (!Columns.Contains(name))
-                        Columns.Add(new Options(name));
-
-                    Columns[name].SourceRange = new DoubleRange(min, max);
-                    // Columns[name].OutputRange = new DoubleRange(-1, +1);
-                }
+                if (objMax != DBNull.Value)
+                    max = (double)objMax;
+                if (objMin != DBNull.Value)
+                    min = (double)objMin;
             }
+            else if (column.DataType == typeof(String))
+            {
+                double[] values = column.ToArray();
+                max = values.Max();
+                min = values.Min();
+            }
+
+            if (!Columns.Contains(name))
+                Columns.Add(new Options(name));
+
+            Columns[name].SourceRange = new DoubleRange(min, max);
+            // Columns[name].OutputRange = new DoubleRange(-1, +1);
         }
 
         /// <summary>
