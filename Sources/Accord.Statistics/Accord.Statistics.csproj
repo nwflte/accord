@@ -262,6 +262,8 @@
     <Compile Include="Links\LogLinkFunction.cs" />
     <Compile Include="Links\InverseSquaredLinkFunction.cs" />
     <Compile Include="Links\ProbitLinkFunction.cs" />
+    <Compile Include="Models\Markov\MarkovHelperMethods.cs" />
+    <Compile Include="Models\Regression\Nonlinear\GeneralizedLinearRegression.cs" />
     <Compile Include="Models\Regression\Nonlinear\Fitting\LogisticGradientDescent.cs" />
     <Compile Include="Models\Survival\ProportionalHazards.cs" />
     <Compile Include="Models\Fields\ConditionalRandomField.cs" />
