@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -488,17 +488,16 @@ namespace Accord.MachineLearning.Structures
         /// 
         public IEnumerator<KDTreeNode<T>> GetEnumerator()
         {
-            if (root == null) 
+            if (root == null)
                 yield break;
 
             var stack = new Stack<KDTreeNode<T>>(new[] { root });
 
-            while (stack.Count == 0)
+            while (stack.Count != 0)
             {
                 KDTreeNode<T> current = stack.Pop();
 
                 yield return current;
-
 
                 if (current.Left != null)
                     stack.Push(current.Left);
@@ -507,6 +506,23 @@ namespace Accord.MachineLearning.Structures
                     stack.Push(current.Right);
             }
         }
+
+        /// <summary>
+        ///   Traverse the tree using a <see cref="KDTreeTraversal">tree traversal
+        ///   method</see>. Can be iterated with a foreach loop.
+        /// </summary>
+        /// 
+        /// <param name="method">The tree traversal method. Common methods are
+        /// available in the <see cref="KDTreeTraversal"/>static class.</param>
+        /// 
+        /// <returns>An <see cref="IEnumerable{T}"/> object which can be used to
+        /// traverse the tree using the chosen traversal method.</returns>
+        /// 
+        public IEnumerable<KDTreeNode<T>> Traverse(KDTreeTraversalMethod<T> method)
+        {
+            return new KDTreeTraversal(this, method);
+        }
+
 
         /// <summary>
         ///   Returns an enumerator that iterates through the tree.
@@ -519,6 +535,30 @@ namespace Accord.MachineLearning.Structures
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+
+        private class KDTreeTraversal : IEnumerable<KDTreeNode<T>>
+        {
+
+            private KDTree<T> tree;
+            private KDTreeTraversalMethod<T> method;
+
+            public KDTreeTraversal(KDTree<T> tree, KDTreeTraversalMethod<T> method)
+            {
+                this.tree = tree;
+                this.method = method;
+            }
+
+            public IEnumerator<KDTreeNode<T>> GetEnumerator()
+            {
+                return method(tree);
+            }
+
+            System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+            {
+                return method(tree);
+            }
         }
     }
 }
