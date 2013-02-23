@@ -1,3 +1,50 @@
+Accord.NET Framework 2.8.2 release notes
+-----------------------------------------
+25.02.2013.    
+
+Version updates and fixes:
+
+* Accord.MachineLearning
+  - Adding several K-d tree traversal methods;
+  - Adding support for generating decision tree assemblies;
+  - Adding maximum height option for ID3 and C4.5 learning;
+  - Adding a generic Bag-Of-Words to accept other feature detectors;
+  - Updating DecisionVariable to initialize itself from a Codebook;
+  - Fixing C4.5 learning when presented with constant variable inputs;
+  - Fixing and normalizing the name of cluster identification methods.
+  
+* Accord.Statistics
+  - Adding support for opening binary streams in ExcelReader;
+  - Adding support for generalized linear regression models;
+  - Adding support for integer observations in generic density HMMs;
+  - Fixing Levene's test to behave as a one-tailed test;
+  - Fixing Stepwise Logistic Regression's result property;
+  - Fixing HMM classifier rejection using Threshold models;
+  - Fixing ConfusionMatrix's ToGeneralMatrix method so it respects
+    the expected order of elements in the contingency table.
+
+* Accord.Math
+  - Adding Discrete Cosine, Sine and Hartley Transforms.
+
+* Accord.Imaging
+  - Adding Hu's set of invariant image moments;
+  - Adding k-nearest neighbors feature point matching;
+  - Adding an early, experimental version of the Histograms of
+    Oriented Gradients (HOG) descriptors due to popular demand;
+  - Correcting image converters for different pixel sizes.
+
+* Accord.DirectSound
+  - Adding support for capturing audio in different bit resolutions.
+  
+* Accord.Controls
+  - Fixing the initialization of ScatterplotView.
+  
+* AForge Compatibility
+  - Compiled against AForge.NET Framework 2.2.4. May work with newer versions.
+
+
+
+
 Accord.NET Framework 2.8.1 release notes
 -----------------------------------------
 21.12.2012.    
