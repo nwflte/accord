@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -97,14 +97,15 @@ namespace Accord.MachineLearning
         /// </summary>
         /// 
         /// <param name="input">A point to be classificated.</param>
+        /// <param name="scores">The distance score for each possible class.</param>
         /// 
         /// <returns>The most likely label for the given point.</returns>
         /// 
-        public override int Compute(double[] input)
+        public override int Compute(double[] input, out double[] scores)
         {
             KDTreeNodeCollection<int> neighbors = tree.Nearest(input, this.K);
 
-            double[] scores = new double[ClassCount];
+            scores = new double[ClassCount];
 
             foreach (var point in neighbors)
             {
