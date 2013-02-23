@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -148,6 +148,7 @@ namespace Accord.Audio.Formats
         }
 
 
+
         #region Constructors
 
         /// <summary>
@@ -267,7 +268,8 @@ namespace Accord.Audio.Formats
 
             bytes = readAsFloat(buffer, frames);
 
-            return Signal.FromArray(buffer, bufferSize, channels, sampleRate);
+            // The decoder always decodes as 32-bit IEEE Float.
+            return Signal.FromArray(buffer, bufferSize, channels, sampleRate, SampleFormat.Format32BitIeeeFloat);
         }
 
         /// <summary>

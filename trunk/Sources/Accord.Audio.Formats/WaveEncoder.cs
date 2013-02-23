@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -46,6 +46,7 @@ namespace Accord.Audio.Formats
         private int sampleRate;
         private int bitsPerSample;
         private int averageBitsPerSecond;
+        private SampleFormat sampleFormat;
 
         
         // The following fields are set when the encoder
@@ -142,6 +143,15 @@ namespace Accord.Audio.Formats
         public int BitsPerSample
         {
             get { return bitsPerSample; }
+        }
+
+        /// <summary>
+        ///   Gets the sample format used by the encoder.
+        /// </summary>
+        /// 
+        public SampleFormat Format
+        {
+            get { return sampleFormat; }
         }
 
         #region Constructors
@@ -295,7 +305,7 @@ namespace Accord.Audio.Formats
             format.FmtHeader = new char[] { 'f', 'm', 't', ' ' };
             format.Length = 16;
             format.Channels = (short)this.channels;
-            format.FormatTag = (short)WaveFormatTag.IeeeFloat;
+            format.FormatTag = (short)sampleFormat.ToWaveFormat();
             format.SamplesPerSecond = sampleRate;
             format.BitsPerSample = (short)this.bitsPerSample;
             format.BlockAlignment = (short)this.blockAlign;
@@ -318,8 +328,9 @@ namespace Accord.Audio.Formats
         {
             this.channels = signal.Channels;
             this.sampleRate = signal.SampleRate;
-            this.bitsPerSample = sizeof(float) * 8;
-            this.blockAlign = bitsPerSample / 8 * channels;
+            this.sampleFormat = signal.SampleFormat;
+            this.bitsPerSample = Signal.GetSampleSize(signal.SampleFormat);
+            this.blockAlign = (bitsPerSample / 8) * channels;
             this.averageBitsPerSecond = sampleRate * blockAlign;
 
             this.initialized = true;
