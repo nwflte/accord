@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -67,6 +67,10 @@ namespace Accord.Statistics.Models.Markov.Topology
         ///   Creates a new custom topology with user-defined
         ///   transition matrix and initial state probabilities.
         /// </summary>
+        /// 
+        /// <param name="initial">The initial probabilities for the model.</param>
+        /// <param name="transitions">The transition probabilities for the model.</param>
+        /// 
         public Custom(double[,] transitions, double[] initial)
             : this(transitions, initial, false) { }
 
@@ -74,6 +78,12 @@ namespace Accord.Statistics.Models.Markov.Topology
         ///   Creates a new custom topology with user-defined
         ///   transition matrix and initial state probabilities.
         /// </summary>
+        /// 
+        /// <param name="initial">The initial probabilities for the model.</param>
+        /// <param name="transitions">The transition probabilities for the model.</param>
+        /// <param name="logarithm">Set to true if the passed transitions are given 
+        ///   in log-probabilities. Default is false (given values are probabilities).</param>
+        /// 
         public Custom(double[,] transitions, double[] initial, bool logarithm)
         {
             if (transitions == null)
@@ -101,7 +111,15 @@ namespace Accord.Statistics.Models.Markov.Topology
                      "initial");
             }
 
+
+
             this.states = transitions.GetLength(0);
+
+            for (int i = 0; i < states; i++)
+                for (int j = 0; j < states; j++)
+                    if (Double.IsNaN(transitions[i, j]))
+                        throw new ArgumentOutOfRangeException("transitions");
+
             if (logarithm)
             {
                 this.transitions = Matrix.Exp(transitions);
@@ -118,6 +136,7 @@ namespace Accord.Statistics.Models.Markov.Topology
         /// <summary>
         ///   Gets the number of states in this topology.
         /// </summary>
+        /// 
         public int States
         {
             get { return states; }
@@ -126,6 +145,7 @@ namespace Accord.Statistics.Models.Markov.Topology
         /// <summary>
         ///   Gets the initial state probabilities.
         /// </summary>
+        /// 
         public double[] Initial
         {
             get { return pi; }
@@ -134,6 +154,7 @@ namespace Accord.Statistics.Models.Markov.Topology
         /// <summary>
         ///   Gets the state-transitions matrix.
         /// </summary>
+        /// 
         public double[,] Transitions
         {
             get { return transitions; }
@@ -145,6 +166,7 @@ namespace Accord.Statistics.Models.Markov.Topology
         ///   Creates the state transitions matrix and the
         ///   initial state probabilities for this topology.
         /// </summary>
+        /// 
         public int Create(bool logarithm, out double[,] transitionMatrix, out double[] initialState)
         {
             if (logarithm)
