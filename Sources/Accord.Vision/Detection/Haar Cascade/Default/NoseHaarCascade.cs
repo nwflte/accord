@@ -2,7 +2,7 @@
 // The Accord.NET Framework (LGPL)
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 // Copyright © Modesto Castrillon-Santana, 2008
