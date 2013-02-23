@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -147,7 +147,7 @@ namespace Accord.MachineLearning
                 // 6. Increment cluster count (current = current + 1)
             }
 
-            return Clusters.Compute(points);
+            return Clusters.Nearest(points);
         }
 
 
