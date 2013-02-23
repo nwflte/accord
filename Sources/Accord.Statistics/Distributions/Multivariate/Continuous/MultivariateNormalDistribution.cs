@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -121,7 +121,7 @@ namespace Accord.Statistics.Distributions.Multivariate
             if (mean.Length != rows)
                 throw new DimensionMismatchException("covariance", "Covariance matrix should have the same dimensions as mean vector's length.");
 
-            CholeskyDecomposition chol = new CholeskyDecomposition(covariance, 
+            CholeskyDecomposition chol = new CholeskyDecomposition(covariance,
                 robust: false, lowerTriangular: true);
 
             if (!chol.PositiveDefinite)
@@ -247,9 +247,15 @@ namespace Accord.Statistics.Distributions.Multivariate
             if (x.Length != Dimension)
                 throw new DimensionMismatchException("x", "The vector should have the same dimension as the distribution.");
 
-            double[] z = x.Subtract(mean);
+            double[] z = new double[mean.Length];
+            for (int i = 0; i < x.Length; i++)
+                z[i] = x[i] - mean[i];
+
             double[] a = chol.Solve(z);
-            double b = a.InnerProduct(z);
+
+            double b = 0;
+            for (int i = 0; i < z.Length; i++)
+                b += a[i] * z[i];
 
             // Original code:
             // double r = constant * System.Math.Exp(-b/2);
@@ -288,9 +294,15 @@ namespace Accord.Statistics.Distributions.Multivariate
             if (x.Length != Dimension)
                 throw new DimensionMismatchException("x", "The vector should have the same dimension as the distribution.");
 
-            double[] z = x.Subtract(mean);
+            double[] z = new double[mean.Length];
+            for (int i = 0; i < x.Length; i++)
+                z[i] = x[i] - mean[i];
+
             double[] a = chol.Solve(z);
-            double b = a.InnerProduct(z);
+
+            double b = 0;
+            for (int i = 0; i < z.Length; i++)
+                b += a[i] * z[i];
 
             return lnconstant - b * 0.5;
         }
@@ -366,7 +378,7 @@ namespace Accord.Statistics.Distributions.Multivariate
                 cov = Statistics.Tools.Covariance(observations, means);
             }
 
-            CholeskyDecomposition chol = new CholeskyDecomposition(cov, 
+            CholeskyDecomposition chol = new CholeskyDecomposition(cov,
                 robust: false, lowerTriangular: true);
 
             if (options != null)
