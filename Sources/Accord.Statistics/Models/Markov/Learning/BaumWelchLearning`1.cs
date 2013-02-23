@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -358,7 +358,7 @@ namespace Accord.Statistics.Models.Markov.Learning
             // Convert the generic representation to a vector of multivariate sequences
             this.vectorObservations = new double[observations.Length][][];
             for (int i = 0; i < vectorObservations.Length; i++)
-                this.vectorObservations[i] = convert(observations[i], model.Dimension);
+                this.vectorObservations[i] = MarkovHelperMethods.checkAndConvert(observations[i], model.Dimension);
 
 
             // Sample array, used to store all observations as a sample vector
@@ -491,20 +491,5 @@ namespace Accord.Statistics.Models.Markov.Learning
         }
 
 
-        /// <summary>
-        ///   Converts a univariate or multivariate array
-        ///   of observations into a two-dimensional jagged array.
-        /// </summary>
-        /// 
-        private static double[][] convert(Array array, int dimension)
-        {
-            double[][] multivariate = array as double[][];
-            if (multivariate != null) return multivariate;
-
-            double[] univariate = array as double[];
-            if (univariate != null) return Accord.Math.Matrix.Split(univariate, dimension);
-
-            throw new ArgumentException("Invalid array argument type.", "array");
-        }
     }
 }

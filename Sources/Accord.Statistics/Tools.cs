@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -214,6 +214,47 @@ namespace Accord.Statistics
         }
 
         /// <summary>
+        ///   Computes the contraharmonic mean of the given values.
+        /// </summary>
+        /// 
+        /// <param name="values">A unsigned short array containing the vector members.</param>
+        /// <param name="order">The order of the harmonic mean. Default is 1.</param>
+        /// 
+        /// <returns>The contraharmonic mean of the given data.</returns>
+        /// 
+        public static double ContraHarmonicMean(double[] values, int order)
+        {
+            double r1 = 0, r2 = 0;
+            for (int i = 0; i < values.Length; i++)
+            {
+                r1 += Math.Pow(values[i], order + 1);
+                r2 += Math.Pow(values[i], order);
+            }
+
+            return r1 / r2;
+        }
+
+        /// <summary>
+        ///   Computes the contraharmonic mean of the given values.
+        /// </summary>
+        /// 
+        /// <param name="values">A unsigned short array containing the vector members.</param>
+        /// 
+        /// <returns>The contraharmonic mean of the given data.</returns>
+        /// 
+        public static double ContraHarmonicMean(double[] values)
+        {
+            double r1 = 0, r2 = 0;
+            for (int i = 0; i < values.Length; i++)
+            {
+                r1 += values[i] * values[i];
+                r2 += values[i];
+            }
+
+            return r1 / r2;
+        }
+
+        /// <summary>
         ///   Computes the Standard Deviation of the given values.
         /// </summary>
         /// 
@@ -254,7 +295,7 @@ namespace Accord.Statistics
         ///   
         /// <returns>The standard deviation of the given data.</returns>
         /// 
-        public static double StandardDeviation(this double[] values, double mean, bool unbiased=true)
+        public static double StandardDeviation(this double[] values, double mean, bool unbiased = true)
         {
             return System.Math.Sqrt(Variance(values, mean, unbiased));
         }
@@ -3454,6 +3495,10 @@ namespace Accord.Statistics
         /// 
         public static int[] RandomSample(int n, int k)
         {
+            if (k > n)
+                throw new ArgumentOutOfRangeException("k",
+                    "The sample size must be less than the size of the population.");
+
             int[] idx = Tools.Random(n);
             return idx.Submatrix(k);
         }
@@ -3675,6 +3720,8 @@ namespace Accord.Statistics
 
             return counts;
         }
+
+
     }
 }
 
