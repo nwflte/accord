@@ -32,6 +32,33 @@ namespace Accord.Math
     ///   Discrete Cosine Transformation.
     /// </summary>
     /// 
+    /// <remarks>
+    /// <para>
+    ///    A discrete cosine transform (DCT) expresses a finite sequence of data points
+    ///    in terms of a sum of cosine functions oscillating at different frequencies. 
+    ///    DCTs are important to numerous applications in science and engineering, from
+    ///    lossy compression of audio (e.g. MP3) and images (e.g. JPEG) (where small 
+    ///    high-frequency components can be discarded), to spectral methods for the 
+    ///    numerical solution of partial differential equations.</para>
+    ///    
+    /// <para>
+    ///    The use of cosine rather than sine functions is critical in these applications:
+    ///    for compression, it turns out that cosine functions are much more efficient,
+    ///    whereas for differential equations the cosines express a particular choice of 
+    ///    boundary conditions.</para>
+    ///   
+    /// <para>
+    ///   References:
+    ///   <list type="bullet">
+    ///     <item><description>
+    ///       Wikipedia contributors, "Discrete sine transform," Wikipedia, The Free Encyclopedia,
+    ///       available at: http://en.wikipedia.org/w/index.php?title=Discrete_sine_transform </description></item>
+    ///     <item><description>
+    ///       K. R. Castleman, Digital Image Processing. Chapter 13, p.288.
+    ///       Prentice. Hall, 1998.</description></item>
+    ///   </list></para>
+    /// </remarks>
+    /// 
     public static class CosineTransform
     {
 

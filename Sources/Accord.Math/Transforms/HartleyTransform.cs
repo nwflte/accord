@@ -29,16 +29,27 @@ namespace Accord.Math
     using AForge.Math;
 
     /// <summary>
-    ///   Harley Transformation.
+    ///   Hartley Transformation.
     /// </summary>
+    /// 
+    /// <para>
+    ///   In mathematics, the Hartley transform is an integral transform closely related
+    ///   to the Fourier transform, but which transforms real-valued functions to real-
+    ///   valued functions. It was proposed as an alternative to the Fourier transform by
+    ///   R. V. L. Hartley in 1942, and is one of many known Fourier-related transforms. 
+    ///   Compared to the Fourier transform, the Hartley transform has the advantages of 
+    ///   transforming real functions to real functions (as opposed to requiring complex 
+    ///   numbers) and of being its own inverse.</para>
     /// 
     /// <remarks>
     ///   References:
     ///   <list type="bullet">
     ///     <item><description>
-    ///       Digital Image Processing - Kenneth R. Castleman - Chapter 13 - p.289</description></item>
+    ///       K. R. Castleman, Digital Image Processing. Chapter 13, p.289.
+    ///       Prentice. Hall, 1998.</description></item>
     ///     <item><description>
-    ///       Poularikas A.D. "The Hartley Transform" - p.15 (1-D)</description></item>
+    ///       Poularikas A. D. “The Hartley Transform”. The Handbook of Formulas and 
+    ///       Tables for Signal Processing. Ed. Alexander D. Poularikas, 1999.</description></item>
     ///   </list>
     /// </remarks>
     /// 

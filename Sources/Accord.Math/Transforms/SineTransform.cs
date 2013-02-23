@@ -32,7 +32,28 @@ namespace Accord.Math
     ///   Discrete Sine Transform
     /// </summary>
     /// 
-    public static class DiscreteSineTransform
+    /// <remarks>
+    /// <para>
+    ///   In mathematics, the discrete sine transform (DST) is a Fourier-related transform
+    ///   similar to the discrete Fourier transform (DFT), but using a purely real matrix. It
+    ///   is equivalent to the imaginary parts of a DFT of roughly twice the length, operating
+    ///   on real data with odd symmetry (since the Fourier transform of a real and odd function
+    ///   is imaginary and odd), where in some variants the input and/or output data are shifted
+    ///   by half a sample.</para>
+    ///   
+    /// <para>
+    ///   References:
+    ///   <list type="bullet">
+    ///     <item><description>
+    ///       Wikipedia contributors, "Discrete sine transform," Wikipedia, The Free Encyclopedia,
+    ///       available at: http://en.wikipedia.org/w/index.php?title=Discrete_sine_transform </description></item>
+    ///     <item><description>
+    ///       K. R. Castleman, Digital Image Processing. Chapter 13, p.288.
+    ///       Prentice. Hall, 1998.</description></item>
+    ///   </list></para>
+    /// </remarks>
+    /// 
+    public static class SineTransform
     {
 
         /// <summary>
