@@ -51,7 +51,7 @@
       <DocumentationSource sourceFile="..\..\..\Release\Accord.Vision.xml" />
       <DocumentationSource sourceFile="..\..\..\Release\Accord.xml" />
     </DocumentationSources>
-    <CopyrightText>&amp;lt%3ba href=&amp;quot%3bhttp://accord.googlecode.com&amp;quot%3b target=&amp;quot%3b_blank&amp;quot%3b&amp;gt%3bAccord.NET Framework&amp;lt%3b/a&amp;gt%3b &amp;#169%3b 2009-2012. All documentation is licensed under the Creative Commons Attribution/Share-Alike License.</CopyrightText>
+    <CopyrightText>&amp;lt%3ba href=&amp;quot%3bhttp://accord.googlecode.com&amp;quot%3b target=&amp;quot%3b_blank&amp;quot%3b&amp;gt%3bAccord.NET Framework&amp;lt%3b/a&amp;gt%3b &amp;#169%3b 2009-2013. All documentation is licensed under the Creative Commons Attribution/Share-Alike License.</CopyrightText>
     <FeedbackEMailAddress>
     </FeedbackEMailAddress>
     <NamespaceSummaries>
