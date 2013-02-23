@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -41,6 +41,10 @@ namespace Accord.Statistics.Kernels
     ///   degree of the polynomial kernel and the alpha for the spherical normalization
     ///   should be given at the construction of the kernel. For more information,
     ///   please see the referenced papers shown below.</para>
+    ///   
+    /// <para>
+    ///   The use of a <see cref="KernelFunctionCache">cache</see> is highly advisable
+    ///   when using this kernel.</para>
     ///   
     /// <para>
     ///   <list type="bullet">
@@ -95,6 +99,7 @@ namespace Accord.Statistics.Kernels
         /// <summary>
         ///   Constructs a new Dynamic Time Warping kernel.
         /// </summary>
+        /// 
         /// <param name="length">
         ///    The length of the feature vectors
         ///    contained in each sequence.
@@ -108,10 +113,12 @@ namespace Accord.Statistics.Kernels
         /// <summary>
         ///   Constructs a new Dynamic Time Warping kernel.
         /// </summary>
+        /// 
         /// <param name="length">
         ///    The length of the feature vectors
         ///    contained in each sequence.
         /// </param>
+        /// 
         /// <param name="alpha">
         ///    The hypersphere ratio. Default value is 1.
         /// </param>
@@ -125,13 +132,16 @@ namespace Accord.Statistics.Kernels
         /// <summary>
         ///   Constructs a new Dynamic Time Warping kernel.
         /// </summary>
+        /// 
         /// <param name="length">
         ///    The length of the feature vectors
         ///    contained in each sequence.
         /// </param>
+        /// 
         /// <param name="alpha">
         ///    The hypersphere ratio. Default value is 1.
         /// </param>
+        /// 
         /// <param name="degree">
         ///    The degree of the kernel. Default value is 1 (linear kernel).
         /// </param>
@@ -147,6 +157,7 @@ namespace Accord.Statistics.Kernels
         /// <summary>
         ///   Dynamic Time Warping kernel function.
         /// </summary>
+        /// 
         /// <param name="x">Vector <c>x</c> in input space.</param>
         /// <param name="y">Vector <c>y</c> in input space.</param>
         /// <returns>Dot product in feature (kernel) space.</returns>
@@ -170,8 +181,10 @@ namespace Accord.Statistics.Kernels
         /// <summary>
         ///   Global distance D(X,Y) between two sequences of vectors.
         /// </summary>
+        /// 
         /// <param name="X">A sequence of vectors.</param>
         /// <param name="Y">A sequence of vectors.</param>
+        /// 
         /// <returns>The global distance between X and Y.</returns>
         /// 
         private double D(double[] X, double[] Y)
@@ -210,11 +223,13 @@ namespace Accord.Statistics.Kernels
         /// <summary>
         ///   Local distance d(x,y) between two vectors.
         /// </summary>
+        /// 
         /// <param name="X">A sequence of fixed-length vectors X.</param>
         /// <param name="Y">A sequence of fixed-length vectors Y.</param>
         /// <param name="ix">The index of the vector in the sequence x.</param>
         /// <param name="iy">The index of the vector in the sequence y.</param>
         /// <param name="length">The fixed-length of the vectors in the sequences.</param>
+        /// 
         /// <returns>The local distance between x and y.</returns>
         /// 
         private static double d(double[] X, int ix, double[] Y, int iy, int length)
@@ -230,8 +245,10 @@ namespace Accord.Statistics.Kernels
                 p += X[i++] * Y[j++];
 
             // Assert the value is in the [-1;+1] range
-            if (p > +1.0) p = +1.0;
-            else if (p < -1.0) p = -1.0;
+            if (p > +1.0) 
+                p = +1.0;
+            else if (p < -1.0) 
+                p = -1.0;
 
             // Return the arc-cosine of the inner product
             return Math.Acos(p);
@@ -243,8 +260,11 @@ namespace Accord.Statistics.Kernels
         ///   a hypersphere, augmenting their size in one unit
         ///   and normalizing them to be unit vectors.
         /// </summary>
+        /// 
         /// <param name="x">A sequence of vectors.</param>
+        /// 
         /// <returns>A sequence of vector projections.</returns>
+        /// 
         private double[] snorm(double[] x)
         {
             // Get the number of vectors in the sequence
