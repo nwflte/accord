@@ -11,7 +11,7 @@ using System.Resources;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Accord.NET")]
 [assembly: AssemblyProduct("Accord.Controls.Statistics")]
-[assembly: AssemblyCopyright("Copyright © César Souza 2009-2012")]
+[assembly: AssemblyCopyright("Copyright © César Souza, 2009-2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -30,8 +30,8 @@ using System.Resources;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("2.8.1.0")]
-[assembly: AssemblyFileVersion("2.8.1.0")]
+[assembly: AssemblyVersion("2.8.2.0")]
+[assembly: AssemblyFileVersion("2.8.2.0")]
 
 
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "Sortable", Scope = "type", Target = "Accord.Controls.SortableBindingList`1")]
