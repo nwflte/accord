@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -31,8 +31,54 @@ namespace Accord.Imaging.Moments
     ///   Raw image moments.
     /// </summary>
     /// 
-    public class RawMoments : IMoments
+    /// <remarks>
+    /// <para>
+    ///   In image processing, computer vision and related fields, an image moment is
+    ///   a certain particular weighted average (moment) of the image pixels' intensities,
+    ///   or a function of such moments, usually chosen to have some attractive property 
+    ///   or interpretation.</para>
+    ///
+    /// <para>
+    ///   Image moments are useful to describe objects after segmentation. Simple properties 
+    ///   of the image which are found via image moments include area (or total intensity), 
+    ///   its centroid, and information about its orientation.</para>
+    ///   
+    /// <para>
+    ///   The raw moments are the most basic moments which can be computed from an image,
+    ///   and can then be further processed to achieve <see cref="CentralMoments"/> or even
+    ///   <see cref="HuMoments"/>.</para>
+    ///   
+    /// <para>
+    ///   References:
+    ///   <list type="bullet">
+    ///     <item><description>
+    ///       Wikipedia contributors. "Image moment." Wikipedia, The Free Encyclopedia. Wikipedia,
+    ///       The Free Encyclopedia. Available at http://en.wikipedia.org/wiki/Image_moment </description></item>
+    ///   </list>
+    /// </para>
+    /// </remarks>
+    /// 
+    /// <example>
+    /// <code>
+    /// Bitmap image = ...;
+    ///
+    /// // Compute the raw moments of up to third order
+    /// RawMoments m = new RawMoments(image, order: 3);
+    /// </code>
+    /// </example>
+    /// 
+    /// <seealso cref="HuMoments"/>
+    /// <seealso cref="CentralMoments"/>
+    /// 
+    public class RawMoments : MomentsBase, IMoments
     {
+
+        /// <summary>
+        ///   Gets the default maximum moment order.
+        /// </summary>
+        /// 
+        public const int DefaultOrder = 3;
+
 
         /// <summary>
         ///   Raw moment of order (0,0).
@@ -70,6 +116,30 @@ namespace Accord.Imaging.Moments
         /// 
         public float M02 { get; private set; }
 
+        /// <summary>
+        ///   Raw moment of order (2,1).
+        /// </summary>
+        /// 
+        public float M21 { get; private set; }
+
+        /// <summary>
+        ///   Raw moment of order (1,2).
+        /// </summary>
+        /// 
+        public float M12 { get; private set; }
+
+        /// <summary>
+        ///   Raw moment of order (3,0).
+        /// </summary>
+        /// 
+        public float M30 { get; private set; }
+
+        /// <summary>
+        ///   Raw moment of order (0,3).
+        /// </summary>
+        /// 
+        public float M03 { get; private set; }
+
 
         /// <summary>
         ///   Inverse raw moment of order (0,0).
@@ -99,15 +169,74 @@ namespace Accord.Imaging.Moments
         public float Area { get { return M00; } }
 
 
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="Moments"/> class.
+        /// </summary>
+        /// 
+        public RawMoments(int order = DefaultOrder)
+            : base(order) { }
 
         /// <summary>
         ///   Initializes a new instance of the <see cref="Moments"/> class.
         /// </summary>
         /// 
-        public RawMoments()
+        public RawMoments(Bitmap image, Rectangle area, int order = DefaultOrder)
+            : base(order)
         {
+            Compute(image, area);
         }
 
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="Moments"/> class.
+        /// </summary>
+        /// 
+        public RawMoments(UnmanagedImage image, Rectangle area, int order = DefaultOrder)
+            : base(image, area, order) { }
+
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="Moments"/> class.
+        /// </summary>
+        /// 
+        public RawMoments(float[,] image, Rectangle area, int order = DefaultOrder)
+            : base(image, area, order) { }
+
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="Moments"/> class.
+        /// </summary>
+        /// 
+        public RawMoments(UnmanagedImage image, int order = DefaultOrder)
+            : base(image, order) { }
+
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="Moments"/> class.
+        /// </summary>
+        /// 
+        public RawMoments(Bitmap image, int order = DefaultOrder)
+            : base(image, order) { }
+
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="Moments"/> class.
+        /// </summary>
+        /// 
+        public RawMoments(float[,] image, int order = DefaultOrder)
+            : base(image, order) { }
+
+
+
+        /// <summary>
+        ///   Computes the raw moments for the specified image.
+        /// </summary>
+        /// 
+        /// <param name="image">The image whose moments should be computed.</param>
+        /// <param name="area">The region of interest in the image to compute moments for.</param>
+        /// <param name="secondOrder"><c>True</c> to compute second order moments, <c>false</c> otherwise.</param>
+        /// 
+        [Obsolete("Use the Order property to determine the maximum order to be computed.")]
+        public void Compute(float[,] image, Rectangle area, bool secondOrder)
+        {
+            Order = secondOrder ? 2 : 1;
+            Compute(image, area);
+        }
 
         /// <summary>
         ///   Computes the raw moments for the specified image.
@@ -115,9 +244,8 @@ namespace Accord.Imaging.Moments
         /// 
         /// <param name="image">The image.</param>
         /// <param name="area">The region of interest in the image to compute moments for.</param>
-        /// <param name="secondOrder"><c>True</c> to compute second order moments, <c>false</c> otherwise.</param>
         /// 
-        public unsafe void Compute(float[,] image, Rectangle area, bool secondOrder)
+        public unsafe override void Compute(float[,] image, Rectangle area)
         {
             int height = image.GetLength(0);
             int width = image.GetLength(1);
@@ -155,11 +283,20 @@ namespace Accord.Imaging.Moments
                         M01 += y * v;
                         M10 += x * v;
 
-                        if (secondOrder)
+                        if (Order >= 2)
                         {
                             M11 += x * y * v;
                             M02 += y * y * v;
                             M20 += x * x * v;
+                        }
+
+                        if (Order >= 3)
+                        {
+                            M12 += x * y * y * v;
+                            M21 += x * x * y * v;
+
+                            M30 += x * x * x * v;
+                            M03 += y * y * y * v;
                         }
                     }
 
@@ -179,20 +316,7 @@ namespace Accord.Imaging.Moments
         /// <param name="image">The image.</param>
         /// <param name="area">The region of interest in the image to compute moments for.</param>
         /// 
-        public unsafe void Compute(UnmanagedImage image, Rectangle area)
-        {
-            Compute(image, area, true);
-        }
-
-        /// <summary>
-        ///   Computes the raw moments for the specified image.
-        /// </summary>
-        /// 
-        /// <param name="image">The image.</param>
-        /// <param name="area">The region of interest in the image to compute moments for.</param>
-        /// <param name="secondOrder"><c>True</c> to compute second order moments, <c>false</c> otherwise.</param>
-        /// 
-        public unsafe void Compute(UnmanagedImage image, Rectangle area, bool secondOrder)
+        public unsafe override void Compute(UnmanagedImage image, Rectangle area)
         {
             int height = image.Height;
             int width = image.Width;
@@ -231,11 +355,20 @@ namespace Accord.Imaging.Moments
                         M01 += y * v;
                         M10 += x * v;
 
-                        if (secondOrder)
+                        if (Order >= 2)
                         {
                             M11 += x * y * v;
                             M02 += y * y * v;
                             M20 += x * x * v;
+                        }
+
+                        if (Order >= 3)
+                        {
+                            M12 += x * y * y * v;
+                            M21 += x * x * y * v;
+
+                            M30 += x * x * x * v;
+                            M03 += y * y * y * v;
                         }
                     }
 
@@ -265,11 +398,20 @@ namespace Accord.Imaging.Moments
                         M01 += y * v;
                         M10 += x * v;
 
-                        if (secondOrder)
+                        if (Order >= 2)
                         {
                             M11 += x * y * v;
                             M02 += y * y * v;
                             M20 += x * x * v;
+                        }
+
+                        if (Order >= 3)
+                        {
+                            M12 += x * y * y * v;
+                            M21 += x * x * y * v;
+
+                            M30 += x * x * x * v;
+                            M03 += y * y * y * v;
                         }
                     }
 
@@ -292,6 +434,9 @@ namespace Accord.Imaging.Moments
         {
             M00 = M10 = M01 = 0;
             M11 = M20 = M02 = 0;
+
+            M21 = M12 = 0;
+            M30 = M03 = 0;
 
             InvM00 = 0;
 

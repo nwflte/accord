@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -36,10 +36,19 @@ namespace Accord.Imaging.Moments
         ///   Computes the center moments for the specified image.
         /// </summary>
         /// 
-        /// <param name="image">The image.</param>
+        /// <param name="image">The image whose moments should be computed.</param>
         /// <param name="area">The region of interest in the image to compute moments for.</param>
         /// 
         void Compute(UnmanagedImage image, Rectangle area);
+
+        /// <summary>
+        ///   Computes the center moments for the specified image.
+        /// </summary>
+        /// 
+        /// <param name="image">The image whose moments should be computed.</param>
+        /// <param name="area">The region of interest in the image to compute moments for.</param>
+        /// 
+        void Compute(Bitmap image, Rectangle area);
 
     }
 }
