@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -343,7 +343,7 @@ namespace Accord.Statistics.Models.Markov
             }
 
             // Argument check
-            double[][] x = checkAndConvert(observations);
+            double[][] x = MarkovHelperMethods.checkAndConvert(observations, dimension);
 
 
             // Viterbi-forward algorithm.
@@ -446,8 +446,8 @@ namespace Accord.Statistics.Models.Markov
             if (observations.Length == 0)
                 return Double.NegativeInfinity;
 
-            
-            double[][] x = checkAndConvert(observations);
+
+            double[][] x = MarkovHelperMethods.checkAndConvert(observations, dimension);
 
 
             // Forward algorithm
@@ -484,8 +484,8 @@ namespace Accord.Statistics.Models.Markov
             if (observations.Length == 0)
                 return Double.NegativeInfinity;
 
-           
-            double[][] x = checkAndConvert(observations);
+
+            double[][] x = MarkovHelperMethods.checkAndConvert(observations, dimension);
 
 
             double logLikelihood = Probabilities[path[0]]
@@ -573,7 +573,7 @@ namespace Accord.Statistics.Models.Markov
 
 
             // Convert to multivariate observations
-            double[][] obs = convertNoCheck(observations);
+            double[][] obs = MarkovHelperMethods.convertNoCheck(observations, dimension);
 
             // Matrix to store the probabilities in assuming the next
             // observations (prediction) will belong to each state.
@@ -690,7 +690,7 @@ namespace Accord.Statistics.Models.Markov
 
 
             // Convert to multivariate observations
-            double[][] obs = convertNoCheck(observations);
+            double[][] obs = MarkovHelperMethods.convertNoCheck(observations, dimension);
 
             // Matrix to store the probabilities in assuming the next
             // observations (prediction) will belong to each state.
@@ -834,7 +834,7 @@ namespace Accord.Statistics.Models.Markov
             where TUnivariate : DistributionBase, TDistribution, IUnivariateDistribution
         {
             // Convert to multivariate observations
-            double[][] obs = convertNoCheck(observations);
+            double[][] obs = MarkovHelperMethods.convertNoCheck(observations, dimension);
 
             // Matrix to store the probabilities in assuming the next
             // observations (prediction) will belong to each state.
@@ -935,57 +935,6 @@ namespace Accord.Statistics.Models.Markov
 
             var multi = dist as IMultivariateDistribution;
             return multi.Mode;
-        }
-
-        /// <summary>
-        ///   Converts a univariate or multivariate array
-        ///   of observations into a two-dimensional jagged array.
-        /// </summary>
-        /// 
-        private double[][] convertNoCheck(Array array)
-        {
-            double[][] multivariate = array as double[][];
-            if (multivariate != null) return multivariate;
-
-            double[] univariate = array as double[];
-            if (univariate != null) return Accord.Math.Matrix.Split(univariate, Dimension);
-
-            throw new ArgumentException("Invalid array argument type.", "array");
-        }
-
-        /// <summary>
-        ///   Converts a univariate or multivariate array
-        ///   of observations into a two-dimensional jagged array.
-        /// </summary>
-        /// 
-        private double[][] checkAndConvert(Array observations)
-        {
-            if (observations == null)
-                throw new ArgumentNullException("observations");
-
-            // Test if the observations are multivariate
-            double[][] multivariate = observations as double[][];
-            if (multivariate != null)
-            {
-                for (int i = 0; i < multivariate.Length; i++)
-                    if (multivariate[i].Length != Dimension)
-                        throw new DimensionMismatchException("observations", "This model expects observations of length " + Dimension);
-                return multivariate;
-            }
-
-            // Test if the observations are univariate
-            double[] univariate = observations as double[];
-            if (univariate != null)
-            {
-                if (Dimension != 1)
-                    throw new DimensionMismatchException("observations", "This model expects univariate observations");
-                return Accord.Math.Matrix.Split(univariate, Dimension);
-            }
-
-            // else
-            throw new ArgumentException("Argument should be either of type " +
-                    "double[] (for univariate observation) or double[][] (for " +
-                    "multivariate observation).", "observations");
         }
         #endregion
 

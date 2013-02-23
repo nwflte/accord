@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -25,6 +25,8 @@ namespace Accord.Statistics.Models.Markov.Learning
     using System;
     using Accord.Math;
     using System.Threading.Tasks;
+    using Accord.Statistics.Models.Markov.Topology;
+    using System.Diagnostics;
 
     /// <summary>
     ///   Configuration function delegate for Sequence Classifier Learning algorithms.
@@ -207,6 +209,82 @@ namespace Accord.Statistics.Models.Markov.Learning
         /// <returns>A <see cref="Threshold">threshold Markov model</see>.</returns>
         /// 
         public abstract TModel Threshold();
+
+        /// <summary>
+        ///   Creates the state transition topology for the threshold model. This
+        ///   method can be used to help in the implementation of the <see cref="Threshold"/>
+        ///   abstract method which has to be defined for implementers of this class.
+        /// </summary>
+        /// 
+        protected ITopology CreateThresholdTopology()
+        {
+            TModel[] models = Classifier.Models;
+
+            int states = 0;
+
+            // Get the total number of states
+            for (int i = 0; i < models.Length; i++)
+                states += models[i].States;
+
+            // Create the threshold model transition matrix
+            double[,] transitions = new double[states, states];
+
+            // Set the initial probabilities
+            double[] initial = new double[states];
+            for (int i = 0; i < initial.Length; i++)
+                initial[i] = 1.0 / models.Length;
+
+
+            // Then, for each hidden Markov model in the classifier
+            for (int i = 0, modelStartIndex = 0; i < models.Length; i++)
+            {
+
+                // Now, for each state 'j' in the model
+                for (int j = 0; j < models[i].States; j++)
+                {
+                    // Retrieve the state self-transition probability
+                    double self = Math.Exp(models[i].Transitions[j, j]);
+
+                    // Make sure the exp-log conversion was within limits
+                    if (self < 0) self = 0; else if (self > 1) self = 1;
+
+                    // Check where we should write it
+                    int stateIndex = modelStartIndex + j;
+
+                    // Copy the self-transition probability
+                    transitions[stateIndex, stateIndex] = self;
+
+                    // And normalize all others to sum up to one
+                    double pinv = (1.0 - self) / (models[i].States - 1);
+
+                    for (int k = 0; k < models[i].States; k++)
+                        if (j != k) transitions[stateIndex, modelStartIndex + k] = pinv;
+
+#if DEBUG
+                    // Rows should sum up to one.
+                    check(transitions, stateIndex);
+#endif
+                }
+
+                // Next model starts where this ends
+                modelStartIndex += models[i].States;
+            }
+
+
+            // Create and return the custom threshold topology
+            return new Custom(transitions, initial, logarithm: false);
+        }
+
+        
+        private static void check(double[,] transitions, int index)
+        {
+            // Check if they indeed sum up to one
+            var modelRow = transitions.GetRow(index);
+            var modelRowSum = modelRow.Sum();
+            if (Math.Abs(modelRowSum - 1.0) >= 1e-4)
+                throw new InvalidOperationException("Rows do not sum to one.");
+        }
+
 
         /// <summary>
         ///   Raises the <see cref="E:GenerativeClassModelLearningFinished"/> event.
