@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Accord.NET")]
 [assembly: AssemblyProduct("Accord.Controls.Imaging")]
-[assembly: AssemblyCopyright("Copyright © César Souza 2009-2012")]
+[assembly: AssemblyCopyright("Copyright © César Souza, 2009-2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
