@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -56,6 +56,15 @@ namespace Accord.Statistics.Filters
         public Codification(DataTable data)
         {
             this.Detect(data);
+        }
+
+        /// <summary>
+        ///   Creates a new Codification Filter.
+        /// </summary>
+        /// 
+        public Codification(DataTable data, params string[] columns)
+        {
+            this.Detect(data, columns);
         }
 
         /// <summary>
@@ -132,6 +141,36 @@ namespace Accord.Statistics.Filters
                     if (options.Mapping.TryGetValue(data[i], out result[i]))
                         break;
                 }
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        ///   Translates an array of values into their
+        ///   integer representation, assuming values
+        ///   are given in original order of columns.
+        /// </summary>
+        /// 
+        /// <param name="row">A <see cref="DataRow"/> containing the values to be translated.</param>
+        /// <param name="columnNames">The columns of the <paramref name="row"/> containing the
+        /// values to be translated.</param>
+        /// 
+        /// <returns>An array of integers in which each value
+        /// uniquely identifies the given value for each of
+        /// the variables.</returns>
+        /// 
+        public int[] Translate(DataRow row, params string[] columnNames)
+        {
+            int[] result = new int[columnNames.Length];
+
+            for (int i = 0; i < columnNames.Length; i++)
+            {
+                string name = columnNames[i];
+                string value = row[name] as string;
+
+                Options options = this.Columns[name];
+                result[i] = options.Mapping[value];
             }
 
             return result;
@@ -277,27 +316,40 @@ namespace Accord.Statistics.Filters
         ///   Auto detects the filter options by analyzing a given <see cref="System.Data.DataTable"/>.
         /// </summary> 
         ///  
+        public void Detect(DataTable data, string[] columns)
+        {
+            foreach (string column in columns)
+                parseColumn(data, data.Columns[column]);
+        }
+
+        /// <summary>
+        ///   Auto detects the filter options by analyzing a given <see cref="System.Data.DataTable"/>.
+        /// </summary> 
+        ///  
         public void Detect(DataTable data)
         {
             foreach (DataColumn column in data.Columns)
+                parseColumn(data, column);
+        }
+
+        private void parseColumn(DataTable data, DataColumn column)
+        {
+            // If the column has string type
+            if (column.DataType == typeof(String))
             {
-                // If the column has string type
-                if (column.DataType == typeof(String))
+                // We'll create a mapping
+                string name = column.ColumnName;
+                var map = new Dictionary<string, int>();
+                Columns.Add(new Options(name, map));
+
+                // Do a select distinct to get distinct values
+                DataTable d = data.DefaultView.ToTable(true, name);
+
+                // For each distinct value, create a corresponding integer
+                for (int i = 0; i < d.Rows.Count; i++)
                 {
-                    // We'll create a mapping
-                    string name = column.ColumnName;
-                    var map = new Dictionary<string, int>();
-                    Columns.Add(new Options(name, map));
-
-                    // Do a select distinct to get distinct values
-                    DataTable d = data.DefaultView.ToTable(true, name);
-
-                    // For each distinct value, create a corresponding integer
-                    for (int i = 0; i < d.Rows.Count; i++)
-                    {
-                        // And register the String->Integer mapping
-                        map.Add(d.Rows[i][0] as string, i);
-                    }
+                    // And register the String->Integer mapping
+                    map.Add(d.Rows[i][0] as string, i);
                 }
             }
         }
