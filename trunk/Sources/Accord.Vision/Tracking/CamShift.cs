@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 // Copyright © Benjamin Jung, 2009
@@ -571,13 +571,13 @@ namespace Accord.Vision.Tracking
             lock (sync) generateBackprojectionMap(frame, currentHistogram);
 
 
-            RawMoments moments = new RawMoments();
+            RawMoments moments = new RawMoments(1);
 
             // Mean shift with fixed number of iterations
             for (int i = 0; i < MAX_ITERATIONS - 1; i++)
             {
                 // Locate first order moments
-                moments.Compute(map, searchWindow, false);
+                moments.Compute(map, searchWindow);
 
                 // Shift the mean (centroid)
                 searchWindow.X += (int)(moments.CenterX - searchWindow.Width / 2f);
@@ -585,7 +585,7 @@ namespace Accord.Vision.Tracking
             }
 
             // Locate second order moments and perform final shift
-            moments.Compute(map, searchWindow, true);
+            moments.Order = 2; moments.Compute(map, searchWindow);
             searchWindow.X += (int)(moments.CenterX - searchWindow.Width / 2f);
             searchWindow.Y += (int)(moments.CenterY - searchWindow.Height / 2f);
 
