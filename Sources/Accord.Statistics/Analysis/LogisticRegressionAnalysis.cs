@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -406,7 +406,7 @@ namespace Accord.Statistics.Analysis
         /// <param name="model">Another logistic regression model.</param>
         /// <returns>The Likelihood-Ratio between the two models.</returns>
         /// 
-        public double GetLikelihoodRatio(LogisticRegression model)
+        public double GetLikelihoodRatio(GeneralizedLinearRegression model)
         {
             return regression.GetLogLikelihoodRatio(inputData, outputData, model);
         }
