@@ -5,7 +5,7 @@
 // Copyright © Christopher Evans, 2009-2011
 // http://www.chrisevansdev.com/
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -35,7 +35,7 @@ namespace Accord.Imaging
     /// <seealso cref="SpeededUpRobustFeaturesDescriptor"/>
     /// 
     [Serializable]
-    public class SpeededUpRobustFeaturePoint
+    public class SpeededUpRobustFeaturePoint : IFeaturePoint
     {
 
         /// <summary>
