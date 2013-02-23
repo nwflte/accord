@@ -67,33 +67,41 @@ namespace Accord.Neuro
         ///   the network using Nguyen-Widrow method's.
         /// </summary>
         /// 
-        public void Randomize()
+        public void Randomize(int layerIndex)
         {
             Neuron.RandRange = randRange;
 
-            for (int i = 0; i < network.Layers.Length; i++)
+            for (int j = 0; j < network.Layers[layerIndex].Neurons.Length; j++)
             {
-                for (int j = 0; j < network.Layers[i].Neurons.Length; j++)
-                {
-                    ActivationNeuron neuron = network.Layers[i].Neurons[j] as ActivationNeuron;
-                    
-                    neuron.Randomize();
+                ActivationNeuron neuron = network.Layers[layerIndex].Neurons[j] as ActivationNeuron;
 
-                    double norm = 0.0;
+                neuron.Randomize();
 
-                    // Calculate the Euclidean Norm for the weights
-                    for (int k = 0; k < neuron.Weights.Length; k++)
-                        norm += neuron.Weights[k] * neuron.Weights[k];
-                    norm += neuron.Threshold * neuron.Threshold;
+                double norm = 0.0;
 
-                    norm = System.Math.Sqrt(norm);
+                // Calculate the Euclidean Norm for the weights
+                for (int k = 0; k < neuron.Weights.Length; k++)
+                    norm += neuron.Weights[k] * neuron.Weights[k];
+                norm += neuron.Threshold * neuron.Threshold;
 
-                    // Rescale the weights using beta and the norm
-                    for (int k = 0; k < neuron.InputsCount; k++)
-                        neuron.Weights[k] = beta * neuron.Weights[k] / norm;
-                    neuron.Threshold = beta * neuron.Threshold / norm;
-                }
+                norm = System.Math.Sqrt(norm);
+
+                // Rescale the weights using beta and the norm
+                for (int k = 0; k < neuron.InputsCount; k++)
+                    neuron.Weights[k] = beta * neuron.Weights[k] / norm;
+                neuron.Threshold = beta * neuron.Threshold / norm;
             }
+        }
+
+        /// <summary>
+        ///   Randomizes (initializes) the weights of
+        ///   the network using a Gaussian distribution.
+        /// </summary>
+        /// 
+        public void Randomize()
+        {
+            for (int i = 0; i < network.Layers.Length; i++)
+                Randomize(i);
         }
 
     }
