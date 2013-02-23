@@ -114,7 +114,15 @@
     <Compile Include="Converters\MatrixToImage.cs" />
     <Compile Include="Converters\ImageToArray.cs" />
     <Compile Include="Converters\ImageToMatrix.cs" />
+    <Compile Include="BagOfVisualWords`1.cs" />
+    <Compile Include="Interest Points\HistogramsOfOrientedGradients.cs" />
+    <Compile Include="KNearestNeighborMatching.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Interest Points\CornerFeaturePoint.cs" />
+    <Compile Include="Interest Points\CornerFeaturesDetector.cs" />
+    <Compile Include="Interest Points\Base\IFeatureDetector.cs" />
+    <Compile Include="Moments\HuMoments.cs" />
+    <Compile Include="Moments\MomentsBase.cs" />
     <Compile Include="RansacFundamentalEstimator.cs" />
     <Compile Include="CorrelationMatching.cs" />
     <Compile Include="Filters\CombineChannel.cs" />

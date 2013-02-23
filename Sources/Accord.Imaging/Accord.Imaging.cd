@@ -1,8 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="Accord.Imaging.CorrelationMatching">
-    <Position X="7.5" Y="12.75" Width="2.75" />
+    <Position X="3" Y="8.75" Width="2.75" />
     <Members>
+      <Method Name="computeCorrelationMatrix" Hidden="true" />
       <Field Name="dmax" Hidden="true" />
       <Field Name="windowSize" Hidden="true" />
     </Members>
@@ -16,7 +17,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Imaging.HarrisCornersDetector" BaseTypeListCollapsed="true">
-    <Position X="18" Y="7.5" Width="2.75" />
+    <Position X="26" Y="15" Width="2.75" />
     <Members>
       <Method Name="convolve" Hidden="true" />
       <Method Name="createGaussian" Hidden="true" />
@@ -43,7 +44,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Imaging.RansacHomographyEstimator">
-    <Position X="10.5" Y="12.75" Width="2.25" />
+    <Position X="6" Y="8.75" Width="2.25" />
     <Members>
       <Method Name="degenerate" Hidden="true" />
       <Method Name="distance" Hidden="true" />
@@ -77,12 +78,14 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Imaging.Filters.Blend">
-    <Position X="21.25" Y="0.5" Width="2" />
+    <Position X="26.25" Y="1.5" Width="2" />
     <Members>
+      <Field Name="alphaOnly" Hidden="true" />
       <Field Name="center" Hidden="true" />
       <Method Name="distance" Hidden="true" />
       <Field Name="fillColor" Hidden="true" />
       <Field Name="formatTranslations" Hidden="true" />
+      <Field Name="gradient" Hidden="true" />
       <Field Name="homography" Hidden="true" />
       <Field Name="imageSize" Hidden="true" />
       <Field Name="offset" Hidden="true" />
@@ -99,7 +102,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Imaging.Filters.Concatenate">
-    <Position X="19" Y="0.5" Width="2" />
+    <Position X="21.25" Y="3.5" Width="2.25" />
     <Members>
       <Field Name="formatTranslations" Hidden="true" />
       <Field Name="overlayImage" Hidden="true" />
@@ -115,7 +118,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Imaging.Filters.PointsMarker">
-    <Position X="14.75" Y="0.5" Width="2.25" />
+    <Position X="18" Y="0.75" Width="2.25" />
     <Members>
       <Field Name="formatTranslations" Hidden="true" />
       <Field Name="markerColor" Hidden="true" />
@@ -133,7 +136,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Imaging.Filters.PairsMarker">
-    <Position X="12.25" Y="0.5" Width="2.25" />
+    <Position X="15.5" Y="0.75" Width="2.25" />
     <Members>
       <Field Name="formatTranslations" Hidden="true" />
       <Field Name="markerColor" Hidden="true" />
@@ -151,7 +154,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Imaging.IntegralImage2">
-    <Position X="10.75" Y="4.5" Width="2.25" />
+    <Position X="4.5" Y="15.75" Width="2.25" />
     <Members>
       <Method Name="~IntegralImage2" Hidden="true" />
       <Field Name="height" Hidden="true" />
@@ -183,7 +186,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Imaging.Filters.WaveletTransform">
-    <Position X="23.5" Y="0.5" Width="2.5" />
+    <Position X="18.25" Y="3.5" Width="2.5" />
     <Members>
       <Field Name="backward" Hidden="true" />
       <Field Name="formatTranslations" Hidden="true" />
@@ -200,7 +203,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Imaging.FastCornersDetector">
-    <Position X="18" Y="4.75" Width="2.75" />
+    <Position X="26" Y="12.25" Width="2.75" />
     <Members>
       <Method Name="detect" Hidden="true" />
       <Method Name="makeOffsets" Hidden="true" />
@@ -220,7 +223,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Imaging.SpeededUpRobustFeaturesDetector" BaseTypeListCollapsed="true">
-    <Position X="21.5" Y="5" Width="3.5" />
+    <Position X="14.25" Y="10.5" Width="3.5" />
     <Members>
       <Field Name="computeOrientation" Hidden="true" />
       <Field Name="descriptor" Hidden="true" />
@@ -257,14 +260,15 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Imaging.SpeededUpRobustFeaturePoint">
-    <Position X="25.5" Y="5" Width="3.25" />
+    <Position X="18.25" Y="12" Width="3.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAUBAAAAAAAIAAAAAAAAAAAAAAAAAAAEAYAA=</HashCode>
       <FileName>Interest Points\SpeededUpRobustFeaturePoint.cs</FileName>
     </TypeIdentifier>
+    <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Imaging.Filters.FeaturesMarker">
-    <Position X="17.25" Y="0.5" Width="1.5" />
+    <Position X="15.5" Y="3.5" Width="2.5" />
     <Members>
       <Field Name="points" Hidden="true" />
     </Members>
@@ -277,26 +281,30 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Imaging.Moments.CentralMoments">
-    <Position X="0.5" Y="9.75" Width="2.75" />
+    <Position X="32.25" Y="13" Width="2.75" />
     <Members>
+      <Field Name="DefaultOrder" Hidden="true" />
       <Field Name="invM00" Hidden="true" />
     </Members>
     <TypeIdentifier>
-      <HashCode>AEDAAQAAAAABAACBAAAAAAAAAAAQAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AEDgAQAAAAABAACBAAAAAAAAAAAQAAAAAAgAAAAAAAA=</HashCode>
       <FileName>Moments\CentralMoments.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Imaging.Moments.RawMoments">
-    <Position X="3.75" Y="9.5" Width="2" />
+    <Position X="35.5" Y="13" Width="2.5" />
+    <Members>
+      <Field Name="DefaultOrder" Hidden="true" />
+    </Members>
     <TypeIdentifier>
-      <HashCode>AEAAAAAAAAEABAAAGAAAACAAAAAAABIAAAAAAQAAAAA=</HashCode>
+      <HashCode>AEBAAAAAAAEABAAAGAAAACAAAAAAABIAAAgAAQAAAAA=</HashCode>
       <FileName>Moments\RawMoments.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Imaging.BorderFollowing">
-    <Position X="7.25" Y="9.75" Width="2.5" />
+    <Position X="1.25" Y="17.5" Width="2.5" />
     <Members>
       <Method Name="CheckPixelFormat" Hidden="true" />
       <Field Name="nextDirection" Hidden="true" />
@@ -309,15 +317,16 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Imaging.Converters.ArrayToImage" BaseTypeListCollapsed="true">
-    <Position X="20" Y="12.25" Width="2.5" />
+    <Position X="32.25" Y="5" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAABBAAAAAAEIAAAEAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Converters\ArrayToImage.cs</FileName>
+      <NewMemberFileName>Converters\ImageToArray.cs</NewMemberFileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Imaging.Converters.ImageToArray" BaseTypeListCollapsed="true">
-    <Position X="23" Y="12.25" Width="2.5" />
+    <Position X="32.25" Y="1.5" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAgABAAAAAAEIAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Converters\ImageToArray.cs</FileName>
@@ -325,7 +334,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Imaging.Converters.ImageToMatrix" BaseTypeListCollapsed="true">
-    <Position X="26" Y="12.25" Width="2.5" />
+    <Position X="35.25" Y="1.25" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAgABAAAAAAEIAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Converters\ImageToMatrix.cs</FileName>
@@ -333,7 +342,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Imaging.Converters.MatrixToImage" BaseTypeListCollapsed="true">
-    <Position X="29" Y="12.25" Width="2.5" />
+    <Position X="35.25" Y="5" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAABAAAAAAEIAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Converters\MatrixToImage.cs</FileName>
@@ -341,7 +350,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Imaging.Filters.CombineChannel">
-    <Position X="26.25" Y="0.5" Width="1.75" />
+    <Position X="24" Y="3.5" Width="1.75" />
     <Members>
       <Field Name="baseHeight" Hidden="true" />
       <Field Name="baseWidth" Hidden="true" />
@@ -354,19 +363,20 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Imaging.Filters.RectanglesMarker">
-    <Position X="28.25" Y="0.5" Width="2.5" />
+    <Position X="20.75" Y="0.75" Width="2.5" />
     <Members>
+      <Field Name="fillColor" Hidden="true" />
       <Field Name="formatTranslations" Hidden="true" />
       <Field Name="markerColor" Hidden="true" />
       <Field Name="rectangles" Hidden="true" />
     </Members>
     <TypeIdentifier>
-      <HashCode>AAEAAAABAAAgAAAAAAAACAAAQAAgAAAAAAQAAAAAAAA=</HashCode>
+      <HashCode>AAEAAAABAAAgAAAAAAAACAAAQAAgAAAACAQAAAgAAAA=</HashCode>
       <FileName>Filters\RectanglesMarker.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Imaging.Filters.Rectification">
-    <Position X="31" Y="0.5" Width="2.25" />
+    <Position X="23.75" Y="0.75" Width="2.25" />
     <Members>
       <Field Name="fillColor" Hidden="true" />
       <Field Name="formatTranslations" Hidden="true" />
@@ -378,7 +388,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Imaging.SpeededUpRobustFeaturesDescriptor" BaseTypeListCollapsed="true">
-    <Position X="29.25" Y="5" Width="2.75" />
+    <Position X="22" Y="10.5" Width="2.75" />
     <Members>
       <Field Name="ang" Hidden="true" />
       <Field Name="extended" Hidden="true" />
@@ -400,14 +410,14 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Accord.Imaging.BagOfVisualWords">
-    <Position X="10.75" Y="9.25" Width="2.5" />
+    <Position X="8.25" Y="18.5" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AEAAQAEAAAAAAAAQAAAAgAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAA=</HashCode>
       <FileName>BagOfVisualWords.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Accord.Imaging.RansacFundamentalEstimator">
-    <Position X="13" Y="12.75" Width="2.25" />
+    <Position X="6" Y="10.75" Width="2.25" />
     <Members>
       <Method Name="fundamental" Hidden="true" />
       <Field Name="inliers" Hidden="true" />
@@ -418,6 +428,75 @@
     <TypeIdentifier>
       <HashCode>AAAAAAAAACAAAAggAAAAEAAAAFAAAAEABAAAAAAAAAA=</HashCode>
       <FileName>RansacFundamentalEstimator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Accord.Imaging.CornerFeaturePoint" BaseTypeListCollapsed="true">
+    <Position X="18.5" Y="17.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAA=</HashCode>
+      <FileName>Interest Points\CornerFeaturePoint.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Orientation="Left" Position="0.1" Collapsed="true" />
+  </Class>
+  <Class Name="Accord.Imaging.CornerFeaturesDetector" BaseTypeListCollapsed="true">
+    <Position X="14.5" Y="15.75" Width="2.25" />
+    <Members>
+      <Method Name="convert" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAABAAEAAAA=</HashCode>
+      <FileName>Interest Points\CornerFeaturesDetector.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Detector" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Accord.Imaging.HistogramsOfOrientedGradients">
+    <Position X="14.5" Y="17.5" Width="2.5" />
+    <Members>
+      <Field Name="binWidth" Hidden="true" />
+      <Field Name="blockSize" Hidden="true" />
+      <Field Name="cellSize" Hidden="true" />
+      <Field Name="epsilon" Hidden="true" />
+      <Field Name="numberOfBins" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAgAAAAAAQAAQBEAAEAAAAAAIAABACAAAAA=</HashCode>
+      <FileName>Interest Points\HistogramsOfOrientedGradients.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Accord.Imaging.Moments.HuMoments">
+    <Position X="38.5" Y="13" Width="2.25" />
+    <Members>
+      <Field Name="defaultOrder" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AEAABAAAAAAAAAAAAAAABAIAAAAAAAEQAAAAgAAIAAA=</HashCode>
+      <FileName>Moments\HuMoments.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Accord.Imaging.Moments.MomentsBase">
+    <Position X="35.5" Y="10.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AEEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Moments\MomentsBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Accord.Imaging.BagOfVisualWords&lt;TPoint&gt;">
+    <Position X="8.25" Y="15.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAQAAAAAAAAAAQAAAAgAAAAAAAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>BagOfVisualWords`1.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Accord.Imaging.KNearestNeighborMatching">
+    <Position X="3" Y="10.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAIAAAAA=</HashCode>
+      <FileName>KNearestNeighborMatching.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Struct Name="Accord.Imaging.PointH">
@@ -438,35 +517,53 @@
     </TypeIdentifier>
   </Struct>
   <Interface Name="Accord.Imaging.IContourExtractionAlgorithm">
-    <Position X="7.25" Y="8" Width="2.5" />
+    <Position X="1.25" Y="15.75" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Contour\IContourExtractionAlgorithm.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Accord.Imaging.Converters.IConverter&lt;TInput, TOutput&gt;">
-    <Position X="17.25" Y="12.75" Width="2.25" />
+    <Position X="38.5" Y="2.75" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Converters\Base\IConverter.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="Accord.Imaging.Moments.IMoments">
-    <Position X="0.5" Y="8" Width="1.5" />
+    <Position X="33.25" Y="10.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Moments\IMoments.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Enum Name="Accord.Imaging.HarrisCornerMeasure">
-    <Position X="15" Y="8" Width="1.75" />
+  <Interface Name="Accord.Imaging.IFeatureDetector&lt;TPoint&gt;">
+    <Position X="16" Y="8.5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAABAAAAABAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAA=</HashCode>
+      <FileName>Interest Points\Base\IFeatureDetector.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Accord.Imaging.IFeaturePoint">
+    <Position X="19.75" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAA=</HashCode>
+      <FileName>Interest Points\Base\IFeatureDetector.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="AForge.Imaging.ICornersDetector">
+    <Position X="18.25" Y="15.75" Width="2.25" />
+    <TypeIdentifier />
+  </Interface>
+  <Enum Name="Accord.Imaging.HarrisCornerMeasure">
+    <Position X="23" Y="15.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAABAA=</HashCode>
       <FileName>Interest Points\HarrisCornersDetector.cs</FileName>
     </TypeIdentifier>
   </Enum>
   <Enum Name="Accord.Imaging.SpeededUpRobustFeatureDescriptorType">
-    <Position X="25.5" Y="8" Width="3.25" />
+    <Position X="22" Y="13.5" Width="3.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAgAAAAAAAAAAIAAAAAAAAAAAAEAAAA=</HashCode>
       <FileName>Interest Points\SpeededUpRobustFeaturesDetector.cs</FileName>
