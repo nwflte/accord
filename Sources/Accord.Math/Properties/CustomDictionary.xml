@@ -41,7 +41,12 @@
       <Acronym>IWT</Acronym>
       <Acronym>FWT</Acronym>
       <Acronym>FHT</Acronym>
+      <Acronym>DHT</Acronym>
       <Acronym>CDF</Acronym>
+      <Acronym>DCT</Acronym>
+      <Acronym>IDCT</Acronym>
+      <Acronym>DST</Acronym>
+      <Acronym>IDST</Acronym>
     </CasingExceptions>
   </Acronyms>
 </Dictionary>

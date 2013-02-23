@@ -104,6 +104,9 @@
     <Compile Include="Comparers\StableComparer.cs" />
     <Compile Include="Convergence\AbsoluteConvergence.cs" />
     <Compile Include="Convergence\RelativeParameterConvergence.cs" />
+    <Compile Include="Transforms\HartleyTransform.cs" />
+    <Compile Include="Transforms\SineTransform.cs" />
+    <Compile Include="Transforms\CosineTransform.cs" />
     <Compile Include="Decompositions\Base\ISolverArrayDecomposition.cs" />
     <Compile Include="Decompositions\Base\ISolverMatrixDecomposition.cs" />
     <None Include="Decompositions\CholeskyDecomposition.tt" />
@@ -224,7 +227,7 @@
     <Compile Include="Optimization\Constrained\GoldfarbIdnaniQuadraticSolver.cs" />
     <Compile Include="Optimization\BrentSearch.cs" />
     <Compile Include="Special.cs" />
-    <Compile Include="HilbertTransform.cs" />
+    <Compile Include="Transforms\HilbertTransform.cs" />
     <Compile Include="Matrix\Matrix.Common.cs" />
     <Compile Include="Functions\Beta.cs" />
     <Compile Include="Functions\Gamma.cs" />
