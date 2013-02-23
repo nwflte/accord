@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -22,6 +22,7 @@
 
 namespace Accord.Statistics.Links
 {
+    using System;
 
     /// <summary>
     ///   Link function interface.
@@ -42,7 +43,7 @@ namespace Accord.Statistics.Links
     ///   </list></para>
     /// </remarks>
     /// 
-    public interface ILinkFunction
+    public interface ILinkFunction : ICloneable
     {
 
         /// <summary>
