@@ -124,6 +124,7 @@
     </Compile>
     <Compile Include="Initialization\NguyenWidrow.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Visualization\ActivationMaximization.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Accord.Core\Accord.Core.csproj">
