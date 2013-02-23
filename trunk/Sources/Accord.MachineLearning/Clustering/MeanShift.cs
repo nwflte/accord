@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -248,7 +248,7 @@ namespace Accord.MachineLearning
             clusters = new MeanShiftClusterCollection(tree, maximum);
 
             // label each point
-            return clusters.Compute(points);
+            return clusters.Nearest(points);
         }
 
         private void computeMeanShift(double[] x, double[] shift)

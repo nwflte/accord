@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -176,7 +176,7 @@ namespace Accord.MachineLearning
                     TData point = points[i];
 
                     // Compute the nearest cluster centroid
-                    int c = labels[i] = Clusters.Compute(points[i]);
+                    int c = labels[i] = Clusters.Nearest(points[i]);
 
                     // Accumulate in the corresponding centroid
                     clusters[c].Add(point);
