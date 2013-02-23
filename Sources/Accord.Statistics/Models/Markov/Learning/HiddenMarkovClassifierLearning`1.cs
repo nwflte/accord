@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -27,6 +27,7 @@ namespace Accord.Statistics.Models.Markov.Learning
     using System.Threading.Tasks;
     using Accord.Math;
     using Accord.Statistics.Distributions;
+    using Accord.Statistics.Models.Markov.Topology;
 
     /// <summary>
     ///   Arbitrary-density hidden Markov Sequence Classifier learning algorithm.
@@ -246,43 +247,38 @@ namespace Accord.Statistics.Models.Markov.Learning
         /// 
         public override HiddenMarkovModel<TDistribution> Threshold()
         {
-            HiddenMarkovModel<TDistribution>[] Models = base.Classifier.Models;
+            var models = Classifier.Models;
+            var topology = CreateThresholdTopology();
 
-            int states = 0;
+            int states = topology.States;
 
-            // Get the total number of states
-            for (int i = 0; i < Models.Length; i++)
-                states += Models[i].States;
+            // Create the threshold emission matrix
+            var emissions = new TDistribution[states];
 
-            // Create the transition and emission matrices
-            double[,] transition = new double[states, states];
-            TDistribution[] emissions = new TDistribution[states];
-            double[] initial = new double[states];
 
-            for (int i = 0, m = 0; i < Models.Length; i++)
+            // Then, for each hidden Markov model in the classifier
+            for (int i = 0, modelStartIndex = 0; i < models.Length; i++)
             {
-                for (int j = 0; j < Models[i].States; j++)
+                // Retrieve the model definition matrices
+                TDistribution[] B = models[i].Emissions;
+
+                // Now, for each state in the model
+                for (int j = 0; j < models[i].States; j++)
                 {
-                    var A = Matrix.Exp(Models[i].Transitions);
-                    var B = Models[i].Emissions;
-                    int s = Models[i].States;
-
-                    double D = transition[j + m, j + m] = A[j, j];
-
-                    for (int k = 0; k < Models[i].States; k++)
-                        if (j != k) transition[j + m, k + m] = (1.0 - D) / (s - 1.0);
-
-                    System.Diagnostics.Debug.Assert(transition.GetRow(m).Sum() == 1);
-
-                    emissions[j + m] = B[j];
+                    // Copy emissions from the model
+                    emissions[j + modelStartIndex] = B[j];
                 }
 
-                initial[m] = 1.0 / Models.Length;
-                m += Models[i].States;
+                // Next model starts where this ends
+                modelStartIndex += models[i].States;
             }
 
 
-            return new HiddenMarkovModel<TDistribution>(transition, emissions, initial) { Tag = "Threshold" };
+            // Create and return the threshold hidden Markov model
+            return new HiddenMarkovModel<TDistribution>(topology, emissions)
+            { 
+                Tag = "Non-gesture"
+            };
         }
 
     }
