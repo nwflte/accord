@@ -19,7 +19,7 @@
       <Compartment Name="Fields" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>BAgABARCAiAAGAkACBAAQAQAAAAAAIAIIQAAAIAIACI=</HashCode>
+      <HashCode>BAgABARKAiAAGAkACBAAQAQAAAgAAIAIIQAAAIAIACI=</HashCode>
       <FileName>AudioCaptureDevice.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -32,6 +32,8 @@
       <Field Name="channels" Hidden="true" />
       <Field Name="device" Hidden="true" />
       <Field Name="notifications" Hidden="true" />
+      <Method Name="OnFramePlayingStarted" Hidden="true" />
+      <Method Name="OnStopped" Hidden="true" />
       <Field Name="owner" Hidden="true" />
       <Field Name="samplingRate" Hidden="true" />
       <Field Name="stop" Hidden="true" />
