@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -24,6 +24,7 @@ namespace Accord.MachineLearning.DecisionTrees
 {
     using System;
     using System.Collections.ObjectModel;
+    using System.Runtime.Serialization;
 
 
     /// <summary>
@@ -44,6 +45,14 @@ namespace Accord.MachineLearning.DecisionTrees
     [Serializable]
     public class DecisionNode
     {
+
+        [NonSerialized]
+        private DecisionTree owner;
+
+        [NonSerialized]
+        private DecisionNode parent;
+
+
         /// <summary>
         ///   Gets or sets the value this node responds to
         ///   whenever this node acts as a child node. This
@@ -79,13 +88,21 @@ namespace Accord.MachineLearning.DecisionTrees
         ///   node, the parent is <c>null</c>.
         /// </summary>
         /// 
-        public DecisionNode Parent { get; set; }
+        public DecisionNode Parent
+        {
+            get { return parent; }
+            set { parent = value; }
+        }
 
         /// <summary>
         ///   Gets the <see cref="DecisionTree"/> containing this node.
         /// </summary>
         /// 
-        public DecisionTree Owner { get; private set; }
+        public DecisionTree Owner
+        {
+            get { return owner; }
+            set { owner = value; }
+        }
 
         /// <summary>
         ///   Creates a new decision node.
@@ -206,6 +223,19 @@ namespace Accord.MachineLearning.DecisionTrees
             String value = Value.ToString();
 
             return String.Format("{0} {1} {2}", name, op, value);
+        }
+
+
+        [OnDeserialized]
+        private void OnDeserialized(StreamingContext context)
+        {
+            if (Branches != null)
+            {
+                foreach (DecisionNode node in Branches)
+                {
+                    node.Parent = this;
+                }
+            }
         }
     }
 

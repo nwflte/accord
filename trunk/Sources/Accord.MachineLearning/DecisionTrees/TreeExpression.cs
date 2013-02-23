@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -64,12 +64,14 @@ namespace Accord.MachineLearning.DecisionTrees
 
             var rootExpression = create(tree.Root);
 
-            ConstructorInfo ex = typeof(ArgumentException).GetConstructor(new[] { typeof(string), typeof(string) });
+            ConstructorInfo ex = typeof(ArgumentException).GetConstructor(
+                new[] { typeof(string), typeof(string) });
 
             BlockExpression block = Expression.Block(typeof(int),
                 rootExpression,
-                Expression.Throw(Expression.New(ex, Expression.Constant("Input contains a value outside of expected ranges."),
-                                                    Expression.Constant("input"))),
+                Expression.Throw(Expression.New(ex,
+                    Expression.Constant("Input contains a value outside of expected ranges."),
+                    Expression.Constant("input"))),
                 Expression.Label(label, Expression.Constant(0))
             );
 
@@ -85,6 +87,7 @@ namespace Accord.MachineLearning.DecisionTrees
                 // Create all comparison expressions
                 BinaryExpression[] comparisons = new BinaryExpression[node.Branches.Count];
                 Expression[] childExpression = new Expression[node.Branches.Count];
+
                 for (int i = 0; i < comparisons.Length; i++)
                 {
                     DecisionNode child = node.Branches[i];
@@ -133,16 +136,18 @@ namespace Accord.MachineLearning.DecisionTrees
                 for (int i = comparisons.Length - 2; i >= 0; i--)
                 {
                     currentIf = Expression.IfThenElse(comparisons[i],
-                            childExpression[i],
-                            lastElse);
+                            childExpression[i], lastElse);
                     lastElse = currentIf;
                 }
 
                 return currentIf;
             }
-            else
+
+            else // node is a leaf
             {
-                return Expression.Return(label, Expression.Constant(node.Output.Value), typeof(int));
+                if (node.Output.HasValue)
+                    return Expression.Return(label, Expression.Constant(node.Output.Value), typeof(int));
+                return Expression.Return(label, Expression.Constant(-1), typeof(int));
             }
 
         }

@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -26,6 +26,7 @@ namespace Accord.MachineLearning.DecisionTrees
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using AForge;
+    using Accord.Statistics.Filters;
 
     /// <summary>
     ///   Attribute category.
@@ -54,6 +55,8 @@ namespace Accord.MachineLearning.DecisionTrees
     [Serializable]
     public class DecisionVariable
     {
+        // TODO: Rename this class to DecisionAttribute, or rename
+        // DecisionAttributeKind and DecisionAttributeCollection
 
         /// <summary>
         ///   Gets the name of the attribute.
@@ -93,6 +96,18 @@ namespace Accord.MachineLearning.DecisionTrees
         /// </summary>
         /// 
         /// <param name="name">The name of the attribute.</param>
+        /// <param name="range">The range of valid values for this attribute. Default is [0;1].</param>
+        /// 
+        public DecisionVariable(string name, DoubleRange range)
+            : this(name, DecisionAttributeKind.Continuous, range)
+        {
+        }
+
+        /// <summary>
+        ///   Creates a new <see cref="DecisionVariable"/>.
+        /// </summary>
+        /// 
+        /// <param name="name">The name of the attribute.</param>
         /// <param name="nature">The attribute's nature (i.e. real-valued or discrete-valued).</param>
         /// 
         public DecisionVariable(string name, DecisionAttributeKind nature)
@@ -125,6 +140,31 @@ namespace Accord.MachineLearning.DecisionTrees
             : this(name, DecisionAttributeKind.Discrete, new DoubleRange(0, symbols - 1))
         {
         }
+
+        /// <summary>
+        ///   Creates a set of decision variables from a <see cref="Codification"/> codebook.
+        /// </summary>
+        /// 
+        /// <param name="codebook">The codebook containing information about the variables.</param>
+        /// <param name="columns">The columns to consider as decision variables.</param>
+        /// 
+        /// <returns>An array of <see cref="DecisionVariable"/> objects 
+        /// initialized with the values from the codebook.</returns>
+        /// 
+        public static DecisionVariable[] FromCodebook(Codification codebook, params string[] columns)
+        {
+            DecisionVariable[] variables = new DecisionVariable[columns.Length];
+
+            for (int i = 0; i < variables.Length; i++)
+            {
+                string name = columns[i];
+                var col = codebook.Columns[name];
+                variables[i] = new DecisionVariable(name, col.Symbols);
+            }
+
+            return variables;
+        }
+
     }
 
 

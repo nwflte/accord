@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -23,7 +23,13 @@
 namespace Accord.MachineLearning.DecisionTrees
 {
     using System;
+    using System.Collections.Generic;
+    using System.IO;
     using System.Linq.Expressions;
+    using System.Reflection;
+    using System.Reflection.Emit;
+    using System.Runtime.Serialization.Formatters.Binary;
+    using System.Runtime.Serialization;
 
     /// <summary>
     ///   Decision tree.
@@ -77,18 +83,40 @@ namespace Accord.MachineLearning.DecisionTrees
         /// <param name="attributes">An array specifying the attributes to be processed by this tree.</param>
         /// <param name="outputClasses">The number of possible output classes for the given atributes.</param>
         /// 
-        public DecisionTree(DecisionVariable[] attributes, int outputClasses)
+        public DecisionTree(IList<DecisionVariable> attributes, int outputClasses)
         {
             if (outputClasses <= 0)
                 throw new ArgumentOutOfRangeException("outputClasses");
             if (attributes == null)
                 throw new ArgumentNullException("attributes");
 
+            for (int i = 0; i < attributes.Count; i++)
+                if (attributes[i].Range.Length == 0)
+                    throw new ArgumentException("Attribute " + i + " is a constant.");
+
+
             this.Attributes = new DecisionAttributeCollection(attributes);
-            this.InputCount = attributes.Length;
+            this.InputCount = attributes.Count;
             this.OutputClasses = outputClasses;
         }
 
+
+        /// <summary>
+        ///   Computes the decision for a given input.
+        /// </summary>
+        /// 
+        /// <param name="input">The input data.</param>
+        /// 
+        /// <returns>A predicted class for the given input.</returns>
+        /// 
+        public int Compute(int[] input)
+        {
+            double[] x = new double[input.Length];
+            for (int i = 0; i < input.Length; i++)
+                x[i] = input[i];
+
+            return Compute(x);
+        }
 
         /// <summary>
         ///   Computes the decision for a given input.
@@ -114,7 +142,7 @@ namespace Accord.MachineLearning.DecisionTrees
                     // This is a leaf node. The decision
                     // proccess thus should stop here.
 
-                    return current.Output.Value;
+                    return (current.Output.HasValue) ? current.Output.Value : -1;
                 }
 
                 // This node is not a leaf. Continue the
@@ -147,6 +175,46 @@ namespace Accord.MachineLearning.DecisionTrees
         }
 
 
+        [OnDeserialized]
+        private void OnDeserialized(StreamingContext context)
+        {
+            foreach (DecisionNode node in this)
+            {
+                node.Owner = this;
+            }
+        }
+
+        /// <summary>
+        ///   Returns an enumerator that iterates through the tree.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
+        /// </returns>
+        /// 
+        public IEnumerator<DecisionNode> GetEnumerator()
+        {
+            if (Root == null)
+                yield break;
+
+            var stack = new Stack<DecisionNode>(new[] { Root });
+
+            while (stack.Count != 0)
+            {
+                DecisionNode current = stack.Pop();
+
+                yield return current;
+
+                if (current.Branches != null)
+                    foreach (var child in current.Branches)
+                        stack.Push(child);
+            }
+        }
+
+
+
+
+
 #if !NET35
         /// <summary>
         ///   Creates an <see cref="Expression">Expression Tree</see> representation
@@ -160,8 +228,143 @@ namespace Accord.MachineLearning.DecisionTrees
             DecisionTreeExpressionCreator compiler = new DecisionTreeExpressionCreator(this);
             return compiler.Create();
         }
+
+        /// <summary>
+        ///   Creates a .NET assembly (.dll) containing a static class of
+        ///   the given name implementing the decision tree. The class will
+        ///   contain a single static Compute method implementing the tree.
+        /// </summary>
+        /// 
+        /// <param name="assemblyName">The name of the assembly to generate.</param>
+        /// <param name="className">The name of the generated static class.</param>
+        /// 
+        public void ToAssembly(string assemblyName, string className)
+        {
+            ToAssembly(assemblyName, "Accord.MachineLearning.DecisionTrees.Custom", className);
+        }
+
+        /// <summary>
+        ///   Creates a .NET assembly (.dll) containing a static class of
+        ///   the given name implementing the decision tree. The class will
+        ///   contain a single static Compute method implementing the tree.
+        /// </summary>
+        /// 
+        /// <param name="assemblyName">The name of the assembly to generate.</param>
+        /// <param name="moduleName">The namespace which should contain the class.</param>
+        /// <param name="className">The name of the generated static class.</param>
+        /// 
+        public void ToAssembly(string assemblyName, string moduleName, string className)
+        {
+            AssemblyBuilder da = AppDomain.CurrentDomain.DefineDynamicAssembly(
+                new AssemblyName(assemblyName), AssemblyBuilderAccess.Save);
+
+            ModuleBuilder dm = da.DefineDynamicModule(moduleName, assemblyName);
+            TypeBuilder dt = dm.DefineType(className);
+            MethodBuilder method = dt.DefineMethod("Compute",
+                MethodAttributes.Public | MethodAttributes.Static);
+
+            // Compile the tree into a method
+            ToExpression().CompileToMethod(method);
+
+            dt.CreateType();
+            da.Save(assemblyName);
+        }
 #endif
+
+
+        /// <summary>
+        ///   Generates a C# class implementing the decision tree.
+        /// </summary>
+        /// 
+        /// <param name="className">The name for the generated class.</param>
+        /// 
+        /// <returns>A string containing the generated class.</returns>
+        /// 
+        public string ToCode(string className)
+        {
+            using (MemoryStream stream = new MemoryStream())
+            {
+                TextWriter writer = new StreamWriter(stream);
+                var treeWriter = new DecisionTreeWriter(writer);
+                treeWriter.Write(this, className);
+                writer.Flush();
+
+                stream.Seek(0, SeekOrigin.Begin);
+                TextReader reader = new StreamReader(stream);
+                return reader.ReadToEnd();
+            }
+        }
+
+        /// <summary>
+        ///   Generates a C# class implementing the decision tree.
+        /// </summary>
+        /// 
+        /// <param name="className">The name for the generated class.</param>
+        /// <param name="writer">The <see cref="TextWriter"/> where the class should be written.</param>
+        /// 
+        public void ToCode(TextWriter writer, string className)
+        {
+            var treeWriter = new DecisionTreeWriter(writer);
+            treeWriter.Write(this, className);
+        }
+
+
+        /// <summary>
+        ///   Loads a tree from a file.
+        /// </summary>
+        /// 
+        /// <param name="path">The path to the file from which the tree is to be deserialized.</param>
+        /// 
+        /// <returns>The deserialized tree.</returns>
+        /// 
+        public void Save(string path)
+        {
+            using (FileStream fs = new FileStream(path, FileMode.Create))
+            {
+                Save(fs);
+            }
+        }
+
+        /// <summary>
+        ///   Saves the tree to a stream.
+        /// </summary>
+        /// 
+        /// <param name="stream">The stream to which the tree is to be serialized.</param>
+        /// 
+        public void Save(Stream stream)
+        {
+            BinaryFormatter b = new BinaryFormatter();
+            b.Serialize(stream, this);
+        }
+
+        /// <summary>
+        ///   Loads a tree from a stream.
+        /// </summary>
+        /// 
+        /// <param name="stream">The stream from which the tree is to be deserialized.</param>
+        /// 
+        /// <returns>The deserialized tree.</returns>
+        /// 
+        public static DecisionTree Load(Stream stream)
+        {
+            BinaryFormatter b = new BinaryFormatter();
+            return (DecisionTree)b.Deserialize(stream);
+        }
+
+        /// <summary>
+        ///   Loads a tree from a file.
+        /// </summary>
+        /// 
+        /// <param name="path">The path to the tree from which the machine is to be deserialized.</param>
+        /// 
+        /// <returns>The deserialized tree.</returns>
+        /// 
+        public static DecisionTree Load(string path)
+        {
+            using (FileStream fs = new FileStream(path, FileMode.Open))
+            {
+                return Load(fs);
+            }
+        }
     }
-
-
 }
