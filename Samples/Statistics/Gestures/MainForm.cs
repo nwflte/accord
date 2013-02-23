@@ -1,7 +1,7 @@
 ﻿// Accord.NET Sample Applications
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -36,36 +36,34 @@ using Accord.Statistics.Models.Fields.Learning;
 using Accord.Statistics.Models.Markov;
 using Accord.Statistics.Models.Markov.Learning;
 using Accord.Statistics.Models.Markov.Topology;
+using Gestures.Native;
 
 namespace Gestures
 {
     public partial class MainForm : Form
     {
 
-        Database database;
-
-        HiddenMarkovClassifier<MultivariateNormalDistribution> hmm;
-        HiddenConditionalRandomField<double[]> hcrf;
-
+        private Database database;
+        private HiddenMarkovClassifier<MultivariateNormalDistribution> hmm;
+        private HiddenConditionalRandomField<double[]> hcrf;
 
 
         public MainForm()
         {
             InitializeComponent();
 
-            gvSamples.AutoGenerateColumns = false;
-
             database = new Database();
+            gridSamples.AutoGenerateColumns = false;
             cbClasses.DataSource = database.Classes;
-            gvSamples.DataSource = database.Samples;
-
+            gridSamples.DataSource = database.Samples;
             openDataDialog.InitialDirectory = Path.Combine(Application.StartupPath, "Resources");
         }
 
 
+
         private void btnLearnHMM_Click(object sender, EventArgs e)
         {
-            if (gvSamples.Rows.Count == 0)
+            if (gridSamples.Rows.Count == 0)
             {
                 MessageBox.Show("Please load or insert some data first.");
                 return;
@@ -123,7 +121,7 @@ namespace Gestures
                 sample.RecognizedAs = hmm.Compute(sample.Input);
             }
 
-            foreach (DataGridViewRow row in gvSamples.Rows)
+            foreach (DataGridViewRow row in gridSamples.Rows)
             {
                 var sample = row.DataBoundItem as Sequence;
                 row.DefaultCellStyle.BackColor = (sample.RecognizedAs == sample.Output) ?
@@ -135,7 +133,7 @@ namespace Gestures
 
         private void btnLearnHCRF_Click(object sender, EventArgs e)
         {
-            if (gvSamples.Rows.Count == 0)
+            if (gridSamples.Rows.Count == 0)
             {
                 MessageBox.Show("Please load or insert some data first.");
                 return;
@@ -178,7 +176,7 @@ namespace Gestures
                 sample.RecognizedAs = hcrf.Compute(sample.Input);
             }
 
-            foreach (DataGridViewRow row in gvSamples.Rows)
+            foreach (DataGridViewRow row in gridSamples.Rows)
             {
                 var sample = row.DataBoundItem as Sequence;
                 row.DefaultCellStyle.BackColor = (sample.RecognizedAs == sample.Output) ?
@@ -187,6 +185,8 @@ namespace Gestures
         }
 
 
+
+        // Load and save database methods
         private void openDataStripMenuItem_Click(object sender, EventArgs e)
         {
             openDataDialog.ShowDialog();
@@ -197,13 +197,19 @@ namespace Gestures
             saveDataDialog.ShowDialog();
         }
 
-
         private void openDataDialog_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            hmm = null;
+            hcrf = null;
+
             using (var stream = openDataDialog.OpenFile())
                 database.Load(stream);
 
             btnLearnHMM.Enabled = true;
+            btnLearnHCRF.Enabled = false;
+
+            panelClassification.Visible = false;
+            panelUserLabeling.Visible = false;
         }
 
         private void saveDataDialog_FileOk(object sender, CancelEventArgs e)
@@ -212,93 +218,125 @@ namespace Gestures
                 database.Save(stream);
         }
 
-
-        private void newToolStripMenuItem_Click(object sender, EventArgs e)
+        private void btnFile_MouseDown(object sender, MouseEventArgs e)
         {
-            database.Clear();
-            hmm = null;
-            hcrf = null;
-        }
-
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Close();
+            menuFile.Show(button4, button4.PointToClient(Cursor.Position));
         }
 
 
 
-
+        // Top user interaction panel box events
         private void btnYes_Click(object sender, EventArgs e)
+        {
+            addGesture();
+        }
+
+        private void btnNo_Click(object sender, EventArgs e)
+        {
+            panelClassification.Visible = false;
+            panelUserLabeling.Visible = true;
+        }
+
+
+        // Bottom user interaction panel box events
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            canvas.Clear();
+            panelUserLabeling.Visible = false;
+        }
+
+        private void btnInsert_Click(object sender, EventArgs e)
+        {
+            addGesture();
+        }
+
+        private void addGesture()
         {
             string selectedItem = cbClasses.SelectedItem as String;
             string classLabel = String.IsNullOrEmpty(selectedItem) ?
                 cbClasses.Text : selectedItem;
 
-            if (database.Add(inputCanvas.GetSequence(), classLabel) != null)
+            if (database.Add(canvas.GetSequence(), classLabel) != null)
             {
-                inputCanvas.Clear();
-                btnLearnHMM.Enabled = true;
+                canvas.Clear();
+
+                if (database.Classes.Count >= 2 &&
+                    database.SamplesPerClass() >= 3)
+                    btnLearnHMM.Enabled = true;
+
+                panelUserLabeling.Visible = false;
             }
         }
 
-        private void btnNo_Click(object sender, EventArgs e)
-        {
-            showQuestion();
-        }
 
-
-
-
+        // Canvas events
         private void inputCanvas_MouseUp(object sender, MouseEventArgs e)
         {
-            if (hmm == null)
+            double[][] input = Sequence.Preprocess(canvas.GetSequence());
+
+            if (input.Length < 5)
             {
-                showQuestion();
+                panelUserLabeling.Visible = false;
+                panelClassification.Visible = false;
+                return;
             }
-            else if (hcrf == null)
+
+            if (hmm == null && hcrf == null)
             {
-                showConfirm(hmm.Compute(Sequence.Preprocess(inputCanvas.GetSequence())));
+                panelUserLabeling.Visible = true;
+                panelClassification.Visible = false;
             }
+
             else
             {
-                showConfirm(hcrf.Compute(Sequence.Preprocess(inputCanvas.GetSequence())));
+                int index = (hcrf != null) ?
+                    hcrf.Compute(input) : hmm.Compute(input);
+
+                string label = database.Classes[index];
+                lbHaveYouDrawn.Text = String.Format("Have you drawn a {0}?", label);
+                panelClassification.Visible = true;
+                panelUserLabeling.Visible = false;
             }
         }
 
-        private void btnClear_Click(object sender, EventArgs e)
+        private void canvas_MouseDown(object sender, MouseEventArgs e)
         {
-            inputCanvas.Clear();
+            lbIdle.Visible = false;
         }
 
 
 
-        private void showQuestion()
+
+        // Aero Glass settings
+        //
+        private void MainForm_Load(object sender, EventArgs e)
         {
-            lbWhat.Text = "What's this?";
-            lbQuestion.Visible = false;
-            btnNo.Visible = false;
-            btnOK.Text = "OK";
+            // Perform special processing to enable aero
+            if (SafeNativeMethods.IsAeroEnabled)
+            {
+                ThemeMargins margins = new ThemeMargins();
+                margins.TopHeight = canvas.Top;
+                margins.LeftWidth = canvas.Left;
+                margins.RightWidth = ClientRectangle.Right - gridSamples.Right;
+                margins.BottomHeight = ClientRectangle.Bottom - canvas.Bottom;
+
+                // Extend the Frame into client area
+                SafeNativeMethods.ExtendAeroGlassIntoClientArea(this, margins);
+            }
         }
 
-        private void showConfirm(int index)
+        /// <summary>
+        ///   Paints the background of the control.
+        /// </summary>
+        protected override void OnPaintBackground(PaintEventArgs e)
         {
-            if (index < 0) return;
+            base.OnPaintBackground(e);
 
-            string label = database.Classes[index];
-
-            lbWhat.Text = "Is this a ";
-            cbClasses.Text = label;
-            lbQuestion.Visible = true;
-            btnOK.Text = "Yes";
-            btnNo.Visible = true;
+            if (SafeNativeMethods.IsAeroEnabled)
+            {
+                // paint background black to enable include glass regions
+                e.Graphics.Clear(Color.FromArgb(0, this.BackColor));
+            }
         }
-
-        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            new AboutBox().ShowDialog();
-        }
-
-
-
     }
 }

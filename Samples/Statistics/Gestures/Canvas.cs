@@ -1,7 +1,7 @@
 ﻿// Accord.NET Sample Applications
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -57,6 +57,9 @@ namespace Gestures
 
         protected override void OnPaint(PaintEventArgs e)
         {
+
+            base.OnPaint(e);
+
             if (!this.DesignMode)
             {
                 if (sequence.Count > 1)
@@ -71,8 +74,15 @@ namespace Gestures
                         int prevY = (int)sequence[i - 1].Y;
                         int prevP = (int)Accord.Math.Tools.Scale(0, sequence.Count, 0, 255, i - 1);
 
-                        using (Brush brush = new LinearGradientBrush(new Point(prevX, prevY), new Point(x, y),
-                            Color.FromArgb(255 - p, 0, p), Color.FromArgb(255 - prevP, 0, prevP)))
+                        if (x == prevX && y == prevY)
+                            continue;
+
+                        Point start = new Point(prevX, prevY);
+                        Point end = new Point(x, y);
+                        Color colorStart = Color.FromArgb(255 - p, 0, p);
+                        Color colorEnd = Color.FromArgb(255 - prevP, 0, prevP);
+
+                        using (Brush brush = new LinearGradientBrush(start, end, colorStart, colorEnd))
                         using (Pen pen = new Pen(brush, 10))
                         {
                             pen.StartCap = LineCap.Round;
@@ -83,8 +93,6 @@ namespace Gestures
                     }
                 }
             }
-
-            base.OnPaint(e);
         }
 
         protected override void OnMouseDown(MouseEventArgs e)

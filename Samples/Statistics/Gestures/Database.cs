@@ -71,5 +71,22 @@ namespace Gestures
             Classes.Clear();
             Samples.Clear();
         }
+
+        public int SamplesPerClass()
+        {
+            int min = 0;
+            foreach (string label in Classes)
+            {
+                int c = Samples.Count(p => p.OutputName == label);
+
+                if (min == 0) 
+                    min = c;
+
+                else if (c < min)
+                    min = c;
+            }
+
+            return min;
+        }
     }
 }
