@@ -118,6 +118,24 @@ namespace Accord.Neuro.Networks
         }
 
         /// <summary>
+        ///   Creates a new <see cref="DeepBeliefNetwork"/>.
+        /// </summary>
+        /// 
+        /// <param name="inputsCount">The number of inputs for the network.</param>
+        /// <param name="layers">The layers to add to the deep network.</param>
+        /// 
+        public DeepBeliefNetwork(int inputsCount, params RestrictedBoltzmannMachine[] layers)
+            : base(null, inputsCount, new int[layers.Length])
+        {
+            machines = new List<RestrictedBoltzmannMachine>(layers);
+
+            // Override AForge layers
+            base.layers = new Layer[machines.Count];
+            for (int i = 0; i < layers.Length; i++)
+                base.layers[i] = machines[i].Hidden;
+        }
+
+        /// <summary>
         ///   Computes the network's outputs for a given input.
         /// </summary>
         /// 
@@ -133,6 +151,27 @@ namespace Accord.Neuro.Networks
 
             foreach (RestrictedBoltzmannMachine layer in machines)
                 output = layer.Hidden.Compute(output);
+
+            return output;
+        }
+
+        /// <summary>
+        ///   Computes the network's outputs for a given input.
+        /// </summary>
+        /// 
+        /// <param name="input">The input vector.</param>
+        /// <param name="layerIndex">The index of the layer.</param>
+        /// 
+        /// <returns>
+        ///   Returns the network's output for the given input.
+        /// </returns>
+        /// 
+        public double[] Compute(double[] input, int layerIndex)
+        {
+            double[] output = input;
+
+            for (int i = 0; i <= layerIndex; i++)
+                output = machines[i].Hidden.Compute(output);
 
             return output;
         }

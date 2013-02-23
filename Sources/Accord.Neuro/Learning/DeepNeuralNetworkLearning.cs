@@ -55,8 +55,9 @@ namespace Accord.Neuro.Learning
         private ActivationNetworkLearningConfigurationFunction configure;
 
         private int layerIndex = 0;
+        private int layerCount = 1;
 
-        private ISupervisedLearning[] algorithms;
+        private ISupervisedLearning algorithm;
 
         /// <summary>
         ///   Gets or sets the configuration function used
@@ -70,17 +71,24 @@ namespace Accord.Neuro.Learning
             set
             {
                 configure = value;
-                createAlgorithms();
+                algorithm = null;
             }
         }
 
         private void createAlgorithms()
         {
-            algorithms = new ISupervisedLearning[network.Machines.Count];
-            for (int i = 0; i < network.Machines.Count; i++)
+            if (layerCount == 1)
             {
-                RestrictedBoltzmannMachine layer = network.Machines[i];
-                algorithms[i] = configure(layer, i);
+                algorithm = configure(network.Machines[layerIndex], layerIndex);
+            }
+            else
+            {
+                var machines = new RestrictedBoltzmannMachine[layerCount];
+                for (int i = 0; i < machines.Length; i++)
+                    machines[i] = network.Machines[i + layerIndex];
+                int inputsCount = machines[0].InputsCount;
+
+                algorithm = configure(new DeepBeliefNetwork(inputsCount, machines), layerIndex);
             }
         }
 
@@ -94,10 +102,29 @@ namespace Accord.Neuro.Learning
             get { return layerIndex; }
             set
             {
-                if (layerIndex < 0 || layerIndex >= network.Machines.Count)
+                if (value < 0 || value >= network.Machines.Count)
                     throw new ArgumentOutOfRangeException("value");
 
                 layerIndex = value;
+                algorithm = null;
+            }
+        }
+
+        /// <summary>
+        ///   Gets or sets the number of layers, starting at <see cref="LayerIndex"/>
+        ///   to be trained by the deep learning algorithm.
+        /// </summary>
+        /// 
+        public int LayerCount
+        {
+            get { return layerCount; }
+            set
+            {
+                if (value <= 0)
+                    throw new ArgumentOutOfRangeException("value");
+
+                layerCount = value;
+                algorithm = null;
             }
         }
 
@@ -163,18 +190,6 @@ namespace Accord.Neuro.Learning
             return outputBatches;
         }
 
-        /// <summary>
-        ///   Gets the <see cref="IUnsupervisedLearning">unsupervised 
-        ///   learning algorithm</see> allocated for the given layer.
-        /// </summary>
-        /// 
-        /// <param name="layerIndex">The index of the layer to get the algorithm for.</param>
-        /// 
-        public ISupervisedLearning GetLayerAlgorithm(int layerIndex)
-        {
-            return algorithms[layerIndex];
-        }
-
 
         /// <summary>
         ///   Runs a single learning iteration.
@@ -189,8 +204,11 @@ namespace Accord.Neuro.Learning
         /// 
         public double Run(double[] input, double[] output)
         {
+            if (algorithm == null)
+                createAlgorithms();
+
             // Get layer learning algorithm
-            var teacher = algorithms[layerIndex];
+            var teacher = algorithm;
 
             // Learn the layer using data
             return teacher.Run(input, output);
@@ -210,8 +228,11 @@ namespace Accord.Neuro.Learning
         /// 
         public double RunEpoch(double[][] input, double[][] output)
         {
+            if (algorithm == null)
+                createAlgorithms();
+
             // Get layer learning algorithm
-            var teacher = algorithms[layerIndex];
+            var teacher = algorithm;
 
             // Learn the layer using data
             return teacher.RunEpoch(input, output);
@@ -231,8 +252,11 @@ namespace Accord.Neuro.Learning
         /// 
         public double RunEpoch(double[][][] inputBatches, double[][][] outputBatches)
         {
+            if (algorithm == null)
+                createAlgorithms();
+
             // Get layer learning algorithm
-            var teacher = algorithms[layerIndex];
+            var teacher = algorithm;
 
             // Learn the layer using data
             double error = 0;
@@ -267,7 +291,6 @@ namespace Accord.Neuro.Learning
             }
             return error;
         }
-
 
 
     }
