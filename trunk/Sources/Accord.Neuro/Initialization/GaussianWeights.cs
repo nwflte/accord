@@ -46,12 +46,14 @@ namespace Accord.Neuro
         /// </summary>
         /// 
         /// <param name="network">The activation network whose weights will be initialized.</param>
+        /// <param name="stdDev">The standard deviation to be used. Common values lie in the 0.001-
+        /// 0.1 range. Default is 0.1.</param>
         /// 
-        public GaussianWeights(ActivationNetwork network)
+        public GaussianWeights(ActivationNetwork network, double stdDev = 0.1)
         {
             this.network = network;
 
-            this.random = new GaussianGenerator(0f, 0.1f, Accord.Math.Tools.Random.Next());
+            this.random = new GaussianGenerator(0f, (float)stdDev, Accord.Math.Tools.Random.Next());
 
             this.UpdateThresholds = false;
         }
