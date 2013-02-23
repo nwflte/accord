@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -183,7 +183,7 @@ namespace Accord.Tests.Statistics
                 { 2, 0 }, // observation of product 2 in class 0
             };
 
-
+             
             // Fit using extended data
             double[][] inputs = Matrix.ColumnVector(inputExtended.GetColumn(0)).ToArray();
             double[] outputs = inputExtended.GetColumn(1);

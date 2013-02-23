@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -126,7 +126,6 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual((0.5 + 0.75) / 2.0, matrix.Efficiency);
 
             Assert.AreEqual(0.3273268353539886, matrix.MatthewsCorrelationCoefficient);
-
         }
 
         [TestMethod()]
@@ -160,7 +159,6 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(falsePositives, matrix.FalsePositives);
             Assert.AreEqual(truePositives, matrix.TruePositives);
             Assert.AreEqual(trueNegatives, matrix.TrueNegatives);
-
         }
 
         [TestMethod()]
@@ -211,9 +209,9 @@ namespace Accord.Tests.Statistics
 
             ConfusionMatrix matrix = new ConfusionMatrix
             (
-                truePositives:  70,
-                trueNegatives:  95,
-                falsePositives:  5, 
+                truePositives: 70,
+                trueNegatives: 95,
+                falsePositives: 5,
                 falseNegatives: 30
             );
 
@@ -300,6 +298,64 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(0.3273268353539886, matrix.MatthewsCorrelationCoefficient);
 
         }
+
+        [TestMethod()]
+        public void ConfusionMatrixConstructorTest6()
+        {
+            // Create a new confusion matrix using the given parameters
+            ConfusionMatrix matrix = new ConfusionMatrix(
+                truePositives: 10, falsePositives: 40,
+                falseNegatives: 5, trueNegatives: 45);
+
+            Assert.AreEqual(5, matrix.FalseNegatives);
+            Assert.AreEqual(40, matrix.FalsePositives);
+            Assert.AreEqual(10, matrix.TruePositives);
+            Assert.AreEqual(45, matrix.TrueNegatives);
+
+            Assert.AreEqual(0.15, matrix.Prevalence);
+            Assert.AreEqual(0.67, matrix.Sensitivity, 1e-2);
+            Assert.AreEqual(0.53, matrix.Specificity, 1e-2);
+            Assert.AreEqual(0.20, matrix.PositivePredictiveValue);
+            Assert.AreEqual(0.90, matrix.NegativePredictiveValue);
+
+        }
+
+        [TestMethod()]
+        public void ToGeneralMatrixTest1()
+        {
+            // Example from http://www.iph.ufrgs.br/corpodocente/marques/cd/rd/presabs.htm
+
+            ConfusionMatrix matrix = new ConfusionMatrix
+            (
+                truePositives: 70,
+                trueNegatives: 95,
+                falsePositives: 5,
+                falseNegatives: 30
+            );
+
+            Assert.AreEqual(70, matrix.TruePositives);
+            Assert.AreEqual(5, matrix.FalsePositives);
+            Assert.AreEqual(95, matrix.TrueNegatives);
+            Assert.AreEqual(30, matrix.FalseNegatives);
+
+            GeneralConfusionMatrix general = matrix.ToGeneralMatrix();
+
+            Assert.AreEqual(matrix.Kappa, general.Kappa, 1e-10);
+            Assert.AreEqual(matrix.Accuracy, general.OverallAgreement, 1e-10);
+            Assert.AreEqual(matrix.StandardError, general.StandardError, 1e-10);
+            Assert.AreEqual(matrix.StandardErrorUnderNull, general.StandardErrorUnderNull, 1e-10);
+            Assert.AreEqual(matrix.Variance, general.Variance, 1e-10);
+            Assert.AreEqual(matrix.VarianceUnderNull, general.VarianceUnderNull, 1e-10);
+            Assert.AreEqual(matrix.Samples, general.Samples);
+
+            Assert.IsFalse(double.IsNaN(general.Kappa));
+            Assert.IsFalse(double.IsNaN(general.OverallAgreement));
+            Assert.IsFalse(double.IsNaN(general.StandardError));
+            Assert.IsFalse(double.IsNaN(general.StandardErrorUnderNull));
+            Assert.IsFalse(double.IsNaN(general.Variance));
+            Assert.IsFalse(double.IsNaN(general.VarianceUnderNull));
+        }
+
 
     }
 }

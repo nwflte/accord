@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -230,7 +230,6 @@ namespace Accord.Tests.Statistics
             double y = regression.Regression.Compute(new double[] { 87, 1 });
 
             // For those inputs, the answer probability is approximately 75%.
-
 
             Assert.AreEqual(0.085627701654393359, odds[0]);
             Assert.AreEqual(1.0208597028836701, odds[1]);

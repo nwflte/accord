@@ -134,6 +134,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CosineTransformTest.cs" />
+    <Compile Include="Matrix\Matrix.Conversion.cs" />
     <Compile Include="Optimization\BrentSearchTest.cs" />
     <Compile Include="Optimization\QuadraticConstraintTest.cs" />
     <Compile Include="Special\BetaTest.cs" />

@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -28,10 +28,6 @@ namespace Accord.Tests.Math
 {
 
 
-    /// <summary>
-    ///This is a test class for HilbertTransformTest and is intended
-    ///to contain all HilbertTransformTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class HilbertTransformTest
     {
@@ -39,10 +35,6 @@ namespace Accord.Tests.Math
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -87,9 +79,6 @@ namespace Accord.Tests.Math
 
 
 
-        /// <summary>
-        ///A test for FHT
-        ///</summary>
         [TestMethod()]
         public void FHTTest()
         {
@@ -116,9 +105,6 @@ namespace Accord.Tests.Math
             Assert.AreEqual(actual[3], original[3]);
         }
 
-        /// <summary>
-        ///A test for FHT
-        ///</summary>
         [TestMethod()]
         public void FHTTest2()
         {

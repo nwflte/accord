@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -27,6 +27,8 @@ namespace Accord.Tests.Math
     using Accord.Math;
     using Accord.Math.Comparers;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System.Collections.Generic;
+    using System;
 
     [TestClass()]
     public class KDTreeTest
@@ -285,6 +287,119 @@ namespace Accord.Tests.Math
             for (int i = 0; i < expected.Length; i++)
             {
                 Assert.IsTrue(actual.Contains(expected[i], new CustomComparer<double[]>((a, b) => a.IsEqual(b) ? 0 : 1)));
+            }
+        }
+
+        [TestMethod()]
+        public void TraverseTest0()
+        {
+            double[][] points =
+            {
+                new double[] { 2, 3 },
+                new double[] { 5, 4 },
+                new double[] { 9, 6 },
+                new double[] { 4, 7 },
+                new double[] { 8, 1 },
+                new double[] { 7, 2 },
+            };
+
+
+            // To create a tree from a set of points, we use
+            KDTree<int> tree = KDTree.FromData<int>(points);
+
+            double[][] inOrder =
+            {
+                new double[] { 2, 3 },
+                new double[] { 5, 4 },
+                new double[] { 4, 7 },
+                new double[] { 7, 2 },
+                new double[] { 8, 1 },
+                new double[] { 9, 6 },
+            };
+
+            int i = 0;
+            foreach (var node in tree.Traverse(KDTreeTraversal.InOrder))
+            {
+                Assert.AreEqual(node.Position[0], inOrder[i][0]);
+                Assert.AreEqual(node.Position[1], inOrder[i][1]);
+                i++;
+            }
+        }
+
+        [TestMethod()]
+        public void TraverseTest1()
+        {
+            double[][] points =
+            {
+                new double[] { 2, 3 },
+                new double[] { 5, 4 },
+                new double[] { 9, 6 },
+                new double[] { 4, 7 },
+                new double[] { 8, 1 },
+                new double[] { 7, 2 },
+            };
+
+
+            // To create a tree from a set of points, we use
+            KDTree<int> tree = KDTree.FromData<int>(points);
+
+            double[][] breadth =
+            {
+                new double[] { 7, 2 },
+                new double[] { 5, 4 },
+                new double[] { 9, 6 },
+                new double[] { 2, 3 },
+                new double[] { 4, 7 },
+                new double[] { 8, 1 },
+            };
+
+            double[][] inOrder =
+            {
+                new double[] { 2, 3 },
+                new double[] { 5, 4 },
+                new double[] { 4, 7 },
+                new double[] { 7, 2 },
+                new double[] { 8, 1 },
+                new double[] { 9, 6 },
+            };
+
+            double[][] postOrder =
+            {
+                new double[] { 2, 3 },
+                new double[] { 4, 7 },
+                new double[] { 5, 4 },
+                new double[] { 8, 1 },
+                new double[] { 9, 6 },
+                new double[] { 7, 2 },
+            };
+
+            double[][] preOrder =
+            {
+                new double[] { 7, 2 },
+                new double[] { 5, 4 },
+                new double[] { 2, 3 },
+                new double[] { 4, 7 },
+                new double[] { 9, 6 },
+                new double[] { 8, 1 },
+            };
+
+
+            AreEqual(tree, breadth, KDTreeTraversal.BreadthFirst);
+            AreEqual(tree, preOrder, KDTreeTraversal.PreOrder);
+            AreEqual(tree, inOrder, KDTreeTraversal.InOrder);
+            AreEqual(tree, postOrder, KDTreeTraversal.PostOrder);
+        }
+
+        private static void AreEqual(KDTree<int> tree, double[][] expected, Func<KDTree<int>, IEnumerator<KDTreeNode<int>>> method)
+        {
+            double[][] actual = tree.Traverse(method.Invoke).Select(p => p.Position).ToArray();
+
+            Assert.AreEqual(expected.Length, actual.Length);
+
+            for (int i = 0; i < actual.Length; i++)
+            {
+                Assert.AreEqual(expected[i][0], actual[i][0]);
+                Assert.AreEqual(expected[i][1], actual[i][1]);
             }
         }
     }

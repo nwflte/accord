@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -20,16 +20,12 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics.Kernels;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Accord.Tests.Statistics
 {
+    using Accord.Statistics.Kernels;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 
-    /// <summary>
-    ///This is a test class for AnovaTest and is intended
-    ///to contain all AnovaTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class AnovaTest
     {
@@ -37,10 +33,6 @@ namespace Accord.Tests.Statistics
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -82,6 +74,7 @@ namespace Accord.Tests.Statistics
         //}
         //
         #endregion
+
 
 
         [TestMethod()]

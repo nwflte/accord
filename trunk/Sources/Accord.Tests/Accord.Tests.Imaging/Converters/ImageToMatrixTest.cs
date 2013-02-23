@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -32,6 +32,7 @@ namespace Accord.Tests.Imaging
     using Accord.Math;
     using AForge.Imaging.Filters;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System.Drawing.Imaging;
 
     [TestClass()]
     public class ImageToMatrixTest
@@ -241,6 +242,104 @@ namespace Accord.Tests.Imaging
             Assert.AreEqual(0, matrix.Min());
             Assert.AreEqual(1, matrix.Max());
             Assert.AreEqual(16 * 16, matrix.Length);
+        }
+
+        [TestMethod()]
+        public void ConvertTest4()
+        {
+            ImageToMatrix target = new ImageToMatrix(min: 0, max: 255);
+            Bitmap image = Properties.Resources.image3;
+            Assert.AreEqual(PixelFormat.Format32bppArgb, image.PixelFormat);
+
+            {
+                double[,] output;
+                double[,] outputExpected =
+                {
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 0
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 1
+                     { 0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 2 
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 3
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 4
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 5
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 6
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 7
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 8
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 9
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 10
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 11
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 12
+                     { 0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 13
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 14
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 15
+                };
+
+                target.Channel = RGB.R;
+                target.Convert(image, out output);
+
+                for (int i = 0; i < outputExpected.GetLength(0); i++)
+                    for (int j = 0; j < outputExpected.GetLength(1); j++)
+                        Assert.AreEqual(outputExpected[i, j], output[i, j]);
+            }
+
+            {
+                double[,] output;
+                double[,] outputExpected =
+                {
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 0
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 1
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0 }, // 2 
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 3
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 4
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 5
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 6
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 7
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 8
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 9
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 10
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 11
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 12
+                     { 0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 13
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 14
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 15
+                };
+
+                target.Channel = RGB.G;
+                target.Convert(image, out output);
+
+                for (int i = 0; i < outputExpected.GetLength(0); i++)
+                    for (int j = 0; j < outputExpected.GetLength(1); j++)
+                        Assert.AreEqual(outputExpected[i, j], output[i, j]);
+            }
+
+            {
+                double[,] output;
+                double[,] outputExpected =
+                {
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 0
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 1
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 2 
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 3
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 4
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 5
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 6
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 7
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 8
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 9
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 10
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 11
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 12
+                     { 0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 0, 0 }, // 13
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 14
+                     { 0, 0,   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,   0, 0, 0 }, // 15
+                };
+
+                target.Channel = RGB.B;
+                target.Convert(image, out output);
+
+                for (int i = 0; i < outputExpected.GetLength(0); i++)
+                    for (int j = 0; j < outputExpected.GetLength(1); j++)
+                        Assert.AreEqual(outputExpected[i, j], output[i, j]);
+            }
         }
 
     }

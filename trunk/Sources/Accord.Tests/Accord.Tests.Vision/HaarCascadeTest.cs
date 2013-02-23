@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -27,10 +27,6 @@ namespace Accord.Tests.Vision
     using System.Threading;
     using Accord.Vision.Detection.Cascades;
 
-    /// <summary>
-    ///This is a test class for HaarCascadeTest and is intended
-    ///to contain all HaarCascadeTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class HaarCascadeTest
     {
@@ -38,10 +34,6 @@ namespace Accord.Tests.Vision
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -85,9 +77,6 @@ namespace Accord.Tests.Vision
         #endregion
 
 
-        /// <summary>
-        ///A test for Clone
-        ///</summary>
         [TestMethod()]
         public void CloneTest()
         {

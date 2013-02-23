@@ -60,6 +60,13 @@ namespace Accord.Tests.MachineLearning.Properties {
             }
         }
         
+        internal static byte[] CircleWithWeights {
+            get {
+                object obj = ResourceManager.GetObject("CircleWithWeights", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to 1 1:-0.555556 2:0.25 3:-0.864407 4:-0.916667 
         ///1 1:-0.666667 2:-0.166667 3:-0.864407 4:-0.916667 
@@ -76,6 +83,21 @@ namespace Accord.Tests.MachineLearning.Properties {
         internal static string iris_scale {
             get {
                 return ResourceManager.GetString("iris_scale", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to usual,proper,complete,1,convenient,convenient,nonprob,recommended,recommend
+        ///usual,proper,complete,1,convenient,convenient,nonprob,priority,priority
+        ///usual,proper,complete,1,convenient,convenient,nonprob,not_recom,not_recom
+        ///usual,proper,complete,1,convenient,convenient,slightly_prob,recommended,recommend
+        ///usual,proper,complete,1,convenient,convenient,slightly_prob,priority,priority
+        ///usual,proper,complete,1,convenient,convenient,slightly_prob,not_recom,not_recom
+        ///usual,proper,complete,1,convenient,convenien [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string nursery {
+            get {
+                return ResourceManager.GetString("nursery", resourceCulture);
             }
         }
         

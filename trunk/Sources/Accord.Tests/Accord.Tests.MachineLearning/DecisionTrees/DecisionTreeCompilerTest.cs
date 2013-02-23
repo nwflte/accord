@@ -10,11 +10,6 @@ using System.Reflection.Emit;
 namespace Accord.Tests.MachineLearning
 {
 
-
-    /// <summary>
-    ///This is a test class for DecisionTreeCompilerTest and is intended
-    ///to contain all DecisionTreeCompilerTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class DecisionTreeCompilerTest
     {
@@ -22,10 +17,6 @@ namespace Accord.Tests.MachineLearning
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get

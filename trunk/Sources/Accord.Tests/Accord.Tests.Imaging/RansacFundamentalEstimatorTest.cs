@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -30,10 +30,6 @@ namespace Accord.Tests.Imaging
 {
 
 
-    /// <summary>
-    ///This is a test class for RansacHomographyEstimatorTest and is intended
-    ///to contain all RansacHomographyEstimatorTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class RansacFundamentalEstimatorTest
     {
@@ -41,10 +37,6 @@ namespace Accord.Tests.Imaging
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -88,9 +80,6 @@ namespace Accord.Tests.Imaging
         #endregion
 
 
-        /// <summary>
-        ///A test for Estimate
-        ///</summary>
         [TestMethod()]
         public void EstimateTest()
         {

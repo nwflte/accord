@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -190,13 +190,18 @@ namespace Accord.Tests.Statistics
 
             Assert.AreEqual(1.0685028815195794, best.Coefficients[0].StandardError);
             Assert.AreEqual(1.3197099261438616, best.Coefficients[1].StandardError);
-
+            
             Assert.AreEqual(2, regression.Nested.Count);
             Assert.AreEqual(best, regression.Nested[0]);
             Assert.AreEqual("Age", regression.Nested[1].Names);
 
             Assert.AreEqual(0.83333333214363825, y);
 
+            int[] finalVars = regression.Current.Variables;
+            double[][] finalData = inputs.Submatrix(null, finalVars);
+            double[] expectedOutput = regression.Current.Regression.Compute(finalData);
+
+            Assert.IsTrue(regression.Result.IsEqual(expectedOutput));
         }
 
 
