@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -347,8 +347,15 @@ namespace Accord.Statistics.Analysis
 
             } while (changed != -1);
 
+            
+            // Get the final variable selection
             resultVariables = currentModel.Variables;
-            result = currentModel.Regression.Compute(inputData);
+
+            double[][] resultInput = inputData
+                .Submatrix(null, resultVariables);
+
+            // Compute the final model output probabilities
+            result = currentModel.Regression.Compute(resultInput);
         }
 
         /// <summary>
