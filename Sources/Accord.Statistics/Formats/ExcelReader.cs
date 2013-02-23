@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009-2012
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -58,11 +58,41 @@ namespace Accord.Statistics.Formats
         ///   Creates a new spreadsheet reader.
         /// </summary>
         /// 
+        /// <param name="stream">The stream containing the spreadsheet file.</param>
+        /// <param name="xlsx">True if the file should be treated as .xlsx file, false otherwise.</param>
+        /// <param name="hasHeaders">True if the spreadsheet contains headers, false otherwise.</param>
+        /// <param name="hasMixedData">True to read "intermixed" data columns as text, false otherwise.</param>
+        /// 
+        public ExcelReader(Stream stream, bool xlsx = true, bool hasHeaders = true, bool hasMixedData = true)
+        {
+            string tempFileName = Path.GetTempFileName();
+            string withExtension = Path.ChangeExtension(tempFileName, xlsx ? ".xlsx" : ".xls");
+
+            File.Move(tempFileName, withExtension);
+            tempFileName = withExtension;
+
+            using (FileStream file = new FileStream(tempFileName, FileMode.OpenOrCreate, FileAccess.ReadWrite))
+            {
+                stream.CopyTo(file);
+            }
+
+            initialize(tempFileName, hasHeaders, hasMixedData);
+        }
+
+        /// <summary>
+        ///   Creates a new spreadsheet reader.
+        /// </summary>
+        /// 
         /// <param name="path">The path of for the spreadsheet file.</param>
         /// <param name="hasHeaders">True if the spreadsheet contains headers, false otherwise.</param>
         /// <param name="hasMixedData">True to read "intermixed" data columns as text, false otherwise.</param>
         /// 
         public ExcelReader(string path, bool hasHeaders = true, bool hasMixedData = true)
+        {
+            initialize(path, hasHeaders, hasMixedData);
+        }
+
+        private void initialize(string path, bool hasHeaders, bool hasMixedData)
         {
             string fullPath = Path.GetFullPath(path);
             string extension = Path.GetExtension(path);
@@ -216,4 +246,23 @@ namespace Accord.Statistics.Formats
         }
 
     }
+
+
+
+#if NET35
+    internal static class Extensions
+    {
+
+        internal static void CopyTo(this Stream input, Stream output)
+        {
+            byte[] buffer = new byte[16 * 1024]; 
+
+            int bytesRead;
+            while ((bytesRead = input.Read(buffer, 0, buffer.Length)) > 0)
+            {
+                output.Write(buffer, 0, bytesRead);
+            }
+        }
+    }
+#endif
 }
