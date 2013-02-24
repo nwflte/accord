@@ -2,8 +2,8 @@
   <head>
     <link rel="SHORTCUT ICON" href="./../icons/favicon.ico" />
     <style type="text/css">.OH_CodeSnippetContainerTabLeftActive, .OH_CodeSnippetContainerTabLeft,.OH_CodeSnippetContainerTabLeftDisabled { backgroundImageName: tabLeftBG.gif; }.OH_CodeSnippetContainerTabRightActive, .OH_CodeSnippetContainerTabRight,.OH_CodeSnippetContainerTabRightDisabled { backgroundImageName: tabRightBG.gif; }.OH_footer { backgroundImageName: footer_slice.gif; background-position: top; background-repeat: repeat-x; }</style>
-    <link rel="stylesheet" type="text/css" href="./../Styles/branding.css" />
-    <link rel="stylesheet" type="text/css" href="./../Styles/branding-en-US.css" />
+    <link rel="stylesheet" type="text/css" href="./../styles/branding.css" />
+    <link rel="stylesheet" type="text/css" href="./../styles/branding-en-US.css" />
     <style type="text/css">
 			body
 			{
@@ -12,7 +12,7 @@
 			overflow-y:scroll;
 			}
 		</style>
-    <script src="./../Scripts/branding.js" type="text/javascript">
+    <script src="./../scripts/branding.js" type="text/javascript">
       <!---->
     </script>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -39,21 +39,15 @@
   <body onload="onLoad()" class="primary-mtps-offline-document">
     <div class="OH_outerDiv">
       <div class="OH_outerContent">
-        <div class="OH_topic">
-          <div class="OH_title">
-            <table>
-              <tr>
-                <td class="OH_tdTitleColumn">ID3Learning Class</td>
-                <td class="OH_tdLogoColumn">
-                  <img align="right" src="./../icons/Accord.NET.png" />
-                </td>
-              </tr>
-            </table>
-          </div>
-        </div>
-        <div class="OH_feedbacklink">
-          <a href="mailto:?subject=Accord.NET+Framework+ID3Learning+Class+100+EN-US&amp;body=Your%20feedback%20is%20used%20to%20improve%20the%20documentation%20and%20the%20product.%20Your%20e-mail%20address%20will%20not%20be%20used%20for%20any%20other%20purpose%20and%20is%20disposed%20of%20after%20the%20issue%20you%20report%20is%20resolved.%20While%20working%20to%20resolve%20the%20issue%20that%20you%20report%2c%20you%20may%20be%20contacted%20via%20e-mail%20to%20get%20further%20details%20or%20clarification%20on%20the%20feedback%20you%20sent.%20After%20the%20issue%20you%20report%20has%20been%20addressed%2c%20you%20may%20receive%20an%20e-mail%20to%20let%20you%20know%20that%20your%20feedback%20has%20been%20addressed.">Send Feedback</a>
-        </div>
+        <table class="TitleTable">
+          <tr>
+            <td class="OH_tdLogoColumn">
+              <img alt="Accord.NET (logo)" src="./../icons/logo.png" />
+            </td>
+            <td class="OH_tdTitleColumn">ID3Learning Class</td>
+            <td class="OH_tdRunningTitleColumn">Accord.NET Framework</td>
+          </tr>
+        </table>
         <div id="mainSection">
           <div id="mainBody">
             <span class="introStyle">
@@ -78,7 +72,7 @@
 				</script>Object</a>
             <br />  <span class="selflink">Accord.MachineLearning.DecisionTrees.Learning<span id="ID0EBBOAAAAA"> </span><script type="text/javascript">
 					addToLanSpecTextIdSet("ID0EBBOAAAAA?vb=.|cpp=::|cs=.|fs=.|nu=.");
-				</script>ID3Learning</span><br /><p></p><b>Namespace:</b> <a href="N_Accord_MachineLearning_DecisionTrees_Learning.htm" target="">Accord.MachineLearning.DecisionTrees.Learning</a><br /><b>Assembly:</b> <span sdata="assembly">Accord.MachineLearning</span> (in Accord.MachineLearning.dll) Version: 2.8.1.0 (2.8.1.0)<div class="OH_CollapsibleAreaRegion"><div class="OH_regiontitle">Syntax</div><div class="OH_CollapsibleArea_HrDiv"><hr class="OH_CollapsibleArea_Hr" /></div></div><div class="OH_clear"></div><div id="snippetGroup_Syntax" class="code"><div id="ID0EAAEAAAAA" class="OH_CodeSnippetContainer"><div class="OH_CodeSnippetContainerTabs" id="ID0EAAEAAAAA_tabs"><div class="OH_CodeSnippetContainerTabLeftActive" id="ID0EAAEAAAAA_tabimgleft"></div><div id="ID0EAAEAAAAA_tab1" class="OH_CodeSnippetContainerTabActive" EnableCopyCode="true"><a href="#" onclick="javascript:ChangeTab('ID0EAAEAAAAA','C#','1','4');return false;">C#</a></div><div id="ID0EAAEAAAAA_tab2" class="OH_CodeSnippetContainerTabDisabledNotFirst" EnableCopyCode="true" disabled="true"><a>VB</a></div><div id="ID0EAAEAAAAA_tab3" class="OH_CodeSnippetContainerTabDisabledNotFirst" EnableCopyCode="true" disabled="true"><a>C++</a></div><div id="ID0EAAEAAAAA_tab4" class="OH_CodeSnippetContainerTabDisabledNotFirst" EnableCopyCode="true" disabled="true"><a>F#</a></div><div class="OH_CodeSnippetContainerTabRight" id="ID0EAAEAAAAA_tabimgright"></div></div><div id="ID0EAAEAAAAA_codecollection" class="OH_CodeSnippetContainerCodeCollection"><div class="OH_CodeSnippetToolBar"><div class="OH_CodeSnippetToolBarText"><a id="ID0EAAEAAAAA_ViewColorized" href="javascript:ExchangeTitleContent('ID0EAAEAAAAA','4')" title="View Colorized" style="display: none">View Colorized</a><a id="ID0EAAEAAAAA_copycode" href="javascript:CopyToClipboard('ID0EAAEAAAAA','4')" title="Copy to Clipboard">Copy to Clipboard</a><a id="ID0EAAEAAAAA_PrintText" class="OH_PrintText" href="javascript:Print('ID0EAAEAAAAA','4')" title="Print">Print</a></div></div><div id="ID0EAAEAAAAA_code_Div1" class="OH_CodeSnippetContainerCode" style="display: block"><pre>[<a href="http://msdn2.microsoft.com/en-us/library/bcfsa90a" target="_blank">SerializableAttribute</a>]
+				</script>ID3Learning</span><br /><p></p><b>Namespace:</b> <a href="N_Accord_MachineLearning_DecisionTrees_Learning.htm" target="">Accord.MachineLearning.DecisionTrees.Learning</a><br /><b>Assembly:</b> <span sdata="assembly">Accord.MachineLearning</span> (in Accord.MachineLearning.dll) Version: 2.8.2.0 (2.8.2.0)<div class="OH_CollapsibleAreaRegion"><div class="OH_regiontitle">Syntax</div><div class="OH_CollapsibleArea_HrDiv"><hr class="OH_CollapsibleArea_Hr" /></div></div><div class="OH_clear"></div><div id="snippetGroup_Syntax" class="code"><div id="ID0EAAEAAAAA" class="OH_CodeSnippetContainer"><div class="OH_CodeSnippetContainerTabs" id="ID0EAAEAAAAA_tabs"><div class="OH_CodeSnippetContainerTabLeftActive" id="ID0EAAEAAAAA_tabimgleft"></div><div id="ID0EAAEAAAAA_tab1" class="OH_CodeSnippetContainerTabActive" EnableCopyCode="true"><a href="#" onclick="javascript:ChangeTab('ID0EAAEAAAAA','C#','1','4');return false;">C#</a></div><div id="ID0EAAEAAAAA_tab2" class="OH_CodeSnippetContainerTabDisabledNotFirst" EnableCopyCode="true" disabled="true"><a>VB</a></div><div id="ID0EAAEAAAAA_tab3" class="OH_CodeSnippetContainerTabDisabledNotFirst" EnableCopyCode="true" disabled="true"><a>C++</a></div><div id="ID0EAAEAAAAA_tab4" class="OH_CodeSnippetContainerTabDisabledNotFirst" EnableCopyCode="true" disabled="true"><a>F#</a></div><div class="OH_CodeSnippetContainerTabRight" id="ID0EAAEAAAAA_tabimgright"></div></div><div id="ID0EAAEAAAAA_codecollection" class="OH_CodeSnippetContainerCodeCollection"><div class="OH_CodeSnippetToolBar"><div class="OH_CodeSnippetToolBarText"><a id="ID0EAAEAAAAA_ViewColorized" href="#" onclick="javascript:ExchangeTitleContent('ID0EAAEAAAAA','4')" title="View Colorized" style="display: none">View Colorized</a><a id="ID0EAAEAAAAA_copycode" href="#" onclick="javascript:CopyToClipboard('ID0EAAEAAAAA','4')" title="Copy to Clipboard">Copy to Clipboard</a><a id="ID0EAAEAAAAA_PrintText" class="OH_PrintText" href="#" onclick="javascript:Print('ID0EAAEAAAAA','4')" title="Print">Print</a></div></div><div id="ID0EAAEAAAAA_code_Div1" class="OH_CodeSnippetContainerCode" style="display: block"><pre>[<a href="http://msdn2.microsoft.com/en-us/library/bcfsa90a" target="_blank">SerializableAttribute</a>]
 <span class="keyword">public</span> <span class="keyword">class</span> <span class="identifier">ID3Learning</span></pre></div><div id="ID0EAAEAAAAA_code_Plain_Div1" class="OH_CodeSnippetContainerCode" style="display: none"><pre>[SerializableAttribute]
 public class ID3Learning</pre></div><div id="ID0EAAEAAAAA_code_Div2" class="OH_CodeSnippetContainerCode" style="display: none"><pre /></div><div id="ID0EAAEAAAAA_code_Plain_Div2" class="OH_CodeSnippetContainerCode" style="display: none"><pre /></div><div id="ID0EAAEAAAAA_code_Div3" class="OH_CodeSnippetContainerCode" style="display: none"><pre /></div><div id="ID0EAAEAAAAA_code_Plain_Div3" class="OH_CodeSnippetContainerCode" style="display: none"><pre /></div><div id="ID0EAAEAAAAA_code_Div4" class="OH_CodeSnippetContainerCode" style="display: none"><pre /></div><div id="ID0EAAEAAAAA_code_Plain_Div4" class="OH_CodeSnippetContainerCode" style="display: none"><pre /></div></div></div><script>addSpecificTextLanguageTagSet('ID0EAAEAAAAA');</script></div><div class="OH_CollapsibleAreaRegion"><div class="OH_regiontitle">Remarks</div><div class="OH_CollapsibleArea_HrDiv"><hr class="OH_CollapsibleArea_Hr" /></div></div><div class="OH_clear"></div><p>
                References:
@@ -95,7 +89,7 @@ public class ID3Learning</pre></div><div id="ID0EAAEAAAAA_code_Div2" class="OH
                relationship between Sunny and Rain, one is not bigger nor smaller than the other, but are 
                just distinct). Moreover, the rows, or instances presented above represent days on which the
                behavior of the person has been registered and annotated, pretty much building our set of 
-               observation instances for learning:</p><div id="ID0EICAAAAA" class="OH_CodeSnippetContainer"><div class="OH_CodeSnippetContainerTabs" id="ID0EICAAAAA_tabs"></div><div id="ID0EICAAAAA_codecollection" class="OH_CodeSnippetContainerCodeCollection"><div class="OH_CodeSnippetToolBar"><div class="OH_CodeSnippetToolBarText"><a id="ID0EICAAAAA_ViewColorized" href="javascript:ExchangeTitleContent('ID0EICAAAAA','4')" title="View Colorized" style="display: none">View Colorized</a><a id="ID0EICAAAAA_copycode" href="javascript:CopyToClipboard('ID0EICAAAAA','4')" title="Copy to Clipboard">Copy to Clipboard</a><a id="ID0EICAAAAA_PrintText" class="OH_PrintText" href="javascript:Print('ID0EICAAAAA','4')" title="Print">Print</a></div></div><div id="ID0EICAAAAA_code_Div1" class="OH_CodeSnippetContainerCode" style="display: block"><pre>DataTable data = <span class="highlight-keyword">new</span> DataTable(<span class="highlight-literal">"Mitchell's Tennis Example"</span>);
+               observation instances for learning:</p><div id="ID0EKCAAAAA" class="OH_CodeSnippetContainer"><div class="OH_CodeSnippetContainerTabs" id="ID0EKCAAAAA_tabs"></div><div id="ID0EKCAAAAA_codecollection" class="OH_CodeSnippetContainerCodeCollection"><div class="OH_CodeSnippetToolBar"><div class="OH_CodeSnippetToolBarText"><a id="ID0EKCAAAAA_ViewColorized" href="#" onclick="javascript:ExchangeTitleContent('ID0EKCAAAAA','4')" title="View Colorized" style="display: none">View Colorized</a><a id="ID0EKCAAAAA_copycode" href="#" onclick="javascript:CopyToClipboard('ID0EKCAAAAA','4')" title="Copy to Clipboard">Copy to Clipboard</a><a id="ID0EKCAAAAA_PrintText" class="OH_PrintText" href="#" onclick="javascript:Print('ID0EKCAAAAA','4')" title="Print">Print</a></div></div><div id="ID0EKCAAAAA_code_Div1" class="OH_CodeSnippetContainerCode" style="display: block"><pre>DataTable data = <span class="highlight-keyword">new</span> DataTable(<span class="highlight-literal">"Mitchell's Tennis Example"</span>);
 
 data.Columns.Add(<span class="highlight-literal">"Day"</span>, <span class="highlight-literal">"Outlook"</span>, <span class="highlight-literal">"Temperature"</span>, <span class="highlight-literal">"Humidity"</span>, <span class="highlight-literal">"Wind"</span>, <span class="highlight-literal">"PlayTennis"</span>);
 
@@ -112,7 +106,7 @@ data.Rows.Add(   <span class="highlight-literal">"D10"</span>, <span class="high
 data.Rows.Add(   <span class="highlight-literal">"D11"</span>,  <span class="highlight-literal">"Sunny"</span>,      <span class="highlight-literal">"Mild"</span>,     <span class="highlight-literal">"Normal"</span>, <span class="highlight-literal">"Strong"</span>,   <span class="highlight-literal">"Yes"</span> );
 data.Rows.Add(   <span class="highlight-literal">"D12"</span>, <span class="highlight-literal">"Overcast"</span>,    <span class="highlight-literal">"Mild"</span>,      <span class="highlight-literal">"High"</span>,  <span class="highlight-literal">"Strong"</span>,   <span class="highlight-literal">"Yes"</span> ); 
 data.Rows.Add(   <span class="highlight-literal">"D13"</span>, <span class="highlight-literal">"Overcast"</span>,    <span class="highlight-literal">"Hot"</span>,      <span class="highlight-literal">"Normal"</span>,  <span class="highlight-literal">"Weak"</span>,    <span class="highlight-literal">"Yes"</span> ); 
-data.Rows.Add(   <span class="highlight-literal">"D14"</span>,  <span class="highlight-literal">"Rain"</span>,       <span class="highlight-literal">"Mild"</span>,      <span class="highlight-literal">"High"</span>,  <span class="highlight-literal">"Strong"</span>,   <span class="highlight-literal">"No"</span>  );</pre></div><div id="ID0EICAAAAA_code_Plain_Div1" class="OH_CodeSnippetContainerCode" style="display: none"><pre>DataTable data = new DataTable("Mitchell's Tennis Example");
+data.Rows.Add(   <span class="highlight-literal">"D14"</span>,  <span class="highlight-literal">"Rain"</span>,       <span class="highlight-literal">"Mild"</span>,      <span class="highlight-literal">"High"</span>,  <span class="highlight-literal">"Strong"</span>,   <span class="highlight-literal">"No"</span>  );</pre></div><div id="ID0EKCAAAAA_code_Plain_Div1" class="OH_CodeSnippetContainerCode" style="display: none"><pre>DataTable data = new DataTable("Mitchell's Tennis Example");
 
 data.Columns.Add("Day", "Outlook", "Temperature", "Humidity", "Wind", "PlayTennis");
 
@@ -129,7 +123,7 @@ data.Rows.Add(   "D10", "Rain",        "Mild",     "Normal",  "Weak",    "Yes" )
 data.Rows.Add(   "D11",  "Sunny",      "Mild",     "Normal", "Strong",   "Yes" );
 data.Rows.Add(   "D12", "Overcast",    "Mild",      "High",  "Strong",   "Yes" ); 
 data.Rows.Add(   "D13", "Overcast",    "Hot",      "Normal",  "Weak",    "Yes" ); 
-data.Rows.Add(   "D14",  "Rain",       "Mild",      "High",  "Strong",   "No"  );</pre></div></div></div><script>addSpecificTextLanguageTagSet('ID0EICAAAAA');</script><p>
+data.Rows.Add(   "D14",  "Rain",       "Mild",      "High",  "Strong",   "No"  );</pre></div></div></div><script>addSpecificTextLanguageTagSet('ID0EKCAAAAA');</script><p>
                In order to try to learn a decision tree, we will first convert this problem to a more simpler
                representation. Since all variables are categories, it does not matter if they are represented
                as strings, or numbers, since both are just symbols for the event they represent. Since numbers
@@ -137,28 +131,28 @@ data.Rows.Add(   "D14",  "Rain",       "Mild",      "High",  "Strong",   "No"  )
                alphabet through the use of a <a href="T_Accord_Statistics_Filters_Codification.htm" target="">codebook</a>.</p><p>
                A codebook effectively transforms any distinct possible value for a variable into an integer 
                symbol. For example, “Sunny” could as well be represented by the integer label 0, “Overcast” 
-               by “1”, Rain by “2”, and the same goes by for the other variables. So:</p><div id="ID0EFCAAAAA" class="OH_CodeSnippetContainer"><div class="OH_CodeSnippetContainerTabs" id="ID0EFCAAAAA_tabs"></div><div id="ID0EFCAAAAA_codecollection" class="OH_CodeSnippetContainerCodeCollection"><div class="OH_CodeSnippetToolBar"><div class="OH_CodeSnippetToolBarText"><a id="ID0EFCAAAAA_ViewColorized" href="javascript:ExchangeTitleContent('ID0EFCAAAAA','4')" title="View Colorized" style="display: none">View Colorized</a><a id="ID0EFCAAAAA_copycode" href="javascript:CopyToClipboard('ID0EFCAAAAA','4')" title="Copy to Clipboard">Copy to Clipboard</a><a id="ID0EFCAAAAA_PrintText" class="OH_PrintText" href="javascript:Print('ID0EFCAAAAA','4')" title="Print">Print</a></div></div><div id="ID0EFCAAAAA_code_Div1" class="OH_CodeSnippetContainerCode" style="display: block"><pre><span class="highlight-comment">// Create a new codification codebook to </span> 
+               by “1”, Rain by “2”, and the same goes by for the other variables. So:</p><div id="ID0EHCAAAAA" class="OH_CodeSnippetContainer"><div class="OH_CodeSnippetContainerTabs" id="ID0EHCAAAAA_tabs"></div><div id="ID0EHCAAAAA_codecollection" class="OH_CodeSnippetContainerCodeCollection"><div class="OH_CodeSnippetToolBar"><div class="OH_CodeSnippetToolBarText"><a id="ID0EHCAAAAA_ViewColorized" href="#" onclick="javascript:ExchangeTitleContent('ID0EHCAAAAA','4')" title="View Colorized" style="display: none">View Colorized</a><a id="ID0EHCAAAAA_copycode" href="#" onclick="javascript:CopyToClipboard('ID0EHCAAAAA','4')" title="Copy to Clipboard">Copy to Clipboard</a><a id="ID0EHCAAAAA_PrintText" class="OH_PrintText" href="#" onclick="javascript:Print('ID0EHCAAAAA','4')" title="Print">Print</a></div></div><div id="ID0EHCAAAAA_code_Div1" class="OH_CodeSnippetContainerCode" style="display: block"><pre><span class="highlight-comment">// Create a new codification codebook to </span> 
 <span class="highlight-comment">// convert strings into integer symbols</span>
 Codification codebook = <span class="highlight-keyword">new</span> Codification(data);
 
 <span class="highlight-comment">// Translate our training data into integer symbols using our codebook:</span>
 DataTable symbols = codebook.Apply(data); 
-<span class="highlight-keyword">int</span>[][] inputs  = symbols.ToIntArray(<span class="highlight-literal">"Outlook"</span>, <span class="highlight-literal">"Temperature"</span>, <span class="highlight-literal">"Humidity"</span>, <span class="highlight-literal">"Wind"</span>); 
-<span class="highlight-keyword">int</span>[]   outputs = symbols.ToIntArray(<span class="highlight-literal">"PlayTennis"</span>).GetColumn(<span class="highlight-number">0</span>);</pre></div><div id="ID0EFCAAAAA_code_Plain_Div1" class="OH_CodeSnippetContainerCode" style="display: none"><pre>// Create a new codification codebook to  
+<span class="highlight-keyword">int</span>[][] inputs  = symbols.ToArray&lt;<span class="highlight-keyword">int</span>&gt;(<span class="highlight-literal">"Outlook"</span>, <span class="highlight-literal">"Temperature"</span>, <span class="highlight-literal">"Humidity"</span>, <span class="highlight-literal">"Wind"</span>); 
+<span class="highlight-keyword">int</span>[]   outputs = symbols.ToArray&lt;<span class="highlight-keyword">int</span>&gt;(<span class="highlight-literal">"PlayTennis"</span>);</pre></div><div id="ID0EHCAAAAA_code_Plain_Div1" class="OH_CodeSnippetContainerCode" style="display: none"><pre>// Create a new codification codebook to  
 // convert strings into integer symbols
 Codification codebook = new Codification(data);
 
 // Translate our training data into integer symbols using our codebook:
 DataTable symbols = codebook.Apply(data); 
-int[][] inputs  = symbols.ToIntArray("Outlook", "Temperature", "Humidity", "Wind"); 
-int[]   outputs = symbols.ToIntArray("PlayTennis").GetColumn(0);</pre></div></div></div><script>addSpecificTextLanguageTagSet('ID0EFCAAAAA');</script><p>
+int[][] inputs  = symbols.ToArray&lt;int&gt;("Outlook", "Temperature", "Humidity", "Wind"); 
+int[]   outputs = symbols.ToArray&lt;int&gt;("PlayTennis");</pre></div></div></div><script>addSpecificTextLanguageTagSet('ID0EHCAAAAA');</script><p>
                Now that we already have our learning input/ouput pairs, we should specify our
                decision tree. We will be trying to build a tree to predict the last column, entitled
                “PlayTennis”. For this, we will be using the “Outlook”, “Temperature”, “Humidity” and
                “Wind” as predictors (variables which will we will use for our decision). Since those
                are categorical, we must specify, at the moment of creation of our tree, the
                characteristics of each of those variables. So:
-             </p><div id="ID0EDCAAAAA" class="OH_CodeSnippetContainer"><div class="OH_CodeSnippetContainerTabs" id="ID0EDCAAAAA_tabs"></div><div id="ID0EDCAAAAA_codecollection" class="OH_CodeSnippetContainerCodeCollection"><div class="OH_CodeSnippetToolBar"><div class="OH_CodeSnippetToolBarText"><a id="ID0EDCAAAAA_ViewColorized" href="javascript:ExchangeTitleContent('ID0EDCAAAAA','4')" title="View Colorized" style="display: none">View Colorized</a><a id="ID0EDCAAAAA_copycode" href="javascript:CopyToClipboard('ID0EDCAAAAA','4')" title="Copy to Clipboard">Copy to Clipboard</a><a id="ID0EDCAAAAA_PrintText" class="OH_PrintText" href="javascript:Print('ID0EDCAAAAA','4')" title="Print">Print</a></div></div><div id="ID0EDCAAAAA_code_Div1" class="OH_CodeSnippetContainerCode" style="display: block"><pre><span class="highlight-comment">// Gather information about decision variables</span>
+             </p><div id="ID0EFCAAAAA" class="OH_CodeSnippetContainer"><div class="OH_CodeSnippetContainerTabs" id="ID0EFCAAAAA_tabs"></div><div id="ID0EFCAAAAA_codecollection" class="OH_CodeSnippetContainerCodeCollection"><div class="OH_CodeSnippetToolBar"><div class="OH_CodeSnippetToolBarText"><a id="ID0EFCAAAAA_ViewColorized" href="#" onclick="javascript:ExchangeTitleContent('ID0EFCAAAAA','4')" title="View Colorized" style="display: none">View Colorized</a><a id="ID0EFCAAAAA_copycode" href="#" onclick="javascript:CopyToClipboard('ID0EFCAAAAA','4')" title="Copy to Clipboard">Copy to Clipboard</a><a id="ID0EFCAAAAA_PrintText" class="OH_PrintText" href="#" onclick="javascript:Print('ID0EFCAAAAA','4')" title="Print">Print</a></div></div><div id="ID0EFCAAAAA_code_Div1" class="OH_CodeSnippetContainerCode" style="display: block"><pre><span class="highlight-comment">// Gather information about decision variables</span>
 DecisionVariable[] attributes =
 {
   <span class="highlight-keyword">new</span> DecisionVariable(<span class="highlight-literal">"Outlook"</span>,     <span class="highlight-number">3</span>), <span class="highlight-comment">// 3 possible values (Sunny, overcast, rain)</span> 
@@ -170,7 +164,7 @@ DecisionVariable[] attributes =
 <span class="highlight-keyword">int</span> classCount = <span class="highlight-number">2</span>; <span class="highlight-comment">// 2 possible output values for playing tennis: yes or no</span> 
 
 <span class="highlight-comment">//Create the decision tree using the attributes and classes</span>
-DecisionTree tree = <span class="highlight-keyword">new</span> DecisionTree(attributes, classCount);</pre></div><div id="ID0EDCAAAAA_code_Plain_Div1" class="OH_CodeSnippetContainerCode" style="display: none"><pre>// Gather information about decision variables
+DecisionTree tree = <span class="highlight-keyword">new</span> DecisionTree(attributes, classCount);</pre></div><div id="ID0EFCAAAAA_code_Plain_Div1" class="OH_CodeSnippetContainerCode" style="display: none"><pre>// Gather information about decision variables
 DecisionVariable[] attributes =
 {
   new DecisionVariable("Outlook",     3), // 3 possible values (Sunny, overcast, rain) 
@@ -182,29 +176,31 @@ DecisionVariable[] attributes =
 int classCount = 2; // 2 possible output values for playing tennis: yes or no 
 
 //Create the decision tree using the attributes and classes
-DecisionTree tree = new DecisionTree(attributes, classCount);</pre></div></div></div><script>addSpecificTextLanguageTagSet('ID0EDCAAAAA');</script><p>Now we have created our decision tree. Unfortunately, it is not really very useful,
+DecisionTree tree = new DecisionTree(attributes, classCount);</pre></div></div></div><script>addSpecificTextLanguageTagSet('ID0EFCAAAAA');</script><p>Now we have created our decision tree. Unfortunately, it is not really very useful,
              since we haven't taught it the problem we are trying to predict. So now we must instantiate
              a learning algorithm to make it useful. For this task, in which we have only categorical 
-             variables, the simplest choice is to use the ID3 algorithm by Quinlan. Let’s do it:</p><div id="ID0EBCAAAAA" class="OH_CodeSnippetContainer"><div class="OH_CodeSnippetContainerTabs" id="ID0EBCAAAAA_tabs"></div><div id="ID0EBCAAAAA_codecollection" class="OH_CodeSnippetContainerCodeCollection"><div class="OH_CodeSnippetToolBar"><div class="OH_CodeSnippetToolBarText"><a id="ID0EBCAAAAA_ViewColorized" href="javascript:ExchangeTitleContent('ID0EBCAAAAA','4')" title="View Colorized" style="display: none">View Colorized</a><a id="ID0EBCAAAAA_copycode" href="javascript:CopyToClipboard('ID0EBCAAAAA','4')" title="Copy to Clipboard">Copy to Clipboard</a><a id="ID0EBCAAAAA_PrintText" class="OH_PrintText" href="javascript:Print('ID0EBCAAAAA','4')" title="Print">Print</a></div></div><div id="ID0EBCAAAAA_code_Div1" class="OH_CodeSnippetContainerCode" style="display: block"><pre><span class="highlight-comment">// Create a new instance of the ID3 algorithm</span>
+             variables, the simplest choice is to use the ID3 algorithm by Quinlan. Let’s do it:</p><div id="ID0EDCAAAAA" class="OH_CodeSnippetContainer"><div class="OH_CodeSnippetContainerTabs" id="ID0EDCAAAAA_tabs"></div><div id="ID0EDCAAAAA_codecollection" class="OH_CodeSnippetContainerCodeCollection"><div class="OH_CodeSnippetToolBar"><div class="OH_CodeSnippetToolBarText"><a id="ID0EDCAAAAA_ViewColorized" href="#" onclick="javascript:ExchangeTitleContent('ID0EDCAAAAA','4')" title="View Colorized" style="display: none">View Colorized</a><a id="ID0EDCAAAAA_copycode" href="#" onclick="javascript:CopyToClipboard('ID0EDCAAAAA','4')" title="Copy to Clipboard">Copy to Clipboard</a><a id="ID0EDCAAAAA_PrintText" class="OH_PrintText" href="#" onclick="javascript:Print('ID0EDCAAAAA','4')" title="Print">Print</a></div></div><div id="ID0EDCAAAAA_code_Div1" class="OH_CodeSnippetContainerCode" style="display: block"><pre><span class="highlight-comment">// Create a new instance of the ID3 algorithm</span>
 ID3Learning id3learning = <span class="highlight-keyword">new</span> ID3Learning(tree);
 
 <span class="highlight-comment">// Learn the training instances!</span>
-id3learning.Run(inputs, outputs);</pre></div><div id="ID0EBCAAAAA_code_Plain_Div1" class="OH_CodeSnippetContainerCode" style="display: none"><pre>// Create a new instance of the ID3 algorithm
+id3learning.Run(inputs, outputs);</pre></div><div id="ID0EDCAAAAA_code_Plain_Div1" class="OH_CodeSnippetContainerCode" style="display: none"><pre>// Create a new instance of the ID3 algorithm
 ID3Learning id3learning = new ID3Learning(tree);
 
 // Learn the training instances!
-id3learning.Run(inputs, outputs);</pre></div></div></div><script>addSpecificTextLanguageTagSet('ID0EBCAAAAA');</script><p>The tree can now be queried for new examples through its <a href="M_Accord_MachineLearning_DecisionTrees_DecisionTree_Compute.htm" target="">Compute(<span id="ID0EDBACAAAAA"> </span><script type="text/javascript">
-					addToLanSpecTextIdSet("ID0EDBACAAAAA?vb=|cpp=array&lt;|cs=|fs=|nu=");
-				</script>Double<span id="ID0EBBACAAAAA"> </span><script type="text/javascript">
-					addToLanSpecTextIdSet("ID0EBBACAAAAA?vb=()|cpp=&gt;|cs=[]|fs=[]|nu=[]");
-				</script>)</a> method.
-             </p><a name="seeAlsoSection"><!----></a><div class="OH_CollapsibleAreaRegion"><div class="OH_regiontitle">See Also</div><div class="OH_CollapsibleArea_HrDiv"><hr class="OH_CollapsibleArea_Hr" /></div></div><div class="OH_clear"></div><div class="seeAlsoStyle"><a href="AllMembers_T_Accord_MachineLearning_DecisionTrees_Learning_ID3Learning.htm" target="">ID3Learning Members</a></div><div class="seeAlsoStyle"><a href="N_Accord_MachineLearning_DecisionTrees_Learning.htm" target="">Accord.MachineLearning.DecisionTrees.Learning Namespace</a></div></div>
+id3learning.Run(inputs, outputs);</pre></div></div></div><script>addSpecificTextLanguageTagSet('ID0EDCAAAAA');</script><p>The tree can now be queried for new examples through its <a href="M_Accord_MachineLearning_DecisionTrees_DecisionTree_Compute.htm" target="">Compute(<span id="ID0EDBCCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EDBCCAAAAA?vb=|cpp=array&lt;|cs=|fs=|nu=");
+				</script>Double<span id="ID0EBBCCAAAAA"> </span><script type="text/javascript">
+					addToLanSpecTextIdSet("ID0EBBCCAAAAA?vb=()|cpp=&gt;|cs=[]|fs=[]|nu=[]");
+				</script>)</a>
+             method. For example, we can use: </p><div id="ID0EBCAAAAA" class="OH_CodeSnippetContainer"><div class="OH_CodeSnippetContainerTabs" id="ID0EBCAAAAA_tabs"></div><div id="ID0EBCAAAAA_codecollection" class="OH_CodeSnippetContainerCodeCollection"><div class="OH_CodeSnippetToolBar"><div class="OH_CodeSnippetToolBarText"><a id="ID0EBCAAAAA_ViewColorized" href="#" onclick="javascript:ExchangeTitleContent('ID0EBCAAAAA','4')" title="View Colorized" style="display: none">View Colorized</a><a id="ID0EBCAAAAA_copycode" href="#" onclick="javascript:CopyToClipboard('ID0EBCAAAAA','4')" title="Copy to Clipboard">Copy to Clipboard</a><a id="ID0EBCAAAAA_PrintText" class="OH_PrintText" href="#" onclick="javascript:Print('ID0EBCAAAAA','4')" title="Print">Print</a></div></div><div id="ID0EBCAAAAA_code_Div1" class="OH_CodeSnippetContainerCode" style="display: block"><pre><span class="highlight-keyword">string</span> answer = codebook.Translate(<span class="highlight-literal">"PlayTennis"</span>,
+  tree.Compute(codebook.Translate(<span class="highlight-literal">"Sunny"</span>, <span class="highlight-literal">"Hot"</span>, <span class="highlight-literal">"High"</span>, <span class="highlight-literal">"Strong"</span>)));</pre></div><div id="ID0EBCAAAAA_code_Plain_Div1" class="OH_CodeSnippetContainerCode" style="display: none"><pre>string answer = codebook.Translate("PlayTennis",
+  tree.Compute(codebook.Translate("Sunny", "Hot", "High", "Strong")));</pre></div></div></div><script>addSpecificTextLanguageTagSet('ID0EBCAAAAA');</script><p>In the above example, answer will be "No".</p><a name="seeAlsoSection"><!----></a><div class="OH_CollapsibleAreaRegion"><div class="OH_regiontitle">See Also</div><div class="OH_CollapsibleArea_HrDiv"><hr class="OH_CollapsibleArea_Hr" /></div></div><div class="OH_clear"></div><div class="seeAlsoStyle"><a href="AllMembers_T_Accord_MachineLearning_DecisionTrees_Learning_ID3Learning.htm" target="">ID3Learning Members</a></div><div class="seeAlsoStyle"><a href="N_Accord_MachineLearning_DecisionTrees_Learning.htm" target="">Accord.MachineLearning.DecisionTrees.Learning Namespace</a></div></div>
         </div>
       </div>
     </div>
     <div id="OH_footer" class="OH_footer">
       <p>
-        <a href="http://accord.googlecode.com" target="_blank">Accord.NET Framework</a> © 2009-2012. All documentation is licensed under the Creative Commons Attribution/Share-Alike License.</p>
+        <a href="http://accord.googlecode.com" target="_blank">Accord.NET Framework</a> © 2009-2013. All documentation is licensed under the Creative Commons Attribution/Share-Alike License.</p>
       <div class="OH_feedbacklink">
         <a href="mailto:?subject=Accord.NET+Framework+ID3Learning+Class+100+EN-US&amp;body=Your%20feedback%20is%20used%20to%20improve%20the%20documentation%20and%20the%20product.%20Your%20e-mail%20address%20will%20not%20be%20used%20for%20any%20other%20purpose%20and%20is%20disposed%20of%20after%20the%20issue%20you%20report%20is%20resolved.%20While%20working%20to%20resolve%20the%20issue%20that%20you%20report%2c%20you%20may%20be%20contacted%20via%20e-mail%20to%20get%20further%20details%20or%20clarification%20on%20the%20feedback%20you%20sent.%20After%20the%20issue%20you%20report%20has%20been%20addressed%2c%20you%20may%20receive%20an%20e-mail%20to%20let%20you%20know%20that%20your%20feedback%20has%20been%20addressed.">Send Feedback</a> on this topic.</div>
     </div>
