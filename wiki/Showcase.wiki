@@ -28,6 +28,8 @@ This page enlists several works which have used Accord.NET in some point of thei
 
 The following papers include at least a citation to the framework, reference material published based on the framework or have used standalone code which now has been incorporated in the framework. Some of those have been found using search engines or automatic alerts. If your paper has been incorrectly incorporated in this collection, please let me know.
 
+ * M. H. Afif, A-R. Hedar, T. H. Abdel Hamid, Y. B. Mahdy, SS-SVM (3SVM): A New Classification Method for Hepatitis Disease Diagnosis, 	 International Journal of Advanced Computer Science and Applications (IJACSA), 4(2), 53-58, 2013.
+
  * César Roberto de Souza, Ednaldo Brigante Pizzolato, Mauro dos Santos Anjo. Fingerspelling Recognition with Support Vector Machines and Hidden Conditional Random Fields. Advances in Artificial Intelligence – IBERAMIA 2012. Lecture Notes in Computer Science Volume 7637, 2012, pp 561-570. DOI: http://dx.doi.org/10.1007/978-3-642-34654-5_57
 
  * Eli T. Brown, Jingjing Liu, Carla E. Brodley, Remco Chang. Dis-Function: Learning Distance Functions Interactively. To appear in the Proceedings of the IEEE Conference on Visual Analytics Science and Technology, 2012.
