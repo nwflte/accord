@@ -28,7 +28,13 @@ This page enlists several works which have used Accord.NET in some point of thei
 
 The following papers include at least a citation to the framework, reference material published based on the framework or have used standalone code which now has been incorporated in the framework. Some of those have been found using search engines or automatic alerts. If your paper has been incorrectly incorporated in this collection, please let me know.
 
- * M. H. Afif, A-R. Hedar, T. H. Abdel Hamid, Y. B. Mahdy, SS-SVM (3SVM): A New Classification Method for Hepatitis Disease Diagnosis, 	 International Journal of Advanced Computer Science and Applications (IJACSA), 4(2), 53-58, 2013.
+ * M. Afif, A-R. Hedar, Data Classification Using Support Vector Machine Integrated With Scatter Search Method, Proceedings of the 2012 Japan-Egypt Conference on Electronics, Communications and Computers (JEC-ECC 2012), Article number 6186977, Pages 168-172, Alexandria, 6-9 March 2012.
+
+ * M. Afif,  A-R. Hedar, T. H. Abdel Hamid, Y.  B. Mahdy, Support Vector Machines With Weighted Powered Kernels For  Data Classification, The first International Conference on Advanced Machine Learning Technologies and Applications (AMLTA12), 2012. Available on http://link.springer.com/chapter/10.1007/978-3-642-35326-0_37
+
+ * M. Afif,  A-R. Hedar, T. H. Abdel Hamid, Y. B. Mahdy,  Parameter Determination Of Support Vector Machine Using Scatter Search Approach,   The 22nd International Conference on Computer Theory and Applications (ICCTA 2012), 2012.
+
+ * M. Afif, A-R. Hedar, T. H. Abdel Hamid, Y. B. Mahdy, SS-SVM (3SVM): A New Classification Method for Hepatitis Disease Diagnosis, 	 International Journal of Advanced Computer Science and Applications (IJACSA), 4(2), 53-58, 2013.
 
  * César Roberto de Souza, Ednaldo Brigante Pizzolato, Mauro dos Santos Anjo. Fingerspelling Recognition with Support Vector Machines and Hidden Conditional Random Fields. Advances in Artificial Intelligence – IBERAMIA 2012. Lecture Notes in Computer Science Volume 7637, 2012, pp 561-570. DOI: http://dx.doi.org/10.1007/978-3-642-34654-5_57
 
