@@ -25,6 +25,32 @@ namespace Accord.Statistics.Testing
     using System;
 
     /// <summary>
+    ///   Levene test computation methods.
+    /// </summary>
+    /// 
+    public enum LeveneTestMethod
+    {
+        /// <summary>
+        ///   The test has been computed using the Mean.
+        /// </summary>
+        /// 
+        Mean,
+
+        /// <summary>
+        ///   The test has been computed using the Median
+        ///   (which is known as the Brown-Forsythe test).
+        /// </summary>
+        /// 
+        Median,
+
+        /// <summary>
+        ///   The test has been computed using the trimmed mean.
+        /// </summary>
+        /// 
+        TruncatedMean
+    }
+
+    /// <summary>
     ///   Levene's test for equality of variances.
     /// </summary>
     /// 
@@ -45,6 +71,12 @@ namespace Accord.Statistics.Testing
     {
 
         /// <summary>
+        ///   Gets the method used to compute the Levene's test.
+        /// </summary>
+        /// 
+        public LeveneTestMethod Method { get; private set; }
+
+        /// <summary>
         ///   Tests the null hypothesis that all group variances are equal.
         /// </summary>
         /// 
@@ -54,16 +86,48 @@ namespace Accord.Statistics.Testing
         /// 
         public LeveneTest(double[][] samples, bool median = false)
         {
+            compute(samples, median ? LeveneTestMethod.Median : LeveneTestMethod.Mean, 0);
+        }
+
+        /// <summary>
+        ///   Tests the null hypothesis that all group variances are equal.
+        /// </summary>
+        /// 
+        /// <param name="samples">The grouped samples.</param>
+        /// <param name="percent">The percentage of observations to discard
+        /// from the sample when computing the test with the truncated mean.</param>
+        /// 
+        public LeveneTest(double[][] samples, double percent)
+        {
+            compute(samples, LeveneTestMethod.TruncatedMean, percent);
+        }
+
+
+        private void compute(double[][] samples, LeveneTestMethod method, double percent)
+        {
+            this.Method = method;
             int N = 0, k = samples.Length;
 
             // Compute group means
             var means = new double[samples.Length];
-            if (median)
-                for (int i = 0; i < means.Length; i++)
-                    means[i] = Accord.Statistics.Tools.Median(samples[i]);
-            else
-                for (int i = 0; i < means.Length; i++)
-                    means[i] = Accord.Statistics.Tools.Mean(samples[i]);
+
+            switch (method)
+            {
+                case LeveneTestMethod.Mean:
+                    for (int i = 0; i < means.Length; i++)
+                        means[i] = Accord.Statistics.Tools.Mean(samples[i]);
+                    break;
+
+                case LeveneTestMethod.Median:
+                    for (int i = 0; i < means.Length; i++)
+                        means[i] = Accord.Statistics.Tools.Median(samples[i]);
+                    break;
+
+                case LeveneTestMethod.TruncatedMean:
+                    for (int i = 0; i < means.Length; i++)
+                        means[i] = Accord.Statistics.Tools.TruncatedMean(samples[i], percent);
+                    break;
+            }
 
             // Compute absolute centred samples
             var z = new double[samples.Length][];
