@@ -20,14 +20,19 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-namespace Accord.Tests.Audio
+namespace Accord.Tests.MachineLearning
 {
-    using Accord.DirectSound;
+    using Accord.MachineLearning;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Accord.Audio;
+    using System;
+    using Accord.Math;
+    using Accord.Statistics;
+    using Accord.MachineLearning.Boosting;
+    using Accord.MachineLearning.Boosting.Learners;
+
 
     [TestClass()]
-    public class WaveFileAudioSourceTest
+    public class AdaBoostTest
     {
 
 
@@ -76,35 +81,60 @@ namespace Accord.Tests.Audio
         #endregion
 
 
+
         [TestMethod()]
-        public void WaveFileAudioSourceConstructorTest()
+        public void ConstructorTest()
         {
-            string fileName = @"..\..\..\Accord.Tests\Accord.Tests.Audio\Resources\Grand Piano - Fazioli - major A middle.wav";
-
-            WaveFileAudioSource target = new WaveFileAudioSource(fileName);
-
-            Signal s = null;
-
-            target.NewFrame += delegate(object sender, NewFrameEventArgs e)
+            double[][] inputs =
             {
-                if (s == null)
-                    s = e.Signal;
+                new double[] { 10, 42 },
+                new double[] { 162, 96 },
+                new double[] { 125, 20 },
+                new double[] { 96, 6 },
+                new double[] { 2, 73 },
+                new double[] { 52, 51 },
+                new double[] { 71, 49 },
+            };
 
-                Assert.AreEqual(s.SampleRate, 44100);
-                Assert.AreEqual(s.Channels, 2);
-                Assert.AreEqual(s.Length, 8192);
-                Assert.AreEqual(s.Channels * s.Length, s.Samples);
+            int[] outputs = 
+            {
+                -1, -1, +1, +1, -1, -1, +1
             };
 
 
-            target.Start();
+            var classifier = new Boost<DecisionStump>();
 
-            target.WaitForStop();
+            var teacher = new AdaBoost<DecisionStump>(classifier)
+            {
+                Creation = (weights) =>
+                {
+                    var stump = new DecisionStump(2);
+                    stump.Learn(inputs, outputs, weights);
+                    return stump;
+                },
 
-            Assert.AreEqual(180224, target.FramesReceived);
-            Assert.AreEqual(705600, target.BytesReceived);
+                Iterations = 5,
+                Tolerance = 1e-3
+            };
 
+
+            double error = teacher.Run(inputs, outputs);
+
+            Assert.AreEqual(0, error);
+
+            Assert.AreEqual(5, classifier.Models.Count);
+            Assert.AreEqual(0.16684734250395147, classifier.Models[0].Weight);
+            Assert.AreEqual(0.22329026900109736, classifier.Models[1].Weight);
+            Assert.AreEqual(0.28350372170582383, classifier.Models[2].Weight);
+            Assert.AreEqual(0.16684734250395139, classifier.Models[3].Weight);
+            Assert.AreEqual(0.15951132428517592, classifier.Models[4].Weight);
+
+            int[] actual = new int[outputs.Length];
+            for (int i = 0; i < actual.Length; i++)
+                actual[i] = classifier.Compute(inputs[i]);
+
+            for (int i = 0; i < actual.Length; i++)
+                Assert.AreEqual(outputs[i], actual[i]);
         }
-
     }
 }

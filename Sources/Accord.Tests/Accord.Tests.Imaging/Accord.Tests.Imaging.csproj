@@ -152,6 +152,7 @@
     <Compile Include="ConvexityDefectsTest.cs" />
     <Compile Include="BorderFollowingTest.cs" />
     <Compile Include="CentralMomentsTest.cs" />
+    <Compile Include="FastRetinaKeypointDetectorTest.cs" />
     <Compile Include="HuMomentsTest.cs" />
     <Compile Include="OpenSURF\FastHessian.cs" />
     <Compile Include="OpenSURF\IntegralImage.cs" />

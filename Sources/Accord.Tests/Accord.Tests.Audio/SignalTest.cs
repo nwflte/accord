@@ -20,16 +20,11 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Audio;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Accord.Tests.Audio
 {
+    using Accord.Audio;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-
-    /// <summary>
-    ///This is a test class for SignalTest and is intended
-    ///to contain all SignalTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class SignalTest
     {
@@ -37,10 +32,6 @@ namespace Accord.Tests.Audio
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -85,18 +76,15 @@ namespace Accord.Tests.Audio
 
 
         private float[,] data = 
-            {
-                {  0.00f, 0.2f  },
-                {  0.32f, 0.1f  },
-                {  0.22f, 0.2f  },
-                {  0.12f, 0.42f },
-                { -0.12f, 0.1f  },
-                { -0.22f, 0.2f  },
-            };
+        {
+            {  0.00f, 0.2f  },
+            {  0.32f, 0.1f  },
+            {  0.22f, 0.2f  },
+            {  0.12f, 0.42f },
+            { -0.12f, 0.1f  },
+            { -0.22f, 0.2f  },
+        };
 
-        /// <summary>
-        ///A test for GetEnergy
-        ///</summary>
         [TestMethod()]
         public void GetEnergyTest()
         {
@@ -107,9 +95,6 @@ namespace Accord.Tests.Audio
             Assert.AreEqual(expected, actual, 1e-4);
         }
 
-        /// <summary>
-        ///A test for Signal Constructor
-        ///</summary>
         [TestMethod()]
         public void SignalConstructorTest()
         {
@@ -121,9 +106,6 @@ namespace Accord.Tests.Audio
         }
 
 
-        /// <summary>
-        ///A test for GetSample
-        ///</summary>
         [TestMethod()]
         public void GetSampleTest()
         {

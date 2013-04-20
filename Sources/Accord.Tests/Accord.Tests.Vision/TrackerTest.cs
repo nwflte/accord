@@ -20,19 +20,13 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Vision.Tracking;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Drawing;
-using AForge.Imaging;
-
 namespace Accord.Tests.Vision
 {
+    using Accord.Vision.Tracking;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System.Drawing;
+    using AForge.Imaging;
 
-
-    /// <summary>
-    ///This is a test class for TrackerTest and is intended
-    ///to contain all TrackerTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class TrackerTest
     {
@@ -40,10 +34,6 @@ namespace Accord.Tests.Vision
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -87,9 +77,6 @@ namespace Accord.Tests.Vision
         #endregion
 
 
-        /// <summary>
-        ///   A test for ProcessFrame
-        /// </summary>
         [TestMethod()]
         public void ProcessFrame()
         {
@@ -122,7 +109,7 @@ namespace Accord.Tests.Vision
             Assert.AreEqual((int)47.57993716803177, to.Rectangle.Width, 0.01);
             Assert.AreEqual((int)57.3831709184114, to.Rectangle.Height, 0.05);
 
-            Assert.AreEqual(new Rectangle(0, 0, 52, 63), window);
+            Assert.AreEqual(new Rectangle(0, 0, 52, 62), window);
 
             Assert.IsNotNull(to.Image);
             Assert.AreEqual(47, to.Image.Width);

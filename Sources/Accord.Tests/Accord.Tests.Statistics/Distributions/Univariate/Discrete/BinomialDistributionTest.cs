@@ -155,10 +155,10 @@ namespace Accord.Tests.Statistics
             // http://www.stat.yale.edu/Courses/1997-98/101/binom.htm
             // Verified in http://stattrek.com/online-calculator/binomial.aspx
 
-            double[] pmf =             { 0.0260838446329553, 0.10433562893683, 0.198238170750635, 0.237886375826923, 0.202203904741285 };
+            double[] pmf = { 0.0260838446329553, 0.10433562893683, 0.198238170750635, 0.237886375826923, 0.202203904741285 };
             double[] cdfLess = { 0.0000000000000000, 0.0260838446329553, 0.130419473569785, 0.32865764432042, 0.566544020147343 };
-            double[] cdfLessEqual =    { 0.0260838446329553, 0.130419473569785, 0.32865764432042, 0.566544020147343, 0.768747924888628 };
-            double[] cdfGreater =      { 0.973916155367045, 0.869580526430215, 0.67134235567958, 0.433455979852657, 0.231252075111372 };
+            double[] cdfLessEqual = { 0.0260838446329553, 0.130419473569785, 0.32865764432042, 0.566544020147343, 0.768747924888628 };
+            double[] cdfGreater = { 0.973916155367045, 0.869580526430215, 0.67134235567958, 0.433455979852657, 0.231252075111372 };
             double[] cdfGreaterEqual = { 1.000000000000000, 0.973916155367045, 0.869580526430215, 0.67134235567958, 0.433455979852657 };
 
             int trials = 20;
@@ -216,6 +216,24 @@ namespace Accord.Tests.Statistics
                 double actual = target.DistributionFunction(i);
                 Assert.AreEqual(expected[i], actual, 1e-4);
                 Assert.IsFalse(Double.IsNaN(actual));
+            }
+        }
+
+        [TestMethod()]
+        public void InverseDistributionFunctionTest()
+        {
+            double[] pvalues = { 0.0260838, 0.130419, 0.3287, 0.5665, 0.7687, 0.8982, 0.9629, 0.9887, 0.9972, 0.9994 };
+
+            int trials = 20;
+            double probability = 0.166667;
+            BinomialDistribution target = new BinomialDistribution(trials, probability);
+
+            for (int i = 0; i < pvalues.Length; i++)
+            {
+                double p = pvalues[i] + 1e-4;
+                double actual = target.InverseDistributionFunction(p);
+
+                Assert.AreEqual(i, actual);
             }
         }
 

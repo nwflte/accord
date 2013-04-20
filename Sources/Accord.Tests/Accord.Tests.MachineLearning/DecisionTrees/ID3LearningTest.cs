@@ -32,6 +32,7 @@ namespace Accord.Tests.MachineLearning
     using System.Reflection;
     using System.Reflection.Emit;
     using System.IO;
+    using AForge;
 
     [TestClass()]
     public class ID3LearningTest
@@ -206,8 +207,8 @@ namespace Accord.Tests.MachineLearning
 
             DecisionVariable[] attributes = 
             {
-                new DecisionVariable("x", DecisionAttributeKind.Discrete),
-                new DecisionVariable("y", DecisionAttributeKind.Discrete),
+                new DecisionVariable("x", DecisionVariableKind.Discrete),
+                new DecisionVariable("y", DecisionVariableKind.Discrete),
             };
 
 
@@ -464,5 +465,36 @@ namespace Accord.Tests.MachineLearning
             }
         }
 
+
+        [TestMethod]
+        public void ConsistencyTest1()
+        {
+            int[,] random = Matrix.Random(1000, 10, 0, 10).ToInt32();
+
+            int[][] samples = random.ToArray();
+            int[] outputs = new int[1000];
+
+            for (int i = 0; i < samples.Length; i++)
+            {
+                if (samples[i][0] > 8)
+                    outputs[i] = 1;
+            }
+
+            DecisionVariable[] vars = new DecisionVariable[10];
+            for (int i = 0; i < vars.Length; i++)
+                vars[i] = new DecisionVariable(i.ToString(), new IntRange(0,10));
+
+            DecisionTree tree = new DecisionTree(vars, 2);
+
+            ID3Learning teacher = new ID3Learning(tree);
+
+            double error = teacher.Run(samples, outputs);
+
+            Assert.AreEqual(0, error);
+
+            Assert.AreEqual(11, tree.Root.Branches.Count);
+            for (int i = 0; i < tree.Root.Branches.Count; i++)
+                Assert.IsTrue(tree.Root.Branches[i].IsLeaf);    
+        }
     }
 }

@@ -122,7 +122,7 @@ namespace Accord.Tests.MachineLearning
         public void MeanShiftConstructorTest2()
         {
 
-            Accord.Math.Tools.SetupGenerator(0);
+            Accord.Math.Tools.SetupGenerator(1);
 
 
             // Declare some observations

@@ -27,6 +27,8 @@ namespace Accord.Tests.MachineLearning
     using Accord.Math;
     using Accord.Statistics.Kernels;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System.IO;
+    using System.Threading.Tasks;
 
     [TestClass()]
     public class MultilabelSupportVectorLearningTest
@@ -132,7 +134,128 @@ namespace Accord.Tests.MachineLearning
 
             // only xor is not learnable by
             // a hard-margin linear machine
-            Assert.AreEqual(2 / 16.0, error); 
+            Assert.AreEqual(2 / 16.0, error);
+        }
+
+
+        [TestMethod()]
+        public void ComputeTest1()
+        {
+            double[][] inputs =
+            {
+                new double[] { 1, 4, 2, 0, 1 },
+                new double[] { 1, 3, 2, 0, 1 },
+                new double[] { 3, 0, 1, 1, 1 },
+                new double[] { 3, 0, 1, 0, 1 },
+                new double[] { 0, 5, 5, 5, 5 },
+                new double[] { 1, 5, 5, 5, 5 },
+                new double[] { 1, 0, 0, 0, 0 },
+                new double[] { 1, 0, 0, 0, 0 },
+            };
+
+            int[] outputs =
+            {
+                0, 0,
+                1, 1,
+                2, 2,
+                3, 3,
+            };
+
+
+            IKernel kernel = new Polynomial(2);
+            var msvm = new MultilabelSupportVectorMachine(5, kernel, 4);
+            var smo = new MultilabelSupportVectorLearning(msvm, inputs, outputs);
+            smo.Algorithm = (svm, classInputs, classOutputs, i, j) =>
+                new SequentialMinimalOptimization(svm, classInputs, classOutputs);
+
+            Assert.AreEqual(0, msvm.GetLastKernelEvaluations());
+
+            double error = smo.Run();
+            Assert.AreEqual(0, error);
+
+
+            int[] evals = new int[inputs.Length];
+            for (int i = 0; i < inputs.Length; i++)
+            {
+                double expected = outputs[i];
+                double[] responses; msvm.Compute(inputs[i], out responses);
+                int actual; responses.Max(out actual);
+                Assert.AreEqual(expected, actual);
+                evals[i] = msvm.GetLastKernelEvaluations();
+            }
+
+            for (int i = 0; i < evals.Length; i++)
+                Assert.AreEqual(msvm.SupportVectorUniqueCount, evals[i]);
+        }
+
+        [TestMethod()]
+        public void SerializeTest1()
+        {
+            double[][] inputs =
+            {
+                new double[] { 1, 4, 2, 0, 1 },
+                new double[] { 1, 3, 2, 0, 1 },
+                new double[] { 3, 0, 1, 1, 1 },
+                new double[] { 3, 0, 1, 0, 1 },
+                new double[] { 0, 5, 5, 5, 5 },
+                new double[] { 1, 5, 5, 5, 5 },
+                new double[] { 1, 0, 0, 0, 0 },
+                new double[] { 1, 0, 0, 0, 0 },
+            };
+
+            int[] outputs =
+            {
+                0, 0,
+                1, 1,
+                2, 2,
+                3, 3,
+            };
+
+            IKernel kernel = new Linear();
+            var msvm = new MultilabelSupportVectorMachine(5, kernel, 4);
+            var smo = new MultilabelSupportVectorLearning(msvm, inputs, outputs);
+            smo.Algorithm = (svm, classInputs, classOutputs, i, j) =>
+                new SequentialMinimalOptimization(svm, classInputs, classOutputs);
+
+            double expected = smo.Run();
+
+
+            MemoryStream stream = new MemoryStream();
+
+            // Save the machines
+            msvm.Save(stream);
+
+            // Rewind
+            stream.Seek(0, SeekOrigin.Begin);
+
+            // Reload the machines
+            var target = MultilabelSupportVectorMachine.Load(stream);
+
+            double actual;
+
+            int count = 0; // Compute errors
+            for (int i = 0; i < inputs.Length; i++)
+            {
+                double[] responses;
+                target.Compute(inputs[i], out responses);
+                int y; responses.Max(out y);
+                if (y != outputs[i]) count++;
+            }
+
+            actual = (double)count / inputs.Length;
+
+
+            Assert.AreEqual(expected, actual);
+
+            Assert.AreEqual(msvm.Inputs, target.Inputs);
+            Assert.AreEqual(msvm.Classes, target.Classes);
+            for (int i = 0; i < msvm.Machines.Length; i++)
+            {
+                var a = msvm[i];
+                var b = target[i];
+
+                Assert.IsTrue(a.SupportVectors.IsEqual(b.SupportVectors));
+            }
         }
 
     }

@@ -93,8 +93,8 @@ namespace Accord.Tests.Audio
             // sizeof(int)   = 4
             // sizeof(short) = 2
 
-            var sourceStream = Properties.Resources.Grand_Piano___Fazioli___major_A_middle;
-            var destinationStream = new MemoryStream();
+            UnmanagedMemoryStream sourceStream = Properties.Resources.Grand_Piano___Fazioli___major_A_middle;
+            MemoryStream destinationStream = new MemoryStream();
 
             // Create a decoder for the source stream
             WaveDecoder sourceDecoder = new WaveDecoder(sourceStream);
