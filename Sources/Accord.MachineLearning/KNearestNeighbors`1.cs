@@ -319,21 +319,20 @@ namespace Accord.MachineLearning
         /// 
         public virtual int Compute(T input, out double[] scores)
         {
+            // Compute all distances
             for (int i = 0; i < inputs.Length; i++)
                 distances[i] = distance(input, inputs[i]);
 
-            int[] nearestIndices = Matrix.Indices(0, inputs.Length);
-
-            Array.Sort(distances, nearestIndices);
+            int[] idx = distances.Bottom(k, inPlace: true);
 
             scores = new double[classCount];
 
             for (int i = 0; i < k; i++)
             {
-                int j = nearestIndices[i];
+                int j = idx[i];
 
                 int label = outputs[j];
-                double d = distances[j];
+                double d = distances[i];
 
                 scores[label] += 1.0 / d;
             }

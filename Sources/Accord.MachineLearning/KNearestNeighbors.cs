@@ -89,7 +89,7 @@ namespace Accord.MachineLearning
         public KNearestNeighbors(int k, int classes, double[][] inputs, int[] outputs, Func<double[], double[], double> distance)
             : base(k, classes, inputs, outputs, distance)
         {
-            this.tree = KDTree.FromData(inputs, outputs);
+            this.tree = KDTree.FromData(inputs, outputs, distance);
         }
 
         /// <summary>
