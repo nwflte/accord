@@ -205,8 +205,8 @@ namespace Accord.Imaging
                     {
                         for (int y = 0; y < cellSize; y++)
                         {
-                            double ang = direction[startCellX + x, startCellY + y];
-                            double mag = magnitude[startCellX + x, startCellY + y];
+                            double ang = direction[startCellY + y, startCellX + x];
+                            double mag = magnitude[startCellY + y, startCellX + x];
 
                             // Get its angular bin
                             int bin = (int)System.Math.Floor((ang + Math.PI) * binWidth);
@@ -240,7 +240,7 @@ namespace Accord.Imaging
                     {
                         for (int y = 0; y < blockSize; y++)
                         {
-                            double[] histogram = 
+                            double[] histogram =
                                 histograms[startBlockX + x, startBlockY + y];
 
                             // Copy all histograms to the block vector
