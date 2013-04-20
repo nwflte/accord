@@ -52,6 +52,7 @@ namespace Accord.MachineLearning
     /// </summary>
     /// 
     /// <example>
+    /// <code>
     /// // This is a sample code on how to use Bootstrap estimate
     /// // to assess the performance of Support Vector Machines.
     /// 
@@ -130,6 +131,7 @@ namespace Accord.MachineLearning
     /// 
     /// // And compute the 0.632 estimate
     /// double estimate = result.Estimate;
+    /// </code>
     /// </example>
     /// 
     [Serializable]
