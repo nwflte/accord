@@ -103,6 +103,7 @@
     <Compile Include="Comparers\GeneralComparer.cs" />
     <Compile Include="Comparers\StableComparer.cs" />
     <Compile Include="Convergence\AbsoluteConvergence.cs" />
+    <Compile Include="Convergence\RelativeConvergence.cs" />
     <Compile Include="Convergence\RelativeParameterConvergence.cs" />
     <Compile Include="Transforms\HartleyTransform.cs" />
     <Compile Include="Transforms\SineTransform.cs" />
