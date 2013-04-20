@@ -202,6 +202,10 @@ namespace Accord.MachineLearning.DecisionTrees.Learning
             this.attributes = new bool[tree.InputCount];
             this.maxHeight = attributes.Length;
 
+            for (int i = 0; i < tree.Attributes.Count; i++)
+                if (tree.Attributes[i].Nature != DecisionVariableKind.Discrete)
+                    throw new ArgumentException("The ID3 learning algorithm can only handle discrete inputs.");
+
             for (int i = 0; i < inputRanges.Length; i++)
                 inputRanges[i] = tree.Attributes[i].Range.ToIntRange(false);
         }
