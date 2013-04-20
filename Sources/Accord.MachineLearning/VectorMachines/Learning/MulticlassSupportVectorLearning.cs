@@ -357,7 +357,9 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         }
 
         /// <summary>
-        ///   Compute the error ratio.
+        ///   Computes the error ratio, the number of
+        ///   misclassifications divided by the total
+        ///   number of samples in a dataset.
         /// </summary>
         /// 
         public double ComputeError(double[][] inputs, int[] expectedOutputs)

@@ -200,6 +200,8 @@ namespace Accord.MachineLearning.VectorMachines
         }
 
 
+
+    
         #region Properties
         /// <summary>
         ///   Gets the classifier for <paramref name="class1"/> against <paramref name="class2"/>.
@@ -922,119 +924,7 @@ namespace Accord.MachineLearning.VectorMachines
         #endregion
 
 
-        private Cache createOrResetCache()
-        {
-            Cache cache = vectorCache.Value;
 
-            // First of all, check if the shared vectors in this machine
-            // already have been identified. If they don't, identify them.
-
-            cache.Vectors = sharedVectors.Value; // use lazy instantiation
-            int vectorCount = SupportVectorSharedCount;
-
-            // Now, check if a cache has already been created for this
-            // thread and has adequate size. If it has not, create it.
-
-            if (cache.Products == null || cache.Products.Length < vectorCount)
-            {
-                // The cache has not been created
-                cache.Products = new double[vectorCount];
-
-#if !NET35      // Create synchronization objects
-                cache.SyncObjects = new SpinLock[vectorCount];
-                for (int i = 0; i < cache.SyncObjects.Length; i++)
-                    cache.SyncObjects[i] = new SpinLock();
-#endif
-            }
-
-            // Initialize (or reset) the cache. A value of Not-a-Number
-            // indicates that the value of corresponding vector has not
-            // been computed yet.
-            for (int i = 0; i < cache.Products.Length; i++)
-                cache.Products[i] = Double.NaN;
-
-
-            cache.Evaluations = 0;
-
-            return cache;
-        }
-
-
-        private int[][][] computeSharedVectors()
-        {
-            // This method should only be called once after the machine has
-            // been learned. If the inner machines or they Support Vectors
-            // change, this method will need to be recomputed.
-
-            // Detect all vectors which are being shared along the machines
-            var shared = new Dictionary<double[], List<Tuple<int, int, int>>>();
-
-            // for all machines
-            for (int i = 0; i < machines.Length; i++)
-            {
-                // for all support vectors in the machines
-                for (int j = 0; j < machines[i].Length; j++)
-                {
-                    // if the machine is not in compact form
-                    if (machines[i][j].SupportVectors != null)
-                    {
-                        // register the support vector on the shared cache collection
-                        for (int k = 0; k < machines[i][j].SupportVectors.Length; k++)
-                        {
-                            double[] sv = machines[i][j].SupportVectors[k];
-
-                            List<Tuple<int, int, int>> count;
-                            bool success = shared.TryGetValue(sv, out count);
-
-                            if (success)
-                            {
-                                // Value is already in the dictionary
-                                count.Add(Tuple.Create(i, j, k));
-                            }
-                            else
-                            {
-                                count = new List<Tuple<int, int, int>>();
-                                count.Add(Tuple.Create(i, j, k));
-                                shared[sv] = count;
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Create a table of indices for shared vectors
-            int idx = 0;
-
-            var indices = new Dictionary<double[], int>();
-            foreach (double[] sv in shared.Keys)
-                indices[sv] = idx++;
-
-            // Create a lookup table for the machines
-            int[][][] sharedVectors = new int[machines.Length][][];
-            for (int i = 0; i < sharedVectors.Length; i++)
-            {
-                sharedVectors[i] = new int[machines[i].Length][];
-                for (int j = 0; j < sharedVectors[i].Length; j++)
-                {
-                    if (machines[i][j].SupportVectors != null)
-                    {
-                        sharedVectors[i][j] = new int[machines[i][j].SupportVectors.Length];
-
-                        for (int k = 0; k < machines[i][j].SupportVectors.Length; k++)
-                        {
-                            double[] sv = machines[i][j].SupportVectors[k];
-                            if (shared.ContainsKey(sv))
-                                sharedVectors[i][j][k] = indices[sv];
-                            else
-                                sharedVectors[i][j][k] = -1;
-                        }
-                    }
-                }
-            }
-
-            sharedVectorsCount = shared.Count;
-            return sharedVectors;
-        }
 
 
         /// <summary>
@@ -1198,6 +1088,121 @@ namespace Accord.MachineLearning.VectorMachines
         #endregion
 
 
+
+        #region Cache
+        private Cache createOrResetCache()
+        {
+            Cache cache = vectorCache.Value;
+
+            // First of all, check if the shared vectors in this machine
+            // already have been identified. If they don't, identify them.
+
+            cache.Vectors = sharedVectors.Value; // use lazy instantiation
+            int vectorCount = SupportVectorSharedCount;
+
+            // Now, check if a cache has already been created for this
+            // thread and has adequate size. If it has not, create it.
+
+            if (cache.Products == null || cache.Products.Length < vectorCount)
+            {
+                // The cache has not been created
+                cache.Products = new double[vectorCount];
+
+#if !NET35      // Create synchronization objects
+                cache.SyncObjects = new SpinLock[vectorCount];
+                for (int i = 0; i < cache.SyncObjects.Length; i++)
+                    cache.SyncObjects[i] = new SpinLock();
+#endif
+            }
+
+            // Initialize (or reset) the cache. A value of Not-a-Number
+            // indicates that the value of corresponding vector has not
+            // been computed yet.
+            for (int i = 0; i < cache.Products.Length; i++)
+                cache.Products[i] = Double.NaN;
+
+
+            cache.Evaluations = 0;
+
+            return cache;
+        }
+
+
+        private int[][][] computeSharedVectors()
+        {
+            // This method should only be called once after the machine has
+            // been learned. If the inner machines or they Support Vectors
+            // change, this method will need to be recomputed.
+
+            // Detect all vectors which are being shared along the machines
+            var shared = new Dictionary<double[], List<Tuple<int, int, int>>>();
+
+            // for all machines
+            for (int i = 0; i < machines.Length; i++)
+            {
+                for (int j = 0; j < machines[i].Length; j++)
+                {
+                    // if the machine is not in compact form
+                    if (machines[i][j].SupportVectors != null)
+                    {
+                        // register the support vector on the shared cache collection
+                        for (int k = 0; k < machines[i][j].SupportVectors.Length; k++)
+                        {
+                            double[] sv = machines[i][j].SupportVectors[k];
+
+                            List<Tuple<int, int, int>> count;
+                            bool success = shared.TryGetValue(sv, out count);
+
+                            if (success)
+                            {
+                                // Value is already in the dictionary
+                                count.Add(Tuple.Create(i, j, k));
+                            }
+                            else
+                            {
+                                count = new List<Tuple<int, int, int>>();
+                                count.Add(Tuple.Create(i, j, k));
+                                shared[sv] = count;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Create a table of indices for shared vectors
+            int idx = 0;
+
+            var indices = new Dictionary<double[], int>();
+            foreach (double[] sv in shared.Keys)
+                indices[sv] = idx++;
+
+            // Create a lookup table for the machines
+            int[][][] sharedVectors = new int[machines.Length][][];
+            for (int i = 0; i < sharedVectors.Length; i++)
+            {
+                sharedVectors[i] = new int[machines[i].Length][];
+                for (int j = 0; j < sharedVectors[i].Length; j++)
+                {
+                    if (machines[i][j].SupportVectors != null)
+                    {
+                        sharedVectors[i][j] = new int[machines[i][j].SupportVectors.Length];
+
+                        for (int k = 0; k < machines[i][j].SupportVectors.Length; k++)
+                        {
+                            double[] sv = machines[i][j].SupportVectors[k];
+                            if (shared.ContainsKey(sv))
+                                sharedVectors[i][j][k] = indices[sv];
+                            else
+                                sharedVectors[i][j][k] = -1;
+                        }
+                    }
+                }
+            }
+
+            sharedVectorsCount = shared.Count;
+            return sharedVectors;
+        }
+
         private class Cache
         {
             public int Evaluations;
@@ -1207,5 +1212,8 @@ namespace Accord.MachineLearning.VectorMachines
             public SpinLock[] SyncObjects;
 #endif
         }
+
+        #endregion
+
     }
 }

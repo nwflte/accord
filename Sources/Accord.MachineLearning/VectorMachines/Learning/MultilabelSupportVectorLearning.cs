@@ -58,7 +58,7 @@ namespace Accord.MachineLearning.VectorMachines.Learning
     ///   int[][] outputs =
     ///   {
     ///       new[] { 0, 1, 0 }
-    ///       new[] { 0, ,  1 }
+    ///       new[] { 0, 0, 1 }
     ///       new[] { 1, 1, 0 }
     ///   }
     ///   
@@ -120,22 +120,62 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         /// can be associated with a single input vector.</param>
         /// 
         public MultilabelSupportVectorLearning(MultilabelSupportVectorMachine machine,
-            double[][] inputs, int[][] outputs)
+            double[][] inputs, int[] outputs)
         {
-
             // Initial argument checking
-            if (machine == null)
-                throw new ArgumentNullException("machine");
-
-            if (inputs == null)
-                throw new ArgumentNullException("inputs");
-
-            if (outputs == null)
-                throw new ArgumentNullException("outputs");
-
+            if (machine == null) throw new ArgumentNullException("machine");
+            if (inputs == null) throw new ArgumentNullException("inputs");
+            if (outputs == null) throw new ArgumentNullException("outputs");
             if (inputs.Length != outputs.Length)
                 throw new DimensionMismatchException("outputs", "The number of inputs and outputs does not match.");
 
+            int classes = machine.Classes;
+            int[][] expanded = new int[outputs.Length][];
+            for (int i = 0; i < expanded.Length; i++)
+            {
+                int c = outputs[i];
+                if (c < 0 || c >= classes)
+                {
+                    throw new ArgumentOutOfRangeException("outputs",
+                        "Output labels should be either positive and less than the number of classes" +
+                        " at the machine. The output at position " + i + " violates this criteria.");
+                }
+
+                int[] row = expanded[i] = new int[classes];
+                for (int j = 0; j < row.Length; j++)
+                    row[j] = -1;
+                row[c] = 1;
+            }
+
+            initialize(machine, inputs, expanded);
+        }
+
+        /// <summary>
+        ///   Constructs a new Multi-label Support Vector Learning algorithm.
+        /// </summary>
+        /// 
+        /// <param name="inputs">The input learning vectors for the machine learning algorithm.</param>
+        /// <param name="machine">The <see cref="MulticlassSupportVectorMachine"/> to be trained.</param>
+        /// <param name="outputs">The output labels associated with each of the input vectors. The
+        /// class labels should be between 0 and the <see cref="MultilabelSupportVectorMachine.Classes">
+        /// number of classes in the multiclass machine</see>. In a multi-label SVM, multiple classes
+        /// can be associated with a single input vector.</param>
+        /// 
+        public MultilabelSupportVectorLearning(MultilabelSupportVectorMachine machine,
+            double[][] inputs, int[][] outputs)
+        {
+            // Initial argument checking
+            if (machine == null) throw new ArgumentNullException("machine");
+            if (inputs == null) throw new ArgumentNullException("inputs");
+            if (outputs == null) throw new ArgumentNullException("outputs");
+            if (inputs.Length != outputs.Length)
+                throw new DimensionMismatchException("outputs", "The number of inputs and outputs does not match.");
+
+            initialize(machine, inputs, outputs);
+        }
+
+        private void initialize(MultilabelSupportVectorMachine machine, double[][] inputs, int[][] outputs)
+        {
             if (machine.Inputs > 0)
             {
                 // This machine has a fixed input vector size
@@ -166,7 +206,7 @@ namespace Accord.MachineLearning.VectorMachines.Learning
                     {
                         throw new ArgumentOutOfRangeException("outputs",
                             "Output values should be either -1 or +1. The output at index " + j +
-                            " of the output vector at position "+ i + " violates this criteria.");
+                            " of the output vector at position " + i + " violates this criteria.");
                     }
                 }
             }
@@ -178,7 +218,6 @@ namespace Accord.MachineLearning.VectorMachines.Learning
             // Learning data
             this.inputs = inputs;
             this.outputs = outputs;
-
         }
 
         /// <summary>
