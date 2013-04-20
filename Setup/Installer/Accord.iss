@@ -1,6 +1,6 @@
 ; Accord.NET setup project
 
-#define VERSION "2.8.2"
+#define VERSION "2.9.0"
 
 [Setup]
 AppName=Accord.NET Framework
@@ -48,6 +48,7 @@ Source: "..\..\Externals\*";       DestDir: "{app}\Externals"; Components: libs;
 
 [Registry]
 Root: HKLM; Subkey: "Software\Microsoft\.NETFramework\AssemblyFolders\Accord.NET"; Flags: uninsdeletekey; ValueType: string; ValueData: "{app}\Release"
+Root: HKLM; Subkey: "Software\Microsoft\.NETFramework\v4.0.30319\AssemblyFoldersEx\Accord.NET"; Flags: uninsdeletekey; ValueType: string; ValueData: "{app}\Release"
 
 
 [Icons]

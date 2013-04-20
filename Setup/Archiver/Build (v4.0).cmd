@@ -12,7 +12,7 @@ echo.
 :: Settings for complete and (libs-only) package creation
 :: ---------------------------------------------------------
 
-set version=2.8.2
+set version=2.9.0
 set rar="C:\Program Files\WinRAR\rar"
 set fullname="Accord.NET Framework-%version%.rar" 
 set libsname="Accord.NET Framework-%version%-(libs only).rar"
@@ -36,6 +36,7 @@ echo Creating Accord.NET %fullname% archive
 echo ---------------------------------------------------------
 
 timeout /T 5
+mkdir ..\bin
 set output=..\bin\%fullname%
 del %output%
 
