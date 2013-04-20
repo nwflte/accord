@@ -178,7 +178,7 @@ namespace Accord.Statistics.Testing
             switch (Tail)
             {
                 case DistributionTail.TwoTail:
-                    p = 2.0 * StatisticDistribution.DistributionFunction((int)x);
+                    p = wilsonSterne(x);
                     break;
 
                 case DistributionTail.OneUpper:
@@ -215,12 +215,54 @@ namespace Accord.Statistics.Testing
                     b = StatisticDistribution.InverseDistributionFunction(1.0 - p);
                     break;
                 case DistributionTail.TwoTail:
-                    b = StatisticDistribution.InverseDistributionFunction(1.0 - p / 2.0);
-                    break;
+                    throw new NotSupportedException();
+
                 default: throw new InvalidOperationException();
             }
 
             return b;
+        }
+
+
+        /// <summary>
+        ///   Computes the two-tail probability using the Wilson-Sterne rule,
+        ///   which defines the tail of the distribution based on a ordering
+        ///   of the null probabilities of X. (Smirnoff, 2003)
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   References: Jeffrey S. Simonoff, Analyzing 
+        ///   Categorical Data, Springer, 2003 (pg 64).
+        /// </remarks>
+        /// 
+        private double wilsonSterne(double x)
+        {
+            int trials = StatisticDistribution.NumberOfTrials;
+
+            // Construct a map of values and point probabilities
+            int[] values = new int[trials];
+            for (int i = 0; i < values.Length; i++)
+                values[i] = i;
+
+            double[] probabilities = new double[trials];
+            for (int i = 0; i < probabilities.Length; i++)
+                probabilities[i] = StatisticDistribution.ProbabilityMassFunction(i);
+
+            // Build the ordered Wilson-Sterne table
+            Array.Sort(probabilities, values);
+
+            // Now, compute the cumulative distribution
+            double[] cumulative = new double[trials];
+            cumulative[0] = probabilities[0];
+            for (int i = 1; i < cumulative.Length; i++)
+                cumulative[i] += cumulative[i - 1] + probabilities[i];
+
+            int v = 0; // Locate the desired value
+            for (int i = 0; i < values.Length; i++)
+                if (values[i] == (int)x) v = i;
+
+            // Report the p-value
+            return cumulative[v];
         }
 
     }
