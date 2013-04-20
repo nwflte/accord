@@ -29,6 +29,8 @@ namespace Accord.MachineLearning.VectorMachines
     using Accord.Math;
     using Accord.Statistics.Kernels;
     using System.Collections.Generic;
+    using System.Threading;
+    using System.Runtime.Serialization;
 
 
     /// <summary>
@@ -109,12 +111,25 @@ namespace Accord.MachineLearning.VectorMachines
     /// <seealso cref="Learning.MultilabelSupportVectorLearning"/>
     ///
     [Serializable]
-    public class MultilabelSupportVectorMachine : ISupportVectorMachine, 
-        IEnumerable<KernelSupportVectorMachine>
+    public class MultilabelSupportVectorMachine : ISupportVectorMachine,
+        IEnumerable<KernelSupportVectorMachine>, IDisposable
     {
 
         // Underlying classifiers
         private KernelSupportVectorMachine[] machines;
+
+        // Multi-label statistics
+        private int? totalVectorsCount;
+        private int? uniqueVectorsCount;
+        private int? sharedVectorsCount;
+
+
+        // Performance optimizations
+        [NonSerialized]
+        private Lazy<int[][]> sharedVectors;
+
+        [NonSerialized]
+        private ThreadLocal<Cache> vectorCache;
 
 
         /// <summary>
@@ -140,6 +155,8 @@ namespace Accord.MachineLearning.VectorMachines
             machines = new KernelSupportVectorMachine[classes];
             for (int i = 0; i < machines.Length; i++)
                 machines[i] = new KernelSupportVectorMachine(kernel, inputs);
+
+            initialize();
         }
 
         /// <summary>
@@ -155,8 +172,93 @@ namespace Accord.MachineLearning.VectorMachines
             if (machines == null) throw new ArgumentNullException("machines");
 
             this.machines = machines;
+            initialize();
         }
 
+        private void initialize()
+        {
+            this.vectorCache = new ThreadLocal<Cache>(() => new Cache());
+            this.sharedVectors = new Lazy<int[][]>(computeSharedVectors, true);
+        }
+
+
+
+        #region Properties
+        /// <summary>
+        ///   Gets the classifier for class <paramref name="index"/>.
+        /// </summary>
+        /// 
+        public KernelSupportVectorMachine this[int index]
+        {
+            get { return machines[index]; }
+        }
+
+        /// <summary>
+        ///   Gets the total number of support vectors
+        ///   in the entire multi-label machine.
+        /// </summary>
+        /// 
+        public int SupportVectorCount
+        {
+            get
+            {
+                if (totalVectorsCount == null)
+                {
+                    int count = 0;
+                    for (int i = 0; i < machines.Length; i++)
+                        if (machines[i].SupportVectors != null)
+                            count += machines[i].SupportVectors.Length;
+                    totalVectorsCount = count;
+                }
+
+                return totalVectorsCount.Value;
+            }
+        }
+
+        /// <summary>
+        ///   Gets the number of unique support 
+        ///   vectors in the multi-label machine.
+        /// </summary>
+        /// 
+        public int SupportVectorUniqueCount
+        {
+            get
+            {
+                if (uniqueVectorsCount == null)
+                {
+                    HashSet<double[]> unique = new HashSet<double[]>();
+                    for (int i = 0; i < machines.Length; i++)
+                    {
+                        if (machines[i].SupportVectors != null)
+                        {
+                            for (int k = 0; k < machines[i].SupportVectors.Length; k++)
+                                unique.Add(machines[i].SupportVectors[k]);
+                        }
+                    }
+
+                    uniqueVectorsCount = unique.Count;
+                }
+
+                return uniqueVectorsCount.Value;
+            }
+        }
+
+        /// <summary>
+        ///   Gets the number of shared support
+        ///   vectors in the multi-label machine.
+        /// </summary>
+        /// 
+        public int SupportVectorSharedCount
+        {
+            get
+            {
+                if (sharedVectorsCount == null)
+                {
+                    var v = sharedVectors.Value;
+                }
+                return sharedVectorsCount.Value;
+            }
+        }
 
         /// <summary>
         ///   Gets the number of classes.
@@ -197,6 +299,9 @@ namespace Accord.MachineLearning.VectorMachines
         {
             get { return machines; }
         }
+        #endregion
+
+
 
 
         /// <summary>
@@ -210,13 +315,19 @@ namespace Accord.MachineLearning.VectorMachines
         /// 
         public int[] Compute(double[] inputs, out double[] responses)
         {
+            // Get a list of the shared vectors (lazy)
+            int[][] vectors = this.sharedVectors.Value;
+
+            // Get the cache for this thread
+            Cache cache = createOrResetCache();
+
             int[] labels = new int[machines.Length];
             double[] outputs = new double[machines.Length];
 
             // For each machine
             Parallel.For(0, machines.Length, i =>
             {
-                labels[i] = machines[i].Compute(inputs, out outputs[i]);
+                labels[i] = computeSequential(i, inputs, out outputs[i], cache);
             });
 
             responses = outputs;
@@ -239,7 +350,102 @@ namespace Accord.MachineLearning.VectorMachines
         }
 
 
+        /// <summary>
+        ///   Compute SVM output with support vector sharing.
+        /// </summary>
+        /// 
+        private int computeSequential(int index, double[] input, out double output, Cache cache)
+        {
+            // Get the machine for this problem
+            KernelSupportVectorMachine machine = machines[index];
 
+            // Get the vectors shared among all machines
+            int[] vectors = cache.Vectors[index];
+            double[] values = cache.Products;
+
+            double sum = machine.Threshold;
+
+
+            if (machine.IsCompact)
+            {
+                // For linear machines, computation is simpler
+                for (int i = 0; i < machine.Weights.Length; i++)
+                    sum += machine.Weights[i] * input[i];
+            }
+            else
+            {
+                // For each support vector in the machine
+                for (int i = 0; i < vectors.Length; i++)
+                {
+                    double value;
+
+                    // Check if it is a shared vector
+                    int j = vectors[i];
+
+                    if (j >= 0)
+                    {
+                        // This is a shared vector. Check
+                        // if it has already been computed
+
+                        if (!Double.IsNaN(values[j]))
+                        {
+                            // Yes, it has. Retrieve the value from the cache
+                            value = values[j];
+                        }
+                        else
+                        {
+                            // No, it has not. Compute and store the computed value in the cache
+                            value = values[j] = machine.Kernel.Function(machine.SupportVectors[i], input);
+                            Interlocked.Increment(ref cache.Evaluations);
+                        }
+                    }
+                    else
+                    {
+                        // This vector is not shared by any other machine. No need to cache
+                        value = machine.Kernel.Function(machine.SupportVectors[i], input);
+                        Interlocked.Increment(ref cache.Evaluations);
+                    }
+
+                    sum += machine.Weights[i] * value;
+                }
+            }
+
+            // Produce probabilities if required
+            if (machine.IsProbabilistic)
+            {
+                output = machine.Link.Inverse(sum);
+                return output >= 0.5 ? +1 : -1;
+            }
+            else
+            {
+                output = sum;
+                return output >= 0 ? +1 : -1;
+            }
+        }
+
+        /// <summary>
+        ///   Resets the cache and machine statistics
+        ///   so they can be recomputed on next evaluation.
+        /// </summary>
+        /// 
+        public void Reset()
+        {
+            if (this.vectorCache != null)
+                this.vectorCache.Dispose();
+
+            this.sharedVectors = null;
+            this.totalVectorsCount = null;
+            this.uniqueVectorsCount = null;
+            this.sharedVectorsCount = null;
+
+            this.initialize();
+        }
+
+
+
+
+
+        #region Loading & Saving
         /// <summary>
         ///   Saves the machine to a stream.
         /// </summary>
@@ -290,6 +496,12 @@ namespace Accord.MachineLearning.VectorMachines
             return Load(new FileStream(path, FileMode.Open));
         }
 
+        [OnDeserialized]
+        private void onDeserialized(StreamingContext context)
+        {
+            initialize();
+        }
+        #endregion
 
         #region ISupportVectorMachine Members
 
@@ -314,7 +526,7 @@ namespace Accord.MachineLearning.VectorMachines
 
         #endregion
 
-
+        #region IEnumerable members
         /// <summary>
         ///   Returns an enumerator that iterates through all machines in the classifier.
         /// </summary>
@@ -340,5 +552,179 @@ namespace Accord.MachineLearning.VectorMachines
         {
             return machines.GetEnumerator();
         }
+        #endregion
+
+        #region IDisposable members
+        /// <summary>
+        ///   Performs application-defined tasks associated with
+        ///   freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        /// 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        ///   Releases unmanaged and - optionally - managed resources
+        /// </summary>
+        /// 
+        /// <param name="disposing">
+        ///   <c>true</c> to release both managed and unmanaged resources;
+        ///   <c>false</c> to release only unmanaged resources.</param>
+        /// 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                // free managed resources
+                if (vectorCache != null)
+                {
+                    vectorCache.Dispose();
+                    vectorCache = null;
+                }
+            }
+        }
+        #endregion
+
+
+
+
+        #region Cache
+        private Cache createOrResetCache()
+        {
+            Cache cache = vectorCache.Value;
+
+            // First of all, check if the shared vectors in this machine
+            // already have been identified. If they don't, identify them.
+
+            cache.Vectors = sharedVectors.Value; // use lazy instantiation
+            int vectorCount = SupportVectorSharedCount;
+
+            // Now, check if a cache has already been created for this
+            // thread and has adequate size. If it has not, create it.
+
+            if (cache.Products == null || cache.Products.Length < vectorCount)
+            {
+                // The cache has not been created
+                cache.Products = new double[vectorCount];
+
+#if !NET35      // Create synchronization objects
+                cache.SyncObjects = new SpinLock[vectorCount];
+                for (int i = 0; i < cache.SyncObjects.Length; i++)
+                    cache.SyncObjects[i] = new SpinLock();
+#endif
+            }
+
+            // Initialize (or reset) the cache. A value of Not-a-Number
+            // indicates that the value of corresponding vector has not
+            // been computed yet.
+            for (int i = 0; i < cache.Products.Length; i++)
+                cache.Products[i] = Double.NaN;
+
+
+            cache.Evaluations = 0;
+
+            return cache;
+        }
+
+
+        private int[][] computeSharedVectors()
+        {
+            // This method should only be called once after the machine has
+            // been learned. If the inner machines or they Support Vectors
+            // change, this method will need to be recomputed.
+
+            // Detect all vectors which are being shared along the machines
+            var shared = new Dictionary<double[], List<Tuple<int, int>>>();
+
+            // for all machines
+            for (int i = 0; i < machines.Length; i++)
+            {
+                // if the machine is not in compact form
+                if (machines[i].SupportVectors != null)
+                {
+                    // register the support vector on the shared cache collection
+                    for (int k = 0; k < machines[i].SupportVectors.Length; k++)
+                    {
+                        double[] sv = machines[i].SupportVectors[k];
+
+                        List<Tuple<int, int>> count;
+                        bool success = shared.TryGetValue(sv, out count);
+
+                        if (success)
+                        {
+                            // Value is already in the dictionary
+                            count.Add(Tuple.Create(i, k));
+                        }
+                        else
+                        {
+                            count = new List<Tuple<int, int>>();
+                            count.Add(Tuple.Create(i, k));
+                            shared[sv] = count;
+                        }
+                    }
+
+                }
+            }
+
+            // Create a table of indices for shared vectors
+            int idx = 0;
+
+            var indices = new Dictionary<double[], int>();
+            foreach (double[] sv in shared.Keys)
+                indices[sv] = idx++;
+
+            // Create a lookup table for the machines
+            int[][] sharedVectors = new int[machines.Length][];
+            for (int i = 0; i < sharedVectors.Length; i++)
+            {
+                if (machines[i].SupportVectors != null)
+                {
+                    sharedVectors[i] = new int[machines[i].SupportVectors.Length];
+
+                    for (int k = 0; k < machines[i].SupportVectors.Length; k++)
+                    {
+                        double[] sv = machines[i].SupportVectors[k];
+                        if (shared.ContainsKey(sv))
+                            sharedVectors[i][k] = indices[sv];
+                        else
+                            sharedVectors[i][k] = -1;
+                    }
+                }
+            }
+
+
+            sharedVectorsCount = shared.Count;
+            return sharedVectors;
+        }
+
+
+
+        /// <summary>
+        ///   Gets the total kernel evaluations performed
+        ///   in the last call to any of the <see cref="Compute(double[])"/>
+        ///   functions in the current thread.
+        /// </summary>
+        /// 
+        /// <returns>The number of total kernel evaluations.</returns>
+        /// 
+        public int GetLastKernelEvaluations()
+        {
+            return vectorCache.Value.Evaluations;
+        }
+
+        private class Cache
+        {
+            public int Evaluations;
+            public double[] Products;
+            public int[][] Vectors;
+#if !NET35
+            public SpinLock[] SyncObjects;
+#endif
+        }
+        #endregion
+
     }
 }
