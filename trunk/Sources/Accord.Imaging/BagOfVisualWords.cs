@@ -24,6 +24,8 @@ namespace Accord.Imaging
 {
     using System;
     using Accord.MachineLearning;
+    using System.IO;
+    using System.Runtime.Serialization.Formatters.Binary;
 
     /// <summary>
     ///   Bag of Visual Words
@@ -86,6 +88,72 @@ namespace Accord.Imaging
         /// 
         public BagOfVisualWords(IClusteringAlgorithm<double[]> algorithm)
             : base(new SpeededUpRobustFeaturesDetector(), algorithm) { }
+
+
+
+
+
+        /// <summary>
+        ///   Loads a bag of words from a stream.
+        /// </summary>
+        /// 
+        /// <param name="stream">The stream from which the bow is to be deserialized.</param>
+        /// 
+        /// <returns>The deserialized bag of words.</returns>
+        /// 
+        public static BagOfVisualWords Load(Stream stream)
+        {
+            BinaryFormatter b = new BinaryFormatter();
+            return (BagOfVisualWords)b.Deserialize(stream);
+        }
+
+        /// <summary>
+        ///   Loads a bag of words from a file.
+        /// </summary>
+        /// 
+        /// <param name="path">The path to the file from which the bow is to be deserialized.</param>
+        /// 
+        /// <returns>The deserialized bag of words.</returns>
+        /// 
+        public static BagOfVisualWords Load(string path)
+        {
+            using (FileStream fs = new FileStream(path, FileMode.Open))
+            {
+                return Load(fs);
+            }
+        }
+
+        /// <summary>
+        ///   Loads a bag of words from a stream.
+        /// </summary>
+        /// 
+        /// <param name="stream">The stream from which the bow is to be deserialized.</param>
+        /// 
+        /// <returns>The deserialized bag of words.</returns>
+        /// 
+        public static BagOfVisualWords<TPoint> Load<TPoint>(Stream stream)
+            where TPoint : IFeaturePoint
+        {
+            BinaryFormatter b = new BinaryFormatter();
+            return (BagOfVisualWords<TPoint>)b.Deserialize(stream);
+        }
+
+        /// <summary>
+        ///   Loads a bag of words from a file.
+        /// </summary>
+        /// 
+        /// <param name="path">The path to the file from which the bow is to be deserialized.</param>
+        /// 
+        /// <returns>The deserialized bag of words.</returns>
+        /// 
+        public static BagOfVisualWords<TPoint> Load<TPoint>(string path)
+            where TPoint : IFeaturePoint
+        {
+            using (FileStream fs = new FileStream(path, FileMode.Open))
+            {
+                return Load<TPoint>(fs);
+            }
+        }
     }
 
 }

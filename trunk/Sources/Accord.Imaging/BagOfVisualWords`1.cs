@@ -31,6 +31,8 @@ namespace Accord.Imaging
     using Accord.MachineLearning;
     using Accord.Math;
     using AForge.Imaging;
+    using System.IO;
+    using System.Runtime.Serialization.Formatters.Binary;
 
     /// <summary>
     ///   Bag of Visual Words
@@ -221,6 +223,20 @@ namespace Accord.Imaging
             });
 
             return features.ToDouble();
+        }
+
+
+
+        /// <summary>
+        ///   Saves the bag of words to a stream.
+        /// </summary>
+        /// 
+        /// <param name="stream">The stream to which the bow is to be serialized.</param>
+        /// 
+        public virtual void Save(Stream stream)
+        {
+            BinaryFormatter b = new BinaryFormatter();
+            b.Serialize(stream, this);
         }
 
     }
