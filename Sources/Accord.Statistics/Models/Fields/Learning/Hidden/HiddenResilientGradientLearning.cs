@@ -197,15 +197,11 @@ namespace Accord.Statistics.Models.Fields.Learning
         /// 
         public double Run(T[][] observations, int[] outputs)
         {
-            convergence.CurrentIteration = 0;
+            convergence.Clear();
 
             do
             {
-                convergence.OldValue = convergence.NewValue;
-
                 RunEpoch(observations, outputs);
-
-                convergence.NewValue = -Model.LogLikelihood(observations, outputs);
             }
             while (!convergence.HasConverged);
 
@@ -224,8 +220,6 @@ namespace Accord.Statistics.Models.Fields.Learning
         /// 
         public double RunEpoch(T[][] observations, int[] outputs)
         {
-            convergence.CurrentIteration++;
-
             double error = 0;
 
             if (stochastic)
@@ -312,7 +306,7 @@ namespace Accord.Statistics.Models.Fields.Learning
 
             System.Diagnostics.Debug.Assert(!Model.Function.Weights.HasNaN());
 
-            return error;
+            return convergence.NewValue = error;
         }
 
         /// <summary>

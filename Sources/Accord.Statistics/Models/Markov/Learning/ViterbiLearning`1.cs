@@ -155,13 +155,13 @@ namespace Accord.Statistics.Models.Markov.Learning
         public double Run(params Array[] observations)
         {
             var model = mle.Model;
+            convergence.Clear();
 
             // Convert the generic representation to a vector of multivariate sequences
             double[][][] vectorObservations = new double[observations.Length][][];
             for (int i = 0; i < observations.Length; i++)
                 vectorObservations[i] = convert(observations[i], model.Dimension);
 
-            int currentIteration = 0;
 
             double logLikelihood = Double.NegativeInfinity;
             for (int i = 0; i < observations.Length; i++)
@@ -172,7 +172,6 @@ namespace Accord.Statistics.Models.Markov.Learning
             do // Until convergence or max iterations is reached
             {
                 logLikelihood = newLogLikelihood;
-                currentIteration++;
 
                 // Compute the Viterbi path for all sequences
                 int[][] paths = new int[observations.Length][];
@@ -189,8 +188,6 @@ namespace Accord.Statistics.Models.Markov.Learning
 
                 // Check convergence
                 convergence.NewValue = newLogLikelihood;
-                convergence.OldValue = logLikelihood;
-                convergence.CurrentIteration = currentIteration;
 
             } while (!convergence.HasConverged);
 

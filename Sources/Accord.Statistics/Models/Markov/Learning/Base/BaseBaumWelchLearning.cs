@@ -230,7 +230,6 @@ namespace Accord.Statistics.Models.Markov.Learning
             }
 
 
-            int iteration = 1;
             bool stop = false;
 
             int TMax = observations.Max(x => x.Length);
@@ -289,8 +288,6 @@ namespace Accord.Statistics.Models.Markov.Learning
                 // Average the likelihood for all sequences
                 newLogLikelihood /= observations.Length;
 
-                convergence.CurrentIteration = iteration;
-                convergence.OldValue = oldLogLikelihood;
                 convergence.NewValue = newLogLikelihood;
 
                 // Check for convergence
@@ -299,7 +296,6 @@ namespace Accord.Statistics.Models.Markov.Learning
                     // We haven't converged yet
 
                     // 3. Continue with parameter re-estimation
-                    iteration++;
                     oldLogLikelihood = newLogLikelihood;
                     newLogLikelihood = Double.NegativeInfinity;
 

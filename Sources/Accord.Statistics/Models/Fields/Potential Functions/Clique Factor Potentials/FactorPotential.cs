@@ -123,7 +123,7 @@ namespace Accord.Statistics.Models.Fields.Functions
         /// <param name="states">The number of states in this clique potential.</param>
         /// <param name="factorIndex">The index of this factor potential in the <paramref name="owner"/>.</param>
         /// 
-        protected FactorPotential(IPotentialFunction<T> owner, int states, int factorIndex)
+        public FactorPotential(IPotentialFunction<T> owner, int states, int factorIndex)
         {
             Owner = owner;
             States = states;

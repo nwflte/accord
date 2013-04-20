@@ -152,8 +152,6 @@ namespace Accord.Statistics.Models.Fields.Learning
         /// 
         public double RunEpoch(T[][] observations, int[] outputs)
         {
-            convergence.CurrentIteration++;
-
             double error = 0;
 
             if (stochastic)
@@ -193,7 +191,7 @@ namespace Accord.Statistics.Models.Fields.Learning
                     System.Diagnostics.Debug.Assert(!gradient.HasNaN());
                 }
 #if !SERIAL
-                );
+);
 #endif
 
                 // Compute the average gradient
@@ -212,7 +210,7 @@ namespace Accord.Statistics.Models.Fields.Learning
             }
 
             double[] parameters = Model.Function.Weights;
-            stepSize = learningRate / convergence.CurrentIteration;
+            stepSize = learningRate / (convergence.CurrentIteration + 1);
 
             // Update the model using a dynamic step size
             for (int i = 0; i < parameters.Length; i++)
@@ -226,7 +224,7 @@ namespace Accord.Statistics.Models.Fields.Learning
             }
 
 
-            return error;
+            return convergence.NewValue = error;
         }
 
 
@@ -242,15 +240,11 @@ namespace Accord.Statistics.Models.Fields.Learning
         /// 
         public double Run(T[][] observations, int[] outputs)
         {
-            convergence.CurrentIteration = 0;
+            convergence.Clear();
 
             do
             {
-                convergence.OldValue = convergence.NewValue;
-
                 RunEpoch(observations, outputs);
-
-                convergence.NewValue = -Model.LogLikelihood(observations, outputs);
             }
             while (!convergence.HasConverged);
 
@@ -347,7 +341,7 @@ namespace Accord.Statistics.Models.Fields.Learning
                 }
             }
         }
-      
+
         #endregion
 
     }
