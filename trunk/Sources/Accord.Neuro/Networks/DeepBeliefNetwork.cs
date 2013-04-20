@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009, 2010
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -402,6 +402,27 @@ namespace Accord.Neuro.Networks
             GaussianFunction gaussian = new GaussianFunction();
             foreach (StochasticNeuron neuron in network.machines[0].Visible.Neurons)
                 neuron.ActivationFunction = gaussian;
+
+            return network;
+        }
+
+        /// <summary>
+        ///   Creates a Mixed-Bernoulli network.
+        /// </summary>
+        /// 
+        /// <param name="visible">The <see cref="IStochasticFunction"/> to be used in the first visible layer.</param>
+        /// <param name="hidden">The <see cref="IStochasticFunction"/> to be used in all other layers.</param>
+        /// 
+        /// <param name="inputsCount">The number of inputs for the network.</param>
+        /// <param name="hiddenNeurons">The number of hidden neurons in each layer.</param>
+        /// 
+        public static DeepBeliefNetwork CreateMixedNetwork(IStochasticFunction visible,
+            IStochasticFunction hidden, int inputsCount, params int[] hiddenNeurons)
+        {
+            DeepBeliefNetwork network = new DeepBeliefNetwork(hidden, inputsCount, hiddenNeurons);
+
+            foreach (StochasticNeuron neuron in network.machines[0].Visible.Neurons)
+                neuron.ActivationFunction = visible;
 
             return network;
         }
