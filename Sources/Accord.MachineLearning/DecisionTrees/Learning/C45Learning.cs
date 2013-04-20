@@ -229,7 +229,7 @@ namespace Accord.MachineLearning.DecisionTrees.Learning
             // 0. Create candidate split thresholds for each attribute
             for (int i = 0; i < tree.Attributes.Count; i++)
             {
-                if (tree.Attributes[i].Nature == DecisionAttributeKind.Continuous)
+                if (tree.Attributes[i].Nature == DecisionVariableKind.Continuous)
                 {
                     double[] v = inputs.GetColumn(i);
                     int[] o = (int[])outputs.Clone();
@@ -302,7 +302,7 @@ namespace Accord.MachineLearning.DecisionTrees.Learning
             //    the target attributes in the examples.
             int predictors = attributes.Count(x => x == false);
 
-            if (predictors < attributes.Length - maxHeight)
+            if (predictors <= attributes.Length - maxHeight)
             {
                 root.Output = Statistics.Tools.Mode(output);
                 return;
@@ -352,7 +352,7 @@ namespace Accord.MachineLearning.DecisionTrees.Learning
             int[] outputSubset;
 
             // Now, create next nodes and pass those partitions as their responsabilities. 
-            if (tree.Attributes[maxGainAttribute].Nature == DecisionAttributeKind.Discrete)
+            if (tree.Attributes[maxGainAttribute].Nature == DecisionVariableKind.Discrete)
             {
                 // This is a discrete nature attribute. We will branch at each
                 // possible value for the discrete variable and call recursion.
@@ -444,13 +444,13 @@ namespace Accord.MachineLearning.DecisionTrees.Learning
         {
             threshold = 0;
 
-            if (tree.Attributes[attributeIndex].Nature == DecisionAttributeKind.Discrete)
-                return entropy - computeInfo(input, output, attributeIndex, out partitions);
+            if (tree.Attributes[attributeIndex].Nature == DecisionVariableKind.Discrete)
+                return entropy - computeInfoDiscrete(input, output, attributeIndex, out partitions);
 
-            return entropy - computeInfo(input, output, attributeIndex, out partitions, out threshold);
+            return entropy + computeInfoContinuous(input, output, attributeIndex, out partitions, out threshold);
         }
 
-        private double computeInfo(double[][] input, int[] output,
+        private double computeInfoDiscrete(double[][] input, int[] output,
             int attributeIndex, out int[][] partitions)
         {
             // Compute the information gain obtained by using
@@ -483,7 +483,7 @@ namespace Accord.MachineLearning.DecisionTrees.Learning
             return info;
         }
 
-        private double computeInfo(double[][] input, int[] output,
+        private double computeInfoContinuous(double[][] input, int[] output,
             int attributeIndex, out int[][] partitions, out double threshold)
         {
             // Compute the information gain obtained by using
