@@ -61,6 +61,8 @@ namespace Accord.Statistics.Kernels
         private int misses;
         private int hits;
 
+        double[][] matrix;
+
 
 
         /// <summary>
@@ -125,17 +127,30 @@ namespace Accord.Statistics.Kernels
         public KernelFunctionCache(IKernel kernel, double[][] inputs, int cacheSize)
         {
             if (cacheSize < 0)
-                throw new ArgumentOutOfRangeException
-                    ("cacheSize", "The cache size must be non-negative.");
-
-            if (cacheSize > inputs.Length)
-                cacheSize = inputs.Length;
+                throw new ArgumentOutOfRangeException("cacheSize",
+                    "The cache size must be non-negative.");
 
             this.kernel = kernel;
             this.inputs = inputs;
-            this.size = cacheSize;
 
-            if (size > 0)
+            this.size = cacheSize;
+            if (cacheSize > inputs.Length)
+                this.size = inputs.Length;
+
+
+            if (cacheSize > inputs.Length)
+            {
+                // Create whole cache.
+                matrix = new double[inputs.Length][];
+                for (int i = 0; i < inputs.Length; i++)
+                {
+                    double[] row = matrix[i] = new double[inputs.Length - 1];
+                    for (int j = 0; j < row.Length - 1; j++)
+                        matrix[i][j] = kernel.Function(inputs[i], inputs[j]);
+                }
+            }
+
+            else if (cacheSize > 0)
             {
                 this.capacity = (size * (size - 1)) / 2;
                 int collectionCapacity = (int)(1.1f * capacity);
@@ -190,12 +205,19 @@ namespace Accord.Statistics.Kernels
             if (i == j)
                 return diagonal[i];
 
+            // Keys should always be given as in
+            // the order (i, j) with i > j, so we
+            // always have (higher{i}, lower{j})
+
             if (j > i)
             {
                 int t = i;
                 i = j;
                 j = t;
             }
+
+            if (matrix != null)
+                return matrix[i][j];
 
             int key = (i * (i - 1)) / 2 + j;
 
