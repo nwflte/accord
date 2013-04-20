@@ -163,7 +163,7 @@ namespace Accord.MachineLearning
             this.dimension = dimension;
             this.kernel = kernel;
             this.Bandwidth = bandwidth;
-            this.distance = Accord.Math.Distance.Euclidean;
+            this.distance = Accord.Math.Distance.SquareEuclidean;
         }
 
         /// <summary>
