@@ -25,17 +25,12 @@
 
 namespace Accord.Imaging
 {
-    using System.Collections.Generic;
-    using System.Drawing;
-    using System.Drawing.Imaging;
-    using AForge.Imaging;
 
     /// <summary>
-    ///   Common interface for feature detectors.
+    ///   Common interface for feature points.
     /// </summary>
     /// 
-    public interface IFeatureDetector<TPoint> : IFeatureDetector<TPoint, double[]>
-        where TPoint : IFeaturePoint<double[]>
+    public interface IFeaturePoint : IFeaturePoint<double[]>
     {
         // This class exists to maintain backward compatibility with
         // the non-generic version of IFeaturePoint (and to provide
@@ -44,40 +39,28 @@ namespace Accord.Imaging
     }
 
     /// <summary>
-    ///   Common interface for feature detectors.
+    ///   Common interface for feature points.
     /// </summary>
     /// 
-    public interface IFeatureDetector<TPoint, TFeature> where TPoint : IFeaturePoint<TFeature>
+    public interface IFeaturePoint<T>
     {
         /// <summary>
-        ///   Process image looking for interest points.
+        ///   Gets or sets the descriptor vector
+        ///   associated with this point.
         /// </summary>
         /// 
-        /// <param name="image">Source image data to process.</param>
-        /// 
-        /// <returns>Returns list of found interest points.</returns>
-        /// 
-        List<TPoint> ProcessImage(Bitmap image);
+        T Descriptor { get; }
 
         /// <summary>
-        ///   Process image looking for interest points.
+        ///   Gets or sets the x-coordinate of this point.
         /// </summary>
         /// 
-        /// <param name="imageData">Source image data to process.</param>
-        /// 
-        /// <returns>Returns list of found interest points.</returns>
-        /// 
-        List<TPoint> ProcessImage(BitmapData imageData);
+        double X { get; }
 
         /// <summary>
-        ///   Process image looking for interest points.
+        ///   Gets or sets the y-coordinate of this point.
         /// </summary>
         /// 
-        /// <param name="image">Source image data to process.</param>
-        /// 
-        /// <returns>Returns list of found interest points.</returns>
-        /// 
-        List<TPoint> ProcessImage(UnmanagedImage image);
+        double Y { get; }
     }
-
 }
