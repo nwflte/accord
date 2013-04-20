@@ -115,7 +115,13 @@
     <Compile Include="Converters\ImageToArray.cs" />
     <Compile Include="Converters\ImageToMatrix.cs" />
     <Compile Include="BagOfVisualWords`1.cs" />
+    <Compile Include="Interest Points\Base\IFeaturePoint.cs" />
+    <Compile Include="Interest Points\FREAK\FastRetinaKeypointDetector.cs" />
+    <Compile Include="Interest Points\FREAK\FastRetinaKeypoint.cs" />
+    <Compile Include="Interest Points\FREAK\FastRetinaKeypointDescriptor.cs" />
+    <Compile Include="Interest Points\FREAK\FastRetinaKeypointPattern.cs" />
     <Compile Include="Interest Points\HistogramsOfOrientedGradients.cs" />
+    <Compile Include="Interest Points\SURF\ResponseLayer.cs" />
     <Compile Include="KNearestNeighborMatching.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Interest Points\CornerFeaturePoint.cs" />
@@ -132,7 +138,7 @@
     <Compile Include="Moments\RawMoments.cs" />
     <Compile Include="Interest Points\FastCornersDetector.cs" />
     <Compile Include="Filters\FeaturesMarker.cs" />
-    <Compile Include="Interest Points\SpeededUpRobustFeaturesDetector.cs" />
+    <Compile Include="Interest Points\SURF\SpeededUpRobustFeaturesDetector.cs" />
     <Compile Include="Filters\Blend.cs" />
     <Compile Include="Filters\Concatenate.cs" />
     <Compile Include="Filters\RectanglesMarker.cs" />
@@ -141,12 +147,12 @@
     <Compile Include="Filters\WaveletTransform.cs" />
     <Compile Include="Interest Points\HarrisCornersDetector.cs" />
     <Compile Include="IntegralImage2.cs" />
-    <Compile Include="Interest Points\SpeededUpRobustFeaturePoint.cs" />
+    <Compile Include="Interest Points\SURF\SpeededUpRobustFeaturePoint.cs" />
     <Compile Include="MatrixH.cs" />
     <Compile Include="PointH.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RansacHomographyEstimator.cs" />
-    <Compile Include="Interest Points\SpeededUpRobustFeaturesDescriptor.cs">
+    <Compile Include="Interest Points\SURF\SpeededUpRobustFeaturesDescriptor.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Tools.cs" />

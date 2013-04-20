@@ -133,6 +133,38 @@ namespace Accord.Imaging.Moments
         }
 
 
+        /// <summary>
+        ///   Computes the moments for the specified image.
+        /// </summary>
+        /// 
+        /// <param name="image">The image whose moments should be computed.</param>
+        /// 
+        public void Compute(Bitmap image)
+        {
+            Compute(image, new Rectangle(0, 0, image.Width, image.Height));
+        }
+
+        /// <summary>
+        ///   Computes the moments for the specified image.
+        /// </summary>
+        /// 
+        /// <param name="image">The image whose moments should be computed.</param>
+        /// 
+        public void Compute(UnmanagedImage image)
+        {
+            Compute(image, new Rectangle(0, 0, image.Width, image.Height));
+        }
+
+        /// <summary>
+        ///   Computes the moments for the specified image.
+        /// </summary>
+        /// 
+        /// <param name="image">The image whose moments should be computed.</param>
+        /// 
+        public void Compute(BitmapData image)
+        {
+            Compute(image, new Rectangle(0, 0, image.Width, image.Height));
+        }
 
         /// <summary>
         ///   Computes the moments for the specified image.
