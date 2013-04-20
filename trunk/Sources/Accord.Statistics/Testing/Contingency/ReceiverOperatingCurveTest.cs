@@ -99,7 +99,6 @@ namespace Accord.Statistics.Testing
             return varVx / Vx.Length + varVy / Vy.Length;
         }
 
-
       
     }
 }

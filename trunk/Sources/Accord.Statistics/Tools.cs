@@ -214,6 +214,31 @@ namespace Accord.Statistics
         }
 
         /// <summary>
+        ///   Computes the truncated (trimmed) mean of the given values.
+        /// </summary>
+        /// 
+        /// <param name="values">A double array containing the vector members.</param>
+        /// <param name="inPlace">Wether to perform operations in place, overwriting the original vector.</param>
+        /// <param name="percent">The percentage of observations to drop from the sample.</param>
+        /// 
+        /// <returns>The mean of the given data.</returns>
+        /// 
+        public static double TruncatedMean(this double[] values, double percent, bool inPlace = false)
+        {
+            values = (inPlace) ? values : (double[])values.Clone();
+
+            Array.Sort(values);
+
+            int k = (int)Math.Floor(values.Length * percent);
+
+            double sum = 0;
+            for (int i = k; i < values.Length - k; i++)
+                sum += values[i];
+
+            return sum / (values.Length - 2 * k);
+        }
+
+        /// <summary>
         ///   Computes the contraharmonic mean of the given values.
         /// </summary>
         /// 

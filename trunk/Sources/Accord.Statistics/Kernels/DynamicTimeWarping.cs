@@ -166,9 +166,6 @@ namespace Accord.Statistics.Kernels
         {
             if (x == y) return 1.0;
 
-            // TODO: As a performance improvement, projected values
-            //  could be cached to avoid unecessary computations.
-
             // Compute the cosine of the global distance
             double distance = D(snorm(x), snorm(y));
             double cos = System.Math.Cos(distance);
