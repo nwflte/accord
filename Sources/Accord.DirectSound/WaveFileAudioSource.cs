@@ -22,12 +22,12 @@
 
 namespace Accord.DirectSound
 {
-    using System;
-    using System.Threading;
     using Accord.Audio;
     using Accord.Audio.Formats;
     using SlimDX.Multimedia;
+    using System;
     using System.IO;
+    using System.Threading;
 
     /// <summary>
     ///   Read audio samples from a Wave file.
@@ -36,7 +36,7 @@ namespace Accord.DirectSound
     /// <remarks>
     ///   <para>This <see cref="IAudioSource">audio source</see> reads audio samples
     ///   from Wave files. Internally, it uses the <see cref="WaveDecoder"/> class
-    ///   to automatically decode Wave files into audio signals.</para>
+    ///   to automatically decode Wave files into <see cref="Signal">audio signals</see>.</para>
     /// </remarks>
     /// 
     /// <example>
@@ -130,6 +130,16 @@ namespace Accord.DirectSound
         {
             get { return frameSize; }
             set { frameSize = value; }
+        }
+
+        /// <summary>
+        ///   Gets the number of audio channels in the wave file.
+        /// </summary>
+        /// 
+        public int Channels
+        {
+            get { return decoder.Channels; }
+            set { }
         }
 
         /// <summary>

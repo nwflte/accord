@@ -86,6 +86,7 @@ namespace Accord.DirectSound
 
         // moniker string of audio capture device
         private Guid device = Guid.Empty;
+        private string sourceName;
 
         // user data associated with the audio source
         private object userData = null;
@@ -138,8 +139,8 @@ namespace Accord.DirectSound
         /// 
         public virtual string Source
         {
-            get { return device.ToString(); }
-            set { device = new Guid(value); }
+            get { return sourceName; }
+            set { sourceName = value; }
         }
 
         /// <summary>
@@ -159,6 +160,18 @@ namespace Accord.DirectSound
         {
             get { return desiredCaptureSize; }
             set { desiredCaptureSize = value; }
+        }
+
+        /// <summary>
+        ///   Gets the number of audio channels captured by
+        ///   the device. Currently, only a single channel 
+        ///   is supported.
+        /// </summary>
+        /// 
+        public int Channels
+        {
+            get { return 1; }
+            set { }
         }
 
         /// <summary>
@@ -239,6 +252,17 @@ namespace Accord.DirectSound
         public AudioCaptureDevice()
         {
             this.device = Guid.Empty;
+            this.sourceName = "Default capture device";
+        }
+
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="AudioCaptureDevice"/> class.
+        /// </summary>
+        /// 
+        public AudioCaptureDevice(AudioDeviceInfo device)
+        {
+            this.device = device.Guid;
+            this.sourceName = device.Description;
         }
 
         /// <summary>
@@ -250,6 +274,20 @@ namespace Accord.DirectSound
         public AudioCaptureDevice(Guid device)
         {
             this.device = device;
+            this.sourceName = device.ToString();
+        }
+
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="AudioCaptureDevice"/> class.
+        /// </summary>
+        /// 
+        /// <param name="device">Global identifier of the audio capture device.</param>
+        /// <param name="name">The device name or description string.</param>
+        /// 
+        public AudioCaptureDevice(Guid device, string name)
+        {
+            this.device = device;
+            this.sourceName = name;
         }
 
         /// <summary>
@@ -378,31 +416,34 @@ namespace Accord.DirectSound
             captureBufferDescription.WaveMapped = true;
             captureBufferDescription.ControlEffects = false;
 
-            CaptureBuffer captureBuffer = new CaptureBuffer(captureDevice, captureBufferDescription);
-
-            // Setup the notification positions
-            int bufferPortionSize = captureBuffer.SizeInBytes / 2;
+            CaptureBuffer captureBuffer = null;
             NotificationPosition[] notifications = new NotificationPosition[2];
-            notifications[0] = new NotificationPosition();
-            notifications[0].Offset = bufferPortionSize - 1;
-            notifications[0].Event = new AutoResetEvent(false);
-            notifications[1] = new NotificationPosition();
-            notifications[1].Offset = bufferPortionSize - 1 + bufferPortionSize;
-            notifications[1].Event = new AutoResetEvent(false);
-            captureBuffer.SetNotificationPositions(notifications);
-
-            // Make a copy of the wait handles
-            WaitHandle[] waitHandles = new WaitHandle[notifications.Length];
-            for (int i = 0; i < notifications.Length; i++)
-                waitHandles[i] = notifications[i].Event;
-
-            
-
-            // Start capturing
-            captureBuffer.Start(true);
 
             try
             {
+                captureBuffer = new CaptureBuffer(captureDevice, captureBufferDescription);
+
+                // Setup the notification positions
+                int bufferPortionSize = captureBuffer.SizeInBytes / 2;
+                notifications[0] = new NotificationPosition();
+                notifications[0].Offset = bufferPortionSize - 1;
+                notifications[0].Event = new AutoResetEvent(false);
+                notifications[1] = new NotificationPosition();
+                notifications[1].Offset = bufferPortionSize - 1 + bufferPortionSize;
+                notifications[1].Event = new AutoResetEvent(false);
+                captureBuffer.SetNotificationPositions(notifications);
+
+                // Make a copy of the wait handles
+                WaitHandle[] waitHandles = new WaitHandle[notifications.Length];
+                for (int i = 0; i < notifications.Length; i++)
+                    waitHandles[i] = notifications[i].Event;
+
+
+
+                // Start capturing
+                captureBuffer.Start(true);
+
+
                 if (sampleFormat == SampleFormat.Format32BitIeeeFloat)
                 {
                     float[] currentSample = new float[desiredCaptureSize];
@@ -434,17 +475,22 @@ namespace Accord.DirectSound
             }
             finally
             {
-                captureBuffer.Stop();
+                if (captureBuffer != null)
+                {
+                    captureBuffer.Stop();
+                    captureBuffer.Dispose();
+                }
+
+                if (captureDevice != null)
+                    captureDevice.Dispose();
 
                 for (int i = 0; i < notifications.Length; i++)
-                    notifications[i].Event.Close();
-
-                captureBuffer.Dispose();
-                captureDevice.Dispose();
+                    if (notifications[i].Event != null)
+                        notifications[i].Event.Close();
             }
         }
 
-      
+
 
         /// <summary>
         ///   Notifies client about new block of frames.
@@ -493,6 +539,16 @@ namespace Accord.DirectSound
 
 
         #region IDisposable members
+        /// <summary>
+        ///   Releases unmanaged resources and performs other cleanup operations before the
+        ///   <see cref="AudioCaptureDevice"/> is reclaimed by garbage collection.
+        /// </summary>
+        /// 
+        ~AudioCaptureDevice()
+        {
+            Dispose(false);
+        }
+
         /// <summary>
         ///   Performs application-defined tasks associated with
         ///   freeing, releasing, or resetting unmanaged resources.
