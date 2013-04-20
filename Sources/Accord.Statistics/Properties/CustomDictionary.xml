@@ -31,7 +31,6 @@
       <Word>fwd</Word>
       <Word>kmeans</Word>
       <Word>hsl</Word>
-      <Word>McNemar</Word>
     </Recognized>
     <Deprecated>
       <Term PreferredAlternate=""></Term>
@@ -39,6 +38,7 @@
     <Compound>
       <Term CompoundAlternate="KMeans">kmeans</Term>
       <Term CompoundAlternate="McNemar">McNemar</Term>
+      <Term CompoundAlternate="DeLong">DeLong</Term>
     </Compound>
     <DiscreteExceptions>
       <Term>x</Term>
@@ -48,7 +48,6 @@
     <CasingExceptions>
       <Acronym>NIPALS</Acronym>
       <Acronym>SIMPLS</Acronym>
-      <Acronym>McNemar</Acronym>
       <Acronym>Mc</Acronym>
     </CasingExceptions>
   </Acronyms>

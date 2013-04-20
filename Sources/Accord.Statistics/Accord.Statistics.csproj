@@ -262,6 +262,9 @@
     <Compile Include="Links\LogLinkFunction.cs" />
     <Compile Include="Links\InverseSquaredLinkFunction.cs" />
     <Compile Include="Links\ProbitLinkFunction.cs" />
+    <Compile Include="Models\Markov\Hybrid\IHybridMarkovModel.cs" />
+    <Compile Include="Models\Markov\Hybrid\HybridMarkovClassifier.cs" />
+    <Compile Include="Models\Markov\Hybrid\HybridMarkovModel.cs" />
     <Compile Include="Models\Markov\MarkovHelperMethods.cs" />
     <Compile Include="Models\Regression\Nonlinear\GeneralizedLinearRegression.cs" />
     <Compile Include="Models\Regression\Nonlinear\Fitting\LogisticGradientDescent.cs" />
