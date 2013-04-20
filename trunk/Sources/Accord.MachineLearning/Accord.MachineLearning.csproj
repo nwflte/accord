@@ -96,8 +96,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Boosting\AdaBoost.cs" />
     <Compile Include="BagOfWords.cs" />
     <Compile Include="Bayes\NaiveBayes`1.cs" />
+    <Compile Include="Boosting\Boost.cs" />
+    <Compile Include="Boosting\Classifiers\IWeakClassifier.cs" />
+    <Compile Include="Boosting\Classifiers\Stump.cs" />
     <Compile Include="Clustering\BinarySplit.cs" />
     <Compile Include="Clustering\GaussianCluster.cs" />
     <Compile Include="Clustering\MeanShiftCluster.cs" />
@@ -105,7 +109,11 @@
     <Compile Include="Clustering\IClusteringAlgorithm.cs" />
     <Compile Include="Clustering\KModesCluster.cs" />
     <Compile Include="Clustering\MeanShift.cs" />
+    <Compile Include="DecisionTrees\ComparisonKind.cs" />
+    <Compile Include="DecisionTrees\DecisionBranchNodeCollection.cs" />
     <Compile Include="DecisionTrees\DecisionTreeWriter.cs" />
+    <Compile Include="DecisionTrees\Prunning\ReducedErrorPrunning.cs" />
+    <Compile Include="DecisionTrees\Prunning\ErrorBasedPrunning.cs" />
     <Compile Include="KNearestNeighbors`1.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Performance\Bootstrap\Bootstrap.cs" />
@@ -142,7 +150,10 @@
     <Compile Include="Structures\KDTree.cs" />
     <Compile Include="Structures\KDTreeNode.cs" />
     <Compile Include="Structures\KDTreeNodeCollection.cs" />
+    <Compile Include="DecisionTrees\DecisionTreeTraversal.cs" />
+    <Compile Include="VectorMachines\Learning\LeastSquaresLearning.cs" />
     <Compile Include="VectorMachines\Learning\MultilabelSupportVectorLearning.cs" />
+    <Compile Include="VectorMachines\Learning\SupportVectorLearningHelper.cs" />
     <Compile Include="VectorMachines\Learning\SupportVectorReduction.cs" />
     <Compile Include="VectorMachines\MultilabelSupportVectorMachine.cs" />
     <Compile Include="VectorMachines\ISupportVectorMachine.cs" />
@@ -196,6 +207,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
