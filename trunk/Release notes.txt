@@ -1,3 +1,54 @@
+Accord.NET Framework 2.9.0 release notes
+-----------------------------------------
+20.04.2013.    
+
+Version updates and fixes:
+
+* General
+  - Updating installer to register framework libraries.
+
+* Accord.MachineLearning
+  - Adding Least-Squares Support Vector Machines (LS-SVMs);
+  - Adding support for Decision Tree prunning (experimental);
+  - Adding Hybrid Markov Models (experimental, use with care);
+  - Adding Load and Save methods to Bag-of-Words;
+  - Adding initial support for Boosting (AdaBoost);
+  - Correcting k-Nearest Neighbors, KD-Trees and 
+    Mean-Shift to respect non-Euclidean distances;
+  - Fixing IndexOutOfRange Exception in C4.5 learning;
+  - Fixing bug in k-Nearest Neighbors classifier;
+  - Fixing C4.5 split when working with continuous attributes;
+  - Renaming DecisionAttributeKind to DecisionVariableKind
+    for better naming consistency with DecisionVariables.
+
+* Accord.Statistics
+  - Adding support for combining Confusion Matrices;
+  - Updating Levene's Test to support Trimmed Mean;
+  - Updating Binomial Test to use the small p-values;
+  - Fixing Two-Tailed computation in Binomial test.
+
+* Accord.Math
+  - Adding Discrete Cosine, Sine and Hartley Transforms.
+
+* Accord.Imaging
+  - Adding missing overloads for image moment calculators;
+  - Adding the Fast Retina Keypoint (FREAK) image descriptor;
+  - Correcting Histograms-of-Oriented-Gradients;
+  - Updating HaarObjectDetector to ignore Channel 
+    information when working with Grayscale images.
+
+* Accord.DirectSound
+  - Adding support for recording multiple bit-rates.
+
+* Accord.Controls
+  - Adding support for Codebooks in DecisionTreeView.
+  
+* AForge Compatibility
+  - Compiled against AForge.NET Framework 2.2.4. May work with newer versions.
+
+
+
+
 Accord.NET Framework 2.8.2 release notes
 -----------------------------------------
 25.02.2013.    
