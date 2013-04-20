@@ -29,7 +29,7 @@ namespace Accord.Math
     ///   Absolute convergence criteria.
     /// </summary>
     /// 
-    public class AbsoluteConvergence
+    public class RelativeConvergence
     {
 
         private double tolerance = 0;
@@ -112,7 +112,7 @@ namespace Accord.Math
                     // Stopping criteria is likelihood convergence
                     double delta = Math.Abs(OldValue - NewValue);
 
-                    if (delta <= tolerance)
+                    if (delta <= tolerance * OldValue)
                         return true;
 
                     if (maxIterations > 0)
