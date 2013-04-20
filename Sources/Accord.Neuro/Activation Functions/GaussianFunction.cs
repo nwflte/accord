@@ -2,7 +2,7 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © César Souza, 2009, 2010
+// Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
 //    This library is free software; you can redistribute it and/or
@@ -43,7 +43,7 @@ namespace Accord.Neuro.ActivationFunctions
         private double alpha = 1;
 
         // function output range
-        private DoubleRange range = new DoubleRange(-1e+10, +1e+10);
+        private DoubleRange range = new DoubleRange(-1, +1);
 
         private static StandardGenerator gaussian = new StandardGenerator(Environment.TickCount);
 
@@ -77,7 +77,7 @@ namespace Accord.Neuro.ActivationFunctions
         /// </summary>
         ///
         /// <remarks>
-        ///   <para>Default value is set to [-1e10;+1e10]</para>
+        ///   <para>Default value is set to [-1;+1]</para>
         /// </remarks>
         ///
         public DoubleRange Range
@@ -148,15 +148,15 @@ namespace Accord.Neuro.ActivationFunctions
         /// 
         public double Generate(double x)
         {
-            double y = alpha * x;
+            // assume zero-mean noise
+            double y = alpha * x + gaussian.Next();
 
             if (y > range.Max)
                 y = range.Max;
             else if (y < range.Min)
                 y = range.Min;
 
-            // assume zero-mean noise
-            return y + gaussian.Next();
+            return y;
         }
 
         /// <summary>
@@ -172,7 +172,14 @@ namespace Accord.Neuro.ActivationFunctions
         /// 
         public double Generate2(double y)
         {
-            return y + gaussian.Next();
+            y = y + gaussian.Next();
+
+            if (y > range.Max)
+                y = range.Max;
+            else if (y < range.Min)
+                y = range.Min;
+
+            return y;
         }
 
         /// <summary>
