@@ -29,6 +29,7 @@ namespace Accord.Tests.Math
     using Accord.Math.Formats;
     using System.Data;
     using AForge;
+    using System.Linq;
 
     [TestClass()]
     public partial class MatrixTest
@@ -1500,6 +1501,24 @@ namespace Accord.Tests.Math
         }
 
         [TestMethod()]
+        public void MaxMinTest1()
+        {
+            double[] a = { 5 };
+
+            int imax;
+            int imin;
+
+            double max = Matrix.Max(a, out imax);
+            double min = Matrix.Min(a, out imin);
+
+            Assert.AreEqual(max, min);
+            Assert.AreEqual(imax, imin);
+
+            Assert.AreEqual(5, max);
+            Assert.AreEqual(0, imax);
+        }
+
+        [TestMethod()]
         public void MaxMinTest()
         {
             double[,] matrix = new double[,]
@@ -2741,12 +2760,12 @@ namespace Accord.Tests.Math
 
             {
                 int[] idx = values.Top(5);
-                double[] selected = values.Submatrix(idx); 
+                double[] selected = values.Submatrix(idx);
                 Assert.AreEqual(5, idx.Length);
                 Assert.AreEqual(9, selected[0]);
                 Assert.AreEqual(8, selected[1]);
-                Assert.AreEqual(8, selected[2]);
-                Assert.AreEqual(6, selected[3]);
+                Assert.AreEqual(6, selected[2]);
+                Assert.AreEqual(8, selected[3]);
                 Assert.AreEqual(4, selected[4]);
             }
 
@@ -2754,8 +2773,8 @@ namespace Accord.Tests.Math
                 int[] idx = values.Bottom(5);
                 double[] selected = values.Submatrix(idx);
                 Assert.AreEqual(5, idx.Length);
-                Assert.AreEqual(-2, selected[0]);
-                Assert.AreEqual(0, selected[1]);
+                Assert.AreEqual(0, selected[0]);
+                Assert.AreEqual(-2, selected[1]);
                 Assert.AreEqual(1, selected[2]);
                 Assert.AreEqual(1, selected[3]);
                 Assert.AreEqual(1, selected[4]);
@@ -2763,6 +2782,36 @@ namespace Accord.Tests.Math
 
         }
 
+        [TestMethod()]
+        public void TopBottomTest2()
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                double[] values = Matrix.Random(20, -1.0, 1.0);
 
+                for (int k = 0; k < 11; k++)
+                {
+                    double[] actualTop = values.Submatrix(values.Top(k));
+                    double[] actualBottom = values.Submatrix(values.Bottom(k));
+
+                    Array.Sort(values);
+
+                    double[] expectedTop = values.Submatrix(values.Length - k, values.Length - 1);
+                    double[] expectedBottom = values.Submatrix(0, k - 1);
+
+                    Assert.AreEqual(k, actualTop.Length);
+                    Assert.AreEqual(k, actualBottom.Length);
+                    Assert.AreEqual(expectedTop.Length, actualTop.Length);
+                    Assert.AreEqual(expectedBottom.Length, actualBottom.Length);
+
+                    foreach (var v in actualTop)
+                        Assert.IsTrue(expectedTop.Contains(v));
+
+                    foreach (var v in actualBottom)
+                        Assert.IsTrue(expectedBottom.Contains(v));
+                }
+            }
+
+        }
     }
 }

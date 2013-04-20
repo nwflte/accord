@@ -23,15 +23,12 @@
 namespace Accord.Tests.Imaging
 {
     using Accord.Imaging;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using System;
-    using Accord.MachineLearning;
-    using System.Collections.Generic;
-    using System.Drawing;
     using Accord.Math;
-    using System.Runtime.Serialization.Formatters.Binary;
-    using System.IO;
     using AForge.Imaging;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System.Drawing;
+    using System.IO;
+    using System.Runtime.Serialization.Formatters.Binary;
 
     [TestClass()]
     public class BagOfVisualWordsTest
@@ -104,24 +101,24 @@ namespace Accord.Tests.Imaging
             Assert.AreEqual(10, bow.NumberOfWords);
             Assert.AreEqual(6, points.Length);
 
-            Assert.AreEqual(405, points[0].Count);
-            Assert.AreEqual(724, points[1].Count);
-            Assert.AreEqual(550, points[2].Count);
-            Assert.AreEqual(457, points[3].Count);
-            Assert.AreEqual(725, points[4].Count);
-            Assert.AreEqual(1258, points[5].Count);
+            Assert.AreEqual(406, points[0].Count);
+            Assert.AreEqual(727, points[1].Count);
+            Assert.AreEqual(549, points[2].Count);
+            Assert.AreEqual(458, points[3].Count);
+            Assert.AreEqual(723, points[4].Count);
+            Assert.AreEqual(1263, points[5].Count);
 
-            Assert.AreEqual(388.04379807392485, points[0][0].X);
-            Assert.AreEqual(105.99344045132918, points[0][0].Y);
+            Assert.AreEqual(388.043776954555, points[0][0].X);
+            Assert.AreEqual(105.99327164889745, points[0][0].Y);
 
-            Assert.AreEqual(335.64199612902496, points[3][7].X);
-            Assert.AreEqual(152.20031176259624, points[2][3].Y);
+            Assert.AreEqual(335.64548481033881, points[3][7].X);
+            Assert.AreEqual(152.14505651866821, points[2][3].Y);
 
-            Assert.AreEqual(561.95888019580082, points[2][52].X);
-            Assert.AreEqual(153.66589796202763, points[1][11].Y);
+            Assert.AreEqual(573.691355494602, points[2][52].X);
+            Assert.AreEqual(153.6650841848263, points[1][11].Y);
 
-            Assert.AreEqual(639.25228448622192, points[0][42].X);
-            Assert.AreEqual(370.24258266581012, points[4][125].Y);
+            Assert.AreEqual(573.03087205188058, points[0][42].X);
+            Assert.AreEqual(374.27580307739436, points[4][125].Y);
         }
 
         [TestMethod()]
@@ -141,24 +138,24 @@ namespace Accord.Tests.Imaging
             Assert.AreEqual(10, vector.Length);
 
             Assert.AreEqual(2800, points[0].Count);
-            Assert.AreEqual(4515, points[1].Count);
-            Assert.AreEqual(2290, points[2].Count);
-            Assert.AreEqual(1178, points[3].Count);
+            Assert.AreEqual(4532, points[1].Count);
+            Assert.AreEqual(2282, points[2].Count);
+            Assert.AreEqual(1173, points[3].Count);
             Assert.AreEqual(4860, points[4].Count);
-            Assert.AreEqual(5756, points[5].Count);
+            Assert.AreEqual(5730, points[5].Count);
 
             Assert.AreEqual(596, points[0][0].Descriptor[0]);
             Assert.AreEqual(51, points[0][0].Descriptor[1]);
             Assert.AreEqual(points[0][0].Descriptor[0], points[0][0].X);
             Assert.AreEqual(points[0][0].Descriptor[1], points[0][0].Y);
 
-            Assert.AreEqual(485, points[3][7].Descriptor[0]);
+            Assert.AreEqual(461, points[3][7].Descriptor[0]);
             Assert.AreEqual(8, points[2][3].Descriptor[1]);
 
             Assert.AreEqual(991, points[2][52].Descriptor[0]);
-            Assert.AreEqual(83, points[1][11].Descriptor[1]);
+            Assert.AreEqual(82, points[1][11].Descriptor[1]);
 
-            Assert.AreEqual(640, points[0][42].Descriptor[0]);
+            Assert.AreEqual(430, points[0][42].Descriptor[0]);
             Assert.AreEqual(135, points[4][125].Descriptor[1]);
         }
 
@@ -190,9 +187,9 @@ namespace Accord.Tests.Imaging
 
             double[][] expected = 
             {
-                new double[] { 48, 24, 103, 54, 37, 26, 42, 22, 34, 15 },
-                new double[] { 28, 64, 96, 121, 25, 110, 68, 105, 17, 90 },
-                new double[] { 74, 48, 142, 37, 22, 28, 50, 49, 56, 44 },
+                new double[] { 26, 58, 102, 24, 53, 22, 47, 29, 42, 3 },
+                new double[] { 61, 135, 90, 101, 28, 48, 26, 105, 71, 62 },
+                new double[] { 47, 36, 138, 56, 61, 22, 71, 30, 55, 33 },
             };
 
             double[][] actual = new double[expected.Length][];

@@ -26,7 +26,7 @@ namespace Accord.Tests.Statistics
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
     using System.Collections.Generic;
-    
+
     [TestClass()]
     public class LeveneTestTest
     {
@@ -108,6 +108,30 @@ namespace Accord.Tests.Statistics
 
             Assert.AreEqual(0.7247191011235955, result.Statistic);
             Assert.AreEqual(0.58857793222910693, result.PValue);
+        }
+
+        [TestMethod()]
+        public void LeveneTestConstructorTest3()
+        {
+            double[][] samples =
+            {
+                new double[]  { 50, 10, 12, 42, 125, 21, 62, 13, 66, 200, 54, 32, 64, 13, 65 },
+                new double[]  { 10, 42, 12, 36, 12, 52, 100, 24,  1, 52, 95, 157, 52, 12, 50 }
+            };
+
+            double[] expected = 
+            {
+                0.0619, 0.0569, 0.0494,
+                0.0498, 0.0535, 0.0519
+            };
+
+            for (int i = 0; i < 6; i++)
+            {
+                double percent = i / 10.0;
+                LeveneTest result = new LeveneTest(samples, percent);
+                
+                Assert.AreEqual(expected[i], result.Statistic, 1e-4);
+            }
         }
     }
 }

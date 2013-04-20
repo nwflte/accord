@@ -120,13 +120,12 @@ namespace Accord.Tests.Math
         [TestMethod()]
         public void PhaseTest()
         {
-            // TODO: Reenable this test when AForge is updated to version 2.2.4.
             Complex[] x = { new Complex(0, 5), new Complex(2, 0), new Complex(-5, 1) };
             double[] expected = { 1, Math.Sqrt(5), Math.Sqrt(26) };
             double[] actual = ComplexMatrix.Phase(x);
 
-            //for (int i = 0; i < x.Length; i++)
-            //    Assert.AreEqual(x[i].Phase, Math.Atan2(x[i].Im, x[i].Re));
+            for (int i = 0; i < x.Length; i++)
+                Assert.AreEqual(x[i].Phase, Math.Atan2(x[i].Im, x[i].Re));
         }
 
 

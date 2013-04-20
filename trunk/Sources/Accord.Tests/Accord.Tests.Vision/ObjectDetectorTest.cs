@@ -103,7 +103,7 @@ namespace Accord.Tests.Vision
         {
             HaarCascade cascade = new FaceHaarCascade();
             HaarObjectDetector target = new HaarObjectDetector(cascade,
-                15, ObjectDetectorSearchMode.NoOverlap);
+                30, ObjectDetectorSearchMode.NoOverlap);
 
             Bitmap bmp = Properties.Resources.lena_gray;
 
@@ -117,7 +117,7 @@ namespace Accord.Tests.Vision
 
 
             target = new HaarObjectDetector(cascade,
-                15, ObjectDetectorSearchMode.Default);
+                30, ObjectDetectorSearchMode.Default);
 
             target.ProcessFrame(bmp);
 
@@ -139,18 +139,21 @@ namespace Accord.Tests.Vision
 
             target.ProcessFrame(bmp);
 
-            Assert.AreEqual(2, target.DetectedObjects.Length);
-            Assert.AreEqual(168, target.DetectedObjects[0].X);
-            Assert.AreEqual(144, target.DetectedObjects[0].Y);
-            Assert.AreEqual(49, target.DetectedObjects[0].Width);
-            Assert.AreEqual(49, target.DetectedObjects[0].Height);
+            Assert.AreEqual(3, target.DetectedObjects.Length);
+            Assert.AreEqual(180, target.DetectedObjects[0].X);
+            Assert.AreEqual(275, target.DetectedObjects[0].Y);
+            Assert.AreEqual(41, target.DetectedObjects[0].Width);
+            Assert.AreEqual(41, target.DetectedObjects[0].Height);
 
-            Assert.AreEqual(392, target.DetectedObjects[1].X);
-            Assert.AreEqual(133, target.DetectedObjects[1].Y);
-            Assert.AreEqual(59, target.DetectedObjects[1].Width);
-            Assert.AreEqual(59, target.DetectedObjects[1].Height);
+            Assert.AreEqual(168, target.DetectedObjects[1].X);
+            Assert.AreEqual(144, target.DetectedObjects[1].Y);
+            Assert.AreEqual(49, target.DetectedObjects[1].Width);
+            Assert.AreEqual(49, target.DetectedObjects[1].Height);
 
-            Assert.AreEqual(2, target.DetectedObjects.Length);
+            Assert.AreEqual(392, target.DetectedObjects[2].X);
+            Assert.AreEqual(133, target.DetectedObjects[2].Y);
+            Assert.AreEqual(59, target.DetectedObjects[2].Width);
+            Assert.AreEqual(59, target.DetectedObjects[2].Height);
 
 
             target = new HaarObjectDetector(cascade,

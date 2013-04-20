@@ -20,14 +20,21 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-namespace Accord.Tests.Audio
+namespace Accord.Tests.MachineLearning
 {
-    using Accord.DirectSound;
+    using Accord.MachineLearning.DecisionTrees.Prunning;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Accord.Audio;
-
+    using System;
+    using Accord.MachineLearning.DecisionTrees;
+    using System.Data;
+    using Accord.Statistics.Filters;
+    using Accord.Math;
+    using Accord.Tests.MachineLearning.Properties;
+    using Accord.MachineLearning.DecisionTrees.Learning;
+    
+    
     [TestClass()]
-    public class WaveFileAudioSourceTest
+    public class ErrorBasedPrunningTest
     {
 
 
@@ -77,34 +84,38 @@ namespace Accord.Tests.Audio
 
 
         [TestMethod()]
-        public void WaveFileAudioSourceConstructorTest()
+        public void RunTest()
         {
-            string fileName = @"..\..\..\Accord.Tests\Accord.Tests.Audio\Resources\Grand Piano - Fazioli - major A middle.wav";
+            double[][] inputs;
+            int[] outputs;
 
-            WaveFileAudioSource target = new WaveFileAudioSource(fileName);
+            int training = 6000;
+            DecisionTree tree = ReducedErrorPrunningTest.createNurseryExample(out inputs, out outputs, training);
 
-            Signal s = null;
+            int nodeCount = 0;
+            foreach (var node in tree)
+                nodeCount++;
 
-            target.NewFrame += delegate(object sender, NewFrameEventArgs e)
+            var prunningInputs = inputs.Submatrix(training, inputs.Length - 1);
+            var prunningOutputs = outputs.Submatrix(training, inputs.Length - 1);
+            ErrorBasedPrunning prune = new ErrorBasedPrunning(tree, prunningInputs, prunningOutputs);
+
+            prune.Threshold = 0.1;
+
+            double lastError, error = Double.PositiveInfinity;
+            do
             {
-                if (s == null)
-                    s = e.Signal;
+                lastError = error;
+                error = prune.Run();
+            } while (error < lastError);
 
-                Assert.AreEqual(s.SampleRate, 44100);
-                Assert.AreEqual(s.Channels, 2);
-                Assert.AreEqual(s.Length, 8192);
-                Assert.AreEqual(s.Channels * s.Length, s.Samples);
-            };
+            int nodeCount2 = 0;
+            foreach (var node in tree)
+                nodeCount2++;
 
-
-            target.Start();
-
-            target.WaitForStop();
-
-            Assert.AreEqual(180224, target.FramesReceived);
-            Assert.AreEqual(705600, target.BytesReceived);
-
+            Assert.AreEqual(0.25459770114942532, error);
+            Assert.AreEqual(447, nodeCount);
+            Assert.AreEqual(193, nodeCount2);
         }
-
     }
 }

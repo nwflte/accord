@@ -22,16 +22,14 @@
 
 namespace Accord.Tests.MachineLearning
 {
+    using System;
     using System.Data;
     using Accord.MachineLearning.DecisionTrees;
     using Accord.MachineLearning.DecisionTrees.Learning;
     using Accord.Math;
     using Accord.Statistics.Filters;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Accord.Statistics.Formats;
-    using System.IO;
     using Accord.Tests.MachineLearning.Properties;
-    using System;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass()]
     public class C45LearningTest
@@ -116,8 +114,8 @@ namespace Accord.Tests.MachineLearning
             DecisionVariable[] attributes =
             {
                new DecisionVariable("Outlook",     codebook["Outlook"].Symbols),      // 3 possible values (Sunny, overcast, rain)
-               new DecisionVariable("Temperature", DecisionAttributeKind.Continuous), // continuous values
-               new DecisionVariable("Humidity",    DecisionAttributeKind.Continuous), // continuous values
+               new DecisionVariable("Temperature", DecisionVariableKind.Continuous), // continuous values
+               new DecisionVariable("Humidity",    DecisionVariableKind.Continuous), // continuous values
                new DecisionVariable("Wind",        codebook["Wind"].Symbols)          // 2 possible values (Weak, strong)
             };
 
@@ -150,11 +148,11 @@ namespace Accord.Tests.MachineLearning
             Assert.IsNull(tree.Root.Value);
 
             Assert.AreEqual(84, tree.Root.Branches[0].Value); // Temperature <= 84.0
-            Assert.AreEqual(2, tree.Root.Branches[0].Branches.AttributeIndex); // Decide over Humidity
+            Assert.AreEqual(0, tree.Root.Branches[0].Branches.AttributeIndex); // Decide over Outlook
             Assert.AreEqual(ComparisonKind.LessThanOrEqual, tree.Root.Branches[0].Comparison);
-            Assert.AreEqual(2, tree.Root.Branches[0].Branches.Count);
+            Assert.AreEqual(3, tree.Root.Branches[0].Branches.Count);
             Assert.IsFalse(tree.Root.Branches[0].Branches[0].IsLeaf);
-            Assert.IsFalse(tree.Root.Branches[0].Branches[1].IsLeaf);
+            Assert.IsTrue(tree.Root.Branches[0].Branches[1].IsLeaf);
 
             Assert.AreEqual(84, tree.Root.Branches[1].Value); // Temperature > 84.0
             Assert.AreEqual(0, tree.Root.Branches[1].Output.Value); // Output is "No"
@@ -163,13 +161,13 @@ namespace Accord.Tests.MachineLearning
             Assert.AreEqual(0, tree.Root.Branches[1].Branches.Count);
             Assert.IsTrue(tree.Root.Branches[1].IsLeaf);
 
-            Assert.AreEqual(80, tree.Root.Branches[0].Branches[0].Value); // Humidity <= 80
-            Assert.AreEqual(ComparisonKind.LessThanOrEqual, tree.Root.Branches[0].Branches[0].Comparison);
-            Assert.AreEqual(2, tree.Root.Branches[0].Branches.Count);
-            Assert.AreEqual(3, tree.Root.Branches[0].Branches[0].Branches.AttributeIndex); // Decide over Wind
-            Assert.AreEqual(0, tree.Root.Branches[0].Branches[0].Branches[0].Value);
-            Assert.AreEqual(ComparisonKind.Equal, tree.Root.Branches[0].Branches[0].Branches[0].Comparison);
-            Assert.AreEqual(ComparisonKind.Equal, tree.Root.Branches[0].Branches[0].Branches[1].Comparison);
+            Assert.AreEqual(0, tree.Root.Branches[0].Branches[0].Value); // Outlook <= 0
+            Assert.AreEqual(ComparisonKind.Equal, tree.Root.Branches[0].Branches[0].Comparison);
+            Assert.AreEqual(3, tree.Root.Branches[0].Branches.Count);
+            Assert.AreEqual(2, tree.Root.Branches[0].Branches[0].Branches.AttributeIndex); // Decide over Humidity
+            Assert.AreEqual(70, tree.Root.Branches[0].Branches[0].Branches[0].Value);
+            Assert.AreEqual(ComparisonKind.LessThanOrEqual, tree.Root.Branches[0].Branches[0].Branches[0].Comparison);
+            Assert.AreEqual(ComparisonKind.GreaterThan, tree.Root.Branches[0].Branches[0].Branches[1].Comparison);
         }
 
 
@@ -333,8 +331,8 @@ namespace Accord.Tests.MachineLearning
             DecisionVariable[] attributes =
             {
                new DecisionVariable("Outlook",     codebook["Outlook"].Symbols),      // 3 possible values (Sunny, overcast, rain)
-               new DecisionVariable("Temperature", DecisionAttributeKind.Continuous), // constant continuous value
-               new DecisionVariable("Humidity",    DecisionAttributeKind.Continuous), // continuous values
+               new DecisionVariable("Temperature", DecisionVariableKind.Continuous), // constant continuous value
+               new DecisionVariable("Humidity",    DecisionVariableKind.Continuous), // continuous values
                new DecisionVariable("Wind",        codebook["Wind"].Symbols + 1)      // 1 possible value (Weak)
             };
 
@@ -396,8 +394,8 @@ namespace Accord.Tests.MachineLearning
             DecisionVariable[] attributes =
             {
                new DecisionVariable("Outlook",     codebook["Outlook"].Symbols),      // 3 possible values (Sunny, overcast, rain)
-               new DecisionVariable("Temperature", DecisionAttributeKind.Continuous), // continuous values
-               new DecisionVariable("Humidity",    DecisionAttributeKind.Continuous), // continuous values
+               new DecisionVariable("Temperature", DecisionVariableKind.Continuous), // continuous values
+               new DecisionVariable("Humidity",    DecisionVariableKind.Continuous), // continuous values
                new DecisionVariable("Wind",        codebook["Wind"].Symbols + 1)      // 1 possible value (Weak)
             };
 
@@ -418,6 +416,38 @@ namespace Accord.Tests.MachineLearning
                 int y = tree.Compute(inputs[i]);
                 Assert.AreEqual(outputs[i], y);
             }
+        }
+
+
+        [TestMethod]
+        public void ConsistencyTest1()
+        {
+            double[,] random = Matrix.Random(1000, 10, 0.0, 1.0);
+
+            double[][] samples = random.ToArray();
+            int[] outputs = new int[1000];
+
+            for (int i = 0; i < samples.Length; i++)
+            {
+                if (samples[i][0] > 0.8)
+                    outputs[i] = 1;
+            }
+
+            DecisionVariable[] vars = new DecisionVariable[10];
+            for (int i = 0; i < vars.Length; i++)
+                vars[i] = new DecisionVariable(i.ToString(), DecisionVariableKind.Continuous);
+
+            DecisionTree tree = new DecisionTree(vars, 2);
+
+            C45Learning teacher = new C45Learning(tree);
+
+            double error = teacher.Run(samples, outputs);
+
+            Assert.AreEqual(0, error);
+
+            Assert.AreEqual(2, tree.Root.Branches.Count);
+            Assert.IsTrue(tree.Root.Branches[0].IsLeaf);
+            Assert.IsTrue(tree.Root.Branches[1].IsLeaf);
         }
     }
 }
