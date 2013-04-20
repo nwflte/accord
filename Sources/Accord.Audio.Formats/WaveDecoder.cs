@@ -31,6 +31,27 @@ namespace Accord.Audio.Formats
     ///   Wave audio file decoder.
     /// </summary>
     /// 
+    /// <example>
+    /// <code>
+    /// // Let's decode an Wave audio file
+    /// UnmanagedMemoryStream sourceStream = ...
+    /// 
+    /// // Create a decoder for the source stream
+    /// WaveDecoder sourceDecoder = new WaveDecoder(sourceStream);
+    /// 
+    /// // At this point, we can query some properties of the audio file:
+    /// int channels =  sourceDecoder.Channels;
+    /// int samples  =  sourceDecoder.Samples;
+    /// int frames   =  sourceDecoder.Frames;
+    /// int duration =  sourceDecoder.Duration;
+    /// int rate     =  sourceDecoder.SampleRate;
+    /// int bps      =  sourceDecoder.BitsPerSample;
+    /// 
+    /// // Decode the signal in the source stream
+    /// Signal sourceSignal = sourceDecoder.Decode();
+    /// </code>
+    /// </example>
+    /// 
     public class WaveDecoder : IAudioDecoder
     {
         private WaveStream waveStream;

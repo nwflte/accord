@@ -5,6 +5,9 @@
 // Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
+// Copyright © AForge.NET, 2005-2011
+// contacts@aforgenet.com
+//
 //    This library is free software; you can redistribute it and/or
 //    modify it under the terms of the GNU Lesser General Public
 //    License as published by the Free Software Foundation; either
@@ -26,62 +29,48 @@ namespace Accord.Audio
     using System.Runtime.Serialization;
 
     /// <summary>
-    ///   Invalid signal properties exception.
+    ///   Audio related exception.
     /// </summary>
     /// 
-    /// <remarks>
-    ///   <para>
-    ///   The invalid signal properties exception is thrown in the case when
-    ///   user provides a signal which do not have the properties expected by
-    ///   a particular signal processing routine.</para>
-    /// </remarks>
+    /// <remarks><para>The exception is thrown in the case of some audio related issues, like
+    /// failure of initializing codec, compression, etc.</para></remarks>
     /// 
     [Serializable]
-    public class InvalidSignalPropertiesException : ArgumentException
+    public class AudioException : Exception
     {
         /// <summary>
-        ///   Initializes a new instance of the <see cref="InvalidSignalPropertiesException"/> class.
+        /// Initializes a new instance of the <see cref="AudioException"/> class.
         /// </summary>
         /// 
-        public InvalidSignalPropertiesException() { }
+        public AudioException() { }
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref="InvalidSignalPropertiesException"/> class.
+        /// Initializes a new instance of the <see cref="AudioException"/> class.
         /// </summary>
         /// 
-        /// <param name="message">Message providing some additional information.</param>
+        /// <param name="message">Exception's message.</param>
         /// 
-        public InvalidSignalPropertiesException(string message)
-            : base(message) { }
+        public AudioException(string message) :
+            base(message) { }
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref="InvalidSignalPropertiesException"/> class.
-        /// </summary>
-        /// 
-        /// <param name="message">Message providing some additional information.</param>
-        /// <param name="paramName">Name of the invalid parameter.</param>
-        /// 
-        public InvalidSignalPropertiesException(string message, string paramName)
-            : base(message, paramName) { }
-
-        /// <summary>
-        ///   Initializes a new instance of the <see cref="InvalidSignalPropertiesException"/> class.
+        ///   Initializes a new instance of the <see cref="AudioException"/> class.
         /// </summary>
         /// 
         /// <param name="message">Message providing some additional information.</param>
         /// <param name="innerException">The exception that is the cause of the current exception.</param>
         /// 
-        public InvalidSignalPropertiesException(string message, Exception innerException)
+        public AudioException(string message, Exception innerException)
             : base(message, innerException) { }
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref="InvalidSignalPropertiesException"/> class.
+        ///   Initializes a new instance of the <see cref="AudioException"/> class.
         /// </summary>
         /// 
         /// <param name="info">The object that holds the serialized object data.</param>
         /// <param name="context">The contextual information about the source or destination.</param>
         /// 
-        protected InvalidSignalPropertiesException(SerializationInfo info, StreamingContext context)
+        protected AudioException(SerializationInfo info, StreamingContext context)
             : base(info, context) { }
 
     }
