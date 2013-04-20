@@ -283,6 +283,7 @@ namespace Accord.MachineLearning.Structures
             KDTree<T> tree = new KDTree<T>(dimensions);
             tree.root = root;
             tree.count = points.Length;
+            tree.distance = distance;
             return tree;
         }
         #endregion
