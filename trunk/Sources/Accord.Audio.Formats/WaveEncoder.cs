@@ -22,16 +22,27 @@
 
 namespace Accord.Audio.Formats
 {
+    using Accord.Audio;
     using System;
     using System.IO;
-    using Accord.Audio;
-    using SlimDX.Multimedia;
     using System.Runtime.InteropServices;
-    using System.Text;
 
     /// <summary>
-    ///   Wave audio file encoder
+    ///   Wave audio file encoder.
     /// </summary>
+    /// 
+    /// <example>
+    /// <code>
+    /// // Create a stream to hold our encoded audio
+    /// MemoryStream destinationStream = new MemoryStream();
+    /// 
+    /// // Create a encoder for the destinoation stream
+    /// WaveEncoder encoder = new WaveEncoder(destinationStream);
+    /// 
+    /// // Encode the signal to the destionation stream
+    /// encoder.Encode(sourceSignal);
+    /// </code>
+    /// </example>
     /// 
     public class WaveEncoder : IAudioEncoder
     {
@@ -48,7 +59,7 @@ namespace Accord.Audio.Formats
         private int averageBitsPerSecond;
         private SampleFormat sampleFormat;
 
-        
+
         // The following fields are set when the encoder
         // receives the first signal to be written.
 

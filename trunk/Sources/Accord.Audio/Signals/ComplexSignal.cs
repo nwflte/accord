@@ -36,29 +36,33 @@ namespace Accord.Audio
         /// <summary>
         ///   Normal state.
         /// </summary>
+        /// 
         Normal,
 
         /// <summary>
         ///  Analytic form (Hilbert Transformed)
         /// </summary>
+        /// 
         Analytic,
 
         /// <summary>
         ///  Frequency form (Fourier transformed)
         /// </summary>
+        /// 
         FourierTransformed
     }
 
     /// <summary>
     ///   Complex audio signal.
-    ///   A complex discrete-time signal is any complex-valued function
-    ///   of the integers.
     /// </summary>
     /// 
     /// <remarks>
     ///  <para>
-    ///   The class is used to keep audio signals represented in complex
-    ///   numbers sutable for Fourier transformations.</para>
+    ///   A complex discrete-time signal is any complex-valued function
+    ///   of integers. This class is used to keep audio signals represented 
+    ///   in complex numbers so they are suitable to be converted to and
+    ///   from the frequency domain in either analytic or fourier transformed
+    ///   forms.</para>
     /// 
     /// <para>    
     ///   References:

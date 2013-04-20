@@ -34,7 +34,7 @@ namespace Accord.Audio
     /// 
     /// <seealso cref="IAudioOutput"/>
     /// 
-    public interface IAudioSource
+    public interface IAudioSource : IDisposable
     {
         /// <summary>
         ///   New frame block event.
@@ -73,6 +73,12 @@ namespace Accord.Audio
         /// </summary>
         /// 
         int DesiredFrameSize { get; set; }
+
+        /// <summary>
+        ///   Gets the number of audio channels in the source.
+        /// </summary>
+        /// 
+        int Channels { get; set; }
 
         /// <summary>
         ///   Seeks a frame.

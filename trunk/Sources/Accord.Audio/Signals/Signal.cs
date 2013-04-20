@@ -37,7 +37,7 @@ namespace Accord.Audio
         /// </summary>
         /// 
         Format8BitUnsigned,
-        
+
         /// <summary>
         ///   Specifies the format is 8 bit, signed.
         /// </summary>
@@ -81,11 +81,12 @@ namespace Accord.Audio
 
     /// <summary>
     ///   Represents a PCM sound discrete signal (measured in time).
-    ///   A real discrete-time signal is defined as any real-valued 
-    ///   function of the integers.
     /// </summary>
     /// 
     /// <remarks>
+    ///  <para>
+    ///   A real discrete-time signal is defined as any real-valued 
+    ///   function of the integers.</para>
     ///  <para>
     ///  In signal processing, sampling is the reduction of a continuous
     ///  signal to a discrete signal. A common example is the conversion
@@ -96,8 +97,34 @@ namespace Accord.Audio
     ///  A sample refers to a value or set of values at a point in time 
     ///  and/or space.</para>
     ///
+    /// <para>Sample usage:</para>
+    /// <code>
+    /// // create an empty audio signal 
+    /// Signal signal = new Signal( channels, length, sampleRate, format );
+    /// </code>
+    /// 
+    /// <code>
+    /// float[,] data = 
+    /// {
+    ///     {  0.00f, 0.2f  },
+    ///     {  0.32f, 0.1f  },
+    ///     {  0.22f, 0.2f  },
+    ///     {  0.12f, 0.42f },
+    ///     { -0.12f, 0.1f  },
+    ///     { -0.22f, 0.2f  },
+    /// };
+    /// 
+    /// // or create an audio signal from an array of audio frames
+    /// Signal target = Signal.FromArray(data, sampleRate: 8000);
+    /// </code>
+    /// 
+    /// <para>
+    /// For an example on how to decode a signal from a Wave file, please
+    /// take a look on the WaveDecoder and WaveFileAudioSource documentation.</para>
     /// </remarks>
     /// 
+    /// <seealso cref="ComplexSignal"/>
+    ///
     public class Signal : IDisposable
     {
         private byte[] rawData;
@@ -323,7 +350,7 @@ namespace Accord.Audio
         ///   Creates a new Signal from a float array.
         /// </summary>
         /// 
-        public static Signal FromArray(Array signal, int sampleRate, 
+        public static Signal FromArray(Array signal, int sampleRate,
             SampleFormat format = SampleFormat.Format32BitIeeeFloat)
         {
             int channels = signal.Rank == 1 ? 1 : signal.GetLength(1);
@@ -345,7 +372,7 @@ namespace Accord.Audio
         ///   Creates a new Signal from a float array.
         /// </summary>
         /// 
-        public static Signal FromArray(Array signal, int channels, int sampleRate, 
+        public static Signal FromArray(Array signal, int channels, int sampleRate,
             SampleFormat format = SampleFormat.Format32BitIeeeFloat)
         {
             return FromArray(signal, signal.Length, channels, sampleRate, format);
