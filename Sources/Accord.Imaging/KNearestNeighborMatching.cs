@@ -41,7 +41,31 @@ namespace Accord.Imaging
     /// <seealso cref="CorrelationMatching"/>
     /// <seealso cref="RansacHomographyEstimator"/>
     /// 
-    public class KNearestNeighborMatching
+    public class KNearestNeighborMatching : KNearestNeighborMatching<double[]>
+    {
+        /// <summary>
+        ///   Constructs a new Correlation Matching algorithm.
+        /// </summary>
+        /// 
+        public KNearestNeighborMatching(int k)
+            : base(k, Accord.Math.Distance.Euclidean) { }
+    }
+
+
+    /// <summary>
+    ///   Nearest neighbor feature point matching algorithm.
+    /// </summary>
+    /// 
+    /// <remarks>
+    ///   <para>
+    ///     This class matches feature points using a <see cref="KNearestNeighbors">
+    ///     k-Nearest Neighbors</see> algorithm.</para>
+    /// </remarks>
+    ///
+    /// <seealso cref="CorrelationMatching"/>
+    /// <seealso cref="RansacHomographyEstimator"/>
+    /// 
+    public class KNearestNeighborMatching<T>
     {
 
         /// <summary>
@@ -51,41 +75,51 @@ namespace Accord.Imaging
         public int K { get; set; }
 
         /// <summary>
+        ///   Gets or sets the distance function used
+        ///   as a distance metric between data points.
+        /// </summary>
+        /// 
+        public Func<T, T, double> Distance { get; set; }
+
+        /// <summary>
         ///   Gets or sets a minimum relevance threshold
         ///   used to find matching pairs
         /// </summary>
         /// 
         public double Threshold { get; set; }
 
+
         /// <summary>
         ///   Constructs a new Correlation Matching algorithm.
         /// </summary>
         /// 
-        public KNearestNeighborMatching(int k)
+        public KNearestNeighborMatching(int k, Func<T, T, double> distance)
         {
             this.K = k;
+            this.Distance = distance;
         }
+
 
 
         /// <summary>
         ///   Matches two sets of feature points.
         /// </summary>
         /// 
-        public IntPoint[][] Match(IFeaturePoint[] points1, IFeaturePoint[] points2)
+        public IntPoint[][] Match(IFeaturePoint<T>[] points1, IFeaturePoint<T>[] points2)
         {
             // Get the descriptors associated with each feature point
-            double[][] features1 = new double[points1.Length][];
+            T[] features1 = new T[points1.Length];
             for (int i = 0; i < features1.Length; i++)
                 features1[i] = points1[i].Descriptor;
 
-            double[][] features2 = new double[points2.Length][];
+            T[] features2 = new T[points2.Length];
             for (int i = 0; i < features2.Length; i++)
                 features2[i] = points2[i].Descriptor;
 
             // Create a k-Nearest Neighbor classifier to classify points
             // in the second image to nearest points in the first image
-            KNearestNeighbors knn = new KNearestNeighbors(K, points1.Length,
-                features1, Matrix.Indices(0, points1.Length));
+            var knn = new KNearestNeighbors<T>(K, points1.Length,
+                features1, Matrix.Indices(0, points1.Length), Distance);
 
 
             double[] scores = new double[points2.Length];
@@ -122,8 +156,9 @@ namespace Accord.Imaging
             {
                 if (bestScore[i] != Double.PositiveInfinity)
                 {
-                    IFeaturePoint pi = points1[i];
-                    IFeaturePoint pj = points2[bestMatch[i]];
+                    int j = bestMatch[i];
+                    var pi = points1[i];
+                    var pj = points2[j];
                     p1.Add(new IntPoint((int)pi.X, (int)pi.Y));
                     p2.Add(new IntPoint((int)pj.X, (int)pj.Y));
                 }
