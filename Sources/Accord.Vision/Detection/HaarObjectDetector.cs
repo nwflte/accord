@@ -40,6 +40,7 @@ namespace Accord.Vision.Detection
     using System.Threading.Tasks;
     using Accord.Imaging;
     using AForge.Imaging;
+    using System.Drawing.Imaging;
 
     /// <summary>
     ///   Object detector options for the search procedure.
@@ -415,9 +416,12 @@ namespace Accord.Vision.Detection
         /// 
         public Rectangle[] ProcessFrame(UnmanagedImage image)
         {
+            int colorChannel =
+              image.PixelFormat == PixelFormat.Format8bppIndexed ? 0 : channel;
+
             // Creates an integral image representation of the frame
             IntegralImage2 integralImage = IntegralImage2.FromBitmap(
-                image, channel, classifier.Cascade.HasTiltedFeatures);
+                image, colorChannel, classifier.Cascade.HasTiltedFeatures);
 
             // Creates a new list of detected objects.
             this.detectedObjects.Clear();
