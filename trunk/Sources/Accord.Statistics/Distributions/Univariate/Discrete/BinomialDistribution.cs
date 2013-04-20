@@ -152,32 +152,34 @@ namespace Accord.Statistics.Distributions.Univariate
         public override double DistributionFunction(int k)
         {
             if (k < 0) return 0;
-            if (k > numberOfTrials) return 1;
+            if (k >= numberOfTrials) return 1;
 
             double x = 1.0 - probability;
             double a = numberOfTrials - k;
             double b = k + 1;
             return Beta.Incomplete(a, b, x);
         }
-/*
+
         /// <summary>
-        ///   Gets the complementary cumulative distribution function
-        ///   (ccdf) for this distribution evaluated at point <c>k</c>.
-        ///   This function is also known as the Survival function.
+        ///   Gets the inverse of the cumulative distribution function (icdf) for
+        ///   this distribution evaluated at probability <c>p</c>. This function
+        ///   is also known as the Quantile function.
         /// </summary>
         /// 
         /// <remarks>
-        ///   The Complementary Cumulative Distribution Function (CCDF) is
-        ///   the complement of the Cumulative Distribution Function, or 1
-        ///   minus the CDF.
+        ///   The Inverse Cumulative Distribution Function (ICDF) specifies, for
+        ///   a given probability, the value which the random variable will be at,
+        ///   or below, with that probability.
         /// </remarks>
         /// 
-        public override double ComplementaryDistributionFunction(int k)
+        public override int InverseDistributionFunction(double p)
         {
-            double c = 1.0 - DistributionFunction(k);
-            return c + ProbabilityMassFunction(k);
+            for (int i = 0; i < numberOfTrials; i++)
+                if (DistributionFunction(i) > p) return i - 1;
+
+            return numberOfTrials;
         }
-        */
+
         /// <summary>
         ///   Gets the probability mass function (pmf) for
         ///   this distribution evaluated at point <c>x</c>.
@@ -197,8 +199,11 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override double ProbabilityMassFunction(int k)
         {
-            if (k < 0 || k > numberOfTrials) return 0;
-            return Special.Binomial(numberOfTrials, k) * Math.Pow(probability, k) * Math.Pow(1 - probability, numberOfTrials - k);
+            if (k < 0 || k > numberOfTrials)
+                return 0;
+
+            return Special.Binomial(numberOfTrials, k) * Math.Pow(probability, k)
+                * Math.Pow(1 - probability, numberOfTrials - k);
         }
 
         /// <summary>
@@ -220,8 +225,11 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override double LogProbabilityMassFunction(int k)
         {
-            if (k < 0 || k > numberOfTrials) return Double.NegativeInfinity;
-            return Special.LogBinomial(numberOfTrials, k) + k * Math.Log(probability) + (numberOfTrials - k) * Math.Log(1 - probability);
+            if (k < 0 || k > numberOfTrials)
+                return Double.NegativeInfinity;
+
+            return Special.LogBinomial(numberOfTrials, k) + k * Math.Log(probability)
+                + (numberOfTrials - k) * Math.Log(1 - probability);
         }
 
         /// <summary>
