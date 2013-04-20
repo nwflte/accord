@@ -32,7 +32,7 @@ namespace Accord.MachineLearning.DecisionTrees
     ///   Attribute category.
     /// </summary>
     /// 
-    public enum DecisionAttributeKind
+    public enum DecisionVariableKind
     {
         /// <summary>
         ///   Attribute is discrete-valued.
@@ -55,9 +55,6 @@ namespace Accord.MachineLearning.DecisionTrees
     [Serializable]
     public class DecisionVariable
     {
-        // TODO: Rename this class to DecisionAttribute, or rename
-        // DecisionAttributeKind and DecisionAttributeCollection
-
         /// <summary>
         ///   Gets the name of the attribute.
         /// </summary>
@@ -68,7 +65,7 @@ namespace Accord.MachineLearning.DecisionTrees
         ///   Gets the nature of the attribute (i.e. real-valued or discrete-valued).
         /// </summary>
         /// 
-        public DecisionAttributeKind Nature { get; private set; }
+        public DecisionVariableKind Nature { get; private set; }
 
         /// <summary>
         ///   Gets the valid range of the attribute.
@@ -76,20 +73,6 @@ namespace Accord.MachineLearning.DecisionTrees
         /// 
         public DoubleRange Range { get; private set; }
 
-        /// <summary>
-        ///   Creates a new <see cref="DecisionVariable"/>.
-        /// </summary>
-        /// 
-        /// <param name="name">The name of the attribute.</param>
-        /// <param name="nature">The attribute's nature (i.e. real-valued or discrete-valued).</param>
-        /// <param name="range">The range of valid values for this attribute. Default is [0;1].</param>
-        /// 
-        public DecisionVariable(string name, DecisionAttributeKind nature, DoubleRange range)
-        {
-            this.Name = name;
-            this.Nature = nature;
-            this.Range = range;
-        }
 
         /// <summary>
         ///   Creates a new <see cref="DecisionVariable"/>.
@@ -99,8 +82,10 @@ namespace Accord.MachineLearning.DecisionTrees
         /// <param name="range">The range of valid values for this attribute. Default is [0;1].</param>
         /// 
         public DecisionVariable(string name, DoubleRange range)
-            : this(name, DecisionAttributeKind.Continuous, range)
         {
+            this.Name = name;
+            this.Nature = DecisionVariableKind.Continuous;
+            this.Range = range;
         }
 
         /// <summary>
@@ -110,7 +95,7 @@ namespace Accord.MachineLearning.DecisionTrees
         /// <param name="name">The name of the attribute.</param>
         /// <param name="nature">The attribute's nature (i.e. real-valued or discrete-valued).</param>
         /// 
-        public DecisionVariable(string name, DecisionAttributeKind nature)
+        public DecisionVariable(string name, DecisionVariableKind nature)
         {
             this.Name = name;
             this.Nature = nature;
@@ -125,8 +110,10 @@ namespace Accord.MachineLearning.DecisionTrees
         /// <param name="range">The range of valid values for this attribute.</param>
         /// 
         public DecisionVariable(string name, IntRange range)
-            : this(name, DecisionAttributeKind.Discrete, new DoubleRange(range.Min, range.Max))
         {
+            this.Name = name;
+            this.Nature = DecisionVariableKind.Discrete;
+            this.Range = new DoubleRange(range.Min, range.Max);
         }
 
         /// <summary>
@@ -137,7 +124,7 @@ namespace Accord.MachineLearning.DecisionTrees
         /// <param name="symbols">The number of possible values for this attribute.</param>
         /// 
         public DecisionVariable(string name, int symbols)
-            : this(name, DecisionAttributeKind.Discrete, new DoubleRange(0, symbols - 1))
+            : this(name, new IntRange(0, symbols - 1))
         {
         }
 
@@ -173,15 +160,15 @@ namespace Accord.MachineLearning.DecisionTrees
     /// </summary>
     /// 
     [Serializable]
-    public class DecisionAttributeCollection : ReadOnlyCollection<DecisionVariable>
+    public class DecisionVariableCollection : ReadOnlyCollection<DecisionVariable>
     {
         /// <summary>
-        ///   Initializes a new instance of the <see cref="DecisionAttributeCollection"/> class.
+        ///   Initializes a new instance of the <see cref="DecisionVariableCollection"/> class.
         /// </summary>
         /// 
         /// <param name="list">The list to initialize the collection.</param>
         /// 
-        public DecisionAttributeCollection(IList<DecisionVariable> list)
+        public DecisionVariableCollection(IList<DecisionVariable> list)
             : base(list) { }
     }
 }

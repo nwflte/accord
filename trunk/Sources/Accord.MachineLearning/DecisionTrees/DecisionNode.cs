@@ -22,10 +22,9 @@
 
 namespace Accord.MachineLearning.DecisionTrees
 {
+    using Accord.Statistics.Filters;
     using System;
-    using System.Collections.ObjectModel;
     using System.Runtime.Serialization;
-
 
     /// <summary>
     ///   Decision Tree (DT) Node.
@@ -81,7 +80,7 @@ namespace Accord.MachineLearning.DecisionTrees
         ///   determining the reasoning process for those children.
         /// </summary>
         /// 
-        public DecisionBranchNodeCollection Branches { get; private set; }
+        public DecisionBranchNodeCollection Branches { get; set; }
 
         /// <summary>
         ///   Gets or sets the parent of this node. If this is a root
@@ -139,6 +138,8 @@ namespace Accord.MachineLearning.DecisionTrees
             get { return Branches == null || Branches.Count == 0; }
         }
 
+
+
         /// <summary>
         ///   Computes whether a value satisfies
         ///   the condition imposed by this node.
@@ -186,6 +187,25 @@ namespace Accord.MachineLearning.DecisionTrees
         /// 
         public override string ToString()
         {
+            return toString(null);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(Codification codebook)
+        {
+            return toString(codebook);
+        }
+
+
+        private string toString(Codification codebook)
+        {
             if (IsRoot)
                 return "Root";
 
@@ -220,7 +240,12 @@ namespace Accord.MachineLearning.DecisionTrees
                     return "Unexpected comparison type.";
             }
 
-            String value = Value.ToString();
+            String value;
+            if (codebook != null && Value.HasValue && codebook.Columns.Contains(name))
+                value = codebook.Translate(name, (int)Value.Value);
+
+            else value = Value.ToString();
+
 
             return String.Format("{0} {1} {2}", name, op, value);
         }
@@ -238,111 +263,4 @@ namespace Accord.MachineLearning.DecisionTrees
             }
         }
     }
-
-
-    /// <summary>
-    ///   Collection of decision nodes. A decision branch specifies the index of
-    ///   an attribute whose current value should be compared against its children
-    ///   nodes. The type of the comparison is specified in each child node.
-    /// </summary>
-    /// 
-    [Serializable]
-    public class DecisionBranchNodeCollection : Collection<DecisionNode>
-    {
-        /// <summary>
-        ///   Gets or sets the index of the attribute to be
-        ///   used in this stage of the decisioning process.
-        /// </summary>
-        /// 
-        public int AttributeIndex { get; set; }
-
-        /// <summary>
-        ///   Initializes a new instance of the <see cref="DecisionBranchNodeCollection"/> class.
-        /// </summary>
-        /// 
-        public DecisionBranchNodeCollection()
-        {
-        }
-
-        /// <summary>
-        ///   Initializes a new instance of the <see cref="DecisionBranchNodeCollection"/> class.
-        /// </summary>
-        /// 
-        /// <param name="attributeIndex">Index of the attribute to be processed.</param>
-        /// 
-        /// <param name="nodes">The children nodes. Each child node should be
-        /// responsable for a possible value of a discrete attribute, or for
-        /// a region of a continuous-valued attribute.</param>
-        /// 
-        public DecisionBranchNodeCollection(int attributeIndex, DecisionNode[] nodes)
-            : base(nodes)
-        {
-            if (nodes == null)
-                throw new ArgumentNullException("nodes");
-            if (nodes.Length == 0)
-                throw new ArgumentException("Node collection is empty.", "nodes");
-
-            this.AttributeIndex = attributeIndex;
-        }
-
-        /// <summary>
-        ///   Adds the elements of the specified collection to the end of the collection.
-        /// </summary>
-        /// 
-        /// <param name="children">The child nodes to be added.</param>
-        /// 
-        public void AddRange(DecisionNode[] children)
-        {
-            for (int i = 0; i < children.Length; i++)
-                this.Add(children[i]);
-        }
-    }
-
-    /// <summary>
-    ///   Numeric comparison category.
-    /// </summary>
-    /// 
-    public enum ComparisonKind
-    {
-        /// <summary>
-        ///   The node does no comparison.
-        /// </summary>
-        /// 
-        None,
-
-        /// <summary>
-        ///   The node compares for equality.
-        /// </summary>
-        /// 
-        Equal,
-
-        /// <summary>
-        ///   The node compares for non-equality.
-        /// </summary>
-        /// 
-        NotEqual,
-
-        /// <summary>
-        ///   The node compares for greater-than or equality.
-        /// </summary>
-        GreaterThanOrEqual,
-
-        /// <summary>
-        ///   The node compares for greater-than.
-        /// </summary>
-        /// 
-        GreaterThan,
-
-        /// <summary>
-        ///   The node compares for less-than.
-        /// </summary>
-        /// 
-        LessThan,
-
-        /// <summary>
-        ///   The node compares for less-than or equality.
-        /// </summary>
-        LessThanOrEqual
-    }
-
 }
