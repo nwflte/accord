@@ -93,6 +93,9 @@ namespace Accord.Math
         /// <summary>Log of two: log(2).</summary>
         public const double Log2 = 0.69314718055994530941;
 
+        /// <summary>Log of three: log(3).</summary>
+        public const double Log3 = 1.098612288668109691395;
+
         /// <summary>Log of square root of twice number pi: log(sqrt(2*pi).</summary>
         public const double LogSqrt2PI = 0.91893853320467;
 

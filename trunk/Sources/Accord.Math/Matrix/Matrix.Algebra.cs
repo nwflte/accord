@@ -468,7 +468,7 @@ namespace Accord.Math
 
             double[][] r = new double[aCols][];
             for (int i = 0; i < r.Length; i++)
-			 r[i] = new double[bCols];
+             r[i] = new double[bCols];
 
             TransposeAndMultiply(a, b, r);
 

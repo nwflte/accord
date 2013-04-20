@@ -1612,21 +1612,25 @@ namespace Accord.Math
         /// </summary>
         /// 
         public static int[] Top<T>(this T[] values, int count, bool inPlace = false)
+            where T : IComparable
         {
-            if (!inPlace)
-                values = (T[])values.Clone();
+            if (count < 0) throw new ArgumentOutOfRangeException("count",
+                "The number of elements to be selected must be positive.");
+            if (count == 0) return new int[0];
+
+            T[] work = (inPlace) ? values : (T[])values.Clone();
 
             int[] idx = new int[values.Length];
             for (int i = 0; i < idx.Length; i++)
                 idx[i] = i;
 
-            Array.Sort(values, idx);
+            int pivot = select(work, idx, 0, values.Length - 1, count, true);
 
-            int[] r = new int[count];
-            for (int i = 0; i < r.Length; i++)
-                r[i] = idx[idx.Length - i - 1];
+            int[] result = new int[count];
+            for (int i = 0; i < result.Length; i++)
+                result[i] = idx[i];
 
-            return r;
+            return result;
         }
 
         /// <summary>
@@ -1634,23 +1638,98 @@ namespace Accord.Math
         /// </summary>
         /// 
         public static int[] Bottom<T>(this T[] values, int count, bool inPlace = false)
+            where T : IComparable
         {
-            if (!inPlace)
-                values = (T[])values.Clone();
+            if (count < 0) throw new ArgumentOutOfRangeException("count", 
+                "The number of elements to be selected must be positive.");
+            if (count == 0) return new int[0];
+
+            T[] work = (inPlace) ? values : (T[])values.Clone();
 
             int[] idx = new int[values.Length];
             for (int i = 0; i < idx.Length; i++)
                 idx[i] = i;
 
-            Array.Sort(values, idx);
+            int pivot = select(work, idx, 0, values.Length - 1, count, false);
 
-            int[] r = new int[count];
-            for (int i = 0; i < r.Length; i++)
-                r[i] = idx[i];
+            int[] result = new int[count];
+            for (int i = 0; i < result.Length; i++)
+                result[i] = idx[i];
 
-            return r;
+            return result;
         }
 
-     
+        private static int select<T>(T[] list, int[] idx, int left, int right, int k, bool asc)
+            where T : IComparable
+        {
+            while (left != right)
+            {
+                // select pivotIndex between left and right
+                int pivotIndex = (left + right) / 2;
+
+                int pivotNewIndex = partition(list, idx, left, right, pivotIndex, asc);
+                int pivotDist = pivotNewIndex - left + 1;
+
+                if (pivotDist == k)
+                    return pivotNewIndex;
+
+                else if (k < pivotDist)
+                    right = pivotNewIndex - 1;
+                else
+                {
+                    k = k - pivotDist;
+                    left = pivotNewIndex + 1;
+                }
+            }
+
+            return -1;
+        }
+
+        private static int partition<T>(T[] list, int[] idx, int left, int right, int pivotIndex, bool asc)
+            where T : IComparable
+        {
+            T pivotValue = list[pivotIndex];
+
+            // Move pivot to end
+            swap(ref list[pivotIndex], ref list[right]);
+            swap(ref idx[pivotIndex], ref idx[right]);
+
+            int storeIndex = left;
+
+            if (asc)
+            {
+                for (int i = left; i < right; i++)
+                {
+                    if (list[i].CompareTo(pivotValue) > 0)
+                    {
+                        swap(ref list[storeIndex], ref list[i]);
+                        swap(ref idx[storeIndex], ref idx[i]);
+                        storeIndex++;
+                    }
+                }
+            }
+            else
+            {
+                for (int i = left; i < right; i++)
+                {
+                    if (list[i].CompareTo(pivotValue) < 0)
+                    {
+                        swap(ref list[storeIndex], ref list[i]);
+                        swap(ref idx[storeIndex], ref idx[i]);
+                        storeIndex++;
+                    }
+                }
+            }
+
+            // Move pivot to its final place
+            swap(ref list[right], ref list[storeIndex]);
+            swap(ref idx[right], ref idx[storeIndex]);
+            return storeIndex;
+        }
+
+        private static void swap<T>(ref T a, ref T b)
+        {
+            T aux = a; a = b; b = aux;
+        }
     }
 }

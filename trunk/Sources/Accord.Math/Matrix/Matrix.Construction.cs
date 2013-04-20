@@ -781,8 +781,6 @@ namespace Accord.Math
         /// 
         public static T[,] Stack<T>(params T[][,] matrices)
         {
-            // TODO: Rename to "Stack<T>" or similar
-
             int rows = 0;
             int cols = 0;
 
@@ -815,8 +813,6 @@ namespace Accord.Math
         /// 
         public static T[,] Stack<T>(T[,] matrix, T[] vector)
         {
-            // TODO: Rename to "Stack<T>" or similar
-
             int rows = matrix.GetLength(0);
             int cols = matrix.GetLength(1);
 
