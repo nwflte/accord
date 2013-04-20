@@ -82,7 +82,6 @@ namespace Accord.Imaging
         public IntegralImage Image
         {
             get { return integral; }
-            set { integral = value; }
         }
 
         /// <summary>
