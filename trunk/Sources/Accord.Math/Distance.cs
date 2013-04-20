@@ -23,6 +23,7 @@
 namespace Accord.Math
 {
     using System;
+    using System.Collections;
 
     /// <summary>
     ///   Static class Distance. Defines a set of extension methods defining distance measures.
@@ -322,6 +323,79 @@ namespace Accord.Math
 
             return d[x.Length, y.Length];
         }
+
+        /// <summary>
+        ///   Hamming distance between two boolean vectors.
+        /// </summary>
+        /// 
+        public static double Hamming(bool[] x, bool[] y)
+        {
+            int d = 0;
+            for (int i = 0; i < x.Length; i++)
+                if (x[i] != y[i]) d++;
+            return d;
+        }
+
+        /// <summary>
+        ///   Hamming distance between two double vectors
+        ///   containing only 0 (false) or 1 (true) values.
+        /// </summary>
+        /// 
+        public static double Hamming(double[] x, double[] y)
+        {
+            int d = 0;
+            for (int i = 0; i < x.Length; i++)
+                if (x[i] != y[i]) d++;
+            return d;
+        }
+
+        /// <summary>
+        ///   Bitwise hamming distance between two sequences of bytes.
+        /// </summary>
+        /// 
+        public static double BitwiseHamming(byte[] x, byte[] y)
+        {
+            int d = 0;
+            for (int i = 0; i < x.Length; i++)
+            {
+                byte xor = (byte)(x[i] ^ y[i]);
+                d += lookup[xor];
+            }
+            return d;
+        }
+
+        private static byte[] lookup =
+        {
+            0, 1, 1, 2, 1, 2, 2, 3, 1, 2, 2, 3, 2, 3, 3, 4,
+            1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5,
+            1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5,
+            2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
+            1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5,
+            2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
+            2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
+            3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7,
+            1, 2, 2, 3, 2, 3, 3, 4, 2, 3, 3, 4, 3, 4, 4, 5,
+            2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
+            2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
+            3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7,
+            2, 3, 3, 4, 3, 4, 4, 5, 3, 4, 4, 5, 4, 5, 5, 6,
+            3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7,
+            3, 4, 4, 5, 4, 5, 5, 6, 4, 5, 5, 6, 5, 6, 6, 7,
+            4, 5, 5, 6, 5, 6, 6, 7, 5, 6, 6, 7, 6, 7, 7, 8,
+        };
+
+        /// <summary>
+        ///   Bitwise hamming distance between two bit arrays.
+        /// </summary>
+        /// 
+        public static double BitwiseHamming(BitArray x, BitArray y)
+        {
+            int d = 0;
+            for (int i = 0; i < x.Length; i++)
+                if (x[i] != y[i]) d++;
+            return d;
+        }
+
 
         #region Private methods
         private static double[] mean(double[,] matrix)
