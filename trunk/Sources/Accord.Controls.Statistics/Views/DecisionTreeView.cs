@@ -24,6 +24,7 @@ namespace Accord.Controls
 {
     using System.Windows.Forms;
     using Accord.MachineLearning.DecisionTrees;
+    using Accord.Statistics.Filters;
 
     /// <summary>
     ///   Decision Tree (DT) Viewer.
@@ -32,6 +33,7 @@ namespace Accord.Controls
     public partial class DecisionTreeView : UserControl
     {
         private DecisionTree treeSource;
+        private Codification codebook;
 
         /// <summary>
         ///   Initializes a new instance of the <see cref="DecisionTreeView"/> class.
@@ -40,7 +42,6 @@ namespace Accord.Controls
         public DecisionTreeView()
         {
             InitializeComponent();
-
         }
 
         /// <summary>
@@ -63,6 +64,25 @@ namespace Accord.Controls
             }
         }
 
+        /// <summary>
+        ///   Gets or sets the codebook to be used when
+        ///   displaying the tree. Using a codebook avoids
+        ///   showing integer labels which may be difficult
+        ///   to interpret.
+        /// </summary>
+        /// 
+        public Codification Codebook
+        {
+            get { return codebook; }
+            set
+            {
+                if (codebook != value)
+                {
+                    codebook = value;
+                    update();
+                }
+            }
+        }
 
         private void update()
         {
@@ -74,21 +94,38 @@ namespace Accord.Controls
 
         private TreeNode convert(DecisionNode node)
         {
-            TreeNode treeNode = new TreeNode(node.ToString());
+            TreeNode treeNode = (codebook == null) ?
+                new TreeNode(node.ToString()) :
+                new TreeNode(node.ToString(codebook));
 
-            if (node.IsLeaf)
-            {
-                treeNode.Nodes.Add(new TreeNode(node.Output.ToString()));
-            }
-            else
+
+            if (!node.IsLeaf)
             {
                 foreach (var child in node.Branches)
                     treeNode.Nodes.Add(convert(child));
+
+                return treeNode;
             }
 
+
+            if (codebook == null || !node.Output.HasValue)
+            {
+                treeNode.Nodes.Add(new TreeNode(node.Output.ToString()));
+                return treeNode;
+            }
+
+            int index = node.Parent.Branches.AttributeIndex;
+            var attrib = treeSource.Attributes[index];
+
+            if (attrib.Nature != DecisionVariableKind.Discrete)
+            {
+                treeNode.Nodes.Add(new TreeNode(node.Output.ToString()));
+                return treeNode;
+            }
+
+            string value = codebook.Translate(attrib.Name, node.Output.Value);
+            treeNode.Nodes.Add(new TreeNode(value));
             return treeNode;
         }
     }
-
-
 }
