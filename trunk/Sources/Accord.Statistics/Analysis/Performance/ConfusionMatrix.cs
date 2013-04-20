@@ -877,5 +877,28 @@ namespace Accord.Statistics.Analysis
 
             return new GeneralConfusionMatrix(matrix);
         }
+
+        /// <summary>
+        ///   Combines several confusion matrices into one single matrix.
+        /// </summary>
+        /// 
+        /// <param name="matrices">The matrices to combine.</param>
+        /// 
+        public static ConfusionMatrix Combine(params ConfusionMatrix[] matrices)
+        {
+            if (matrices == null) throw new ArgumentNullException("matrices");
+            if (matrices.Length == 0) throw new ArgumentException("At least one confusion matrix is required.");
+
+            int[,] total = new int[2, 2];
+
+            foreach (var matrix in matrices)
+            {
+                for (int j = 0; j < 2; j++)
+                    for (int k = 0; k < 2; k++)
+                        total[j, k] += matrix.Matrix[j, k];
+            }
+
+            return new ConfusionMatrix(total);
+        }
     }
 }
