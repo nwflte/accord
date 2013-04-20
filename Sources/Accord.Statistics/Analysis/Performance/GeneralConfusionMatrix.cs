@@ -254,7 +254,7 @@ namespace Accord.Statistics.Analysis
             get
             {
                 if (diagMax == null)
-                    diagMax = Diagonal.Max() ;
+                    diagMax = Diagonal.Max();
                 return diagMax.Value;
             }
         }
@@ -270,7 +270,7 @@ namespace Accord.Statistics.Analysis
             get
             {
                 if (diagMin == null)
-                    diagMin = Diagonal.Min() ;
+                    diagMin = Diagonal.Min();
                 return diagMin.Value;
             }
         }
@@ -637,6 +637,33 @@ namespace Accord.Statistics.Analysis
             }
         }
 
+        /// <summary>
+        ///   Combines several confusion matrices into one single matrix.
+        /// </summary>
+        /// 
+        /// <param name="matrices">The matrices to combine.</param>
+        /// 
+        public static GeneralConfusionMatrix Combine(params GeneralConfusionMatrix[] matrices)
+        {
+            if (matrices == null)
+                throw new ArgumentNullException("matrices");
+            if (matrices.Length == 0)
+                throw new ArgumentException("At least one confusion matrix is required.", "matrices");
 
+            int classes = matrices[0].Classes;
+            int[,] total = new int[classes, classes];
+
+            foreach (var matrix in matrices)
+            {
+                if (matrix.Classes != classes)
+                    throw new ArgumentException("The number of classes in one of the matrices differs.");
+
+                for (int j = 0; j < classes; j++)
+                    for (int k = 0; k < classes; k++)
+                        total[j, k] += matrix.Matrix[j, k];
+            }
+
+            return new GeneralConfusionMatrix(total);
+        }
     }
 }
