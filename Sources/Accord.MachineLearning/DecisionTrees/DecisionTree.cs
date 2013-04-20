@@ -28,8 +28,8 @@ namespace Accord.MachineLearning.DecisionTrees
     using System.Linq.Expressions;
     using System.Reflection;
     using System.Reflection.Emit;
-    using System.Runtime.Serialization.Formatters.Binary;
     using System.Runtime.Serialization;
+    using System.Runtime.Serialization.Formatters.Binary;
 
     /// <summary>
     ///   Decision tree.
@@ -47,7 +47,7 @@ namespace Accord.MachineLearning.DecisionTrees
     /// <seealso cref="Learning.C45Learning"/>
     ///
     [Serializable]
-    public class DecisionTree
+    public class DecisionTree : IEnumerable<DecisionNode>
     {
         /// <summary>
         ///   Gets or sets the root node for this tree.
@@ -59,7 +59,7 @@ namespace Accord.MachineLearning.DecisionTrees
         ///   Gets the collection of attributes processed by this tree.
         /// </summary>
         /// 
-        public DecisionAttributeCollection Attributes { get; private set; }
+        public DecisionVariableCollection Attributes { get; private set; }
 
         /// <summary>
         ///   Gets the number of distinct output
@@ -72,6 +72,7 @@ namespace Accord.MachineLearning.DecisionTrees
         ///   Gets the number of input attributes
         ///   expected by this tree.
         /// </summary>
+        /// 
         public int InputCount { get; private set; }
 
         /// <summary>
@@ -95,7 +96,7 @@ namespace Accord.MachineLearning.DecisionTrees
                     throw new ArgumentException("Attribute " + i + " is a constant.");
 
 
-            this.Attributes = new DecisionAttributeCollection(attributes);
+            this.Attributes = new DecisionVariableCollection(attributes);
             this.InputCount = attributes.Count;
             this.OutputClasses = outputClasses;
         }
@@ -119,7 +120,7 @@ namespace Accord.MachineLearning.DecisionTrees
         }
 
         /// <summary>
-        ///   Computes the decision for a given input.
+        ///   Computes the tree decision for a given input.
         /// </summary>
         /// 
         /// <param name="input">The input data.</param>
@@ -131,7 +132,25 @@ namespace Accord.MachineLearning.DecisionTrees
             if (Root == null)
                 throw new InvalidOperationException();
 
-            DecisionNode current = Root;
+            return Compute(input, Root);
+        }
+
+        /// <summary>
+        ///   Computes the tree decision for a given input.
+        /// </summary>
+        /// 
+        /// <param name="input">The input data.</param>
+        /// <param name="subtree">The node where the decision starts.</param>
+        /// 
+        /// <returns>A predicted class for the given input.</returns>
+        /// 
+        public int Compute(double[] input, DecisionNode subtree)
+        {
+            if (subtree == null) throw new ArgumentNullException("subtree");
+            if (subtree.Owner != this) throw new ArgumentException(
+                "The node does not belong to this tree.", "subtree");
+
+            DecisionNode current = subtree;
 
             // Start reasoning
             while (current != null)
@@ -175,6 +194,7 @@ namespace Accord.MachineLearning.DecisionTrees
         }
 
 
+
         [OnDeserialized]
         private void OnDeserialized(StreamingContext context)
         {
@@ -183,6 +203,7 @@ namespace Accord.MachineLearning.DecisionTrees
                 node.Owner = this;
             }
         }
+
 
         /// <summary>
         ///   Returns an enumerator that iterates through the tree.
@@ -206,13 +227,50 @@ namespace Accord.MachineLearning.DecisionTrees
                 yield return current;
 
                 if (current.Branches != null)
-                    foreach (var child in current.Branches)
-                        stack.Push(child);
+                    for (int i = current.Branches.Count - 1; i >= 0; i--)
+                        stack.Push(current.Branches[i]);
             }
         }
 
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
 
+        /// <summary>
+        ///   Traverse the tree using a <see cref="DecisionTreeTraversal">tree 
+        ///   traversal method</see>. Can be iterated with a foreach loop.
+        /// </summary>
+        /// 
+        /// <param name="method">The tree traversal method. Common methods are
+        /// available in the <see cref="TreeTraversal"/>static class.</param>
+        /// 
+        /// <returns>An <see cref="IEnumerable{T}"/> object which can be used to
+        /// traverse the tree using the chosen traversal method.</returns>
+        /// 
+        public IEnumerable<DecisionNode> Traverse(DecisionTreeTraversalMethod method)
+        {
+            return new TreeTraversal(Root, method);
+        }
 
+        /// <summary>
+        ///   Traverse a subtree using a <see cref="DecisionTreeTraversal">tree 
+        ///   traversal method</see>. Can be iterated with a foreach loop.
+        /// </summary>
+        /// 
+        /// <param name="method">The tree traversal method. Common methods are
+        /// available in the <see cref="TreeTraversal"/>static class.</param>
+        /// <param name="subtree">The root of the subtree to be traversed.</param>
+        /// 
+        /// <returns>An <see cref="IEnumerable{T}"/> object which can be used to
+        /// traverse the tree using the chosen traversal method.</returns>
+        /// 
+        public IEnumerable<DecisionNode> Traverse(DecisionTreeTraversalMethod method, DecisionNode subtree)
+        {
+            if (subtree.Owner != this) throw new ArgumentException(
+                "The node does not belong to this tree.", "subtree");
+            return new TreeTraversal(subtree, method);
+        }
 
 
 #if !NET35
@@ -366,5 +424,30 @@ namespace Accord.MachineLearning.DecisionTrees
                 return Load(fs);
             }
         }
+
+
+
+        private class TreeTraversal : IEnumerable<DecisionNode>
+        {
+            private DecisionNode tree;
+            private DecisionTreeTraversalMethod method;
+
+            public TreeTraversal(DecisionNode tree, DecisionTreeTraversalMethod method)
+            {
+                this.tree = tree;
+                this.method = method;
+            }
+
+            public IEnumerator<DecisionNode> GetEnumerator()
+            {
+                return method(tree);
+            }
+
+            System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+            {
+                return method(tree);
+            }
+        }
     }
 }
+

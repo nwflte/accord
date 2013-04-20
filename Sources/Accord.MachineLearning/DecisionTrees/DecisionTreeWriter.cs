@@ -38,7 +38,7 @@ namespace Accord.MachineLearning.DecisionTrees
         TextWriter writer;
 
         /// <summary>
-        ///   Initializes a new instance of the <see cref="DecisionTreeExpressionCreator"/> class.
+        ///   Initializes a new instance of the <see cref="DecisionTreeWriter"/> class.
         /// </summary>
         /// 
         internal DecisionTreeWriter(TextWriter writer)
