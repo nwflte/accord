@@ -121,8 +121,8 @@ namespace DecisionTrees
 
             DecisionVariable[] attributes = 
             {
-                new DecisionVariable("x", DecisionAttributeKind.Continuous),
-                new DecisionVariable("y", DecisionAttributeKind.Continuous),
+                new DecisionVariable("x", DecisionVariableKind.Continuous),
+                new DecisionVariable("y", DecisionVariableKind.Continuous),
             };
 
             // Create the Decision tree
