@@ -42,7 +42,7 @@ namespace Accord.Imaging
     ///   Common interface for feature points.
     /// </summary>
     /// 
-    public interface IFeaturePoint<T>
+    public interface IFeaturePoint<out T>
     {
         /// <summary>
         ///   Gets or sets the descriptor vector
