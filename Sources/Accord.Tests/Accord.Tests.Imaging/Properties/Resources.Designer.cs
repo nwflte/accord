@@ -63,6 +63,16 @@ namespace Accord.Tests.Imaging.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap _new {
+            get {
+                object obj = ResourceManager.GetObject("_new", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap dct {
             get {
                 object obj = ResourceManager.GetObject("dct", resourceCulture);
@@ -276,6 +286,16 @@ namespace Accord.Tests.Imaging.Properties {
         internal static System.Drawing.Bitmap lena512 {
             get {
                 object obj = ResourceManager.GetObject("lena512", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap old {
+            get {
+                object obj = ResourceManager.GetObject("old", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
