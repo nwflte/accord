@@ -327,7 +327,7 @@ namespace Accord.MachineLearning
 
             scores = new double[classCount];
 
-            for (int i = 0; i < k; i++)
+            for (int i = 0; i < idx.Length; i++)
             {
                 int j = idx[i];
 
