@@ -152,6 +152,7 @@
     <Compile Include="ConvexityDefectsTest.cs" />
     <Compile Include="BorderFollowingTest.cs" />
     <Compile Include="CentralMomentsTest.cs" />
+    <Compile Include="KNearestNeighborMatchingTest.cs" />
     <Compile Include="FastRetinaKeypointDetectorTest.cs" />
     <Compile Include="HuMomentsTest.cs" />
     <Compile Include="OpenSURF\FastHessian.cs" />
@@ -236,6 +237,8 @@
     <None Include="Resources\image3.png" />
     <Content Include="Resources\dctWiki.bmp" />
     <Content Include="Resources\dct.bmp" />
+    <None Include="Resources\new.png" />
+    <None Include="Resources\old.png" />
     <Content Include="Resources\SURF\flower01.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

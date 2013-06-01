@@ -37,11 +37,6 @@ using System.Drawing.Imaging;
 namespace Accord.Tests.Imaging
 {
 
-
-    /// <summary>
-    ///This is a test class for KCurvatureTest and is intended
-    ///to contain all KCurvatureTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class KCurvatureTest
     {
@@ -49,10 +44,6 @@ namespace Accord.Tests.Imaging
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -96,9 +87,6 @@ namespace Accord.Tests.Imaging
         #endregion
 
 
-        /// <summary>
-        ///A test for FindPeaks
-        ///</summary>
         [TestMethod()]
         public void FindPeaksTest()
         {
@@ -149,9 +137,7 @@ namespace Accord.Tests.Imaging
             ImageBox.Show(hand, PictureBoxSizeMode.Zoom);
         }
 
-        /// <summary>
-        ///A test for FindPeaks
-        ///</summary>
+
         [TestMethod()]
         public void FindPeaksTest2()
         {
@@ -195,9 +181,7 @@ namespace Accord.Tests.Imaging
             Assert.AreEqual(14, peaks[4].Y);
         }
 
-        /// <summary>
-        ///A test for FindPeaks
-        ///</summary>
+   
         [TestMethod()]
         public void FindPeaksTest3()
         {
@@ -233,9 +217,6 @@ namespace Accord.Tests.Imaging
             Assert.AreEqual(15, peaks[1].Y);
         }
 
-        /// <summary>
-        ///A test for FindPeaks
-        ///</summary>
         [TestMethod()]
         public void FindPeaksTest4()
         {
@@ -269,9 +250,7 @@ namespace Accord.Tests.Imaging
             Assert.AreEqual(0, peaks[0].Y);
         }
 
-        /// <summary>
-        ///A test for FindPeaks
-        ///</summary>
+
         [TestMethod()]
         public void FindPeaksTest6()
         {

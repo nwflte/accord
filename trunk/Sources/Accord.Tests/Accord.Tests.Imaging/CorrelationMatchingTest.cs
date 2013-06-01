@@ -30,11 +30,6 @@ using System.Collections.Generic;
 namespace Accord.Tests.Imaging
 {
 
-
-    /// <summary>
-    ///This is a test class for CorrelationMatchingTest and is intended
-    ///to contain all CorrelationMatchingTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class CorrelationMatchingTest
     {
@@ -42,10 +37,6 @@ namespace Accord.Tests.Imaging
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -89,9 +80,6 @@ namespace Accord.Tests.Imaging
         #endregion
 
 
-        /// <summary>
-        ///A test for Match
-        ///</summary>
         [TestMethod()]
         public void MatchTest()
         {
@@ -141,9 +129,6 @@ namespace Accord.Tests.Imaging
             Assert.IsTrue(actual.IsEqual(expected));
         }
 
-        /// <summary>
-        ///A test for Match
-        ///</summary>
         [TestMethod()]
         public void MatchTest2()
         {
