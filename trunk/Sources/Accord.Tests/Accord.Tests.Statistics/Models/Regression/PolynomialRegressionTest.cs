@@ -25,10 +25,6 @@ namespace Accord.Tests.Statistics
     using Accord.Statistics.Models.Regression.Linear;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-    /// <summary>
-    ///This is a test class for PolynomialRegressionTest and is intended
-    ///to contain all PolynomialRegressionTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class PolynomialRegressionTest
     {
@@ -36,10 +32,6 @@ namespace Accord.Tests.Statistics
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -83,9 +75,6 @@ namespace Accord.Tests.Statistics
         #endregion
 
 
-        /// <summary>
-        ///A test for Regress
-        ///</summary>
         [TestMethod()]
         public void PolynomialRegressionRegressTest()
         {
@@ -104,6 +93,42 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(expected[0], actual[0], 000.1);
             Assert.AreEqual(expected[1], actual[1], 000.1);
             Assert.AreEqual(expected[2], actual[2], 000.1);
+        }
+
+        [TestMethod()]
+        public void ToStringTest()
+        {
+            // Issue 51:
+            PolynomialRegression poly = new PolynomialRegression(2);
+            var x = new double[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+            var y = new double[] { 1, 6, 17, 34, 57, 86, 121, 162, 209, 262, 321 };
+
+            poly.Regress(x, y);
+
+            {
+                string expected = "y(x) = 3x^2 + 1.99999999999998x^1 + 1.00000000000005x^0";
+                expected = expected.Replace(".", System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator);
+                string actual = poly.ToString();
+                Assert.AreEqual(expected, actual);
+            }
+
+            {
+                string expected = "y(x) = 3x^2 + 1.99999999999998x^1 + 1.00000000000005x^0";
+                string actual = poly.ToString(null, System.Globalization.CultureInfo.GetCultureInfo("en-US"));
+                Assert.AreEqual(expected, actual);
+            }
+
+            {
+                string expected = "y(x) = 3.0x^2 + 2.0x^1 + 1.0x^0";
+                string actual = poly.ToString("N1", System.Globalization.CultureInfo.GetCultureInfo("en-US"));
+                Assert.AreEqual(expected, actual);
+            }
+
+            {
+                string expected = "y(x) = 3,00x^2 + 2,00x^1 + 1,00x^0";
+                string actual = poly.ToString("N2", System.Globalization.CultureInfo.GetCultureInfo("pt-BR"));
+                Assert.AreEqual(expected, actual);
+            }
         }
     }
 }
