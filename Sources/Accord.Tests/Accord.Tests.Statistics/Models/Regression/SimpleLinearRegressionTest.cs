@@ -25,10 +25,7 @@ namespace Accord.Tests.Statistics
     using Accord.Statistics.Models.Regression.Linear;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-    /// <summary>
-    ///This is a test class for SimpleLinearRegressionTest and is intended
-    ///to contain all SimpleLinearRegressionTest Unit Tests
-    ///</summary>
+
     [TestClass()]
     public class SimpleLinearRegressionTest
     {
@@ -36,10 +33,6 @@ namespace Accord.Tests.Statistics
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -83,9 +76,6 @@ namespace Accord.Tests.Statistics
         #endregion
 
 
-        /// <summary>
-        ///A test for Regress
-        ///</summary>
         [TestMethod()]
         public void RegressTest()
         {
@@ -123,6 +113,42 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(eIntercept, c, 1e-5);
 
             Assert.IsFalse(double.IsNaN(y));
+        }
+
+        [TestMethod()]
+        public void ToStringTest()
+        {
+            // Issue 51:
+            SimpleLinearRegression regression = new SimpleLinearRegression();
+            var x = new double[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+            var y = new double[] { 1, 6, 17, 34, 57, 86, 121, 162, 209, 262, 321 };
+
+            regression.Regress(x, y);
+
+            {
+                string expected = "y(x) = 32x + -43,9999999999999";
+                expected = expected.Replace(".", System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator);
+                string actual = regression.ToString();
+                Assert.AreEqual(expected, actual);
+            }
+
+            {
+                string expected = "y(x) = 32x + -43.9999999999999";
+                string actual = regression.ToString(null, System.Globalization.CultureInfo.GetCultureInfo("en-US"));
+                Assert.AreEqual(expected, actual);
+            }
+
+            {
+                string expected = "y(x) = 32.0x + -44.0";
+                string actual = regression.ToString("N1", System.Globalization.CultureInfo.GetCultureInfo("en-US"));
+                Assert.AreEqual(expected, actual);
+            }
+
+            {
+                string expected = "y(x) = 32,00x + -44,00";
+                string actual = regression.ToString("N2", System.Globalization.CultureInfo.GetCultureInfo("pt-BR"));
+                Assert.AreEqual(expected, actual);
+            }
         }
     }
 }

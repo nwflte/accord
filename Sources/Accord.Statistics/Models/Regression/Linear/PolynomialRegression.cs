@@ -38,7 +38,7 @@ namespace Accord.Statistics.Models.Regression.Linear
     /// </remarks>
     /// 
     [Serializable]
-    public class PolynomialRegression : ILinearRegression
+    public class PolynomialRegression : ILinearRegression, IFormattable
     {
         private MultipleLinearRegression regression;
 
@@ -211,12 +211,46 @@ namespace Accord.Statistics.Models.Regression.Linear
         /// 
         public override string ToString()
         {
+            return ToString(null as string);
+        }
+
+        /// <summary>
+        ///   Returns a System.String representing the regression.
+        /// </summary>
+        /// 
+        public string ToString(string format)
+        {
+            return ToString(format, System.Globalization.CultureInfo.CurrentCulture);
+        }
+
+        /// <summary>
+        ///   Returns a System.String representing the regression.
+        /// </summary>
+        /// 
+        public string ToString(IFormatProvider formatProvider)
+        {
+            return ToString(null, formatProvider);
+        }
+
+        /// <summary>
+        ///   Returns a System.String representing the regression.
+        /// </summary>
+        /// 
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
             StringBuilder sb = new StringBuilder();
 
             sb.Append("y(x) = ");
             for (int i = 0; i < regression.Coefficients.Length; i++)
             {
-                sb.AppendFormat("{0}*x^{1}", regression.Coefficients[i], i);
+                int degree = regression.Coefficients.Length - i - 1;
+                double coeff = regression.Coefficients[i];
+
+                string coefStr = format == null ? 
+                    coeff.ToString(formatProvider) :
+                    coeff.ToString(format, formatProvider);
+
+                sb.AppendFormat(formatProvider, "{0}x^{1}", coefStr, degree);
 
                 if (i < regression.Coefficients.Length - 1)
                     sb.Append(" + ");
