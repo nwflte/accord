@@ -8,9 +8,11 @@
  * Browse the [https://code.google.com/p/accord/source/browse/trunk#trunk%2FSamples%2FMachineLearning%2FKMeans source code online]
 
 <br />
-This sample application shows how to use the [http://accord.googlecode.com/svn/docs/html/T_Accord_MachineLearning_KMeans.htm K-Means clustering algorithm] to perform [http://crsouza.blogspot.com.br/2010/10/k-means-clustering.html color clustering], reducing the number of distinct colors in a given image.
+This sample application shows how to use the [http://accord.googlecode.com/svn/docs/html/T_Accord_MachineLearning_KMeans.htm K-Means clustering algorithm] and the [http://accord.googlecode.com/svn/docs/html/T_Accord_MachineLearning_MeanShift.htm mean shift clustering algorithm] to perform [http://crsouza.blogspot.com.br/2010/10/k-means-clustering.html color clustering], reducing the number of distinct colors in a given image.
 
 <br /><p align="center">
 http://accord.googlecode.com/svn/wiki/samples/accord-machinelearning-kmeans-img.png
-<br />K-Means color clustering sample application.
+<br />Color clustering sample application.
 </p><br />
+
+As of version 2.9.1, this sample application now includes support for the [http://accord.googlecode.com/svn/docs/html/T_Accord_MachineLearning_MeanShift.htm Mean-Shift algorithm].
