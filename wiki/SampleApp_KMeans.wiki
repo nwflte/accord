@@ -1,6 +1,8 @@
 #summary Sample Application: K-Means
 #labels Type-SampleApps
 
+= Color clustering sample application = 
+
  * Download [http://dl.dropbox.com/u/32601472/accord/samples/accord-machinelearning-kmeans-bin.zip application]
  * Download [http://dl.dropbox.com/u/32601472/accord/samples/accord-machinelearning-kmeans-src.zip source code]
  * Browse the [https://code.google.com/p/accord/source/browse/trunk#trunk%2FSamples%2FMachineLearning%2FKMeans source code online]
