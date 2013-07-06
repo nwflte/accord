@@ -15,4 +15,4 @@ http://accord.googlecode.com/svn/wiki/samples/accord-machinelearning-kmeans-img.
 <br />Color clustering sample application.
 </p><br />
 
-As of version 2.9.1, this sample application now includes support for the [http://accord.googlecode.com/svn/docs/html/T_Accord_MachineLearning_MeanShift.htm Mean-Shift algorithm].
+*PS:* As of version 2.9.1, this sample application now includes support for the [http://accord.googlecode.com/svn/docs/html/T_Accord_MachineLearning_MeanShift.htm Mean-Shift algorithm].
