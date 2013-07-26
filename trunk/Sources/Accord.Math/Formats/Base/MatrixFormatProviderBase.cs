@@ -20,7 +20,7 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-namespace Accord.Math.Formats
+namespace Accord.Math
 {
     using System;
     using System.Globalization;
@@ -117,19 +117,22 @@ namespace Accord.Math.Formats
 
 
         /// <summary>
-        /// Gets the culture specific formatting information
-        /// to be used during parsing or formatting.
+        ///   Gets the culture specific formatting information
+        ///   to be used during parsing or formatting.
         /// </summary>
-        public CultureInfo CultureInfo { get; protected set; }
+        /// 
+        public IFormatProvider InnerProvider { get; protected set; }
 
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MatrixFormatProviderBase"/> class.
+        ///   Initializes a new instance of the <see cref="MatrixFormatProviderBase"/> class.
         /// </summary>
-        /// <param name="culture">The culture.</param>
-        protected MatrixFormatProviderBase(CultureInfo culture)
+        /// 
+        /// <param name="innerProvider">The inner format provider.</param>
+        /// 
+        protected MatrixFormatProviderBase(IFormatProvider innerProvider)
         {
-            this.CultureInfo = culture;
+            this.InnerProvider = innerProvider;
         }
 
         /// <summary>

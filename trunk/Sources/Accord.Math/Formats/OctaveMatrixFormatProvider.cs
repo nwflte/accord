@@ -20,7 +20,7 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-namespace Accord.Math.Formats
+namespace Accord.Math
 {
     using System;
     using System.Globalization;
@@ -29,14 +29,71 @@ namespace Accord.Math.Formats
     ///   Format provider for the matrix format used by Octave.
     /// </summary>
     /// 
+    /// <remarks>
+    ///   This class can be used to convert to and from C#
+    ///   matrices and their string representation. Please 
+    ///   see the example for details.
+    /// </remarks>
+    /// 
+    /// <remarks>
+    ///   This class can be used to convert to and from C#
+    ///   matrices and their string representation. Please 
+    ///   see the example for details.
+    /// </remarks>
+    /// 
+    /// <example>
+    /// <para>
+    ///   Converting from a multidimensional matrix to a 
+    ///   string representation:</para>
+    ///   
+    /// <code>
+    ///   // Declare a number array
+    ///   double[,] x = 
+    ///   {
+    ///      { 1, 2, 3, 4 },
+    ///      { 5, 6, 7, 8 },
+    ///   };
+    ///   
+    ///   // Convert the aforementioned array to a string representation:
+    ///   string str = x.ToString(OctaveMatrixFormatProvider.CurrentCulture);
+    ///   
+    ///   // the final result will be equivalent to
+    ///   "[ 1, 2, 3, 4; 5, 6, 7, 8 ]"
+    /// </code>
+    /// 
+    /// <para>
+    ///   Converting from strings to actual matrices:</para>
+    /// 
+    /// <code>
+    ///   // Declare an input string
+    ///   string str = "[ 1, 2, 3, 4; 5, 6, 7, 8 ]";
+    ///   
+    ///   // Convert the string representation to an actual number array:
+    ///   double[,] matrix = Matrix.Parse(str, OctaveMatrixFormatProvider.InvariantCulture);
+    ///   
+    ///   // matrix will now contain the actual multidimensional 
+    ///   // matrix representation of the given string.
+    /// </code>
+    /// </example>
+    /// 
+    /// <seealso cref="Accord.Math.Matrix"/>
+    /// <seealso cref="CSharpMatrixFormatProvider"/>
+    /// 
+    /// <seealso cref="CSharpJaggedMatrixFormatProvider"/>
+    /// <seealso cref="CSharpArrayFormatProvider"/>
+    /// 
+    /// <seealso cref="OctaveMatrixFormatProvider"/>
+    /// <seealso cref="OctaveArrayFormatProvider"/>
+    /// 
     public sealed class OctaveMatrixFormatProvider : MatrixFormatProviderBase
     {
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="OctaveMatrixFormatProvider"/> class.
+        ///   Initializes a new instance of the <see cref="OctaveMatrixFormatProvider"/> class.
         /// </summary>
-        public OctaveMatrixFormatProvider(CultureInfo culture)
-            : base(culture)
+        /// 
+        public OctaveMatrixFormatProvider(IFormatProvider innerProvider)
+            : base(innerProvider)
         {
             FormatMatrixStart = "[";
             FormatMatrixEnd = "]";
