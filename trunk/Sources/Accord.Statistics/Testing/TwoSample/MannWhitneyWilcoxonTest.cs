@@ -30,6 +30,63 @@ namespace Accord.Statistics.Testing
     ///   Mann-Whitney-Wilcoxon test for unpaired samples.
     /// </summary>
     /// 
+    /// <remarks>
+    /// <para>
+    ///   The Mann–Whitney U test (also called the Mann–Whitney–Wilcoxon (MWW), 
+    ///   Wilcoxon rank-sum test, or Wilcoxon–Mann–Whitney test) is a non-parametric 
+    ///   test of the null hypothesis that two populations are the same against 
+    ///   an alternative hypothesis, especially that a particular population tends
+    ///   to have larger values than the other.</para>
+    ///   
+    /// <para>
+    ///   It has greater efficiency than the <see cref="TTest">t-test</see> on 
+    ///   non-normal distributions, such as a <see cref="Mixture{T}">mixture</see>
+    ///   of <see cref="NormalDistribution">normal distributions</see>, and it is
+    ///   nearly as efficient as the <see cref="TTest">t-test</see> on normal
+    ///   distributions.</para>
+    /// </remarks>
+    /// 
+    /// <example>
+    /// <para>
+    ///   The following example comes from Richard Lowry's page at
+    ///   http://vassarstats.net/textbook/ch11a.html. As stated by
+    ///   Richard, this example deals with persons seeking treatment
+    ///   by claustrophobia. Those persons are randomly divided into
+    ///   two groups, and each group receive a different treatment
+    ///   for the disorder.</para>
+    ///   
+    /// <para>
+    ///   The hypothesis would be that treatment A would more effective
+    ///   than B. To check this hypothesis, we can use Mann-Whitney's Test
+    ///   to compare the medians of both groups.</para>
+    /// 
+    /// <code>
+    ///   // Claustrophobia test scores for people treated with treatment A
+    ///   double[] sample1 = { 4.6, 4.7, 4.9, 5.1, 5.2, 5.5, 5.8, 6.1, 6.5, 6.5, 7.2 };
+    ///   
+    ///   // Claustrophobia test scores for people treated with treatment B
+    ///   double[] sample2 = { 5.2, 5.3, 5.4, 5.6, 6.2, 6.3, 6.8, 7.7, 8.0, 8.1 };
+    ///   
+    ///   // Create a new Mann-Whitney-Wilcoxon's test to compare the two samples
+    ///   MannWhitneyWilcoxonTest test = new MannWhitneyWilcoxonTest(sample1, sample2,
+    ///     TwoSampleHypothesis.FirstValueIsSmallerThanSecond);
+    ///   
+    ///   double sum1 = test.RankSum1; //  96.5
+    ///   double sum2 = test.RankSum2; // 134.5
+    ///   
+    ///   double statistic1 = test.Statistic1; // 79.5
+    ///   double statistic2 = test.Statistic2; // 30.5
+    ///   
+    ///   double pvalue = test.PValue; // 0.043834132843420748
+    ///   
+    ///   // Check if the test was significant
+    ///   bool significant = test.Significant; // true
+    /// </code>
+    /// </example>
+    /// 
+    /// <see cref="TwoSampleTTest"/>
+    /// <see cref="TwoSampleWilcoxonSignedRankTest"/>
+    /// 
     [Serializable]
     public class MannWhitneyWilcoxonTest : HypothesisTest<MannWhitneyDistribution>
     {
@@ -41,7 +98,7 @@ namespace Accord.Statistics.Testing
         /// </summary>
         /// 
         public TwoSampleHypothesis Hypothesis { get; protected set; }
-        
+
         /// <summary>
         ///   Gets the number of samples in the first sample.
         /// </summary>
@@ -103,7 +160,7 @@ namespace Accord.Statistics.Testing
         /// <param name="sample2">The second sample.</param>
         /// <param name="alternate">The alternative hypothesis (research hypothesis) to test.</param>
         ///
-        public MannWhitneyWilcoxonTest(double[] sample1, double[] sample2, 
+        public MannWhitneyWilcoxonTest(double[] sample1, double[] sample2,
             TwoSampleHypothesis alternate = TwoSampleHypothesis.ValuesAreDifferent)
         {
             int n1 = sample1.Length;

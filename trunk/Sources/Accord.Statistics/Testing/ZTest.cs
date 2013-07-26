@@ -98,6 +98,12 @@ namespace Accord.Statistics.Testing
     /// </code>
     /// </example>
     /// 
+    /// <seealso cref="TTest"/>
+    /// <seealso cref="NormalDistribution"/>
+    /// <seealso cref="TwoSampleTTest"/>
+    /// <seealso cref="TwoSampleZTest"/>
+    /// <seealso cref="TwoProportionZTest"/>
+    /// 
     [Serializable]
     public class ZTest : HypothesisTest<NormalDistribution>
     {

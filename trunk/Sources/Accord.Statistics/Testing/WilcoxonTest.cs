@@ -29,6 +29,15 @@ namespace Accord.Statistics.Testing
     ///   Base class for Wilcoxon's W tests.
     /// </summary>
     /// 
+    /// <remarks>
+    ///   This is a base class which doesn't need to be used directly.
+    ///   Instead, you may wish to call <see cref="WilcoxonSignedRankTest"/>
+    ///   and <see cref="TwoSampleWilcoxonSignedRankTest"/>.
+    /// </remarks>
+    /// 
+    /// <see cref="WilcoxonSignedRankTest"/>
+    /// <seealso cref="TwoSampleWilcoxonSignedRankTest"/>
+    /// 
     public class WilcoxonTest : HypothesisTest<WilcoxonDistribution>
     {
 
@@ -121,7 +130,9 @@ namespace Accord.Statistics.Testing
             switch (Tail)
             {
                 case DistributionTail.TwoTail:
-                    p = 2.0 * StatisticDistribution.ComplementaryDistributionFunction(x);
+                    double a = StatisticDistribution.DistributionFunction(x);
+                    double b = StatisticDistribution.ComplementaryDistributionFunction(x);
+                    p = 2 * Math.Min(a, b);
                     break;
 
                 case DistributionTail.OneUpper:

@@ -104,7 +104,7 @@ namespace Accord.Statistics.Testing
             switch (Tail)
             {
                 case DistributionTail.TwoTail:
-                    p = 2 * StatisticDistribution.DistributionFunction((int)x);
+                    p = 2.0 * StatisticDistribution.DistributionFunction((int)x);
                     break;
 
                 case DistributionTail.OneUpper:
