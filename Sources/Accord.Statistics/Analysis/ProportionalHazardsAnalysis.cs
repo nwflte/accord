@@ -558,7 +558,7 @@ namespace Accord.Statistics.Analysis
 
             computeInformation();
 
-            if (inputCount > 0)
+            if (inputCount > 2)
                 computeInner(limit, maxIterations);
 
 
@@ -576,6 +576,8 @@ namespace Accord.Statistics.Analysis
             {
                 // Create a diminished inner model without the current variable
                 double[][] data = inputData.RemoveColumn(i);
+
+                System.Diagnostics.Trace.Assert(data[0].Length > 0);
 
                 Array.Clear(innerModel.Coefficients, 0, inputCount - 1);
 

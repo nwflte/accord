@@ -81,10 +81,32 @@ namespace Accord.Statistics.Analysis
         /// <param name="method">The analysis method to perform.</param>
         /// <param name="centerInFeatureSpace">True to center the data in feature space, false otherwise. Default is true.</param>
         /// 
-        public KernelPrincipalComponentAnalysis(double[,] data, IKernel kernel, AnalysisMethod method, bool centerInFeatureSpace)
+        public KernelPrincipalComponentAnalysis(double[,] data, IKernel kernel,
+            AnalysisMethod method, bool centerInFeatureSpace)
             : base(data, method)
         {
             if (kernel == null) throw new ArgumentNullException("kernel");
+
+            this.kernel = kernel;
+            this.centerFeatureSpace = centerInFeatureSpace;
+        }
+
+        /// <summary>
+        ///   Constructs the Kernel Principal Component Analysis.
+        /// </summary>
+        /// 
+        /// <param name="data">The source data to perform analysis. The matrix should contain
+        /// variables as columns and observations of each variable as rows.</param>
+        /// <param name="kernel">The kernel to be used in the analysis.</param>
+        /// <param name="method">The analysis method to perform.</param>
+        /// <param name="centerInFeatureSpace">True to center the data in feature space, false otherwise. Default is true.</param>
+        /// 
+        public KernelPrincipalComponentAnalysis(double[][] data, IKernel kernel,
+            AnalysisMethod method, bool centerInFeatureSpace)
+            : base(data, method)
+        {
+            if (kernel == null) 
+                throw new ArgumentNullException("kernel");
 
             this.kernel = kernel;
             this.centerFeatureSpace = centerInFeatureSpace;
@@ -102,12 +124,32 @@ namespace Accord.Statistics.Analysis
         public KernelPrincipalComponentAnalysis(double[,] data, IKernel kernel, AnalysisMethod method)
             : this(data, kernel, method, true) { }
 
+        /// <summary>
+        ///   Constructs the Kernel Principal Component Analysis.
+        /// </summary>
+        /// 
+        /// <param name="data">The source data to perform analysis. The matrix should contain
+        /// variables as columns and observations of each variable as rows.</param>
+        /// <param name="kernel">The kernel to be used in the analysis.</param>
+        /// <param name="method">The analysis method to perform.</param>
+        /// 
+        public KernelPrincipalComponentAnalysis(double[][] data, IKernel kernel, AnalysisMethod method)
+            : this(data, kernel, method, true) { }
+
         /// <summary>Constructs the Kernel Principal Component Analysis.</summary>
         /// 
         /// <param name="data">The source data to perform analysis.</param>
         /// <param name="kernel">The kernel to be used in the analysis.</param>
         /// 
         public KernelPrincipalComponentAnalysis(double[,] data, IKernel kernel)
+            : this(data, kernel, AnalysisMethod.Center, true) { }
+
+        /// <summary>Constructs the Kernel Principal Component Analysis.</summary>
+        /// 
+        /// <param name="data">The source data to perform analysis.</param>
+        /// <param name="kernel">The kernel to be used in the analysis.</param>
+        /// 
+        public KernelPrincipalComponentAnalysis(double[][] data, IKernel kernel)
             : this(data, kernel, AnalysisMethod.Center, true) { }
         #endregion
 

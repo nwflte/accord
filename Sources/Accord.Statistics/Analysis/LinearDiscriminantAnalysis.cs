@@ -180,7 +180,8 @@ namespace Accord.Statistics.Analysis
             if (outputs == null) throw new ArgumentNullException("outputs");
 
             if (inputs.GetLength(0) != outputs.Length)
-                throw new ArgumentException("The number of rows in the input array must match the number of given outputs.");
+                throw new ArgumentException(
+                    "The number of rows in the input array must match the number of given outputs.");
 
             init(inputs, outputs);
         }
@@ -200,7 +201,8 @@ namespace Accord.Statistics.Analysis
             if (outputs == null) throw new ArgumentNullException("outputs");
 
             if (inputs.Length != outputs.Length)
-                throw new ArgumentException("The number of rows in the input array must match the number of given outputs.");
+                throw new ArgumentException(
+                    "The number of rows in the input array must match the number of given outputs.");
 
             init(inputs.ToMatrix(), outputs);
         }

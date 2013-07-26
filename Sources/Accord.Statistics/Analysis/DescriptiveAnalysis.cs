@@ -214,7 +214,7 @@ namespace Accord.Statistics.Analysis
             this.sums = Accord.Math.Matrix.Sum(sourceMatrix);
             this.means = Statistics.Tools.Mean(sourceMatrix, sums);
             this.standardDeviations = Statistics.Tools.StandardDeviation(sourceMatrix, means);
-            this.ranges = Matrix.Range(sourceMatrix);
+            this.ranges = Matrix.Range(sourceMatrix, 0);
             this.kurtosis = Statistics.Tools.Kurtosis(sourceMatrix, means);
             this.skewness = Statistics.Tools.Skewness(sourceMatrix, means);
             this.medians = Statistics.Tools.Median(sourceMatrix);
