@@ -30,9 +30,18 @@ namespace Accord.Statistics.Links
     /// </summary>
     /// 
     /// <remarks>
+    /// <para>
     ///   The identity link function is associated with the
-    ///   <see cref="NormalDistribution">Normal distribution</see>.
+    ///   <see cref="NormalDistribution">Normal distribution</see>.</para>
+    ///   
+    /// <para>
+    ///   Link functions can be used in many models, such as in
+    ///   <see cref="Accord.Statistics.Models.Regression.GeneralizedLinearRegression"/> and Support
+    ///   Vector Machines.</para>    
     /// </remarks>
+    /// 
+    /// <seealso cref="ILinkFunction"/>
+    /// <seealso cref="Accord.Statistics.Models.Regression.GeneralizedLinearRegression"/>
     /// 
     [Serializable]
     public class IdentityLinkFunction : ILinkFunction
@@ -77,6 +86,10 @@ namespace Accord.Statistics.Links
         /// 
         /// <returns>The transformed input value.</returns>
         /// 
+        /// <remarks>
+        ///   The Identity link function is given by <c>f(x) = (x - A) / B</c>.
+        /// </remarks>
+        /// 
         public double Function(double x)
         {
             return (x - A) / B;
@@ -89,6 +102,10 @@ namespace Accord.Statistics.Links
         /// <param name="x">A transformed value.</param>
         /// 
         /// <returns>The reverse transformed value.</returns>
+        /// 
+        /// <remarks>
+        ///   The inverse Identity link function is given by <c>g(x) = B * x + A</c>.
+        /// </remarks>
         /// 
         public double Inverse(double x)
         {
@@ -103,6 +120,11 @@ namespace Accord.Statistics.Links
         /// 
         /// <returns>The first derivative of the input value.</returns>
         /// 
+        /// <remarks>
+        ///   The first derivative of the identity link 
+        ///   function is given by <c>f'(x) = B</c>.
+        /// </remarks>
+        /// 
         public double Derivative(double x)
         {
             return B;
@@ -116,6 +138,11 @@ namespace Accord.Statistics.Links
         /// <param name="y">The reverse transformed value.</param>
         /// 
         /// <returns>The first derivative of the input value.</returns>
+        /// 
+        /// <remarks>
+        ///   The first derivative of the identity link function 
+        ///   in terms of y = f(x) is given by <c>f'(y) = B</c>.
+        /// </remarks>
         /// 
         public double Derivative2(double y)
         {

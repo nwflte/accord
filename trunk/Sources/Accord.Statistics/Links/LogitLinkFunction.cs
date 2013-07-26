@@ -57,8 +57,8 @@ namespace Accord.Statistics.Links
         ///   Creates a new Logit link function.
         /// </summary>
         /// 
-        /// <param name="beta">The beta value.</param>
-        /// <param name="constant">The constant value.</param>
+        /// <param name="beta">The beta value. Default is 1.</param>
+        /// <param name="constant">The constant value. Default is 0.</param>
         /// 
         public LogitLinkFunction(double beta, double constant)
         {
@@ -70,7 +70,8 @@ namespace Accord.Statistics.Links
         ///   Initializes a new instance of the <see cref="LogitLinkFunction"/> class.
         /// </summary>
         /// 
-        public LogitLinkFunction() : this(1, 0) { }
+        public LogitLinkFunction()
+            : this(1, 0) { }
 
 
         /// <summary>
@@ -80,6 +81,11 @@ namespace Accord.Statistics.Links
         /// <param name="x">An input value.</param>
         /// 
         /// <returns>The transformed input value.</returns>
+        /// 
+        /// <remarks>
+        ///   The inverse Logit link function is given by
+        ///   <c>f(x) = (Math.Log(x / (1.0 - x)) - A) / B</c>.
+        /// </remarks>
         /// 
         public double Function(double x)
         {
@@ -94,6 +100,12 @@ namespace Accord.Statistics.Links
         /// 
         /// <returns>The reverse transformed value.</returns>
         /// 
+        /// <remarks>
+        ///   The inverse Logit link function is given by
+        ///   <c>g(x) = 1.0 / (1.0 + Math.Exp(-z)</c> in
+        ///   which <c>z =  B * x + A</c>.
+        /// </remarks>
+        /// 
         public double Inverse(double x)
         {
             double z = B * x + A;
@@ -107,6 +119,13 @@ namespace Accord.Statistics.Links
         /// <param name="x">The input value.</param>
         /// 
         /// <returns>The first derivative of the input value.</returns>
+        /// 
+        /// <remarks>
+        ///   The first derivative of the identity link 
+        ///   function is given by <c>f'(x) = y * (1.0 - y)</c>
+        ///   where <c>y = f(x)</c> is the <see cref="Function">
+        ///   Logit function</see>.
+        /// </remarks>
         /// 
         public double Derivative(double x)
         {
@@ -124,6 +143,11 @@ namespace Accord.Statistics.Links
         /// <param name="y">The reverse transformed value.</param>
         /// 
         /// <returns>The first derivative of the input value.</returns>
+        /// 
+        /// <remarks>
+        ///   The first derivative of the Logit link function 
+        ///   in terms of y = f(x) is given by <c>y * (1.0 - y)</c>.
+        /// </remarks>
         /// 
         public double Derivative2(double y)
         {

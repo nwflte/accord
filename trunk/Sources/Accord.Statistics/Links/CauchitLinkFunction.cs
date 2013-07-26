@@ -30,9 +30,18 @@ namespace Accord.Statistics.Links
     /// </summary>
     /// 
     /// <remarks>
+    /// <para>
     ///   The Cauchy link function is associated with the
-    ///   <see cref="CauchyDistribution">Cauchy distribution</see>.
+    ///   <see cref="CauchyDistribution">Cauchy distribution</see>.</para>
+    ///   
+    /// <para>
+    ///   Link functions can be used in many models, such as in
+    ///   <see cref="Accord.Statistics.Models.Regression.GeneralizedLinearRegression"/> and Support
+    ///   Vector Machines.</para>    
     /// </remarks>
+    /// 
+    /// <seealso cref="ILinkFunction"/>
+    /// <seealso cref="Accord.Statistics.Models.Regression.GeneralizedLinearRegression"/>
     /// 
     [Serializable]
     public class CauchitLinkFunction : ILinkFunction
@@ -54,8 +63,8 @@ namespace Accord.Statistics.Links
         ///   Creates a new Cauchit link function.
         /// </summary>
         /// 
-        /// <param name="beta">The beta value.</param>
-        /// <param name="constant">The constant value.</param>
+        /// <param name="beta">The beta value. Default is 1/pi.</param>
+        /// <param name="constant">The constant value. Default is 0.5.</param>
         /// 
         public CauchitLinkFunction(double beta, double constant)
         {
@@ -67,7 +76,8 @@ namespace Accord.Statistics.Links
         ///   Creates a new Cauchit link function.
         /// </summary>
         /// 
-        public CauchitLinkFunction() : this(1 / Math.PI, 0.5) { }
+        public CauchitLinkFunction() 
+            : this(1.0 / Math.PI, 0.5) { }
 
         /// <summary>
         ///   The Cauchit link function.
@@ -76,6 +86,10 @@ namespace Accord.Statistics.Links
         /// <param name="x">An input value.</param>
         /// 
         /// <returns>The transformed input value.</returns>
+        /// 
+        /// <remarks>
+        ///   The Cauchit link function is given by <c>f(x) = tan((x - A) / B)</c>.
+        /// </remarks>
         /// 
         public double Function(double x)
         {
@@ -90,6 +104,10 @@ namespace Accord.Statistics.Links
         /// 
         /// <returns>The reverse transformed value.</returns>
         /// 
+        /// <remarks>
+        ///   The inverse Cauchit link function is given by <c>g(x) = tan(x) * B + A</c>.
+        /// </remarks>
+        /// 
         public double Inverse(double x)
         {
             return Math.Atan(x) * B + A;
@@ -102,6 +120,14 @@ namespace Accord.Statistics.Links
         /// <param name="x">The input value.</param>
         /// 
         /// <returns>The first derivative of the input value.</returns>
+        /// 
+        /// <remarks>
+        ///   The first derivative of the Cauchit link function 
+        ///   in terms of y = f(x) is given by 
+        ///   
+        ///     <c>f'(y) =  B / (x * x + 1)</c>
+        ///     
+        /// </remarks>
         /// 
         public double Derivative(double x)
         {
@@ -117,10 +143,18 @@ namespace Accord.Statistics.Links
         /// 
         /// <returns>The first derivative of the input value.</returns>
         /// 
+        /// <remarks>
+        ///   The first derivative of the Cauchit link function 
+        ///   in terms of y = f(x) is given by 
+        ///   
+        ///     <c>f'(y) = B / (tan((y - A) / B)² + 1)</c>
+        ///     
+        /// </remarks>
+        /// 
         public double Derivative2(double y)
         {
             double x = Math.Tan((y - A) / B);
-            return B / (x * x + 1); ;
+            return B / (x * x + 1);
         }
 
 

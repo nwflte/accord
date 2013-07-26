@@ -29,6 +29,16 @@ namespace Accord.Statistics.Links
     ///   Absolute link function.
     /// </summary>
     /// 
+    /// <remarks>
+    /// <para>
+    ///   Link functions can be used in many models, such as in
+    ///   <see cref="Accord.Statistics.Models.Regression.GeneralizedLinearRegression"/> and Support
+    ///   Vector Machines.</para>    
+    /// </remarks>
+    /// 
+    /// <seealso cref="ILinkFunction"/>
+    /// <seealso cref="Accord.Statistics.Models.Regression.GeneralizedLinearRegression"/>
+    /// 
     [Serializable]
     public class AbsoluteLinkFunction : ILinkFunction
     {
@@ -64,6 +74,10 @@ namespace Accord.Statistics.Links
         /// 
         /// <returns>The transformed input value.</returns>
         /// 
+        /// <remarks>
+        ///   The absolute link function is given by <c>f(x) = abs(x) / b</c>.
+        /// </remarks>
+        /// 
         public double Function(double x)
         {
             return Math.Abs(x) / B;
@@ -76,6 +90,10 @@ namespace Accord.Statistics.Links
         /// <param name="x">A transformed value.</param>
         /// 
         /// <returns>The reverse transformed value.</returns>
+        /// 
+        /// <remarks>
+        ///   The inverse absolute link function is given by <c>g(x) = B * abs(x)</c>.
+        /// </remarks>
         /// 
         public double Inverse(double x)
         {
@@ -90,6 +108,11 @@ namespace Accord.Statistics.Links
         /// 
         /// <returns>The first derivative of the input value.</returns>
         /// 
+        /// <remarks>
+        ///   The first derivative of the absolute link function 
+        ///   is given by <c>f'(x) = B</c>.
+        /// </remarks>
+        /// 
         public double Derivative(double x)
         {
             return B;
@@ -103,6 +126,11 @@ namespace Accord.Statistics.Links
         /// <param name="y">The reverse transformed value.</param>
         /// 
         /// <returns>The first derivative of the input value.</returns>
+        /// 
+        /// <remarks>
+        ///   The first derivative of the absolute link function 
+        ///   in terms of y = f(x) is given by <c>f'(y) = B</c>.
+        /// </remarks>
         /// 
         public double Derivative2(double y)
         {
