@@ -86,6 +86,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compatibility\CancellationToken.cs" />
+    <Compile Include="Compatibility\ConcurrentStack.cs" />
     <Compile Include="Compatibility\Lazy.cs" />
     <Compile Include="Compatibility\Parallel.cs" />
     <Compile Include="Compatibility\SortedSet.cs" />
