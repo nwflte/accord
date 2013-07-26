@@ -43,6 +43,10 @@ namespace Accord.Statistics.Links
     ///   </list></para>
     /// </remarks>
     /// 
+    /// <seealso cref="ProbitLinkFunction"/>
+    /// <seealso cref="LogitLinkFunction"/>
+    /// <seealso cref="Accord.Statistics.Models.Regression.GeneralizedLinearRegression"/>
+    /// 
     public interface ILinkFunction : ICloneable
     {
 

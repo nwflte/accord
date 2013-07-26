@@ -53,6 +53,13 @@ namespace Accord.Statistics.Links
         /// 
         /// <returns>The transformed input value.</returns>
         /// 
+        /// <remarks>
+        ///   The Probit link function is given by <c>f(x) = Phi^-1(x)</c>,
+        ///   in which <see cref="Normal.Inverse">Phi^-1</see> is the
+        ///   <see cref="Normal.Inverse">inverse Normal (Gaussian) cumulative 
+        ///   distribution function</see>.
+        /// </remarks>
+        /// 
         public double Function(double x)
         {
             return Normal.Inverse(x);
@@ -65,6 +72,13 @@ namespace Accord.Statistics.Links
         /// <param name="x">A transformed value.</param>
         /// 
         /// <returns>The reverse transformed value.</returns>
+        /// 
+        /// <remarks>
+        ///   The Probit link function is given by <c>g(x) = Phi(x)</c>,
+        ///   in which <see cref="Normal.Function">Phi</see> is the
+        ///   <see cref="Normal.Function">Normal (Gaussian) cumulative 
+        ///   distribution function</see>.
+        /// </remarks>
         /// 
         public double Inverse(double x)
         {
@@ -79,6 +93,14 @@ namespace Accord.Statistics.Links
         /// 
         /// <returns>The first derivative of the input value.</returns>
         /// 
+        /// <remarks>
+        ///   The first derivative of the identity link function is 
+        ///   given by <c>f'(x) = exp(c - (Phi^-1(x))² * 0.5)</c> in
+        ///   which <c>c = -<see cref="Constants.LogSqrt2PI">log(sqrt(2*π)</see></c>
+        ///   and <see cref="Normal.Inverse">Phi^-1</see> is the <see cref="Normal.Inverse">
+        ///   inverse Normal (Gaussian) cumulative distribution function</see>.
+        /// </remarks>
+        /// 
         public double Derivative(double x)
         {
             return Math.Exp(lnconstant - x * x * 0.5);
@@ -92,6 +114,13 @@ namespace Accord.Statistics.Links
         /// <param name="y">The reverse transformed value.</param>
         /// 
         /// <returns>The first derivative of the input value.</returns>
+        /// 
+        /// <remarks>
+        ///   The first derivative of the identity link function in terms
+        ///   of y = f(x) is given by <c>f'(y) = exp(c - x * x * 0.5)</c>
+        ///   in which <c>c = -<see cref="Constants.LogSqrt2PI">log(sqrt(2*π)</see></c>
+        ///   and <c>x = </c>
+        /// </remarks>
         /// 
         public double Derivative2(double y)
         {
