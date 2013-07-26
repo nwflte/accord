@@ -20,7 +20,7 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-namespace Accord.Math.Formats
+namespace Accord.Math
 {
     using System;
     using System.Collections.Generic;
@@ -91,7 +91,7 @@ namespace Accord.Math.Formats
                 throw new FormatException(String.Format("The format of '{0}' is invalid.", format));
             }
 
-            CultureInfo culture = formatProvider.CultureInfo;
+            IFormatProvider culture = formatProvider.InnerProvider;
 
 
             // Retrieve matrix dimensions. If the matrix is a jagged array,
@@ -247,7 +247,7 @@ namespace Accord.Math.Formats
         /// <summary>
         ///   Handles formatting for objects other than matrices.
         /// </summary>
-        private static string handleOtherFormats(string format, object arg, CultureInfo culture)
+        private static string handleOtherFormats(string format, object arg, IFormatProvider culture)
         {
             try
             {
@@ -316,7 +316,7 @@ namespace Accord.Math.Formats
                         col = col.Remove(col.Length - provider.ParseColEnd.Length, provider.ParseColEnd.Length);
 
                     // finally, parse the value and store
-                    values.Add(Double.Parse(col, provider.CultureInfo));
+                    values.Add(Double.Parse(col, provider.InnerProvider));
                 }
 
                 rows.Add(values.ToArray());

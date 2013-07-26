@@ -20,25 +20,74 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-namespace Accord.Math.Formats
+namespace Accord.Math
 {
+    using System;
     using System.Globalization;
 
     /// <summary>
     ///   Gets the matrix representation used in C# multi-dimensional arrays.
     /// </summary>
     /// 
+    /// <remarks>
+    ///   This class can be used to convert to and from C#
+    ///   arrays and their string representation. Please 
+    ///   see the example for details.
+    /// </remarks>
+    /// 
+    /// <example>
+    /// <para>
+    ///   Converting from an array to a string representation:</para>
+    ///   
+    /// <code>
+    ///   // Declare a number array
+    ///   double[] x = { 1, 2, 3, 4 };
+    ///   
+    ///   // Convert the aforementioned array to a string representation:
+    ///   string str = x.ToString(CSharpArrayFormatProvider.CurrentCulture);
+    ///   
+    ///   // the final result will be
+    ///   "double[] x = { 1, 2, 3, 4 }"
+    /// </code>
+    /// 
+    /// <para>
+    ///   Converting from strings to actual arrays:</para>
+    /// 
+    /// <code>
+    ///   // Declare an input string
+    ///   string str = "double[] { 1, 2, 3, 4 }";
+    ///   
+    ///   // Convert the string representation to an actual number array:
+    ///   double[] array = Matrix.Parse(str, CSharpArrayFormatProvider.InvariantCulture);
+    ///   
+    ///   // array will now contain the actual number 
+    ///   // array representation of the given string.
+    /// </code>
+    /// </example>
+    /// 
+    /// <seealso cref="Accord.Math.Matrix"/>
+    /// <seealso cref="CSharpMatrixFormatProvider"/>
+    /// 
+    /// <seealso cref="CSharpJaggedMatrixFormatProvider"/>
+    /// <seealso cref="CSharpArrayFormatProvider"/>
+    /// 
+    /// <seealso cref="OctaveMatrixFormatProvider"/>
+    /// <seealso cref="OctaveArrayFormatProvider"/>
+    /// 
     public sealed class CSharpArrayFormatProvider : MatrixFormatProviderBase
     {
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CSharpMatrixFormatProvider"/> class.
+        ///   Initializes a new instance of the <see cref="CSharpMatrixFormatProvider"/> class.
         /// </summary>
-        public CSharpArrayFormatProvider(CultureInfo culture)
-            : base(culture)
+        /// 
+        public CSharpArrayFormatProvider(IFormatProvider innerProvider,
+            bool includeTypeName = true,
+            bool includeSemicolon = true)
+            : base(innerProvider)
         {
-            FormatMatrixStart = "new double[] { ";
-            FormatMatrixEnd = " };";
+            FormatMatrixStart = includeTypeName ? "new double[] { " : "{ ";
+            FormatMatrixEnd = includeSemicolon ? " };" : " }";
             FormatRowStart = "";
             FormatRowEnd = "";
             FormatColStart = "";
@@ -46,8 +95,8 @@ namespace Accord.Math.Formats
             FormatRowDelimiter = ", ";
             FormatColDelimiter = ", ";
 
-            ParseMatrixStart = "new double[] {";
-            ParseMatrixEnd = "};";
+            ParseMatrixStart = includeTypeName ? "new double[] {" : "{";
+            ParseMatrixEnd = includeSemicolon ? "};" : "}";
             ParseRowStart = "";
             ParseRowEnd = "";
             ParseColStart = "";
@@ -60,7 +109,7 @@ namespace Accord.Math.Formats
         ///   Gets the IMatrixFormatProvider which uses the CultureInfo used by the current thread.
         /// </summary>
         /// 
-        public static CSharpArrayFormatProvider CurrentCulture 
+        public static CSharpArrayFormatProvider CurrentCulture
         {
             get { return currentCulture; }
         }

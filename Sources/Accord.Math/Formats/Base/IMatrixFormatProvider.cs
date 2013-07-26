@@ -20,7 +20,7 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-namespace Accord.Math.Formats
+namespace Accord.Math
 {
     using System;
     using System.Globalization;
@@ -90,7 +90,7 @@ namespace Accord.Math.Formats
         ///   Gets the culture specific formatting information
         ///   to be used during parsing or formatting.
         /// </summary>
-        CultureInfo CultureInfo { get; }
+        IFormatProvider InnerProvider { get; }
         
     }
 
