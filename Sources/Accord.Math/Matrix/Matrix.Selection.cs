@@ -1432,6 +1432,7 @@ namespace Accord.Math
         /// <summary>
         ///   Gets the range of the values in a vector.
         /// </summary>
+        /// 
         public static IntRange Range(this int[] array)
         {
             if (array.Length == 0)
@@ -1447,31 +1448,103 @@ namespace Accord.Math
                 if (max < array[i])
                     max = array[i];
             }
+
             return new IntRange(min, max);
+        }
+
+        /// <summary>
+        ///   Gets the range of the values accross a matrix.
+        /// </summary>
+        /// 
+        public static IntRange Range(this int[,] value)
+        {
+            if (value.Length == 0)
+                return new IntRange(0, 0);
+
+            int min = value[0, 0];
+            int max = value[0, 0];
+
+            foreach (int v in value)
+            {
+                if (v < min) min = v;
+                if (v > max) max = v;
+            }
+
+            return new IntRange(min, max);
+        }
+
+        /// <summary>
+        ///   Gets the range of the values accross a matrix.
+        /// </summary>
+        /// 
+        public static DoubleRange Range(this double[,] value)
+        {
+            if (value.Length == 0)
+                return new DoubleRange(0, 0);
+
+            double min = value[0, 0];
+            double max = value[0, 0];
+
+            foreach (double v in value)
+            {
+                if (v < min) min = v;
+                if (v > max) max = v;
+            }
+
+            return new DoubleRange(min, max);
         }
 
         /// <summary>
         ///   Gets the range of the values accross the columns of a matrix.
         /// </summary>
-        public static DoubleRange[] Range(double[,] value)
+        /// 
+        public static DoubleRange[] Range(this double[,] value, int dimension)
         {
-            DoubleRange[] ranges = new DoubleRange[value.GetLength(1)];
+            int rows = value.GetLength(0);
+            int cols = value.GetLength(1);
+            DoubleRange[] ranges;
 
-            for (int j = 0; j < ranges.Length; j++)
+            if (dimension == 0)
             {
-                double max = value[0, j];
-                double min = value[0, j];
+                ranges = new DoubleRange[cols];
 
-                for (int i = 0; i < value.GetLength(0); i++)
+                for (int j = 0; j < ranges.Length; j++)
                 {
-                    if (value[i, j] > max)
-                        max = value[i, j];
+                    double max = value[0, j];
+                    double min = value[0, j];
 
-                    if (value[i, j] < min)
-                        min = value[i, j];
+                    for (int i = 0; i < rows; i++)
+                    {
+                        if (value[i, j] > max)
+                            max = value[i, j];
+
+                        if (value[i, j] < min)
+                            min = value[i, j];
+                    }
+
+                    ranges[j] = new DoubleRange(min, max);
                 }
+            }
+            else
+            {
+                ranges = new DoubleRange[rows];
 
-                ranges[j] = new DoubleRange(min, max);
+                for (int j = 0; j < ranges.Length; j++)
+                {
+                    double max = value[j, 0];
+                    double min = value[j, 0];
+
+                    for (int i = 0; i < cols; i++)
+                    {
+                        if (value[j, i] > max)
+                            max = value[j, i];
+
+                        if (value[j, i] < min)
+                            min = value[j, i];
+                    }
+
+                    ranges[j] = new DoubleRange(min, max);
+                }
             }
 
             return ranges;
@@ -1480,7 +1553,7 @@ namespace Accord.Math
         /// <summary>
         ///   Gets the range of the values accross the columns of a matrix.
         /// </summary>
-        public static DoubleRange[] Range(double[][] value)
+        public static DoubleRange[] Range(this double[][] value)
         {
             int cols = value[0].Length;
             DoubleRange[] ranges = new DoubleRange[cols];

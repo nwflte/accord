@@ -32,6 +32,201 @@ namespace Accord.Math
     ///   that operates mainly on multidimensional arrays and vectors.
     /// </summary>
     /// 
+    /// 
+    /// <remarks>
+    /// 
+    /// </remarks>
+    /// 
+    /// <example>
+    ///   <h2>Introduction</h2>
+    ///   
+    ///   <para>
+    ///     Declaring and using matrices in the Accord.NET Framework does
+    ///     not requires much. In fact, it does not require anything else
+    ///     that is not already present at the .NET Framework. If you have
+    ///     already existing and working code using other libraries, you
+    ///     don't have to convert your matrices to any special format used
+    ///     by Accord.NET. This is because Accord.NET is built to interoperate
+    ///     with other libraries and existing solutions, relying solely on
+    ///     default .NET structures to work.</para>
+    ///     
+    ///   <para>
+    ///     To begin, please add the following <c>using</c> directive on
+    ///     top of your .cs (or equivalent) source code file: </para>
+    ///     
+    ///   <code>
+    ///     using namespace Accord.Math;
+    ///   </code>
+    ///   
+    ///   <para>
+    ///     This is all you need to start using the Accord.NET matrix library.</para>
+    ///     
+    ///   <h2>Creating matrices</h2>
+    ///   
+    ///   <para>
+    ///     Let's start by declaring a matrix, or otherwise specifying matrices
+    ///     from other sources. The most straighforward way to declare a matrix
+    ///     in Accord.NET is simply using: </para>
+    ///     
+    /// <code>
+    ///     double[,] matrix = 
+    ///     {
+    ///        { 1, 2 },
+    ///        { 3, 4 },
+    ///        { 5, 6 },
+    ///    };
+    /// </code>
+    /// 
+    ///  <para>
+    ///    Yep, that is right. You don't need to create any fancy custom Matrix
+    ///    classes or vectors to make Accord.NET work, which is a plus if you
+    ///    have already existent code using other libraries. You are also free
+    ///    to use both the multidimensional matrix syntax above or the jagged
+    ///    matrix syntax below:</para>
+    ///    
+    /// <code>
+    ///     double[][] matrix = 
+    ///     {
+    ///        new double[] { 1, 2 },
+    ///        new double[] { 3, 4 },
+    ///        new double[] { 5, 6 },
+    ///    };
+    /// </code>
+    /// 
+    ///  <para>
+    ///    Special purpose matrices can also be created through specialized methods.
+    ///    Those include</para>
+    ///    
+    /// <code>
+    ///   // Creates a vector of indices
+    ///   int[] idx = Matrix.Indices(0, 10);  // { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }
+    ///   
+    ///   // Creates a step vector within a given interval
+    ///   double[] interval = Matrix.Interval(from: -2, to: 4); // { -2, -1, 0, 1, 2, 3, 4 };
+    ///   
+    ///   // Special matrices
+    ///   double[,] I = Matrix.Identity(3);     // creates a 3x3 identity matrix
+    ///   double[,] magic = Matrix.Magic(5);    // creates a magic square matrix of size 5
+    ///   
+    ///   double[] v = Matrix.Vector(5, 1.0);      // generates { 1, 1, 1, 1, 1 }
+    ///   double[,] diagonal = Matrix.Diagonal(v); // matrix with v on its diagonal
+    /// </code>
+    ///    
+    ///  <para>
+    ///    Another way to declare matrices is by parsing the contents of a string:</para>
+    ///    
+    /// <code>
+    ///   string str = @"1 2
+    ///                  3 4";
+    ///                  
+    ///   double[,] matrix = Matrix.Parse(str);
+    /// </code>
+    /// 
+    ///  <para>
+    ///    You can even read directly from matrices formatted in C# syntax:</para>
+    ///    
+    ///  <code>
+    ///   string str = @"double[,] matrix = 
+    ///                  {
+    ///                     { 1, 2 },
+    ///                     { 3, 4 },
+    ///                     { 5, 6 },
+    ///                  }";
+    ///                  
+    ///   matrix[,] mdimensional = Matrix.Parse(str, CSharpMatrixFormatProvider.InvariantCulture);
+    ///   matrix[,] jagged = Matrix.ParseJagged(str, CSharpMatrixFormatProvider.InvariantCulture);
+    ///  </code>
+    ///  
+    ///  <para>
+    ///    And even from <a href="http://www.gnu.org/software/octave/">Octave-compatible</a> syntax!</para>
+    ///    
+    ///  <code>
+    ///   string str = "[1 2; 3 4]";
+    ///                  
+    ///   matrix[,] matrix = Matrix.Parse(str, OctaveMatrixFormatProvider.InvariantCulture);
+    ///  </code>
+    ///  
+    ///  <para>
+    ///    There are also other methods, such as specialization for arrays and other formats.
+    ///    For more details, please take a look on <see cref="CSharpMatrixFormatProvider"/>,
+    ///    <see cref="CSharpArrayFormatProvider"/>, <see cref="DefaultArrayFormatProvider"/>,
+    ///    <see cref="DefaultMatrixFormatProvider"/> and <see cref="Matrix.Parse(string)"/>.
+    ///  </para>
+    ///    
+    ///     
+    ///  <h2>Matrix operations</h2>
+    ///  
+    ///  <para>
+    ///    Albeit being simple <see cref="T:double[]"/> matrices, the framework leverages
+    ///    .NET extension methods to support all basic matrix operations. For instance,
+    ///    consider the elementwise operations (also known as dot operations in Octave):</para>
+    /// 
+    /// <code>
+    ///   double[] vector = { 0, 2, 4 };
+    ///   double[] a = vector.ElementwiseMultiply(2); // vector .* 2, generates { 0,  4,  8 }
+    ///   double[] b = vector.ElementwiseDivide(2);   // vector ./ 2, generates { 0,  1,  2 }
+    ///   double[] c = vector.ElementwisePower(2);    // vector .^ 2, generates { 0,  4, 16 }
+    /// </code>
+    /// 
+    /// <para>
+    ///   Operations between vectors, matrices, and both are also completely supported:</para>
+    ///   
+    /// <code>
+    ///   // Declare two vectors
+    ///   double[] u = { 1, 6, 3 };
+    ///   double[] v = { 9, 4, 2 };
+    /// 
+    ///   // Products between vectors
+    ///   double inner = u.InnerProduct(v);    // 39.0
+    ///   double[,] outer = u.OuterProduct(v); // see below
+    ///   double[] kronecker = u.KroneckerProduct(v); // { 9, 4, 2, 54, 24, 12, 27, 12, 6 }
+    ///   double[][] cartesian = u.CartesianProduct(v); // all possible pair-wise combinations
+    /// 
+    /// /* outer =
+    ///    { 
+    ///       {  9,  4,  2 },
+    ///       { 54, 24, 12 },
+    ///       { 27, 12,  6 },
+    ///    };                  */
+    ///
+    ///   // Addition
+    ///   double[] addv = u.Add(v); // { 10, 10, 5 }
+    ///   double[] add5 = u.Add(5); // {  6, 11, 8 }
+    ///
+    ///   // Elementwise operations
+    ///   double[] abs = u.Abs();   // { 1, 6, 3 }
+    ///   double[] log = u.Log();   // { 0, 1.79, 1.09 }
+    ///   
+    ///   // Apply *any* function to all elements in a vector
+    ///   double[] cos = u.Apply(Math.Cos); // { 0.54, 0.96, -0.989 }
+    ///   u.ApplyInPlace(Math.Cos); // can also do optionally in-place
+    ///
+    ///   
+    ///   // Declare a matrix
+    ///   double[,] M = 
+    ///   {
+    ///      { 0, 5, 2 },
+    ///      { 2, 1, 5 }
+    ///   };
+    ///  
+    ///   // Extract a subvector from v:
+    ///   double[] vcut = v.Submatrix(0, 1); // { 9, 4 }
+    ///   
+    ///   // Some operations between vectors and matrices
+    ///   double[] Mv = m.Multiply(v);    //  { 24, 32 }
+    ///   double[] vM = vcut.Multiply(m); // { 8, 49, 38 }
+    ///   
+    ///   // Some operations between matrices
+    ///   double[,] Md = m.MultiplyByDiagonal(v);   // { { 0, 20, 4 }, { 18, 4, 10 } }
+    ///   double[,] MMt = m.MultiplyByTranspose(m); //   { { 29, 15 }, { 15, 30 } }
+    /// </code>
+    /// 
+    /// <para>
+    ///   Please note this is by no means an extensive list; please take a look on
+    ///   all members available on this class or (preferably) use IntelliSense to
+    ///   navigate through all possible options when trying to perform an operation.</para>
+    /// </example>
+    /// 
     public static partial class Matrix
     {
 
@@ -468,7 +663,7 @@ namespace Accord.Math
 
             double[][] r = new double[aCols][];
             for (int i = 0; i < r.Length; i++)
-             r[i] = new double[bCols];
+                r[i] = new double[bCols];
 
             TransposeAndMultiply(a, b, r);
 
@@ -595,6 +790,40 @@ namespace Accord.Math
 
         }
 
+        /// <summary>
+        ///   Computes the product A'*B of matrix <c>A</c> and diagonal matrix <c>B</c>.
+        /// </summary>
+        /// 
+        /// <param name="a">The left matrix <c>A</c>.</param>
+        /// <param name="b">The diagonal vector of right matrix <c>B</c>.</param>
+        /// <returns>The product <c>A*B</c> of the given matrices <c>A</c> and <c>B</c>.</returns>
+        /// 
+        public static double[,] TransposeAndMultiplyByDiagonal(this double[,] a, double[] b)
+        {
+            double[,] r = new double[a.GetLength(1), b.Length];
+            TransposeAndMultiplyByDiagonal(a, b, r);
+            return r;
+        }
+
+        /// <summary>
+        ///   Computes the product A'*B of matrix <c>A</c> and diagonal matrix <c>B</c>.
+        /// </summary>
+        /// 
+        /// <param name="a">The left matrix <c>A</c>.</param>
+        /// <param name="b">The diagonal vector of right matrix <c>B</c>.</param>
+        /// <param name="result">The matrix <c>R</c> to store the product <c>R = A*B</c>
+        ///   of the given matrices <c>A</c> and <c>B</c>.</param>
+        /// 
+        public static unsafe void TransposeAndMultiplyByDiagonal(this double[,] a, double[] b, double[,] result)
+        {
+            if (a.GetLength(0) != b.Length)
+                throw new ArgumentException("Matrix dimensions must match.");
+
+            int m = a.GetLength(1);
+            for (int i = 0; i < b.Length; i++)
+                for (int j = 0; j < m; j++)
+                    result[j, i] = a[i, j] * b[i];
+        }
 
         /// <summary>
         ///   Computes the product A*B of matrix <c>A</c> and diagonal matrix <c>B</c>.
@@ -1462,6 +1691,36 @@ namespace Accord.Math
         #endregion
 
         #region Addition and Subraction
+        /// <summary>
+        ///   Adds a scalar to each element of a matrix.
+        /// </summary>
+        /// 
+        public static double[,] Add(this double[,] matrix, double x)
+        {
+            if (matrix == null) throw new ArgumentNullException("matrix");
+
+            int rows = matrix.GetLength(0);
+            int cols = matrix.GetLength(1);
+
+            double[,] r = new double[rows, cols];
+
+            for (int i = 0; i < rows; i++)
+                for (int j = 0; j < cols; j++)
+                    r[i, j] = matrix[i, j] + x;
+
+            return r;
+        }
+
+        /// <summary>
+        ///   Subtracts a scalar to each element of a matrix.
+        /// </summary>
+        /// 
+        public static double[,] Add(this double x, double[,] matrix)
+        {
+            return matrix.Add(x);
+        }
+
+
         /// <summary>
         ///   Adds two matrices.
         /// </summary>

@@ -441,7 +441,24 @@ namespace Accord.Math
             for (double i = a; i < b; i += increment)
                 list.Add(i);
 
-            if (list[list.Count] != b)
+            if (list[list.Count - 1] != b)
+                list.Add(b);
+
+            return list.ToArray();
+        }
+
+        /// <summary>
+        ///   Creates a vector with the given dimension and starting values.
+        /// </summary>
+        /// 
+        public static int[] Vector(int a, int b, int increment = 1)
+        {
+            List<int> list = new List<int>();
+
+            for (int i = a; i < b; i += increment)
+                list.Add(i);
+
+            if (list[list.Count - 1] != b)
                 list.Add(b);
 
             return list.ToArray();
@@ -574,6 +591,31 @@ namespace Accord.Math
             return mesh;
         }
         #endregion
+
+        /// <summary>
+        ///   Generates a 2-D mesh grid from two vectors <c>a</c> and <c>b</c>,
+        ///   generating two matrices <c>len(a)</c> x <c>len(b)</c> with all
+        ///   all possible combinations of values between the two vectors.
+        /// </summary>
+        ///
+        /// <returns>A tuple containing two matrices: the first containing values
+        /// for the x-coordinates and the second for the y-coordinates.</returns>
+        ///
+        public static Tuple<T[,], T[,]> MeshGrid<T>(this T[] sequence1, T[] sequence2)
+        {
+            T[,] x = new T[sequence1.Length, sequence2.Length];
+            T[,] y = new T[sequence1.Length, sequence2.Length];
+            for (int i = 0; i < sequence1.Length; i++)
+            {
+                for (int j = 0; j < sequence2.Length; j++)
+                {
+                    x[i, j] = sequence1[i];
+                    y[i, j] = sequence2[j];
+                }
+            }
+
+            return Tuple.Create(x, y);
+        }
 
 
         #region Combine
@@ -900,10 +942,14 @@ namespace Accord.Math
         #region Split
         /// <summary>
         ///   Splits a given vector into a smaller vectors of the given size.
+        ///   This operation can be reverted using <see cref="Merge"/>.
         /// </summary>
+        /// 
         /// <param name="vector">The vector to be splitted.</param>
         /// <param name="size">The size of the resulting vectors.</param>
+        /// 
         /// <returns>An array of vectors containing the subdivisions of the given vector.</returns>
+        /// 
         public static T[][] Split<T>(this T[] vector, int size)
         {
             int n = vector.Length / size;
@@ -914,6 +960,29 @@ namespace Accord.Math
                 for (int j = 0; j < size; j++)
                     ri[j] = vector[j * n + i];
             }
+            return r;
+        }
+
+        /// <summary>
+        ///   Merges a series of vectors into a a single vector. This
+        ///   operation can be reverted using <see cref="Split"/>.
+        /// </summary>
+        /// 
+        /// <param name="vectors">The vectors to be merged.</param>
+        /// <param name="size">The size of the inner vectors.</param>
+        /// 
+        /// <returns>A single array containing the given vectors.</returns>
+        /// 
+        public static T[] Merge<T>(this T[][] vectors, int size)
+        {
+            int n = vectors.Length * size;
+            T[] r = new T[n * size];
+
+            int c = 0;
+            for (int i = 0; i < vectors.Length; i++)
+                for (int j = 0; j < vectors[i].Length; j++, c++)
+                    r[c] = vectors[i][j];
+
             return r;
         }
         #endregion
