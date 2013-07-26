@@ -28,6 +28,9 @@ namespace Accord.Statistics.Testing
     ///   Z-Test for two sample proportions.
     /// </summary>
     /// 
+    /// <seealso cref="TwoSampleZTest"/>
+    /// <seealso cref="ZTest"/>
+    /// 
     [Serializable]
     public class TwoProportionZTest : TwoSampleZTest
     {

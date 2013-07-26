@@ -52,6 +52,8 @@ namespace Accord.Statistics.Testing
     ///   </list></para>
     /// </remarks>
     /// 
+    /// <seealso cref="ZTest"/>
+    /// 
     [Serializable]
     public class WaldTest : ZTest
     {
@@ -59,6 +61,7 @@ namespace Accord.Statistics.Testing
         /// <summary>
         ///   Constructs a Wald's test.
         /// </summary>
+        /// 
         /// <param name="statistic">The test statistic, as given by (θ-θ')/SE.</param>
         /// 
         public WaldTest(double statistic)
@@ -67,6 +70,7 @@ namespace Accord.Statistics.Testing
         /// <summary>
         ///   Constructs a Wald's test.
         /// </summary>
+        /// 
         /// <param name="estimatedValue">The estimated value (θ).</param>
         /// <param name="hypothesizedValue">The hypothetized value (θ').</param>
         /// <param name="standardError">The standard error of the estimation (SE).</param>
