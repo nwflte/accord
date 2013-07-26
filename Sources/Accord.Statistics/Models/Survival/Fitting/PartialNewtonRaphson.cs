@@ -42,7 +42,6 @@ namespace Accord.Statistics.Models.Regression.Fitting
 
         private double[,] hessian;
         private double[] gradient;
-        private double[] previous;
 
         private double[] partialGradient;
         private double[,] partialHessian;
@@ -92,7 +91,7 @@ namespace Accord.Statistics.Models.Regression.Fitting
         ///   in place before the last learning iteration was performed.
         /// </summary>
         /// 
-        public double[] Previous { get { return previous; } }
+        public double[] Previous { get { return convergence.OldValues; } }
 
         /// <summary>
         ///   Gets the current values for the coefficients.
@@ -239,6 +238,8 @@ namespace Accord.Statistics.Models.Regression.Fitting
                 for (int j = 0; j < time.Length; j++)
                     if (time[j] == time[i]) ties[i]++;
 
+            if (parameterCount == 0)
+                return createBaseline(time, censor, output);
 
             CurrentIteration = 0;
             double smooth = 0.1;
@@ -300,8 +301,6 @@ namespace Accord.Statistics.Models.Regression.Fitting
                 // be invertible and LU will succeed. However, sometimes the hessian
                 // may be singular and a Singular Value Decomposition may be needed.
 
-                LuDecomposition lu = new LuDecomposition(hessian);
-
                 // The SVD is very stable, but is quite expensive, being on average
                 // about 10-15 times more expensive than LU decomposition. There are
                 // other ways to avoid a singular Hessian. For a very interesting 
@@ -315,24 +314,13 @@ namespace Accord.Statistics.Models.Regression.Fitting
                 // Moreover, the computation of the inverse is optional, as it will
                 // be used only to compute the standard errors of the regression.
 
-                double[] deltas;
 
-                if (lu.Nonsingular)
-                {
-                    // Solve using LU decomposition
-                    deltas = lu.Solve(gradient);
-                    decomposition = lu;
-                }
-                else
-                {
-                    // Hessian Matrix is singular, try pseudo-inverse solution
-                    decomposition = new SingularValueDecomposition(hessian);
-                    deltas = decomposition.Solve(gradient);
-                }
+                // Hessian Matrix is singular, try pseudo-inverse solution
+                decomposition = new SingularValueDecomposition(hessian);
+                double[] deltas = decomposition.Solve(gradient);
 
 
                 // Update coefficients using the calculated deltas
-                previous = (double[])regression.Coefficients.Clone();
                 for (int i = 0; i < regression.Coefficients.Length; i++)
                     regression.Coefficients[i] -= smooth * deltas[i];
 
@@ -342,14 +330,13 @@ namespace Accord.Statistics.Models.Regression.Fitting
 
                 // Check relative maximum parameter change
                 convergence.NewValues = regression.Coefficients;
-                convergence.OldValues = previous;
 
 
                 if (convergence.HasDiverged)
                 {
                     // Restore previous coefficients
                     for (int i = 0; i < regression.Coefficients.Length; i++)
-                        regression.Coefficients[i] = previous[i];
+                        regression.Coefficients[i] = convergence.OldValues[i];
                 }
 
 
@@ -379,7 +366,15 @@ namespace Accord.Statistics.Models.Regression.Fitting
                     standardErrors[i] = Math.Sqrt(Math.Abs(inverse[i, i])) / sdev[i];
             }
 
-            if (computeBaselineFunction && regression.BaselineHazard != null)
+            if (computeBaselineFunction)
+                createBaseline(time, censor, output);
+
+            return convergence.Delta;
+        }
+
+        private double createBaseline(double[] time, int[] censor, double[] output)
+        {
+            if (regression.BaselineHazard != null)
             {
                 IFittingOptions options = null;
 
@@ -407,7 +402,7 @@ namespace Accord.Statistics.Models.Regression.Fitting
                 regression.BaselineHazard.Fit(time, null, options);
             }
 
-            return convergence.Delta;
+            return 0;
         }
 
 

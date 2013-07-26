@@ -324,8 +324,6 @@ namespace Accord.Statistics.Models.Regression.Fitting
             // be invertible and LU will succeed. However, sometimes the hessian
             // may be singular and a Singular Value Decomposition may be needed.
 
-            LuDecomposition lu = new LuDecomposition(hessian);
-
             // The SVD is very stable, but is quite expensive, being on average
             // about 10-15 times more expensive than LU decomposition. There are
             // other ways to avoid a singular Hessian. For a very interesting 
@@ -339,18 +337,10 @@ namespace Accord.Statistics.Models.Regression.Fitting
             // Moreover, the computation of the inverse is optional, as it will
             // be used only to compute the standard errors of the regression.
 
-            if (lu.Nonsingular)
-            {
-                // Solve using LU decomposition
-                deltas = lu.Solve(gradient);
-                decomposition = lu;
-            }
-            else
-            {
-                // Hessian Matrix is singular, try pseudo-inverse solution
-                decomposition = new SingularValueDecomposition(hessian);
-                deltas = decomposition.Solve(gradient);
-            }
+            // Hessian Matrix is singular, try pseudo-inverse solution
+            decomposition = new SingularValueDecomposition(hessian);
+            deltas = decomposition.Solve(gradient);
+
 
             previous = (double[])coefficients.Clone();
 
@@ -358,7 +348,7 @@ namespace Accord.Statistics.Models.Regression.Fitting
             for (int i = 0; i < coefficients.Length; i++)
                 coefficients[i] -= deltas[i];
 
-            
+
             if (computeStandardErrors)
             {
                 // Grab the regression information matrix
