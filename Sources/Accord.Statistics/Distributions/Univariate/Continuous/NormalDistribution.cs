@@ -27,6 +27,7 @@ namespace Accord.Statistics.Distributions.Univariate
     using Accord.Statistics.Distributions.Fitting;
     using Accord.Statistics.Distributions;
     using Accord.Statistics.Distributions.Multivariate;
+    using AForge;
 
     /// <summary>
     ///   Normal (Gaussian) distribution.
@@ -45,49 +46,76 @@ namespace Accord.Statistics.Distributions.Univariate
     ///   random samples from it.</para>
     ///   
     /// <code>
-    /// // Create a normal distribution with mean 2 and sigma 3
-    /// var normal = new NormalDistribution(mean: 2, stdDev: 3);
+    ///   // Create a normal distribution with mean 2 and sigma 3
+    ///   var normal = new NormalDistribution(mean: 2, stdDev: 3);
     /// 
-    /// // In a normal distribution, the median and
-    /// // the mode coincide with the mean, so
+    ///   // In a normal distribution, the median and
+    ///   // the mode coincide with the mean, so
     /// 
-    /// double mean = normal.Mean;     // 2
-    /// double mode = normal.Mode;     // 2
-    /// double median = normal.Median; // 2
+    ///   double mean = normal.Mean;     // 2
+    ///   double mode = normal.Mode;     // 2
+    ///   double median = normal.Median; // 2
     /// 
-    /// // The variance is the square of the standard deviation
-    /// double variance = normal.Variance; // 3² = 9
+    ///   // The variance is the square of the standard deviation
+    ///   double variance = normal.Variance; // 3² = 9
+    ///   
+    ///   // Let's check what is the cumulative probability of
+    ///   // a value less than 3 ocurring in this distribution:
+    ///   double cdf = normal.DistributionFunction(3); // 0.63055
     /// 
-    /// // Let's check what is the cumulative probability of
-    /// // a value less than 3 ocurring in this distribution:
-    /// double cdf = normal.DistributionFunction(3); // 0.63055
+    ///   // Finally, let's generate 1000 samples from this distribution
+    ///   // and check if they have the specified mean and standard devs
     /// 
-    /// // Finally, let's generate 1000 samples from this distribution
-    /// // and check if they have the specified mean and standard devs
+    ///   double[] samples = normal.Generate(1000);
     /// 
-    /// double[] samples = normal.Generate(1000);
+    ///   double sampleMean = samples.Mean();             // 1.92
+    ///   double sampleDev = samples.StandardDeviation(); // 3.00
+    /// </code>
     /// 
-    /// double sampleMean = samples.Mean();             // 1.92
-    /// double sampleDev = samples.StandardDeviation(); // 3.00
+    /// <para>
+    ///   This example further demonstrates how to compute
+    ///   derived measures from a Normal distribution: </para>
+    ///   
+    /// <code>
+    ///   var normal = new NormalDistribution(mean: 4, stdDev: 4.2);
+    ///   
+    ///   double mean = normal.Mean;     // 4.0
+    ///   double median = normal.Median; // 4.0
+    ///   double var = normal.Variance;  // 17.64
+    ///   
+    ///   double cdf = normal.DistributionFunction(x: 1.4);           // 0.26794249453351904
+    ///   double pdf = normal.ProbabilityDensityFunction(x: 1.4);     // 0.078423391448155175
+    ///   double lpdf = normal.LogProbabilityDensityFunction(x: 1.4); // -2.5456330358182586
+    ///   
+    ///   double ccdf = normal.ComplementaryDistributionFunction(x: 1.4); // 0.732057505466481
+    ///   double icdf = normal.InverseDistributionFunction(p: cdf);       // 1.4
+    ///   
+    ///   double hf = normal.HazardFunction(x: 1.4);            // 0.10712736480747137
+    ///   double chf = normal.CumulativeHazardFunction(x: 1.4); // 0.31189620872601354
+    ///   
+    ///   string str = normal.ToString(CultureInfo.InvariantCulture); // N(x; μ = 4, σ² = 17.64)
     /// </code>
     /// </example>
     /// 
+    /// <seealso cref="Accord.Statistics.Testing.ZTest"/>
+    /// <seealso cref="Accord.Statistics.Testing.TTest"/>
+    /// 
     [Serializable]
     public class NormalDistribution : UnivariateContinuousDistribution,
-        IFormattable, IFittableDistribution<double, NormalOptions>,
-        ISampleableDistribution<double>
+        IFittableDistribution<double, NormalOptions>,
+        ISampleableDistribution<double>, IFormattable
     {
 
         // Distribution parameters
-        private double mean = 0;  // mean
-        private double stdDev = 1; // standard deviation
+        private double mean = 0;   // mean μ
+        private double stdDev = 1; // standard deviation σ
 
         // Distribution measures
         private double? entropy;
 
         // Derived measures
-        private double variance = 1;
-        private double lnconstant; // log(1/sqrt(2*pi*variance))
+        private double variance = 1; // σ²
+        private double lnconstant;   // log(1/sqrt(2*pi*variance))
 
         private bool immutable;
 
@@ -109,7 +137,7 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   with given mean and unit standard deviation.
         /// </summary>
         /// 
-        /// <param name="mean">The distribution's mean value.</param>
+        /// <param name="mean">The distribution's mean value μ (mu).</param>
         /// 
         public NormalDistribution(double mean)
         {
@@ -121,8 +149,8 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   with given mean and standard deviation.
         /// </summary>
         /// 
-        /// <param name="mean">The distribution's mean value.</param>
-        /// <param name="stdDev">The distribution's standard deviation.</param>
+        /// <param name="mean">The distribution's mean value μ (mu).</param>
+        /// <param name="stdDev">The distribution's standard deviation σ (sigma).</param>
         /// 
         public NormalDistribution(double mean, double stdDev)
         {
@@ -135,7 +163,8 @@ namespace Accord.Statistics.Distributions.Univariate
 
 
         /// <summary>
-        ///   Gets the Mean for this Normal distribution.
+        ///   Gets the Mean value μ (mu) for 
+        ///   this Normal distribution.
         /// </summary>
         /// 
         public override double Mean
@@ -144,8 +173,25 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
-        ///   Gets the Variance (the square of the standard
-        ///   deviation) for this Normal distribution.
+        ///   Gets the median for this distribution.
+        /// </summary>
+        /// 
+        /// <value>
+        ///   The distribution's median value.
+        /// </value>
+        /// 
+        public override double Median
+        {
+            get
+            {
+                System.Diagnostics.Debug.Assert(mean == base.Median);
+                return mean;
+            }
+        }
+
+        /// <summary>
+        ///   Gets the Variance σ² (sigma-squared), which is the square
+        ///   of the standard deviation σ for this Normal distribution.
         /// </summary>
         /// 
         public override double Variance
@@ -154,13 +200,27 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
-        ///   Gets the Standard Deviation (the square root of
-        ///   the variance) for this Normal distribution.
+        ///   Gets the Standard Deviation σ (sigma), which is the 
+        ///   square root of the variance for this Normal distribution.
         /// </summary>
         /// 
         public override double StandardDeviation
         {
             get { return stdDev; }
+        }
+
+        /// <summary>
+        ///   Gets the support interval for this distribution.
+        /// </summary>
+        /// 
+        /// <value>
+        ///   A <see cref="AForge.DoubleRange" /> containing
+        ///   the support interval for this distribution.
+        /// </value>
+        /// 
+        public override DoubleRange Support
+        {
+            get { return new DoubleRange(Double.NegativeInfinity, Double.PositiveInfinity); }
         }
 
         /// <summary>
@@ -172,9 +232,7 @@ namespace Accord.Statistics.Distributions.Univariate
             get
             {
                 if (!entropy.HasValue)
-                {
                     entropy = 0.5 * (Math.Log(2.0 * Math.PI * variance) + 1);
-                }
 
                 return entropy.Value;
             }
@@ -208,16 +266,22 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   </list></para>
         /// </remarks>
         /// 
+        /// <example>
+        ///   See <see cref="NormalDistribution"/>.
+        /// </example>
+        /// 
         public override double DistributionFunction(double x)
         {
             double z = (x - mean) / stdDev;
-            return Special.Erfc(-z / Constants.Sqrt2) * 0.5;
+            double cdf = Special.Erfc(-z / Constants.Sqrt2) * 0.5;
 
             /*
                 // For a normal distribution with zero variance, the cdf is the Heaviside
                 // step function (Wipedia, http://en.wikipedia.org/wiki/Normal_distribution)
                 return (x >= mean) ? 1.0 : 0.0;
             */
+
+            return cdf;
         }
 
 
@@ -228,14 +292,28 @@ namespace Accord.Statistics.Distributions.Univariate
         /// </summary>
         /// 
         /// <remarks>
+        /// <para>
         ///   The Inverse Cumulative Distribution Function (ICDF) specifies, for
         ///   a given probability, the value which the random variable will be at,
-        ///   or below, with that probability.
+        ///   or below, with that probability.</para>
+        /// <para>
+        ///   The Normal distribution's ICDF is defined in terms of the
+        ///   <see cref="Normal.Inverse">standard normal inverse cumulative
+        ///   distribution function I</see> as <c>ICDF(p) = μ + σ * I(p)</c>.
+        /// </para>
         /// </remarks>
-        /// 
+        ///
+        /// <example>
+        ///   See <see cref="NormalDistribution"/>.
+        /// </example>
+        ///
         public override double InverseDistributionFunction(double p)
         {
-            return mean + stdDev * Normal.Inverse(p);
+            double icdf = mean + stdDev * Normal.Inverse(p);
+
+            System.Diagnostics.Debug.Assert(icdf.IsRelativelyEqual(base.InverseDistributionFunction(p), 1e-6));
+
+            return icdf;
         }
 
         /// <summary>
@@ -254,10 +332,18 @@ namespace Accord.Statistics.Distributions.Univariate
         /// </returns>
         /// 
         /// <remarks>
+        /// <para>
         ///   The Probability Density Function (PDF) describes the
-        ///   probability that a given value <c>x</c> will occur.
+        ///   probability that a given value <c>x</c> will occur.</para>
+        /// <para>
+        ///   The Normal distribution's PDF is defined as
+        ///   <c>PDF(x) = c * exp((x - μ / σ)²/2)</c>.</para>
         /// </remarks>
         /// 
+        /// <example>
+        ///   See <see cref="NormalDistribution"/>.
+        /// </example> 
+        ///
         public override double ProbabilityDensityFunction(double x)
         {
             double z = (x - mean) / stdDev;
@@ -295,6 +381,10 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   The Probability Density Function (PDF) describes the
         ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
+        /// 
+        /// <example>
+        ///   See <see cref="NormalDistribution"/>.
+        /// </example>
         /// 
         public override double LogProbabilityDensityFunction(double x)
         {
@@ -415,6 +505,61 @@ namespace Accord.Statistics.Distributions.Univariate
             return new NormalDistribution(mean, stdDev);
         }
 
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public override string ToString()
+        {
+            return String.Format("N(x; μ = {0}, σ² = {1})", mean, variance);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(IFormatProvider formatProvider)
+        {
+            return String.Format(formatProvider, "N(x; μ = {0}, σ² = {1})", mean, variance);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return String.Format(formatProvider, "N(x; μ = {0}, σ² = {1})",
+                mean.ToString(format, formatProvider),
+                variance.ToString(format, formatProvider));
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format)
+        {
+            return String.Format("N(x; μ = {0}, σ² = {1})",
+                mean.ToString(format), variance.ToString(format));
+        }
+
 
         private void initialize(double mu, double dev, double var)
         {
@@ -456,34 +601,6 @@ namespace Accord.Statistics.Distributions.Univariate
             return n;
         }
 
-        /// <summary>
-        ///   Returns a <see cref="System.String"/> that represents this instance.
-        /// </summary>
-        /// 
-        /// <returns>
-        ///   A <see cref="System.String"/> that represents this instance.
-        /// </returns>
-        /// 
-        public override string ToString()
-        {
-            return String.Format("{0} ± {1}", mean, StandardDeviation);
-        }
-
-        /// <summary>
-        ///   Returns a <see cref="System.String"/> that represents this instance.
-        /// </summary>
-        /// 
-        /// <param name="format">The format.</param>
-        /// <param name="formatProvider">The format provider.</param>
-        /// 
-        /// <returns>
-        ///   A <see cref="System.String"/> that represents this instance.
-        /// </returns>
-        /// 
-        public string ToString(string format, IFormatProvider formatProvider)
-        {
-            return String.Format(formatProvider, "{0} ± {1}", mean, StandardDeviation);
-        }
 
         /// <summary>
         ///   Converts this univariate distribution into a

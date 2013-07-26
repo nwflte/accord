@@ -24,6 +24,8 @@ namespace Accord.Statistics.Distributions.Univariate
 {
     using System;
     using Accord.Statistics.Distributions.Fitting;
+    using AForge;
+    using Accord.Math;
 
     /// <summary>
     ///   Estimators for Hazard distribution functions.
@@ -48,10 +50,70 @@ namespace Accord.Statistics.Distributions.Univariate
     ///   Empirical Hazard Distribution.
     /// </summary>
     /// 
+    /// <remarks>
+    /// <para>
+    ///   The Empirical Hazard (or Survival) Distribution can be used as an
+    ///   estimative of the true Survival function for a dataset which does
+    ///   not relies on distribution or model assumptions about the data.</para>
+    /// <para>
+    ///   This class can be instantiated using either hazards values through
+    ///   its <see cref="EmpiricalHazardDistribution">constructor</see> and
+    ///   <see cref="FromHazardValues"/>; or using survival values using
+    ///   <see cref="FromSurvivalValues"/>.</para>
+    ///   
+    /// <para>
+    ///   The most direct use for this class is in Survival Analysis, such as when
+    ///   using or creating <see cref=" Accord.Statistics.Models.Regression.ProportionalHazards">
+    ///   Cox's Proportional Hazards models</see>.</para>
+    /// </remarks>
+    /// 
+    /// <example>
+    /// <para>
+    ///   The following example shows how to construct an empirical hazards 
+    ///   function from a set of hazard values at the given time instants.</para>
+    /// <code>
+    /// 
+    ///   // Consider the following observations, ocurring at the given timesteps
+    ///   double[] times = { 11, 10, 9, 8, 6, 5, 4, 2 };
+    ///   double[] values = { 0.22, 0.67, 1.00, 0.18, 1.00, 1.00, 1.00, 0.55 };
+    ///   
+    ///   // Create a new empirical distribution function given the observations and event times
+    ///   EmpiricalHazardDistribution distribution = new EmpiricalHazardDistribution(times, values);
+    ///   
+    ///   // Common measures
+    ///   double mean   = distribution.Mean;     // 0.93696461879063664
+    ///   double median = distribution.Median;   // 3.9999999151458066
+    ///   double var    = distribution.Variance; // 2.0441627748096289
+    ///   
+    ///   // Cumulative distribution functions
+    ///   double cdf = distribution.DistributionFunction(x: 4.2);           // 0.7877520261732569
+    ///   double ccdf = distribution.ComplementaryDistributionFunction(x: 4.2); // 0.21224797382674304
+    ///   double icdf = distribution.InverseDistributionFunction(p: cdf);       // 4.3304819115496436
+    ///   
+    ///   // Probability density functions
+    ///   double pdf = distribution.ProbabilityDensityFunction(x: 4.2);     // 0.046694554241883471
+    ///   double lpdf = distribution.LogProbabilityDensityFunction(x: 4.2); // -3.0641277326297756
+    ///   
+    ///   // Hazard (failure rate) functions
+    ///   double hf = distribution.HazardFunction(x: 4.2);            // 0.22
+    ///   double chf = distribution.CumulativeHazardFunction(x: 4.2); // 1.55
+    ///   
+    ///   // String representation
+    ///   string str = distribution.ToString(); // H(x; v, t)
+    /// </code>
+    /// </example>
+    /// 
+    /// <seealso cref="Accord.Statistics.Models.Regression.ProportionalHazards"/>
+    /// 
     [Serializable]
     public class EmpiricalHazardDistribution : UnivariateContinuousDistribution,
         IFittableDistribution<double, EmpiricalHazardOptions>
     {
+        private double? mean;
+        private double? variance;
+
+        private double? maxTimes;
+
 
         /// <summary>
         ///   Gets the time steps of the hazard density values.
@@ -65,9 +127,6 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public double[] Hazards { get; private set; }
 
-
-        private double? mean;
-        private double? variance;
 
         /// <summary>
         ///   Initializes a new instance of the <see cref="EmpiricalHazardDistribution"/> class.
@@ -156,6 +215,26 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
+        ///   Gets the support interval for this distribution.
+        /// </summary>
+        /// 
+        /// <value>
+        ///   A <see cref="AForge.DoubleRange" /> containing
+        ///   the support interval for this distribution.
+        /// </value>
+        /// 
+        public override DoubleRange Support
+        {
+            get
+            {
+                if (!maxTimes.HasValue)
+                    maxTimes = Matrix.Max(Times);
+
+                return new DoubleRange(0, maxTimes.Value);
+            }
+        }
+
+        /// <summary>
         ///   Gets the cumulative hazard function for this
         ///   distribution evaluated at point <c>x</c>.
         /// </summary>
@@ -194,9 +273,17 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override double DistributionFunction(double x)
         {
+            if (!maxTimes.HasValue)
+                maxTimes = Matrix.Max(Times);
+
+            if (x > maxTimes)
+                return 1.0;
+
             // H(x) = -ln(1-F(x))
             // F(x) = 1 - exp(-H(x))
-            return 1.0 - Math.Exp(-CumulativeHazardFunction(x));
+            double chf = CumulativeHazardFunction(x);
+            double exp = Math.Exp(-chf);
+            return 1.0 - exp;
         }
 
 
@@ -233,6 +320,12 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   The probability of <c>x</c> occurring
         ///   in the current distribution.
         /// </returns>
+        /// 
+        /// <remarks>
+        ///   In the Emprical Hazard Distribution, the PDF is defined
+        ///   as the product of the hazard function h(x) and survival 
+        ///   function CDF(x), as PDF(x) = h(x) * CDF(x).
+        /// </remarks>
         /// 
         public override double ProbabilityDensityFunction(double x)
         {
@@ -426,7 +519,18 @@ namespace Accord.Statistics.Distributions.Univariate
             this.mean = null;
             this.variance = null;
         }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public override string ToString()
+        {
+            return "H(x; v, t)";
+        }
     }
-
-
 }

@@ -23,10 +23,6 @@
 namespace Accord.Statistics.Distributions.DensityKernels
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using Accord.Math;
 
     /// <summary>
     ///   Gaussian density kernel.
@@ -50,7 +46,9 @@ namespace Accord.Statistics.Distributions.DensityKernels
     ///       Visualization, Wiley, Aug 31, 1992</description></item>
     ///   </list></para>
     /// </remarks>
-    /// 
+    ///
+    /// <seealso cref="Accord.Statistics.Distributions.Univariate.EmpiricalDistribution"/>
+    ///
     [Serializable]
     public class GaussianKernel : IRadiallySymmetricKernel
     {

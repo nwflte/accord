@@ -24,10 +24,26 @@ namespace Accord.Statistics.Distributions
 {
     using System;
     using Accord.Statistics.Distributions.Fitting;
+    using Accord.Statistics.Distributions.Multivariate;
 
     /// <summary>
     ///   Common interface for multivariate probability distributions.
     /// </summary>
+    /// 
+    /// <remarks>
+    ///   <para>
+    ///   This interface is implemented by both multivariate <see cref="MultivariateDiscreteDistribution">
+    ///   Discrete Distributions</see> and <see cref="MultivariateContinuousDistribution">Continuous 
+    ///   Distributions</see>.</para>
+    ///   
+    ///   <para>
+    ///   For Univariate distributions, see <see cref="IUnivariateDistribution"/>.</para>
+    /// </remarks>
+    /// 
+    /// <seealso cref="MultivariateNormalDistribution"/>
+    /// <seealso cref="DirichletDistribution"/>
+    /// <seealso cref="MultivariateEmpiricalDistribution"/>
+    /// <seealso cref="WishartDistribution"/>
     /// 
     public interface IMultivariateDistribution : IDistribution
     {

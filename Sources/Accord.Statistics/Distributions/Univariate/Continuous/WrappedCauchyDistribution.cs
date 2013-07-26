@@ -25,6 +25,7 @@ namespace Accord.Statistics.Distributions.Univariate
     using System;
     using Accord.Statistics.Distributions.Fitting;
     using AForge.Math;
+    using AForge;
 
     /// <summary>
     ///   Wrapped Cauchy Distribution.
@@ -41,11 +42,40 @@ namespace Accord.Statistics.Distributions.Univariate
     ///  <para>
     ///   The wrapped Cauchy distribution is often found in the field of spectroscopy where
     ///   it is used to analyze diffraction patterns (e.g. see Fabry–Pérot interferometer)</para>.
+    ///   
+    /// <para>    
+    ///   References:
+    ///   <list type="bullet">
+    ///     <item><description><a href="http://en.wikipedia.org/wiki/Directional_statistics">
+    ///       Wikipedia, The Free Encyclopedia. Directional statistics. Available on:
+    ///       http://en.wikipedia.org/wiki/Directional_statistics </a></description></item>
+    ///     <item><description><a href="http://en.wikipedia.org/wiki/Wrapped_Cauchy_distribution">
+    ///       Wikipedia, The Free Encyclopedia. Wrapped Cauchy distribution. Available on:
+    ///       http://en.wikipedia.org/wiki/Wrapped_Cauchy_distribution </a></description></item>
+    ///   </list></para>
     /// </remarks>
     /// 
-    /// http://en.wikipedia.org/wiki/Directional_statistics
+    /// <example>
+    /// <code>
+    ///   // Create a Wrapped Cauchy distribution with μ = 0.42, γ = 3
+    ///   var dist = new WrappedCauchyDistribution(mu: 0.42, gamma: 3);
+    ///   
+    ///   // Common measures
+    ///   double mean = dist.Mean;     // 0.42
+    ///   double var = dist.Variance;  // 0.950212931632136
+    ///    
+    ///   // Probability density functions
+    ///   double pdf = dist.ProbabilityDensityFunction(x: 0.42); // 0.1758330112785475
+    ///   double lpdf = dist.LogProbabilityDensityFunction(x: 0.42); // -1.7382205338929015
+    ///   
+    ///   // String representation
+    ///   string str = dist.ToString(); // "WrappedCauchy(x; μ = 0,42, γ = 3)"
+    /// </code>
+    /// </example>
     /// 
-    public class WrappedCauchyDistribution : UnivariateContinuousDistribution, 
+    /// <seealso cref="CauchyDistribution"/>
+    /// 
+    public class WrappedCauchyDistribution : UnivariateContinuousDistribution,
         IFittableDistribution<double, CauchyOptions>
     {
 
@@ -95,6 +125,29 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
+        ///   Not supported.
+        /// </summary>
+        /// 
+        public override double Median
+        {
+            get { throw new NotSupportedException(); }
+        }
+
+        /// <summary>
+        ///   Gets the support interval for this distribution.
+        /// </summary>
+        /// 
+        /// <value>
+        ///   A <see cref="AForge.DoubleRange" /> containing
+        ///   the support interval for this distribution.
+        /// </value>
+        /// 
+        public override DoubleRange Support
+        {
+            get { return new DoubleRange(-Math.PI, Math.PI); }
+        }
+
+        /// <summary>
         ///   Gets the entropy for this distribution.
         /// </summary>
         /// 
@@ -108,11 +161,8 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
-        ///   Gets the cumulative distribution function (cdf) for
-        ///   this distribution evaluated at point <c>x</c>.
+        ///   Not supported.
         /// </summary>
-        /// 
-        /// <param name="x">A single point in the distribution range.</param>
         /// 
         public override double DistributionFunction(double x)
         {
@@ -133,7 +183,8 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override double ProbabilityDensityFunction(double x)
         {
-            return (1 / (2 * Math.PI)) * Math.Sinh(gamma) / (Math.Cosh(gamma) - Math.Cos(x - mu));
+            double constant = (1.0 / (2 * Math.PI));
+            return constant * Math.Sinh(gamma) / (Math.Cosh(gamma) - Math.Cos(x - mu));
         }
 
         /// <summary>
@@ -177,7 +228,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// <param name="options">Optional arguments which may be used during fitting, such
         ///   as regularization constants and additional parameters.</param>
         ///   
-        public void  Fit(double[] observations, double[] weights = null, CauchyOptions options = null)
+        public void Fit(double[] observations, double[] weights = null, CauchyOptions options = null)
         {
             double sin = 0, cos = 0;
             for (int i = 0; i < observations.Length; i++)
@@ -195,5 +246,59 @@ namespace Accord.Statistics.Distributions.Univariate
             gamma = Math.Log(1 / R2e) / 2;
         }
 
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public override string ToString()
+        {
+            return String.Format("WrappedCauchy(x; μ = {0}, γ = {1})", mu, gamma);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(IFormatProvider formatProvider)
+        {
+            return String.Format(formatProvider, "WrappedCauchy(x; μ = {0}, γ = {1})", mu, gamma);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return String.Format(formatProvider, "WrappedCauchy(x; μ = {0}, γ = {1})",
+                mu.ToString(format, formatProvider),
+                gamma.ToString(format, formatProvider));
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format)
+        {
+            return String.Format("WrappedCauchy(x; μ = {0}, γ = {1})",
+                mu.ToString(format), gamma.ToString(format));
+        }
     }
 }

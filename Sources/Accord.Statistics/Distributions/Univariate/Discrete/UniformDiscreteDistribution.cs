@@ -24,10 +24,75 @@ namespace Accord.Statistics.Distributions.Univariate
 {
     using System;
     using Accord.Math;
+    using AForge;
 
     /// <summary>
     ///   Discrete uniform distribution.
     /// </summary>
+    /// 
+    /// <remarks>
+    /// <para>
+    ///   In probability theory and statistics, the discrete uniform distribution is a 
+    ///   symmetric probability distribution whereby a finite number of values are equally
+    ///   likely to be observed; every one of n values has equal probability 1/n. Another 
+    ///   way of saying "discrete uniform distribution" would be "a known, finite number of
+    ///   outcomes equally likely to happen".</para>
+    ///
+    /// <para>
+    ///   A simple example of the discrete uniform distribution is throwing a fair die. 
+    ///   The possible values are 1, 2, 3, 4, 5, 6, and each time the die is thrown the 
+    ///   probability of a given score is 1/6. If two dice are thrown and their values 
+    ///   added, the resulting distribution is no longer uniform since not all sums have 
+    ///   equal probability.</para>
+    ///   
+    /// <para>
+    ///   The discrete uniform distribution itself is inherently non-parametric. It is 
+    ///   convenient, however, to represent its values generally by an integer interval
+    ///   [a,b], so that a,b become the main parameters of the distribution (often one
+    ///   simply considers the interval [1,n] with the single parameter n). </para>
+    ///   
+    /// <para>    
+    ///   References:
+    ///   <list type="bullet">
+    ///     <item><description><a href="http://en.wikipedia.org/wiki/Uniform_distribution_(discrete)">
+    ///       Wikipedia, The Free Encyclopedia. Uniform distribution (discrete). Available on:
+    ///       http://en.wikipedia.org/wiki/Uniform_distribution_(discrete) </a></description></item>
+    ///   </list></para>
+    /// </remarks>
+    /// 
+    /// <example>
+    /// <code>
+    ///   // Create an uniform (discrete) distribution in [2, 6] 
+    ///   var dist = new UniformDiscreteDistribution(a: 2, b: 6);
+    ///   
+    ///   // Common measures
+    ///   double mean = dist.Mean;     // 4.0
+    ///   double median = dist.Median; // 4.0
+    ///   double var = dist.Variance;  // 1.3333333333333333
+    ///   
+    ///   // Cumulative distribution functions
+    ///   double cdf = dist.DistributionFunction(k: 2);               // 0.2
+    ///   double ccdf = dist.ComplementaryDistributionFunction(k: 2); // 0.8
+    ///   
+    ///   // Probability mass functions
+    ///   double pmf1 = dist.ProbabilityMassFunction(k: 4); // 0.2
+    ///   double pmf2 = dist.ProbabilityMassFunction(k: 5); // 0.2
+    ///   double pmf3 = dist.ProbabilityMassFunction(k: 6); // 0.2
+    ///   double lpmf = dist.LogProbabilityMassFunction(k: 2); // -1.6094379124341003
+    ///   
+    ///   // Quantile function
+    ///   int icdf1 = dist.InverseDistributionFunction(p: 0.17); // 2
+    ///   int icdf2 = dist.InverseDistributionFunction(p: 0.46); // 4
+    ///   int icdf3 = dist.InverseDistributionFunction(p: 0.87); // 6
+    ///   
+    ///   // Hazard (failure rate) functions
+    ///   double hf = dist.HazardFunction(x: 4); // 0.5
+    ///   double chf = dist.CumulativeHazardFunction(x: 4); // 0.916290731874155
+    ///   
+    ///   // String representation
+    ///   string str = dist.ToString(CultureInfo.InvariantCulture); // "U(x; a = 2, b = 6)"
+    /// </code>
+    /// </example>
     /// 
     [Serializable]
     public class UniformDiscreteDistribution : UnivariateDiscreteDistribution
@@ -50,7 +115,7 @@ namespace Accord.Statistics.Distributions.Univariate
         public UniformDiscreteDistribution(int a, int b)
         {
             if (a > b)
-                throw new ArgumentOutOfRangeException("b", 
+                throw new ArgumentOutOfRangeException("b",
                     "The starting number a must be lower than b.");
 
             this.a = a;
@@ -102,6 +167,20 @@ namespace Accord.Statistics.Distributions.Univariate
         public override double Entropy
         {
             get { return Math.Log(b - a); }
+        }
+
+        /// <summary>
+        ///   Gets the support interval for this distribution.
+        /// </summary>
+        /// 
+        /// <value>
+        ///   A <see cref="AForge.DoubleRange" /> containing
+        ///   the support interval for this distribution.
+        /// </value>
+        /// 
+        public override DoubleRange Support
+        {
+            get { return new DoubleRange(a, b); }
         }
 
         /// <summary>
@@ -212,6 +291,59 @@ namespace Accord.Statistics.Distributions.Univariate
             return new UniformDiscreteDistribution(a, b);
         }
 
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public override string ToString()
+        {
+            return String.Format("U(x; a = {0}, b = {1})", a, b);
+        }
 
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(IFormatProvider formatProvider)
+        {
+            return String.Format(formatProvider, "U(x; a = {0}, b = {1})", a, b);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return String.Format(formatProvider, "U(x; a = {0}, b = {1})",
+                a.ToString(format, formatProvider),
+                b.ToString(format, formatProvider));
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format)
+        {
+            return String.Format("U(x; a = {0}, b = {1})",
+                a.ToString(format), b.ToString(format));
+        }
     }
 }

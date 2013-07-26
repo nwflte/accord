@@ -29,6 +29,7 @@ namespace Accord.Statistics.Distributions.Univariate
 {
     using System;
     using Accord.Math;
+    using AForge;
 
     /// <summary>
     ///   Kolmogorov-Smirnov distribution.
@@ -84,8 +85,37 @@ namespace Accord.Statistics.Distributions.Univariate
     ///  </list></para>  
     /// </remarks>
     /// 
+    /// <example>
+    /// <para>
+    ///   The following example shows how to build a Kolmogorov-Smirnov distribution
+    ///   for 42 samples and compute its main functions and characteristics: </para>
+    ///   
+    /// <code>
+    ///   // Create a Kolmogorov-Smirnov distribution with n = 42
+    ///   var ks = new KolmogorovSmirnovDistribution(samples: 42);
+    ///   
+    ///   // Common measures
+    ///   double mean   = ks.Mean;     // 0.13404812830261556
+    ///   double median = ks.Median;   // 0.12393613519421857
+    ///   double var    = ks.Variance; // 0.019154717445778062
+    ///   
+    ///   // Cumulative distribution functions
+    ///   double cdf  = ks.DistributionFunction(x: 0.27);              // 0.99659863602996079
+    ///   double ccdf = ks.ComplementaryDistributionFunction(x: 0.27); // 0.0034013639700392062
+    ///   double icdf = ks.InverseDistributionFunction(p: cdf);        // 0.26999997446092017
+    ///   
+    ///   // Hazard (failure rate) functions
+    ///   double chf  = ks.CumulativeHazardFunction(x: 0.27);          // 5.6835787601476619
+    ///   
+    ///   // String representation
+    ///   string str = ks.ToString(); // "KS(x; n = 42)"
+    /// </code>
+    /// </example>
+    /// 
+    /// <seealso cref="Accord.Statistics.Testing.KolmogorovSmirnovTest"/>
+    /// 
     [Serializable]
-    public class KolmogorovSmirnovDistribution : UnivariateContinuousDistribution
+    public class KolmogorovSmirnovDistribution : UnivariateContinuousDistribution, IFormattable
     {
 
         /// <summary>
@@ -106,8 +136,32 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
+        ///   Gets the support interval for this distribution.
+        /// </summary>
+        /// 
+        /// <value>
+        ///   A <see cref="AForge.DoubleRange" /> containing
+        ///   the support interval for this distribution.
+        /// </value>
+        /// 
+        public override DoubleRange Support
+        {
+            get { return new DoubleRange(0.5 / NumberOfSamples, 1.0); }
+        }
+        
+
+        /// <summary>
         ///   Gets the mean for this distribution.
         /// </summary>
+        /// 
+        /// <remarks>
+        ///   The mean of the K-S distribution for n samples 
+        ///   is computed as Mean = sqrt(π/2) * ln(2) / sqrt(n).
+        /// </remarks>
+        /// 
+        /// <example>
+        ///   See <see cref="KolmogorovSmirnovDistribution"/>.
+        /// </example>
         /// 
         public override double Mean
         {
@@ -117,6 +171,16 @@ namespace Accord.Statistics.Distributions.Univariate
         /// <summary>
         ///   Gets the variance for this distribution.
         /// </summary>
+        /// 
+        /// <remarks>
+        ///   The variance of the K-S distribution for n samples 
+        ///   is computed as Var = (π² / 12 - mean²) / n, in which
+        ///   mean is the K-S distribution <see cref="Mean"/>.
+        /// </remarks>
+        /// 
+        /// <example>
+        ///   See <see cref="KolmogorovSmirnovDistribution"/>.
+        /// </example>
         /// 
         public override double Variance
         {
@@ -144,26 +208,18 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   probability that a given value or any value smaller than it will occur.
         /// </remarks>
         /// 
+        /// <example>
+        ///   See <see cref="KolmogorovSmirnovDistribution"/>.
+        /// </example>
+        /// 
         public override double DistributionFunction(double x)
         {
             return CumulativeFunction(NumberOfSamples, x);
         }
 
         /// <summary>
-        ///   Gets the probability density function (pdf) for
-        ///   this distribution evaluated at point <c>x</c>.
+        ///   Not supported.
         /// </summary>
-        /// 
-        /// <param name="x">A single point in the distribution range.</param>
-        /// <returns>
-        ///   The probability of <c>x</c> occurring
-        ///   in the current distribution.
-        /// </returns>
-        /// 
-        /// <remarks>
-        ///   The Probability Density Function (PDF) describes the
-        ///   probability that a given value <c>x</c> will occur.
-        /// </remarks>
         /// 
         public override double ProbabilityDensityFunction(double x)
         {
@@ -171,20 +227,8 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
-        ///   Gets the log-probability density function (pdf) for
-        ///   this distribution evaluated at point <c>x</c>.
+        ///   Not supported.
         /// </summary>
-        /// 
-        /// <param name="x">A single point in the distribution range.</param>
-        /// <returns>
-        ///   The probability of <c>x</c> occurring
-        ///   in the current distribution.
-        /// </returns>
-        /// 
-        /// <remarks>
-        ///   The Probability Density Function (PDF) describes the
-        ///   probability that a given value <c>x</c> will occur.
-        /// </remarks>
         /// 
         public override double LogProbabilityDensityFunction(double x)
         {
@@ -203,6 +247,10 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   the complement of the Cumulative Distribution Function, or 1
         ///   minus the CDF.
         /// </remarks>
+        /// 
+        /// <example>
+        ///   See <see cref="KolmogorovSmirnovDistribution"/>.
+        /// </example>
         /// 
         public override double ComplementaryDistributionFunction(double x)
         {
@@ -244,7 +292,45 @@ namespace Accord.Statistics.Distributions.Univariate
             return new KolmogorovSmirnovDistribution(NumberOfSamples);
         }
 
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public override string ToString()
+        {
+            return String.Format("KS(x; n = {0})", NumberOfSamples);
+        }
 
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(IFormatProvider formatProvider)
+        {
+            return String.Format(formatProvider, "KS(x; n = {0})", NumberOfSamples);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return String.Format("KS(x; n = {0})", 
+                NumberOfSamples.ToString(format, formatProvider));
+        }
 
 
         #region Static methods

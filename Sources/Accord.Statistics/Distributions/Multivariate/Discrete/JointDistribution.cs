@@ -26,23 +26,79 @@ namespace Accord.Statistics.Distributions.Multivariate
     using Accord.Statistics.Distributions.Fitting;
 
     /// <summary>
-    ///   Univariate generic discrete distribution, also referred as the
-    ///   Categorical distribution.
+    ///   Joint distribution of multiple discrete univariate distributions.
     /// </summary>
+    /// 
     /// <remarks>
-    ///  <para>
-    ///   An univariate categorical distribution is a statistical distribution
-    ///   whose variables can take on only discrete values. Each discrete value
-    ///   defined within the interval of the distribution has an associated 
-    ///   probability value indicating its frequency of occurrence.</para>
-    ///  <para>
-    ///   The discrete uniform distribution is a special case of a generic
-    ///   discrete distribution whose probability values are constant.</para>
+    /// <para>
+    ///   This class builds a (potentially huge) lookup table for discrete
+    ///   symbol distributions. For example, given a discrete variable A
+    ///   which may take symbols a, b, c; and a discrete variable B which
+    ///   may assume values x, y, z, this class will build the probability
+    ///   table: </para>
+    ///   
+    /// <code>
+    ///          x      y      z
+    ///   a   p(a,x) p(a,y) p(a,z)
+    ///   b   p(b,x) p(b,y) p(b,z)
+    ///   c   p(c,x) p(c,y) p(c,z)
+    /// </code>
+    /// 
+    /// <para>
+    ///   Thus comprising the probabilities for all possible simple combination. This
+    ///   distribution is a generalization of the
+    ///   <see cref="Accord.Statistics.Distributions.Univariate.GeneralDiscreteDistribution"/>
+    ///   for multivariate discrete observations.
+    /// </para>
     /// </remarks>
+    /// 
+    /// <example>
+    /// <para>
+    ///   The following example should demonstrate how to estimate a joint 
+    ///   distribution of two discrete variables. The first variable can
+    ///   take up to three distinct values, whereas the second can assume
+    ///   up to five.</para>
+    /// 
+    /// <code>
+    ///   // Lets create a joint distribution for two discrete variables:
+    ///   // the first of which can assume 3 distinct symbol values: 0, 1, 2
+    ///   // the second which can assume 5 distinct symbol values: 0, 1, 2, 3, 4
+    ///   
+    ///   int[] symbols = { 3, 5 }; // specify the symbol counts
+    ///   
+    ///   // Create the joint distribution for the above variables
+    ///   JointDistribution joint = new JointDistribution(symbols);
+    /// 
+    ///   // Now, suppose we would like to fit the distribution (estimate
+    ///   // its parameters) from the following multivariate observations:
+    ///   //
+    ///   double[][] observations = 
+    ///   {
+    ///       new double[] { 0, 0 },
+    ///       new double[] { 1, 1 },
+    ///       new double[] { 2, 1 },
+    ///       new double[] { 0, 0 },
+    ///   };
+    /// 
+    ///   
+    ///   // Estimate parameters
+    ///   joint.Fit(observations);
+    /// 
+    ///   // At this point, we can query the distribution for observations:
+    ///   double p1 = joint.ProbabilityMassFunction(new[] { 0, 0 }); // should be 0.50
+    ///   double p2 = joint.ProbabilityMassFunction(new[] { 1, 1 }); // should be 0.25
+    ///   double p3 = joint.ProbabilityMassFunction(new[] { 2, 1 }); // should be 0.25
+    /// 
+    ///   // As it can be seem, indeed {0,0} appeared twice at the data, 
+    ///   // and {1,1} and {2,1 appeared one fourth of the data each.
+    /// </code>
+    /// </example>
+    /// 
+    /// <see cref="Accord.Statistics.Distributions.Univariate.GeneralDiscreteDistribution"/>
+    /// <see cref="Independent{TDistribution}"/>
     /// 
     [Serializable]
     public class JointDistribution : MultivariateDiscreteDistribution
-        //IFittableDistribution<int[], GeneralDiscreteOptions>
     {
 
         // distribution parameters

@@ -25,6 +25,8 @@ namespace Accord.Statistics.Distributions.Univariate
     using System;
     using Accord.Math;
     using Accord.Statistics.Distributions.Fitting;
+    using AForge;
+    using Accord.Math.Optimization;
 
     /// <summary>
     ///   Poisson probability distribution.
@@ -45,13 +47,47 @@ namespace Accord.Statistics.Distributions.Univariate
     ///   </list></para>
     /// </remarks>
     /// 
+    /// <example>
+    /// <code>
+    ///    // Create a Poisson distribution with λ = 4.2
+    ///    var dist = new PoissonDistribution(lambda: 4.2);
+    ///    
+    ///    // Common measures
+    ///    double mean = dist.Mean;     // 4.2
+    ///    double median = dist.Median; // 4.0
+    ///    double var = dist.Variance;  // 4.2
+    ///    
+    ///    // Cumulative distribution functions
+    ///    double cdf = dist.DistributionFunction(k: 2);               // 0.39488100648845126
+    ///    double ccdf = dist.ComplementaryDistributionFunction(k: 2); // 0.60511899351154874
+    ///    
+    ///    // Probability mass functions
+    ///    double pmf1 = dist.ProbabilityMassFunction(k: 4); // 0.19442365170822165
+    ///    double pmf2 = dist.ProbabilityMassFunction(k: 5); // 0.1633158674349062
+    ///    double pmf3 = dist.ProbabilityMassFunction(k: 6); // 0.11432110720443435
+    ///    double lpmf = dist.LogProbabilityMassFunction(k: 2); // -2.0229781299813
+    ///    
+    ///    // Quantile function
+    ///    int icdf1 = dist.InverseDistributionFunction(p: 0.17); // 2
+    ///    int icdf2 = dist.InverseDistributionFunction(p: 0.46); // 4
+    ///    int icdf3 = dist.InverseDistributionFunction(p: 0.87); // 7
+    ///    
+    ///    // Hazard (failure rate) functions
+    ///    double hf = dist.HazardFunction(x: 4); // 0.19780423301883465
+    ///    double chf = dist.CumulativeHazardFunction(x: 4); // 0.017238269667812049
+    ///    
+    ///    // String representation
+    ///    string str = dist.ToString(CultureInfo.InvariantCulture); // "Poisson(x; λ = 4.2)"
+    /// </code>
+    /// </example>
+    /// 
     [Serializable]
     public class PoissonDistribution : UnivariateDiscreteDistribution,
         IFittableDistribution<double, IFittingOptions>
     {
 
         // Distribution parameters
-        private double lambda;
+        private double lambda; // λ
 
         // Derived values
         private double epml;
@@ -61,13 +97,17 @@ namespace Accord.Statistics.Distributions.Univariate
 
 
         /// <summary>
-        ///   Creates a new Poisson distribution with the given lambda.
+        ///   Creates a new Poisson distribution with the given λ (lambda).
         /// </summary>
         /// 
-        /// <param name="lambda">The Poisson's lambda parameter.</param>
+        /// <param name="lambda">The Poisson's λ (lambda) parameter.</param>
         /// 
         public PoissonDistribution(double lambda)
         {
+            if (lambda <= 0)
+                throw new ArgumentOutOfRangeException("lambda", 
+                    "Poisson's λ must be greater than zero.");
+
             initialize(lambda);
         }
 
@@ -124,6 +164,20 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
+        ///   Gets the support interval for this distribution.
+        /// </summary>
+        /// 
+        /// <value>
+        ///   A <see cref="AForge.DoubleRange" /> containing
+        ///   the support interval for this distribution.
+        /// </value>
+        /// 
+        public override DoubleRange Support
+        {
+            get { return new DoubleRange(Double.Epsilon, Double.PositiveInfinity); }
+        }
+
+        /// <summary>
         ///   Gets the cumulative distribution function (cdf) for
         ///   this distribution evaluated at point <c>k</c>.
         /// </summary>
@@ -138,7 +192,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override double DistributionFunction(int k)
         {
-            return Gamma.Incomplete(k + 1, lambda) / Special.Factorial(k);
+            return Gamma.LowerIncomplete(k + 1, lambda) / Special.Factorial(k);
         }
 
         /// <summary>
@@ -164,23 +218,55 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
-        /// Gets the log-probability mass function (pmf) for
-        /// this distribution evaluated at point <c>k</c>.
+        ///   Gets the log-probability mass function (pmf) for
+        ///   this distribution evaluated at point <c>k</c>.
         /// </summary>
+        /// 
         /// <param name="k">A single point in the distribution range.</param>
+        /// 
         /// <returns>
-        /// The logarithm of the probability of <c>k</c>
-        /// occurring in the current distribution.
+        ///   The logarithm of the probability of <c>k</c>
+        ///   occurring in the current distribution.
         /// </returns>
+        /// 
         /// <remarks>
-        /// The Probability Mass Function (PMF) describes the
-        /// probability that a given value <c>k</c> will occur.
+        ///   The Probability Mass Function (PMF) describes the
+        ///   probability that a given value <c>k</c> will occur.
         /// </remarks>
+        /// 
         public override double LogProbabilityMassFunction(int k)
         {
             return (k * Math.Log(lambda) - Special.LogFactorial(k)) - lambda;
         }
 
+        /// <summary>
+        ///   Gets the inverse of the cumulative distribution function (icdf) for
+        ///   this distribution evaluated at probability <c>p</c>. This function
+        ///   is also known as the Quantile function.
+        /// </summary>
+        /// 
+        /// <param name="p">A probability value between 0 and 1.</param>
+        /// 
+        /// <returns>The observation which most likely generated <paramref name="p"/>.</returns>
+        /// 
+        /// <remarks>
+        /// <para>
+        ///   The Inverse Cumulative Distribution Function (ICDF) specifies, for
+        ///   a given probability, the value which the random variable will be at,
+        ///   or below, with that probability.</para>
+        /// <para>
+        ///   In Poisson's distribution, the Inverse CDF can be computed using
+        ///   the <see cref="Gamma.Inverse">inverse Gamma function Γ'(a, x)</see>
+        ///   as 
+        ///             <code>icdf(p) = Γ'(λ, 1 - p)</code>
+        ///   .</para>
+        /// </remarks>
+        public override int InverseDistributionFunction(double p)
+        {
+            double result = Gamma.Inverse(lambda, 1.0 - p);
+
+            return (int)Math.Round(result);
+        }
 
         /// <summary>
         ///   Fits the underlying distribution to a given set of observations.
@@ -225,6 +311,61 @@ namespace Accord.Statistics.Distributions.Univariate
         public override object Clone()
         {
             return new PoissonDistribution(lambda);
+        }
+
+
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public override string ToString()
+        {
+            return String.Format("Poisson(x; λ = {0})", lambda);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(IFormatProvider formatProvider)
+        {
+            return String.Format(formatProvider, "Poisson(x; λ = {0})", lambda);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return String.Format("Poisson(x; λ = {0})",
+                lambda.ToString(format, formatProvider));
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format)
+        {
+            return String.Format("Poisson(x; λ = {0})", lambda.ToString(format));
         }
     }
 }

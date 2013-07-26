@@ -25,10 +25,97 @@ namespace Accord.Statistics.Distributions.Univariate
     using System;
     using Accord.Math;
     using Accord.Statistics.Distributions.Fitting;
+    using AForge;
 
     /// <summary>
     ///   Gamma distribution.
     /// </summary>
+    /// 
+    /// <remarks>
+    /// <para>
+    ///    The gamma distribution is a two-parameter family of continuous probability
+    ///    distributions. There are three different parameterizations in common use:</para>
+    ///    <list type="bullet">
+    ///    <item><description>
+    ///       With a <see cref="Shape"/> parameter k and a
+    ///       <see cref="Scale"/> parameter θ.</description></item>
+    ///    <item><description>
+    ///       With a shape parameter α = k and an inverse scale parameter
+    ///       β = 1/θ, called a <see cref="Rate"/> parameter.</description></item>
+    ///    <item><description>
+    ///       With a shape parameter k and a <see cref="Mean"/>
+    ///       parameter μ = k/β.</description></item>
+    ///    </list>
+    ///       
+    /// <para>
+    ///    In each of these three forms, both parameters are positive real numbers. The
+    ///    parameterization with k and θ appears to be more common in econometrics and 
+    ///    certain other applied fields, where e.g. the gamma distribution is frequently
+    ///    used to model waiting times. For instance, in life testing, the waiting time 
+    ///    until death is a random variable that is frequently modeled with a gamma 
+    ///    distribution. This is the <see cref="GammaDistribution(double,double)">default 
+    ///    construction method for this class</see>.</para>
+    /// <para>
+    ///    The parameterization with α and β is more common in Bayesian statistics, where 
+    ///    the gamma distribution is used as a conjugate prior distribution for various 
+    ///    types of inverse scale (aka rate) parameters, such as the λ of an exponential 
+    ///    distribution or a Poisson distribution – or for that matter, the β of the gamma
+    ///    distribution itself. (The closely related inverse gamma distribution is used as
+    ///    a conjugate prior for scale parameters, such as the variance of a normal distribution.)
+    ///    In order to create a Gamma distribution using the Bayesian parametrization, you
+    ///    can use <see cref="GammaDistribution.FromBayesian"/>.</para>
+    /// <para>
+    ///    If k is an integer, then the distribution represents an Erlang distribution; i.e.,
+    ///    the sum of k independent exponentially distributed random variables, each of which
+    ///    has a mean of θ (which is equivalent to a rate parameter of 1/θ). </para>
+    /// <para>
+    ///    The gamma distribution is the maximum entropy probability distribution for a random 
+    ///    variable X for which E[X] = kθ = α/β is fixed and greater than zero, and <c>E[ln(X)] = 
+    ///    ψ(k) + ln(θ) = ψ(α) − ln(β)</c> is fixed (ψ is the digamma function).</para>
+    ///    
+    /// <para>
+    ///   References:
+    ///   <list type="bullet">
+    ///     <item><description><a href="http://en.wikipedia.org/wiki/Gamma_distribution">
+    ///       Wikipedia, The Free Encyclopedia. Gamma distribution. Available on: 
+    ///       http://en.wikipedia.org/wiki/Gamma_distribution </a></description></item>
+    ///   </list></para>     
+    /// </remarks>
+    /// 
+    /// <example>
+    /// <para>
+    ///   The following example shows how to create, test and compute the main 
+    ///   functions of a Gamma distribution given parameters θ = 4 and k = 2: </para>
+    ///   
+    /// <code>
+    ///   // Create a Γ-distribution with k = 2 and θ = 4
+    ///   var gamma = new GammaDistribution(theta: 4, k: 2);
+    /// 
+    ///   // Common measures
+    ///   double mean   = gamma.Mean;     // 8.0
+    ///   double median = gamma.Median;   // 6.7133878418421506
+    ///   double var    = gamma.Variance; // 32.0
+    /// 
+    ///   // Cumulative distribution functions
+    ///   double cdf  = gamma.DistributionFunction(x: 0.27);              //  0.002178158242390601
+    ///   double ccdf = gamma.ComplementaryDistributionFunction(x: 0.27); // 0.99782184175760935
+    ///   double icdf = gamma.InverseDistributionFunction(p: cdf);        // 0.26999998689819171
+    ///   
+    ///   // Probability density functions
+    ///   double pdf  = gamma.ProbabilityDensityFunction(x: 0.27);    //  0.015773530285395465
+    ///   double lpdf = gamma.LogProbabilityDensityFunction(x: 0.27); // -4.1494220422235433
+    /// 
+    ///   // Hazard (failure rate) functions
+    ///   double hf  = gamma.HazardFunction(x: 0.27);           // 0.015807962529274005
+    ///   double chf = gamma.CumulativeHazardFunction(x: 0.27); // 0.0021805338793574793
+    ///
+    ///   // String representation
+    ///   string str = gamma.ToString(CultureInfo.InvariantCulture); // "Γ(x; k = 2, θ = 4)"
+    /// </code>
+    /// </example>
+    /// 
+    /// <seealso cref="Accord.Math.Gamma"/>
+    /// <seealso cref="InverseGammaDistribution"/>
     /// 
     [Serializable]
     public class GammaDistribution : UnivariateContinuousDistribution,
@@ -37,8 +124,8 @@ namespace Accord.Statistics.Distributions.Univariate
     {
 
         // Distribution parameters
-        private double scale;
-        private double shape;
+        private double theta; // scale (θ)
+        private double k;     // shape
 
         // Derived measures
         private double constant;
@@ -49,41 +136,78 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   Constructs a Gamma distribution.
         /// </summary>
         /// 
-        /// <param name="scale">The scale parameter theta.</param>
-        /// <param name="shape">The shape parameter k.</param>
+        /// <param name="theta">The scale parameter θ (theta).</param>
+        /// <param name="k">The shape parameter k.</param>
         /// 
-        public GammaDistribution(double scale, double shape)
+        public GammaDistribution(double theta, double k)
         {
-            init(scale, shape);
-        }
-
-        private void init(double scale, double shape)
-        {
-            this.scale = scale;
-            this.shape = shape;
-
-            this.constant = 1.0 / (Math.Pow(scale, shape) * Gamma.Function(shape));
-            this.lnconstant = -(shape * Math.Log(scale) + Gamma.Log(shape));
+            init(theta, k);
         }
 
         /// <summary>
-        ///   Gets the distribution's Scale
-        ///   parameter theta.
+        ///   Constructs a Gamma distribution using α and β parametrization.
+        /// </summary>
+        /// 
+        /// <param name="alpha">The shape parameter α = k.</param>
+        /// <param name="beta">The inverse scale parameter β = 1/θ.</param>
+        /// 
+        /// <returns>A Gamma distribution constructed with the given parametrization.</returns>
+        /// 
+        public static GammaDistribution FromBayesian(double alpha, double beta)
+        {
+            return new GammaDistribution(1.0 / beta, alpha);
+        }
+
+        /// <summary>
+        ///   Constructs a Gamma distribution using k and μ parametrization.
+        /// </summary>
+        /// 
+        /// <param name="alpha">The shape parameter α = k.</param>
+        /// <param name="mean">The mean parameter μ = k/β.</param>
+        /// 
+        /// <returns>A Gamma distribution constructed with the given parametrization.</returns>
+        /// 
+        public static GammaDistribution FromMean(double alpha, double mean)
+        {
+            return new GammaDistribution(mean / alpha, alpha);
+        }
+
+        private void init(double theta, double k)
+        {
+            this.theta = theta;
+            this.k = k;
+
+            this.constant = 1.0 / (Math.Pow(theta, k) * Gamma.Function(k));
+            this.lnconstant = -(k * Math.Log(theta) + Gamma.Log(k));
+        }
+
+        /// <summary>
+        ///   Gets the distribution's scale
+        ///   parameter θ (theta).
         /// </summary>
         /// 
         public double Scale
         {
-            get { return scale; }
+            get { return theta; }
         }
 
         /// <summary>
-        ///   Gets the distribution's Shape
-        ///   parameter k.
+        ///   Gets the distribution's 
+        ///   shape parameter k.
         /// </summary>
         /// 
         public double Shape
         {
-            get { return shape; }
+            get { return k; }
+        }
+
+        /// <summary>
+        ///   Gets the inverse scale parameter β = 1/θ.
+        /// </summary>
+        /// 
+        public double Rate
+        {
+            get { return 1.0 / theta; }
         }
 
         /// <summary>
@@ -92,9 +216,13 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         /// <value>The distribution's mean value.</value>
         /// 
+        /// <remarks>
+        ///   In the Gamma distribution, the mean is computed as k*θ.
+        /// </remarks>
+        /// 
         public override double Mean
         {
-            get { return shape * scale; }
+            get { return k * theta; }
         }
 
         /// <summary>
@@ -103,20 +231,13 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         /// <value>The distribution's variance.</value>
         /// 
+        /// <remarks>
+        ///   In the Gamma distribution, the variance is computed as k*θ².
+        /// </remarks>
+        /// 
         public override double Variance
         {
-            get { return shape * scale * scale; }
-        }
-
-        /// <summary>
-        ///   Gets the median for this distribution.
-        /// </summary>
-        /// 
-        /// <value>The distribution's median value.</value>
-        /// 
-        public override double Median
-        {
-            get { return double.NaN; }
+            get { return k * theta * theta; }
         }
 
         /// <summary>
@@ -127,7 +248,21 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override double Entropy
         {
-            get { return shape + Math.Log(scale) + Gamma.Log(shape) + (1 - shape) * Gamma.Digamma(shape); }
+            get { return k + Math.Log(theta) + Gamma.Log(k) + (1 - k) * Gamma.Digamma(k); }
+        }
+
+        /// <summary>
+        ///   Gets the support interval for this distribution.
+        /// </summary>
+        /// 
+        /// <value>
+        ///   A <see cref="AForge.DoubleRange" /> containing
+        ///   the support interval for this distribution.
+        /// </value>
+        /// 
+        public override DoubleRange Support
+        {
+            get { return new DoubleRange(0, Double.PositiveInfinity); }
         }
 
         /// <summary>
@@ -138,13 +273,23 @@ namespace Accord.Statistics.Distributions.Univariate
         /// <param name="x">A single point in the distribution range.</param>
         /// 
         /// <remarks>
+        /// <para>
         ///   The Cumulative Distribution Function (CDF) describes the cumulative
-        ///   probability that a given value or any value smaller than it will occur.
+        ///   probability that a given value or any value smaller than it will occur.</para>
+        ///   
+        /// <para>
+        ///   The Gamma's CDF is computed in terms of the <see cref="Gamma.LowerIncomplete">
+        ///   Lower Incomplete Regularized Gamma Function P</see> as <c>CDF(x) = P(shape, 
+        ///   x / scale)</c>.</para>
         /// </remarks>
+        /// 
+        /// <example>
+        ///   See <see cref="GammaDistribution"/>.
+        /// </example>
         /// 
         public override double DistributionFunction(double x)
         {
-            return Gamma.LowerIncomplete(shape, x / scale);
+            return Gamma.LowerIncomplete(k, x / theta);
         }
 
         /// <summary>
@@ -164,9 +309,13 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
         /// 
+        /// <example>
+        ///   See <see cref="GammaDistribution"/>.
+        /// </example>
+        /// 
         public override double ProbabilityDensityFunction(double x)
         {
-            return constant * Math.Pow(x, shape - 1) * Math.Exp(-x / scale);
+            return constant * Math.Pow(x, k - 1) * Math.Exp(-x / theta);
         }
 
         /// <summary>
@@ -186,9 +335,13 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
         /// 
+        /// <example>
+        ///   See <see cref="GammaDistribution"/>.
+        /// </example>
+        /// 
         public override double LogProbabilityDensityFunction(double x)
         {
-            return lnconstant + (shape - 1) * Math.Log(x) - x / scale;
+            return lnconstant + (k - 1) * Math.Log(x) - x / theta;
         }
 
         /// <summary>
@@ -276,7 +429,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override object Clone()
         {
-            return new GammaDistribution(scale, shape);
+            return new GammaDistribution(theta, k);
         }
 
 
@@ -292,7 +445,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public double[] Generate(int samples)
         {
-            return Random(shape, scale, samples);
+            return Random(k, theta, samples);
         }
 
         /// <summary>
@@ -303,7 +456,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public double Generate()
         {
-            return Random(shape, scale);
+            return Random(k, theta);
         }
 
         /// <summary>
@@ -419,5 +572,46 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         #endregion
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public override string ToString()
+        {
+            return String.Format("Γ(x; k = {0}, θ = {1})", k, theta);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(IFormatProvider formatProvider)
+        {
+            return String.Format(formatProvider, "Γ(x; k = {0}, θ = {1})", k, theta);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return String.Format("Γ(x; k = {0}, θ = {1})", 
+                k.ToString(format, formatProvider),
+                theta.ToString(format, formatProvider));
+        }
     }
 }

@@ -23,13 +23,61 @@
 namespace Accord.Statistics.Distributions.Univariate
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
+    using AForge;
 
     /// <summary>
     ///   Gompertz distribution.
     /// </summary>
+    /// 
+    /// <remarks>
+    /// <para>
+    ///   The Gompertz distribution is a continuous probability distribution. The
+    ///   Gompertz distribution is often applied to describe the distribution of 
+    ///   adult lifespans by demographers and actuaries. Related fields of science
+    ///   such as biology and gerontology also considered the Gompertz distribution
+    ///   for the analysis of survival. More recently, computer scientists have also
+    ///   started to model the failure rates of computer codes by the Gompertz 
+    ///   distribution. In marketing science, it has been used as an individual-level 
+    ///   model of customer lifetime.</para>
+    /// 
+    /// <para>
+    ///   References:
+    ///   <list type="bullet">
+    ///     <item><description><a href="http://en.wikipedia.org/wiki/Gamma_distribution">
+    ///       Wikipedia, The Free Encyclopedia. Gompertz distribution. Available on: 
+    ///       http://en.wikipedia.org/wiki/Gompertz_distribution </a></description></item>
+    ///   </list></para>     
+    /// </remarks>
+    /// 
+    /// <example>
+    /// <para>
+    ///   The following example shows how to construct a Gompertz 
+    ///   distribution with <c>η = 4.2</c> and <c>b = 1.1</c>.</para>
+    ///
+    /// <code>
+    ///   // Create a new Gompertz distribution with η = 4.2 and b = 1.1
+    ///   GompertzDistribution dist = new GompertzDistribution(eta: 4.2, b: 1.1);
+    ///   
+    ///   // Common measures
+    ///   double median = dist.Median; // 0.13886469671401389
+    ///   
+    ///   // Cumulative distribution functions
+    ///   double cdf = dist.DistributionFunction(x: 0.27); // 0.76599768199799145
+    ///   double ccdf = dist.ComplementaryDistributionFunction(x: 0.27); // 0.23400231800200855
+    ///   double icdf = dist.InverseDistributionFunction(p: cdf); // 0.26999999999766749
+    ///   
+    ///   // Probability density functions
+    ///   double pdf = dist.ProbabilityDensityFunction(x: 0.27); // 1.4549484164912097
+    ///   double lpdf = dist.LogProbabilityDensityFunction(x: 0.27); // 0.37497044741163688
+    ///   
+    ///   // Hazard (failure rate) functions
+    ///   double hf = dist.HazardFunction(x: 0.27); // 6.2176666834502088
+    ///   double chf = dist.CumulativeHazardFunction(x: 0.27); // 1.4524242576820101
+    ///   
+    ///   // String representation
+    ///   string str = dist.ToString(CultureInfo.InvariantCulture); // "Gompertz(x; η = 4.2, b = 1.1)"
+    /// </code>
+    /// </example>
     /// 
     public class GompertzDistribution : UnivariateContinuousDistribution
     {
@@ -52,12 +100,8 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
-        ///   Gets the mean for this distribution.
+        ///   Not supported.
         /// </summary>
-        /// 
-        /// <value>
-        ///   The distribution's mean value.
-        /// </value>
         /// 
         public override double Mean
         {
@@ -65,12 +109,8 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
-        ///   Gets the variance for this distribution.
+        ///   Not supported.
         /// </summary>
-        /// 
-        /// <value>
-        ///   The distribution's variance.
-        /// </value>
         /// 
         public override double Variance
         {
@@ -78,16 +118,42 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
-        ///   Gets the entropy for this distribution.
+        ///   Gets the median for this distribution.
         /// </summary>
         /// 
         /// <value>
-        ///   The distribution's entropy.
+        ///   The distribution's median value.
         /// </value>
+        /// 
+        public override double Median
+        {
+            get
+            {
+                return (1.0 / b) * Math.Log((-1 / eta) * Math.Log(0.5) + 1);
+            }
+        }
+
+        /// <summary>
+        ///   Not supported.
+        /// </summary>
         /// 
         public override double Entropy
         {
             get { throw new NotSupportedException(); }
+        }
+
+        /// <summary>
+        ///   Gets the support interval for this distribution.
+        /// </summary>
+        /// 
+        /// <value>
+        ///   A <see cref="AForge.DoubleRange" /> containing
+        ///   the support interval for this distribution.
+        /// </value>
+        /// 
+        public override DoubleRange Support
+        {
+            get { return new DoubleRange(0, Double.PositiveInfinity); }
         }
 
         /// <summary>
@@ -99,7 +165,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override double DistributionFunction(double x)
         {
-            return 1 - Math.Exp(-eta * (Math.Exp(b * x - 11)));
+            return 1 - Math.Exp(-eta * (Math.Exp(b * x) - 1));
         }
 
         /// <summary>
@@ -147,6 +213,48 @@ namespace Accord.Statistics.Distributions.Univariate
         public override object Clone()
         {
             return new GompertzDistribution(eta, b);
+        }
+
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public override string ToString()
+        {
+            return String.Format("Gompertz(x; η = {0}, b = {1})", eta, b);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(IFormatProvider formatProvider)
+        {
+            return String.Format(formatProvider, "Gompertz(x; η = {0}, b = {1})", eta, b);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return String.Format("Gompertz(x; η = {0}, b = {1})",
+                eta.ToString(format, formatProvider),
+                b.ToString(format, formatProvider));
         }
     }
 }

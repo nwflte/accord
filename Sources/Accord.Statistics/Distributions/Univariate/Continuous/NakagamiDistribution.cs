@@ -25,6 +25,7 @@ namespace Accord.Statistics.Distributions.Univariate
     using System;
     using Accord.Math;
     using Accord.Statistics.Distributions.Fitting;
+    using AForge;
 
     /// <summary>
     ///   Nakagami distribution.
@@ -34,6 +35,7 @@ namespace Accord.Statistics.Distributions.Univariate
     /// <para>
     ///   The Nakagami distribution has been used in the modelling of wireless
     ///   signal attenuation while traversing multiple paths. </para>
+    ///   
     /// <para>    
     ///   References:
     ///   <list type="bullet">
@@ -49,9 +51,31 @@ namespace Accord.Statistics.Distributions.Univariate
     ///   </list></para>
     /// </remarks>
     /// 
+    /// <example>
+    /// <code>
+    ///   var nakagami = new NakagamiDistribution(shape: 2.4, spread: 4.2);
+    ///   
+    ///   double mean = nakagami.Mean;     // 1.946082119049118
+    ///   double median = nakagami.Median; // 1.9061151110206338
+    ///   double var = nakagami.Variance;  // 0.41276438591729486
+    ///   
+    ///   double cdf = nakagami.DistributionFunction(x: 1.4); // 0.20603416752368109
+    ///   double pdf = nakagami.ProbabilityDensityFunction(x: 1.4); // 0.49253215371343023
+    ///   double lpdf = nakagami.LogProbabilityDensityFunction(x: 1.4); // -0.708195533773302
+    ///   
+    ///   double ccdf = nakagami.ComplementaryDistributionFunction(x: 1.4); // 0.79396583247631891
+    ///   double icdf = nakagami.InverseDistributionFunction(p: cdf); // 1.400000000131993
+    ///   
+    ///   double hf = nakagami.HazardFunction(x: 1.4); // 0.62034426869133652
+    ///   double chf = nakagami.CumulativeHazardFunction(x: 1.4); // 0.23071485080660473
+    ///   
+    ///   string str = nakagami.ToString(CultureInfo.InvariantCulture); // Nakagami(x; μ = 2,4, ω = 4,2)"
+    /// </code>
+    /// </example>
+    /// 
     [Serializable]
     public class NakagamiDistribution : UnivariateContinuousDistribution,
-        ISampleableDistribution<double>
+        ISampleableDistribution<double>, IFormattable
     {
         // distribution parameters
         private double mu;
@@ -61,17 +85,17 @@ namespace Accord.Statistics.Distributions.Univariate
         private double? mean;
         private double? variance;
 
-        private double constant;
-        private double nratio;
-        private double twoMu1;
+        private double constant; // 2 * μ ^ μ / (Γ(μ) * ω ^ μ))
+        private double nratio;   // -μ / ω
+        private double twoMu1;   // 2 * μ - 1.0
 
 
         /// <summary>
         ///   Initializes a new instance of the <see cref="NakagamiDistribution"/> class.
         /// </summary>
         /// 
-        /// <param name="shape">The shape parameter μ.</param>
-        /// <param name="spread">The spread parameter ω.</param>
+        /// <param name="shape">The shape parameter μ (mu).</param>
+        /// <param name="spread">The spread parameter ω (omega).</param>
         /// 
         public NakagamiDistribution(double shape, double spread)
         {
@@ -104,10 +128,10 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
-        ///   Gets the distribution's shape parameter mu.
+        ///   Gets the distribution's shape parameter μ (mu).
         /// </summary>
         /// 
-        /// <value>The shape parameter mu.</value>
+        /// <value>The shape parameter μ (mu).</value>
         /// 
         public double Shape
         {
@@ -115,10 +139,10 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
-        ///   Gets the distribution's spread parameter omega.
+        ///   Gets the distribution's spread parameter ω (omega).
         /// </summary>
         /// 
-        /// <value>The spread parameter omega.</value>
+        /// <value>The spread parameter ω (omega).</value>
         /// 
         public double Spread
         {
@@ -130,6 +154,11 @@ namespace Accord.Statistics.Distributions.Univariate
         /// </summary>
         /// 
         /// <value>The distribution's mean value.</value>
+        /// 
+        /// <remarks>
+        ///   Nakagami's mean is defined in terms of the <see cref="Gamma.Function(double)">
+        ///   Gamma function Γ(x)</see> as <c>(Γ(μ + 0.5) / Γ(μ)) * sqrt(ω / μ)</c>.
+        /// </remarks>
         /// 
         public override double Mean
         {
@@ -147,6 +176,11 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         /// <value>The distribution's variance.</value>
         /// 
+        /// <remarks>
+        ///   Nakagami's variance is defined in terms of the <see cref="Gamma.Function(double)">
+        ///   Gamma function Γ(x)</see> as <c>ω * (1 - (1 / μ) * (Γ(μ + 0.5) / Γ(μ))²</c>.
+        /// </remarks>
+        /// 
         public override double Variance
         {
             get
@@ -161,14 +195,26 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
-        ///   Gets the entropy for this distribution.
+        ///   This method is not supported.
         /// </summary>
-        /// 
-        /// <value>The distribution's entropy.</value>
         /// 
         public override double Entropy
         {
             get { throw new NotSupportedException(); }
+        }
+
+        /// <summary>
+        ///   Gets the support interval for this distribution.
+        /// </summary>
+        /// 
+        /// <value>
+        ///   A <see cref="AForge.DoubleRange" /> containing
+        ///   the support interval for this distribution.
+        /// </value>
+        /// 
+        public override DoubleRange Support
+        {
+            get { return new DoubleRange(Double.Epsilon, Double.PositiveInfinity); }
         }
 
         /// <summary>
@@ -179,9 +225,19 @@ namespace Accord.Statistics.Distributions.Univariate
         /// <param name="x">A single point in the distribution range.</param>
         /// 
         /// <remarks>
+        /// <para>
         ///   The Cumulative Distribution Function (CDF) describes the cumulative
-        ///   probability that a given value or any value smaller than it will occur.
+        ///   probability that a given value or any value smaller than it will occur.</para>
+        /// <para>
+        ///   The Nakagami's distribution CDF is defined in terms of the 
+        ///   <see cref="Gamma.LowerIncomplete">Lower incomplete regularized 
+        ///   Gamma function P(a, x)</see> as <c>CDF(x) = P(μ, μ / ω) * x²</c>.
+        /// </para>
         /// </remarks>
+        /// 
+        /// <example>
+        ///   See <see cref="NakagamiDistribution"/>.
+        /// </example>
         /// 
         public override double DistributionFunction(double x)
         {
@@ -201,9 +257,18 @@ namespace Accord.Statistics.Distributions.Univariate
         /// </returns>
         /// 
         /// <remarks>
+        /// <para>
         ///   The Probability Density Function (PDF) describes the
-        ///   probability that a given value <c>x</c> will occur.
+        ///   probability that a given value <c>x</c> will occur.</para>
+        /// <para>
+        ///   Nakagami's PDF is defined as 
+        ///   <c>PDF(x) = c * x^(2 * μ - 1) * exp(-(μ / ω) * x²)</c>
+        ///   in which <c>c = 2 * μ ^ μ / (Γ(μ) * ω ^ μ))</c></para>
         /// </remarks>
+        /// 
+        /// <example>
+        ///   See <see cref="NakagamiDistribution"/>.
+        /// </example>
         /// 
         public override double ProbabilityDensityFunction(double x)
         {
@@ -223,9 +288,18 @@ namespace Accord.Statistics.Distributions.Univariate
         /// </returns>
         /// 
         /// <remarks>
+        /// <para>
         ///   The Probability Density Function (PDF) describes the
-        ///   probability that a given value <c>x</c> will occur.
+        ///   probability that a given value <c>x</c> will occur.</para>
+        /// <para>
+        ///   Nakagami's PDF is defined as 
+        ///   <c>PDF(x) = c * x^(2 * μ - 1) * exp(-(μ / ω) * x²)</c>
+        ///   in which <c>c = 2 * μ ^ μ / (Γ(μ) * ω ^ μ))</c></para>
         /// </remarks>
+        /// 
+        /// <example>
+        ///   See <see cref="NakagamiDistribution"/>.
+        /// </example>
         /// 
         public override double LogProbabilityDensityFunction(double x)
         {
@@ -376,5 +450,68 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         #endregion
+
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public override string ToString()
+        {
+            return String.Format("Nakagami(x; μ = {0}, ω = {1})", mu, omega);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <param name="formatProvider">The format provider.</param>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(IFormatProvider formatProvider)
+        {
+            return String.Format(formatProvider, "Nakagami(x; μ = {0}, ω = {1})", mu, omega);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <param name="format">The format.</param>
+        /// <param name="formatProvider">The format provider.</param>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return String.Format(formatProvider, "Nakagami(x; μ = {0}, ω = {1})",
+                mu.ToString(format, formatProvider),
+                omega.ToString(format, formatProvider));
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <param name="format">The format.</param>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format)
+        {
+            return String.Format("Nakagami(x; x; μ = {0}, ω = {1})",
+                mu.ToString(format), omega.ToString(format));
+        }
     }
 }

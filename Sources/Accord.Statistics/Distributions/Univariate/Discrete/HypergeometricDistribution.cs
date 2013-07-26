@@ -25,6 +25,7 @@ namespace Accord.Statistics.Distributions.Univariate
     using System;
     using Accord.Math;
     using Accord.Statistics.Distributions.Fitting;
+    using AForge;
 
     /// <summary>
     ///   Hypergeometric probability distribution.
@@ -33,8 +34,10 @@ namespace Accord.Statistics.Distributions.Univariate
     /// <remarks>
     /// <para>
     ///   The hypergeometric distribution is a discrete probability distribution that 
-    ///   describes the probability of k successes in n draws from a finite population
-    ///   without replacement.</para>
+    ///   describes the probability of <c>k</c> successes in <c>n</c> draws from a finite population
+    ///   without replacement. This is in contrast to the <see cref="BinomialDistribution">
+    ///   binomial distribution</see>, which describes the probability of <c>k</c> successes 
+    ///   in <c>n</c> draws with replacement.</para>
     ///   
     /// <para>    
     ///   References:
@@ -44,6 +47,49 @@ namespace Accord.Statistics.Distributions.Univariate
     ///       http://en.wikipedia.org/wiki/Hypergeometric_distribution </a></description></item>
     ///   </list></para>
     /// </remarks>
+    /// 
+    /// <example>
+    /// <code>
+    ///    // Distribution parameters
+    ///    int populationSize = 15; // population size N
+    ///    int success = 7;         // number of successes in the sample  
+    ///    int samples = 8;         // number of samples drawn from N
+    ///    
+    ///    // Create a new Hypergeometric distribution with N = 15, n = 8, and s = 7
+    ///    var dist = new HypergeometricDistribution(populationSize, success, samples);
+    ///    
+    ///    // Common measures
+    ///    double mean   = dist.Mean;     // 1.3809523809523812
+    ///    double median = dist.Median;   // 4.0
+    ///    double var    = dist.Variance; // 3.2879818594104315
+    ///    double mode   = dist.Mode;     // 4.0
+    ///    
+    ///    // Cumulative distribution functions
+    ///    double cdf = dist.DistributionFunction(k: 2);               // 0.80488799999999994
+    ///    double ccdf = dist.ComplementaryDistributionFunction(k: 2); // 0.19511200000000006
+    ///    
+    ///    // Probability mass functions
+    ///    double pdf1 = dist.ProbabilityMassFunction(k: 4); // 0.38073038073038074
+    ///    double pdf2 = dist.ProbabilityMassFunction(k: 5); // 0.18275058275058276
+    ///    double pdf3 = dist.ProbabilityMassFunction(k: 6); // 0.030458430458430458
+    ///    double lpdf = dist.LogProbabilityMassFunction(k: 2); // -2.3927801721315989
+    ///    
+    ///    // Quantile function
+    ///    int icdf1 = dist.InverseDistributionFunction(p: 0.17); // 3
+    ///    int icdf2 = dist.InverseDistributionFunction(p: 0.46); // 4
+    ///    int icdf3 = dist.InverseDistributionFunction(p: 0.87); // 5
+    ///    
+    ///    // Hazard (failure rate) functions
+    ///    double hf = dist.HazardFunction(x: 4); // 1.7753623188405792
+    ///    double chf = dist.CumulativeHazardFunction(x: 4); // 1.5396683418789763
+    ///    
+    ///    // String representation
+    ///    string str = dist.ToString(CultureInfo.InvariantCulture); // "HyperGeometric(x; N = 15, m = 7, n = 8)"
+    /// </code>
+    /// </example>
+    /// 
+    /// <seealso cref="BinomialDistribution"/>
+    /// <seealso cref="GeometricDistribution"/>
     /// 
     [Serializable]
     public class HypergeometricDistribution : UnivariateDiscreteDistribution,
@@ -57,8 +103,8 @@ namespace Accord.Statistics.Distributions.Univariate
 
 
         /// <summary>
-        ///   Gets the size <c>N</c> of the population
-        ///   for this distribution.
+        ///   Gets the size <c>N</c> of the 
+        ///   population for this distribution.
         /// </summary>
         /// 
         public int PopulationSize
@@ -67,7 +113,8 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
-        ///   Gets the size <c>n</c> of the sample drawn.
+        ///   Gets the size <c>n</c> of the sample drawn
+        ///   from <see cref="PopulationSize">N</see>.
         /// </summary>
         /// 
         public int SampleSize
@@ -77,7 +124,8 @@ namespace Accord.Statistics.Distributions.Univariate
 
         /// <summary>
         ///   Gets the count of success trials in the
-        ///   population for this distribution.
+        ///   population for this distribution. This
+        ///   is often referred as <c>m</c>.
         /// </summary>
         /// 
         public int PopulationSuccess
@@ -147,6 +195,38 @@ namespace Accord.Statistics.Distributions.Univariate
         public override double Entropy
         {
             get { throw new NotSupportedException(); }
+        }
+
+        /// <summary>
+        ///   Gets the mode for this distribution.
+        /// </summary>
+        /// 
+        /// <value>
+        ///   The distribution's mode value.
+        /// </value>
+        /// 
+        public override double Mode
+        {
+            get
+            {
+                double num = (n + 1) * (m + 1);
+                double den = N + 2;
+                return Math.Floor(num / den);
+            }
+        }
+
+        /// <summary>
+        ///   Gets the support interval for this distribution.
+        /// </summary>
+        /// 
+        /// <value>
+        ///   A <see cref="AForge.DoubleRange" /> containing
+        ///   the support interval for this distribution.
+        /// </value>
+        /// 
+        public override DoubleRange Support
+        {
+            get { return new DoubleRange(Math.Max(0, n + m - N), Math.Min(m, n)); }
         }
 
         /// <summary>
@@ -305,6 +385,63 @@ namespace Accord.Statistics.Distributions.Univariate
         public override object Clone()
         {
             return new HypergeometricDistribution(N, m, n);
+        }
+
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public override string ToString()
+        {
+            return String.Format("HyperGeometric(x; N = {0}, m = {1}, n = {2})", N, m, n);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(IFormatProvider formatProvider)
+        {
+            return String.Format(formatProvider, "HyperGeometric(x; N = {0}, m = {1}, n = {2})", N, m, n);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return String.Format("HyperGeometric(x; N = {0}, m = {1}, n = {2})",
+                N.ToString(format, formatProvider),
+                m.ToString(format, formatProvider),
+                n.ToString(format, formatProvider));
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format)
+        {
+            return String.Format("HyperGeometric(x; N = {0}, m = {1}, n = {2})",
+                N.ToString(format), m.ToString(format), n.ToString(format));
         }
     }
 }

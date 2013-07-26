@@ -25,6 +25,7 @@ namespace Accord.Statistics.Distributions.Univariate
     using System;
     using Accord.Math;
     using Accord.Statistics.Distributions.Fitting;
+    using AForge;
 
     /// <summary>
     ///   Rayleigh distribution.
@@ -46,25 +47,53 @@ namespace Accord.Statistics.Distributions.Univariate
     ///   References:
     ///   <list type="bullet">
     ///     <item><description><a href="http://en.wikipedia.org/wiki/Rayleigh_distribution">
-    ///       Wikipedia, The Free Encyclopedia. Inverse Gaussian distribution. Available on: 
+    ///       Wikipedia, The Free Encyclopedia. Rayleigh distribution. Available on: 
     ///       http://en.wikipedia.org/wiki/Rayleigh_distribution </a></description></item>
     ///   </list></para> 
     /// </remarks>
     /// 
+    /// <example>
+    /// <code>
+    ///   // Create a new Rayleigh's distribution with σ = 0.42
+    ///   var rayleigh = new RayleighDistribution(sigma: 0.42);
+    ///   
+    ///   // Common measures
+    ///   double mean = rayleigh.Mean;     // 0.52639193767251
+    ///   double median = rayleigh.Median; // 0.49451220943852386
+    ///   double var = rayleigh.Variance;  // 0.075711527953380237
+    ///   
+    ///   // Cumulative distribution functions
+    ///   double cdf = rayleigh.DistributionFunction(x: 1.4);               // 0.99613407986052716
+    ///   double ccdf = rayleigh.ComplementaryDistributionFunction(x: 1.4); // 0.0038659201394728449
+    ///   double icdf = rayleigh.InverseDistributionFunction(p: cdf);       // 1.4000000080222026
+    ///    
+    ///   // Probability density functions
+    ///   double pdf = rayleigh.ProbabilityDensityFunction(x: 1.4);     // 0.030681905868831811
+    ///   double lpdf = rayleigh.LogProbabilityDensityFunction(x: 1.4); // -3.4840821835248961
+    ///   
+    ///   // Hazard (failure rate) functions
+    ///   double hf = rayleigh.HazardFunction(x: 1.4); // 7.9365079365078612
+    ///   double chf = rayleigh.CumulativeHazardFunction(x: 1.4); // 5.5555555555555456
+    ///   
+    ///   // String representation
+    ///   string str = rayleigh.ToString(CultureInfo.InvariantCulture); // Rayleigh(x; σ = 0.42)
+    /// </code>
+    /// </example>
+    /// 
     [Serializable]
     public class RayleighDistribution : UnivariateContinuousDistribution,
-        ISampleableDistribution<double>
+        ISampleableDistribution<double>, IFormattable
     {
 
         // Distribution parameters
-        private double sigma;
+        private double sigma; // σ
 
 
         /// <summary>
         ///   Creates a new Rayleigh distribution.
         /// </summary>
         /// 
-        /// <param name="sigma">The Rayleigh distribution's sigma.</param>
+        /// <param name="sigma">The Rayleigh distribution's σ (sigma).</param>
         /// 
         public RayleighDistribution(double sigma)
         {
@@ -78,6 +107,11 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         /// <value>The distribution's mean value.</value>
         /// 
+        /// <remarks>
+        ///   The Rayleight's mean value is defined 
+        ///   as <c>mean = σ * sqrt(π / 2)</c>.
+        /// </remarks>
+        /// 
         public override double Mean
         {
             get { return sigma * Math.Sqrt(Math.PI / 2.0); }
@@ -88,6 +122,11 @@ namespace Accord.Statistics.Distributions.Univariate
         /// </summary>
         /// 
         /// <value>The distribution's variance.</value>
+        /// 
+        /// <remarks>
+        ///   The Rayleight's variance value is defined 
+        ///   as <c>var = (4 - π) / 2 * σ²</c>.
+        /// </remarks>
         /// 
         public override double Variance
         {
@@ -106,6 +145,20 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
+        ///   Gets the support interval for this distribution.
+        /// </summary>
+        /// 
+        /// <value>
+        ///   A <see cref="AForge.DoubleRange" /> containing
+        ///   the support interval for this distribution.
+        /// </value>
+        /// 
+        public override DoubleRange Support
+        {
+            get { return new DoubleRange(0, Double.PositiveInfinity); }
+        }
+
+        /// <summary>
         ///   Gets the cumulative distribution function (cdf) for
         ///   this distribution evaluated at point <c>x</c>.
         /// </summary>
@@ -116,6 +169,10 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   The Cumulative Distribution Function (CDF) describes the cumulative
         ///   probability that a given value or any value smaller than it will occur.
         /// </remarks>
+        /// 
+        /// <example>
+        ///   See <see cref="RayleighDistribution"/>.
+        /// </example>
         /// 
         public override double DistributionFunction(double x)
         {
@@ -138,7 +195,11 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   The Probability Density Function (PDF) describes the
         ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
-        /// 
+        ///
+        /// <example>
+        ///   See <see cref="RayleighDistribution"/>.
+        /// </example>
+        ///
         public override double ProbabilityDensityFunction(double x)
         {
             return x / (sigma * sigma) * Math.Exp(-x * x / (2 * sigma * sigma));
@@ -160,6 +221,10 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   The Probability Density Function (PDF) describes the
         ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
+        /// 
+        /// <example>
+        ///   See <see cref="RayleighDistribution"/>.
+        /// </example>
         /// 
         public override double LogProbabilityDensityFunction(double x)
         {
@@ -199,13 +264,13 @@ namespace Accord.Statistics.Distributions.Univariate
             sigma = Math.Sqrt(1.0 / (2.0 * observations.Length) * sum);
         }
 
-          private RayleighDistribution() { }
+        private RayleighDistribution() { }
 
         /// <summary>
         ///   Estimates a new Gamma distribution from a given set of observations.
         /// </summary>
         /// 
-          public static RayleighDistribution Estimate(double[] observations)
+        public static RayleighDistribution Estimate(double[] observations)
         {
             var n = new RayleighDistribution();
             n.Fit(observations, null, null);
@@ -288,5 +353,60 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         #endregion
+
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public override string ToString()
+        {
+            return String.Format("Rayleigh(x; σ = {0})", sigma);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(IFormatProvider formatProvider)
+        {
+            return String.Format(formatProvider, "Rayleigh(x; σ = {0})", sigma);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return String.Format(formatProvider, "Rayleigh(x; σ = {0})",
+                sigma.ToString(format, formatProvider));
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format)
+        {
+            return String.Format("Rayleigh(x; σ = {0})",
+                sigma.ToString(format));
+        }
     }
 }

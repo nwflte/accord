@@ -24,6 +24,7 @@ namespace Accord.Statistics.Distributions.Univariate
 {
     using System;
     using Accord.Math;
+    using AForge;
 
     /// <summary>
     ///   Empirical distribution.
@@ -56,6 +57,45 @@ namespace Accord.Statistics.Distributions.Univariate
     ///       Springer; 1st ed. 2006.</description></item>
     ///  </list></para>  
     /// </remarks>
+    /// 
+    /// <example>
+    /// <para>
+    ///   The following example shows how to build an empirical distribution directly from a sample: </para>
+    ///   
+    /// <code>
+    ///   // Consider the following univariate samples
+    ///   double[] samples = { 5, 5, 1, 4, 1, 2, 2, 3, 3, 3, 4, 3, 3, 3, 4, 3, 2, 3 };
+    ///   
+    ///   // Create a non-parametric, empirical distribution using those samples:
+    ///   EmpiricalDistribution distribution = new EmpiricalDistribution(samples);
+    ///     
+    ///   // Common measures
+    ///   double mean   = distribution.Mean;     // 3
+    ///   double median = distribution.Median;   // 2.9999993064186787
+    ///   double var    = distribution.Variance; // 1.2941176470588236
+    ///   
+    ///   // Cumulative distribution function
+    ///   double cdf  = distribution.DistributionFunction(x: 4.2);          // 0.88888888888888884
+    ///   double ccdf = distribution.ComplementaryDistributionFunction(x: 4.2); //0.11111111111111116
+    ///   double icdf = distribution.InverseDistributionFunction(p: cdf);       // 4.1999999999999993
+    ///   
+    ///   // Probability density functions
+    ///   double pdf  = distribution.ProbabilityDensityFunction(x: 4.2);    // 0.15552784414141974
+    ///   double lpdf = distribution.LogProbabilityDensityFunction(x: 4.2); // -1.8609305013898356
+    ///   
+    ///   // Hazard (failure rate) functions
+    ///   double hf  = distribution.HazardFunction(x: 4.2);           // 1.3997505972727771
+    ///   double chf = distribution.CumulativeHazardFunction(x: 4.2); // 2.1972245773362191
+    ///
+    ///   // Automatically estimated smooth parameter (gamma)
+    ///   double smoothing = distribution.Smoothing; // 1.9144923416414432
+    /// 
+    ///   // String representation
+    ///   string str = distribution.ToString(CultureInfo.InvariantCulture); // Fn(x; S)
+    /// </code>
+    /// </example>
+    /// 
+    /// <seealso cref="EmpiricalHazardDistribution"/>
     /// 
     [Serializable]
     public class EmpiricalDistribution : UnivariateContinuousDistribution
@@ -119,6 +159,10 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   Gets the mean for this distribution.
         /// </summary>
         /// 
+        /// <example>
+        ///   See <see cref="EmpiricalDistribution"/>.
+        /// </example>
+        /// 
         public override double Mean
         {
             get
@@ -133,6 +177,10 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   Gets the variance for this distribution.
         /// </summary>
         /// 
+        /// <example>
+        ///   See <see cref="EmpiricalDistribution"/>.
+        /// </example>
+        /// 
         public override double Variance
         {
             get
@@ -141,6 +189,20 @@ namespace Accord.Statistics.Distributions.Univariate
                     variance = Statistics.Tools.Variance(samples);
                 return variance.Value;
             }
+        }
+
+        /// <summary>
+        ///   Gets the support interval for this distribution.
+        /// </summary>
+        /// 
+        /// <value>
+        ///   A <see cref="AForge.DoubleRange" /> containing
+        ///   the support interval for this distribution.
+        /// </value>
+        /// 
+        public override DoubleRange Support
+        {
+            get { return new DoubleRange(Double.NegativeInfinity, Double.PositiveInfinity); }
         }
 
         /// <summary>
@@ -177,6 +239,10 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   probability that a given value or any value smaller than it will occur.
         /// </remarks>
         /// 
+        /// <example>
+        ///   See <see cref="EmpiricalDistribution"/>.
+        /// </example>
+        /// 
         public override double DistributionFunction(double x)
         {
             int sum = 0;
@@ -201,6 +267,10 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   The Probability Density Function (PDF) describes the
         ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
+        /// 
+        /// <example>
+        ///   See <see cref="EmpiricalDistribution"/>.
+        /// </example>
         /// 
         public override double ProbabilityDensityFunction(double x)
         {
@@ -236,6 +306,10 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   The Probability Density Function (PDF) describes the
         ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
+        /// 
+        /// <example>
+        ///   See <see cref="EmpiricalDistribution"/>.
+        /// </example>
         /// 
         public override double LogProbabilityDensityFunction(double x)
         {
@@ -323,5 +397,19 @@ namespace Accord.Statistics.Distributions.Univariate
             this.mean = null;
             this.variance = null;
         }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public override string ToString()
+        {
+            return String.Format("Fn(x; S)");
+        }
+
     }
 }

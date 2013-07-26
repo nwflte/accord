@@ -49,6 +49,34 @@ namespace Accord.Statistics.Distributions.Multivariate
     ///       Available from: http://en.wikipedia.org/wiki/Dirichlet_distribution </a></description></item>
     ///   </list></para>
     /// </remarks>
+    /// 
+    /// <example>
+    /// <code>
+    ///   // Create a Dirichlet with the following concentrations
+    ///   var dirich = new DirichletDistribution(0.42, 0.57, 1.2);
+    ///   
+    ///   // Common measures
+    ///   double[] mean = dirich.Mean;     // { 0.19, 0.26, 0.54 }
+    ///   double[] median = dirich.Median; // { 0.19, 0.26, 0.54 }
+    ///   double[] var = dirich.Variance;  // { 0.048, 0.060, 0.077 }
+    ///   double[,] cov = dirich.Covariance; // see below
+    ///   
+    ///   
+    ///   //       0.0115297440926238 0.0156475098399895 0.0329421259789253 
+    ///   // cov = 0.0156475098399895 0.0212359062114143 0.0447071709713986 
+    ///   //       0.0329421259789253 0.0447071709713986 0.0941203599397865
+    ///   
+    ///   // (the above matrix representation has been transcribed to text using)
+    ///   string str = cov.ToString(DefaultMatrixFormatProvider.InvariantCulture);
+    ///   
+    ///   
+    ///   // Probability mass functions
+    ///   double pdf1 = dirich.ProbabilityDensityFunction(new double[] { 2, 5 }); // 0.12121671541846207
+    ///   double pdf2 = dirich.ProbabilityDensityFunction(new double[] { 4, 2 }); // 0.12024840322466089
+    ///   double pdf3 = dirich.ProbabilityDensityFunction(new double[] { 3, 7 }); // 0.082907634905068528
+    ///   double lpdf = dirich.LogProbabilityDensityFunction(new double[] { 3, 7 }); // -2.4900281233124044
+    /// </code>
+    /// </example>
     ///
     [Serializable]
     public class DirichletDistribution : MultivariateContinuousDistribution

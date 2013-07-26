@@ -23,6 +23,7 @@
 namespace Accord.Statistics.Distributions.Univariate
 {
     using System;
+    using AForge;
 
     /// <summary>
     ///   Pareto's Distribution.
@@ -44,18 +45,47 @@ namespace Accord.Statistics.Distributions.Univariate
     ///   </list></para>
     /// </remarks>
     /// 
+    /// <example>
+    /// <code>
+    ///    // Creates a new Pareto's distribution with xm = 0.42, α = 3
+    ///    var pareto = new ParetoDistribution(scale: 0.42, shape: 3);
+    ///    
+    ///    // Common measures
+    ///    double mean   = pareto.Mean;     // 0.63
+    ///    double median = pareto.Median;   // 0.52916684095584676
+    ///    double var    = pareto.Variance; // 0.13229999999999997
+    ///    
+    ///    // Cumulative distribution functions
+    ///    double cdf = pareto.DistributionFunction(x: 1.4);           // 0.973
+    ///    double ccdf = pareto.ComplementaryDistributionFunction(x: 1.4); // 0.027000000000000024
+    ///    double icdf = pareto.InverseDistributionFunction(p: cdf);       // 1.4000000446580794
+    ///    
+    ///    // Probability density functions
+    ///    double pdf = pareto.ProbabilityDensityFunction(x: 1.4);     // 0.057857142857142857
+    ///    double lpdf = pareto.LogProbabilityDensityFunction(x: 1.4); // -2.8497783609309111
+    ///    
+    ///    // Hazard (failure rate) functions
+    ///    double hf = pareto.HazardFunction(x: 1.4);            // 2.142857142857141
+    ///    double chf = pareto.CumulativeHazardFunction(x: 1.4); // 3.6119184129778072
+    ///    
+    ///    // String representation
+    ///    string str = pareto.ToString(CultureInfo.InvariantCulture); // Pareto(x; xm = 0.42, α = 3)
+    /// </code>
+    /// </example>
+    /// 
     [Serializable]
-    public class ParetoDistribution : UnivariateContinuousDistribution
+    public class ParetoDistribution : UnivariateContinuousDistribution, IFormattable
     {
-        double xm;
-        double a;
+
+        double xm; // x_m
+        double a;  // alpha
 
         /// <summary>
         ///   Creates new Pareto distribution.
         /// </summary>
         /// 
         /// <param name="scale">The scale parameter x<sub>m</sub>.</param>
-        /// <param name="shape">The shape parameter alpha.</param>
+        /// <param name="shape">The shape parameter α (alpha).</param>
         /// 
         public ParetoDistribution(double scale, double shape)
         {
@@ -69,6 +99,11 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         /// <value>The distribution's mean value.</value>
         /// 
+        /// <remarks>
+        ///   The Pareto distribution's mean is defined as
+        ///   <c>α * x<sub>m</sub> / (α - 1)</c>.
+        /// </remarks>
+        /// 
         public override double Mean
         {
             get { return (a * xm) / (a - 1); }
@@ -79,6 +114,11 @@ namespace Accord.Statistics.Distributions.Univariate
         /// </summary>
         /// 
         /// <value>The distribution's variance.</value>
+        /// 
+        /// <remarks>
+        ///   The Pareto distribution's mean is defined as
+        ///   <c>α * x<sub>m</sub>² / ((α - 1)² * (α - 2)</c>.
+        /// </remarks>
         /// 
         public override double Variance
         {
@@ -91,9 +131,28 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         /// <value>The distribution's entropy.</value>
         /// 
+        /// <remarks>
+        ///   The Pareto distribution's Entropy is defined as
+        ///   <c>ln(x<sub>m</sub> / α) + 1 / α + 1</c>.
+        /// </remarks>
+        /// 
         public override double Entropy
         {
             get { return Math.Log(xm / a) + 1.0 / a + 1.0; }
+        }
+
+        /// <summary>
+        ///   Gets the support interval for this distribution.
+        /// </summary>
+        /// 
+        /// <value>
+        ///   A <see cref="AForge.DoubleRange" /> containing
+        ///   the support interval for this distribution.
+        /// </value>
+        /// 
+        public override DoubleRange Support
+        {
+            get { return new DoubleRange(xm, Double.PositiveInfinity); }
         }
 
         /// <summary>
@@ -101,6 +160,10 @@ namespace Accord.Statistics.Distributions.Univariate
         /// </summary>
         /// 
         /// <value>The distribution's mode value.</value>
+        /// 
+        /// <remarks>
+        ///   The Pareto distribution's Entropy is defined as <c>x<sub>m</sub></c>.
+        /// </remarks>
         /// 
         public override double Mode
         {
@@ -113,10 +176,16 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         /// <value>The distribution's median value.</value>
         /// 
+        /// <remarks>
+        ///   The Pareto distribution's median is defined
+        ///   as <c>x<sub>m</sub> * 2^(1 / α)</c>.
+        /// </remarks>
+        /// 
         public override double Median
         {
             get { return xm * Math.Pow(2, 1.0 / a); }
         }
+
         /// <summary>
         ///   Gets the cumulative distribution function (cdf) for
         ///   this distribution evaluated at point <c>x</c>.
@@ -128,6 +197,10 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   The Cumulative Distribution Function (CDF) describes the cumulative
         ///   probability that a given value or any value smaller than it will occur.
         /// </remarks>
+        /// 
+        /// <example>
+        ///   See <see cref="ParetoDistribution"/>.
+        /// </example>
         /// 
         public override double DistributionFunction(double x)
         {
@@ -153,6 +226,10 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
         /// 
+        /// <example>
+        ///   See <see cref="ParetoDistribution"/>.
+        /// </example>
+        /// 
         public override double ProbabilityDensityFunction(double x)
         {
             if (x >= xm)
@@ -177,6 +254,10 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
         /// 
+        /// <example>
+        ///   See <see cref="ParetoDistribution"/>.
+        /// </example>
+        /// 
         public override double LogProbabilityDensityFunction(double x)
         {
             if (x >= xm)
@@ -195,6 +276,61 @@ namespace Accord.Statistics.Distributions.Univariate
         public override object Clone()
         {
             return new ParetoDistribution(xm, a);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public override string ToString()
+        {
+            return String.Format("Pareto(x; xm = {0}, α = {1})", xm, a);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(IFormatProvider formatProvider)
+        {
+            return String.Format(formatProvider, "Pareto(x; xm = {0}, α = {1})", xm, a);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return String.Format(formatProvider, "Pareto(x; xm = {0}, α = {1})",
+                xm.ToString(format, formatProvider),
+                a.ToString(format, formatProvider));
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format)
+        {
+            return String.Format("Pareto(x; xm = {0}, α = {1})",
+                xm.ToString(format), a.ToString(format));
         }
     }
 }

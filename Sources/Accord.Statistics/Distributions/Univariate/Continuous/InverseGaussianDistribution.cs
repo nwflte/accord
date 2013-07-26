@@ -25,6 +25,7 @@ namespace Accord.Statistics.Distributions.Univariate
     using System;
     using Accord.Math;
     using Accord.Statistics.Distributions.Fitting;
+    using AForge;
 
     /// <summary>
     ///   Inverse Gaussian (Normal) Distribution, also known as the Wald distribution.
@@ -48,11 +49,39 @@ namespace Accord.Statistics.Distributions.Univariate
     ///   </list></para> 
     /// </remarks>
     ///
+    /// <example>
+    /// <code>
+    ///   // Create a new inverse Gaussian distribution with μ = 0.42 and λ = 1.2
+    ///   var invGaussian = new InverseGaussianDistribution(mean: 0.42, shape: 1.2);
+    ///   
+    ///   // Common measures
+    ///   double mean = invGaussian.Mean;     // 0.42
+    ///   double median = invGaussian.Median; // 0.35856861093990083
+    ///   double var = invGaussian.Variance;  // 0.061739999999999989
+    ///   
+    ///   // Cumulative distribution functions
+    ///   double cdf = invGaussian.DistributionFunction(x: 0.27);               // 0.30658791274125458
+    ///   double ccdf = invGaussian.ComplementaryDistributionFunction(x: 0.27); // 0.69341208725874548
+    ///   double icdf = invGaussian.InverseDistributionFunction(p: cdf);        // 0.26999999957543408
+    ///   
+    ///   // Probability density functions
+    ///   double pdf = invGaussian.ProbabilityDensityFunction(x: 0.27);     // 2.3461495925760354
+    ///   double lpdf = invGaussian.LogProbabilityDensityFunction(x: 0.27); // 0.85277551314980737
+    ///   
+    ///   // Hazard (failure rate) functions
+    ///   double hf = invGaussian.HazardFunction(x: 0.27);            // 3.383485283406336
+    ///   double chf = invGaussian.CumulativeHazardFunction(x: 0.27); // 0.36613081401302111
+    ///   
+    ///   // String representation
+    ///   string str = invGaussian.ToString(CultureInfo.InvariantCulture); // "N^-1(x; μ = 0.42, λ = 1.2)"
+    /// </code>
+    /// </example>
+    /// 
     /// <seealso cref="NormalDistribution"/>
     ///
     [Serializable]
     public class InverseGaussianDistribution : UnivariateContinuousDistribution,
-        ISampleableDistribution<double>
+        ISampleableDistribution<double>, IFormattable
     {
 
         // Distribution parameters
@@ -96,7 +125,9 @@ namespace Accord.Statistics.Distributions.Univariate
         /// <summary>
         ///   Gets the mean for this distribution.
         /// </summary>
+        /// 
         /// <value>The distribution's mean value.</value>
+        /// 
         public override double Mean
         {
             get { return mean; }
@@ -125,6 +156,20 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
+        ///   Gets the support interval for this distribution.
+        /// </summary>
+        /// 
+        /// <value>
+        ///   A <see cref="AForge.DoubleRange" /> containing
+        ///   the support interval for this distribution.
+        /// </value>
+        /// 
+        public override DoubleRange Support
+        {
+            get { return new DoubleRange(0, Double.PositiveInfinity); }
+        }
+
+        /// <summary>
         ///   Gets the cumulative distribution function (cdf) for
         ///   this distribution evaluated at point <c>x</c>.
         /// </summary>
@@ -135,6 +180,10 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   The Cumulative Distribution Function (CDF) describes the cumulative
         ///   probability that a given value or any value smaller than it will occur.
         /// </remarks>
+        /// 
+        /// <example>
+        ///   See <see cref="InverseGaussianDistribution"/>.
+        /// </example>
         /// 
         public override double DistributionFunction(double x)
         {
@@ -164,6 +213,10 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
         /// 
+        /// <example>
+        ///   See <see cref="InverseGaussianDistribution"/>.
+        /// </example>
+        /// 
         public override double ProbabilityDensityFunction(double x)
         {
             double a = Math.Sqrt(lambda / (2.0 * Math.PI * x * x * x));
@@ -188,6 +241,10 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   The Probability Density Function (PDF) describes the
         ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
+        /// 
+        /// <example>
+        ///   See <see cref="InverseGaussianDistribution"/>.
+        /// </example>
         /// 
         public override double LogProbabilityDensityFunction(double x)
         {
@@ -288,6 +345,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// </summary>
         /// 
         /// <param name="samples">The number of samples to generate.</param>
+        /// 
         /// <returns>A random vector of observations drawn from this distribution.</returns>
         /// 
         public double[] Generate(int samples)
@@ -370,6 +428,53 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         #endregion
+
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public override string ToString()
+        {
+            return String.Format("N^-1(x; μ = {0}, λ = {1})", mean, lambda);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <param name="formatProvider">The format provider.</param>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(IFormatProvider formatProvider)
+        {
+            return String.Format(formatProvider, "N^-1(x; μ = {0}, λ = {1})", mean, lambda);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <param name="format">The format.</param>
+        /// <param name="formatProvider">The format provider.</param>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return String.Format("N^-1(x; μ = {0}, λ = {1})", 
+                mean.ToString(format, formatProvider),
+                lambda.ToString(format, formatProvider));
+        }
     }
 }
 

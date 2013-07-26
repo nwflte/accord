@@ -25,22 +25,67 @@ namespace Accord.Statistics.Distributions.Univariate
     using System;
     using Accord.Statistics.Distributions.Fitting;
     using Accord.Statistics.Distributions.Univariate;
+    using Accord.Statistics.Testing;
     using Accord.Math;
-
+    using AForge;
 
     /// <summary>
     ///   Mann-Whitney's U statistic distribution.
     /// </summary>
     /// 
     /// <remarks>
+    /// <para>
+    ///   This is the distribution for <see cref="MannWhitneyWilcoxonTest">Mann-Whitney's U</see>
+    ///   statistic used in <see cref="MannWhitneyWilcoxonTest"/>. This distribution is based on
+    ///   sample <see cref="Accord.Statistics.Tools.Rank"/> statistics.</para>
+    /// <para>
     ///   This is the distribution for the first sample statistic, U1. Some textbooks
     ///   (and statistical packages) use alternate definitions for U, which should be
-    ///   compared with the appropriate statistic tables or alternate distributions.
+    ///   compared with the appropriate statistic tables or alternate distributions.</para>
     /// </remarks>
+    /// 
+    /// <example>
+    /// <code>
+    ///   // Consider the following rank statistics
+    ///   double[] ranks = { 1, 2, 3, 4, 5 };
+    ///   
+    ///   // Create a new Mann-Whitney U's distribution with n1 = 2 and n2 = 3
+    ///   var mannWhitney = new MannWhitneyDistribution(ranks, n1: 2, n2: 3);
+    ///   
+    ///   // Common measures
+    ///   double mean = mannWhitney.Mean;     // 2.7870954605658511
+    ///   double median = mannWhitney.Median; // 1.5219615583481305
+    ///   double var = mannWhitney.Variance;  // 18.28163603621158
+    ///   
+    ///   // Cumulative distribution functions
+    ///   double cdf = mannWhitney.DistributionFunction(x: 4);               // 0.6
+    ///   double ccdf = mannWhitney.ComplementaryDistributionFunction(x: 4); // 0.4
+    ///   double icdf = mannWhitney.InverseDistributionFunction(p: cdf);     // 3.6666666666666661
+    ///   
+    ///   // Probability density functions
+    ///   double pdf = mannWhitney.ProbabilityDensityFunction(x: 4);     // 0.2
+    ///   double lpdf = mannWhitney.LogProbabilityDensityFunction(x: 4); // -1.6094379124341005
+    ///   
+    ///   // Hazard (failure rate) functions
+    ///   double hf = mannWhitney.HazardFunction(x: 4); // 0.5
+    ///   double chf = mannWhitney.CumulativeHazardFunction(x: 4); // 0.916290731874155
+    ///     
+    ///   // String representation
+    ///   string str = mannWhitney.ToString(); // MannWhitney(u; n1 = 2, n2 = 3)
+    /// </code>
+    /// </example>
+    /// 
+    /// <seealso cref="MannWhitneyWilcoxonTest"/>
+    /// <seealso cref="Accord.Statistics.Tools.Rank"/>
+    /// <seealso cref="WilcoxonDistribution"/>
     /// 
     [Serializable]
     public class MannWhitneyDistribution : UnivariateContinuousDistribution
     {
+
+        private bool smallSample;
+        private double[] table;
+
 
         /// <summary>
         ///   Gets the number of observations in the first sample. 
@@ -60,9 +105,6 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public double[] Ranks { get; private set; }
 
-
-        private bool smallSample;
-        private double[] table;
 
         /// <summary>
         ///   Constructs a Mann-Whitney's U-statistic distribution.
@@ -102,20 +144,19 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   this distribution evaluated at point <c>k</c>.
         /// </summary>
         /// 
-        /// <param name="u">A single point in the distribution range.</param>
+        /// <param name="x">A single point in the distribution range.</param>
         /// 
         /// <remarks>
         ///   The Cumulative Distribution Function (CDF) describes the cumulative
         ///   probability that a given value or any value smaller than it will occur.
         /// </remarks>
         /// 
-        public override double DistributionFunction(double u)
+        public override double DistributionFunction(double x)
         {
             if (!smallSample)
             {
-
                 // Normal approximation
-                double z = ((u + 0.5) - Mean) / Math.Sqrt(Variance);
+                double z = ((x + 0.5) - Mean) / Math.Sqrt(Variance);
 
                 double p = NormalDistribution.Standard.DistributionFunction(Math.Abs(z));
 
@@ -123,11 +164,12 @@ namespace Accord.Statistics.Distributions.Univariate
             }
             else
             {
-                // For small samples (< 400) and if there are not very large
+                // For small samples (< 30) and if there are not very large
                 // differences in samples sizes, this distribution is exact.
 
                 for (int i = 0; i < table.Length; i++)
-                    if (u <= table[i]) return i / (double)table.Length;
+                    if (x <= table[i])
+                        return i / (double)table.Length;
 
                 return 1;
             }
@@ -201,6 +243,11 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         /// <value>The distribution's mean value.</value>
         /// 
+        /// <remarks>
+        ///   The mean of Mann-Whitney's U distribution
+        ///   is defined as <c>(n1 * n2) / 2</c>.
+        /// </remarks>
+        /// 
         public override double Mean
         {
             get
@@ -217,6 +264,11 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         /// <value>The distribution's variance.</value>
         /// 
+        /// <remarks>
+        ///   The variance of Mann-Whitney's U distribution
+        ///   is defined as <c>(n1 * n2 * (n1 + n2 + 1)) / 12</c>.
+        /// </remarks>
+        /// 
         public override double Variance
         {
             get
@@ -228,14 +280,26 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
-        ///   Gets the entropy for this distribution.
+        ///   This method is not supported.
         /// </summary>
-        /// 
-        /// <value>The distribution's entropy.</value>
         /// 
         public override double Entropy
         {
             get { throw new NotSupportedException(); }
+        }
+
+        /// <summary>
+        ///   Gets the support interval for this distribution.
+        /// </summary>
+        /// 
+        /// <value>
+        ///   A <see cref="AForge.DoubleRange" /> containing
+        ///   the support interval for this distribution.
+        /// </value>
+        /// 
+        public override DoubleRange Support
+        {
+            get { return new DoubleRange(Double.NegativeInfinity, Double.PositiveInfinity); }
         }
 
 
@@ -244,7 +308,7 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   this distribution evaluated at point <c>u</c>.
         /// </summary>
         /// 
-        /// <param name="u">A single point in the distribution range.</param>
+        /// <param name="x">A single point in the distribution range.</param>
         /// 
         /// <returns>
         ///   The probability of <c>u</c> occurring
@@ -256,14 +320,18 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   probability that a given value <c>u</c> will occur.
         /// </remarks>
         /// 
-        public override double ProbabilityDensityFunction(double u)
+        /// <example>
+        ///   See <see cref="MannWhitneyDistribution"/>.
+        /// </example>
+        /// 
+        public override double ProbabilityDensityFunction(double x)
         {
             // For all possible values for U, find how many
             // of them are equal to the requested value.
 
             int count = 0;
             for (int j = 0; j < table.Length; j++)
-                if (table[j] == u) count++;
+                if (table[j] == x) count++;
             return count / (double)table.Length;
         }
 
@@ -272,7 +340,7 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   this distribution evaluated at point <c>x</c>.
         /// </summary>
         /// 
-        /// <param name="u">A single point in the distribution range.</param>
+        /// <param name="x">A single point in the distribution range.</param>
         /// 
         /// <returns>
         ///   The logarithm of the probability of <c>u</c>
@@ -284,12 +352,29 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   probability that a given value <c>u</c> will occur.
         /// </remarks>
         /// 
-        public override double LogProbabilityDensityFunction(double u)
+        /// <example>
+        ///   See <see cref="MannWhitneyDistribution"/>.
+        /// </example>
+        /// 
+        public override double LogProbabilityDensityFunction(double x)
         {
             int count = 0;
             for (int j = 0; j < table.Length; j++)
-                if (table[j] == u) count++;
+                if (table[j] == x) count++;
             return Math.Log(count) - Math.Log(table.Length);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public override string ToString()
+        {
+            return String.Format("MannWhitney(u; n1 = {0}, n2 = {1})", Samples1, Samples2);
         }
     }
 }

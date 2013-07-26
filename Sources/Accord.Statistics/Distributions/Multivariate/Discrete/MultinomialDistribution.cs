@@ -25,6 +25,7 @@ namespace Accord.Statistics.Distributions.Multivariate
     using System;
     using Accord.Math;
     using Accord.Statistics.Distributions.Fitting;
+    using System.Globalization;
 
     /// <summary>
     ///   Multinomial probability distribution.
@@ -52,6 +53,34 @@ namespace Accord.Statistics.Distributions.Multivariate
     ///       http://en.wikipedia.org/wiki/Multinomial_distribution </a></description></item>
     ///   </list></para>
     /// </remarks>
+    /// 
+    /// <example>
+    /// <code>
+    ///    // distribution parameters
+    ///    int numberOfTrials = 5; 
+    ///    double[] probabilities = { 0.25, 0.75 };
+    ///    
+    ///    // Create a new Multinomial distribution with 5 trials for 2 symbols
+    ///    var dist = new MultinomialDistribution(numberOfTrials, probabilities);
+    ///    
+    ///    int dimensions = dist.Dimension; // 2
+    ///    
+    ///    double[] mean = dist.Mean;     // {  1.25, 3.75 }
+    ///    double[] median = dist.Median; // {  1.25, 3.75 }
+    ///    double[] var = dist.Variance;  // { -0.9375, -0.9375 }
+    ///    
+    ///    double pdf1 = dist.ProbabilityMassFunction(new[] { 2, 3 }); // 0.26367187499999994
+    ///    double pdf2 = dist.ProbabilityMassFunction(new[] { 1, 4 }); // 0.3955078125
+    ///    double pdf3 = dist.ProbabilityMassFunction(new[] { 5, 0 }); // 0.0009765625
+    ///    double lpdf = dist.LogProbabilityMassFunction(new[] { 1, 4 }); // -0.9275847384929139
+    ///    
+    ///    // output is "Multinomial(x; n = 5, p = { 0.25, 0.75 })"
+    ///    string str = dist.ToString(CultureInfo.InvariantCulture); 
+    /// </code>
+    /// </example>
+    /// 
+    /// <seealso cref="Distributions.Univariate.BernoulliDistribution"/>
+    /// <seealso cref="Distributions.Univariate.GeneralDiscreteDistribution"/>
     /// 
     [Serializable]
     public class MultinomialDistribution : MultivariateDiscreteDistribution,
@@ -170,18 +199,10 @@ namespace Accord.Statistics.Distributions.Multivariate
         }
 
         /// <summary>
-        ///   Gets the cumulative distribution function (cdf) for
-        ///   this distribution evaluated at point <c>x</c>.
+        ///   Not supported.
         /// </summary>
         /// 
-        /// <param name="x">A single point in the distribution range.</param>
-        /// 
-        /// <remarks>
-        /// The Cumulative Distribution Function (CDF) describes the cumulative
-        /// probability that a given value or any value smaller than it will occur.
-        /// </remarks>
-        /// 
-        public override double DistributionFunction(int[] x)
+        public override double DistributionFunction(params int[] x)
         {
             // TODO: Implement an approximation of the multinomial CDF
             //  "A Representation for Multinomial Cumulative Distribution Functions",  
@@ -206,8 +227,15 @@ namespace Accord.Statistics.Distributions.Multivariate
         ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
         /// 
-        public override double ProbabilityMassFunction(int[] x)
+        public override double ProbabilityMassFunction(params int[] x)
         {
+            if (x.Length != Dimension)
+                throw new DimensionMismatchException("x",
+                    "Input length must match the number of dimensions in this distribution.");
+
+            if (x.Sum() != N)
+                throw new ArgumentException("Elements must sum up to the number of trials (" + N + ")", "x");
+
             double theta = 0;
             double prod = 0;
             for (int i = 0; i < x.Length; i++)
@@ -237,17 +265,21 @@ namespace Accord.Statistics.Distributions.Multivariate
         ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
         /// 
-        public override double LogProbabilityMassFunction(int[] x)
+        public override double LogProbabilityMassFunction(params int[] x)
         {
-                double theta = 0;
-                double prod = 0;
-                for (int i = 0; i < x.Length; i++)
-                {
-                    theta += Accord.Math.Special.LogFactorial(x[i]);
-                    prod += x[i] * Math.Log(probabilities[i]);
-                }
+            if (x.Length != Dimension)
+                throw new DimensionMismatchException("x",
+                    "Input length must match the number of dimensions in this distribution.");
 
-                return lnfac - theta + prod;
+            double theta = 0;
+            double prod = 0;
+            for (int i = 0; i < x.Length; i++)
+            {
+                theta += Accord.Math.Special.LogFactorial(x[i]);
+                prod += x[i] * Math.Log(probabilities[i]);
+            }
+
+            return lnfac - theta + prod;
         }
 
 
@@ -288,7 +320,7 @@ namespace Accord.Statistics.Distributions.Multivariate
                     pi[c] /= N;
                 }
             }
-            
+
             initialize(N, pi);
         }
 
@@ -303,6 +335,78 @@ namespace Accord.Statistics.Distributions.Multivariate
         public override object Clone()
         {
             return new MultinomialDistribution(N, probabilities);
+        }
+
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public override string ToString()
+        {
+            var provider = new CSharpArrayFormatProvider(CultureInfo.CurrentCulture,
+                includeTypeName: false, includeSemicolon: false);
+
+            return String.Format("Multinomial(x; n = {0}, p = {1})",
+                N.ToString(provider), probabilities.ToString(provider));
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(IFormatProvider formatProvider)
+        {
+            var provider = new CSharpArrayFormatProvider(formatProvider,
+                includeTypeName: false, includeSemicolon: false);
+
+            return String.Format("Multinomial(x; n = {0}, p = {1})",
+                N.ToString(provider),
+                probabilities.ToString(provider));
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            var provider = new CSharpArrayFormatProvider(formatProvider,
+                includeTypeName: false, includeSemicolon: false);
+
+            return String.Format("Multinomial(x; n = {0}, p = {1})",
+                N.ToString(format, provider),
+                probabilities.ToString(format, provider));
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format)
+        {
+            var provider = new CSharpArrayFormatProvider(CultureInfo.CurrentCulture,
+                includeTypeName: false, includeSemicolon: false);
+
+            return String.Format("Multinomial(x; n = {0}, p = {1})",
+                N.ToString(format, provider),
+                probabilities.ToString(format, provider));
         }
     }
 }
