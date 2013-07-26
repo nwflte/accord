@@ -28,6 +28,7 @@ namespace Accord.Math.Differentiation
     /// <summary>
     ///   Derivative approximation by finite differences.
     /// </summary>
+    /// 
     /// <remarks>
     /// <para>
     ///   Numerical differentiation is a technique of numerical analysis to
@@ -63,7 +64,7 @@ namespace Accord.Math.Differentiation
     /// 
     public class FiniteDifferences
     {
-        private const double step = 1e-2;
+        private double step = 1e-2;
 
         private int n;
 
@@ -76,6 +77,17 @@ namespace Accord.Math.Differentiation
         /// </summary>
         /// 
         public Func<double[], double> Function { get; set; }
+
+        /// <summary>
+        ///   Gets or sets the relative step size used to
+        ///   approximate the derivatives. Default is 1e-2.
+        /// </summary>
+        /// 
+        public double StepSize
+        {
+            get { return step; }
+            set { step = value; }
+        }
 
 
         /// <summary>
@@ -107,15 +119,6 @@ namespace Accord.Math.Differentiation
             this.Function = function;
         }
 
-        /// <summary>
-        ///   Resets the relative step sizes of the approximation.
-        /// </summary>
-        /// 
-        public void Reset()
-        {
-            for (int i = 0; i < stepSize.Length; i++)
-                this.stepSize[i] = step;
-        }
 
         /// <summary>
         ///   Computes the gradient at the given point <c>x</c>.
