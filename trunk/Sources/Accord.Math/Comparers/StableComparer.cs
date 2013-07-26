@@ -31,6 +31,22 @@ namespace Accord.Math.Comparers
     /// 
     /// <typeparam name="T">The type of objects to compare.</typeparam>
     /// 
+    /// <remarks>
+    ///   This class helps sort the elements of an array without swapping
+    ///   elements which are already in order. This comprises a <c>stable</c>
+    ///   sorting algorithm. This class is used by the <see cref="Tools.StableSort"/>
+    ///   method to produce a stable sort of its given arguments.
+    /// </remarks>
+    /// 
+    /// <example>
+    ///   In order to use this class, please use <see cref="Tools.StableSort"/>.
+    /// </example>
+    /// 
+    /// <seealso cref="ElementComparer{T}"/>
+    /// <seealso cref="ArrayComparer{T}"/>
+    /// <seealso cref="GeneralComparer"/>
+    /// <seealso cref="CustomComparer{T}"/>
+    /// 
     public class StableComparer<T> : IComparer<KeyValuePair<int, T>>
     {
         private readonly Comparison<T> comparison;
