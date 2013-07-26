@@ -26,7 +26,6 @@
 namespace Accord.Imaging
 {
     using System;
-    using System.Drawing;
 
     /// <summary>
     ///   Speeded-Up Robust Feature (SURF) Point.
@@ -148,89 +147,5 @@ namespace Accord.Imaging
         /// 
         public double[] Descriptor { get; set; }
 
-
-
-        /// <summary>
-        ///   Converts the feature point to a <see cref="AForge.IntPoint"/>.
-        /// </summary>
-        /// 
-        public AForge.IntPoint ToIntPoint()
-        {
-            return new AForge.IntPoint((int)X, (int)Y);
-        }
-
-        /// <summary>
-        ///   Converts this object into a <see cref="AForge.IntPoint"/>.
-        /// </summary>
-        /// 
-        /// <returns>
-        ///   The result of the conversion.
-        /// </returns>
-        /// 
-        public Point ToPoint()
-        {
-            return new Point((int)X, (int)Y);
-        }
-
-        /// <summary>
-        ///   Converts this object into a <see cref="System.Drawing.PointF"/>.
-        /// </summary>
-        /// 
-        /// <returns>
-        ///   The result of the conversion.
-        /// </returns>
-        /// 
-        public PointF ToPointF()
-        {
-            return new PointF((float)X, (float)Y);
-        }
-
-        /// <summary>
-        ///   Performs an implicit conversion from <see cref="Accord.Imaging.SpeededUpRobustFeaturePoint"/>
-        ///   to <see cref="System.Drawing.Point"/>.
-        /// </summary>
-        /// 
-        /// <param name="point">The point to be converted.</param>
-        /// 
-        /// <returns>
-        ///   The result of the conversion.
-        /// </returns>
-        /// 
-        public static implicit operator Point(SpeededUpRobustFeaturePoint point)
-        {
-            return point.ToPoint();
-        }
-
-        /// <summary>
-        ///   Performs an implicit conversion from <see cref="Accord.Imaging.SpeededUpRobustFeaturePoint"/>
-        ///   to <see cref="System.Drawing.PointF"/>.
-        /// </summary>
-        /// 
-        /// <param name="point">The point to be converted.</param>
-        /// 
-        /// <returns>
-        ///   The result of the conversion.
-        /// </returns>
-        /// 
-        public static implicit operator PointF(SpeededUpRobustFeaturePoint point)
-        {
-            return point.ToPointF();
-        }
-
-        /// <summary>
-        ///   Performs an implicit conversion from <see cref="Accord.Imaging.SpeededUpRobustFeaturePoint"/>
-        ///   to <see cref="AForge.IntPoint"/>.
-        /// </summary>
-        /// 
-        /// <param name="point">The point to be converted.</param>
-        /// 
-        /// <returns>
-        ///   The result of the conversion.
-        /// </returns>
-        /// 
-        public static implicit operator AForge.IntPoint(SpeededUpRobustFeaturePoint point)
-        {
-            return point.ToIntPoint();
-        }
     }
 }

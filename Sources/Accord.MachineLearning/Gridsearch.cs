@@ -204,7 +204,7 @@ namespace Accord.MachineLearning
                 }
                 catch (ConvergenceException ex)
                 {
-                    errors[i] = Double.PositiveInfinity;
+                    errors[i] = Double.NaN;
                     msgs[i] = ex.Message;
                 }
             });

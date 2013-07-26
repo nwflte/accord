@@ -1614,17 +1614,9 @@ namespace Accord.Math
         public static int[] Top<T>(this T[] values, int count, bool inPlace = false)
             where T : IComparable
         {
-            if (count < 0)
-            {
-                throw new ArgumentOutOfRangeException("count",
+            if (count < 0) throw new ArgumentOutOfRangeException("count",
                 "The number of elements to be selected must be positive.");
-            }
-
-            if (count == 0)
-                return new int[0];
-
-            if (count > values.Length)
-                return Matrix.Indices(0, values.Length);
+            if (count == 0) return new int[0];
 
             T[] work = (inPlace) ? values : (T[])values.Clone();
 
@@ -1648,17 +1640,9 @@ namespace Accord.Math
         public static int[] Bottom<T>(this T[] values, int count, bool inPlace = false)
             where T : IComparable
         {
-            if (count < 0)
-            {
-                throw new ArgumentOutOfRangeException("count",
+            if (count < 0) throw new ArgumentOutOfRangeException("count", 
                 "The number of elements to be selected must be positive.");
-            }
-
-            if (count == 0)
-                return new int[0];
-
-            if (count > values.Length)
-                return Matrix.Indices(0, values.Length);
+            if (count == 0) return new int[0];
 
             T[] work = (inPlace) ? values : (T[])values.Clone();
 

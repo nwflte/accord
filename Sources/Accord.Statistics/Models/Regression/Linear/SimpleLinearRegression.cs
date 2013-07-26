@@ -217,49 +217,14 @@ namespace Accord.Statistics.Models.Regression.Linear
             return CoefficientOfDetermination(inputs, outputs, false);
         }
 
-
         /// <summary>
         ///   Returns a System.String representing the regression.
         /// </summary>
         /// 
         public override string ToString()
         {
-            return ToString(null as string);
-        }
-
-        /// <summary>
-        ///   Returns a System.String representing the regression.
-        /// </summary>
-        /// 
-        public string ToString(string format)
-        {
-            return ToString(format, System.Globalization.CultureInfo.CurrentCulture);
-        }
-
-        /// <summary>
-        ///   Returns a System.String representing the regression.
-        /// </summary>
-        /// 
-        public string ToString(IFormatProvider formatProvider)
-        {
-            return ToString(null, formatProvider);
-        }
-
-        /// <summary>
-        ///   Returns a System.String representing the regression.
-        /// </summary>
-        /// 
-        public string ToString(string format, IFormatProvider formatProvider)
-        {
-            string a = format != null ? 
-                Slope.ToString(format, formatProvider) :
-                Slope.ToString(formatProvider);
-
-            string b = format != null ? 
-                Intercept.ToString(format, formatProvider) :
-                Intercept.ToString(formatProvider);
-
-            return String.Format("y(x) = {0}x + {1}", a, b);
+            return String.Format(System.Globalization.CultureInfo.CurrentCulture,
+                "y(x) = {0}x + {1}", Slope, Intercept);
         }
 
 
