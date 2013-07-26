@@ -23,11 +23,42 @@
 namespace Accord.Math
 {
     using System;
-    using System.Linq;
 
     /// <summary>
-    ///   Absolute convergence criteria.
+    ///   Relative convergence criteria.
     /// </summary>
+    /// 
+    /// <remarks>
+    ///   This class can be used to track progress and convergence
+    ///   of methods which rely on the relative change of a value.
+    /// </remarks>
+    /// 
+    /// <example>
+    /// <code>
+    ///   // Create a new convergence criteria with unlimited iterations
+    ///   var criteria = new RelativeConvergence(iterations: 0, tolerance: 0.1);
+    ///   
+    ///   int progress = 1;
+    ///   
+    ///   do
+    ///   {
+    ///       // Do some processing...
+    ///   
+    ///   
+    ///       // Update current iteration information:
+    ///       criteria.NewValue = 12345.6 / progress++;
+    ///   
+    ///   } while (!criteria.HasConverged);
+    ///   
+    ///   
+    ///   // The method will converge after reaching the 
+    ///   // maximum of 11 iterations with a final value
+    ///   // of 1234.56:
+    ///   
+    ///   int iterations = criteria.CurrentIteration; // 11
+    ///   double value = criteria.OldValue; // 1234.56
+    /// </code>
+    /// </example>
     /// 
     public class RelativeConvergence
     {
@@ -38,7 +69,7 @@ namespace Accord.Math
 
 
         /// <summary>
-        ///   Gets or sets the maximum change in the watched value
+        ///   Gets or sets the maximum relative change in the watched value
         ///   after an iteration of the algorithm used to detect convergence.
         /// </summary>
         /// 
@@ -65,10 +96,36 @@ namespace Accord.Math
             set
             {
                 if (value < 0)
-                    throw new ArgumentOutOfRangeException("value", "The maximum number of iterations should be positive.");
+                    throw new ArgumentOutOfRangeException("value",
+                        "The maximum number of iterations should be positive.");
 
                 maxIterations = value;
             }
+        }
+
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="RelativeConvergence"/> class.
+        /// </summary>
+        /// 
+        public RelativeConvergence()
+        {
+        }
+
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="RelativeConvergence"/> class.
+        /// </summary>
+        /// 
+        /// <param name="iterations">The maximum number of iterations which should be
+        ///   performed by the iterative algorithm. Setting to zero indicates there
+        ///   is no maximum number of iterations. Default is 0.</param>
+        /// <param name="tolerance">The maximum relative change in the watched value
+        ///   after an iteration of the algorithm used to detect convergence.
+        ///   Default is 0.</param>
+        /// 
+        public RelativeConvergence(int iterations, double tolerance)
+        {
+            this.Iterations = iterations;
+            this.tolerance = tolerance;
         }
 
         /// <summary>
