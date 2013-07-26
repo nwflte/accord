@@ -32,7 +32,7 @@ namespace Accord.Statistics.Kernels
     /// 
     /// <remarks>
     /// <para>
-    ///   This class works as a least-corrently-used cache for elements
+    ///   This class works as a least-recently-used cache for elements
     ///   computed from a the kernel (Gram) matrix. Elements which have
     ///   not been needed for some time are discarded from the cache;
     ///   while elements which are constantly requested remains cached.</para>

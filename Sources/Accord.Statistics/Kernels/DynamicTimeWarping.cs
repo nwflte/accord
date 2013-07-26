@@ -24,6 +24,8 @@ namespace Accord.Statistics.Kernels
 {
     using Accord.Math;
     using System;
+    using System.Threading;
+    using System.Collections.Generic;
 
     /// <summary>
     ///   Dynamic Time Warping Sequence Kernel.
@@ -59,11 +61,15 @@ namespace Accord.Statistics.Kernels
     /// </remarks>
     /// 
     [Serializable]
-    public sealed class DynamicTimeWarping : IKernel, ICloneable
+    public class DynamicTimeWarping : IKernel, ICloneable, IDisposable
     {
         private double alpha = 1.0; // spherical projection distance
         private int length = 1;     // length of the feature vectors
         private int degree = 1;     // polynomial kernel degree
+
+        [NonSerialized]
+        private ThreadLocal<Locals> locals =
+            new ThreadLocal<Locals>(() => new Locals());
 
         /// <summary>
         ///   Gets or sets the length for the feature vectors
@@ -166,8 +172,19 @@ namespace Accord.Statistics.Kernels
         {
             if (x == y) return 1.0;
 
+            Locals m = locals.Value;
+
+            double[] sx = snorm(x);
+            double[] sy = snorm(y);
+
+            // if (!m.vectors.TryGetValue(x, out sx))
+            //     m.vectors[x] = sx = snorm(x);
+
+            //if (!m.vectors.TryGetValue(y, out sy))
+            //    m.vectors[y] = sy = snorm(y);
+
             // Compute the cosine of the global distance
-            double distance = D(snorm(x), snorm(y));
+            double distance = D(m, sx, sy);
             double cos = System.Math.Cos(distance);
 
             // Return cos for the linear kernel, cos^n for polynomial
@@ -179,77 +196,62 @@ namespace Accord.Statistics.Kernels
         ///   Global distance D(X,Y) between two sequences of vectors.
         /// </summary>
         /// 
-        /// <param name="X">A sequence of vectors.</param>
-        /// <param name="Y">A sequence of vectors.</param>
+        /// <param name="locals">The current thread local storage.</param>
+        /// <param name="sequence1">A sequence of vectors.</param>
+        /// <param name="sequence2">A sequence of vectors.</param>
         /// 
         /// <returns>The global distance between X and Y.</returns>
         /// 
-        private double D(double[] X, double[] Y)
+        private unsafe double D(Locals locals, double[] sequence1, double[] sequence2)
         {
             // Get the number of vectors in each sequence. The vectors
             // have been projected, so the length is augmented by one.
-            int n = X.Length / (length + 1);
-            int m = Y.Length / (length + 1);
+            int vectorSize = length + 1;
+            int vectorCount1 = sequence1.Length / vectorSize;
+            int vectorCount2 = sequence2.Length / vectorSize;
 
             // Application of the Dynamic Time Warping
             // algorithm by using dynamic programming.
-            double[,] DTW = new double[n + 1, m + 1];
+            if (locals.m < vectorCount2 || locals.n < vectorCount1)
+                locals.Create(vectorCount1, vectorCount2);
 
-            for (int i = 1; i <= n; i++)
-                DTW[i, 0] = double.PositiveInfinity;
+            double[,] DTW = locals.DTW;
 
-            for (int i = 1; i <= m; i++)
-                DTW[0, i] = double.PositiveInfinity;
 
-            for (int i = 1; i <= n; i++)
+            fixed (double* start1 = sequence1)
+            fixed (double* start2 = sequence2)
             {
-                for (int j = 1; j <= m; j++)
+                double* vector1 = start1;
+
+                for (int i = 0; i < vectorCount1; i++, vector1 += vectorSize)
                 {
-                    double cost = d(X, i - 1, Y, j - 1, length + 1);
-                    DTW[i, j] = cost + Math.Min(Math.Min(
-                        DTW[i - 1, j],      // insertion
-                        DTW[i, j - 1]),     // deletion
-                        DTW[i - 1, j - 1]   // match
-                    );
+                    double* vector2 = start2;
+
+                    for (int j = 0; j < vectorCount2; j++, vector2 += vectorSize)
+                    {
+                        double prod = 0; // inner product 
+                        for (int k = 0; k < vectorSize; k++)
+                            prod += vector1[k] * vector2[k];
+
+                        // Return the arc-cosine of the inner product
+                        double cost = Math.Acos(prod > 1 ? 1 : (prod < -1 ? -1 : prod));
+
+                        double insertion = DTW[i, j + 1];
+                        double deletion = DTW[i + 1, j];
+                        double match = DTW[i, j];
+
+                        double min = (insertion < deletion
+                            ? (insertion < match ? insertion : match)
+                            : (deletion < match ? deletion : match));
+
+                        DTW[i + 1, j + 1] = cost + min;
+                    }
                 }
             }
 
-            return DTW[n, m]; // return the minimum global distance
+            return DTW[vectorCount1, vectorCount2]; // return the minimum global distance
         }
 
-        /// <summary>
-        ///   Local distance d(x,y) between two vectors.
-        /// </summary>
-        /// 
-        /// <param name="X">A sequence of fixed-length vectors X.</param>
-        /// <param name="Y">A sequence of fixed-length vectors Y.</param>
-        /// <param name="ix">The index of the vector in the sequence x.</param>
-        /// <param name="iy">The index of the vector in the sequence y.</param>
-        /// <param name="length">The fixed-length of the vectors in the sequences.</param>
-        /// 
-        /// <returns>The local distance between x and y.</returns>
-        /// 
-        private static double d(double[] X, int ix, double[] Y, int iy, int length)
-        {
-            double p = 0; // the product <x,y>
-
-            // Get the vectors' starting positions in the sequences
-            int i = ix * length;
-            int j = iy * length;
-
-            // Compute the inner product between the vectors
-            for (int k = 0; k < length; k++)
-                p += X[i++] * Y[j++];
-
-            // Assert the value is in the [-1;+1] range
-            if (p > +1.0) 
-                p = +1.0;
-            else if (p < -1.0) 
-                p = -1.0;
-
-            // Return the arc-cosine of the inner product
-            return Math.Acos(p);
-        }
 
 
         /// <summary>
@@ -258,43 +260,40 @@ namespace Accord.Statistics.Kernels
         ///   and normalizing them to be unit vectors.
         /// </summary>
         /// 
-        /// <param name="x">A sequence of vectors.</param>
+        /// <param name="input">A sequence of vectors.</param>
         /// 
         /// <returns>A sequence of vector projections.</returns>
         /// 
-        private double[] snorm(double[] x)
+        private unsafe double[] snorm(double[] input)
         {
             // Get the number of vectors in the sequence
-            int n = x.Length / length;
+            int n = input.Length / length;
 
             // Create the augmented sequence projection
-            double[] xs = new double[x.Length + n];
+            double[] projection = new double[input.Length + n];
 
-            // For each vector in the sequence
-            for (int j = 0; j < n; j++)
+            fixed (double* source = input)
+            fixed (double* result = projection)
             {
-                // Compute its starting position in the
-                //  source and destination sequences
-                int src = j * length;
-                int dst = j * (length + 1);
+                double* src = source;
+                double* dst = result;
 
-                // Compute augmented vector norm
-                double norm = alpha * alpha;
-                for (int i = src; i < src + length; i++)
-                    norm += x[i] * x[i];
-                norm = System.Math.Sqrt(norm);
+                for (int i = 0; i < n; i++)
+                {
+                    double norm = alpha * alpha;
 
-                // Normalize the augmented vector and
-                //  copy to the destination sequence
-                xs[dst + length] = alpha / norm;
-                for (int i = dst; i < dst + length; i++, src++)
-                    xs[i] = x[src] / norm;
+                    for (int j = 0; j < length; j++)
+                        norm += src[j] * src[j];
+                    norm = Math.Sqrt(norm);
+
+                    for (int j = 0; j < length; j++, src++, dst++)
+                        *dst = *src / norm;
+
+                    *(dst++) = alpha / norm;
+                }
             }
 
-            return xs; // return the projected sequence
-
-            // Remarks: the above could be done much more
-            // efficiently using unsafe pointer arithmetic.
+            return projection; // return the projected sequence
         }
 
         /// <summary>
@@ -310,5 +309,76 @@ namespace Accord.Statistics.Kernels
             return MemberwiseClone();
         }
 
+
+        private class Locals
+        {
+            public double[,] DTW;
+            public int m;
+            public int n;
+            // Dictionary<double[], double[]> vectors;
+
+            public Locals()
+            {
+                // vectors = new Dictionary<double[], double[]>();
+            }
+
+            public void Create(int n, int m)
+            {
+                this.n = n;
+                this.m = m;
+                this.DTW = new double[n + 1, m + 1];
+
+                for (int i = 1; i <= n; i++)
+                    DTW[i, 0] = double.PositiveInfinity;
+
+                for (int i = 1; i <= m; i++)
+                    DTW[0, i] = double.PositiveInfinity;
+            }
+
+        }
+
+
+         /// <summary>
+        ///   Performs application-defined tasks associated with freeing, 
+        ///   releasing, or resetting unmanaged resources.
+        /// </summary>
+        /// 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        ///   Releases unmanaged resources and performs other cleanup operations 
+        ///   before the <see cref="DynamicTimeWarping"/> is reclaimed by garbage collection.
+        /// </summary>
+        /// 
+        ~DynamicTimeWarping()
+        {
+            Dispose(false);
+        }
+
+        /// <summary>
+        ///   Releases unmanaged and - optionally - managed resources
+        /// </summary>
+        /// 
+        /// <param name="disposing"><c>true</c> to release both managed
+        /// and unmanaged resources; <c>false</c> to release only unmanaged
+        /// resources.</param>
+        ///
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                // free managed resources
+                if (locals != null)
+                {
+                    locals.Dispose();
+                    locals = null;
+                }
+            }
+
+        }
     }
 }
