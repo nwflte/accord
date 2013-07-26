@@ -27,10 +27,22 @@ namespace Accord.Math.Comparers
 
     /// <summary>
     ///   Custom comparer which accepts any delegate or
-    ///   anonymous function to perform comparison of values.
+    ///   anonymous function to perform value comparisons.
     /// </summary>
     /// 
     /// <typeparam name="T">The type of objects to compare.</typeparam>
+    /// 
+    /// <example>
+    /// <code>
+    ///   // Assume we have values to sort
+    ///   double[] values = { 0, 5, 3, 1, 8 };
+    ///   
+    ///   // We can create an ad-hoc sorting rule using
+    ///   Array.Sort(values, new CustomComparer&lt;double>((a, b) => -a.CompareTo(b)));
+    ///   
+    ///   // Result will be { 8, 5, 3, 1, 0 }.
+    /// </code>
+    /// </example>
     /// 
     public class CustomComparer<T> : IComparer<T>, IEqualityComparer<T>
     {

@@ -23,12 +23,100 @@
 namespace Accord.Math.Comparers
 {
     using System.Collections.Generic;
+    using System;
 
     /// <summary>
-    ///   Array element comparer.
+    ///   Element-at-position comparer.
     /// </summary>
     /// 
-    public class ElementComparer : IComparer<double[]>, IEqualityComparer<double[]>
+    /// <remarks>
+    ///   This class compares arrays by checking the value
+    ///   of a particular element at a given array index.
+    /// </remarks>
+    /// 
+    /// <example>
+    /// <code>
+    ///   // We sort the arrays according to the 
+    ///   // elements at their second column.
+    ///   
+    ///   double[][] values =
+    ///   {   //                 v
+    ///       new double[] {  0, 3, 0 },
+    ///       new double[] {  0, 4, 1 },
+    ///       new double[] { -1, 1, 1 },
+    ///       new double[] { -1, 5, 4 },
+    ///       new double[] { -2, 2, 6 },
+    ///   };
+    ///   
+    ///   // Sort the array considering only the second column
+    ///   Array.Sort(values, new ElementComparer() { Index = 1 });
+    ///   
+    ///   // The result will be
+    ///   double[][] result =
+    ///   {
+    ///       new double[] { -1, 1, 1 },
+    ///       new double[] { -2, 2, 6 },
+    ///       new double[] {  0, 3, 0 },
+    ///       new double[] {  0, 4, 1 },
+    ///       new double[] { -1, 5, 4 },
+    ///   };
+    /// </code>
+    /// </example>
+    /// 
+    /// <seealso cref="ElementComparer{T}"/>
+    /// <seealso cref="ArrayComparer{T}"/>
+    /// <seealso cref="GeneralComparer"/>
+    /// <seealso cref="CustomComparer{T}"/>
+    /// 
+    public class ElementComparer : ElementComparer<double>
+    {
+    }
+
+    /// <summary>
+    ///   Element-at-position comparer.
+    /// </summary>
+    /// 
+    /// <remarks>
+    ///   This class compares arrays by checking the value
+    ///   of a particular element at a given array index.
+    /// </remarks>
+    /// 
+    /// <example>
+    /// <code>
+    ///   // We sort the arrays according to the 
+    ///   // elements at their second column.
+    ///   
+    ///   double[][] values =
+    ///   {   //                 v
+    ///       new double[] {  0, 3, 0 },
+    ///       new double[] {  0, 4, 1 },
+    ///       new double[] { -1, 1, 1 },
+    ///       new double[] { -1, 5, 4 },
+    ///       new double[] { -2, 2, 6 },
+    ///   };
+    ///   
+    ///   // Sort the array considering only the second column
+    ///   Array.Sort(values, new ElementComparer() { Index = 1 });
+    ///   
+    ///   // The result will be
+    ///   double[][] result =
+    ///   {
+    ///       new double[] { -1, 1, 1 },
+    ///       new double[] { -2, 2, 6 },
+    ///       new double[] {  0, 3, 0 },
+    ///       new double[] {  0, 4, 1 },
+    ///       new double[] { -1, 5, 4 },
+    ///   };
+    /// </code>
+    /// </example>
+    /// 
+    /// <seealso cref="ElementComparer"/>
+    /// <seealso cref="ArrayComparer{T}"/>
+    /// <seealso cref="GeneralComparer"/>
+    /// <seealso cref="CustomComparer{T}"/>
+    /// 
+    public class ElementComparer<T> : IComparer<T[]>, IEqualityComparer<T[]>
+        where T : IComparable, IEquatable<T>
     {
         /// <summary>
         ///   Gets or sets the element index to compare.
@@ -37,18 +125,14 @@ namespace Accord.Math.Comparers
         public int Index { get; set; }
 
         /// <summary>
-        ///   Compares two objects and returns a value indicating whether one is less than, equal to, or greater than the other.
+        ///   Compares two objects and returns a value indicating 
+        ///   whether one is less than, equal to, or greater than the other.
         /// </summary>
         /// 
         /// <param name="x">The first object to compare.</param>
         /// <param name="y">The second object to compare.</param>
         /// 
-        /// <returns>
-        /// A signed integer that indicates the relative values of <paramref name="x"/> and <paramref name="y"/>, as shown in the following table.Value Meaning Less than zero <paramref name="x"/> is less than <paramref name="y"/>. Zero <paramref name="x"/> equals <paramref name="y"/>. Greater than zero <paramref name="x"/> is greater than <paramref name="y"/>.
-        /// </returns>
-        /// <exception cref="T:System.ArgumentException">Neither <paramref name="x"/> nor <paramref name="y"/> implements the <see cref="T:System.IComparable"/> interface.-or- <paramref name="x"/> and <paramref name="y"/> are of different types and neither one can handle comparisons with the other. </exception>
-        /// 
-        public int Compare(double[] x, double[] y)
+        public int Compare(T[] x, T[] y)
         {
             return x[Index].CompareTo(y[Index]);
         }
@@ -59,13 +143,14 @@ namespace Accord.Math.Comparers
         /// 
         /// <param name="x">The first object to compare.</param>
         /// <param name="y">The second object to compare.</param>
+        /// 
         /// <returns>
         ///   <c>true</c> if the specified object is equal to the other; otherwise, <c>false</c>.
         /// </returns>
         ///   
-        public bool Equals(double[] x, double[] y)
+        public bool Equals(T[] x, T[] y)
         {
-            return x[Index] == y[Index];
+            return x[Index].Equals(y[Index]);
         }
 
         /// <summary>
@@ -75,10 +160,11 @@ namespace Accord.Math.Comparers
         /// <param name="obj">The instance.</param>
         /// 
         /// <returns>
-        ///   A hash code for the instance instance, suitable for use in hashing algorithms and data structures like a hash table. 
+        ///   A hash code for the instance instance, suitable for use
+        ///   in hashing algorithms and data structures like a hash table. 
         /// </returns>
         /// 
-        public int GetHashCode(double[] obj)
+        public int GetHashCode(T[] obj)
         {
             return obj[Index].GetHashCode();
         }

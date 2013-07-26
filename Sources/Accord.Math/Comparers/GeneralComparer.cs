@@ -23,6 +23,7 @@
 namespace Accord.Math.Comparers
 {
     using System.Collections.Generic;
+    using System;
 
     /// <summary>
     ///   Directions for the General Comparer.
@@ -44,13 +45,30 @@ namespace Accord.Math.Comparers
     };
 
     /// <summary>
-    ///   General comparer which supports multiple directions
-    ///   and comparison of absolute values.
+    ///   General comparer which supports multiple 
+    ///   directions and comparison of absolute values.
     /// </summary>
+    /// 
+    /// <example>
+    /// <code>
+    ///   // Assume we have values to sort
+    ///   double[] values = { 0, -5, 3, 1, 8 };
+    ///   
+    ///   // We can create an ad-hoc sorting rule considering only absolute values
+    ///   Array.Sort(values, new GeneralComparer(ComparerDirection.Ascending, Math.Abs));
+    ///   
+    ///   // Result will be { 0, 1, 3, 5, 8 }.
+    /// </code>
+    /// </example>
+    /// 
+    /// <seealso cref="ElementComparer{T}"/>
+    /// <seealso cref="ArrayComparer{T}"/>
+    /// <seealso cref="GeneralComparer"/>
+    /// <seealso cref="CustomComparer{T}"/>
     /// 
     public class GeneralComparer : IComparer<double>, IComparer<int>
     {
-        private bool absolute;
+        Func<double, double> map;
         private int direction = 1;
 
         /// <summary>
@@ -82,8 +100,25 @@ namespace Accord.Math.Comparers
         /// 
         public GeneralComparer(ComparerDirection direction, bool useAbsoluteValues)
         {
+            if (useAbsoluteValues)
+                this.map = Math.Abs;
+            else this.map = (a) => a;
+
             this.direction = (int)direction;
-            this.absolute = useAbsoluteValues;
+        }
+
+        /// <summary>
+        ///   Constructs a new General Comparer.
+        /// </summary>
+        /// 
+        /// <param name="direction">The direction to compare.</param>
+        /// <param name="map">The mapping function which will be applied to
+        ///   each vector element prior to any comparisons.</param>
+        /// 
+        public GeneralComparer(ComparerDirection direction, Func<double, double> map)
+        {
+            this.map = map;
+            this.direction = (int)direction;
         }
 
         /// <summary>
@@ -96,10 +131,7 @@ namespace Accord.Math.Comparers
         /// 
         public int Compare(double x, double y)
         {
-            if (absolute)
-                return direction * (System.Math.Abs(x).CompareTo(System.Math.Abs(y)));
-            else
-                return direction * (x.CompareTo(y));
+            return direction * (map(x).CompareTo(map(y)));
         }
 
         /// <summary>
@@ -112,10 +144,7 @@ namespace Accord.Math.Comparers
         /// 
         public int Compare(int x, int y)
         {
-            if (absolute)
-                return direction * (System.Math.Abs(x).CompareTo(System.Math.Abs(y)));
-            else
-                return direction * (x.CompareTo(y));
+            return direction * (map(x).CompareTo(map(y)));
         }
 
     }

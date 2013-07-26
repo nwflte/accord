@@ -23,14 +23,24 @@
 namespace Accord.Math.Comparers
 {
     using System.Collections.Generic;
+    using System;
 
     /// <summary>
     ///   Elementwise comparer for integer arrays.
     /// </summary>
     /// 
-    public class IntegerArrayComparer : IEqualityComparer<int[]>
+    [Obsolete("Please use ArrayComparer<T> instead.")]
+    public class IntegerArrayComparer : ArrayComparer<int>
     {
+    }
 
+    /// <summary>
+    ///   Elementwise comparer for arrays.
+    /// </summary>
+    /// 
+    public class ArrayComparer<T> : IEqualityComparer<T[]>
+        where T : IEquatable<T>
+    {
         /// <summary>
         ///   Determines whether two instances are equal.
         /// </summary>
@@ -41,10 +51,10 @@ namespace Accord.Math.Comparers
         ///   <c>true</c> if the specified object is equal to the other; otherwise, <c>false</c>.
         /// </returns>
         ///   
-        public bool Equals(int[] x, int[] y)
+        public bool Equals(T[] x, T[] y)
         {
             for (int i = 0; i < x.Length; i++)
-                if (x[i] != y[i])
+                if (!x[i].Equals(y[i]))
                     return false;
             return true;
         }
@@ -56,10 +66,11 @@ namespace Accord.Math.Comparers
         /// <param name="obj">The instance.</param>
         /// 
         /// <returns>
-        ///   A hash code for the instance instance, suitable for use in hashing algorithms and data structures like a hash table. 
+        ///   A hash code for the instance instance, suitable for use 
+        ///   in hashing algorithms and data structures like a hash table. 
         /// </returns>
         /// 
-        public int GetHashCode(int[] obj)
+        public int GetHashCode(T[] obj)
         {
             unchecked
             {
