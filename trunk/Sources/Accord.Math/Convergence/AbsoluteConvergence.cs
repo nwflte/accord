@@ -23,11 +23,42 @@
 namespace Accord.Math
 {
     using System;
-    using System.Linq;
 
     /// <summary>
     ///   Absolute convergence criteria.
     /// </summary>
+    /// 
+    /// <remarks>
+    ///   This class can be used to track progress and convergence
+    ///   of methods which rely on the absolute change of a value.
+    /// </remarks>
+    /// 
+    /// <example>
+    /// <code>
+    ///   // Create a new convergence criteria for a maximum of 10 iterations
+    ///   var criteria = new AbsoluteConvergence(iterations: 10, tolerance: 0.1);
+    /// 
+    ///   int progress = 1;
+    /// 
+    ///   do
+    ///   {
+    ///       // Do some processing...
+    /// 
+    /// 
+    ///       // Update current iteration information:
+    ///       criteria.NewValue = 12345.6 / progress++;
+    /// 
+    ///   } while (!criteria.HasConverged);
+    /// 
+    ///   
+    ///   // The method will converge after reaching the 
+    ///   // maximum of 10 iterations with a final value
+    ///   // of 1371.73:
+    ///   
+    ///   int iterations = criteria.CurrentIteration; // 10
+    ///   double value = criteria.OldValue; // 1371.7333333
+    /// </code>
+    /// </example>
     /// 
     public class AbsoluteConvergence
     {
@@ -65,14 +96,40 @@ namespace Accord.Math
             set
             {
                 if (value < 0)
-                    throw new ArgumentOutOfRangeException("value", "The maximum number of iterations should be positive.");
+                    throw new ArgumentOutOfRangeException("value",
+                        "The maximum number of iterations should be positive.");
 
                 maxIterations = value;
             }
         }
 
         /// <summary>
-        ///   Gets or sets the watched value before the iteration.
+        ///   Initializes a new instance of the <see cref="AbsoluteConvergence"/> class.
+        /// </summary>
+        /// 
+        public AbsoluteConvergence()
+        {
+        }
+
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="AbsoluteConvergence"/> class.
+        /// </summary>
+        /// 
+        /// <param name="iterations">The maximum number of iterations which should be
+        ///   performed by the iterative algorithm. Setting to zero indicates there
+        ///   is no maximum number of iterations. Default is 0.</param>
+        /// <param name="tolerance">The maximum change in the watched value
+        ///   after an iteration of the algorithm used to detect convergence.
+        ///   Default is 0.</param>
+        /// 
+        public AbsoluteConvergence(int iterations, double tolerance)
+        {
+            this.Iterations = iterations;
+            this.tolerance = tolerance;
+        }
+
+        /// <summary>
+        ///   Gets the watched value before the iteration.
         /// </summary>
         /// 
         public double OldValue { get; private set; }
