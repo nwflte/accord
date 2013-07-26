@@ -31,6 +31,63 @@ namespace Accord.Statistics.Filters
     ///   Data normalization preprocessing filter.
     /// </summary>
     /// 
+    /// <para>
+    ///   The normalization filter is able to transform numerical data into
+    ///   Z-Scores, subtracting the mean for each variable and dividing by
+    ///   their standard deviation. The filter is able to distinguish
+    ///   numerical columns automatically, leaving other columns unnafected.
+    ///   It is also possible to control which columns should be processed
+    ///   by the filter.</para>
+    /// 
+    /// <example>
+    /// <para>
+    ///   Suppose we have a data table relating the age of a person and its 
+    ///   categorical classification, as in "child", "adult" or "elder".
+    ///   The normalization filter can be used to transform the "Age" column
+    ///   into Z-scores, as shown below:</para>
+    ///   
+    /// <code>
+    ///   // Create the aforementioned sample table
+    ///   DataTable table = new DataTable("Sample data");
+    ///   table.Columns.Add("Age", typeof(double));
+    ///   table.Columns.Add("Label", typeof(string));
+    ///   
+    ///   //            age   label
+    ///   table.Rows.Add(10, "child");
+    ///   table.Rows.Add(07, "child");
+    ///   table.Rows.Add(04, "child");
+    ///   table.Rows.Add(21, "adult");
+    ///   table.Rows.Add(27, "adult");
+    ///   table.Rows.Add(12, "child");
+    ///   table.Rows.Add(79, "elder");
+    ///   table.Rows.Add(40, "adult");
+    ///   table.Rows.Add(30, "adult");
+    ///   
+    ///   // The filter will ignore non-real (continuous) data
+    ///   Normalization normalization = new Normalization(table);
+    ///   
+    ///   double mean = normalization["Age"].Mean;              // 25.55
+    ///   double sdev = normalization["Age"].StandardDeviation; // 23.29
+    ///   
+    ///   // Now we can process another table at once:
+    ///   DataTable result = normalization.Apply(table);
+    ///   
+    ///   // The result will be a table with the same columns, but
+    ///   // in which any column named "Age" will have been normalized
+    ///   // using the previously detected mean and standard deviation:
+    ///   
+    ///   DataGridBox.Show(result);
+    /// </code>
+    /// 
+    /// <para>
+    ///   The resulting data is shown below:</para>
+    /// 
+    ///   <img src="..\images\normalization-filter.png" />
+    /// 
+    /// </example>
+    /// 
+    /// <seealso cref="Codification"/>
+    /// 
     [Serializable]
     public class Normalization : BaseFilter<Normalization.Options>, IAutoConfigurableFilter
     {
@@ -40,6 +97,15 @@ namespace Accord.Statistics.Filters
         /// </summary>
         /// 
         public Normalization() { }
+
+        /// <summary>
+        ///   Creates a new data normalization filter.
+        /// </summary>
+        /// 
+        public Normalization(DataTable table)
+        {
+            Detect(table);
+        }
 
         /// <summary>
         ///   Creates a new data normalization filter.
