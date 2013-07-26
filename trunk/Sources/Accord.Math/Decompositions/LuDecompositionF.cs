@@ -187,7 +187,16 @@ namespace Accord.Math.Decompositions
 
         /// <summary>
         ///   Returns if the matrix is non-singular (i.e. invertible).
+        ///   Please see remarks for important information regarding
+        ///   numerical stability when using this method.
         /// </summary>
+        /// 
+        /// <remarks>
+        ///   Please keep in mind this is not one of the most reliable methods
+        ///   for checking singularity of a matrix. For a more reliable method,
+        ///   please use <see cref="Matrix.IsSingular"/> or the 
+        ///   <see cref="SingularValueDecomposition"/>.
+        /// </remarks>
         /// 
         public bool Nonsingular
         {

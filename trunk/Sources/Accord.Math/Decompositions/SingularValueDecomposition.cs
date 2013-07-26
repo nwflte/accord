@@ -96,8 +96,12 @@ namespace Accord.Math.Decompositions
             get { return s[0]; }
         }
 
-        /// <summary>Returns the effective numerical matrix rank.</summary>
+        /// <summary>
+		///   Returns the effective numerical matrix rank.
+		/// </summary>
+		///
         /// <value>Number of non-negligible singular values.</value>
+		///
         public int Rank
         {
             get
@@ -112,7 +116,19 @@ namespace Accord.Math.Decompositions
             }
         }
 
-        /// <summary>Returns the one-dimensional array of singular values.</summary>        
+		/// <summary>
+		///   Gets whether the decomposed matrix is singular.
+		/// </summary>
+		///
+		public bool IsSingular
+        {
+            get { return Rank < Math.Min(m, n); }
+        }
+
+        /// <summary>
+		///   Gets the one-dimensional array of singular values.
+		/// </summary>        
+		///
         public Double[] Diagonal
         {
             get { return this.s; }
@@ -218,6 +234,12 @@ namespace Accord.Math.Decompositions
             Double[,] a;
             m = value.GetLength(0); // rows
             n = value.GetLength(1); // cols
+
+			if (m == 0 || n == 0)
+			{
+			   throw new ArgumentException("Matrix does not have any rows or columns.", "value");
+			}
+			    
 
 
             if (m < n) // Check if we are violating JAMA's assumption
