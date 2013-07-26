@@ -26,6 +26,10 @@ namespace Accord.Statistics.Distributions.DensityKernels
     ///   Common interface for radially symmetric kernels.
     /// </summary>
     /// 
+    /// <seealso cref="GaussianKernel"/>
+    /// <seealso cref="EpanechnikovKernel"/>
+    /// <seealso cref="UniformKernel"/>
+    /// 
     public interface IRadiallySymmetricKernel : IDensityKernel
     {
         

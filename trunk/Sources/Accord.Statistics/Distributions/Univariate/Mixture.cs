@@ -25,6 +25,9 @@ namespace Accord.Statistics.Distributions.Univariate
     using System;
     using Accord.Math;
     using Accord.Statistics.Distributions.Fitting;
+    using System.Text;
+    using System.Linq;
+    using AForge;
 
     /// <summary>
     ///   Mixture of univariate probability distributions.
@@ -50,6 +53,42 @@ namespace Accord.Statistics.Distributions.Univariate
     ///   
     /// <typeparam name="T">
     ///   The type of the univariate component distributions.</typeparam>
+    ///   
+    /// <example>
+    /// <code>
+    ///   // Create a new mixture containing two Normal distributions
+    ///   Mixture&lt;NormalDistribution> mix = new Mixture&lt;NormalDistribution>(
+    ///       new NormalDistribution(2, 1), new NormalDistribution(5, 1));
+    ///   
+    ///   // Common measures
+    ///   double mean   = mix.Mean;     // 3.5
+    ///   double median = mix.Median;   // 3.4999998506015895
+    ///   double var    = mix.Variance; // 3.25
+    ///   
+    ///   // Cumulative distribution functions
+    ///   double cdf = mix.DistributionFunction(x: 4.2);               // 0.59897597553494908
+    ///   double ccdf = mix.ComplementaryDistributionFunction(x: 4.2); // 0.40102402446505092
+    ///   
+    ///   // Probability mass functions
+    ///   double pmf1 = mix.ProbabilityDensityFunction(x: 1.2); // 0.14499174984363708
+    ///   double pmf2 = mix.ProbabilityDensityFunction(x: 2.3); // 0.19590437513747333
+    ///   double pmf3 = mix.ProbabilityDensityFunction(x: 3.7); // 0.13270883471234715
+    ///   double lpmf = mix.LogProbabilityDensityFunction(x: 4.2); // -1.8165661905848629
+    ///   
+    ///   // Quantile function
+    ///   double icdf1 = mix.InverseDistributionFunction(p: 0.17); // 1.5866611690305095
+    ///   double icdf2 = mix.InverseDistributionFunction(p: 0.46); // 3.1968506765456883
+    ///   double icdf3 = mix.InverseDistributionFunction(p: 0.87); // 5.6437596300843076
+    ///   
+    ///   // Hazard (failure rate) functions
+    ///   double hf = mix.HazardFunction(x: 4.2);            // 0.40541978256972522
+    ///   double chf = mix.CumulativeHazardFunction(x: 4.2); // 0.91373394208601633
+    ///   
+    ///   // String representation:
+    ///   // Mixture(x; 0.5 * N(x; μ = 5, σ² = 1) + 0.5 * N(x; μ = 5, σ² = 1))
+    ///   string str = mix.ToString(CultureInfo.InvariantCulture);
+    /// </code>
+    /// </example>
     ///   
     [Serializable]
     public class Mixture<T> : UnivariateContinuousDistribution, IMixture<T>,
@@ -195,7 +234,10 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override double DistributionFunction(double x)
         {
-            throw new NotSupportedException();
+            double r = 0.0;
+            for (int i = 0; i < components.Length; i++)
+                r += coefficients[i] * components[i].DistributionFunction(x);
+            return r;
         }
 
 
@@ -478,6 +520,25 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
+        ///   Gets the support interval for this distribution.
+        /// </summary>
+        /// 
+        /// <value>
+        ///   A <see cref="AForge.DoubleRange" /> containing
+        ///   the support interval for this distribution.
+        /// </value>
+        /// 
+        public override DoubleRange Support
+        {
+            get
+            {
+                double min = Components.Min(p => p.Support.Min);
+                double max = Components.Max(p => p.Support.Max);
+                return new DoubleRange(min, max);
+            }
+        }
+
+        /// <summary>
         ///   Estimates a new mixture model from a given set of observations.
         /// </summary>
         /// 
@@ -563,5 +624,111 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         #endregion
+
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("Mixture(x; ");
+
+            for (int i = 0; i < coefficients.Length; i++)
+            {
+                sb.AppendFormat("{0}*{1}", coefficients[0], components[1].ToString());
+                if (i < coefficients.Length - 1)
+                    sb.Append(" + ");
+            }
+            sb.Append(")");
+
+            return sb.ToString();
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(IFormatProvider formatProvider)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("Mixture(x; ");
+
+            for (int i = 0; i < coefficients.Length; i++)
+            {
+                sb.AppendFormat("{0}*{1}",
+                    coefficients[0].ToString(formatProvider),
+                    components[1].ToString());
+
+                if (i < coefficients.Length - 1)
+                    sb.Append(" + ");
+            }
+            sb.Append(")");
+
+            return sb.ToString();
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("Mixture(x; ");
+
+            for (int i = 0; i < coefficients.Length; i++)
+            {
+                sb.AppendFormat("{0}*{1}",
+                    coefficients[0].ToString(format, formatProvider),
+                    components[1].ToString());
+
+                if (i < coefficients.Length - 1)
+                    sb.Append(" + ");
+            }
+            sb.Append(")");
+
+            return sb.ToString();
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("Mixture(x; ");
+
+            for (int i = 0; i < coefficients.Length; i++)
+            {
+                sb.AppendFormat("{0}*{1}",
+                    coefficients[0].ToString(format),
+                    components[1].ToString());
+
+                if (i < coefficients.Length - 1)
+                    sb.Append(" + ");
+            }
+            sb.Append(")");
+
+            return sb.ToString();
+        }
     }
 }

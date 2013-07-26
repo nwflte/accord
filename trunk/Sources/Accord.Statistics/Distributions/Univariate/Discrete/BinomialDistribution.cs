@@ -25,6 +25,7 @@ namespace Accord.Statistics.Distributions.Univariate
     using System;
     using Accord.Math;
     using Accord.Statistics.Distributions.Fitting;
+    using AForge;
 
     /// <summary>
     ///   Binomial probability distribution.
@@ -48,6 +49,42 @@ namespace Accord.Statistics.Distributions.Univariate
     ///       C. Bishop. “Pattern Recognition and Machine Learning”. Springer. 2006.</description></item>
     ///   </list></para>
     /// </remarks>
+    /// 
+    /// <example>
+    /// <code>
+    ///   // Creates a distribution with n = 16 and success probability 0.12
+    ///   var bin = new BinomialDistribution(trials: 16, probability: 0.12);
+    ///   
+    ///   // Common masures
+    ///   double mean = bin.Mean;     // 1.92
+    ///   double median = bin.Median; // 2
+    ///   double var = bin.Variance;  // 1.6896
+    ///   double mode = bin.Mode;     // 2
+    ///   
+    ///   // Probability mass functions
+    ///   double pdf = bin.ProbabilityMassFunction(k: 1); // 0.28218979948821621
+    ///   double lpdf = bin.LogProbabilityMassFunction(k: 0); // -2.0453339441581582
+    ///   
+    ///   // Cumulative distribution functions
+    ///   double cdf = bin.DistributionFunction(k: 0);    // 0.12933699143209909
+    ///   double ccdf = bin.ComplementaryDistributionFunction(k: 0); // 0.87066300856790091
+    ///   
+    ///   // Quantile functions
+    ///   int icdf0 = bin.InverseDistributionFunction(p: 0.37); // 1
+    ///   int icdf1 = bin.InverseDistributionFunction(p: 0.50); // 2
+    ///   int icdf2 = bin.InverseDistributionFunction(p: 0.99); // 5
+    ///   int icdf3 = bin.InverseDistributionFunction(p: 0.999); // 7
+    ///   
+    ///   // Hazard (failure rate) functions
+    ///   double hf = bin.HazardFunction(x: 0); // 1.3809523809523814
+    ///   double chf = bin.CumulativeHazardFunction(x: 0); // 0.86750056770472328
+    ///   
+    ///   // String representation
+    ///   string str = bin.ToString(CultureInfo.InvariantCulture); // "Binomial(x; n = 16, p = 0.12)"
+    /// </code>
+    /// </example>
+    /// 
+    /// <seealso cref="BernoulliDistribution"/>
     /// 
     [Serializable]
     public class BinomialDistribution : UnivariateDiscreteDistribution,
@@ -127,6 +164,29 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
+        ///   Gets the mode for this distribution.
+        /// </summary>
+        /// 
+        /// <value>
+        ///   The distribution's mode value.
+        /// </value>
+        /// 
+        public override double Mode
+        {
+            get
+            {
+                double test = (numberOfTrials+1) * probability;
+                if (test <= 0 || (int)test != test)
+                    return Math.Floor(test);
+                if (test <= numberOfTrials)
+                    return test; // TODO: should return test and test - 1 (multimodal)
+                if (test == numberOfTrials + 1)
+                    return numberOfTrials;
+                return Double.NaN;
+            }
+        }
+
+        /// <summary>
         ///   Gets the entropy for this distribution.
         /// </summary>
         /// 
@@ -135,6 +195,20 @@ namespace Accord.Statistics.Distributions.Univariate
         public override double Entropy
         {
             get { throw new NotSupportedException(); }
+        }
+
+        /// <summary>
+        ///   Gets the support interval for this distribution.
+        /// </summary>
+        /// 
+        /// <value>
+        ///   A <see cref="AForge.DoubleRange" /> containing
+        ///   the support interval for this distribution.
+        /// </value>
+        /// 
+        public override DoubleRange Support
+        {
+            get { return new DoubleRange(0, numberOfTrials); }
         }
 
         /// <summary>
@@ -174,10 +248,20 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override int InverseDistributionFunction(double p)
         {
-            for (int i = 0; i < numberOfTrials; i++)
-                if (DistributionFunction(i) > p) return i - 1;
+            int result = numberOfTrials;
 
-            return numberOfTrials;
+            for (int i = 0; i < numberOfTrials; i++)
+            {
+                if (DistributionFunction(i) > p)
+                {
+                    result = i;
+                    break;
+                }
+            }
+
+            System.Diagnostics.Debug.Assert(result == base.InverseDistributionFunction(p));
+
+            return result;
         }
 
         /// <summary>
@@ -278,6 +362,48 @@ namespace Accord.Statistics.Distributions.Univariate
         public override object Clone()
         {
             return new BinomialDistribution(numberOfTrials, probability);
+        }
+
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public override string ToString()
+        {
+            return String.Format("Binomial(x; n = {0}, p = {1})", numberOfTrials, probability);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(IFormatProvider formatProvider)
+        {
+            return String.Format(formatProvider, "Binomial(x; n = {0}, p = {1})", numberOfTrials, probability);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return String.Format("Binomial(x; n = {0}, p = {1})",
+                numberOfTrials.ToString(format, formatProvider),
+                probability.ToString(format, formatProvider));
         }
     }
 

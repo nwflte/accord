@@ -25,6 +25,7 @@ namespace Accord.Statistics.Distributions.Multivariate
     using System;
     using Accord.Math;
     using Accord.Statistics.Distributions.DensityKernels;
+    using Accord.Math.Decompositions;
 
     /// <summary>
     ///   Multivariate empirical distribution.
@@ -55,8 +56,54 @@ namespace Accord.Statistics.Distributions.Multivariate
     ///     <item><description>
     ///       Bishop, Christopher M.; Pattern Recognition and Machine Learning. 
     ///       Springer; 1st ed. 2006.</description></item>
+    ///     <item><description>
+    ///       Buch-Kromann, T.; Nonparametric Density Estimation (Multidimension), 2007. Available in 
+    ///       http://www.buch-kromann.dk/tine/nonpar/Nonparametric_Density_Estimation_multidim.pdf </description></item>
+    ///     <item><description>
+    ///       W. Härdle, M. Müller, S. Sperlich, A. Werwatz; Nonparametric and Semiparametric Models, 2004. Available
+    ///       in http://sfb649.wiwi.hu-berlin.de/fedc_homepage/xplore/ebooks/html/spm/spmhtmlnode18.html </description></item>
     ///  </list></para>  
     /// </remarks>
+    /// 
+    /// <example>
+    /// <code>
+    ///   // Suppose we have the following data, and we would
+    ///   // like to estimate a distribution from this data
+    ///   
+    ///   double[][] samples =
+    ///   {
+    ///       new double[] { 0, 1 },
+    ///       new double[] { 1, 2 },
+    ///       new double[] { 5, 1 },
+    ///       new double[] { 7, 1 },
+    ///       new double[] { 6, 1 },
+    ///       new double[] { 5, 7 },
+    ///       new double[] { 2, 1 },
+    ///   };
+    ///   
+    ///   // Start by specifying a density kernel
+    ///   IDensityKernel kernel = new EpanechnikovKernel(dimension: 2);
+    ///   
+    ///   // Create a multivariate Empirical distribution from the samples
+    ///   var dist = new MultivariateEmpiricalDistribution(kernel, samples);
+    ///   
+    ///   
+    ///   // Common measures
+    ///   double[] mean = dist.Mean;     // { 3.71, 2.00 }
+    ///   double[] median = dist.Median; // { 3.71, 2.00 }
+    ///   double[] var = dist.Variance;  // { 7.23, 5.00 } (diagonal from cov)
+    ///   double[,] cov = dist.Covariance; // { { 7.23, 0.83 }, { 0.83, 5.00 } }
+    ///   
+    ///   // Probability mass functions
+    ///   double pdf1 = dist.ProbabilityDensityFunction(new double[] { 2, 1 }); // 0.039131176997318849
+    ///   double pdf2 = dist.ProbabilityDensityFunction(new double[] { 4, 2 }); // 0.010212109770266639
+    ///   double pdf3 = dist.ProbabilityDensityFunction(new double[] { 5, 7 }); // 0.02891906722705221
+    ///   double lpdf = dist.LogProbabilityDensityFunction(new double[] { 5, 7 }); // -3.5432541357714742
+    /// </code>
+    /// </example>
+    /// 
+    /// <seealso cref="IDensityKernel"/>
+    /// <seealso cref="Accord.Statistics.Distributions.Univariate.EmpiricalDistribution"/>
     /// 
     [Serializable]
     public class MultivariateEmpiricalDistribution : MultivariateContinuousDistribution
@@ -73,12 +120,38 @@ namespace Accord.Statistics.Distributions.Multivariate
         private double[] variance;
         private double[,] covariance;
 
+        /// <summary>
+        ///   Creates a new Empirical Distribution from the data samples.
+        /// </summary>
+        /// 
+        /// <param name="samples">The data samples.</param>
+        /// 
+        public MultivariateEmpiricalDistribution(double[][] samples)
+            : base(samples[0].Length)
+        {
+            this.initialize(null, samples, null);
+        }
 
         /// <summary>
         ///   Creates a new Empirical Distribution from the data samples.
         /// </summary>
         /// 
-        /// <param name="kernel">The kernel density function to use.</param>
+        /// <param name="kernel">The kernel density function to use. 
+        ///   Default is to use the <see cref="GaussianKernel"/>.</param>
+        /// <param name="samples">The data samples forming the distribution.</param>
+        /// 
+        public MultivariateEmpiricalDistribution(IDensityKernel kernel, double[][] samples)
+            : base(samples[0].Length)
+        {
+            this.initialize(kernel, samples, null);
+        }
+
+        /// <summary>
+        ///   Creates a new Empirical Distribution from the data samples.
+        /// </summary>
+        /// 
+        /// <param name="kernel">The kernel density function to use. 
+        ///   Default is to use the <see cref="GaussianKernel"/>.</param>
         /// <param name="samples">The data samples.</param>
         /// <param name="smoothing">
         ///   The kernel smoothing or bandwidth to be used in density estimation.
@@ -138,19 +211,23 @@ namespace Accord.Statistics.Distributions.Multivariate
         /// 
         public override double ProbabilityDensityFunction(double[] x)
         {
+            // http://www.buch-kromann.dk/tine/nonpar/Nonparametric_Density_Estimation_multidim.pdf
+            // http://sfb649.wiwi.hu-berlin.de/fedc_homepage/xplore/ebooks/html/spm/spmhtmlnode18.html
+
             double sum = 0;
+
+            CholeskyDecomposition chol = new CholeskyDecomposition(smoothing);
 
             double[] delta = new double[Dimension];
             for (int i = 0; i < samples.Length; i++)
             {
                 for (int j = 0; j < x.Length; j++)
-                    delta[i] = (x[j] - samples[i][j]);
+                    delta[j] = (x[j] - samples[i][j]);
 
-                double[] Hx = smoothing.Multiply(delta);
-                sum += Math.Sqrt(determinant) * kernel.Function(Hx);
+                sum += kernel.Function(chol.Solve(delta));
             }
 
-            return sum / samples.Length;
+            return sum / (samples.Length * determinant);
         }
 
         /// <summary>

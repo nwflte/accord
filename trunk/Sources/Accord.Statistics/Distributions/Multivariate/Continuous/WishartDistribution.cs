@@ -25,6 +25,7 @@ namespace Accord.Statistics.Distributions.Multivariate
     using System;
     using Accord.Math;
     using Accord.Math.Decompositions;
+    using Accord.Statistics.Distributions.Univariate;
 
     /// <summary>
     ///   Wishart Distribution.
@@ -33,8 +34,10 @@ namespace Accord.Statistics.Distributions.Multivariate
     /// <remarks>
     /// <para>
     ///   The Wishart distribution is a generalization to multiple dimensions of 
-    ///   the chi-squared distribution, or, in the case of non-integer degrees of
-    ///   freedom, of the gamma distribution.</para>
+    ///   the <see cref="ChiSquareDistribution">Chi-Squared distribution, or, in
+    ///   the case of non-integer <see cref="DegreesOfFreedom"/>degrees of 
+    ///   freedom</see>, of the <see cref="GammaDistribution">Gamma distribution
+    ///   </see>.</para>
     ///   
     /// <para>
     ///   References:
@@ -45,15 +48,69 @@ namespace Accord.Statistics.Distributions.Multivariate
     ///   </list></para>
     /// </remarks>
     /// 
+    /// <example>
+    /// <code>
+    ///   // Create a Wishart distribution with the parameters:
+    ///   WishartDistribution wishart = new WishartDistribution(
+    ///   
+    ///       // Degrees of freedom
+    ///       degreesOfFreedom: 7,
+    ///   
+    ///       // Scale parameter
+    ///       scale: new double[,] 
+    ///       {
+    ///           { 4, 1, 1 },  
+    ///           { 1, 2, 2 },  // (must be symmetric and positive definite)
+    ///           { 1, 2, 6 },
+    ///       }
+    ///   );
+    ///   
+    ///   // Common measures
+    ///   double[] var = wishart.Variance;  // { 224, 56, 504 }
+    ///   double[,] cov = wishart.Covariance;   // see below
+    ///   double[,] meanm = wishart.MeanMatrix; // see below
+    ///               
+    ///   //         224  63  175             28  7   7 
+    ///   //   cov =  63  56  112     mean =   7  14  14
+    ///   //         175 112  504              7  14  42
+    ///   
+    ///   // (the above matrix representations have been transcribed to text using)
+    ///   string scov = cov.ToString(DefaultMatrixFormatProvider.InvariantCulture);
+    ///   string smean = meanm.ToString(DefaultMatrixFormatProvider.InvariantCulture);
+    ///   
+    ///   // For compatibility reasons, .Mean stores a flattened mean matrix
+    ///   double[] mean = wishart.Mean; // { 28, 7, 7, 7, 14, 14, 7, 14, 42 }
+    ///   
+    ///   
+    ///   // Probability density functions
+    ///   double pdf = wishart.ProbabilityDensityFunction(new double[,] 
+    ///   {
+    ///       { 8, 3, 1 },
+    ///       { 3, 7, 1 },   //   0.000000011082455043473361
+    ///       { 1, 1, 8 },
+    ///   });
+    ///   
+    ///   double lpdf = wishart.LogProbabilityDensityFunction(new double[,] 
+    ///   {
+    ///       { 8, 3, 1 },
+    ///       { 3, 7, 1 },   // -18.317902605850534
+    ///       { 1, 1, 8 },
+    ///   });
+    /// </code>
+    /// </example>
+    /// 
+    /// <seealso cref="InverseWishartDistribution"/>
+    /// 
     [Serializable]
     public class WishartDistribution : MultivariateContinuousDistribution
     {
 
-        int p;
+        int size;
         double n;
         double[,] scaleMatrix;
 
         double constant;
+        double lnconstant;
         double power;
         CholeskyDecomposition chol;
 
@@ -76,25 +133,37 @@ namespace Accord.Statistics.Distributions.Multivariate
 
             this.scaleMatrix = scale;
             this.n = degreesOfFreedom;
-            this.p = scale.GetLength(0);
+            this.size = scale.GetLength(0);
 
-            if (degreesOfFreedom <= p - 1)
-                throw new ArgumentOutOfRangeException("degreesOfFreedom","Degrees of freedom must be greater "
+            if (degreesOfFreedom <= size - 1)
+                throw new ArgumentOutOfRangeException("degreesOfFreedom", "Degrees of freedom must be greater "
                 + "than or equal to the number of rows in the scale matrix.");
 
             this.chol = new CholeskyDecomposition(scale);
 
             if (!chol.PositiveDefinite)
                 throw new NonPositiveDefiniteMatrixException("scale");
+            if (!chol.Symmetric)
+                throw new NonSymmetricMatrixException("scale");
 
-            double a = Math.Pow(chol.Determinant, degreesOfFreedom / 2.0);
-            double b = Math.Pow(2, (degreesOfFreedom * p) / 2.0);
-            double c = Gamma.Function(degreesOfFreedom / 2.0, p);
+            double a = Math.Pow(chol.Determinant, n / 2.0);
+            double b = Math.Pow(2, (n * size) / 2.0);
+            double c = Gamma.Multivariate(n / 2.0, size);
 
             this.constant = 1.0 / (a * b * c);
-            this.power = (degreesOfFreedom - p - 1) / 2.0;
+            this.lnconstant = Math.Log(constant);
+
+            this.power = (n - size - 1) / 2.0;
         }
 
+        /// <summary>
+        ///   Gets the degrees of freedom for this Wishart distribution.
+        /// </summary>
+        /// 
+        public double DegreesOfFreedom
+        {
+            get { return n; }
+        }
 
         /// <summary>
         ///   Gets the mean for this distribution.
@@ -138,8 +207,8 @@ namespace Accord.Statistics.Distributions.Multivariate
             {
                 if (variance == null)
                 {
-                    variance = new double[p];
-                    for (int i = 0; i < p; i++)
+                    variance = new double[size];
+                    for (int i = 0; i < size; i++)
                     {
                         double vii = scaleMatrix[i, i];
                         variance[i] = 2 * n * (vii * vii);
@@ -162,12 +231,12 @@ namespace Accord.Statistics.Distributions.Multivariate
             {
                 if (covariance == null)
                 {
-                    covariance = new double[p, p];
-                    for (int i = 0; i < p; i++)
+                    covariance = new double[size, size];
+                    for (int i = 0; i < size; i++)
                     {
                         double vii = scaleMatrix[i, i];
 
-                        for (int j = 0; j < p; j++)
+                        for (int j = 0; j < size; j++)
                         {
                             double vij = scaleMatrix[i, j];
                             double vjj = scaleMatrix[j, j];
@@ -204,8 +273,13 @@ namespace Accord.Statistics.Distributions.Multivariate
         /// 
         public override double ProbabilityDensityFunction(params double[] x)
         {
-            double[,] X = x.Reshape(p, p);
-            return ProbabilityDensityFunction(X);
+            if (x.Length != size * size)
+                throw new DimensionMismatchException("x",
+                    "The flattened matrix should have length equal to "
+                  + "the number of rows times columns in the scale matrix.");
+
+            double[,] inputMatrix = x.Reshape(size, size);
+            return ProbabilityDensityFunction(inputMatrix);
         }
 
         /// <summary>
@@ -232,8 +306,13 @@ namespace Accord.Statistics.Distributions.Multivariate
         public double ProbabilityDensityFunction(double[,] x)
         {
             double det = x.Determinant();
-            double z = 0.5 * chol.Solve(x).Trace();
-            return constant * Math.Pow(det, power) * Math.Exp(z);
+            double[,] Vx = chol.Solve(x);
+
+            double z = -0.5 * Vx.Trace();
+            double a = Math.Pow(det, power);
+            double b = Math.Exp(z);
+
+            return constant * a * b;
         }
 
         /// <summary>
@@ -254,7 +333,7 @@ namespace Accord.Statistics.Distributions.Multivariate
         /// 
         public override double LogProbabilityDensityFunction(params double[] x)
         {
-            double[,] X = x.Reshape(p, p);
+            double[,] X = x.Reshape(size, size);
             return LogProbabilityDensityFunction(X);
         }
 
@@ -277,8 +356,12 @@ namespace Accord.Statistics.Distributions.Multivariate
         public double LogProbabilityDensityFunction(double[,] x)
         {
             double det = x.Determinant();
-            double z = 0.5 * chol.Solve(x).Trace();
-            return Math.Log(constant) + power * Math.Log(det) + z;
+            double[,] Vx = chol.Solve(x);
+
+            double z = -0.5 * Vx.Trace();
+            double a = power * Math.Log(det);
+
+            return lnconstant + a + z;
         }
 
         /// <summary>

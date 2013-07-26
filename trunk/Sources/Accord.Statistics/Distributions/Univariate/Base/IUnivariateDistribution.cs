@@ -24,10 +24,27 @@ namespace Accord.Statistics.Distributions
 {
     using System;
     using Accord.Statistics.Distributions.Fitting;
+    using Accord.Statistics.Distributions.Univariate;
+    using AForge;
 
     /// <summary>
     ///   Common interface for univariate probability distributions.
     /// </summary>
+    /// 
+    /// <remarks>
+    ///   <para>
+    ///   This interface is implemented by both univariate <see cref="UnivariateDiscreteDistribution">
+    ///   Discrete Distributions</see> and <see cref="UnivariateContinuousDistribution">Continuous 
+    ///   Distributions</see>.</para>
+    ///   
+    ///   <para>
+    ///   For Multivariate distributions, see <see cref="IMultivariateDistribution"/>.</para>
+    /// </remarks>
+    /// 
+    /// <seealso cref="NormalDistribution"/>
+    /// <seealso cref="GammaDistribution"/>
+    /// <seealso cref="UniformContinuousDistribution"/>
+    /// <seealso cref="UniformDiscreteDistribution"/>
     /// 
     public interface IUnivariateDistribution : IDistribution
     {
@@ -71,6 +88,15 @@ namespace Accord.Statistics.Distributions
         /// <value>The distribution's entropy.</value>
         /// 
         double Entropy { get; }
+
+        /// <summary>
+        ///   Gets the support interval for this distribution.
+        /// </summary>
+        /// 
+        /// <value>A <see cref="AForge.DoubleRange"/> containing
+        ///  the support interval for this distribution.</value>
+        ///  
+        DoubleRange Support { get; }
 
         /// <summary>
         ///   Gets the cumulative distribution function (cdf) for
@@ -133,6 +159,11 @@ namespace Accord.Statistics.Distributions
         ///   a given probability, the value which the random variable will be at,
         ///   or below, with that probability.
         /// </remarks>
+        /// 
+        /// <param name="p">A probability value between 0 and 1.</param>
+        /// 
+        /// <returns>A sample which could original the given probability 
+        ///   value when applied in the <see cref="DistributionFunction"/>.</returns>
         /// 
         double InverseDistributionFunction(double p);
 

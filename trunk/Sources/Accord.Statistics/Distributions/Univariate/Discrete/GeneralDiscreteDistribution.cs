@@ -26,11 +26,14 @@ namespace Accord.Statistics.Distributions.Univariate
     using Accord.Math;
     using Accord.Statistics.Distributions.Fitting;
     using Accord.Statistics.Distributions;
+    using AForge;
+    using System.Globalization;
 
     /// <summary>
     ///   Univariate general discrete distribution, also referred as the
     ///   Categorical distribution.
     /// </summary>
+    /// 
     /// <remarks>
     ///  <para>
     ///   An univariate categorical distribution is a statistical distribution
@@ -41,6 +44,47 @@ namespace Accord.Statistics.Distributions.Univariate
     ///   The discrete uniform distribution is a special case of a generic
     ///   discrete distribution whose probability values are constant.</para>
     /// </remarks>
+    /// 
+    /// <example>
+    /// <code>
+    ///   // Create a Categorical distribution for 3 symbols, in which
+    ///   // the first and second symbol have 25% chance of appearing,
+    ///   // and the third symbol has 50% chance of appearing.
+    ///   
+    ///   //                         1st   2nd   3rd
+    ///   double[] probabilities = { 0.25, 0.25, 0.50 };
+    ///   
+    ///   // Create the categorical with the given probabilities
+    ///   var dist = new GeneralDiscreteDistribution(probabilities);
+    ///   
+    ///   // Common measures
+    ///   double mean = dist.Mean;     // 1.25
+    ///   double median = dist.Median; // 1.00
+    ///   double var = dist.Variance;  // 0.6875
+    ///   
+    ///   // Cumulative distribution functions
+    ///   double cdf  = dist.DistributionFunction(k: 2);              // 1.0
+    ///   double ccdf = dist.ComplementaryDistributionFunction(k: 2); // 0.0
+    ///   
+    ///   // Probability mass functions
+    ///   double pdf1 = dist.ProbabilityMassFunction(k: 0); // 0.25
+    ///   double pdf2 = dist.ProbabilityMassFunction(k: 1); // 0.25
+    ///   double pdf3 = dist.ProbabilityMassFunction(k: 2); // 0.50
+    ///   double lpdf = dist.LogProbabilityMassFunction(k: 2); // -0.69314718055994529
+    ///   
+    ///   // Quantile function
+    ///   int icdf1 = dist.InverseDistributionFunction(p: 0.17); // 0
+    ///   int icdf2 = dist.InverseDistributionFunction(p: 0.39); // 1
+    ///   int icdf3 = dist.InverseDistributionFunction(p: 0.56); // 2
+    ///   
+    ///   // Hazard (failure rate) functions
+    ///   double hf = dist.HazardFunction(x: 0); // 0.33333333333333331
+    ///   double chf = dist.CumulativeHazardFunction(x: 0); // 0.2876820724517809
+    ///   
+    ///   // String representation
+    ///   string str = dist.ToString(CultureInfo.InvariantCulture); // "Categorical(x; p = { 0.25, 0.25, 0.5 })"
+    /// </code>
+    /// </example>
     /// 
     [Serializable]
     public class GeneralDiscreteDistribution : UnivariateDiscreteDistribution,
@@ -266,6 +310,20 @@ namespace Accord.Statistics.Distributions.Univariate
                 }
                 return entropy.Value;
             }
+        }
+
+        /// <summary>
+        ///   Gets the support interval for this distribution.
+        /// </summary>
+        /// 
+        /// <value>
+        ///   A <see cref="AForge.DoubleRange" /> containing
+        ///   the support interval for this distribution.
+        /// </value>
+        /// 
+        public override DoubleRange Support
+        {
+            get { return new DoubleRange(start, start + probabilities.Length); }
         }
 
         /// <summary>
@@ -605,12 +663,81 @@ namespace Accord.Statistics.Distributions.Univariate
             {
                 cumulativeSum += probabilities[i];
 
-                if (uniform < cumulativeSum) 
+                if (uniform < cumulativeSum)
                     return i;
             }
 
             throw new InvalidOperationException("Generated value is not between 0 and 1.");
         }
 
+
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public override string ToString()
+        {
+            var provider = new CSharpArrayFormatProvider(CultureInfo.CurrentCulture,
+                includeTypeName: false, includeSemicolon: false);
+
+            return String.Format("Categorical(x; p = {0})",
+                probabilities.ToString(provider));
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(IFormatProvider formatProvider)
+        {
+            var provider = new CSharpArrayFormatProvider(formatProvider,
+                includeTypeName: false, includeSemicolon: false);
+
+            return String.Format("Categorical(x; p = {0})",
+                probabilities.ToString(provider));
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            var provider = new CSharpArrayFormatProvider(formatProvider,
+                includeTypeName: false, includeSemicolon: false);
+
+            return String.Format("Categorical(x; p = {0})", probabilities
+                .ToString(format, provider));
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format)
+        {
+            var provider = new CSharpArrayFormatProvider(CultureInfo.CurrentCulture,
+                includeTypeName: false, includeSemicolon: false);
+
+            return String.Format("Categorical(x; p = {0})", probabilities
+                .ToString(format, provider));
+        }
     }
 }

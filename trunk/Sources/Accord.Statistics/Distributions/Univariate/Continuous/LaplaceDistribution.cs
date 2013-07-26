@@ -23,6 +23,7 @@
 namespace Accord.Statistics.Distributions.Univariate
 {
     using System;
+    using AForge;
 
     /// <summary>
     ///   Laplace's Distribution.
@@ -56,13 +57,41 @@ namespace Accord.Statistics.Distributions.Univariate
     ///   </list></para>
     /// </remarks>
     /// 
-    public class LaplaceDistribution : UnivariateContinuousDistribution
+    /// <example>
+    /// <code>
+    ///    // Create a new Laplace distribution with μ = 4 and b = 2
+    ///    var laplace = new LaplaceDistribution(location: 4, scale: 2);
+    ///    
+    ///    // Common measures
+    ///    double mean = laplace.Mean;     // 4.0
+    ///    double median = laplace.Median; // 4.0
+    ///    double var = laplace.Variance;  // 8.0
+    ///    
+    ///    // Cumulative distribution functions
+    ///    double cdf = laplace.DistributionFunction(x: 0.27);               // 0.077448104942453522
+    ///    double ccdf = laplace.ComplementaryDistributionFunction(x: 0.27); // 0.92255189505754642
+    ///    double icdf = laplace.InverseDistributionFunction(p: cdf);        // 0.27
+    ///    
+    ///    // Probability density functions
+    ///    double pdf = laplace.ProbabilityDensityFunction(x: 0.27);     //  0.038724052471226761
+    ///    double lpdf = laplace.LogProbabilityDensityFunction(x: 0.27); // -3.2512943611198906
+    ///    
+    ///    // Hazard (failure rate) functions
+    ///    double hf = laplace.HazardFunction(x: 0.27); // 0.041974931360160776
+    ///    double chf = laplace.CumulativeHazardFunction(x: 0.27); // 0.080611649844768624
+    ///     
+    ///    // String representation
+    ///    string str = laplace.ToString(CultureInfo.InvariantCulture); // Laplace(x; μ = 4, b = 2)
+    /// </code>
+    /// </example>
+    /// 
+    public class LaplaceDistribution : UnivariateContinuousDistribution, IFormattable
     {
 
-        double u;
-        double b;
+        double u; // location parameter μ (mu)
+        double b; // scale parameter b
 
-        double constant;
+        double constant; // 1 / (2 * b)
 
         /// <summary>
         ///   Creates a new Laplace distribution.
@@ -74,7 +103,7 @@ namespace Accord.Statistics.Distributions.Univariate
         public LaplaceDistribution(double location, double scale)
         {
             if (scale <= 0) throw new ArgumentOutOfRangeException(
-                "scale","Scale must be non-negative.");
+                "scale", "Scale must be non-negative.");
 
             this.u = location;
             this.b = scale;
@@ -88,7 +117,30 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         /// <value>The distribution's mean value.</value>
         /// 
+        /// <remarks>
+        ///   The Laplace's distribution mean has the 
+        ///   same value as the location parameter μ.
+        /// </remarks>
+        /// 
         public override double Mean
+        {
+            get { return u; }
+        }
+
+        /// <summary>
+        ///   Gets the median for this distribution.
+        /// </summary>
+        /// 
+        /// <value>
+        ///   The distribution's median value.
+        /// </value>
+        /// 
+        /// <remarks>
+        ///   The Laplace's distribution median has the 
+        ///   same value as the location parameter μ.
+        /// </remarks>
+        /// 
+        public override double Median
         {
             get { return u; }
         }
@@ -99,9 +151,27 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         /// <value>The distribution's variance.</value>
         /// 
+        /// <remarks>
+        ///   The Laplace's variance is computed as 2*b².
+        /// </remarks>
+        /// 
         public override double Variance
         {
             get { return 2 * b * b; }
+        }
+
+        /// <summary>
+        ///   Gets the support interval for this distribution.
+        /// </summary>
+        /// 
+        /// <value>
+        ///   A <see cref="AForge.DoubleRange" /> containing
+        ///   the support interval for this distribution.
+        /// </value>
+        /// 
+        public override DoubleRange Support
+        {
+            get { return new DoubleRange(Double.NegativeInfinity, Double.PositiveInfinity); }
         }
 
         /// <summary>
@@ -109,6 +179,11 @@ namespace Accord.Statistics.Distributions.Univariate
         /// </summary>
         /// 
         /// <value>The distribution's entropy.</value>
+        /// 
+        /// <remarks>
+        ///   The Laplace's entropy is defined as ln(2*e*b), in which
+        ///   <c>e</c> is the <see cref="Math.E">Euler constant</see>.
+        /// </remarks>
         /// 
         public override double Entropy
         {
@@ -126,6 +201,10 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   The Cumulative Distribution Function (CDF) describes the cumulative
         ///   probability that a given value or any value smaller than it will occur.
         /// </remarks>
+        /// 
+        /// <example>
+        ///   See <see cref="LaplaceDistribution"/>.
+        /// </example>
         /// 
         public override double DistributionFunction(double x)
         {
@@ -149,6 +228,10 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
         /// 
+        /// <example>
+        ///   See <see cref="LaplaceDistribution"/>.
+        /// </example>
+        /// 
         public override double ProbabilityDensityFunction(double x)
         {
             return constant * Math.Exp(-Math.Abs(x - u) / b);
@@ -171,6 +254,10 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
         /// 
+        /// <example>
+        ///   See <see cref="LaplaceDistribution"/>.
+        /// </example>
+        /// 
         public override double LogProbabilityDensityFunction(double x)
         {
             return Math.Log(constant) - Math.Abs(x - u) / b;
@@ -187,6 +274,47 @@ namespace Accord.Statistics.Distributions.Univariate
         public override object Clone()
         {
             return new LaplaceDistribution(u, b);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public override string ToString()
+        {
+            return String.Format("Laplace(x; μ = {0}, b = {1})", u, b);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(IFormatProvider formatProvider)
+        {
+            return String.Format(formatProvider, "Laplace(x; μ = {0}, b = {1})", u, b);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return String.Format("Laplace(x; μ = {0}, b = {1})", 
+                u.ToString(format, formatProvider),
+                b.ToString(format, formatProvider));
         }
     }
 }

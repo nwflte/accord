@@ -25,10 +25,60 @@ namespace Accord.Statistics.Distributions.Univariate
     using System;
     using Accord.Math;
     using Accord.Statistics.Distributions.Fitting;
+    using AForge;
 
     /// <summary>
     ///   F (Fisher-Snedecor) distribution.
     /// </summary>
+    /// 
+    /// <remarks>
+    /// <para>
+    ///   In probability theory and statistics, the F-distribution is a continuous
+    ///   probability distribution. It is also known as Snedecor's F distribution
+    ///   or the Fisher-Snedecor distribution (after R.A. Fisher and George W. Snedecor). 
+    ///   The F-distribution arises frequently as the null distribution of a test statistic,
+    ///   most notably in the analysis of variance; see <see cref="Accord.Statistics.Testing.FTest"/>.</para>
+    ///   
+    /// <para>
+    ///   References:
+    ///   <list type="bullet">
+    ///     <item><description><a href="http://en.wikipedia.org/wiki/F-distribution">
+    ///       Wikipedia, The Free Encyclopedia. F-distribution. Available on: 
+    ///       http://en.wikipedia.org/wiki/F-distribution </a></description></item>
+    ///   </list></para>     
+    /// </remarks>
+    /// 
+    /// <example>
+    /// <para>
+    ///   The following example shows how to construct a Fisher-Snedecor's F-distribution
+    ///   with 8 and 5 degrees of freedom, respectively.</para>
+    ///
+    /// <code>
+    ///   // Create a Fisher-Snedecor's F distribution with 8 and 5 d.f.
+    ///   FDistribution F = new FDistribution(degrees1: 8, degrees2: 5);
+    /// 
+    ///   // Common measures
+    ///   double mean = F.Mean;     // 1.6666666666666667
+    ///   double median = F.Median; // 1.0545096252132447
+    ///   double var = F.Variance;  // 7.6388888888888893
+    ///   
+    ///   // Cumulative distribution functions
+    ///   double cdf = F.DistributionFunction(x: 0.27); // 0.049463408057268315
+    ///   double ccdf = F.ComplementaryDistributionFunction(x: 0.27); // 0.95053659194273166
+    ///   double icdf = F.InverseDistributionFunction(p: cdf); // 0.27
+    ///   
+    ///   // Probability density functions
+    ///   double pdf = F.ProbabilityDensityFunction(x: 0.27); // 0.45120469723580559
+    ///   double lpdf = F.LogProbabilityDensityFunction(x: 0.27); // -0.79583416831212883
+    ///   
+    ///   // Hazard (failure rate) functions
+    ///   double hf = F.HazardFunction(x: 0.27); // 0.47468419528555084
+    ///   double chf = F.CumulativeHazardFunction(x: 0.27); // 0.050728620222091653
+    ///   
+    ///   // String representation
+    ///   string str = F.ToString(CultureInfo.InvariantCulture); // F(x; df1 = 8, df2 = 5)
+    /// </code>
+    /// </example>
     /// 
     [Serializable]
     public class FDistribution : UnivariateContinuousDistribution,
@@ -133,6 +183,20 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
+        ///   Gets the support interval for this distribution.
+        /// </summary>
+        /// 
+        /// <value>
+        ///   A <see cref="AForge.DoubleRange" /> containing
+        ///   the support interval for this distribution.
+        /// </value>
+        /// 
+        public override DoubleRange Support
+        {
+            get { return new DoubleRange(0, Double.PositiveInfinity); }
+        }
+
+        /// <summary>
         ///   Gets the entropy for this distribution.
         /// </summary>
         /// 
@@ -149,8 +213,13 @@ namespace Accord.Statistics.Distributions.Univariate
         /// <param name="x">A single point in the distribution range.</param>
         /// 
         /// <remarks>
+        /// <para>
         ///   The Cumulative Distribution Function (CDF) describes the cumulative
-        ///   probability that a given value or any value smaller than it will occur.
+        ///   probability that a given value or any value smaller than it will occur.</para>
+        /// <para>
+        ///   The F-distribution CDF is computed in terms of the <see cref="Beta.Incomplete">
+        ///   Incomplete Beta function Ix(a,b)</see> as CDF(x) = Iu(d1/2, d2/2) in which
+        ///   u is given as u = (d1 * x) / (d1 * x + d2)</para>.
         /// </remarks>
         /// 
         public override double DistributionFunction(double x)
@@ -163,6 +232,13 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   Gets the complementary cumulative distribution
         ///   function evaluated at point <c>x</c>.
         /// </summary>
+        /// 
+        /// <remarks>
+        /// <para>
+        ///   The F-distribution complementary CDF is computed in terms of the <see cref="Beta.Incomplete">
+        ///   Incomplete Beta function Ix(a,b)</see> as CDFc(x) = Iu(d2/2, d1/2) in which
+        ///   u is given as u = (d2 * x) / (d2 * x + d1)</para>.
+        /// </remarks>
         /// 
         public override double ComplementaryDistributionFunction(double x)
         {
@@ -238,18 +314,22 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
-        /// Gets the log-probability density function (pdf) for
-        /// this distribution evaluated at point <c>x</c>.
+        ///   Gets the log-probability density function (pdf) for
+        ///   this distribution evaluated at point <c>x</c>.
         /// </summary>
+        /// 
         /// <param name="x">A single point in the distribution range.</param>
+        /// 
         /// <returns>
-        /// The logarithm of the probability of <c>x</c>
-        /// occurring in the current distribution.
+        ///   The logarithm of the probability of <c>x</c>
+        ///   occurring in the current distribution.
         /// </returns>
+        /// 
         /// <remarks>
-        /// The Probability Density Function (PDF) describes the
-        /// probability that a given value <c>x</c> will occur.
+        ///   The Probability Density Function (PDF) describes the
+        ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
+        /// 
         public override double LogProbabilityDensityFunction(double x)
         {
             double lnu = d1 * Math.Log(d1 * x) + d2 * Math.Log(d2) -
@@ -346,5 +426,47 @@ namespace Accord.Statistics.Distributions.Univariate
 
 
         #endregion
+
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public override string ToString()
+        {
+            return String.Format("F(x; df1 = {0}, df2 = {1})", d1, d2);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(IFormatProvider formatProvider)
+        {
+            return String.Format(formatProvider, "F(x; df1 = {0}, df2 = {1})", d1, d2);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return String.Format("F(x; df1 = {0}, df2 = {1})", 
+                d1.ToString(format, formatProvider), 
+                d2.ToString(format, formatProvider));
+        }
     }
 }

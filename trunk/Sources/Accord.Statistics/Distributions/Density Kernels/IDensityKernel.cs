@@ -34,6 +34,10 @@ namespace Accord.Statistics.Distributions.DensityKernels
     ///   over a single input vector, the point estimate of a random variable.
     /// </remarks>
     /// 
+    /// <seealso cref="GaussianKernel"/>
+    /// <seealso cref="EpanechnikovKernel"/>
+    /// <seealso cref="UniformKernel"/>
+    /// 
     public interface IDensityKernel
     {
         /// <summary>

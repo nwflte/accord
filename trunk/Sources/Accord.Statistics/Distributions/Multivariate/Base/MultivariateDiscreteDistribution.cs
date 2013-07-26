@@ -390,16 +390,8 @@ namespace Accord.Statistics.Distributions.Multivariate
         public abstract double LogProbabilityMassFunction(int[] x);
 
         /// <summary>
-        ///   Gets the inverse of the cumulative distribution function (icdf) for
-        ///   this distribution evaluated at probability <c>p</c>. This function 
-        ///   is also known as the Quantile function.
+        ///   Not supported.
         /// </summary>
-        /// 
-        /// <remarks>
-        ///   The Inverse Cumulative Distribution Function (ICDF) specifies, for
-        ///   a given probability, the value which the random variable will be at,
-        ///   or below, with that probability.
-        /// </remarks>
         /// 
         public virtual int[] InverseDistributionFunction(double p)
         {

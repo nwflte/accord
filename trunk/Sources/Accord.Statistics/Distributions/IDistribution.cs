@@ -29,6 +29,17 @@ namespace Accord.Statistics.Distributions
     ///   Common interface for probability distributions.
     /// </summary>
     /// 
+    /// <remarks>
+    ///   <para>
+    ///   This interface is implemented by all probability distributions in the framework, including
+    ///   <see cref="IUnivariateDistribution"/>s and <see cref="IMultivariateDistribution"/>s. This
+    ///   includes
+    ///   <see cref="Accord.Statistics.Distributions.Univariate.UnivariateDiscreteDistribution"/>,
+    ///   <see cref="Accord.Statistics.Distributions.Univariate.UnivariateContinuousDistribution"/>,
+    ///   <see cref="Accord.Statistics.Distributions.Multivariate.MultivariateDiscreteDistribution"/>, and
+    ///   <see cref="Accord.Statistics.Distributions.Multivariate.MultivariateContinuousDistribution"/></para>
+    /// </remarks>
+    /// 
     public interface IDistribution : ICloneable
     {
 

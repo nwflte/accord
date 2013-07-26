@@ -25,10 +25,12 @@ namespace Accord.Statistics.Distributions.Univariate
     using System;
     using Accord.Math;
     using Accord.Statistics.Distributions.Fitting;
+    using AForge;
 
     /// <summary>
     ///   Log-Normal (Galton) distribution.
     /// </summary>
+    /// 
     /// <remarks>
     ///  <para>
     ///   The log-normal distribution is a probability distribution of a random
@@ -49,10 +51,40 @@ namespace Accord.Statistics.Distributions.Univariate
     ///  </list></para>  
     /// </remarks>
     /// 
+    /// <example>
+    /// <code>
+    ///   // Create a new Log-normal distribution with μ = 2.79 and σ = 1.10
+    ///   var log = new LognormalDistribution(location: 0.42, shape: 1.1);
+    /// 
+    ///   // Common measures
+    ///   double mean = log.Mean;     // 2.7870954605658511
+    ///   double median = log.Median; // 1.5219615583481305
+    ///   double var = log.Variance;  // 18.28163603621158
+    /// 
+    ///   // Cumulative distribution functions
+    ///   double cdf = log.DistributionFunction(x: 0.27);           // 0.057961222885664958
+    ///   double ccdf = log.ComplementaryDistributionFunction(x: 0.27); // 0.942038777114335
+    ///   double icdf = log.InverseDistributionFunction(p: cdf);        // 0.26999997937815973
+    ///   
+    ///   // Probability density functions
+    ///   double pdf = log.ProbabilityDensityFunction(x: 0.27);     // 0.39035530085982068
+    ///   double lpdf = log.LogProbabilityDensityFunction(x: 0.27); // -0.94069792674674835
+    /// 
+    ///   // Hazard (failure rate) functions
+    ///   double hf = log.HazardFunction(x: 0.27);            // 0.41437285846720867
+    ///   double chf = log.CumulativeHazardFunction(x: 0.27); // 0.059708840588116374
+    /// 
+    ///   // String representation
+    ///   string str = log.ToString("N2", CultureInfo.InvariantCulture); // Lognormal(x; μ = 2.79, σ = 1.10)
+    /// </code>
+    /// </example>
+    /// 
+    /// <seealso cref="NormalDistribution"/>
+    /// 
     [Serializable]
     public class LognormalDistribution : UnivariateContinuousDistribution,
         IFittableDistribution<double, NormalOptions>,
-        ISampleableDistribution<double>
+        ISampleableDistribution<double>, IFormattable
     {
 
         // Distribution parameters
@@ -86,7 +118,7 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   with given location and unit shape.
         /// </summary>
         /// 
-        /// <param name="location">The distribution's location value.</param>
+        /// <param name="location">The distribution's location value μ (mu).</param>
         /// 
         public LognormalDistribution(double location)
         {
@@ -98,8 +130,8 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   with given mean and standard deviation.
         /// </summary>
         /// 
-        /// <param name="location">The distribution's location value.</param>
-        /// <param name="shape">The distribution's shape deviation.</param>
+        /// <param name="location">The distribution's location value μ (mu).</param>
+        /// <param name="shape">The distribution's shape deviation σ (sigma).</param>
         /// 
         public LognormalDistribution(double location, double shape)
         {
@@ -107,7 +139,8 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
-        ///   Shape parameter of the log-normal distribution.
+        ///   Shape parameter σ (sigma) of 
+        ///   the log-normal distribution. 
         /// </summary>
         /// 
         public double Shape
@@ -116,7 +149,17 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
-        ///   Location parameter of the log-normal distribution.
+        ///   Squared shape parameter σ² (sigma-squared)
+        ///   of the log-normal distribution. 
+        /// </summary>
+        /// 
+        public double Shape2
+        {
+            get { return shape2; }
+        }
+
+        /// <summary>
+        ///   Location parameter μ (mu) of the log-normal distribution.
         /// </summary>
         /// 
         public double Location
@@ -127,6 +170,11 @@ namespace Accord.Statistics.Distributions.Univariate
         /// <summary>
         ///   Gets the Mean for this Log-Normal distribution.
         /// </summary>
+        /// 
+        /// <remarks>
+        ///   The lognormal distribution's mean is 
+        ///   defined as <c>exp(μ + σ²/2).</c>
+        /// </remarks>
         /// 
         public override double Mean
         {
@@ -143,6 +191,11 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   deviation) for this Log-Normal distribution.
         /// </summary>
         /// 
+        /// <remarks>
+        ///   The lognormal distribution's variance is
+        ///   defined as <c>(exp(σ²) - 1) * exp(2*μ + σ²)</c>.
+        /// </remarks>
+        /// 
         public override double Variance
         {
             get
@@ -151,6 +204,20 @@ namespace Accord.Statistics.Distributions.Univariate
                     variance = (Math.Exp(shape2) - 1.0) * Math.Exp(2 * location + shape2);
                 return variance.Value;
             }
+        }
+
+        /// <summary>
+        ///   Gets the support interval for this distribution.
+        /// </summary>
+        /// 
+        /// <value>
+        ///   A <see cref="AForge.DoubleRange" /> containing
+        ///   the support interval for this distribution.
+        /// </value>
+        /// 
+        public override DoubleRange Support
+        {
+            get { return new DoubleRange(0, Double.PositiveInfinity); }
         }
 
         /// <summary>
@@ -171,12 +238,15 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   Gets the cumulative distribution function (cdf) for
         ///   the this Log-Normal distribution evaluated at point <c>x</c>.
         /// </summary>
+        /// 
         /// <param name="x">
         ///   A single point in the distribution range.</param>
         /// <remarks>
+        /// 
         /// <para>
         ///   The Cumulative Distribution Function (CDF) describes the cumulative
         ///   probability that a given value or any value smaller than it will occur.</para>
+        ///   
         /// <para>
         ///  The calculation is computed through the relationship to the error function
         ///  as <see cref="Accord.Math.Special.Erfc">erfc</see>(-z/sqrt(2)) / 2. See 
@@ -191,6 +261,10 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   </list></para>
         /// </remarks>
         /// 
+        /// <example>
+        ///   See <see cref="LognormalDistribution"/>.
+        /// </example>
+        /// 
         public override double DistributionFunction(double x)
         {
             double z = (Math.Log(x) - location) / shape;
@@ -201,18 +275,25 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   Gets the probability density function (pdf) for
         ///   the Normal distribution evaluated at point <c>x</c>.
         /// </summary>
+        /// 
         /// <param name="x">A single point in the distribution range. For a
         ///   univariate distribution, this should be a single
         ///   double value. For a multivariate distribution,
         ///   this should be a double array.</param>
+        ///   
         /// <returns>
         ///   The probability of <c>x</c> occurring
         ///   in the current distribution.
         /// </returns>
+        /// 
         /// <remarks>
         ///   The Probability Density Function (PDF) describes the
         ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
+        /// 
+        /// <example>
+        ///   See <see cref="LognormalDistribution"/>.
+        /// </example>
         /// 
         public override double ProbabilityDensityFunction(double x)
         {
@@ -221,18 +302,26 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
-        /// Gets the log-probability density function (pdf) for
-        /// this distribution evaluated at point <c>x</c>.
+        ///   Gets the log-probability density function (pdf) for
+        ///   this distribution evaluated at point <c>x</c>.
         /// </summary>
+        /// 
         /// <param name="x">A single point in the distribution range.</param>
+        /// 
         /// <returns>
-        /// The logarithm of the probability of <c>x</c>
-        /// occurring in the current distribution.
+        ///   The logarithm of the probability of <c>x</c>
+        ///   occurring in the current distribution.
         /// </returns>
+        /// 
         /// <remarks>
-        /// The Probability Density Function (PDF) describes the
-        /// probability that a given value <c>x</c> will occur.
+        ///   The Probability Density Function (PDF) describes the
+        ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
+        /// 
+        /// <example>
+        ///   See <see cref="LognormalDistribution"/>.
+        /// </example>
+        /// 
         public override double LogProbabilityDensityFunction(double x)
         {
             double z = (Math.Log(x) - location) / shape;
@@ -243,7 +332,7 @@ namespace Accord.Statistics.Distributions.Univariate
 
         /// <summary>
         ///   Gets the Standard Log-Normal Distribution,
-        ///   with zero location and unit shape.
+        ///   with location set to zero and unit shape.
         /// </summary>
         /// 
         public static LognormalDistribution Standard { get { return standard; } }
@@ -441,5 +530,61 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         #endregion
+
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public override string ToString()
+        {
+            return String.Format("Lognormal(x; μ = {0}, σ = {1})", Mean, Shape);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(IFormatProvider formatProvider)
+        {
+            return String.Format(formatProvider, "Lognormal(x; μ = {0}, σ = {1})", Mean, Shape);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return String.Format(formatProvider, "Lognormal(x; μ = {0}, σ = {1})",
+                Mean.ToString(format, formatProvider),
+                Shape.ToString(format, formatProvider));
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format)
+        {
+            return String.Format("Lognormal(x; μ = {0}, σ = {1})",
+                Mean.ToString(format), Shape.ToString(format));
+        }
     }
 }

@@ -25,6 +25,8 @@ namespace Accord.Statistics.Distributions.Univariate
     using System;
     using Accord.Math;
     using Accord.Statistics.Distributions.Fitting;
+    using AForge;
+    using Accord.Math.Optimization;
 
     /// <summary>
     ///   Abstract class for univariate discrete probability distributions.
@@ -57,10 +59,17 @@ namespace Accord.Statistics.Distributions.Univariate
     ///   </list></para>
     /// </remarks>
     /// 
+    /// <seealso cref="BernoulliDistribution"/>
+    /// <seealso cref="GeometricDistribution"/>
+    /// <seealso cref="PoissonDistribution"/>
+    /// 
     [Serializable]
     public abstract class UnivariateDiscreteDistribution : DistributionBase,
         IDistribution, IUnivariateDistribution
     {
+
+        double? median;
+        double? stdDev;
 
         /// <summary>
         ///   Constructs a new UnivariateDistribution class.
@@ -95,6 +104,15 @@ namespace Accord.Statistics.Distributions.Univariate
         public abstract double Entropy { get; }
 
         /// <summary>
+        ///   Gets the support interval for this distribution.
+        /// </summary>
+        /// 
+        /// <value>A <see cref="AForge.IntRange"/> containing
+        ///  the support interval for this distribution.</value>
+        ///  
+        public abstract DoubleRange Support { get; }
+
+        /// <summary>
         ///   Gets the mode for this distribution.
         /// </summary>
         /// 
@@ -113,7 +131,13 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public virtual double Median
         {
-            get { return Mean; }
+            get
+            {
+                if (median == null)
+                    median = InverseDistributionFunction(0.5);
+
+                return median.Value;
+            }
         }
 
         /// <summary>
@@ -125,7 +149,12 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public virtual double StandardDeviation
         {
-            get { return Math.Sqrt(this.Variance); }
+            get
+            {
+                if (!stdDev.HasValue)
+                    stdDev = Math.Sqrt(this.Variance);
+                return stdDev.Value;
+            }
         }
 
 
@@ -479,9 +508,113 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   or below, with that probability.
         /// </remarks>
         /// 
+        /// <param name="p">A probability value between 0 and 1.</param>
+        /// 
+        /// <returns>A sample which could original the given probability 
+        ///   value when applied in the <see cref="DistributionFunction(int)"/>.</returns>
+        /// 
         public virtual int InverseDistributionFunction(double p)
         {
-            throw new NotImplementedException();
+            bool lowerBounded = !Double.IsInfinity(Support.Min);
+            bool upperBounded = !Double.IsInfinity(Support.Max);
+
+            if (lowerBounded && upperBounded)
+            {
+                return new BinarySearch(DistributionFunction, (int)Support.Min, (int)Support.Max).Find(p);
+            }
+
+            try
+            {
+                checked
+                {
+                    if (lowerBounded && !upperBounded)
+                    {
+                        int lower = (int)Support.Min;
+                        int upper = lower + 1;
+
+                        double f = DistributionFunction(lower);
+
+                        if (f > p)
+                        {
+                            while (f > p)
+                            {
+                                upper = 2 * upper;
+                                f = DistributionFunction(upper);
+                            }
+                        }
+                        else
+                        {
+                            while (f < p)
+                            {
+                                upper = 2 * upper;
+                                f = DistributionFunction(upper);
+                            }
+                        }
+
+                        return new BinarySearch(DistributionFunction, lower, upper).Find(p);
+                    }
+
+                    if (!lowerBounded && upperBounded)
+                    {
+                        int upper = (int)Support.Max;
+                        int lower = upper - 1;
+
+                        double f = DistributionFunction(upper);
+
+                        if (f > p)
+                        {
+                            while (f > p)
+                            {
+                                lower = lower - 2 * lower;
+                                f = DistributionFunction(lower);
+                            }
+                        }
+                        else
+                        {
+                            while (f < p)
+                            {
+                                lower = lower - 2 * lower;
+                                f = DistributionFunction(lower);
+                            }
+                        }
+
+                        return new BinarySearch(DistributionFunction, lower, upper).Find(p);
+                    }
+
+                    // completely unbounded
+                    {
+                        int lower = -1;
+                        int upper = +1;
+
+                        double f = DistributionFunction(0);
+
+                        if (f > p)
+                        {
+                            while (f > p)
+                            {
+                                upper = lower;
+                                lower = 2 * lower - 1;
+                                f = DistributionFunction(lower);
+                            }
+                        }
+                        else
+                        {
+                            while (f < p)
+                            {
+                                lower = upper;
+                                upper = 2 * upper + 1;
+                                f = DistributionFunction(upper);
+                            }
+                        }
+
+                        return new BinarySearch(DistributionFunction, lower, upper).Find(p);
+                    }
+                }
+            }
+            catch (OverflowException)
+            {
+                return 0;
+            }
         }
 
         /// <summary>

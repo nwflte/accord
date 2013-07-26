@@ -25,11 +25,63 @@ namespace Accord.Statistics.Distributions.Univariate
     using System;
     using Accord.Math;
     using Accord.Statistics.Distributions.Fitting;
+    using AForge;
 
     /// <summary>
     ///   Continuous Uniform Distribution.
     /// </summary>
     /// 
+    /// <remarks>
+    /// <para>
+    ///   The continuous uniform distribution or rectangular distribution is a family of 
+    ///   symmetric probability distributions such that for each member of the family, all
+    ///   intervals of the same length on the distribution's support are equally probable.
+    ///   The support is defined by the two parameters, a and b, which are its minimum and
+    ///   maximum values. The distribution is often abbreviated U(a,b). It is the maximum
+    ///   entropy probability distribution for a random variate X under no constraint other
+    ///   than that it is contained in the distribution's support.</para>
+    ///   
+    /// <para>
+    ///   References:
+    ///   <list type="bullet">
+    ///     <item><description><a href="http://en.wikipedia.org/wiki/Uniform_distribution_(continuous)">
+    ///       Wikipedia, The Free Encyclopedia. Uniform Distribution (continuous). Available on: 
+    ///       http://en.wikipedia.org/wiki/Uniform_distribution_(continuous) </a></description></item>
+    ///   </list></para> 
+    /// </remarks>
+    /// 
+    /// <example>
+    /// <para>
+    ///   The following example demonstrates how to create an uniform 
+    ///   distribution defined over the interval [0.42, 1.1]. </para>
+    ///   
+    /// <code>
+    ///   // Create a new uniform continuous distribution from 0.42 to 1.1
+    ///   var uniform = new UniformContinuousDistribution(a: 0.42, b: 1.1);
+    ///   
+    ///   // Common measures
+    ///   double mean = uniform.Mean;     // 0.76
+    ///   double median = uniform.Median; // 0.76
+    ///   double var = uniform.Variance;  // 0.03853333333333335
+    ///   
+    ///   // Cumulative distribution functions
+    ///   double cdf = uniform.DistributionFunction(x: 0.9);               // 0.70588235294117641
+    ///   double ccdf = uniform.ComplementaryDistributionFunction(x: 0.9); // 0.29411764705882359
+    ///   double icdf = uniform.InverseDistributionFunction(p: cdf);       // 0.9
+    ///   
+    ///   // Probability density functions
+    ///   double pdf = uniform.ProbabilityDensityFunction(x: 0.9);     // 1.4705882352941173
+    ///   double lpdf = uniform.LogProbabilityDensityFunction(x: 0.9); // 0.38566248081198445
+    ///   
+    ///   // Hazard (failure rate) functions
+    ///   double hf = uniform.HazardFunction(x: 0.9); // 4.9999999999999973
+    ///   double chf = uniform.CumulativeHazardFunction(x: 0.9); // 1.2237754316221154
+    ///   
+    ///   // String representation
+    ///   string str = uniform.ToString(CultureInfo.InvariantCulture); // "U(x; a = 0.42, b = 1.1)"
+    /// </code>
+    /// </example>
+    ///   
     [Serializable]
     public class UniformContinuousDistribution : UnivariateContinuousDistribution,
         IFittableDistribution<double, IFittingOptions>,
@@ -112,6 +164,20 @@ namespace Accord.Statistics.Distributions.Univariate
         public override double Entropy
         {
             get { return Math.Log(b - a); }
+        }
+
+        /// <summary>
+        ///   Gets the support interval for this distribution.
+        /// </summary>
+        /// 
+        /// <value>
+        ///   A <see cref="AForge.DoubleRange" /> containing
+        ///   the support interval for this distribution.
+        /// </value>
+        /// 
+        public override DoubleRange Support
+        {
+            get { return new DoubleRange(a, b); }
         }
 
         /// <summary>
@@ -312,5 +378,61 @@ namespace Accord.Statistics.Distributions.Univariate
             return Accord.Math.Tools.Random.NextDouble() * (b - a) + a;
         }
         #endregion
+
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public override string ToString()
+        {
+            return String.Format("U(x; a = {0}, b = {1})", a, b);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(IFormatProvider formatProvider)
+        {
+            return String.Format(formatProvider, "U(x; a = {0}, b = {1})", a, b);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return String.Format(formatProvider, "U(x; a = {0}, b = {1})",
+                a.ToString(format, formatProvider),
+                b.ToString(format, formatProvider));
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format)
+        {
+            return String.Format("U(x; a = {0}, b = {1})",
+                a.ToString(format), b.ToString(format));
+        }
     }
 }

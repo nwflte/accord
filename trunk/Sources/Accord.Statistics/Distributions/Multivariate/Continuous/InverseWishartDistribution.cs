@@ -46,16 +46,65 @@ namespace Accord.Statistics.Distributions.Multivariate
     ///   </list></para>
     /// </remarks>
     /// 
+    /// <example>
+    /// <code>
+    ///   // Create a Inverse Wishart with the parameters
+    ///   var invWishart = new InverseWishartDistribution(
+    ///   
+    ///       // Degrees of freedom
+    ///       degreesOfFreedom: 4,
+    ///   
+    ///       // Scale parameter
+    ///       inverseScale: new double[,] 
+    ///       {
+    ///            {  1.7, -0.2 },
+    ///            { -0.2,  5.3 },
+    ///       }
+    ///   );
+    ///   
+    ///   // Common measures
+    ///   double[] var = invWishart.Variance;  // { -3.4, -10.6 }
+    ///   double[,] cov = invWishart.Covariance;  // see below
+    ///   double[,] mmean = invWishart.MeanMatrix; // see below
+    ///   
+    ///   //        cov                mean
+    ///   //   -5.78   -4.56        1.7  -0.2 
+    ///   //   -4.56  -56.18       -0.2   5.3 
+    ///   
+    ///   // (the above matrix representations have been transcribed to text using)
+    ///   string scov = cov.ToString(DefaultMatrixFormatProvider.InvariantCulture);
+    ///   string smean = mmean.ToString(DefaultMatrixFormatProvider.InvariantCulture);
+    ///   
+    ///   // For compatibility reasons, .Mean stores a flattened mean matrix
+    ///   double[] mean = invWishart.Mean; // { 1.7, -0.2, -0.2, 5.3 }
+    ///   
+    ///   
+    ///   // Probability density functions
+    ///   double pdf = invWishart.ProbabilityDensityFunction(new double[,] 
+    ///   {
+    ///       {  5.2,  0.2 }, // 0.000029806281690351203
+    ///       {  0.2,  4.2 },
+    ///   });
+    ///   
+    ///   double lpdf = invWishart.LogProbabilityDensityFunction(new double[,] 
+    ///   {
+    ///       {  5.2,  0.2 }, // -10.420791391688828
+    ///       {  0.2,  4.2 },
+    ///   });
+    /// </code>
+    /// </example>
+    /// 
+    /// <seealso cref="WishartDistribution"/>
+    /// 
     [Serializable]
     public class InverseWishartDistribution : MultivariateContinuousDistribution
     {
-        int p;
-        double v;
-        double[,] inverseScaleMatrix;
+        int size;
+        double v; // degrees of freedom
+        double[,] inverseScaleMatrix; // Ψ (psi)
 
         double constant;
         double power;
-        CholeskyDecomposition chol;
 
         double[,] mean;
         double[] variance;
@@ -66,7 +115,7 @@ namespace Accord.Statistics.Distributions.Multivariate
         /// </summary>
         /// 
         /// <param name="degreesOfFreedom">The degrees of freedom v.</param>
-        /// <param name="inverseScale">The inverse scale matrix Ψ.</param>
+        /// <param name="inverseScale">The inverse scale matrix Ψ (psi).</param>
         /// 
         public InverseWishartDistribution(double degreesOfFreedom, double[,] inverseScale)
             : base(inverseScale.Length)
@@ -76,24 +125,26 @@ namespace Accord.Statistics.Distributions.Multivariate
                 throw new DimensionMismatchException("inverseScale", "Matrix must be square.");
 
             this.inverseScaleMatrix = inverseScale;
-            this.p = inverseScale.GetLength(0);
+            this.size = inverseScale.GetLength(0);
             this.v = degreesOfFreedom;
 
-            if (degreesOfFreedom <= p - 1)
-                throw new ArgumentOutOfRangeException("degreesOfFreedom","Degrees of freedom must be greater "
+            if (degreesOfFreedom <= size - 1)
+                throw new ArgumentOutOfRangeException("degreesOfFreedom", "Degrees of freedom must be greater "
                 + "than or equal to the number of rows in the inverse scale matrix.");
 
-            this.chol = new CholeskyDecomposition(inverseScale);
+            var chol = new CholeskyDecomposition(inverseScale);
 
             if (!chol.PositiveDefinite)
                 throw new NonPositiveDefiniteMatrixException("scale");
+            if (!chol.Symmetric)
+                throw new NonSymmetricMatrixException("scale");
 
-            double a = Math.Pow(chol.Determinant, degreesOfFreedom / 2.0);
-            double b = Math.Pow(2, (degreesOfFreedom * p) / 2.0);
-            double c = Gamma.Function(degreesOfFreedom / 2.0, p);
+            double a = Math.Pow(chol.Determinant, v / 2.0);
+            double b = Math.Pow(2, (v * size) / 2.0);
+            double c = Gamma.Multivariate(v / 2.0, size);
 
             this.constant = a / (b * c);
-            this.power = -(degreesOfFreedom + p + 1) / 2.0;
+            this.power = -(v + size + 1) / 2.0;
         }
 
 
@@ -108,7 +159,7 @@ namespace Accord.Statistics.Distributions.Multivariate
             get
             {
                 if (mean == null)
-                    mean = inverseScaleMatrix.Divide(v - p - 1);
+                    mean = inverseScaleMatrix.Divide(v - size - 1);
                 return mean;
             }
         }
@@ -136,10 +187,13 @@ namespace Accord.Statistics.Distributions.Multivariate
             {
                 if (variance == null)
                 {
-                    variance = new double[p];
+                    variance = new double[size];
                     for (int i = 0; i < variance.Length; i++)
-                        variance[i] = (2 * inverseScaleMatrix[i, i]) /
-                            ((v - p - 1) * (v - p - 1) * (v - p - 3));
+                    {
+                        double num = 2 * inverseScaleMatrix[i, i];
+                        double den = (v - size - 1) * (v - size - 1) * (v - size - 3);
+                        variance[i] = num / den;
+                    }
                 }
                 return variance;
             }
@@ -158,18 +212,18 @@ namespace Accord.Statistics.Distributions.Multivariate
             {
                 if (covariance == null)
                 {
-                    covariance = new double[p, p];
-                    for (int i = 0; i < p; i++)
+                    covariance = new double[size, size];
+                    for (int i = 0; i < size; i++)
                     {
                         double pii = inverseScaleMatrix[i, i];
 
-                        for (int j = 0; j < p; j++)
+                        for (int j = 0; j < size; j++)
                         {
                             double pij = inverseScaleMatrix[i, j];
                             double pjj = inverseScaleMatrix[j, j];
 
-                            double num = (v - p + 1) * (pij * pij) + (v - p - 1) * (pii * pjj);
-                            double den = (v - p) * (v - p - 1) * (v - p - 1) * (v - p - 3);
+                            double num = (v - size + 1) * (pij * pij) + (v - size - 1) * (pii * pjj);
+                            double den = (v - size) * (v - size - 1) * (v - size - 1) * (v - size - 3);
 
                             covariance[i, j] = num / den;
                         }
@@ -212,7 +266,7 @@ namespace Accord.Statistics.Distributions.Multivariate
         /// 
         public override double ProbabilityDensityFunction(params double[] x)
         {
-            double[,] X = x.Reshape(p, p);
+            double[,] X = x.Reshape(size, size);
             return ProbabilityDensityFunction(X);
         }
 
@@ -239,12 +293,16 @@ namespace Accord.Statistics.Distributions.Multivariate
         /// 
         public double ProbabilityDensityFunction(double[,] x)
         {
-            CholeskyDecomposition chol = new CholeskyDecomposition(x);
-            double det = chol.Determinant;
-            double[,] invX = chol.Inverse();
+            var chol = new CholeskyDecomposition(x);
 
-            double z = -0.5 * Matrix.Trace(inverseScaleMatrix, invX);
-            return constant * Math.Pow(det, power) * Math.Exp(z);
+            double det = chol.Determinant;
+            double[,] Vx = chol.Solve(inverseScaleMatrix);
+
+            double z = -0.5 * Vx.Trace();
+            double a = Math.Pow(det, power);
+            double b = Math.Exp(z);
+
+            return constant * a * b;
         }
 
         /// <summary>
@@ -270,7 +328,7 @@ namespace Accord.Statistics.Distributions.Multivariate
         /// 
         public override double LogProbabilityDensityFunction(params double[] x)
         {
-            double[,] X = x.Reshape(p, p);
+            double[,] X = x.Reshape(size, size);
             return LogProbabilityDensityFunction(X);
         }
 
@@ -297,14 +355,18 @@ namespace Accord.Statistics.Distributions.Multivariate
         /// 
         public double LogProbabilityDensityFunction(double[,] x)
         {
-            CholeskyDecomposition chol = new CholeskyDecomposition(x);
-            double det = chol.Determinant;
-            double[,] invX = chol.Inverse();
+            var chol = new CholeskyDecomposition(x);
 
-            double z = -0.5 * Matrix.Trace(inverseScaleMatrix, invX);
+            double det = chol.Determinant;
+            double[,] Vx = chol.Solve(inverseScaleMatrix);
+
+            double z = -0.5 * Vx.Trace();
+            double a = Math.Pow(det, power);
+            double b = Math.Exp(z);
+
             return Math.Log(constant) + power * Math.Log(det) + z;
         }
-        
+
         /// <summary>
         ///   Not supported.
         /// </summary>

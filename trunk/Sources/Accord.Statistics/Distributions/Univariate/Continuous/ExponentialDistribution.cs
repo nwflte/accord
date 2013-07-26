@@ -24,10 +24,89 @@ namespace Accord.Statistics.Distributions.Univariate
 {
     using System;
     using Accord.Statistics.Distributions.Fitting;
+    using Accord.Math;
+    using AForge;
 
     /// <summary>
     ///   Exponential distribution.
     /// </summary>
+    /// 
+    /// <remarks>
+    /// <para>
+    ///   In probability theory and statistics, the exponential distribution (a.k.a. negative
+    ///   exponential distribution) is a family of continuous probability distributions. It 
+    ///   describes the time between events in a Poisson process, i.e. a process in which events 
+    ///   occur continuously and independently at a constant average rate. It is the continuous 
+    ///   analogue of the geometric distribution.</para>
+    /// <para>
+    ///   Note that the exponential distribution is not the same as the class of exponential 
+    ///   families of distributions, which is a large class of probability distributions that
+    ///   includes the exponential distribution as one of its members, but also includes the 
+    ///   normal distribution, binomial distribution, gamma distribution, Poisson, and many 
+    ///   others.</para>
+    ///   
+    /// <para>
+    ///   References:
+    ///   <list type="bullet">
+    ///     <item><description><a href="http://en.wikipedia.org/wiki/Exponential_distribution">
+    ///       Wikipedia, The Free Encyclopedia. Exponential distribution. Available on: 
+    ///       http://en.wikipedia.org/wiki/Exponential_distribution </a></description></item>
+    ///   </list></para>     
+    /// </remarks>
+    /// 
+    /// <example>
+    /// <para>
+    ///   The following example shows how to create and test the main characteristics
+    ///   of an Exponential distribution given a lambda (λ) rate of 0.42: </para>
+    ///   
+    /// <code>
+    ///   // Create an Exponential distribution with λ = 0.42
+    ///   var exp = new ExponentialDistribution(rate: 0.42);
+    ///   
+    ///   // Common measures
+    ///   double mean = exp.Mean;     // 2.3809523809523809
+    ///   double median = exp.Median; // 1.6503504299046317
+    ///   double var = exp.Variance;  // 5.6689342403628125
+    ///   
+    ///   // Cumulative distribution funcions
+    ///   double cdf  = exp.DistributionFunction(x: 0.27);          // 0.10720652870550407
+    ///   double ccdf = exp.ComplementaryDistributionFunction(x: 0.27); // 0.89279347129449593
+    ///   double icdf = exp.InverseDistributionFunction(p: cdf);        // 0.27
+    ///   
+    ///   // Probability density functions
+    ///   double pdf  = exp.ProbabilityDensityFunction(x: 0.27);    // 0.3749732579436883
+    ///   double lpdf = exp.LogProbabilityDensityFunction(x: 0.27); // -0.98090056770472311
+    ///   
+    ///   // Hazard (failure rate) functions
+    ///   double hf = exp.HazardFunction(x: 0.27);            // 0.42
+    ///   double chf = exp.CumulativeHazardFunction(x: 0.27); // 0.1134
+    ///   
+    ///   // String representation
+    ///   string str = exp.ToString(CultureInfo.InvariantCulture); // Exp(x; λ = 0.42)
+    /// </code>
+    /// 
+    /// <para>
+    ///   The following example shows how to generate random samples drawn
+    ///   from an Exponential distribution and later how to re-estimate a
+    ///   distribution from the generated samples.</para>
+    ///   
+    /// <code>
+    ///   // Create an Exponential distribution with λ = 2.5
+    ///   var exp = new ExponentialDistribution(rate: 2.5);
+    /// 
+    ///   // Generate a million samples from this distribution:
+    ///   double[] samples = target.Generate(1000000);
+    /// 
+    ///   // Create a default exponential distribution
+    ///   var newExp = new ExponentialDistribution();
+    /// 
+    ///   // Fit the samples
+    ///   newExp.Fit(samples);
+    /// 
+    ///   // Check the estimated parameters
+    ///   double rate = newExp.Rate; // 2.5
+    /// </code>
+    /// </example>
     /// 
     [Serializable]
     public class ExponentialDistribution : UnivariateContinuousDistribution,
@@ -36,7 +115,7 @@ namespace Accord.Statistics.Distributions.Univariate
     {
 
         // Distribution parameters
-        double lambda;
+        double lambda; // λ 
 
         // Derived measures
         double lnlambda;
@@ -46,7 +125,7 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   Creates a new Exponential distribution with the given rate.
         /// </summary>
         /// 
-        /// <param name="rate">The rate parameter lambda.</param>
+        /// <param name="rate">The rate parameter lambda (λ).</param>
         /// 
         public ExponentialDistribution(double rate)
         {
@@ -61,7 +140,7 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
-        ///   Gets the distribution's rate parameter lambda.
+        ///   Gets the distribution's rate parameter lambda (λ).
         /// </summary>
         /// 
         public double Rate
@@ -75,9 +154,13 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         /// <value>The distribution's mean value.</value>
         /// 
+        /// <remarks>
+        ///   In the Exponential distribution, the mean is defined as 1/λ.
+        /// </remarks>
+        /// 
         public override double Mean
         {
-            get { return 1 / lambda; }
+            get { return 1.0 / lambda; }
         }
 
         /// <summary>
@@ -86,9 +169,27 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         /// <value>The distribution's variance.</value>
         /// 
+        /// <remarks>
+        ///   In the Exponential distribution, the variance is defined as 1/(λ²)
+        /// </remarks>
+        /// 
         public override double Variance
         {
-            get { return 1 / (lambda * lambda); }
+            get { return 1.0 / (lambda * lambda); }
+        }
+
+        /// <summary>
+        ///   Gets the support interval for this distribution.
+        /// </summary>
+        /// 
+        /// <value>
+        ///   A <see cref="AForge.DoubleRange" /> containing
+        ///   the support interval for this distribution.
+        /// </value>
+        /// 
+        public override DoubleRange Support
+        {
+            get { return new DoubleRange(0, Double.PositiveInfinity); }
         }
 
         /// <summary>
@@ -97,9 +198,18 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         /// <value>The distribution's median value.</value>
         /// 
+        /// <remarks>
+        ///   In the Exponential distribution, the median is defined as ln(2) / λ.
+        /// </remarks>
+        /// 
         public override double Median
         {
-            get { return Math.Log(2) / lambda; }
+            get
+            {
+                double median = Math.Log(2) / lambda;
+                System.Diagnostics.Debug.Assert(median == base.Median);
+                return median;
+            }
         }
 
         /// <summary>
@@ -107,6 +217,10 @@ namespace Accord.Statistics.Distributions.Univariate
         /// </summary>
         /// 
         /// <value>The distribution's mode value.</value>
+        /// 
+        /// <remarks>
+        ///   In the Exponential distribution, the median is defined as 0.
+        /// </remarks>
         /// 
         public override double Mode
         {
@@ -118,6 +232,10 @@ namespace Accord.Statistics.Distributions.Univariate
         /// </summary>
         /// 
         /// <value>The distribution's entropy.</value>
+        /// 
+        /// <remarks>
+        ///   In the Exponential distribution, the median is defined as 1 - ln(λ).
+        /// </remarks>
         /// 
         public override double Entropy
         {
@@ -132,8 +250,12 @@ namespace Accord.Statistics.Distributions.Univariate
         /// <param name="x">A single point in the distribution range.</param>
         /// 
         /// <remarks>
+        /// <para>
         ///   The Cumulative Distribution Function (CDF) describes the cumulative
-        ///   probability that a given value or any value smaller than it will occur.
+        ///   probability that a given value or any value smaller than it will occur.</para>
+        ///   
+        /// <para>
+        ///   The Exponential CDF is defined as CDF(x) = 1 - exp(-λ*x).</para>
         /// </remarks>
         /// 
         public override double DistributionFunction(double x)
@@ -154,8 +276,12 @@ namespace Accord.Statistics.Distributions.Univariate
         /// </returns>
         /// 
         /// <remarks>
+        /// <para>
         ///   The Probability Density Function (PDF) describes the
-        ///   probability that a given value <c>x</c> will occur.
+        ///   probability that a given value <c>x</c> will occur.</para>
+        ///   
+        /// <para>
+        ///   The Exponential PDF is defined as PDF(x) = λ * exp(-λ*x).</para>
         /// </remarks>
         /// 
         public override double ProbabilityDensityFunction(double x)
@@ -180,6 +306,8 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
         /// 
+        /// <seealso cref="ProbabilityDensityFunction"/>
+        /// 
         public override double LogProbabilityDensityFunction(double x)
         {
             return lnlambda - lambda * x;
@@ -192,14 +320,20 @@ namespace Accord.Statistics.Distributions.Univariate
         /// </summary>
         /// 
         /// <remarks>
+        /// <para>
         ///   The Inverse Cumulative Distribution Function (ICDF) specifies, for
         ///   a given probability, the value which the random variable will be at,
-        ///   or below, with that probability.
+        ///   or below, with that probability.</para>
+        /// 
+        /// <para>
+        ///   The Exponential ICDF is defined as ICDF(p) = -ln(1-p)/λ.</para>
         /// </remarks>
         /// 
         public override double InverseDistributionFunction(double p)
         {
-            return -Math.Log(1 - p) / lambda;
+            double icdf = -Math.Log(1 - p) / lambda;
+            System.Diagnostics.Debug.Assert(icdf.IsRelativelyEqual(base.InverseDistributionFunction(p), 1e-6));
+            return icdf;
         }
 
         /// <summary>
@@ -219,6 +353,10 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   double[][] for a univariate distribution may have a negative
         ///   impact in performance.
         /// </remarks>
+        /// 
+        /// <example>
+        ///   Please see <see cref="ExponentialDistribution"/>.
+        /// </example>
         /// 
         public override void Fit(double[] observations, double[] weights, IFittingOptions options)
         {
@@ -256,7 +394,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// </summary>
         /// 
         public static ExponentialDistribution Estimate(double[] observations, double[] weights)
-         {
+        {
             var n = new ExponentialDistribution();
             n.Fit(observations, weights, null);
             return n;
@@ -340,5 +478,46 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         #endregion
+
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public override string ToString()
+        {
+            return String.Format("Exp(x; λ = {0})", lambda);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(IFormatProvider formatProvider)
+        {
+            return String.Format(formatProvider, "Exp(x; λ = {0})", lambda);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return String.Format("Exp(x; λ = {0})",
+                lambda.ToString(format, formatProvider));
+        }
     }
 }

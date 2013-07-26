@@ -24,12 +24,42 @@ namespace Accord.Statistics.Distributions.Univariate
 {
     using System;
     using Accord.Math;
+    using AForge;
 
     /// <summary>
     ///   Student's t-distribution.
     /// </summary>
     /// 
     /// <remarks>
+    /// <para>
+    ///   In probability and statistics, Student's t-distribution (or simply the
+    ///   t-distribution) is a family of continuous probability distributions that
+    ///   arises when estimating the mean of a normally distributed population in 
+    ///   situations where the sample size is small and population standard deviation
+    ///   is unknown. It plays a role in a number of widely used statistical analyses,
+    ///   including the Student's t-test for assessing the statistical significance of
+    ///   the difference between two sample means, the construction of confidence intervals 
+    ///   for the difference between two population means, and in linear regression 
+    ///   analysis. The Student's t-distribution also arises in the Bayesian analysis of 
+    ///   data from a normal family.</para>
+    /// <para>
+    ///   If we take <c>k</c> samples from a normal distribution with fixed unknown mean and 
+    ///   variance, and if we compute the sample mean and sample variance for these k 
+    ///   samples, then the t-distribution (for k) can be defined as the distribution 
+    ///   of the location of the true mean, relative to the sample mean and divided by
+    ///   the sample standard deviation, after multiplying by the normalizing term 
+    ///   <c>sqrt(n)</c>, where <c>n</c> is the sample size. In this way the t-distribution
+    ///   can be used to estimate how likely it is that the true mean lies in any given
+    ///   range.</para>
+    /// <para>
+    ///   The t-distribution is symmetric and bell-shaped, like the normal distribution,
+    ///   but has heavier tails, meaning that it is more prone to producing values that 
+    ///   fall far from its mean. This makes it useful for understanding the statistical 
+    ///   behavior of certain types of ratios of random quantities, in which variation in
+    ///   the denominator is amplified and may produce outlying values when the denominator
+    ///   of the ratio falls close to zero. The Student's t-distribution is a special case 
+    ///   of the generalised hyperbolic distribution.</para>
+    ///   
     /// <para>    
     ///   References:
     ///   <list type="bullet">
@@ -39,8 +69,39 @@ namespace Accord.Statistics.Distributions.Univariate
     ///   </list></para>
     /// </remarks>
     /// 
+    /// <example>
+    /// <code>
+    ///   // Create a new Student's T distribution with d.f = 4.2
+    ///   TDistribution t = new TDistribution(degreesOfFreedom: 4.2);
+    ///   
+    ///   // Common measures
+    ///   double mean = t.Mean;     // 0.0
+    ///   double median = t.Median; // 0.0
+    ///   double var = t.Variance;  // 1.9090909090909089
+    ///   
+    ///   // Cumulative distribution functions
+    ///   double cdf = t.DistributionFunction(x: 1.4);           // 0.88456136730659074
+    ///   double pdf = t.ProbabilityDensityFunction(x: 1.4);     // 0.13894002185341031
+    ///   double lpdf = t.LogProbabilityDensityFunction(x: 1.4); // -1.9737129364307417
+    ///   
+    ///   // Probability density functions
+    ///   double ccdf = t.ComplementaryDistributionFunction(x: 1.4); // 0.11543863269340926
+    ///   double icdf = t.InverseDistributionFunction(p: cdf);       // 1.4000000000000012
+    ///   
+    ///   // Hazard (failure rate) functions
+    ///   double hf = t.HazardFunction(x: 1.4);            // 1.2035833984833988
+    ///   double chf = t.CumulativeHazardFunction(x: 1.4); // 2.1590162088918525
+    ///   
+    ///   // String representation
+    ///   string str = t.ToString(CultureInfo.InvariantCulture); // T(x; df = 4.2)
+    /// </code>
+    /// </example>
+    /// 
+    /// <seealso cref="Accord.Statistics.Testing.TTest"/>
+    /// <seealso cref="NoncentralTDistribution"/>
+    /// 
     [Serializable]
-    public class TDistribution : UnivariateContinuousDistribution
+    public class TDistribution : UnivariateContinuousDistribution, IFormattable
     {
 
         private double constant;
@@ -99,7 +160,21 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
-        ///   Gets the entropy for this distribution.
+        ///   Gets the support interval for this distribution.
+        /// </summary>
+        /// 
+        /// <value>
+        ///   A <see cref="AForge.DoubleRange" /> containing
+        ///   the support interval for this distribution.
+        /// </value>
+        /// 
+        public override DoubleRange Support
+        {
+            get { return new DoubleRange(Double.NegativeInfinity, Double.PositiveInfinity); }
+        }
+
+        /// <summary>
+        ///   Not supported.
         /// </summary>
         /// 
         public override double Entropy
@@ -118,6 +193,10 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   The Cumulative Distribution Function (CDF) describes the cumulative
         ///   probability that a given value or any value smaller than it will occur.
         /// </remarks>
+        /// 
+        /// <example>
+        ///   See <see cref="TDistribution"/>.
+        /// </example>
         /// 
         public override double DistributionFunction(double x)
         {
@@ -144,6 +223,10 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
         /// 
+        /// <example>
+        ///   See <see cref="TDistribution"/>.
+        /// </example>
+        /// 
         public override double ProbabilityDensityFunction(double x)
         {
             double v = DegreesOfFreedom;
@@ -167,6 +250,10 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
         /// 
+        /// <example>
+        ///   See <see cref="TDistribution"/>.
+        /// </example>
+        /// 
         public override double LogProbabilityDensityFunction(double x)
         {
             double v = DegreesOfFreedom;
@@ -184,6 +271,10 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   a given probability, the value which the random variable will be at,
         ///   or below, with that probability.
         /// </remarks>
+        /// 
+        /// <example>
+        ///   See <see cref="TDistribution"/>.
+        /// </example>
         /// 
         public override double InverseDistributionFunction(double p)
         {
@@ -212,6 +303,59 @@ namespace Accord.Statistics.Distributions.Univariate
             return new TDistribution(DegreesOfFreedom);
         }
 
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public override string ToString()
+        {
+            return String.Format("T(x; df = {0})", DegreesOfFreedom);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(IFormatProvider formatProvider)
+        {
+            return String.Format(formatProvider, "T(x; df = {0})", DegreesOfFreedom);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return String.Format(formatProvider, "T(x; df = {0})",
+                DegreesOfFreedom.ToString(format, formatProvider));
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format)
+        {
+            return String.Format("T(x; df = {0})",
+                DegreesOfFreedom.ToString(format));
+        }
 
 
         /// <summary>

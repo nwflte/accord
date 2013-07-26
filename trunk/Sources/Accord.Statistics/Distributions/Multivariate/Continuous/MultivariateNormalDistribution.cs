@@ -55,6 +55,76 @@ namespace Accord.Statistics.Distributions.Multivariate
     ///   </list></para>
     /// </remarks>
     /// 
+    /// <example>
+    /// <para>
+    ///   The following example shows how to create a Multivariate Gaussian
+    ///   distribution with known parameters mean vector and covariance matrix
+    /// </para>
+    /// <code>
+    ///   // Create a multivariate Gaussian distribution 
+    ///   var dist = new MultivariateNormalDistribution(
+    ///   
+    ///       // mean vector mu
+    ///       mean: new double[] 
+    ///       {
+    ///           4, 2 
+    ///       },
+    ///   
+    ///       // covariance matrix sigma
+    ///       covariance: new double[,] 
+    ///       {
+    ///           { 0.3, 0.1 },
+    ///           { 0.1, 0.7 }
+    ///       }
+    ///   );
+    ///   
+    ///   // Common measures
+    ///   double[] mean = dist.Mean;     // { 4, 2 }
+    ///   double[] median = dist.Median; // { 4, 2 }
+    ///   double[] var = dist.Variance;  // { 0.3, 0.7 } (diagonal from cov)
+    ///   double[,] cov = dist.Covariance; // { { 0.3, 0.1 }, { 0.1, 0.7 } }
+    ///   
+    ///   // Probability mass functions
+    ///   double pdf1 = dist.ProbabilityDensityFunction(new double[] { 2, 5 }); // 0.000000018917884164743237
+    ///   double pdf2 = dist.ProbabilityDensityFunction(new double[] { 4, 2 }); // 0.35588127170858852
+    ///   double pdf3 = dist.ProbabilityDensityFunction(new double[] { 3, 7 }); // 0.000000000036520107734505265
+    ///   double lpdf = dist.LogProbabilityDensityFunction(new double[] { 3, 7 }); // -24.033158110192296
+    ///   
+    ///   // Generate samples from this distribution:
+    ///   double[][] sample = dist.Generate(1000000);
+    /// </code>
+    /// 
+    /// <para>
+    ///   The following example demonstrates how to fit a multivariate Gaussian to
+    ///   a set of observations. Since those observations would lead to numerical
+    ///   difficulties, the example also demonstrates how to specify a regularization
+    ///   constant to avoid getting a <see cref="NonPositiveDefiniteMatrixException"/>.
+    /// </para>
+    /// 
+    /// <code>
+    ///   double[][] observations = 
+    ///   {
+    ///       new double[] { 1, 2 },
+    ///       new double[] { 1, 2 },
+    ///       new double[] { 1, 2 },
+    ///       new double[] { 1, 2 }
+    ///   };
+    ///   
+    ///   // Create a multivariate Gaussian for 2 dimensions
+    ///   var normal = new MultivariateNormalDistribution(2);
+    ///   
+    ///   // Specify a regularization constant in the fitting options
+    ///   NormalOptions options = new NormalOptions() { Regularization = double.Epsilon };
+    ///   
+    ///   // Fit the distribution to the data
+    ///   normal.Fit(observations, options);
+    ///   
+    ///   // Check distribution parameters
+    ///   double[] mean = normal.Mean;     // { 1, 2 }
+    ///   double[] var  = normal.Variance; // { 4.9E-324, 4.9E-324 } (almost machine zero)
+    /// </code>
+    /// </example>
+    /// 
     [Serializable]
     public class MultivariateNormalDistribution : MultivariateContinuousDistribution,
         IFittableDistribution<double[], NormalOptions>,
@@ -106,8 +176,8 @@ namespace Accord.Statistics.Distributions.Multivariate
         ///   with given mean vector and covariance matrix.
         /// </summary>
         /// 
-        /// <param name="mean">The mean of the distribution.</param>
-        /// <param name="covariance">The covariance for the distribution.</param>
+        /// <param name="mean">The mean vector μ (mu) for the distribution.</param>
+        /// <param name="covariance">The covariance matrix Σ (sigma) for the distribution.</param>
         /// 
         public MultivariateNormalDistribution(double[] mean, double[,] covariance)
             : base(mean.Length)
@@ -182,7 +252,8 @@ namespace Accord.Statistics.Distributions.Multivariate
         }
 
         /// <summary>
-        ///   Gets the Mean vector for the Gaussian distribution.
+        ///   Gets the Mean vector μ (mu) for 
+        ///   the Gaussian distribution.
         /// </summary>
         /// 
         public override double[] Mean
@@ -191,7 +262,8 @@ namespace Accord.Statistics.Distributions.Multivariate
         }
 
         /// <summary>
-        ///   Gets the Variance vector for the Gaussian distribution.
+        ///   Gets the Variance vector diag(Σ), the diagonal of 
+        ///   the sigma matrix, for the Gaussian distribution.
         /// </summary>
         /// 
         public override double[] Variance
@@ -205,7 +277,8 @@ namespace Accord.Statistics.Distributions.Multivariate
         }
 
         /// <summary>
-        ///   Gets the variance-covariance matrix for the Gaussian distribution.
+        ///   Gets the variance-covariance matrix
+        ///   Σ (sigma) for the Gaussian distribution.
         /// </summary>
         /// 
         public override double[,] Covariance
@@ -318,6 +391,10 @@ namespace Accord.Statistics.Distributions.Multivariate
         /// <param name="weights">The weight vector containing the weight for each of the samples.</param>
         /// <param name="options">Optional arguments which may be used during fitting, such
         ///   as regularization constants and additional parameters.</param>
+        ///   
+        /// <example>
+        ///   Please see <see cref="MultivariateNormalDistribution"/>.
+        /// </example>
         /// 
         public override void Fit(double[][] observations, double[] weights, IFittingOptions options)
         {
@@ -338,6 +415,10 @@ namespace Accord.Statistics.Distributions.Multivariate
         /// <param name="weights">The weight vector containing the weight for each of the samples.</param>
         /// <param name="options">Optional arguments which may be used during fitting, such
         ///   as regularization constants and additional parameters.</param>
+        /// 
+        /// <example>
+        ///   Please see <see cref="MultivariateNormalDistribution"/>.
+        /// </example>
         /// 
         public void Fit(double[][] observations, double[] weights, NormalOptions options)
         {

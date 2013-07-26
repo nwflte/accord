@@ -25,8 +25,9 @@ namespace Accord.Statistics.Distributions
     using System;
 
     /// <summary>
-    ///   Base class for probability distributions. See remarks for details.
+    ///   Do not use or rely on this class. See remarks for details.
     /// </summary>
+    /// 
     /// <remarks>
     /// <para>
     ///   This class serves only as a workaround for a bug in Code Analysis, in which a generic

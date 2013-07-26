@@ -25,6 +25,7 @@ namespace Accord.Statistics.Distributions.Univariate
     using System;
     using Accord.Math;
     using Accord.Statistics.Distributions.Fitting;
+    using AForge;
 
     /// <summary>
     ///   Chi-Square (χ²) probability distribution
@@ -37,6 +38,7 @@ namespace Accord.Statistics.Distributions.Univariate
     ///   squares of k independent standard normal random variables. It is one of the most 
     ///   widely used probability distributions in inferential statistics, e.g. in hypothesis 
     ///   testing, or in construction of confidence intervals.</para>
+    ///   
     /// <para>
     ///   References:
     ///   <list type="bullet">
@@ -45,6 +47,38 @@ namespace Accord.Statistics.Distributions.Univariate
     ///       http://en.wikipedia.org/wiki/Chi-square_distribution </a></description></item>
     ///   </list></para>     
     /// </remarks>
+    /// 
+    /// <example>
+    /// <para>
+    ///   The following example demonstrates how to create a new χ² 
+    ///   distribution with the given degrees of freedom. </para>
+    ///   
+    /// <code>
+    ///   // Create a new χ² distribution with 7 d.f.
+    ///   var chisq = new ChiSquareDistribution(degreesOfFreedom: 7);
+    /// 
+    ///   // Common measures
+    ///   double mean = chisq.Mean;     //  7
+    ///   double median = chisq.Median; //  6.345811195595612
+    ///   double var = chisq.Variance;  // 14
+    /// 
+    ///   // Cumulative distribution functions
+    ///   double cdf = chisq.DistributionFunction(x: 6.27);           // 0.49139966433823956
+    ///   double ccdf = chisq.ComplementaryDistributionFunction(x: 6.27); // 0.50860033566176044
+    ///   double icdf = chisq.InverseDistributionFunction(p: cdf);        // 6.2700000000852318
+    ///   
+    ///   // Probability density functions
+    ///   double pdf = chisq.ProbabilityDensityFunction(x: 6.27);     // 0.11388708001184455
+    ///   double lpdf = chisq.LogProbabilityDensityFunction(x: 6.27); // -2.1725478476948092
+    /// 
+    ///   // Hazard (failure rate) functions
+    ///   double hf = chisq.HazardFunction(x: 6.27);            // 0.22392254197721179
+    ///   double chf = chisq.CumulativeHazardFunction(x: 6.27); // 0.67609276602233315
+    ///   
+    ///   // String representation
+    ///   string str = chisq.ToString(); // "χ²(x; df = 7)
+    /// </code>
+    /// </example>
     /// 
     [Serializable]
     public class ChiSquareDistribution : UnivariateContinuousDistribution,
@@ -110,18 +144,22 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
-        /// Gets the log-probability density function (pdf) for
-        /// this distribution evaluated at point <c>x</c>.
+        ///   Gets the log-probability density function (pdf) for
+        ///   this distribution evaluated at point <c>x</c>.
         /// </summary>
+        /// 
         /// <param name="x">A single point in the distribution range.</param>
+        /// 
         /// <returns>
-        /// The logarithm of the probability of <c>x</c>
-        /// occurring in the current distribution.
+        ///   The logarithm of the probability of <c>x</c>
+        ///   occurring in the current distribution.
         /// </returns>
+        /// 
         /// <remarks>
-        /// The Probability Density Function (PDF) describes the
-        /// probability that a given value <c>x</c> will occur.
+        ///   The Probability Density Function (PDF) describes the
+        ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
+        /// 
         public override double LogProbabilityDensityFunction(double x)
         {
             double v = degreesOfFreedom;
@@ -138,13 +176,18 @@ namespace Accord.Statistics.Distributions.Univariate
         /// </summary>
         /// 
         /// <remarks>
+        /// <para>
         ///   The Cumulative Distribution Function (CDF) describes the cumulative
-        ///   probability that a given value or any value smaller than it will occur.
+        ///   probability that a given value or any value smaller than it will occur.</para>
+        ///   
+        /// <para>
+        ///   The χ² distribution function is defined in terms of the <see cref="Gamma.LowerIncomplete">
+        ///   Incomplete Gamma Function Γ(a, x)</see> as CDF(x; df) = Γ(df/2, x/d). </para>
         /// </remarks>
         /// 
         public override double DistributionFunction(double x)
         {
-            return Gamma.Incomplete(degreesOfFreedom / 2.0, x / 2.0);
+            return Gamma.LowerIncomplete(degreesOfFreedom / 2.0, x / 2.0);
         }
 
         /// <summary>
@@ -154,20 +197,43 @@ namespace Accord.Statistics.Distributions.Univariate
         /// </summary>
         ///
         /// <remarks>
+        /// <para>
         ///   The Complementary Cumulative Distribution Function (CCDF) is
         ///   the complement of the Cumulative Distribution Function, or 1
-        ///   minus the CDF.
+        ///   minus the CDF.</para>
+        ///   
+        /// <para>
+        ///   The χ² complementary distribution function is defined in terms of the 
+        ///   <see cref="Gamma.UpperIncomplete">Complemented Incomplete Gamma 
+        ///   Function Γc(a, x)</see> as CDF(x; df) = Γc(df/2, x/d). </para>
         /// </remarks>
         /// 
         public override double ComplementaryDistributionFunction(double x)
         {
-            return Gamma.ComplementedIncomplete(degreesOfFreedom / 2.0, x / 2.0);
+            return Gamma.UpperIncomplete(degreesOfFreedom / 2.0, x / 2.0);
         }
 
+        /// <summary>
+        ///   Gets the support interval for this distribution.
+        /// </summary>
+        /// 
+        /// <value>
+        ///   A <see cref="AForge.DoubleRange" /> containing
+        ///   the support interval for this distribution.
+        /// </value>
+        /// 
+        public override DoubleRange Support
+        {
+            get { return new DoubleRange(0, Double.PositiveInfinity); }
+        }
 
         /// <summary>
         ///   Gets the mean for this distribution.
         /// </summary>
+        /// 
+        /// <remarks>
+        ///   The χ² distribution mean is the number of degrees of freedom.
+        /// </remarks>
         /// 
         public override double Mean
         {
@@ -177,6 +243,10 @@ namespace Accord.Statistics.Distributions.Univariate
         /// <summary>
         ///   Gets the variance for this distribution.
         /// </summary>
+        /// 
+        /// <remarks>
+        ///   The χ² distribution variance is twice its degrees of freedom.
+        /// </remarks>
         /// 
         public override double Variance
         {
@@ -278,6 +348,46 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         #endregion
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public override string ToString()
+        {
+            return String.Format("χ²(x; df = {0})", degreesOfFreedom);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(IFormatProvider formatProvider)
+        {
+            return String.Format(formatProvider, "χ²(x; df = {0})", degreesOfFreedom);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return String.Format("χ²(x; df = {0})", 
+                degreesOfFreedom.ToString(format, formatProvider));
+        }
     }
 
 }

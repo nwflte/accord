@@ -25,6 +25,7 @@ namespace Accord.Statistics.Distributions.Univariate
     using System;
     using Accord.Math;
     using Accord.Statistics.Distributions.Fitting;
+    using AForge;
 
     /// <summary>
     ///   von-Mises (Circular Normal) distribution.
@@ -58,14 +59,44 @@ namespace Accord.Statistics.Distributions.Univariate
     ///   </list></para>
     /// </remarks>
     /// 
+    /// <example>
+    /// <code>
+    ///    // Create a new von-Mises distribution with μ = 0.42 and κ = 1.2
+    ///    var vonMises = new VonMisesDistribution(mean: 0.42, concentration: 1.2);
+    ///    
+    ///    // Common measures
+    ///    double mean = vonMises.Mean;     // 0.42
+    ///    double median = vonMises.Median; // 0.42
+    ///    double var = vonMises.Variance;  // 0.48721760532782921
+    ///    
+    ///    // Cumulative distribution functions
+    ///    double cdf = vonMises.DistributionFunction(x: 1.4); // 0.81326928491589345
+    ///    double ccdf = vonMises.ComplementaryDistributionFunction(x: 1.4); // 0.18673071508410655
+    ///    double icdf = vonMises.InverseDistributionFunction(p: cdf); // 1.3999999637927665
+    ///    
+    ///    // Probability density functions
+    ///    double pdf = vonMises.ProbabilityDensityFunction(x: 1.4); // 0.2228112141141676
+    ///    double lpdf = vonMises.LogProbabilityDensityFunction(x: 1.4); // -1.5014304395467863
+    ///    
+    ///    // Hazard (failure rate) functions
+    ///    double hf = vonMises.HazardFunction(x: 1.4); // 1.1932220899695576
+    ///    double chf = vonMises.CumulativeHazardFunction(x: 1.4); // 1.6780877262500649
+    ///    
+    ///    // String representation
+    ///    string str = vonMises.ToString(CultureInfo.InvariantCulture); // VonMises(x; μ = 0.42, κ = 1.2)
+    /// </code>
+    /// </example>
+    /// 
+    /// <seealso cref="Circular"/>
+    /// 
     [Serializable]
     public class VonMisesDistribution : UnivariateContinuousDistribution,
         IFittableDistribution<double, VonMisesOptions>
     {
 
         // Distribution parameters
-        private double mean;
-        private double kappa;
+        private double mean;  // μ (mu)
+        private double kappa; // κ (kappa)
 
         // Distribution measures
         private double? variance;
@@ -76,12 +107,11 @@ namespace Accord.Statistics.Distributions.Univariate
 
 
         /// <summary>
-        ///   Constructs a multivariate Gaussian distribution
-        ///   with zero mean vector and unitary variance matrix.
+        ///   Constructs a von-Mises distribution.
         /// </summary>
         /// 
-        /// <param name="mean">The mean of the distribution.</param>
-        /// <param name="concentration">The concentration value (kappa) for the distribution.</param>
+        /// <param name="mean">The mean value μ (mu).</param>
+        /// <param name="concentration">The concentration value κ (kappa).</param>
         /// 
         public VonMisesDistribution(double mean, double concentration)
         {
@@ -102,7 +132,7 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
-        ///   Gets the mean for this distribution.
+        ///   Gets the mean value μ (mu) for this distribution.
         /// </summary>
         /// 
         public override double Mean
@@ -111,10 +141,17 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
-        ///   Gets the concentration (the kappa value) for this distribution.
+        ///   Gets the median value μ (mu) for this distribution.
         /// </summary>
         /// 
-        /// <value>The concentration.</value>
+        public override double Median
+        {
+            get { return mean; }
+        }
+
+        /// <summary>
+        ///   Gets the concentration κ (kappa) for this distribution.
+        /// </summary>
         /// 
         public double Concentration
         {
@@ -124,6 +161,12 @@ namespace Accord.Statistics.Distributions.Univariate
         /// <summary>
         ///   Gets the variance for this distribution.
         /// </summary>
+        /// 
+        /// <remarks>
+        ///   The von-Mises Variance is defined in terms of the
+        ///   <see cref="Bessel.I(double)">Bessel function of the first 
+        ///   kind In(x)</see> as <c>var = 1 - I(1, κ) / I(0, κ)</c>
+        /// </remarks>
         /// 
         public override double Variance
         {
@@ -162,15 +205,31 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
-        ///   Not supported. The distribution function for the
-        ///   von-Mises distribution is not analytic and no
-        ///   approximation has been provided yet.
+        ///   Gets the support interval for this distribution.
         /// </summary>
+        /// 
+        /// <value>
+        ///   A <see cref="AForge.DoubleRange" /> containing
+        ///   the support interval for this distribution.
+        /// </value>
+        /// 
+        public override DoubleRange Support
+        {
+            get { return new DoubleRange(-Math.PI, Math.PI); }
+        }
+
+        /// <summary>
+        ///   Gets the cumulative distribution function (cdf) for
+        ///   this distribution evaluated at point <c>x</c>.
+        /// </summary>
+        /// 
+        /// <param name="x">A single point in the distribution range.</param>
         /// 
         public override double DistributionFunction(double x)
         {
-            throw new NotSupportedException();
+            return DistributionFunction(x, mean, kappa);
         }
+
 
         /// <summary>
         ///   Gets the probability density function (pdf) for
@@ -312,6 +371,61 @@ namespace Accord.Statistics.Distributions.Univariate
             return new VonMisesDistribution(mean, kappa);
         }
 
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public override string ToString()
+        {
+            return String.Format("VonMises(x; μ = {0}, κ = {1})", mean, kappa);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(IFormatProvider formatProvider)
+        {
+            return String.Format(formatProvider, "VonMises(x; μ = {0}, κ = {1})", mean, kappa);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return String.Format(formatProvider, "VonMises(x; μ = {0}, κ = {1})",
+                mean.ToString(format, formatProvider),
+                kappa.ToString(format, formatProvider));
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format)
+        {
+            return String.Format("VonMises(x; μ = {0}, κ = {1})",
+                mean.ToString(format), kappa.ToString(format));
+        }
+
 
         /// <summary>
         ///   Estimates a new von-Mises distribution from a given set of angles.
@@ -342,6 +456,107 @@ namespace Accord.Statistics.Distributions.Univariate
             return vonMises;
         }
 
+
+        /// <summary>
+        ///   von-Mises cumulative distribution function.
+        /// </summary>
+        /// 
+        /// <remarks>
+        ///   This method implements the Von-Mises CDF calculation code
+        ///   as given by Geoffrey Hill on his original FORTRAN code and
+        ///   shared under the GNU LGPL license.
+        /// 
+        /// <para>    
+        ///   References:
+        ///   <list type="bullet">
+        ///     <item><description>Geoffrey Hill, ACM TOMS Algorithm 518,
+        ///     Incomplete Bessel Function I0: The von Mises Distribution,
+        ///     ACM Transactions on Mathematical Software, Volume 3, Number 3,
+        ///     September 1977, pages 279-284.</description></item>
+        ///   </list></para>
+        /// </remarks>
+        /// 
+        /// <param name="x">The point where to calculate the CDF.</param>
+        /// <param name="mu">The location parameter μ (mu).</param>
+        /// <param name="kappa">The concentration parameter κ (kappa).</param>
+        /// 
+        /// <returns>The value of the von-Mises CDF at point <paramref name="x"/>.</returns>
+        /// 
+        public static double DistributionFunction(double x, double mu, double kappa)
+        {
+            double a1 = 12.0;
+            double a2 = 0.8;
+            double a3 = 8.0;
+            double a4 = 1.0;
+            double c1 = 56.0;
+            double ck = 10.5;
+            double cdf = 0;
+
+            if (x - mu <= -Math.PI)
+                return 0;
+
+            if (Math.PI <= x - mu)
+                return 1.0;
+
+            double z = kappa;
+
+            double u = (x - mu + Math.PI) % (2.0 * Math.PI);
+
+            if (u < 0.0)
+                u = u + 2.0 * Math.PI;
+
+            double y = u - Math.PI;
+
+            if (z <= ck)
+            {
+                double v = 0.0;
+
+                if (0.0 < z)
+                {
+                    double ip = Math.Floor(z * a2 - a3 / (z + a4) + a1);
+                    double p = ip;
+                    double s = Math.Sin(y);
+                    double c = Math.Cos(y);
+                    y = p * y;
+                    double sn = Math.Sin(y);
+                    double cn = Math.Cos(y);
+                    double r = 0.0;
+                    z = 2.0 / z;
+
+                    for (int n = 2; n <= ip; n++)
+                    {
+                        p = p - 1.0;
+                        y = sn;
+                        sn = sn * c - cn * s;
+                        cn = cn * c + y * s;
+                        r = 1.0 / (p * z + r);
+                        v = (sn / p + v) * r;
+                    }
+
+                }
+
+                cdf = (u * 0.5 + v) / Math.PI;
+            }
+            else
+            {
+                double c = 24.0 * z;
+                double v = c - c1;
+                double r = Math.Sqrt((54.0 / (347.0 / v + 26.0 - c) - 6.0 + c) / 12.0);
+                z = Math.Sin(0.5 * y) * r;
+                double s = 2.0 * z * z;
+                v = v - s + 3.0;
+                y = (c - s - s - 16.0) / 3.0;
+                y = ((s + 1.75) * s + 83.5) / v - y;
+                double arg = z * (1.0 - s / (y * y));
+                double erfx = Special.Erf(arg);
+                cdf = 0.5 * erfx + 0.5;
+            }
+
+            cdf = Math.Max(cdf, 0.0);
+            cdf = Math.Min(cdf, 1.0);
+
+            return cdf;
+        }
 
     }
 }

@@ -48,6 +48,8 @@ namespace Accord.Statistics.Distributions.DensityKernels
     ///   </list></para>
     /// </remarks>
     /// 
+    /// <seealso cref="Accord.Statistics.Distributions.Univariate.EmpiricalDistribution"/>
+    /// 
     [Serializable]
     public class EpanechnikovKernel : IRadiallySymmetricKernel
     {
@@ -69,7 +71,23 @@ namespace Accord.Statistics.Distributions.DensityKernels
         ///   Initializes a new instance of the <see cref="EpanechnikovKernel"/> class.
         /// </summary>
         /// 
-        public EpanechnikovKernel() { }
+        public EpanechnikovKernel()
+            : this(1)
+        { 
+        }
+
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="EpanechnikovKernel"/> class.
+        /// </summary>
+        /// 
+        /// <param name="constant">The constant by which the kernel formula
+        ///   is multiplied at the end. Default is to consider the area
+        ///   of a unit-sphere of dimension 1.</param>
+        /// 
+        public EpanechnikovKernel(double constant)
+        {
+            this.constant = constant;
+        }
 
         /// <summary>
         ///   Initializes a new instance of the <see cref="EpanechnikovKernel"/> class.
@@ -77,9 +95,10 @@ namespace Accord.Statistics.Distributions.DensityKernels
         /// 
         /// <param name="dimension">The desired dimension <c>d</c>.</param>
         /// 
-        public EpanechnikovKernel(double dimension)
+        public EpanechnikovKernel(int dimension)
         {
             // compute the area of the d-dimensional unit hypersphere
+            // http://www.oberlin.edu/physics/dstyer/StatMech/VolumeDSphere.pdf
 
             double num = Math.Pow(Math.PI, dimension / 2.0);
             double den = Gamma.Function(dimension / 2.0 + 1);
@@ -96,17 +115,17 @@ namespace Accord.Statistics.Distributions.DensityKernels
         /// <param name="x">The input point.</param>
         /// 
         /// <returns>
-        /// A density estimate around <paramref name="x"/>.
+        ///   A density estimate around <paramref name="x"/>.
         /// </returns>
         /// 
-        public double Function(double[] x)
+        public double Function(params double[] x)
         {
-            double norm = 0.0;
+            double sum = 0.0;
             for (int i = 0; i < x.Length; i++)
-                norm += x[i] * x[i];
+                sum += x[i] * x[i];
 
-            if (norm < 1)
-                return constant * (1 - norm);
+            if (sum < 1)
+                return constant * (1.0 - sum);
             return 0;
         }
 

@@ -24,6 +24,7 @@ namespace Accord.Statistics.Distributions.Univariate
 {
     using System;
     using Accord.Math;
+    using AForge;
 
     /// <summary>
     ///   Negative Binomial distribution.
@@ -46,24 +47,64 @@ namespace Accord.Statistics.Distributions.Univariate
     ///   </list></para>
     /// </remarks>
     /// 
+    /// <example>
+    /// <code>
+    ///    // Create a new Negative Binomial distribution with r = 7 and p = 0.42
+    ///    var dist = new NegativeBinomialDistribution(failures: 7, probability: 0.42);
+    ///    
+    ///    // Common measures
+    ///    double mean = dist.Mean;     // 5.068965517241379
+    ///    double median = dist.Median; // 5.0
+    ///    double var = dist.Variance;  // 8.7395957193816862
+    ///    
+    ///    // Cumulative distribution functions
+    ///    double cdf = dist.DistributionFunction(k: 2);               // 0.19605133020527743
+    ///    double ccdf = dist.ComplementaryDistributionFunction(k: 2); // 0.80394866979472257
+    ///    
+    ///    // Probability mass functions
+    ///    double pmf1 = dist.ProbabilityMassFunction(k: 4); // 0.054786846293416853
+    ///    double pmf2 = dist.ProbabilityMassFunction(k: 5); // 0.069908015870399909
+    ///    double pmf3 = dist.ProbabilityMassFunction(k: 6); // 0.0810932984096639
+    ///    double lpmf = dist.LogProbabilityMassFunction(k: 2); // -2.3927801721315989
+    ///    
+    ///    // Quantile function
+    ///    int icdf1 = dist.InverseDistributionFunction(p: 0.17); // 2
+    ///    int icdf2 = dist.InverseDistributionFunction(p: 0.46); // 4
+    ///    int icdf3 = dist.InverseDistributionFunction(p: 0.87); // 8
+    ///    
+    ///    // Hazard (failure rate) functions
+    ///    double hf = dist.HazardFunction(x: 4); // 0.10490438293398294
+    ///    double chf = dist.CumulativeHazardFunction(x: 4); // 0.64959916255036043
+    ///    
+    ///    // String representation
+    ///    string str = dist.ToString(CultureInfo.InvariantCulture); // "NegativeBinomial(x; r = 7, p = 0.42)"
+    /// </code>
+    /// </example>
+    /// 
+    /// <seealso cref="BinomialDistribution"/>
+    /// 
     [Serializable]
-    public class NegativeBinomial : UnivariateDiscreteDistribution
+    public class NegativeBinomialDistribution : UnivariateDiscreteDistribution
     {
 
-        int r;
-        double p;
+        int r;    // number of failures
+        double p; // success probability
 
         /// <summary>
         ///   Creates a new Negative Binomial distribution.
         /// </summary>
         /// 
-        /// <param name="failures">Number of failures r.</param>
-        /// <param name="probability">Success probability in ech experiment.</param>
+        /// <param name="failures">Number of failures <c>r</c>.</param>
+        /// <param name="probability">Success probability in each experiment.</param>
         /// 
-        public NegativeBinomial(int failures, double probability)
+        public NegativeBinomialDistribution(int failures, double probability)
         {
-            if (failures <= 0) throw new ArgumentOutOfRangeException("failures");
-            if (probability < 0 || probability > 1) throw new ArgumentOutOfRangeException("probability");
+            if (failures <= 0)
+                throw new ArgumentOutOfRangeException("failures");
+
+            if (probability < 0 || probability > 1)
+                throw new ArgumentOutOfRangeException("probability");
+
             this.r = failures;
             this.p = probability;
         }
@@ -102,6 +143,20 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
+        ///   Gets the support interval for this distribution.
+        /// </summary>
+        /// 
+        /// <value>
+        ///   A <see cref="AForge.DoubleRange" /> containing
+        ///   the support interval for this distribution.
+        /// </value>
+        /// 
+        public override DoubleRange Support
+        {
+            get { return new DoubleRange(0, Double.PositiveInfinity); }
+        }
+
+        /// <summary>
         ///   Gets P( X&lt;= k), the cumulative distribution function
         ///   (cdf) for this distribution evaluated at point <c>k</c>.
         /// </summary>
@@ -115,7 +170,10 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override double DistributionFunction(int k)
         {
-            return 1.0 - Beta.Incomplete(k + 1, r, k);
+            if (k < 0) 
+                return 0;
+
+            return 1.0 - Beta.Incomplete(k + 1, r, p);
         }
 
         /// <summary>
@@ -174,7 +232,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public override object Clone()
         {
-            return new NegativeBinomial(r, p);
+            return new NegativeBinomialDistribution(r, p);
         }
 
         /// <summary>
@@ -191,6 +249,63 @@ namespace Accord.Statistics.Distributions.Univariate
         public override void Fit(double[] observations, double[] weights, Fitting.IFittingOptions options)
         {
             throw new NotSupportedException();
+        }
+
+
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public override string ToString()
+        {
+            return String.Format("NegativeBinomial(x; r = {0}, p = {1})", r, p);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(IFormatProvider formatProvider)
+        {
+            return String.Format(formatProvider, "NegativeBinomial(x; r = {0}, p = {1})", r, p);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return String.Format("NegativeBinomial(x; r = {0}, p = {1})",
+                r.ToString(format, formatProvider),
+                p.ToString(format, formatProvider));
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format)
+        {
+            return String.Format("NegativeBinomial(x; r = {0}, p = {1})",
+                r.ToString(format), p.ToString(format));
         }
     }
 }

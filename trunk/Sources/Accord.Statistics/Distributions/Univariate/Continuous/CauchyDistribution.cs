@@ -26,20 +26,121 @@ namespace Accord.Statistics.Distributions.Univariate
     using Accord.Math.Optimization;
     using Accord.Statistics.Distributions.Fitting;
     using AForge;
+    using Accord.Math;
 
     /// <summary>
     ///   Cauchy-Lorentz distribution.
     /// </summary>
     /// 
+    /// <remarks>
+    /// <para>
+    ///   The Cauchy distribution, named after Augustin Cauchy, is a continuous probability
+    ///   distribution. It is also known, especially among physicists, as the Lorentz
+    ///   distribution (after Hendrik Lorentz), Cauchy–Lorentz distribution, Lorentz(ian)
+    ///   function, or Breit–Wigner distribution. The simplest Cauchy distribution is called
+    ///   the standard Cauchy distribution. It has the distribution of a random variable that
+    ///   is the ratio of two independent standard normal random variables. </para>
+    ///   
+    /// <para>
+    ///   References:
+    ///   <list type="bullet">
+    ///     <item><description><a href="http://en.wikipedia.org/wiki/Cauchy_distribution">
+    ///       Wikipedia, The Free Encyclopedia. Cauchy distribution. 
+    ///       Available from: http://en.wikipedia.org/wiki/Cauchy_distribution </a></description></item>
+    ///   </list></para>
+    /// </remarks>
+    /// 
+    /// <example>
+    /// <para>
+    ///   The following example demonstrates how to instantiate a Cauchy distribution
+    ///   with a given location parameter x0 and scale parameter γ (gamma), calculating
+    ///   its main properties and characteristics: </para>
+    ///   
+    /// <code>
+    ///   double location = 0.42;
+    ///   double scale = 1.57;
+    ///   
+    ///   // Create a new Cauchy distribution with x0 = 0.42 and γ = 1.57 
+    ///   CauchyDistribution cauchy = new CauchyDistribution(location, scale);
+    ///   
+    ///   // Common measures
+    ///   double mean = cauchy.Mean;     // NaN - Cauchy's mean is undefined.
+    ///   double var = cauchy.Variance;  // NaN - Cauchy's variance is undefined.
+    ///   double median = cauchy.Median; // 0.42
+    ///   
+    ///   // Cumulative distribution functions
+    ///   double cdf = cauchy.DistributionFunction(x: 0.27);           // 0.46968025841608563
+    ///   double ccdf = cauchy.ComplementaryDistributionFunction(x: 0.27);          // 0.53031974158391437
+    ///   double icdf = cauchy.InverseDistributionFunction(p: 0.69358638272337991); // 1.5130304686978195
+    ///   
+    ///   // Probability density functions
+    ///   double pdf = cauchy.ProbabilityDensityFunction(x: 0.27);     // 0.2009112009763413
+    ///   double lpdf = cauchy.LogProbabilityDensityFunction(x: 0.27); // -1.6048922547266871
+    ///   
+    ///   // Hazard (failure rate) functions
+    ///   double hf = cauchy.HazardFunction(x: 0.27); // 0.3788491832800277
+    ///   double chf = cauchy.CumulativeHazardFunction(x: 0.27); // 0.63427516833243092
+    ///   
+    ///   // String representation
+    ///   string str = cauchy.ToString(CultureInfo.InvariantCulture); // "Cauchy(x; x0 = 0.42, γ = 1.57)
+    /// </code>
+    /// 
+    /// <para>
+    ///   The following example shows how to fit a Cauchy distribution (estimate its
+    ///   location and shape parameters) given a set of observation values. </para>
+    ///   
+    /// <code>
+    ///   // Create an initial distribution
+    ///   CauchyDistribution cauchy = new CauchyDistribution();
+    ///   
+    ///   // Consider a vector of univariate observations
+    ///   double[] observations = { 0.25, 0.12, 0.72, 0.21, 0.62, 0.12, 0.62, 0.12 };
+    /// 
+    ///   // Fit to the observations
+    ///   cauchy.Fit(observations);
+    ///     
+    ///   // Check estimated values
+    ///   double location = cauchy.Location; //  0.18383
+    ///   double gamma    = cauchy.Scale;    // -0.10530
+    /// </code>
+    /// 
+    /// <para>
+    ///   It is also possible to estimate only some of the Cauchy parameters at
+    ///   a time. For this, you can specify a <see cref="CauchyOptions"/> object
+    ///   and pass it alongside the observations:</para>
+    ///   
+    /// <code>
+    ///   // Create options to estimate location only
+    ///   CauchyOptions options = new CauchyOptions()
+    ///   {
+    ///       EstimateLocation = true,
+    ///       EstimateScale = false
+    ///   };
+    /// 
+    ///   // Create an initial dsitribution with a pre-defined scale
+    ///   CauchyDistribution cauchy = new CauchyDistribution(location: 0, scale: 4.2);
+    ///
+    ///   // Fit to the observations
+    ///   cauchy.Fit(observations, options);
+    ///
+    ///   // Check estimated values
+    ///   double location = cauchy.Location; //  0.3471218110202
+    ///   double gamma    = cauchy.Scale;    //  4.2 (unchanged)
+    /// </code>
+    /// </example>
+    /// 
+    /// <seealso cref="CauchyOptions"/>
+    /// <seealso cref="WrappedCauchyDistribution"/>
+    /// 
     [Serializable]
     public class CauchyDistribution : UnivariateContinuousDistribution,
         IFittableDistribution<double, CauchyOptions>,
-        ISampleableDistribution<double>
+        ISampleableDistribution<double>, IFormattable
     {
 
         // Distribution parameters
-        private double location;
-        private double scale;
+        private double location; // x0
+        private double scale;    // γ (gamma)
 
         // Derived measures
         private double lnconstant;
@@ -62,7 +163,7 @@ namespace Accord.Statistics.Distributions.Univariate
         /// </summary>
         /// 
         /// <param name="location">The location parameter x0.</param>
-        /// <param name="scale">The scale parameter gamma.</param>
+        /// <param name="scale">The scale parameter gamma (γ).</param>
         /// 
         public CauchyDistribution(double location, double scale)
         {
@@ -107,9 +208,31 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         /// <value>The distribution's median value.</value>
         /// 
+        /// <remarks>
+        ///   The Cauchy's median is the location parameter x0.
+        /// </remarks>
+        /// 
         public override double Median
         {
-            get { return location; }
+            get
+            {
+                System.Diagnostics.Debug.Assert(location.IsRelativelyEqual(base.Median, 1e-6));
+                return location;
+            }
+        }
+
+        /// <summary>
+        ///   Gets the support interval for this distribution.
+        /// </summary>
+        /// 
+        /// <value>
+        ///   A <see cref="AForge.DoubleRange" /> containing
+        ///   the support interval for this distribution.
+        /// </value>
+        /// 
+        public override DoubleRange Support
+        {
+            get { return new DoubleRange(Double.NegativeInfinity, Double.PositiveInfinity); }
         }
 
         /// <summary>
@@ -117,6 +240,10 @@ namespace Accord.Statistics.Distributions.Univariate
         /// </summary>
         /// 
         /// <value>The distribution's mode value.</value>
+        /// 
+        /// <remarks>
+        ///   The Cauchy's median is the location parameter x0.
+        /// </remarks>
         /// 
         public override double Mode
         {
@@ -152,6 +279,10 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         /// <value>The distribution's entropy.</value>
         /// 
+        /// <remarks>
+        ///   The Cauchy's entropy is defined as log(scale) + log(4*π).
+        /// </remarks>
+        /// 
         public override double Entropy
         {
             get { return Math.Log(scale) + Math.Log(4.0 * Math.PI); }
@@ -165,8 +296,13 @@ namespace Accord.Statistics.Distributions.Univariate
         /// <param name="x">A single point in the distribution range.</param>
         /// 
         /// <remarks>
+        /// <para>
         ///   The Cumulative Distribution Function (CDF) describes the cumulative
-        ///   probability that a given value or any value smaller than it will occur.
+        ///   probability that a given value or any value smaller than it will occur.</para>
+        ///   
+        /// <para>
+        ///   The Cauchy's CDF is defined as CDF(x) = 1/π * atan2(x-location, scale) + 0.5.
+        /// </para>
         /// </remarks>
         /// 
         public override double DistributionFunction(double x)
@@ -187,8 +323,14 @@ namespace Accord.Statistics.Distributions.Univariate
         /// </returns>
         /// 
         /// <remarks>
+        /// <para>
         ///   The Probability Density Function (PDF) describes the
-        ///   probability that a given value <c>x</c> will occur.
+        ///   probability that a given value <c>x</c> will occur.</para>
+        ///   
+        /// <para>
+        ///   The Cauchy's PDF is defined as PDF(x) = c / (1.0 + ((x-location)/scale)²) 
+        ///   where the constant c is given by c = 1.0 / (π * scale);
+        /// </para>
         /// </remarks>
         /// 
         public override double ProbabilityDensityFunction(double x)
@@ -214,6 +356,8 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   probability that a given value <c>x</c> will occur.
         /// </remarks>
         /// 
+        /// <seealso cref="ProbabilityDensityFunction"/>
+        /// 
         public override double LogProbabilityDensityFunction(double x)
         {
             double z = (x - location) / scale;
@@ -237,6 +381,10 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   double[][] for a univariate distribution may have a negative
         ///   impact in performance.
         /// </remarks>
+        /// 
+        /// <example>
+        ///   See <see cref="CauchyDistribution"/>.
+        /// </example>
         /// 
         public override void Fit(double[] observations, double[] weights, IFittingOptions options)
         {
@@ -264,6 +412,10 @@ namespace Accord.Statistics.Distributions.Univariate
         ///   double[][] for a univariate distribution may have a negative
         ///   impact in performance.
         /// </remarks>
+        /// 
+        /// <example>
+        ///   See <see cref="CauchyDistribution"/>.
+        /// </example>
         /// 
         public void Fit(double[] observations, double[] weights, CauchyOptions options)
         {
@@ -459,5 +611,46 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         #endregion
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public override string ToString()
+        {
+            return String.Format("Cauchy(x; x0 = {0}, γ = {1})", location, scale);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(IFormatProvider formatProvider)
+        {
+            return String.Format(formatProvider, "Cauchy(x; x0 = {0}, γ = {1})", location, scale);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return String.Format("Cauchy(x; x0 = {0}, γ = {1})",
+                location.ToString(format, formatProvider),
+                scale.ToString(format, formatProvider));
+        }
     }
 }

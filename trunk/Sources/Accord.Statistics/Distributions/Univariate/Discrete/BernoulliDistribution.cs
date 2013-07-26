@@ -24,6 +24,7 @@ namespace Accord.Statistics.Distributions.Univariate
 {
     using System;
     using Accord.Statistics.Distributions.Fitting;
+    using AForge;
 
     /// <summary>
     ///   Bernoulli probability distribution.
@@ -47,7 +48,41 @@ namespace Accord.Statistics.Distributions.Univariate
     ///       C. Bishop. “Pattern Recognition and Machine Learning”. Springer. 2006.</description></item>
     ///   </list></para>
     /// </remarks>
+    ///
+    /// <example>
+    /// <code>
+    ///    // Create a distribution with probability 0.42
+    ///    var bern = new BernoulliDistribution(mean: 0.42);
+    ///    
+    ///    // Common measures
+    ///    double mean   = bern.Mean;     // 0.42
+    ///    double median = bern.Median;   // 0.0
+    ///    double var    = bern.Variance; // 0.2436
+    ///    double mode   = bern.Mode;     // 0.0
+    ///    
+    ///    // Probability mass functions
+    ///    double pdf = bern.ProbabilityMassFunction(k: 1); // 0.42
+    ///    double lpdf = bern.LogProbabilityMassFunction(k: 0); // -0.54472717544167193
+    ///    
+    ///    // Cumulative distribution functions
+    ///    double cdf = bern.DistributionFunction(k: 0);    // 0.58
+    ///    double ccdf = bern.ComplementaryDistributionFunction(k: 0); // 0.42
+    ///    
+    ///    // Quantile functions
+    ///    int icdf0 = bern.InverseDistributionFunction(p: 0.57); // 0
+    ///    int icdf1 = bern.InverseDistributionFunction(p: 0.59); // 1
+    ///    
+    ///    // Hazard / failure rate functions
+    ///    double hf = bern.HazardFunction(x: 0); // 1.3809523809523814
+    ///    double chf = bern.CumulativeHazardFunction(x: 0); // 0.86750056770472328
+    ///    
+    ///    // String representation
+    ///    string str = bern.ToString(CultureInfo.InvariantCulture); // "Bernoulli(x; p = 0.42, q = 0.58)"
+    /// </code>
+    /// </example>
     /// 
+    /// <seealso cref="BinomialDistribution"/>
+    ///
     [Serializable]
     public class BernoulliDistribution : UnivariateDiscreteDistribution,
         IFittableDistribution<double, IFittingOptions>,
@@ -72,6 +107,10 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public BernoulliDistribution(double mean)
         {
+            if (mean < 0 || mean > 1)
+                throw new ArgumentOutOfRangeException("mean",
+                    "Mean should be between zero and one.");
+
             this.initialize(mean);
         }
 
@@ -90,6 +129,49 @@ namespace Accord.Statistics.Distributions.Univariate
         public override double Mean
         {
             get { return probability; }
+        }
+
+        /// <summary>
+        ///   Gets the median for this distribution.
+        /// </summary>
+        /// 
+        /// <value>
+        ///   The distribution's median value.
+        /// </value>
+        /// 
+        public override double Median
+        {
+            get
+            {
+                double median;
+                if (complement > probability) median = 0;
+                else if (complement < probability) median = 1;
+                else median = 0.5;
+
+                System.Diagnostics.Debug.Assert(median == base.Median);
+
+                return median;
+            }
+        }
+
+        /// <summary>
+        ///   Gets the mode for this distribution.
+        /// </summary>
+        /// 
+        /// <value>
+        ///   The distribution's mode value.
+        /// </value>
+        /// 
+        public override double Mode
+        {
+            get
+            {
+                if (complement > probability)
+                    return 0;
+                if (complement < probability)
+                    return 1;
+                return 0; // TODO: should return both 0 and 1
+            }
         }
 
         /// <summary>
@@ -120,6 +202,20 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         /// <summary>
+        ///   Gets the support interval for this distribution.
+        /// </summary>
+        /// 
+        /// <value>
+        ///   A <see cref="AForge.DoubleRange" /> containing
+        ///   the support interval for this distribution.
+        /// </value>
+        /// 
+        public override DoubleRange Support
+        {
+            get { return new DoubleRange(0, 1); }
+        }
+
+        /// <summary>
         ///   Gets the cumulative distribution function (cdf) for
         ///   this distribution evaluated at point <c>k</c>.
         /// </summary>
@@ -136,6 +232,45 @@ namespace Accord.Statistics.Distributions.Univariate
             if (k < 0) return 0;
             if (k >= 1) return 1;
             return complement;
+        }
+
+        /// <summary>
+        ///   Gets the inverse of the cumulative distribution function (icdf) for
+        ///   this distribution evaluated at probability <c>p</c>. This function
+        ///   is also known as the Quantile function.
+        /// </summary>
+        /// 
+        /// <param name="p">A probability value between 0 and 1.</param>
+        /// 
+        /// <returns>
+        ///   A sample which could original the given probability
+        ///   value when applied in the <see cref="DistributionFunction"/>.
+        /// </returns>
+        /// 
+        public override int InverseDistributionFunction(double p)
+        {
+            return (p > this.complement) ? 1 : 0;
+        }
+
+        /// <summary>
+        ///   Gets P(X &gt; k) the complementary cumulative distribution function
+        ///   (ccdf) for this distribution evaluated at point <c>k</c>.
+        ///   This function is also known as the Survival function.
+        /// </summary>
+        /// 
+        /// <param name="k">A single point in the distribution range.</param>
+        /// 
+        /// <remarks>
+        ///   The Complementary Cumulative Distribution Function (CCDF) is
+        ///   the complement of the Cumulative Distribution Function, or 1
+        ///   minus the CDF.
+        /// </remarks>
+        /// 
+        public override double ComplementaryDistributionFunction(int k)
+        {
+            if (k < 0) return 1;
+            if (k >= 1) return 0;
+            return probability;
         }
 
         /// <summary>
@@ -264,5 +399,47 @@ namespace Accord.Statistics.Distributions.Univariate
         }
 
         #endregion
+
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public override string ToString()
+        {
+            return String.Format("Bernoulli(x; p = {0}, q = {1})", probability, complement);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(IFormatProvider formatProvider)
+        {
+            return String.Format(formatProvider, "Bernoulli(x; p = {0}, q = {1})", probability, complement);
+        }
+
+        /// <summary>
+        ///   Returns a <see cref="System.String"/> that represents this instance.
+        /// </summary>
+        /// 
+        /// <returns>
+        ///   A <see cref="System.String"/> that represents this instance.
+        /// </returns>
+        /// 
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return String.Format("Bernoulli(x; p = {0}, q = {1})",
+                probability.ToString(format, formatProvider),
+                complement.ToString(format, formatProvider));
+        }
     }
 }
