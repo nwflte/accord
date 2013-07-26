@@ -96,16 +96,16 @@ namespace Accord.Math
         /// <summary>Log of three: log(3).</summary>
         public const double Log3 = 1.098612288668109691395;
 
-        /// <summary>Log of square root of twice number pi: log(sqrt(2*pi).</summary>
+        /// <summary>Log of square root of twice number pi: log(sqrt(2*π).</summary>
         public const double LogSqrt2PI = 0.91893853320467;
 
         /// <summary>Log of twice number pi: log(2*pi).</summary>
         public const double Log2PI = 1.837877066409345483556;
-        
-        /// <summary>Square root of twice number pi: sqrt(2*pi).</summary>
+
+        /// <summary>Square root of twice number pi: sqrt(2*π).</summary>
         public const double Sqrt2PI = 2.50662827463100050242E0;
 
-        /// <summary>Square root of half number pi: sqrt(pi/2).</summary>
+        /// <summary>Square root of half number π: sqrt(π/2).</summary>
         public const double SqrtHalfPI = 1.25331413731550025121E0;
 
         /// <summary>Square root of 2: sqrt(2).</summary>

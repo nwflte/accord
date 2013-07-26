@@ -60,6 +60,24 @@ namespace Accord.Math
     ///   </list>
     /// </remarks>
     /// 
+    /// <example>
+    /// <para>
+    ///   The following example shows the normal usages for the Normal functions:
+    /// </para>
+    /// 
+    /// <code>
+    ///   // Compute standard precision functions
+    ///   double phi  = Normal.Function(0.42);     //  0.66275727315175048
+    ///   double phic = Normal.Complemented(0.42); //  0.33724272684824952
+    ///   double inv  = Normal.Inverse(0.42);      // -0.20189347914185085
+    ///   
+    ///   // Compute at the limits
+    ///   double phi  = Normal.Function(16.6);     //  1.0
+    ///   double phic = Normal.Complemented(16.6); //  3.4845465199504055E-62
+    /// </code>
+    /// 
+    /// </example>
+    /// 
     public static class Normal
     {
 
@@ -74,6 +92,15 @@ namespace Accord.Math
         public static double Function(double value)
         {
             return 0.5 * Special.Erfc(-value / Constants.Sqrt2);
+        }
+
+        /// <summary>
+        ///   Complemented cumulative distribution function.
+        /// </summary>
+        /// 
+        public static double Complemented(double value)
+        {
+            return 0.5 * Special.Erfc(value / Constants.Sqrt2);
         }
 
         /// <summary>
@@ -240,9 +267,6 @@ namespace Accord.Math
         /// 
         public static double HighAccuracyFunction(double x)
         {
-            if (x < -8 || x > 8)
-                return 0;
-
             double sum = x;
             double term = 0;
 
@@ -304,7 +328,7 @@ namespace Accord.Math
 
             double a = R[j];
             double z = 2 * j;
-            double b = a * z - 1;
+            double b = a * z - 1.0;
 
             double h = Math.Abs(x) - z;
             double q = h * h;
@@ -325,7 +349,7 @@ namespace Accord.Math
                 sum = term + pwr * (a + h * b);
             }
 
-            sum *= Math.Exp(-0.5 * (x * x) - 0.5 * Constants.Log2PI);
+            sum *= Math.Exp(-0.5 * x * x - 0.91893853320467274178);
 
             return (x >= 0) ? sum : (1.0 - sum);
         }
