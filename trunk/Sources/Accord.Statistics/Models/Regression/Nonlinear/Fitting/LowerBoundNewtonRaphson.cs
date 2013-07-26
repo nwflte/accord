@@ -253,7 +253,7 @@ namespace Accord.Statistics.Models.Regression.Fitting
             //
             //   - http://www.lx.it.pt/~mtf/Krishnapuram_Carin_Figueiredo_Hartemink_2005.pdf
             //
-            
+
 
             // Initial definitions and memory allocations
             int N = inputs.Length;
@@ -311,12 +311,12 @@ namespace Accord.Statistics.Models.Regression.Fitting
 
                 // Compute and estimate outputs
                 this.compute(inputs[i], output);
-                
+
                 // Compute errors for the sample
                 for (int j = 0; j < errors.Length; j++)
                     errors[j] = y[j + 1] - output[j];
-               
- 
+
+
                 // Compute current gradient and Hessian
                 //   We can take advantage of the block structure of the 
                 //   Hessian matrix and gradient vector by employing the
@@ -351,8 +351,6 @@ namespace Accord.Statistics.Models.Regression.Fitting
                 // be invertible and LU will succeed. However, sometimes the hessian
                 // may be singular and a Singular Value Decomposition may be needed.
 
-                LuDecomposition lu = new LuDecomposition(lowerBound);
-
                 // The SVD is very stable, but is quite expensive, being on average
                 // about 10-15 times more expensive than LU decomposition. There are
                 // other ways to avoid a singular Hessian. For a very interesting 
@@ -366,25 +364,17 @@ namespace Accord.Statistics.Models.Regression.Fitting
                 // Moreover, the computation of the inverse is optional, as it will
                 // be used only to compute the standard errors of the regression.
 
-                if (lu.Nonsingular)
-                {
-                    // Solve using LU decomposition
-                    deltas = lu.Solve(gradient);
-                    decomposition = lu;
-                }
-                else
-                {
-                    // Hessian Matrix is singular, try pseudo-inverse solution
-                    decomposition = new SingularValueDecomposition(lowerBound);
-                    deltas = decomposition.Solve(gradient);
-                }
+
+                // Hessian Matrix is singular, try pseudo-inverse solution
+                decomposition = new SingularValueDecomposition(lowerBound);
+                deltas = decomposition.Solve(gradient);
             }
             else
             {
                 deltas = decomposition.Solve(gradient);
             }
 
-            
+
             previous = coefficients.Reshape(1);
 
             // Update coefficients using the calculated deltas
