@@ -97,14 +97,25 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Combinatorics.cs" />
-    <Compile Include="Comparers\IntegerArrayComparer.cs" />
+    <Compile Include="Comparers\ArrayComparer`1.cs" />
     <Compile Include="Comparers\ElementComparer.cs" />
-    <Compile Include="Comparers\CustomComparer.cs" />
+    <Compile Include="Comparers\CustomComparer`1.cs" />
     <Compile Include="Comparers\GeneralComparer.cs" />
     <Compile Include="Comparers\StableComparer.cs" />
     <Compile Include="Convergence\AbsoluteConvergence.cs" />
     <Compile Include="Convergence\RelativeConvergence.cs" />
     <Compile Include="Convergence\RelativeParameterConvergence.cs" />
+    <Compile Include="Decompositions\GramSchmidtOrthogonalization.cs" />
+    <Compile Include="Environments\REnvironment.cs" />
+    <Compile Include="Functions\Gabor.cs" />
+    <Compile Include="Geometry\Plane.cs" />
+    <Compile Include="Geometry\Point3.cs" />
+    <Compile Include="Kinematics\DenavitHartenbergMatrix.cs" />
+    <Compile Include="Kinematics\DenavitHartenbergModel.cs" />
+    <Compile Include="Kinematics\DenavitHartenbergNode.cs" />
+    <Compile Include="Kinematics\DenavitHartenbergParameter.cs" />
+    <Compile Include="Kinematics\DenavitHartenbergJoint.cs" />
+    <Compile Include="Optimization\BinarySearch.cs" />
     <Compile Include="Transforms\HartleyTransform.cs" />
     <Compile Include="Transforms\SineTransform.cs" />
     <Compile Include="Transforms\CosineTransform.cs" />
