@@ -25,17 +25,29 @@ namespace Accord.Math
     using System;
     using Accord.Math.Decompositions;
     using Accord.Math.Comparers;
+    using System.Collections.Generic;
 
     public static partial class Matrix
     {
 
         #region Comparison
+
+        /// <summary>
+        ///   Compares two values for equality, considering a relative acceptance threshold.
+        /// </summary>
+        /// 
+        public static bool IsRelativelyEqual(this double a, double b, double threshold)
+        {
+            return Math.Abs(a - b) <= Math.Abs(a) * threshold;
+        }
+
         /// <summary>
         ///   Compares two matrices for equality, considering an acceptance threshold.
         /// </summary>
+        /// 
         public static bool IsEqual(this double[,] objA, double[,] objB, double threshold)
         {
-            if (objA == null && objB == null) return true;
+            if (objA == objB) return true;
             if (objA == null) throw new ArgumentNullException("objA");
             if (objB == null) throw new ArgumentNullException("objB");
 
@@ -62,7 +74,7 @@ namespace Accord.Math
         /// 
         public static bool IsEqual(this float[,] objA, float[,] objB, double threshold)
         {
-            if (objA == null && objB == null) return true;
+            if (objA == objB) return true;
             if (objA == null) throw new ArgumentNullException("objA");
             if (objB == null) throw new ArgumentNullException("objB");
 
@@ -84,7 +96,7 @@ namespace Accord.Math
         /// </summary>
         public static bool IsEqual(this double[][] objA, double[][] objB, double threshold)
         {
-            if (objA == null && objB == null) return true;
+            if (objA == objB) return true;
             if (objA == null) throw new ArgumentNullException("objA");
             if (objB == null) throw new ArgumentNullException("objB");
 
@@ -106,7 +118,7 @@ namespace Accord.Math
         /// </summary>
         public static bool IsEqual(this float[][] objA, float[][] objB, double threshold)
         {
-            if (objA == null && objB == null) return true;
+            if (objA == objB) return true;
             if (objA == null) throw new ArgumentNullException("objA");
             if (objB == null) throw new ArgumentNullException("objB");
 
@@ -128,7 +140,7 @@ namespace Accord.Math
         /// </summary>
         public static bool IsEqual(this double[] objA, double[] objB, double threshold)
         {
-            if (objA == null && objB == null) return true;
+            if (objA == objB) return true;
             if (objA == null) throw new ArgumentNullException("objA");
             if (objB == null) throw new ArgumentNullException("objB");
 
@@ -147,7 +159,7 @@ namespace Accord.Math
         /// </summary>
         public static bool IsEqual(this float[] objA, float[] objB, double threshold)
         {
-            if (objA == null && objB == null) return true;
+            if (objA == objB) return true;
             if (objA == null) throw new ArgumentNullException("objA");
             if (objB == null) throw new ArgumentNullException("objB");
 
@@ -204,7 +216,7 @@ namespace Accord.Math
         /// </summary>
         public static bool IsEqual<T>(this T[][] objA, T[][] objB)
         {
-            if (objA == null && objB == null) return true;
+            if (objA == objB) return true;
             if (objA == null) throw new ArgumentNullException("objA");
             if (objB == null) throw new ArgumentNullException("objB");
 
@@ -236,7 +248,7 @@ namespace Accord.Math
         /// <summary>Compares two matrices for equality.</summary>
         public static bool IsEqual<T>(this T[,] objA, T[,] objB)
         {
-            if (objA == null && objB == null) return true;
+            if (objA == objB) return true;
             if (objA == null) throw new ArgumentNullException("objA");
             if (objB == null) throw new ArgumentNullException("objB");
 
@@ -261,7 +273,7 @@ namespace Accord.Math
         /// <summary>Compares two vectors for equality.</summary>
         public static bool IsEqual<T>(this T[] objA, params T[] objB)
         {
-            if (objA == null && objB == null) return true;
+            if (objA == objB) return true;
             if (objA == null) throw new ArgumentNullException("objA");
             if (objB == null) throw new ArgumentNullException("objB");
 
@@ -891,7 +903,7 @@ namespace Accord.Math
         public static bool IsSingular(this double[,] matrix)
         {
             if (matrix == null) throw new ArgumentNullException("matrix");
-            return !(new LuDecomposition(matrix).Nonsingular);
+            return new SingularValueDecomposition(matrix).IsSingular;
         }
 
         /// <summary>
@@ -1397,6 +1409,21 @@ namespace Accord.Math
 
             return result;
         }
+
+        /// <summary>
+        ///   Applies a function to every element of the array.
+        /// </summary>
+        public static TResult[] Apply<TData, TResult>(this IList<TData> vector, Func<TData, TResult> func)
+        {
+            if (vector == null) throw new ArgumentNullException("vector");
+
+            TResult[] result = new TResult[vector.Count];
+
+            for (int i = 0; i < vector.Count; i++)
+                result[i] = func(vector[i]);
+
+            return result;
+        }
         #endregion
 
 
@@ -1512,9 +1539,21 @@ namespace Accord.Math
         /// </summary>
         public static T[,] Reshape<T>(this T[] array, int rows, int cols)
         {
-            if (array == null) throw new ArgumentNullException("array");
-            if (rows < 0) throw new ArgumentOutOfRangeException("rows", rows, "Number of rows must be a positive integer.");
-            if (cols < 0) throw new ArgumentOutOfRangeException("cols", cols, "Number of columns must be a positive integer.");
+            if (array == null)
+                throw new ArgumentNullException("array");
+
+            if (rows < 0)
+                throw new ArgumentOutOfRangeException("rows",
+                    rows, "Number of rows must be a positive integer.");
+
+            if (cols < 0)
+                throw new ArgumentOutOfRangeException("cols",
+                cols, "Number of columns must be a positive integer.");
+
+            if (array.Length != rows * cols)
+                throw new ArgumentOutOfRangeException("array",
+                    "The length of the array should equal the product of "
+                    + "the parameter \"rows\" times parameter \"cols\".");
 
 
             T[,] result = new T[rows, cols];

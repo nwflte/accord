@@ -460,6 +460,33 @@ namespace Accord.Math
 
                 columnNames[j] = table.Columns[j].Caption;
             }
+
+            return m;
+        }
+
+        /// <summary>
+        ///   Converts a DataTable to a double[,] array.
+        /// </summary>
+        /// 
+        public static double[,] ToMatrix(this DataTable table, string[] columnNames)
+        {
+            return ToMatrix<double>(table, columnNames);
+        }
+
+        /// <summary>
+        ///   Converts a DataTable to a double[,] array.
+        /// </summary>
+        /// 
+        public static T[,] ToMatrix<T>(this DataTable table, string[] columnNames)
+        {
+            T[,] m = new T[table.Rows.Count, columnNames.Length];
+
+            for (int j = 0; j < columnNames.Length; j++)
+            {
+                for (int i = 0; i < table.Rows.Count; i++)
+                    m[i, j] = (T)System.Convert.ChangeType(table.Rows[i][columnNames[j]], typeof(T));
+            }
+
             return m;
         }
 

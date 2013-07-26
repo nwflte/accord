@@ -23,8 +23,6 @@
 namespace Accord.Math
 {
     using System;
-    using Accord.Math.Formats;
-
 
     public static partial class Matrix
     {
@@ -37,6 +35,13 @@ namespace Accord.Math
         /// <returns>
         ///   A <see cref="System.String"/> that represents this instance.
         /// </returns>
+        /// 
+        /// <example>
+        ///   Please see <see cref="CSharpMatrixFormatProvider"/>,
+        ///   <see cref="CSharpJaggedMatrixFormatProvider"/>, <see cref="CSharpArrayFormatProvider"/>,
+        ///   <see cref="OctaveMatrixFormatProvider"/>, or <see cref="OctaveArrayFormatProvider"/> 
+        ///   for more details.
+        /// </example>
         /// 
         public static string ToString(this double[,] matrix)
         {
@@ -63,6 +68,14 @@ namespace Accord.Math
         /// <returns>
         ///   A <see cref="System.String"/> that represents this instance.
         /// </returns>
+        /// 
+        /// <example>
+        ///   Please see <see cref="CSharpMatrixFormatProvider"/>,
+        ///   <see cref="CSharpJaggedMatrixFormatProvider"/>, <see cref="CSharpArrayFormatProvider"/>,
+        ///   <see cref="OctaveMatrixFormatProvider"/>, or <see cref="OctaveArrayFormatProvider"/> 
+        ///   for more details.
+        /// </example>
+        /// 
         /// 
         public static string ToString(this double[,] matrix, bool multiline, IMatrixFormatProvider provider)
         {
@@ -92,6 +105,14 @@ namespace Accord.Math
         ///   A <see cref="System.String"/> that represents this instance.
         /// </returns>
         /// 
+        /// <example>
+        ///   Please see <see cref="CSharpMatrixFormatProvider"/>,
+        ///   <see cref="CSharpJaggedMatrixFormatProvider"/>, <see cref="CSharpArrayFormatProvider"/>,
+        ///   <see cref="OctaveMatrixFormatProvider"/>, or <see cref="OctaveArrayFormatProvider"/> 
+        ///   for more details.
+        /// </example>
+        /// 
+        /// 
         public static string ToString(this double[,] matrix, IMatrixFormatProvider provider)
         {
             return ToString(matrix, null, provider);
@@ -100,6 +121,7 @@ namespace Accord.Math
         /// <summary>
         ///   Returns a <see cref="System.String"/> that represents a matrix.
         /// </summary>
+        /// 
         /// <param name="matrix">The matrix.</param>
         /// <param name="format">
         ///   The format to use when creating the resulting string.
@@ -109,9 +131,18 @@ namespace Accord.Math
         ///   when creating the resulting string. Default is to use
         ///   <see cref="DefaultMatrixFormatProvider.CurrentCulture"/>.
         /// </param>
+        /// 
         /// <returns>
         ///   A <see cref="System.String"/> that represents this instance.
         /// </returns>
+        /// 
+        /// <example>
+        ///   Please see <see cref="CSharpMatrixFormatProvider"/>,
+        ///   <see cref="CSharpJaggedMatrixFormatProvider"/>, <see cref="CSharpArrayFormatProvider"/>,
+        ///   <see cref="OctaveMatrixFormatProvider"/>, or <see cref="OctaveArrayFormatProvider"/> 
+        ///   for more details.
+        /// </example>
+        /// 
         /// 
         public static string ToString(this double[,] matrix, string format, IMatrixFormatProvider provider)
         {
@@ -132,6 +163,14 @@ namespace Accord.Math
         ///   A <see cref="System.String"/> that represents this instance.
         /// </returns>
         /// 
+        /// <example>
+        ///   Please see <see cref="CSharpMatrixFormatProvider"/>,
+        ///   <see cref="CSharpJaggedMatrixFormatProvider"/>, <see cref="CSharpArrayFormatProvider"/>,
+        ///   <see cref="OctaveMatrixFormatProvider"/>, or <see cref="OctaveArrayFormatProvider"/> 
+        ///   for more details.
+        /// </example>
+        /// 
+        /// 
         public static string ToString(this double[,] matrix, string format)
         {
             return MatrixFormatter.Format(format, matrix, DefaultMatrixFormatProvider.CurrentCulture);
@@ -147,6 +186,14 @@ namespace Accord.Math
         ///   A <see cref="System.String"/> that represents this instance.
         /// </returns>
         /// 
+        /// <example>
+        ///   Please see <see cref="CSharpMatrixFormatProvider"/>,
+        ///   <see cref="CSharpJaggedMatrixFormatProvider"/>, <see cref="CSharpArrayFormatProvider"/>,
+        ///   <see cref="OctaveMatrixFormatProvider"/>, or <see cref="OctaveArrayFormatProvider"/> 
+        ///   for more details.
+        /// </example>
+        /// 
+        /// 
         public static string ToString(this double[][] matrix)
         {
             return ToString(matrix, DefaultMatrixFormatProvider.CurrentCulture);
@@ -155,15 +202,25 @@ namespace Accord.Math
         /// <summary>
         ///   Returns a <see cref="System.String"/> that represents a matrix.
         /// </summary>
+        /// 
         /// <param name="matrix">The matrix.</param>
         /// <param name="provider">
         ///   The <see cref="IMatrixFormatProvider"/> to be used
         ///   when creating the resulting string. Default is to use
         ///   <see cref="DefaultMatrixFormatProvider.CurrentCulture"/>.
         /// </param>
+        /// 
         /// <returns>
         ///   A <see cref="System.String"/> that represents this instance.
         /// </returns>
+        /// 
+        /// <example>
+        ///   Please see <see cref="CSharpMatrixFormatProvider"/>,
+        ///   <see cref="CSharpJaggedMatrixFormatProvider"/>, <see cref="CSharpArrayFormatProvider"/>,
+        ///   <see cref="OctaveMatrixFormatProvider"/>, or <see cref="OctaveArrayFormatProvider"/> 
+        ///   for more details.
+        /// </example>
+        /// 
         /// 
         public static string ToString(this double[][] matrix, IMatrixFormatProvider provider)
         {
@@ -177,14 +234,23 @@ namespace Accord.Math
         /// <param name="format">
         ///   The format to use when creating the resulting string.
         /// </param>
+        /// 
         /// <param name="provider">
         ///   The <see cref="IMatrixFormatProvider"/> to be used
         ///   when creating the resulting string. Default is to use
         ///   <see cref="DefaultMatrixFormatProvider.CurrentCulture"/>.
         /// </param>
+        /// 
         /// <returns>
         ///   A <see cref="System.String"/> that represents this instance.
         /// </returns>
+        /// 
+        /// <example>
+        ///   Please see <see cref="CSharpMatrixFormatProvider"/>,
+        ///   <see cref="CSharpJaggedMatrixFormatProvider"/>, <see cref="CSharpArrayFormatProvider"/>,
+        ///   <see cref="OctaveMatrixFormatProvider"/>, or <see cref="OctaveArrayFormatProvider"/> 
+        ///   for more details.
+        /// </example>
         /// 
         public static string ToString(this double[][] matrix, string format, IMatrixFormatProvider provider)
         {
@@ -205,6 +271,13 @@ namespace Accord.Math
         ///   A <see cref="System.String"/> that represents this instance.
         /// </returns>
         /// 
+        /// <example>
+        ///   Please see <see cref="CSharpMatrixFormatProvider"/>,
+        ///   <see cref="CSharpJaggedMatrixFormatProvider"/>, <see cref="CSharpArrayFormatProvider"/>,
+        ///   <see cref="OctaveMatrixFormatProvider"/>, or <see cref="OctaveArrayFormatProvider"/> 
+        ///   for more details.
+        /// </example>
+        /// 
         public static string ToString(this double[][] matrix, string format)
         {
             return MatrixFormatter.Format(format, matrix, DefaultMatrixFormatProvider.CurrentCulture);
@@ -219,6 +292,12 @@ namespace Accord.Math
         /// <returns>
         ///   A <see cref="System.String"/> that represents this instance.
         /// </returns>
+        /// 
+        /// <example>
+        ///   Please see <see cref="CSharpMatrixFormatProvider"/>,
+        ///   <see cref="OctaveArrayFormatProvider"/> or <see cref="DefaultArrayFormatProvider"/>
+        ///   for examples and more details.
+        /// </example>
         /// 
         public static string ToString(this double[] array)
         {
@@ -240,6 +319,12 @@ namespace Accord.Math
         /// <returns>
         ///   A <see cref="System.String"/> that represents this instance.
         /// </returns>
+        /// 
+        /// <example>
+        ///   Please see <see cref="CSharpMatrixFormatProvider"/>,
+        ///   <see cref="OctaveArrayFormatProvider"/> or <see cref="DefaultArrayFormatProvider"/>
+        ///   for examples and more details.
+        /// </example>
         /// 
         public static string ToString(this double[] array, IMatrixFormatProvider provider)
         {
@@ -266,6 +351,12 @@ namespace Accord.Math
         ///   A <see cref="System.String"/> that represents this instance.
         /// </returns>
         /// 
+        /// <example>
+        ///   Please see <see cref="CSharpMatrixFormatProvider"/>,
+        ///   <see cref="OctaveArrayFormatProvider"/> or <see cref="DefaultArrayFormatProvider"/>
+        ///   for examples and more details.
+        /// </example>
+        /// 
         public static string ToString(this double[] matrix, string format, IMatrixFormatProvider provider)
         {
             return MatrixFormatter.Format(format, matrix, provider);
@@ -284,6 +375,12 @@ namespace Accord.Math
         /// <returns>
         ///   A <see cref="System.String"/> that represents this instance.
         /// </returns>
+        /// 
+        /// <example>
+        ///   Please see <see cref="CSharpMatrixFormatProvider"/>,
+        ///   <see cref="OctaveArrayFormatProvider"/> or <see cref="DefaultArrayFormatProvider"/>
+        ///   for examples and more details.
+        /// </example>
         /// 
         public static string ToString(this double[] array, string format)
         {
