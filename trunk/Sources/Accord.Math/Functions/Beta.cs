@@ -48,14 +48,44 @@ namespace Accord.Math
     /// <summary>
     ///   Beta functions.
     /// </summary>
-    ///  
+    /// 
     /// <remarks>
+    /// <para>
+    ///   This class offers implementations for the many Beta functions,
+    ///   such as the <see cref="Function">Beta function itself</see>, 
+    ///   <see cref="Log">its logarithm</see>, the <see cref="Incomplete"/>
+    ///   incomplete regularized functions and others</para>
+    ///   
+    /// <para>
+    ///   The beta function was studied by Euler and Legendre and was given
+    ///   its name by Jacques Binet; its symbol Β is a Greek capital β rather
+    ///   than the similar Latin capital B.</para>
+    ///   
+    /// <para>
     ///   References:
     ///   <list type="bullet">
     ///     <item><description>
     ///       Cephes Math Library, http://www.netlib.org/cephes/ </description></item>
-    ///   </list>
+    ///     <item><description>
+    ///       Wikipedia contributors, "Beta function,". Wikipedia, The Free 
+    ///       Encyclopedia. Available at: http://en.wikipedia.org/wiki/Beta_function 
+    ///       </description></item>
+    ///   </list></para>
     /// </remarks>
+    /// 
+    /// <example>
+    /// <code>
+    ///   Beta.Function(4, 0.42);       // 1.2155480852832423
+    ///   Beta.Log(4, 15.2);            // -9.46087817876467
+    ///   Beta.Incbcf(4, 2, 4.2);       // -0.23046874999999992
+    ///   Beta.Incbd(4, 2, 4.2);        // 0.7375
+    ///   Beta.PowerSeries(4, 2, 4.2);  // -3671.801280000001
+    ///   
+    ///   Beta.Incomplete(a: 5, b: 4, x: 0.5);   // 0.36328125
+    ///   Beta.IncompleteInverse(0.5, 0.6, 0.1); // 0.019145979066925722
+    ///   Beta.Multinomial(0.42, 0.5, 5.2 );     // 0.82641912952987062
+    /// </code>
+    /// </example>
     /// 
     public static class Beta
     {
@@ -63,6 +93,10 @@ namespace Accord.Math
         /// <summary>
         ///   Beta function as gamma(a) * gamma(b) / gamma(a+b).
         /// </summary>
+        /// 
+        /// <example>
+        ///   Please see <see cref="Beta"/>
+        /// </example>
         /// 
         public static double Function(double a, double b)
         {
@@ -73,6 +107,10 @@ namespace Accord.Math
         ///   Natural logarithm of the Beta function.
         /// </summary>
         /// 
+        /// <example>
+        ///   Please see <see cref="Beta"/>
+        /// </example>
+        /// 
         public static double Log(double a, double b)
         {
             return Gamma.Log(a) + Gamma.Log(b) - Gamma.Log(a + b);
@@ -81,6 +119,10 @@ namespace Accord.Math
         /// <summary>
         ///   Incomplete (regularized) Beta function Ix(a, b).
         /// </summary>
+        /// 
+        /// <example>
+        ///   Please see <see cref="Beta"/>
+        /// </example>
         /// 
         public static double Incomplete(double a, double b, double x)
         {
@@ -175,6 +217,10 @@ namespace Accord.Math
         ///   Continued fraction expansion #1 for incomplete beta integral.
         /// </summary>
         /// 
+        /// <example>
+        ///   Please see <see cref="Beta"/>
+        /// </example>
+        /// 
         public static double Incbcf(double a, double b, double x)
         {
             double xk, pk, pkm1, pkm2, qk, qkm1, qkm2;
@@ -262,6 +308,10 @@ namespace Accord.Math
         /// <summary>
         ///   Continued fraction expansion #2 for incomplete beta integral.
         /// </summary>
+        /// 
+        /// <example>
+        ///   Please see <see cref="Beta"/>
+        /// </example>
         /// 
         public static double Incbd(double a, double b, double x)
         {
@@ -351,6 +401,10 @@ namespace Accord.Math
         /// <summary>
         ///   Inverse of incomplete beta integral.
         /// </summary>
+        /// 
+        /// <example>
+        ///   Please see <see cref="Beta"/>
+        /// </example>
         /// 
         public static double IncompleteInverse(double aa, double bb, double yy0)
         {
@@ -527,7 +581,7 @@ namespace Accord.Math
             for (i = 0; i < 10; i++)
             {
                 /* Compute the function at this point. */
-                if (i != 0) 
+                if (i != 0)
                     y = Incomplete(a, b, x0);
 
                 /* Compute the derivative of the function at this point. */
@@ -572,6 +626,10 @@ namespace Accord.Math
         ///   is small and x not too close to 1.
         /// </summary>
         /// 
+        /// <example>
+        ///   Please see <see cref="Beta"/>
+        /// </example>
+        /// 
         public static double PowerSeries(double a, double b, double x)
         {
             double s, t, u, v, n, t1, z, ai;
@@ -614,7 +672,11 @@ namespace Accord.Math
         ///   Multinomial Beta function.
         /// </summary>
         /// 
-        public static double Multinomial(double[] x)
+        /// <example>
+        ///   Please see <see cref="Beta"/>
+        /// </example>
+        /// 
+        public static double Multinomial(params double[] x)
         {
             double sum = 0;
             double prd = 1;
