@@ -156,6 +156,19 @@ namespace Accord.Math.Optimization
         }
 
         /// <summary>
+        ///   Attempts to find a value in the interval [a;b] 
+        /// </summary>
+        /// 
+        /// <returns>The location of the zero value in the given interval.</returns>
+        /// 
+        public double Find(double value)
+        {
+            Solution = Find(Function, value, LowerBound, UpperBound, Tolerance);
+            Value = Function(Solution);
+            return Solution;
+        }
+
+        /// <summary>
         ///   Finds the minimum of the function in the interval [a;b]
         /// </summary>
         /// 
@@ -186,14 +199,15 @@ namespace Accord.Math.Optimization
         ///   Finds the minimum of a function in the interval [a;b]
         /// </summary>
         /// 
-        /// <param name="f">The function to be minimized.</param>
+        /// <param name="function">The function to be minimized.</param>
         /// <param name="lowerBound">Start of search region.</param>
         /// <param name="upperBound">End of search region.</param>
         /// <param name="tol">The tolerance for determining the solution.</param>
         /// 
         /// <returns>The location of the minimum of the function in the given interval.</returns>
         /// 
-        public static double Minimize(Func<double, double> f, double lowerBound, double upperBound, double tol = 1e-6)
+        public static double Minimize(Func<double, double> function, 
+            double lowerBound, double upperBound, double tol = 1e-6)
         {
             double x, v, w; // Abscissae
             double fx;      // f(x)             
@@ -211,13 +225,13 @@ namespace Accord.Math.Optimization
                     "Tolerance must be positive.");
 
             // First step - always gold section
-            v = lowerBound + r * (upperBound - lowerBound); fv = f(v);
+            v = lowerBound + r * (upperBound - lowerBound); fv = function(v);
             x = v; fx = fv;
             w = v; fw = fv;
 
 
             // Main loop
-            for (; ; )
+            while (true)
             {
 
                 double range = upperBound - lowerBound; // Range over which the minimum
@@ -273,7 +287,7 @@ namespace Accord.Math.Optimization
                 {
 
                     double t = x + new_step;     // Tentative point for the min
-                    double ft = f(t);            // recompute f(tentative point)
+                    double ft = function(t);     // recompute f(tentative point)
 
                     if (Double.IsNaN(ft) || Double.IsInfinity(ft))
                         throw new ConvergenceException("Function evaluation didn't return a finite number.");
@@ -320,7 +334,8 @@ namespace Accord.Math.Optimization
         /// 
         /// <returns>The location of the maximum of the function in the given interval.</returns>
         /// 
-        public static double Maximize(Func<double, double> function, double lowerBound, double upperBound, double tol = 1e-6)
+        public static double Maximize(Func<double, double> function, 
+            double lowerBound, double upperBound, double tol = 1e-6)
         {
             return Minimize(x => -function(x), lowerBound, upperBound, tol);
         }
@@ -336,7 +351,8 @@ namespace Accord.Math.Optimization
         /// 
         /// <returns>The location of the zero value in the given interval.</returns>
         /// 
-        public static double FindRoot(Func<double, double> function, double lowerBound, double upperBound, double tol = 1e-6)
+        public static double FindRoot(Func<double, double> function,
+            double lowerBound, double upperBound, double tol = 1e-6)
         {
             double c;               // Abscissae
             double fa;              // f(a)  
@@ -348,7 +364,7 @@ namespace Accord.Math.Optimization
             c = lowerBound; fc = fa;
 
             // Main loop
-            for (; ; )
+            while (true)
             {
                 double prev_step = upperBound - lowerBound;
 
@@ -440,6 +456,22 @@ namespace Accord.Math.Optimization
             }
         }
 
-
+        /// <summary>
+        ///   Finds a value of a function in the interval [a;b]
+        /// </summary>
+        /// 
+        /// <param name="function">The function to have its root computed.</param>
+        /// <param name="lowerBound">Start of search region.</param>
+        /// <param name="upperBound">End of search region.</param>
+        /// <param name="tol">The tolerance for determining the solution.</param>
+        /// <param name="value">The value to be looked for in the function.</param>
+        /// 
+        /// <returns>The location of the zero value in the given interval.</returns>
+        /// 
+        public static double Find(Func<double, double> function, double value,
+            double lowerBound, double upperBound, double tol = 1e-6)
+        {
+            return FindRoot((x) => function(x) - value, lowerBound, upperBound, tol);
+        }
     }
 }
