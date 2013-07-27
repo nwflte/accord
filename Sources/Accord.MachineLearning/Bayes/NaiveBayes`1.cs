@@ -26,6 +26,8 @@ namespace Accord.MachineLearning.Bayes
     using Accord.Math;
     using Accord.Statistics.Distributions;
     using Accord.Statistics.Distributions.Fitting;
+    using System.IO;
+    using System.Runtime.Serialization.Formatters.Binary;
 
     /// <summary>
     ///   Naïve Bayes Classifier for arbitrary distributions.
@@ -461,6 +463,34 @@ namespace Accord.MachineLearning.Bayes
                 p += probabilities[c, i].LogProbabilityFunction(input[i]);
 
             return p;
+        }
+
+
+
+        /// <summary>
+        ///   Saves the Naïve Bayes model to a stream.
+        /// </summary>
+        /// 
+        /// <param name="stream">The stream to which the Naïve Bayes model is to be serialized.</param>
+        /// 
+        public virtual void Save(Stream stream)
+        {
+            BinaryFormatter b = new BinaryFormatter();
+            b.Serialize(stream, this);
+        }
+
+        /// <summary>
+        ///   Saves the Naïve Bayes model to a stream.
+        /// </summary>
+        /// 
+        /// <param name="path">The path to the file to which the Naïve Bayes model is to be serialized.</param>
+        /// 
+        public void Save(string path)
+        {
+            using (FileStream fs = new FileStream(path, FileMode.Create))
+            {
+                Save(fs);
+            }
         }
     }
 }
