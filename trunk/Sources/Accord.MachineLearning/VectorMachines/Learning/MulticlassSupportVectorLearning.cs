@@ -301,6 +301,16 @@ namespace Accord.MachineLearning.VectorMachines.Learning
         /// 
         public double Run(bool computeError, CancellationToken token)
         {
+            if (configure == null)
+            {
+                var excp = new InvalidOperationException("Please specify the algorithm configuration function "
+                    + "by setting the Algorithm property for this class. Examples are available in the "
+                    + "documentation for Multiclass Support Vector Learning class (given in the help link).");
+                excp.HelpLink = "http://accord.googlecode.com/svn/docs/html/T_Accord_MachineLearning_VectorMachines_MulticlassSupportVectorMachine.htm";
+                throw excp;
+            }
+
+            
             int classes = msvm.Classes;
             int total = (classes * (classes - 1)) / 2;
             int progress = 0;

@@ -109,6 +109,53 @@ namespace Accord.MachineLearning
     ///   // same cluster (thus having the same label). The same should
     ///   // happen to the next four observations and to the last three.
     ///   </code>
+    ///   
+    /// <para>
+    ///   The following example demonstrates how to use the Mean Shift algorithm
+    ///   for color clustering. It is the same code which can be found in the
+    ///   <a href="">color clustering sample application</a>.</para>
+    ///   
+    /// <code>
+    ///
+    ///  int k = 5; 
+    ///  
+    ///  // Load a test image (shown below)
+    ///  Bitmap image = ...
+    ///  
+    ///  // Create conversors
+    ///  ImageToArray imageToArray = new ImageToArray(min: -1, max: +1);
+    ///  ArrayToImage arrayToImage = new ArrayToImage(image.Width, image.Height, min: -1, max: +1);
+    ///  
+    ///  // Transform the image into an array of pixel values
+    ///  double[][] pixels; imageToArray.Convert(image, out pixels);
+    ///  
+    ///  
+    ///  // Create a K-Means algorithm using given k and a
+    ///  //  square euclidean distance as distance metric.
+    ///  KMeans kmeans = new KMeans(k, Distance.SquareEuclidean);
+    ///  
+    ///  // Compute the K-Means algorithm until the difference in
+    ///  //  cluster centroids between two iterations is below 0.05
+    ///  int[] idx = kmeans.Compute(pixels, 0.05);
+    ///  
+    ///  
+    ///  // Replace every pixel with its corresponding centroid
+    ///  pixels.ApplyInPlace((x, i) => kmeans.Clusters.Centroids[idx[i]]);
+    ///  
+    ///  // Retrieve the resulting image in a picture box
+    ///  Bitmap result; arrayToImage.Convert(pixels, out result);
+    /// </code>
+    /// 
+    /// <para>
+    ///   The original image is shown below:</para>
+    /// 
+    ///   <img src="..\images\kmeans-start.png" />
+    ///   
+    /// <para>
+    ///   The resulting image will be:</para>
+    /// 
+    ///   <img src="..\images\kmeans-end.png" />
+    /// 
     /// </example>
     /// 
     /// <seealso cref="KModes{T}"/>
@@ -296,7 +343,7 @@ namespace Accord.MachineLearning
             int rows = data.Length;
             int cols = data[0].Length;
 
-            
+
             // Perform a random initialization of the clusters
             // if the algorithm has not been initialized before.
             if (this.Clusters.Centroids[0] == null)
