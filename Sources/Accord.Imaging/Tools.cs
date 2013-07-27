@@ -53,6 +53,8 @@ namespace Accord.Imaging
     using Accord.Math;
     using Accord.Math.Decompositions;
     using AForge.Imaging;
+    using Accord.Math.Geometry;
+    using AForge.Math;
 
     /// <summary>
     ///   Static tool functions for imaging.
@@ -529,6 +531,7 @@ namespace Accord.Imaging
         /// <summary>
         ///   Detects if three points are collinear.
         /// </summary>
+        /// 
         public static bool Collinear(PointF pt1, PointF pt2, PointF pt3)
         {
             return Math.Abs(
@@ -540,6 +543,7 @@ namespace Accord.Imaging
         /// <summary>
         ///   Detects if three points are collinear.
         /// </summary>
+        /// 
         public static bool Collinear(PointH pt1, PointH pt2, PointH pt3)
         {
             return Math.Abs(
@@ -547,6 +551,8 @@ namespace Accord.Imaging
              (pt1.W * pt2.X - pt1.X * pt2.W) * pt3.Y +
              (pt1.X * pt2.Y - pt1.Y * pt2.X) * pt3.W) < Constants.SingleEpsilon;
         }
+
+       
         #endregion
 
 

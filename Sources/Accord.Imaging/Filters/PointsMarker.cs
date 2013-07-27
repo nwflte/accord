@@ -72,6 +72,7 @@ namespace Accord.Imaging.Filters
         /// <summary>
         ///   Format translations dictionary.
         /// </summary>
+        /// 
         public override Dictionary<PixelFormat, PixelFormat> FormatTranslations
         {
             get { return formatTranslations; }
@@ -80,6 +81,7 @@ namespace Accord.Imaging.Filters
         /// <summary>
         ///   Color used to mark corners.
         /// </summary>
+        /// 
         public Color MarkerColor
         {
             get { return markerColor; }
@@ -89,6 +91,7 @@ namespace Accord.Imaging.Filters
         /// <summary>
         ///   Gets or sets the set of points to mark.
         /// </summary>
+        /// 
         public IEnumerable<IntPoint> Points
         {
             get { return points; }
@@ -98,6 +101,7 @@ namespace Accord.Imaging.Filters
         /// <summary>
         ///   Gets or sets the width of the points to be drawn.
         /// </summary>
+        /// 
         public int Width
         {
             get { return width; }

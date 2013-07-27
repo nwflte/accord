@@ -87,6 +87,7 @@ namespace Accord.Imaging
 
         private PointF[] pointSet1;
         private PointF[] pointSet2;
+        double[] d2;
 
 
         /// <summary>
@@ -199,6 +200,7 @@ namespace Accord.Imaging
             MatrixH T1, T2;
             this.pointSet1 = Tools.Normalize(points1, out T1);
             this.pointSet2 = Tools.Normalize(points2, out T2);
+            d2 = new double[points1.Length];
 
 
             // Compute RANSAC and find the inlier points
@@ -238,15 +240,12 @@ namespace Accord.Imaging
         /// 
         private int[] distance(MatrixH H, double t)
         {
-            int n = pointSet1.Length;
-
             // Compute the projections (both directions)
             PointF[] p1 = H.TransformPoints(pointSet1);
             PointF[] p2 = H.Inverse().TransformPoints(pointSet2);
 
             // Compute the distances
-            double[] d2 = new double[n];
-            for (int i = 0; i < n; i++)
+            for (int i = 0; i < pointSet1.Length; i++)
             {
                 // Compute the distance as
                 float ax = pointSet1[i].X - p2[i].X;
