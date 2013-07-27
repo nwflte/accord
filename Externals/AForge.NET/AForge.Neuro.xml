@@ -174,6 +174,16 @@
             </remarks>
             
         </member>
+        <member name="M:AForge.Neuro.SigmoidFunction.Clone">
+            <summary>
+            Creates a new object that is a copy of the current instance.
+            </summary>
+            
+            <returns>
+            A new object that is a copy of this instance.
+            </returns>
+            
+        </member>
         <member name="P:AForge.Neuro.SigmoidFunction.Alpha">
              <summary>
              Sigmoid's alpha value.
@@ -366,6 +376,16 @@
              so they can save the amount of calculations using this method to calculate derivative.</note></para>
              </remarks>
              
+        </member>
+        <member name="M:AForge.Neuro.BipolarSigmoidFunction.Clone">
+            <summary>
+            Creates a new object that is a copy of the current instance.
+            </summary>
+            
+            <returns>
+            A new object that is a copy of this instance.
+            </returns>
+            
         </member>
         <member name="P:AForge.Neuro.BipolarSigmoidFunction.Alpha">
              <summary>
@@ -802,6 +822,16 @@
             
             <remarks><para><note>The method is not supported, because it is not possible to
             calculate derivative of the function.</note></para></remarks>
+            
+        </member>
+        <member name="M:AForge.Neuro.ThresholdFunction.Clone">
+            <summary>
+            Creates a new object that is a copy of the current instance.
+            </summary>
+            
+            <returns>
+            A new object that is a copy of this instance.
+            </returns>
             
         </member>
         <member name="T:AForge.Neuro.Network">
