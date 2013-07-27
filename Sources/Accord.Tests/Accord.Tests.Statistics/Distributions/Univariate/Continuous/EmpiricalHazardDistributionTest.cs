@@ -1,4 +1,25 @@
-﻿
+﻿// Accord Unit Tests
+// The Accord.NET Framework
+// http://accord.googlecode.com
+//
+// Copyright © César Souza, 2009-2013
+// cesarsouza at gmail.com
+//
+//    This library is free software; you can redistribute it and/or
+//    modify it under the terms of the GNU Lesser General Public
+//    License as published by the Free Software Foundation; either
+//    version 2.1 of the License, or (at your option) any later version.
+//
+//    This library is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+//    Lesser General Public License for more details.
+//
+//    You should have received a copy of the GNU Lesser General Public
+//    License along with this library; if not, write to the Free Software
+//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+//
+
 namespace Accord.Tests.Statistics
 {
     using Accord.Statistics.Distributions.Univariate;
@@ -54,6 +75,41 @@ namespace Accord.Tests.Statistics
         //
         #endregion
 
+        [TestMethod()]
+        public void EmpiricalHazardConstructorTest3()
+        {
+            double[] times = { 11, 10, 9, 8, 6, 5, 4, 2 };
+            double[] values = { 0.22, 0.67, 1.00, 0.18, 1.00, 1.00, 1.00, 0.55 };
+            
+
+            EmpiricalHazardDistribution distribution = new EmpiricalHazardDistribution(times, values);
+
+
+            double mean = distribution.Mean; // 0.93696461879063664
+            double median = distribution.Median; // 3.9999999151458066
+            double var = distribution.Variance; // 2.0441627748096289
+            double chf = distribution.CumulativeHazardFunction(x: 4.2); // 1.55
+            double cdf = distribution.DistributionFunction(x: 4.2); // 0.7877520261732569
+            double pdf = distribution.ProbabilityDensityFunction(x: 4.2); // 0.046694554241883471
+            double lpdf = distribution.LogProbabilityDensityFunction(x: 4.2); // -3.0641277326297756
+            double hf = distribution.HazardFunction(x: 4.2); // 0.22
+            double ccdf = distribution.ComplementaryDistributionFunction(x: 4.2); // 0.21224797382674304
+            double icdf = distribution.InverseDistributionFunction(p: cdf); // 4.3483975243778978
+
+            string str = distribution.ToString(); // H(x; v, t)
+
+            Assert.AreEqual(0.93696461879063664, mean);
+            Assert.AreEqual(3.9999999151458066, median, 1e-6);
+            Assert.AreEqual(2.0441627748096289, var);
+            Assert.AreEqual(1.55, chf);
+            Assert.AreEqual(0.7877520261732569, cdf);
+            Assert.AreEqual(0.046694554241883471, pdf);
+            Assert.AreEqual(-3.0641277326297756, lpdf);
+            Assert.AreEqual(0.22, hf);
+            Assert.AreEqual(0.21224797382674304, ccdf);
+            Assert.AreEqual(4.3483975243778978, icdf, 1e-8);
+            Assert.AreEqual("H(x; v, t)", str);
+        }
 
         [TestMethod()]
         public void DistributionFunctionTest()
@@ -107,6 +163,28 @@ namespace Accord.Tests.Statistics
             }
         }
 
+        [TestMethod()]
+        public void MedianTest()
+        {
+            double[] values = 
+            {
+               0.0000000000000000, 0.0351683340828711, 0.0267358118285064,
+               0.0000000000000000, 0.0103643094219679, 0.0000000000000000,
+               0.0000000000000000, 0.0000000000000000, 0.0000000000000000,
+               0.000762266794052363, 0.000000000000000
+            };
+
+            double[] times =
+            {
+                11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1
+            };
+
+
+            EmpiricalHazardDistribution target =
+                new EmpiricalHazardDistribution(times, values);
+
+            Assert.AreEqual(target.Median, target.InverseDistributionFunction(0.5));
+        }
 
         [TestMethod()]
         public void DistributionFunctionTest2()

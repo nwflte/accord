@@ -27,6 +27,7 @@ namespace Accord.Tests.Statistics
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
     using Accord.Statistics.Distributions.Multivariate;
+    using System.Globalization;
 
     [TestClass()]
     public class NormalDistributionTest
@@ -77,6 +78,40 @@ namespace Accord.Tests.Statistics
         //
         #endregion
 
+
+        [TestMethod()]
+        public void ConstructorTest5()
+        {
+            var normal = new NormalDistribution(mean: 4, stdDev: 4.2);
+
+            double mean = normal.Mean;     // 4.0
+            double median = normal.Median; // 4.0
+            double var = normal.Variance;  // 17.64
+
+            double cdf = normal.DistributionFunction(x: 1.4); // 0.26794249453351904
+            double pdf = normal.ProbabilityDensityFunction(x: 1.4); // 0.078423391448155175
+            double lpdf = normal.LogProbabilityDensityFunction(x: 1.4); // -2.5456330358182586
+
+            double ccdf = normal.ComplementaryDistributionFunction(x: 1.4); // 0.732057505466481
+            double icdf = normal.InverseDistributionFunction(p: cdf); // 1.4
+
+            double hf = normal.HazardFunction(x: 1.4); // 0.10712736480747137
+            double chf = normal.CumulativeHazardFunction(x: 1.4); // 0.31189620872601354
+
+            string str = normal.ToString(CultureInfo.InvariantCulture); // N(x; μ = 4, σ² = 17.64)
+
+            Assert.AreEqual(4.0, mean);
+            Assert.AreEqual(4.0, median);
+            Assert.AreEqual(17.64, var);
+            Assert.AreEqual(0.31189620872601354, chf);
+            Assert.AreEqual(0.26794249453351904, cdf);
+            Assert.AreEqual(0.078423391448155175, pdf);
+            Assert.AreEqual(-2.5456330358182586, lpdf);
+            Assert.AreEqual(0.10712736480747137, hf);
+            Assert.AreEqual(0.732057505466481, ccdf);
+            Assert.AreEqual(1.4, icdf);
+            Assert.AreEqual("N(x; μ = 4, σ² = 17.64)", str);
+        }
 
         [TestMethod()]
         public void FitTest()
@@ -385,6 +420,14 @@ namespace Accord.Tests.Statistics
 
             Assert.AreEqual(4, actual.Mean, 0.01);
             Assert.AreEqual(2, actual.StandardDeviation, 0.01);
+        }
+
+        [TestMethod()]
+        public void MedianTest()
+        {
+            NormalDistribution target = new NormalDistribution(0.4, 2.2);
+
+            Assert.AreEqual(target.Median, target.InverseDistributionFunction(0.5));
         }
     }
 }

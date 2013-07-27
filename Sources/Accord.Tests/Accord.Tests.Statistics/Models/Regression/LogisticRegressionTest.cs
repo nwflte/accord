@@ -145,8 +145,10 @@ namespace Accord.Tests.Statistics
             double smokeOdds = regression.GetOddsRatio(2); // 5.8584748789881331
 
 
-            Assert.AreEqual(1.0208597028836701, ageOdds);
-            Assert.AreEqual(5.8584748789881331, smokeOdds);
+            Assert.AreEqual(1.0208597028836701, ageOdds, 1e-10);
+            Assert.AreEqual(5.8584748789881331, smokeOdds,1e-10);
+            Assert.IsFalse(double.IsNaN(ageOdds));
+            Assert.IsFalse(double.IsNaN(smokeOdds));
         }
 
         [TestMethod()]

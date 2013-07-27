@@ -26,6 +26,7 @@ namespace Accord.Tests.Statistics
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Accord.Statistics;
     using Accord.Statistics.Distributions.Univariate;
+    using System.Globalization;
 
     [TestClass()]
     public class RayleighDistributionTest
@@ -82,6 +83,40 @@ namespace Accord.Tests.Statistics
             RayleighDistribution n = new RayleighDistribution(0.807602);
             Assert.AreEqual(1.0121790039242726, n.Mean);
             Assert.AreEqual(0.27993564482286737, n.Variance);
+        }
+
+        [TestMethod()]
+        public void ConstructorTest2()
+        {
+            var rayleigh = new RayleighDistribution(sigma: 0.42);
+
+            double mean = rayleigh.Mean;     // 0.52639193767251
+            double median = rayleigh.Median; // 0.49451220943852386
+            double var = rayleigh.Variance;  // 0.075711527953380237
+
+            double cdf = rayleigh.DistributionFunction(x: 1.4); // 0.99613407986052716
+            double pdf = rayleigh.ProbabilityDensityFunction(x: 1.4); // 0.030681905868831811
+            double lpdf = rayleigh.LogProbabilityDensityFunction(x: 1.4); // -3.4840821835248961
+
+            double ccdf = rayleigh.ComplementaryDistributionFunction(x: 1.4); // 0.0038659201394728449
+            double icdf = rayleigh.InverseDistributionFunction(p: cdf); // 1.4000000080222026
+
+            double hf = rayleigh.HazardFunction(x: 1.4); // 7.9365079365078612
+            double chf = rayleigh.CumulativeHazardFunction(x: 1.4); // 5.5555555555555456
+
+            string str = rayleigh.ToString(CultureInfo.InvariantCulture); // Rayleigh(x; σ = 0.42)
+
+            Assert.AreEqual(0.52639193767251, mean);
+            Assert.AreEqual(0.49451220943852386, median, 1e-8);
+            Assert.AreEqual(0.075711527953380237, var);
+            Assert.AreEqual(5.5555555555555456, chf);
+            Assert.AreEqual(0.99613407986052716, cdf);
+            Assert.AreEqual(0.030681905868831811, pdf);
+            Assert.AreEqual(-3.4840821835248961, lpdf);
+            Assert.AreEqual(7.9365079365078612, hf);
+            Assert.AreEqual(0.0038659201394728449, ccdf);
+            Assert.AreEqual(1.40000000, icdf, 1e-8);
+            Assert.AreEqual("Rayleigh(x; σ = 0.42)", str);
         }
 
         [TestMethod()]
@@ -149,6 +184,14 @@ namespace Accord.Tests.Statistics
 
             Assert.AreEqual(4, actual.Mean, 0.01);
             Assert.AreEqual(2, actual.Variance, 0.01);
+        }
+
+        [TestMethod()]
+        public void MedianTest()
+        {
+            RayleighDistribution target = new RayleighDistribution(0.52);
+
+            Assert.AreEqual(target.Median, target.InverseDistributionFunction(0.5));
         }
     }
 }

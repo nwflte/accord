@@ -26,6 +26,7 @@ namespace Accord.Tests.Statistics
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
     using Accord.Statistics.Distributions.Fitting;
+    using System.Globalization;
 
     [TestClass()]
     public class UniformDistributionTest
@@ -76,6 +77,40 @@ namespace Accord.Tests.Statistics
         //
         #endregion
 
+
+        [TestMethod()]
+        public void ConstructorTest()
+        {
+            var uniform = new UniformContinuousDistribution(a: 0.42, b: 1.1);
+
+            double mean = uniform.Mean;     // 0.76
+            double median = uniform.Median; // 0.76
+            double var = uniform.Variance;  // 0.03853333333333335
+
+            double cdf = uniform.DistributionFunction(x: 0.9); // 0.70588235294117641
+            double pdf = uniform.ProbabilityDensityFunction(x: 0.9); // 1.4705882352941173
+            double lpdf = uniform.LogProbabilityDensityFunction(x: 0.9); // 0.38566248081198445
+
+            double ccdf = uniform.ComplementaryDistributionFunction(x: 0.9); // 0.29411764705882359
+            double icdf = uniform.InverseDistributionFunction(p: cdf); // 0.9
+
+            double hf = uniform.HazardFunction(x: 0.9); // 4.9999999999999973
+            double chf = uniform.CumulativeHazardFunction(x: 0.9); // 1.2237754316221154
+
+            string str = uniform.ToString(CultureInfo.InvariantCulture); // "U(x; a = 0.42, b = 1.1)"
+
+            Assert.AreEqual(0.76, mean);
+            Assert.AreEqual(0.76, median);
+            Assert.AreEqual(0.03853333333333335, var);
+            Assert.AreEqual(1.2237754316221154, chf);
+            Assert.AreEqual(0.70588235294117641, cdf);
+            Assert.AreEqual(1.4705882352941173, pdf);
+            Assert.AreEqual(0.38566248081198445, lpdf);
+            Assert.AreEqual(4.9999999999999973, hf);
+            Assert.AreEqual(0.29411764705882359, ccdf);
+            Assert.AreEqual(0.9, icdf);
+            Assert.AreEqual("U(x; a = 0.42, b = 1.1)", str);
+        }
 
         [TestMethod()]
         public void UniformDistributionConstructorTest()
@@ -131,6 +166,16 @@ namespace Accord.Tests.Statistics
             double expected = System.Math.Log(b - a);
             double actual = target.Entropy;
             Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod()]
+        public void MedianTest()
+        {
+            double a = 1;
+            double b = 6;
+            UniformContinuousDistribution target = new UniformContinuousDistribution(a, b);
+
+            Assert.AreEqual(target.Median, target.InverseDistributionFunction(0.5));
         }
 
         [TestMethod()]

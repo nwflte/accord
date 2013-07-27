@@ -26,6 +26,7 @@ namespace Accord.Tests.Statistics
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
     using Accord.Statistics.Distributions.Fitting;
+    using System.Globalization;
 
     [TestClass()]
     public class EmpiricalDistributionTest
@@ -99,6 +100,51 @@ namespace Accord.Tests.Statistics
             EmpiricalDistribution target = new EmpiricalDistribution(samples);
             Assert.AreEqual(samples, target.Samples);
             Assert.AreEqual(1.9144923416414432, target.Smoothing);
+        }
+
+        [TestMethod()]
+        public void EmpiricalDistributionConstructorTest3()
+        {
+            double[] samples = { 5, 5, 1, 4, 1, 2, 2, 3, 3, 3, 4, 3, 3, 3, 4, 3, 2, 3 };
+            EmpiricalDistribution distribution = new EmpiricalDistribution(samples);
+
+            
+            double mean = distribution.Mean; // 3
+            double median = distribution.Median; // 2.9999993064186787
+            double var = distribution.Variance; // 1.2941176470588236
+            double chf = distribution.CumulativeHazardFunction(x: 4.2); // 2.1972245773362191
+            double cdf = distribution.DistributionFunction(x: 4.2); // 0.88888888888888884
+            double pdf = distribution.ProbabilityDensityFunction(x: 4.2); // 0.15552784414141974
+            double lpdf = distribution.LogProbabilityDensityFunction(x: 4.2); // -1.8609305013898356
+            double hf = distribution.HazardFunction(x: 4.2); // 1.3997505972727771
+            double ccdf = distribution.ComplementaryDistributionFunction(x: 4.2); //0.11111111111111116
+            double icdf = distribution.InverseDistributionFunction(p: cdf); // 4.1999999999999993
+            double smoothing = distribution.Smoothing; // 1.9144923416414432
+
+            string str = distribution.ToString(); // Fn(x; S)
+
+            Assert.AreEqual(samples, distribution.Samples);
+            Assert.AreEqual(1.9144923416414432, smoothing);
+            Assert.AreEqual(3.0, mean);
+            Assert.AreEqual(2.9999993064186787, median);
+            Assert.AreEqual(1.2941176470588236, var);
+            Assert.AreEqual(2.1972245773362191, chf);
+            Assert.AreEqual(0.88888888888888884, cdf);
+            Assert.AreEqual(0.15552784414141974, pdf);
+            Assert.AreEqual(-1.8609305013898356, lpdf);
+            Assert.AreEqual(1.3997505972727771, hf);
+            Assert.AreEqual(0.11111111111111116, ccdf);
+            Assert.AreEqual(4.1999999999999993, icdf);
+            Assert.AreEqual("Fn(x; S)", str);
+        }
+
+        [TestMethod()]
+        public void MedianTest()
+        {
+            double[] samples = { 1, 5, 2, 5, 1, 7, 1, 9 };
+            EmpiricalDistribution target = new EmpiricalDistribution(samples);
+
+            Assert.AreEqual(target.Median, target.InverseDistributionFunction(0.5));
         }
 
         [TestMethod()]

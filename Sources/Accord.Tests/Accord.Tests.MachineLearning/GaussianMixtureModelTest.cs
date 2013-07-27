@@ -273,5 +273,21 @@ namespace Accord.Tests.MachineLearning
             Assert.AreEqual(-0.40400708592859663, gmm.Gaussians[1].Mean[1]);
         }
 
+        [TestMethod]
+        public void HighDimensionalTest()
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                for (int j = 10; j < 25; j++)
+                {
+                    double[,] covariance = Accord.Statistics.Tools.RandomCovariance(j, -3.0, 3.0);
+
+                    bool isPositiveDefinite = covariance.IsPositiveDefinite();
+
+                    Assert.IsTrue(isPositiveDefinite);
+                }
+            }
+        }
+
     }
 }

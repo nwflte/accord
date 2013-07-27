@@ -20,15 +20,14 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-namespace Accord.Tests.Statistics
+namespace Accord.Tests.Math
 {
-    using Accord.Statistics.Distributions.Univariate;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Accord.Math;
-    using Accord.Statistics.Distributions.Multivariate;
-
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System;    
+    
     [TestClass()]
-    public class MultinomialDistributionTest
+    public class RelativeParameterConvergenceTest
     {
 
 
@@ -77,51 +76,37 @@ namespace Accord.Tests.Statistics
         #endregion
 
 
-
-
         [TestMethod()]
-        public void ProbabilityMassFunctionTest()
+        public void RelativeParameterConstructorTest()
         {
-            MultinomialDistribution dist = new MultinomialDistribution(5, 0.25, 0.25, 0.25, 0.25);
+            var criteria = new RelativeParameterConvergence(iterations: 0, tolerance: 0.1);
 
-            int[] observation = { 1, 1, 1, 2 };
+            int progress = 1;
+            double[] parameters = { 12345.6, 952.12, 1925.1 };
 
-            double actual = dist.ProbabilityMassFunction(observation);
-            double expected = 0.05859375;
+            do
+            {
+                // Do some processing...
 
-            Assert.AreEqual(expected, actual, 1e-6);
+
+                // Update current iteration information:
+                criteria.NewValues = parameters.Divide(progress++);
+
+            } while (!criteria.HasConverged);
+
+
+            // The method will converge after reaching the 
+            // maximum of 11 iterations with a final value
+            // of { 1234.56, 95.212, 192.51 }:
+
+            int iterations = criteria.CurrentIteration; // 11
+            var v = criteria.OldValues; // { 1234.56, 95.212, 192.51 }
+
+
+            Assert.AreEqual(11, criteria.CurrentIteration);
+            Assert.AreEqual(1234.56, criteria.OldValues[0]);
+            Assert.AreEqual(95.212, criteria.OldValues[1]);
+            Assert.AreEqual(192.51, criteria.OldValues[2]);
         }
-
-        [TestMethod()]
-        public void LogProbabilityMassFunctionTest()
-        {
-            MultinomialDistribution dist = new MultinomialDistribution(5, 0.25, 0.25, 0.25, 0.25);
-
-            int[] observation = { 1, 1, 1, 2 };
-
-            double actual = dist.LogProbabilityMassFunction(observation);
-            double expected = System.Math.Log(0.058593750);
-
-            Assert.AreEqual(expected, actual, 1e-6);
-        }
-
-        [TestMethod()]
-        public void FitTest()
-        {
-            MultinomialDistribution dist = new MultinomialDistribution(7, new double[2]);
-
-            double[][] observation =
-            { 
-                new double[] { 0, 2 },
-                new double[] { 1, 2 },
-                new double[] { 5, 1 },
-            };
-
-            dist.Fit(observation);
-
-            Assert.AreEqual(dist.Probabilities[0], 0.857142857142857, 0.000000001);
-            Assert.AreEqual(dist.Probabilities[1], 0.714285714285714, 0.000000001);
-        }
-
     }
 }

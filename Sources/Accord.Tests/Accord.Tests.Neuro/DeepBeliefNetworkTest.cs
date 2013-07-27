@@ -27,6 +27,7 @@ namespace Accord.Tests.Neuro
     using System;
     using Accord.Neuro.ActivationFunctions;
     using Accord.Neuro.Learning;
+    using Accord.Neuro.Layers;
 
     [TestClass()]
     public class DeepBeliefNetworkTest

@@ -24,6 +24,7 @@ namespace Accord.Tests.Statistics
 {
     using Accord.Statistics.Distributions.Univariate;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System.Globalization;
 
     [TestClass()]
     public class FDistributionTest
@@ -74,6 +75,39 @@ namespace Accord.Tests.Statistics
         #endregion
 
 
+        [TestMethod()]
+        public void ConstructorTest()
+        {
+            var F = new FDistribution(degrees1: 8, degrees2: 5);
+
+            double mean = F.Mean;     // 1.6666666666666667
+            double median = F.Median; // 1.0545096252132447
+            double var = F.Variance;  // 7.6388888888888893
+
+            double cdf = F.DistributionFunction(x: 0.27); // 0.049463408057268315
+            double pdf = F.ProbabilityDensityFunction(x: 0.27); // 0.45120469723580559
+            double lpdf = F.LogProbabilityDensityFunction(x: 0.27); // -0.79583416831212883
+
+            double ccdf = F.ComplementaryDistributionFunction(x: 0.27); // 0.95053659194273166
+            double icdf = F.InverseDistributionFunction(p: cdf); // 0.27
+
+            double hf = F.HazardFunction(x: 0.27); // 0.47468419528555084
+            double chf = F.CumulativeHazardFunction(x: 0.27); // 0.050728620222091653
+
+            string str = F.ToString(CultureInfo.InvariantCulture); // F(x; df1 = 8, df2 = 5)
+
+            Assert.AreEqual(1.6666666666666667, mean);
+            Assert.AreEqual(1.0545096252132447, median);
+            Assert.AreEqual(7.6388888888888893, var);
+            Assert.AreEqual(0.050728620222091653, chf);
+            Assert.AreEqual(0.049463408057268315, cdf);
+            Assert.AreEqual(0.45120469723580559, pdf);
+            Assert.AreEqual(-0.79583416831212883, lpdf);
+            Assert.AreEqual(0.47468419528555084, hf);
+            Assert.AreEqual(0.95053659194273166, ccdf);
+            Assert.AreEqual(0.27, icdf);
+            Assert.AreEqual("F(x; df1 = 8, df2 = 5)", str);
+        }
 
         [TestMethod()]
         public void MeanVarianceTest()
@@ -108,6 +142,14 @@ namespace Accord.Tests.Statistics
             double actual = f.DistributionFunction(0.5);
 
             Assert.AreEqual(expected, actual, 1e-6);
+        }
+
+        [TestMethod()]
+        public void MedianTest()
+        {
+            FDistribution target = new FDistribution(2, 3);
+
+            Assert.AreEqual(target.Median, target.InverseDistributionFunction(0.5));
         }
 
         [TestMethod()]

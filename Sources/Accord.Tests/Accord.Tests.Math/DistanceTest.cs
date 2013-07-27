@@ -20,18 +20,12 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Math;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-
 namespace Accord.Tests.Math
 {
+    using Accord.Math;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System;
 
-
-    /// <summary>
-    ///This is a test class for DistanceTest and is intended
-    ///to contain all DistanceTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class DistanceTest
     {
@@ -39,10 +33,6 @@ namespace Accord.Tests.Math
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -86,9 +76,6 @@ namespace Accord.Tests.Math
         #endregion
 
 
-        /// <summary>
-        ///  Malahanobis distance test
-        /// </summary>
         [TestMethod()]
         public void MahalanobisTest()
         {

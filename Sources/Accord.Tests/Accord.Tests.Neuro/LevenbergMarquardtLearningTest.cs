@@ -88,19 +88,19 @@ namespace Accord.Tests.Neuro
 
             double[][] input = 
             {
-			    new double[] { -1, -1 },
-			    new double[] { -1,  1 },
-			    new double[] {  1, -1 },
-			    new double[] {  1,  1 }
-			};
+                new double[] { -1, -1 },
+                new double[] { -1,  1 },
+                new double[] {  1, -1 },
+                new double[] {  1,  1 }
+            };
 
             double[][] output =
             {
-				new double[] { -1 },
-				new double[] {  1 },
-				new double[] {  1 },
-				new double[] { -1 }
-			};
+                new double[] { -1 },
+                new double[] {  1 },
+                new double[] {  1 },
+                new double[] { -1 }
+            };
 
             Neuron.RandGenerator = new ThreadSafeRandom(0);
 
@@ -125,19 +125,19 @@ namespace Accord.Tests.Neuro
 
             double[][] input = 
             {
-			    new double[] { -1, -1 },
-			    new double[] { -1,  1 },
-			    new double[] {  1, -1 },
-			    new double[] {  1,  1 }
-			};
+                new double[] { -1, -1 },
+                new double[] { -1,  1 },
+                new double[] {  1, -1 },
+                new double[] {  1,  1 }
+            };
 
             double[][] output =
             {
-				new double[] { -1 },
-				new double[] {  1 },
-				new double[] {  1 },
-				new double[] { -1 }
-			};
+                new double[] { -1 },
+                new double[] {  1 },
+                new double[] {  1 },
+                new double[] { -1 }
+            };
 
             Neuron.RandGenerator = new ThreadSafeRandom(0);
             ActivationNetwork network = new ActivationNetwork(
@@ -162,19 +162,19 @@ namespace Accord.Tests.Neuro
             // two inputs (x and y)
             double[][] input = 
             {
-				new double[] { -1, -1 },
-				new double[] { -1,  1 },
-				new double[] {  1, -1 },
-				new double[] {  1,  1 }
-			};
+                new double[] { -1, -1 },
+                new double[] { -1,  1 },
+                new double[] {  1, -1 },
+                new double[] {  1,  1 }
+            };
 
             // one output (z = x ^ y)
             double[][] output = 
             {
-				new double[] { -1 },
-				new double[] {  1 },
-				new double[] {  1 },
-				new double[] { -1 }
+                new double[] { -1 },
+                new double[] {  1 },
+                new double[] {  1 },
+                new double[] { -1 }
             };
 
 
@@ -216,19 +216,19 @@ namespace Accord.Tests.Neuro
 
             double[][] input = 
             {
-			    new double[] { -1, -1 },
-			    new double[] { -1,  1 },
-			    new double[] {  1, -1 },
-			    new double[] {  1,  1 }
-			};
+                new double[] { -1, -1 },
+                new double[] { -1,  1 },
+                new double[] {  1, -1 },
+                new double[] {  1,  1 }
+            };
 
             double[][] output =
             {
-				new double[] { -1 },
-				new double[] {  1 },
-				new double[] {  1 },
-				new double[] { -1 }
-			};
+                new double[] { -1 },
+                new double[] {  1 },
+                new double[] {  1 },
+                new double[] { -1 }
+            };
 
             Neuron.RandGenerator = new ThreadSafeRandom(0);
 
@@ -300,19 +300,19 @@ namespace Accord.Tests.Neuro
 
             double[][] input = 
             {
-			    new double[] {-1, -1 },
-			    new double[] {-1,  1 },
-			    new double[] { 1, -1 },
-			    new double[] { 1,  1 }
-			};
+                new double[] {-1, -1 },
+                new double[] {-1,  1 },
+                new double[] { 1, -1 },
+                new double[] { 1,  1 }
+            };
 
             double[][] output =
             {
-				new double[] {-1 },
-				new double[] { 1 },
-				new double[] { 1 },
-				new double[] {-1 }
-			};
+                new double[] {-1 },
+                new double[] { 1 },
+                new double[] { 1 },
+                new double[] {-1 }
+            };
 
             Neuron.RandGenerator = new ThreadSafeRandom(0);
 
@@ -364,19 +364,19 @@ namespace Accord.Tests.Neuro
 
             double[][] input = 
             {
-			    new double[] {-1, -1 },
-			    new double[] {-1,  1 },
-			    new double[] { 1, -1 },
-			    new double[] { 1,  1 }
-			};
+                new double[] {-1, -1 },
+                new double[] {-1,  1 },
+                new double[] { 1, -1 },
+                new double[] { 1,  1 }
+            };
 
             double[][] output =
             {
-				new double[] {-1 },
-				new double[] { 1 },
-				new double[] { 1 },
-				new double[] {-1 }
-			};
+                new double[] {-1 },
+                new double[] { 1 },
+                new double[] { 1 },
+                new double[] {-1 }
+            };
 
             Neuron.RandGenerator = new ThreadSafeRandom(0);
 
@@ -426,19 +426,19 @@ namespace Accord.Tests.Neuro
 
             double[][] input = 
             {
-			    new double[] {-1, -1 },
-			    new double[] {-1,  1 },
-			    new double[] { 1, -1 },
-			    new double[] { 1,  1 }
-			};
+                new double[] {-1, -1 },
+                new double[] {-1,  1 },
+                new double[] { 1, -1 },
+                new double[] { 1,  1 }
+            };
 
             double[][] output =
             {
-				new double[] {-1 },
-				new double[] { 1 },
-				new double[] { 1 },
-				new double[] {-1 }
-			};
+                new double[] {-1 },
+                new double[] { 1 },
+                new double[] { 1 },
+                new double[] {-1 }
+            };
 
             Neuron.RandGenerator = new ThreadSafeRandom(0);
 
@@ -490,19 +490,19 @@ namespace Accord.Tests.Neuro
 
             double[][] input = 
             {
-			    new double[] {-1, -1 },
-			    new double[] {-1,  1 },
-			    new double[] { 1, -1 },
-			    new double[] { 1,  1 }
-			};
+                new double[] {-1, -1 },
+                new double[] {-1,  1 },
+                new double[] { 1, -1 },
+                new double[] { 1,  1 }
+            };
 
             double[][] output =
             {
-				new double[] {-1 },
-				new double[] { 1 },
-				new double[] { 1 },
-				new double[] {-1 }
-			};
+                new double[] {-1 },
+                new double[] { 1 },
+                new double[] { 1 },
+                new double[] {-1 }
+            };
 
             Neuron.RandGenerator = new ThreadSafeRandom(0);
 

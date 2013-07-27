@@ -25,6 +25,7 @@ namespace Accord.Tests.Statistics
     using Accord.Statistics.Distributions.Univariate;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
+    using System.Globalization;
 
     [TestClass()]
     public class LaplaceDistributionTest
@@ -108,6 +109,48 @@ namespace Accord.Tests.Statistics
                     Assert.IsFalse(double.IsNaN(actual));
                 }
             }
+        }
+
+        [TestMethod()]
+        public void ConstructorTest2()
+        {
+            var laplace = new LaplaceDistribution(location: 4, scale: 2);
+
+            double mean = laplace.Mean;     // 4.0
+            double median = laplace.Median; // 4.0
+            double var = laplace.Variance;  // 8.0
+
+            double cdf = laplace.DistributionFunction(x: 0.27); // 0.077448104942453522
+            double pdf = laplace.ProbabilityDensityFunction(x: 0.27); // 0.038724052471226761
+            double lpdf = laplace.LogProbabilityDensityFunction(x: 0.27); // -3.2512943611198906
+
+            double ccdf = laplace.ComplementaryDistributionFunction(x: 0.27); // 0.92255189505754642
+            double icdf = laplace.InverseDistributionFunction(p: cdf); // 0.27
+
+            double hf = laplace.HazardFunction(x: 0.27); // 0.041974931360160776
+            double chf = laplace.CumulativeHazardFunction(x: 0.27); // 0.080611649844768624
+
+            string str = laplace.ToString(CultureInfo.InvariantCulture); // Laplace(x; μ = 4, b = 2)
+
+            Assert.AreEqual(4.0, mean);
+            Assert.AreEqual(4.0, median);
+            Assert.AreEqual(8.0, var);
+            Assert.AreEqual(0.080611649844768624, chf);
+            Assert.AreEqual(0.077448104942453522, cdf);
+            Assert.AreEqual(0.038724052471226761, pdf);
+            Assert.AreEqual(-3.2512943611198906, lpdf);
+            Assert.AreEqual(0.041974931360160776, hf);
+            Assert.AreEqual(0.92255189505754642, ccdf);
+            Assert.AreEqual(0.26999999840794775, icdf);
+            Assert.AreEqual("Laplace(x; μ = 4, b = 2)", str);
+        }
+
+        [TestMethod()]
+        public void MedianTest()
+        {
+            var target = new LaplaceDistribution(location: 2, scale: 0.42);
+
+            Assert.AreEqual(target.Median, target.InverseDistributionFunction(0.5));
         }
 
     }

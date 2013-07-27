@@ -26,6 +26,7 @@ namespace Accord.Tests.Statistics
     using Accord.Statistics.Distributions.Fitting;
     using Accord.Statistics.Distributions.Univariate;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System.Globalization;
 
     [TestClass()]
     public class HypergeometricDistributionTest
@@ -76,6 +77,59 @@ namespace Accord.Tests.Statistics
         //
         #endregion
 
+
+        [TestMethod()]
+        public void ConstructorTest()
+        {
+
+            int populationSize = 15; // population size N
+            int success = 7;         // number of successes in the sample  
+            int samples = 8;         // number of samples drawn from N
+
+            // Create a new Hypergeometric distribution with N = 15, n = 8, and s = 7
+            var dist = new HypergeometricDistribution(populationSize, success, samples);
+
+            double mean = dist.Mean;     // 1.3809523809523812
+            double median = dist.Median; // 4.0
+            double var = dist.Variance;  // 3.2879818594104315
+            double mode = dist.Mode;     // 4.0
+
+            double cdf = dist.DistributionFunction(k: 2);               // 0.80488799999999994
+            double ccdf = dist.ComplementaryDistributionFunction(k: 2); // 0.19511200000000006
+
+            double pdf1 = dist.ProbabilityMassFunction(k: 4); // 0.38073038073038074
+            double pdf2 = dist.ProbabilityMassFunction(k: 5); // 0.18275058275058276
+            double pdf3 = dist.ProbabilityMassFunction(k: 6); // 0.030458430458430458
+
+            double lpdf = dist.LogProbabilityMassFunction(k: 2); // -2.3927801721315989
+
+            int icdf1 = dist.InverseDistributionFunction(p: 0.17); // 4
+            int icdf2 = dist.InverseDistributionFunction(p: 0.46); // 4
+            int icdf3 = dist.InverseDistributionFunction(p: 0.87); // 5
+            int icdf4 = dist.InverseDistributionFunction(p: 0.50);
+
+            double hf = dist.HazardFunction(x: 4); // 1.7753623188405792
+            double chf = dist.CumulativeHazardFunction(x: 4); // 1.5396683418789763
+
+            string str = dist.ToString(CultureInfo.InvariantCulture); // "HyperGeometric(x; N = 15, m = 7, n = 8)"
+
+            Assert.AreEqual(3.7333333333333334, mean);
+            Assert.AreEqual(4.0, median);
+            Assert.AreEqual(0.99555555555555553, var);
+            Assert.AreEqual(4, mode);
+            Assert.AreEqual(1.5396683418789763, chf, 1e-10);
+            Assert.AreEqual(0.10023310023310024, cdf);
+            Assert.AreEqual(0.38073038073038074, pdf1);
+            Assert.AreEqual(0.18275058275058276, pdf2);
+            Assert.AreEqual(0.030458430458430458, pdf3);
+            Assert.AreEqual(-2.3927801721315989, lpdf);
+            Assert.AreEqual(1.7753623188405792, hf);
+            Assert.AreEqual(0.89976689976689972, ccdf);
+            Assert.AreEqual(3, icdf1);
+            Assert.AreEqual(4, icdf2);
+            Assert.AreEqual(5, icdf3);
+            Assert.AreEqual("HyperGeometric(x; N = 15, m = 7, n = 8)", str);
+        }
 
         [TestMethod()]
         public void HypergeometricDistributionConstructorTest()
@@ -154,6 +208,17 @@ namespace Accord.Tests.Statistics
             double expected = 0.96829836829836835;
             double actual = target.DistributionFunction(k);
             Assert.AreEqual(expected, actual, 1e-10);
+        }
+
+        [TestMethod()]
+        public void MedianTest()
+        {
+            int populationSize = 15;
+            int draws = 7;
+            int success = 8;
+            var target = new HypergeometricDistribution(populationSize, success, draws);
+
+            Assert.AreEqual(target.Median, target.InverseDistributionFunction(0.5));
         }
 
         [TestMethod()]

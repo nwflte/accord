@@ -76,6 +76,12 @@ namespace Accord.Tests.Statistics
 
 
         [TestMethod()]
+        public void FunctionTest2()
+        {
+
+        }
+
+        [TestMethod()]
         public void FunctionTest()
         {
             var x = new double[] { 0, 4, 2, 1 };

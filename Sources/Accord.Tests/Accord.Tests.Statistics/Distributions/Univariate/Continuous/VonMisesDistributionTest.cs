@@ -24,6 +24,7 @@ namespace Accord.Tests.Statistics
 {
     using Accord.Statistics.Distributions.Univariate;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System.Globalization;
 
     [TestClass()]
     public class VonMisesDistributionTest
@@ -74,6 +75,45 @@ namespace Accord.Tests.Statistics
         #endregion
 
 
+
+        [TestMethod()]
+        public void ConstructorTest()
+        {
+            var vonMises = new VonMisesDistribution(mean: 0.42, concentration: 1.2);
+
+            double mean = vonMises.Mean;     // 0.42
+            double median = vonMises.Median; // 0.42
+            double var = vonMises.Variance;  // 0.48721760532782921
+
+            double cdf = vonMises.DistributionFunction(x: 1.4); // 0.81326928491589345
+            double pdf = vonMises.ProbabilityDensityFunction(x: 1.4); // 0.2228112141141676
+            double lpdf = vonMises.LogProbabilityDensityFunction(x: 1.4); // -1.5014304395467863
+
+            double ccdf = vonMises.ComplementaryDistributionFunction(x: 1.4); // 0.18673071508410655
+            double icdf = vonMises.InverseDistributionFunction(p: cdf); // 1.3999999637927665
+
+            double hf = vonMises.HazardFunction(x: 1.4); // 1.1932220899695576
+            double chf = vonMises.CumulativeHazardFunction(x: 1.4); // 1.6780877262500649
+
+            string str = vonMises.ToString(CultureInfo.InvariantCulture); // VonMises(x; μ = 0.42, κ = 1.2)
+
+            double imedian = vonMises.InverseDistributionFunction(p: 0.5);
+
+            Assert.AreEqual(0.42, mean);
+            Assert.AreEqual(0.42, median);
+            Assert.AreEqual(0.42000000260613551, imedian, 1e-8);
+            Assert.AreEqual(0.48721760532782921, var);
+            Assert.AreEqual(1.6780877262500649, chf);
+            Assert.AreEqual(0.81326928491589345, cdf);
+            Assert.AreEqual(0.2228112141141676, pdf);
+            Assert.AreEqual(-1.5014304395467863, lpdf);
+            Assert.AreEqual(1.1932220899695576, hf);
+            Assert.AreEqual(0.18673071508410655, ccdf);
+            Assert.AreEqual(1.39999999999, icdf, 1e-8);
+            Assert.AreEqual("VonMises(x; μ = 0.42, κ = 1.2)", str);
+        }
+
+
         [TestMethod()]
         public void FitTest()
         {
@@ -114,6 +154,14 @@ namespace Accord.Tests.Statistics
             double expected = System.Math.Log(dist.ProbabilityDensityFunction(x));
 
             Assert.AreEqual(expected, actual, 1e-10);
+        }
+
+        [TestMethod()]
+        public void MedianTest()
+        {
+            VonMisesDistribution target = new VonMisesDistribution(1.621, 4.52);
+
+            Assert.AreEqual(target.Median, target.InverseDistributionFunction(0.5), 1e-6);
         }
     }
 }

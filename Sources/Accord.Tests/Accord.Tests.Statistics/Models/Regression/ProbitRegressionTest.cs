@@ -184,14 +184,16 @@ namespace Accord.Tests.Statistics
 
 
             Assert.AreEqual(3, regression.Coefficients.Length);
-            Assert.AreEqual(-1.4807594445304693, regression.Coefficients[0]);
-            Assert.AreEqual(0.012417175632016827, regression.Coefficients[1]);
-            Assert.AreEqual(1.072665379969842, regression.Coefficients[2]);
+            Assert.AreEqual(-1.4807594445304693, regression.Coefficients[0],1e-10);
+            Assert.AreEqual(0.012417175632016827, regression.Coefficients[1], 1e-10);
+            Assert.AreEqual(1.072665379969842, regression.Coefficients[2], 1e-10);
+            Assert.IsFalse(regression.Coefficients.HasNaN());
 
             Assert.AreEqual(3, regression.StandardErrors.Length);
-            Assert.AreEqual(1.6402037052797314, regression.StandardErrors[0]);
-            Assert.AreEqual(0.026119425452145524, regression.StandardErrors[1]);
-            Assert.AreEqual(1.1297252500874606, regression.StandardErrors[2]);
+            Assert.AreEqual(1.6402037052797314, regression.StandardErrors[0], 1e-10);
+            Assert.AreEqual(0.026119425452145524, regression.StandardErrors[1], 1e-10);
+            Assert.AreEqual(1.1297252500874606, regression.StandardErrors[2], 1e-10);
+            Assert.IsFalse(regression.StandardErrors.HasNaN());
         }
 
     }

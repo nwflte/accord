@@ -26,6 +26,7 @@ namespace Accord.Tests.Statistics
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
     using Accord.Statistics.Distributions.Fitting;
+    using System.Globalization;
 
     [TestClass()]
     public class TDistributionTest
@@ -76,6 +77,40 @@ namespace Accord.Tests.Statistics
         //
         #endregion
 
+
+        [TestMethod()]
+        public void ConstructorTest()
+        {
+            var t = new TDistribution(degreesOfFreedom: 4.2);
+
+            double mean = t.Mean;     // 0.0
+            double median = t.Median; // 0.0
+            double var = t.Variance;  // 1.9090909090909089
+
+            double cdf = t.DistributionFunction(x: 1.4); // 0.88456136730659074
+            double pdf = t.ProbabilityDensityFunction(x: 1.4); // 0.13894002185341031
+            double lpdf = t.LogProbabilityDensityFunction(x: 1.4); // -1.9737129364307417
+
+            double ccdf = t.ComplementaryDistributionFunction(x: 1.4); // 0.11543863269340926
+            double icdf = t.InverseDistributionFunction(p: cdf); // 1.4000000000000012
+
+            double hf = t.HazardFunction(x: 1.4); // 1.2035833984833988
+            double chf = t.CumulativeHazardFunction(x: 1.4); // 2.1590162088918525
+
+            string str = t.ToString(CultureInfo.InvariantCulture); // T(x; df = 4.2)
+
+            Assert.AreEqual(0.0, mean);
+            Assert.AreEqual(0.0, median);
+            Assert.AreEqual(1.9090909090909089, var);
+            Assert.AreEqual(2.1590162088918525, chf);
+            Assert.AreEqual(0.88456136730659074, cdf);
+            Assert.AreEqual(0.13894002185341031, pdf);
+            Assert.AreEqual(-1.9737129364307417, lpdf);
+            Assert.AreEqual(1.2035833984833988, hf);
+            Assert.AreEqual(0.11543863269340926, ccdf);
+            Assert.AreEqual(1.4000000000000012, icdf);
+            Assert.AreEqual("T(x; df = 4.2)", str);
+        }
 
         [TestMethod()]
         public void VarianceTest()
@@ -351,6 +386,14 @@ namespace Accord.Tests.Statistics
             try { target = new TDistribution(-1); }
             catch (ArgumentOutOfRangeException) { thrown = true; }
             Assert.IsTrue(thrown);
+        }
+
+        [TestMethod()]
+        public void MedianTest()
+        {
+            TDistribution target = new TDistribution(7.6);
+
+            Assert.AreEqual(target.Median, target.InverseDistributionFunction(0.5));
         }
     }
 }

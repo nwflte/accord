@@ -134,12 +134,25 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Convergence\AbsoluteConvergenceTest.cs" />
+    <Compile Include="Comparers\ElementComparerTest.cs" />
+    <Compile Include="Comparers\CustomComparerTest.cs" />
+    <Compile Include="Convergence\RelativeParameterConvergenceTest.cs" />
+    <Compile Include="Convergence\RelativeConvergenceTest.cs" />
+    <Compile Include="REnvironmentTest.cs" />
     <Compile Include="CosineTransformTest.cs" />
+    <Compile Include="Decompositions\GramSchmidtOrthogonalizationTest.cs" />
+    <Compile Include="Functions\BesselTest.cs" />
+    <Compile Include="Functions\NormalTest.cs" />
+    <Compile Include="GaborTest.cs" />
     <Compile Include="Matrix\Matrix.Conversion.cs" />
+    <Compile Include="OctaveEnvironmentTest.cs" />
     <Compile Include="Optimization\BrentSearchTest.cs" />
     <Compile Include="Optimization\QuadraticConstraintTest.cs" />
-    <Compile Include="Special\BetaTest.cs" />
-    <Compile Include="Special\GammaTest.cs" />
+    <Compile Include="PlaneTest.cs" />
+    <Compile Include="Point3Test.cs" />
+    <Compile Include="Functions\BetaTest.cs" />
+    <Compile Include="Functions\GammaTest.cs" />
     <Compile Include="Optimization\AugmentedLagrangianSolverTest.cs" />
     <Compile Include="Optimization\GoldfarbIdnaniTest.cs" />
     <Compile Include="Matrix\Matrix.Complex.cs" />
@@ -148,7 +161,7 @@
     <Compile Include="Optimization\ConjugateGradientTest.cs" />
     <Compile Include="Decompositions\JaggedCholeskyDecompositionFTest.cs" />
     <Compile Include="Decompositions\NonnegativeMatrixFactorization.cs" />
-    <Compile Include="FiniteDifferencesTest.cs" />
+    <Compile Include="Differentiation\FiniteDifferencesTest.cs" />
     <Compile Include="Decompositions\JaggedLuDecompositionFTest.cs" />
     <Compile Include="ReducedRowEchelonFormTest.cs" />
     <Compile Include="Wavelets\CDF97Test.cs" />
@@ -159,7 +172,7 @@
     <Compile Include="Decompositions\CholeskyDecompositionTest.cs" />
     <Compile Include="DistanceTest.cs" />
     <Compile Include="Decompositions\EigenvalueDecompositionTest.cs" />
-    <Compile Include="GeneralComparerTest.cs" />
+    <Compile Include="Comparers\GeneralComparerTest.cs" />
     <Compile Include="Decompositions\GeneralizedEigenvalueDecompositionTest.cs" />
     <Compile Include="Decompositions\LuDecompositionTest.cs" />
     <Compile Include="Matrix\MatrixTest.cs" />
@@ -186,7 +199,9 @@
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Formats\" />
+  </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">
       <Visible>False</Visible>

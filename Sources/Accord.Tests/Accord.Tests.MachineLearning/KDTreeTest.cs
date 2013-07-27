@@ -136,9 +136,9 @@ namespace Accord.Tests.Math
             Assert.AreEqual("(5,4)", result[0].Node.ToString());
 
             Assert.AreEqual(3, neighbors.Count);
-            Assert.AreEqual("(5,4)", neighbors[0].Node.ToString());
-            Assert.AreEqual("(7,2)", neighbors[1].Node.ToString());
-            Assert.AreEqual("(2,3)", neighbors[2].Node.ToString());
+            Assert.AreEqual("(5,4)", neighbors[1].Node.ToString());
+            Assert.AreEqual("(7,2)", neighbors[2].Node.ToString());
+            Assert.AreEqual("(2,3)", neighbors[0].Node.ToString());
 
             Assert.AreEqual(7, tree.Root.Position[0]);
             Assert.AreEqual(2, tree.Root.Position[1]);

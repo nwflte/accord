@@ -75,7 +75,33 @@ namespace Accord.Tests.Statistics
         //
         #endregion
 
+        [TestMethod()]
+        public void ConstructorTest()
+        {
+            var ks = new KolmogorovSmirnovDistribution(samples: 42);
 
+            double mean = ks.Mean;     // 0.13404812830261556
+            double median = ks.Median;   // 0.12393613519421857
+            double var = ks.Variance; // 0.019154717445778062
+
+            double cdf = ks.DistributionFunction(x: 0.27); // 0.99659863602996079
+
+            double ccdf = ks.ComplementaryDistributionFunction(x: 0.27); // 0.0034013639700392062
+            double icdf = ks.InverseDistributionFunction(p: cdf); // 0.26999997446092017
+
+            double chf = ks.CumulativeHazardFunction(x: 0.27); // 5.6835787601476619
+
+            string str = ks.ToString(); // "KS(x; n = 42)"
+
+            Assert.AreEqual(0.13404812830261556, mean);
+            Assert.AreEqual(0.12393613519421857, median, 1e-6);
+            Assert.AreEqual(0.019154717445778062, var);
+            Assert.AreEqual(5.6835787601476619, chf);
+            Assert.AreEqual(0.99659863602996079, cdf);
+            Assert.AreEqual(0.0034013639700392062, ccdf);
+            Assert.AreEqual(0.27, icdf, 1e-6);
+            Assert.AreEqual("KS(x; n = 42)", str);
+        }
 
         [TestMethod()]
         public void CumulativeFunctionTest()
@@ -128,6 +154,14 @@ namespace Accord.Tests.Statistics
 
                 Assert.AreEqual(strExpected, strActual);
             }
+        }
+
+        [TestMethod()]
+        public void MedianTest()
+        {
+            var target = new KolmogorovSmirnovDistribution(7);
+
+            Assert.AreEqual(target.Median, target.InverseDistributionFunction(0.5));
         }
 
         [TestMethod()]

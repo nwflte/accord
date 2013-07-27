@@ -26,12 +26,27 @@ namespace Accord.Tests.Math
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System.Collections.Generic;
     using System;
-    using Accord.Math.Formats;
     using System.Data;
     using AForge;
 
     partial class MatrixTest
     {
+        [TestMethod()]
+        public void TransposeAndMultiplyByDiagonalTest()
+        {
+            double[,] a =
+            { 
+                { 3, 1, 0 },
+                { 5, 2, 1 }
+            };
+
+            double[] b = { 5, 8 };
+
+            double[,] expected = a.Transpose().Multiply(Matrix.Diagonal(b));
+            double[,] actual = a.TransposeAndMultiplyByDiagonal(b);
+
+            Assert.IsTrue(Matrix.IsEqual(expected, actual, 1e-10));
+        }
 
         [TestMethod()]
         public void MultiplyTwoMatrices()

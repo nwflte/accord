@@ -131,5 +131,39 @@ namespace Accord.Tests.Imaging
 
         }
 
+        [TestMethod()]
+        public void MatchTest3()
+        {
+            FastCornersDetector fast = new FastCornersDetector(threshold: 10);
+
+            FastRetinaKeypointDetector freak = new FastRetinaKeypointDetector(fast);
+
+            var keyPoints1 = freak.ProcessImage(Properties.Resources.old).ToArray();
+            var keyPoints2 = freak.ProcessImage(Properties.Resources.flower01).ToArray();
+
+            var matcher = new KNearestNeighborMatching<byte[]>(5, Distance.BitwiseHamming);
+
+            { // direct
+                IntPoint[][] matches = matcher.Match(keyPoints1, keyPoints2);
+                Assert.AreEqual(2, matches.Length);
+                Assert.AreEqual(138, matches[0].Length);
+                Assert.AreEqual(138, matches[1].Length);
+                Assert.AreEqual(532, matches[0][0].X);
+                Assert.AreEqual(159, matches[0][0].Y);
+                Assert.AreEqual(keyPoints2[0].ToIntPoint(), matches[1][0]);
+            }
+
+            { // reverse
+                IntPoint[][] matches = matcher.Match(keyPoints2, keyPoints1);
+                Assert.AreEqual(2, matches.Length);
+                Assert.AreEqual(138, matches[0].Length);
+                Assert.AreEqual(138, matches[1].Length);
+                Assert.AreEqual(keyPoints2[0].ToIntPoint(), matches[0][0]);
+                Assert.AreEqual(532, matches[1][0].X);
+                Assert.AreEqual(159, matches[1][0].Y);
+            }
+
+        }
+
     }
 }

@@ -78,6 +78,42 @@ namespace Accord.Tests.Statistics
 
 
         [TestMethod()]
+        public void ConstructorTest()
+        {
+            double[] ranks = { 1, 2, 3, 4, 5 };
+
+            var mannWhitney = new MannWhitneyDistribution(ranks, n1: 2, n2: 3);
+
+            double mean = mannWhitney.Mean;     // 2.7870954605658511
+            double median = mannWhitney.Median; // 1.5219615583481305
+            double var = mannWhitney.Variance;  // 18.28163603621158
+
+            double cdf = mannWhitney.DistributionFunction(x: 4); // 0.6
+            double pdf = mannWhitney.ProbabilityDensityFunction(x: 4); // 0.2
+            double lpdf = mannWhitney.LogProbabilityDensityFunction(x: 4); // -1.6094379124341005
+
+            double ccdf = mannWhitney.ComplementaryDistributionFunction(x: 4); // 0.4
+            double icdf = mannWhitney.InverseDistributionFunction(p: cdf); // 3.6666666666666661
+
+            double hf = mannWhitney.HazardFunction(x: 4); // 0.5
+            double chf = mannWhitney.CumulativeHazardFunction(x: 4); // 0.916290731874155
+
+            string str = mannWhitney.ToString(); // MannWhitney(u; n1 = 2, n2 = 3)
+
+            Assert.AreEqual(3.0, mean);
+            Assert.AreEqual(3.0000006357828775, median);
+            Assert.AreEqual(3.0, var);
+            Assert.AreEqual(0.916290731874155, chf);
+            Assert.AreEqual(0.6, cdf);
+            Assert.AreEqual(0.2, pdf);
+            Assert.AreEqual(-1.6094379124341005, lpdf);
+            Assert.AreEqual(0.5, hf);
+            Assert.AreEqual(0.4, ccdf);
+            Assert.AreEqual(3.6666666666666661, icdf);
+            Assert.AreEqual("MannWhitney(u; n1 = 2, n2 = 3)", str);
+        }
+
+        [TestMethod()]
         public void ProbabilityDensityFunctionTest()
         {
             double[] ranks = { 1, 2, 3, 4, 5 };
@@ -139,6 +175,22 @@ namespace Accord.Tests.Statistics
                 Assert.AreEqual(expected[i], actual,1e-10);
             }
 
+        }
+
+        [TestMethod()]
+        public void MedianTest()
+        {
+            double[] ranks = { 1, 1, 2, 3, 4, 7, 5 };
+
+            int n1 = 4;
+            int n2 = 3;
+
+            Assert.AreEqual(n1 + n2, ranks.Length);
+
+
+            var target = new MannWhitneyDistribution(ranks, n1, n2);
+
+            Assert.AreEqual(target.Median, target.InverseDistributionFunction(0.5));
         }
     }
 }

@@ -20,15 +20,14 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics.Distributions.Univariate;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using Accord.Statistics.Distributions.Fitting;
-using Accord.Controls;
-
 namespace Accord.Tests.Statistics
 {
-
+    using Accord.Statistics.Distributions.Univariate;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System;
+    using Accord.Statistics.Distributions.Fitting;
+    using Accord.Controls;
+    using System.Globalization;
 
     [TestClass()]
     public class LogNormalDistributionTest
@@ -79,6 +78,39 @@ namespace Accord.Tests.Statistics
         //
         #endregion
 
+        [TestMethod()]
+        public void ConstructorTest()
+        {
+            var log = new LognormalDistribution(location: 0.42, shape: 1.1);
+
+            double mean = log.Mean;     // 2.7870954605658511
+            double median = log.Median; // 1.5219615583481305
+            double var = log.Variance;  // 18.28163603621158
+
+            double cdf = log.DistributionFunction(x: 0.27); // 0.057961222885664958
+            double pdf = log.ProbabilityDensityFunction(x: 0.27); // 0.39035530085982068
+            double lpdf = log.LogProbabilityDensityFunction(x: 0.27); // -0.94069792674674835
+
+            double ccdf = log.ComplementaryDistributionFunction(x: 0.27); // 0.942038777114335
+            double icdf = log.InverseDistributionFunction(p: cdf); // 0.26999997937815973
+
+            double hf = log.HazardFunction(x: 0.27); // 0.41437285846720867
+            double chf = log.CumulativeHazardFunction(x: 0.27); // 0.059708840588116374
+
+            string str = log.ToString("N2", CultureInfo.InvariantCulture); // Lognormal(x; μ = 2.79, σ = 1.10)
+
+            Assert.AreEqual(2.7870954605658511, mean);
+            Assert.AreEqual(1.5219615583481305, median, 1e-7);
+            Assert.AreEqual(18.28163603621158, var);
+            Assert.AreEqual(0.059708840588116374, chf);
+            Assert.AreEqual(0.057961222885664958, cdf);
+            Assert.AreEqual(0.39035530085982068, pdf);
+            Assert.AreEqual(-0.94069792674674835, lpdf);
+            Assert.AreEqual(0.41437285846720867, hf);
+            Assert.AreEqual(0.942038777114335, ccdf);
+            Assert.AreEqual(0.26999997937815973, icdf, 1e-7);
+            Assert.AreEqual("Lognormal(x; μ = 2.79, σ = 1.10)", str);
+        }
 
         [TestMethod()]
         public void LogNormalDistributionConstructorTest()
@@ -261,5 +293,12 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(2, actual.Shape, 0.01);
         }
 
+        [TestMethod()]
+        public void MedianTest()
+        {
+            LognormalDistribution target = new LognormalDistribution(7, 0.6);
+
+            Assert.AreEqual(target.Median, target.InverseDistributionFunction(0.5));
+        }
     }
 }

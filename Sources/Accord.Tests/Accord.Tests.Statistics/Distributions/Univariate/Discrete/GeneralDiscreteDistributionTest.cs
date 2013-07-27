@@ -20,17 +20,13 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics.Distributions.Univariate;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Accord.Math;
 namespace Accord.Tests.Statistics
 {
+    using Accord.Statistics.Distributions.Univariate;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Accord.Math;
+    using System.Globalization;
 
-
-    /// <summary>
-    ///This is a test class for DiscreteDistributionTest and is intended
-    ///to contain all DiscreteDistributionTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class DiscreteDistributionTest
     {
@@ -38,10 +34,6 @@ namespace Accord.Tests.Statistics
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -84,6 +76,58 @@ namespace Accord.Tests.Statistics
         //
         #endregion
 
+
+        [TestMethod()]
+        public void ConstructorTest()
+        {
+            // Create a Categorical distribution for 3 symbols, in which
+            // the first and second symbol have 25% chance of appearing,
+            // and the third symbol has 50% chance of appearing.
+
+            //                         1st   2nd   3rd
+            double[] probabilities = { 0.25, 0.25, 0.50 };
+
+            var dist = new GeneralDiscreteDistribution(probabilities);
+
+            double mean = dist.Mean;     // 1.25
+            double median = dist.Median; // 1.00
+            double var = dist.Variance;  // 0.6875
+
+            double cdf = dist.DistributionFunction(k: 2);    // 1
+
+            double pdf1 = dist.ProbabilityMassFunction(k: 0); // 0.25
+            double pdf2 = dist.ProbabilityMassFunction(k: 1); // 0.25
+            double pdf3 = dist.ProbabilityMassFunction(k: 2); // 0.50
+
+            double lpdf = dist.LogProbabilityMassFunction(k: 2); // -0.69314718055994529
+
+            double ccdf = dist.ComplementaryDistributionFunction(k: 2); // 0.0
+
+            int icdf1 = dist.InverseDistributionFunction(p: 0.17); // 0
+            int icdf2 = dist.InverseDistributionFunction(p: 0.39); // 1
+            int icdf3 = dist.InverseDistributionFunction(p: 0.56); // 2
+
+            double hf = dist.HazardFunction(x: 0); // 0.33333333333333331
+            double chf = dist.CumulativeHazardFunction(x: 0); // 0.2876820724517809
+
+            string str = dist.ToString(CultureInfo.InvariantCulture); // "Categorical(x; p = { 0.25, 0.25, 0.5 })"
+
+            Assert.AreEqual(1.25, mean);
+            Assert.AreEqual(1.00, median);
+            Assert.AreEqual(0.6875, var);
+            Assert.AreEqual(0.2876820724517809, chf, 1e-10);
+            Assert.AreEqual(1.0, cdf);
+            Assert.AreEqual(0.25, pdf1);
+            Assert.AreEqual(0.25, pdf2);
+            Assert.AreEqual(0.5, pdf3);
+            Assert.AreEqual(-0.69314718055994529, lpdf);
+            Assert.AreEqual(0.33333333333333331, hf, 1e-10);
+            Assert.AreEqual(0.0, ccdf);
+            Assert.AreEqual(0, icdf1);
+            Assert.AreEqual(1, icdf2);
+            Assert.AreEqual(2, icdf3);
+            Assert.AreEqual("Categorical(x; p = { 0.25, 0.25, 0.5 })", str);
+        }
 
         [TestMethod()]
         public void FitTest()
@@ -200,6 +244,13 @@ namespace Accord.Tests.Statistics
                               -0.5 * System.Math.Log(0.5);
 
             Assert.AreEqual(expected, target.Entropy);
+        }
+
+        [TestMethod()]
+        public void MedianTest()
+        {
+            var target = new GeneralDiscreteDistribution(0.1, 0.4, 0.5);
+            Assert.AreEqual(target.Median, target.InverseDistributionFunction(0.5));
         }
 
         [TestMethod()]
