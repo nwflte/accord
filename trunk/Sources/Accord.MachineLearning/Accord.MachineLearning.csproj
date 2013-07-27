@@ -194,6 +194,11 @@
   <ItemGroup>
     <None Include="Accord.MachineLearning.cd" />
     <None Include="Accord.snk" />
+    <None Include="Boosting\Accord.MachineLearning.Boosting.cd" />
+    <None Include="Clustering\Accord.MachineLearning.Clustering.cd" />
+    <None Include="DecisionTrees\Accord.MachineLearning.DecisionTrees.cd" />
+    <None Include="Structures\Accord.MachineLearning.Structures.cd" />
+    <None Include="VectorMachines\Accord.MachineLearning.VectorMachines.cd" />
   </ItemGroup>
   <ItemGroup>
     <CodeAnalysisDictionary Include="Properties\CustomDictionary.xml" />

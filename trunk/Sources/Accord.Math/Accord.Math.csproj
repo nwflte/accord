@@ -115,6 +115,7 @@
     <Compile Include="Kinematics\DenavitHartenbergNode.cs" />
     <Compile Include="Kinematics\DenavitHartenbergParameter.cs" />
     <Compile Include="Kinematics\DenavitHartenbergJoint.cs" />
+    <Compile Include="NamespaceDoc.cs" />
     <Compile Include="Optimization\BinarySearch.cs" />
     <Compile Include="Transforms\HartleyTransform.cs" />
     <Compile Include="Transforms\SineTransform.cs" />
