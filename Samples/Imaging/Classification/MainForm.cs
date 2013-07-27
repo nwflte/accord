@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Accord.Math;
-using Accord.Math.Formats;
 using System.IO;
 using Accord.Imaging;
 using Accord.Imaging.Filters;
@@ -124,10 +123,11 @@ namespace Classification
         {
             int numberOfWords = (int)numWords.Value;
 
-            BinarySplit bs = new BinarySplit(numberOfWords);
+            // Create a Binary-Split clustering algorithm
+            BinarySplit binarySplit = new BinarySplit(numberOfWords);
 
-            // Create bag-of-words (BoW) with the given number of words
-            BagOfVisualWords bow = new BagOfVisualWords(bs);
+            // Create bag-of-words (BoW) with the given algorithm
+            BagOfVisualWords bow = new BagOfVisualWords(binarySplit);
 
             if (cbExtended.Checked)
                 bow.Detector.ComputeDescriptors = SpeededUpRobustFeatureDescriptorType.Extended;

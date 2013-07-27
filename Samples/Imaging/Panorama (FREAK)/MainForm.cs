@@ -57,7 +57,7 @@ namespace Panorama
         }
 
 
-        private void btnHarris_Click(object sender, EventArgs e)
+        private void btnFreak_Click(object sender, EventArgs e)
         {
             // Step 1: Detect feature points using FREAK Features Detector
             FastRetinaKeypointDetector freak = new FastRetinaKeypointDetector();
@@ -76,6 +76,12 @@ namespace Panorama
 
         private void btnCorrelation_Click(object sender, EventArgs e)
         {
+            if (keyPoints1 == null)
+            {
+                MessageBox.Show("Please, click FREAK button first! :-)");
+                return;
+            }
+
             // Step 2: Match feature points using a k-NN
             var matcher = new KNearestNeighborMatching<byte[]>(5, Distance.BitwiseHamming);
             IntPoint[][] matches = matcher.Match(keyPoints1, keyPoints2);
@@ -98,6 +104,12 @@ namespace Panorama
 
         private void btnRansac_Click(object sender, EventArgs e)
         {
+            if (correlationPoints1 == null)
+            {
+                MessageBox.Show("Please, click Nearest Neighbor button first! :-)");
+                return;
+            }
+
             if (correlationPoints1.Length < 4 || correlationPoints2.Length < 4)
             {
                 MessageBox.Show("Insufficient points to attempt a fit.");
@@ -126,6 +138,12 @@ namespace Panorama
 
         private void btnBlend_Click(object sender, EventArgs e)
         {
+            if (homography == null)
+            {
+                MessageBox.Show("Please, click RANSAC button first! :-)");
+                return;
+            }
+
             // Step 4: Project and blend the second image using the homography
             Blend blend = new Blend(homography, img1);
             pictureBox.Image = blend.Apply(img2);
@@ -134,7 +152,7 @@ namespace Panorama
         private void btnDoItAll_Click(object sender, EventArgs e)
         {
             // Do it all
-            btnHarris_Click(sender, e);
+            btnFreak_Click(sender, e);
             btnCorrelation_Click(sender, e);
             btnRansac_Click(sender, e);
             btnBlend_Click(sender, e);

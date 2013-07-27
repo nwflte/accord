@@ -715,7 +715,7 @@
             this.lbStatus.Name = "lbStatus";
             this.lbStatus.Size = new System.Drawing.Size(651, 17);
             this.lbStatus.Spring = true;
-            this.lbStatus.Text = "toolStripStatusLabel1";
+            this.lbStatus.Text = "Click \"Compute bag-of-words\" to begin!";
             this.lbStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // progressBar
