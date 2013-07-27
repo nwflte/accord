@@ -243,6 +243,18 @@ namespace Accord.Controls.Imaging
         /// 
         /// <param name="title">The text to display in the title bar of the image box.</param>
         /// <param name="image">The image to show.</param>
+        /// 
+        public static DialogResult Show(string title, Image image)
+        {
+            return Show(title, image, PictureBoxSizeMode.AutoSize, 0, 0);
+        }
+
+        /// <summary>
+        ///   Displays an image on the screen.
+        /// </summary>
+        /// 
+        /// <param name="title">The text to display in the title bar of the image box.</param>
+        /// <param name="image">The image to show.</param>
         /// <param name="sizeMode">How to display the image inside the image box.</param>
         /// 
         public static DialogResult Show(string title, Image image, PictureBoxSizeMode sizeMode)
