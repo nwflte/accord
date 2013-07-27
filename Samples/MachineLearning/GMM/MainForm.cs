@@ -33,7 +33,7 @@ namespace GMM
     public partial class MainForm : Form
     {
         // Colors used in the pie graphics
-        ColorSequenceCollection colors = new ColorSequenceCollection(10);
+        ColorSequenceCollection colors = new ColorSequenceCollection();
 
         int k;
         double[][] mixture;
@@ -65,13 +65,7 @@ namespace GMM
                 double[] mean = Matrix.Random(2, -6.0, +6.0);
 
                 // Create random covariance matrix for the distribution
-                double[,] covariance;
-                do
-                {
-                    covariance = Matrix.Random(2, true, 0.0, 3.0);
-                }
-                while (!covariance.IsPositiveDefinite());
-
+                double[,] covariance = Accord.Statistics.Tools.RandomCovariance(2, -5, 5);
 
                 // Create the Gaussian distribution
                 var gaussian = new MultivariateNormalDistribution(mean, covariance);

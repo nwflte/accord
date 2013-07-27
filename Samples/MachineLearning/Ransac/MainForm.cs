@@ -27,6 +27,7 @@ using System.IO;
 using System.Windows.Forms;
 using Accord.MachineLearning;
 using Accord.Math;
+using Accord.Statistics.Formats;
 using Accord.Statistics.Models.Regression.Linear;
 using Components;
 using ZedGraph;

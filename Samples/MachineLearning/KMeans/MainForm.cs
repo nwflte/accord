@@ -32,13 +32,12 @@ using Accord.Imaging;
 using Accord.Math;
 using Accord.Statistics;
 using Accord.Imaging.Converters;
+using Accord.Statistics.Distributions.DensityKernels;
 
-namespace KMeansClustering
+namespace Clustering
 {
     public partial class MainForm : Form
     {
-
-       
 
         public MainForm()
         {
@@ -46,6 +45,15 @@ namespace KMeansClustering
         }
 
         private void btnRun_Click(object sender, EventArgs e)
+        {
+            if (radioClusters.Checked)
+                kmeans();
+
+            else
+                meanshift();
+        }
+
+        private void kmeans()
         {
             // Retrieve the number of clusters
             int k = (int)numClusters.Value;
@@ -72,6 +80,43 @@ namespace KMeansClustering
 
             // Replace every pixel with its corresponding centroid
             pixels.ApplyInPlace((x, i) => kmeans.Clusters.Centroids[idx[i]]);
+
+            // Show resulting image in the picture box
+            Bitmap result; arrayToImage.Convert(pixels, out result);
+
+            pictureBox.Image = result;
+        }
+
+        private void meanshift()
+        {
+            int pixelSize = 3;
+
+            // Retrieve the kernel bandwidth
+            double sigma = (double)numBandwidth.Value;
+
+            // Load original image
+            Bitmap image = Properties.Resources.leaf;
+
+            // Create conversors
+            ImageToArray imageToArray = new ImageToArray(min: -1, max: +1);
+            ArrayToImage arrayToImage = new ArrayToImage(image.Width, image.Height, min: -1, max: +1);
+
+            // Transform the image into an array of pixel values
+            double[][] pixels; imageToArray.Convert(image, out pixels);
+
+
+            // Create a MeanShift algorithm using given bandwidth
+            //   and a Gaussian density kernel as kernel function.
+            MeanShift meanShift = new MeanShift(pixelSize, new GaussianKernel(3), sigma);
+
+
+            // Compute the mean-shift algorithm until the difference in
+            //  shifting means between two iterations is below 0.05
+            int[] idx = meanShift.Compute(pixels, 0.05, maxIterations: 10);
+
+
+            // Replace every pixel with its corresponding centroid
+            pixels.ApplyInPlace((x, i) => meanShift.Clusters.Modes[idx[i]]);
 
             // Show resulting image in the picture box
             Bitmap result; arrayToImage.Convert(pixels, out result);

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace KMeansClustering
+namespace Clustering
 {
     static class Program
     {
