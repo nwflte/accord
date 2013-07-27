@@ -32,6 +32,75 @@ namespace Accord.Neuro.Networks
     ///   Restricted Boltzmann Machine.
     /// </summary>
     /// 
+    /// <example>
+    ///   <code>
+    ///   // Create some sample inputs and outputs. Note that the
+    ///   // first four vectors belong to one class, and the other
+    ///   // four belong to another (you should see that the 1s
+    ///   // accumulate on the beginning for the first four vectors
+    ///   // and on the end for the second four).
+    ///   
+    ///   double[][] inputs =
+    ///   {
+    ///       new double[] { 1,1,1, 0,0,0 }, // class a
+    ///       new double[] { 1,0,1, 0,0,0 }, // class a
+    ///       new double[] { 1,1,1, 0,0,0 }, // class a
+    ///       new double[] { 0,0,1, 1,1,0 }, // class b
+    ///       new double[] { 0,0,1, 1,0,0 }, // class b
+    ///       new double[] { 0,0,1, 1,1,0 }, // class b
+    ///   };
+    ///   
+    ///   double[][] outputs =
+    ///   {
+    ///       new double[] { 1, 0 }, // indicates the inputs at this
+    ///       new double[] { 1, 0 }, // position belongs to class a
+    ///       new double[] { 1, 0 },
+    ///       new double[] { 0, 1 }, // indicates the inputs at this
+    ///       new double[] { 0, 1 }, // position belongs to class b
+    ///       new double[] { 0, 1 },
+    ///   };
+    ///   
+    ///   // Create a Bernoulli activation function
+    ///   var function = new BernoulliFunction(alpha: 0.5);
+    ///   
+    ///   // Create a Restricted Boltzmann Machine for 6 inputs and with 1 hidden neuron
+    ///   var rbm = new RestrictedBoltzmannMachine(function, inputsCount: 6, hiddenNeurons: 2);
+    ///   
+    ///   // Create the learning algorithm for RBMs
+    ///   var teacher = new ContrastiveDivergenceLearning(rbm)
+    ///   {
+    ///       Momentum = 0,
+    ///       LearningRate = 0.1,
+    ///       Decay = 0
+    ///   };
+    ///   
+    ///   // learn 5000 iterations
+    ///   for (int i = 0; i &lt; 5000; i++)
+    ///       teacher.RunEpoch(inputs);
+    ///   
+    ///   // Compute the machine answers for the given inputs:
+    ///   double[] a = rbm.Compute(new double[] { 1, 1, 1, 0, 0, 0 }); // { 0.99, 0.00 }
+    ///   double[] b = rbm.Compute(new double[] { 0, 0, 0, 1, 1, 1 }); // { 0.00, 0.99 }
+    ///   
+    ///   // As we can see, the first neuron responds to vectors belonging
+    ///   // to the first class, firing 0.99 when we feed vectors which 
+    ///   // have 1s at the beginning. Likewise, the second neuron fires 
+    ///   // when the vector belongs to the second class.
+    ///   
+    ///   // We can also generate input vectors given the classes:
+    ///   double[] xa = rbm.GenerateInput(new double[] { 1, 0 }); // { 1, 1, 1, 0, 0, 0 }
+    ///   double[] xb = rbm.GenerateInput(new double[] { 0, 1 }); // { 0, 0, 1, 1, 1, 0 }
+    ///   
+    ///   // As we can see, if we feed an output pattern where the first neuron
+    ///   // is firing and the second isn't, the network generates an example of
+    ///   // a vector belonging to the first class. The same goes for the second
+    ///   // neuron and the second class.
+    /// </code>
+    /// </example>
+    /// 
+    /// <seealso cref="Accord.Neuro.Learning.ContrastiveDivergenceLearning"/>
+    /// <seealso cref="BernoulliFunction"/>
+    /// 
     [Serializable]
     public class RestrictedBoltzmannMachine : ActivationNetwork
     {
@@ -167,7 +236,7 @@ namespace Accord.Neuro.Networks
             return visible.Generate(output);
         }
 
-        
+
         /// <summary>
         ///   Constructs a Gaussian-Bernoulli network with 
         ///   visible Gaussian units and hidden Bernoulli units.
@@ -184,7 +253,7 @@ namespace Accord.Neuro.Networks
 
             foreach (var neuron in network.Visible.Neurons)
                 neuron.ActivationFunction = new GaussianFunction();
-            
+
             return network;
         }
 

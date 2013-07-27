@@ -25,10 +25,62 @@ namespace Accord.Neuro.ActivationFunctions
     using System;
     using AForge;
     using AForge.Neuro;
+    using Accord.Neuro.Neurons;
+    using Accord.Neuro.Networks;
+    using Accord.Statistics.Distributions.Univariate;
 
     /// <summary>
     ///   Bernoulli stochastic activation function.
     /// </summary>
+    /// 
+    /// <remarks>
+    /// <para>
+    ///   The Bernoulli activation function can be used to create <see cref="StochasticNeuron">
+    ///   Stochastic Neurons</see>, which can in turn be used to create <see cref="DeepBeliefNetwork">
+    ///   Deep Belief Networks</see> and <see cref="RestrictedBoltzmannMachine">Restricted Boltzmann
+    ///   Machines</see>. The use of a Bernoulli function is indicated when the inputs of a problem
+    ///   are discrete, it is, are either 0 or 1. When the inputs are continuous, the use of a
+    ///   <see cref="GaussianFunction"/> might be more indicated.</para>
+    /// <para>
+    ///   As a <see cref="IStochasticFunction">stochastic activation function</see>, the Bernoulli
+    ///   function is able to generate values following a statistic probability distribution. In
+    ///   this case, the Bernoulli function follows a <see cref="BernoulliDistribution">Bernoulli
+    ///   distribution</see> with its <see cref="BernoulliDistribution.Mean">mean</see> given by
+    ///   the output of this class' <see cref="Function">sigmoidal function</see>.</para>
+    /// </remarks>
+    /// 
+    /// <example>
+    ///   <code>
+    ///   // Create a Bernoulli function with sigmoid's alpha = 1
+    ///   BernoulliFunction function = new BernoulliFunction();
+    ///   
+    ///   // Computes the function output (sigmoid function)
+    ///   double y = function.Function(x: 0.4); // 0.5986876
+    ///   
+    ///   // Draws a sample from a Bernoulli distribution with
+    ///   // mean given by the function output y (given as before)
+    ///   double z = function.Generate(x: 0.4); // (random, 0 or 1)
+    ///   
+    ///   // Here, z can be either 0 or 1. Since it follows a Bernoulli
+    ///   // distribution with mean 0.59, it is expected to be 1 about 
+    ///   // 0.59 of the time.
+    ///   
+    ///   // Now, please note that the above is completely equivalent 
+    ///   // to computing the line below (remember, 0.5986876 == y)
+    ///   double w = function.Generate2(y: 0.5986876); // (random, 0 or 1)
+    ///   
+    ///   
+    ///   // We can also compute the derivative of the sigmoid function
+    ///   double d = function.Derivative(x: 0.4); // 0.240260
+    ///   
+    ///   // Or compute the derivative given the functions' output y
+    ///   double e = function.Derivative2(y: 0.5986876); // 0.240260
+    ///   </code>
+    /// </example>
+    /// 
+    /// <seealso cref="BernoulliDistribution"/>
+    /// <seealso cref="GaussianFunction"/>
+    /// <seealso cref="DeepBeliefNetwork"/>
     /// 
     [Serializable]
     public class BernoulliFunction : IStochasticFunction
