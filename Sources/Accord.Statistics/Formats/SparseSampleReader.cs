@@ -1,4 +1,4 @@
-﻿// Accord Machine Learning Library
+﻿// Accord Statistics Library
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //

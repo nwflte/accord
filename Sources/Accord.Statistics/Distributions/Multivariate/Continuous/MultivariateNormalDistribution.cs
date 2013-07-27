@@ -123,7 +123,32 @@ namespace Accord.Statistics.Distributions.Multivariate
     ///   double[] mean = normal.Mean;     // { 1, 2 }
     ///   double[] var  = normal.Variance; // { 4.9E-324, 4.9E-324 } (almost machine zero)
     /// </code>
+    /// 
+    /// <para>
+    ///   The next example shows how to estimate a Gaussian distribution from data
+    ///   available inside a Microsoft Excel spreadsheet using the 
+    ///   <see cref="Accord.Statistics.Formats.ExcelReader"/> class.</para>
+    ///   
+    /// <code>
+    ///   // Create a new Excel reader to read data from a spreadsheet
+    ///   ExcelReader reader = new ExcelReader(@"test.xls", hasHeaders: false);
+    ///   
+    ///   // Extract the "Data" worksheet from the xls
+    ///   DataTable table = reader.GetWorksheet("Data");
+    ///   
+    ///   // Convert the data table to a jagged matrix
+    ///   double[][] observations = table.ToArray();
+    ///   
+    ///   
+    ///   // Estimate a new Multivariate Normal Distribution from the observations
+    ///   var dist = MultivariateNormalDistribution.Estimate(observations, new NormalOptions()
+    ///   {
+    ///       Regularization = 1e-10 // this value will be added to the diagonal until it becomes positive-definite
+    ///   });
+    /// </code>
     /// </example>
+    /// 
+    /// <seealso cref="NormalDistribution"/>
     /// 
     [Serializable]
     public class MultivariateNormalDistribution : MultivariateContinuousDistribution,
@@ -186,16 +211,19 @@ namespace Accord.Statistics.Distributions.Multivariate
             int cols = covariance.GetLength(1);
 
             if (rows != cols)
-                throw new DimensionMismatchException("covariance", "Covariance matrix should be square.");
+                throw new DimensionMismatchException("covariance", 
+                    "Covariance matrix should be square.");
 
             if (mean.Length != rows)
-                throw new DimensionMismatchException("covariance", "Covariance matrix should have the same dimensions as mean vector's length.");
+                throw new DimensionMismatchException("covariance", 
+                    "Covariance matrix should have the same dimensions as mean vector's length.");
 
             CholeskyDecomposition chol = new CholeskyDecomposition(covariance,
                 robust: false, lowerTriangular: true);
 
             if (!chol.PositiveDefinite)
-                throw new NonPositiveDefiniteMatrixException("Covariance matrix is not positive definite.");
+                throw new NonPositiveDefiniteMatrixException("Covariance matrix is not positive definite." +
+                    " If are trying to estimate a distribution from data, please try using the Estimate method.");
 
             initialize(mean, covariance, chol);
         }
@@ -490,7 +518,8 @@ namespace Accord.Statistics.Distributions.Multivariate
             if (!chol.PositiveDefinite)
             {
                 throw new NonPositiveDefiniteMatrixException("Covariance matrix is not positive "
-                    + "definite. Try specifying a regularization constant in the fitting options.");
+                    + "definite. Try specifying a regularization constant in the fitting options "
+                    + "(there is an example in the Multivariate Normal Distribution documentation).");
             }
 
             // Become the newly fitted distribution.
@@ -510,6 +539,10 @@ namespace Accord.Statistics.Distributions.Multivariate
         ///   Estimates a new Normal distribution from a given set of observations.
         /// </summary>
         /// 
+        /// <example>
+        ///   Please see <see cref="MultivariateNormalDistribution"/>.
+        /// </example>
+        /// 
         public static MultivariateNormalDistribution Estimate(double[][] observations, NormalOptions options)
         {
             return Estimate(observations, null, options);
@@ -518,6 +551,10 @@ namespace Accord.Statistics.Distributions.Multivariate
         /// <summary>
         ///   Estimates a new Normal distribution from a given set of observations.
         /// </summary>
+        /// 
+        /// <example>
+        ///   Please see <see cref="MultivariateNormalDistribution"/>.
+        /// </example>
         /// 
         public static MultivariateNormalDistribution Estimate(double[][] observations, double[] weights)
         {
@@ -529,6 +566,10 @@ namespace Accord.Statistics.Distributions.Multivariate
         /// <summary>
         ///   Estimates a new Normal distribution from a given set of observations.
         /// </summary>
+        /// 
+        /// <example>
+        ///   Please see <see cref="MultivariateNormalDistribution"/>.
+        /// </example>
         /// 
         public static MultivariateNormalDistribution Estimate(double[][] observations, double[] weights, NormalOptions options)
         {
