@@ -26,6 +26,7 @@ using System.IO;
 using System.Windows.Forms;
 using Accord.Controls;
 using Accord.Statistics.Filters;
+using Accord.Statistics.Formats;
 using Components;
 
 namespace DataProcessing
@@ -48,6 +49,7 @@ namespace DataProcessing
             dataGridView2.DataSource = filters;
 
             openFileDialog.InitialDirectory = Path.Combine(Application.StartupPath, "Resources");
+
         }
 
         #region Open / Save documents
@@ -123,7 +125,6 @@ namespace DataProcessing
 
 
 
-
         private void dataGridView1_CurrentCellChanged(object sender, EventArgs e)
         {
             if (dataGridView1.DataSource != null && dataGridView1.CurrentCell != null)
@@ -153,11 +154,6 @@ namespace DataProcessing
         {
             apply();
         }
-
-   
-
-        
-
 
     }
 }

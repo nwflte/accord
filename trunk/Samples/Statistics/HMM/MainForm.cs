@@ -20,19 +20,14 @@
 //
 
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
-using Accord.Statistics.Models.Markov;
-using Components;
 using System.IO;
-
+using System.Windows.Forms;
 using Accord.Controls;
+using Accord.Statistics.Formats;
+using Accord.Statistics.Models.Markov;
 using Accord.Statistics.Models.Markov.Learning;
+using Components;
 
 namespace Markov
 {

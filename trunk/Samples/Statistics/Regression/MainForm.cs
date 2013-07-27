@@ -132,16 +132,14 @@ namespace Regression
             double[][] input = independent.ToArray();
             double[] output = dependent.Columns[dependentName].ToArray();
 
-            String[] sourceColumns;
-            double[,] sourceMatrix = sourceTable.ToMatrix(out sourceColumns);
+            double[,] sourceMatrix = sourceTable.ToMatrix(independentNames);
 
             // Creates the Simple Descriptive Analysis of the given source
-            DescriptiveAnalysis sda = new DescriptiveAnalysis(sourceMatrix, sourceColumns);
+            DescriptiveAnalysis sda = new DescriptiveAnalysis(sourceMatrix, independentNames);
             sda.Compute();
 
             // Populates statistics overview tab with analysis data
             dgvDistributionMeasures.DataSource = sda.Measures;
-
 
             // Creates the Logistic Regression Analysis of the given source
             lra = new LogisticRegressionAnalysis(input, output, independentNames, dependentName);
