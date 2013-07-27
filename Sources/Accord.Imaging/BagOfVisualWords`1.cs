@@ -26,30 +26,45 @@ namespace Accord.Imaging
     using System.Collections.Generic;
     using System.Drawing;
     using System.Drawing.Imaging;
+    using System.IO;
+    using System.Runtime.Serialization.Formatters.Binary;
     using System.Threading;
     using System.Threading.Tasks;
     using Accord.MachineLearning;
     using Accord.Math;
     using AForge.Imaging;
-    using System.IO;
-    using System.Runtime.Serialization.Formatters.Binary;
 
     /// <summary>
     ///   Bag of Visual Words
     /// </summary>
     /// 
+    /// <typeparam name="TPoint">
+    ///   The <see cref="IFeaturePoint"/> type to be used with this class,
+    ///   such as <see cref="SpeededUpRobustFeaturePoint"/>.</typeparam>
+    /// 
     /// <remarks>
+    /// <para>
     ///   The bag-of-words (BoW) model can be used to extract finite
     ///   length features from otherwise varying length representations.
     ///   This class can uses any <see cref="IFeatureDetector{TPoint}">feature
-    ///   detector</see> to determine a coded representation for a given image.
+    ///   detector</see> to determine a coded representation for a given image.</para>
+    ///   
+    /// <para>
+    ///   For a simpler, non-generic version of the Bag-of-Words model which 
+    ///   defaults to the <see cref="SpeededUpRobustFeaturesDetector">SURF 
+    ///   features detector</see>, please see <see cref="BagOfVisualWords"/>
+    /// </para>
     /// </remarks>
     /// 
     /// <example>
+    /// <para>
+    ///   The following example shows how to use a BoW model with the
+    ///   <see cref="SpeededUpRobustFeaturesDetector"/>.</para>
+    ///   
     /// <code>
     ///   int numberOfWords = 32;
     ///   
-    ///   // Create bag-of-words (BoW) with the given number of words
+    ///   // Create bag-of-words (BoW) with the given SURF detector
     ///   var bow = new BagOfVisualWords&lt;SpeededUpRobustFeaturePoint>(
     ///      new SpeededUpRobustFeaturesDetector(), numberOfWords);
     ///   
@@ -59,33 +74,41 @@ namespace Accord.Imaging
     ///   // Create a fixed-length feature vector for a new image
     ///   double[] featureVector = bow.GetFeatureVector(image);
     /// </code>
+    /// 
+    /// <para>
+    ///   The following example shows how to create a BoW which works with any
+    ///   of corner detector, such as <see cref="FastCornersDetector"/>:</para>
+    ///   
+    /// <code>
+    ///   int numberOfWords = 16;
+    /// 
+    ///   // Create a corners detector
+    ///   MoravecCornersDetector moravec = new MoravecCornersDetector();
+    ///   
+    ///   // Create an adapter to convert corners to visual features
+    ///   CornerFeaturesDetector detector = new CornerFeaturesDetector(moravec);
+    ///   
+    ///   // Create a bag-of-words (BoW) with the guven 
+    ///   var bow = new BagOfVisualWords&lt;CornerFeaturePoint>(detector, numberOfWords);
+    ///   
+    ///   // Create the BoW codebook using a set of training images
+    ///   bow.Compute(imageArray);
+    ///   
+    ///   // Create a fixed-length feature vector for a new image
+    ///   double[] featureVector = bow.GetFeatureVector(image);
+    /// </code>
     /// </example>
     /// 
+    /// <seealso cref="BagOfVisualWords"/>
+    /// <seealso cref="IFeatureDetector{TPoint}"/>
+    /// 
+    /// <seealso cref="SpeededUpRobustFeaturesDetector"/>
+    /// <seealso cref="FastRetinaKeypointDetector"/>
+    /// 
     [Serializable]
-    public class BagOfVisualWords<TPoint> : IBagOfWords<Bitmap>, IBagOfWords<UnmanagedImage>
-        where TPoint : IFeaturePoint
+    public class BagOfVisualWords<TPoint> : BagOfVisualWords<TPoint, double[]>
+        where TPoint : IFeatureDescriptor<double[]>
     {
-
-        /// <summary>
-        ///   Gets the number of words in this codebook.
-        /// </summary>
-        /// 
-        public int NumberOfWords { get; private set; }
-
-        /// <summary>
-        ///   Gets the K-Means algorithm used to create this model.
-        /// </summary>
-        /// 
-        public IClusteringAlgorithm<double[]> Clustering { get; private set; }
-
-        /// <summary>
-        ///   Gets the <see cref="SpeededUpRobustFeaturesDetector">SURF</see>
-        ///   feature point detector used to identify visual features in images.
-        /// </summary>
-        /// 
-        public IFeatureDetector<TPoint> Detector { get; private set; }
-
-
         /// <summary>
         ///   Constructs a new <see cref="BagOfVisualWords"/>.
         /// </summary>
@@ -94,10 +117,8 @@ namespace Accord.Imaging
         /// <param name="numberOfWords">The number of codewords.</param>
         /// 
         public BagOfVisualWords(IFeatureDetector<TPoint> detector, int numberOfWords)
+            : base(detector, new KMeans(numberOfWords))
         {
-            this.NumberOfWords = numberOfWords;
-            this.Clustering = new KMeans(numberOfWords);
-            this.Detector = detector;
         }
 
         /// <summary>
@@ -108,136 +129,9 @@ namespace Accord.Imaging
         /// <param name="algorithm">The clustering algorithm to use.</param>
         /// 
         public BagOfVisualWords(IFeatureDetector<TPoint> detector, IClusteringAlgorithm<double[]> algorithm)
+            : base(detector, algorithm)
         {
-            this.NumberOfWords = algorithm.Clusters.Count;
-            this.Clustering = algorithm;
-            this.Detector = detector;
         }
-
-        /// <summary>
-        ///   Computes the Bag of Words model.
-        /// </summary>
-        /// 
-        /// <param name="images">The set of images to initialize the model.</param>
-        /// <param name="threshold">Convergence rate for the k-means algorithm. Default is 1e-5.</param>
-        /// 
-        /// <returns>The list of feature points detected in all images.</returns>
-        /// 
-        public List<TPoint>[] Compute(Bitmap[] images, double threshold = 1e-5)
-        {
-
-            var descriptors = new List<double[]>();
-            var imagePoints = new List<TPoint>[images.Length];
-
-            // For all images
-            for (int i = 0; i < images.Length; i++)
-            {
-                Bitmap image = images[i];
-
-                // Compute the feature points
-                var points = Detector.ProcessImage(image);
-
-                foreach (IFeaturePoint point in points)
-                    descriptors.Add(point.Descriptor);
-
-                imagePoints[i] = points;
-            }
-
-            // Compute K-Means of the descriptors
-            double[][] data = descriptors.ToArray();
-
-            Clustering.Compute(data, threshold);
-
-            return imagePoints;
-        }
-
-        /// <summary>
-        ///   Gets the codeword representation of a given image.
-        /// </summary>
-        /// 
-        /// <param name="value">The image to be processed.</param>
-        /// 
-        /// <returns>A double vector with the same length as words
-        /// in the code book.</returns>
-        /// 
-        public double[] GetFeatureVector(Bitmap value)
-        {
-            // lock source image
-            BitmapData imageData = value.LockBits(
-                new Rectangle(0, 0, value.Width, value.Height),
-                ImageLockMode.ReadOnly, value.PixelFormat);
-
-            double[] features;
-
-            try
-            {
-                // process the image
-                features = GetFeatureVector(new UnmanagedImage(imageData));
-            }
-            finally
-            {
-                // unlock image
-                value.UnlockBits(imageData);
-            }
-
-            return features;
-        }
-
-        /// <summary>
-        ///   Gets the codeword representation of a given image.
-        /// </summary>
-        /// 
-        /// <param name="value">The image to be processed.</param>
-        /// 
-        /// <returns>A double vector with the same length as words
-        /// in the code book.</returns>
-        /// 
-        public double[] GetFeatureVector(UnmanagedImage value)
-        {
-            // Detect feature points in image
-            List<TPoint> points = Detector.ProcessImage(value);
-
-            return GetFeatureVector(points);
-        }
-
-        /// <summary>
-        ///   Gets the codeword representation of a given image.
-        /// </summary>
-        /// 
-        /// <param name="points">The interest points of the image.</param>
-        /// 
-        /// <returns>A double vector with the same length as words
-        /// in the code book.</returns>
-        /// 
-        public double[] GetFeatureVector(List<TPoint> points)
-        {
-            int[] features = new int[NumberOfWords];
-
-            // Detect all activation centroids
-            Parallel.For(0, points.Count, i =>
-            {
-                int j = Clustering.Clusters.Nearest(points[i].Descriptor);
-
-                // Form feature vector
-                Interlocked.Increment(ref features[j]);
-            });
-
-            return features.ToDouble();
-        }
-
-
-
-        /// <summary>
-        ///   Saves the bag of words to a stream.
-        /// </summary>
-        /// 
-        /// <param name="stream">The stream to which the bow is to be serialized.</param>
-        /// 
-        public virtual void Save(Stream stream)
-        {
-            BinaryFormatter b = new BinaryFormatter();
-            b.Serialize(stream, this);
-        }
-
     }
+
 }
