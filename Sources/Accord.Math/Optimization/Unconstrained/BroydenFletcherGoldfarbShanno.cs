@@ -30,6 +30,7 @@ namespace Accord.Math.Optimization
     /// <summary>
     ///   Limited-memory Broyden–Fletcher–Goldfarb–Shanno (L-BFGS) optimization method.
     /// </summary>
+    /// 
     /// <remarks>
     /// <para>
     ///   The L-BFGS algorithm is a member of the broad family of quasi-Newton optimization

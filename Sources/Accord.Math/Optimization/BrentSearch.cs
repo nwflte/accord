@@ -287,7 +287,7 @@ namespace Accord.Math.Optimization
                 {
 
                     double t = x + new_step;     // Tentative point for the min
-                    double ft = function(t);     // recompute f(tentative point)
+                    double ft = function(t);            // recompute f(tentative point)
 
                     if (Double.IsNaN(ft) || Double.IsInfinity(ft))
                         throw new ConvergenceException("Function evaluation didn't return a finite number.");

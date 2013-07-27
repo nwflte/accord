@@ -164,7 +164,8 @@ namespace Accord.Math
         public static double[,] Kernel2D(int size, double lambda, double theta, double psi,
             double sigma, double gamma, bool normalized)
         {
-            return Kernel2D(size, lambda, theta, psi, sigma, gamma, normalized, GaborKernelKind.Imaginary);
+            return Kernel2D(size, lambda, theta, psi, sigma,
+                gamma, normalized, GaborKernelKind.Imaginary);
         }
 
 
