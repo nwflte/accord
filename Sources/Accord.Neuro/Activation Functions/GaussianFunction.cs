@@ -25,15 +25,62 @@ namespace Accord.Neuro.ActivationFunctions
     using System;
     using AForge;
     using AForge.Math.Random;
+    using Accord.Neuro.Neurons;
+    using Accord.Neuro.Networks;
+    using Accord.Neuro.Learning;
+    using Accord.Statistics.Distributions.Univariate;
 
     /// <summary>
     ///   Gaussian stochastic activation function.
     /// </summary>
     /// 
     /// <remarks>
-    ///   This function assumes output variables have been normalized
-    ///   to have zero mean and unit variance.
+    /// <para>
+    ///   The Gaussian activation function can be used to create <see cref="StochasticNeuron">
+    ///   Stochastic Neurons</see>, which can in turn be used to create <see cref="DeepBeliefNetwork">
+    ///   Deep Belief Networks</see> and <see cref="RestrictedBoltzmannMachine">Restricted Boltzmann
+    ///   Machines</see>. In contrast to the <see cref="BernoulliFunction"/>, the Gaussian can be used
+    ///   to model continuous inputs in Deep Belief Networks. If, however, the inputs of the problem
+    ///   being learned are discrete in nature, the use of a Bernoulli function would be more indicated.</para>
+    ///   
+    /// <para>
+    ///   The Gaussian activation function is modeled after a <see cref="NormalDistribution">
+    ///   Gaussian (Normal) probability distribution</see>.
+    /// </para>
+    /// 
+    /// <para>
+    ///   This function assumes output variables have been 
+    ///   normalized to have zero mean and unit variance.</para>
     /// </remarks>
+    /// 
+    /// <example>
+    ///   <code>
+    ///   // Create a Gaussian function with slope alpha = 4.2
+    ///   GaussianFunction function = new GaussianFunction(4.2);
+    ///   
+    ///   // Computes the function output (linear, y = alpha * x)
+    ///   double y = function.Function(x: 0.2); // 4.2 * 2 = 0.48
+    ///   
+    ///   // Draws a sample from a Gaussian distribution with
+    ///   // mean given by the function output y (previously 0.48)
+    ///   double z = function.Generate(x: 0.4); // (random, between 0 and 1)
+    ///   
+    ///   // Please note that the above is completely equivalent 
+    ///   // to computing the line below (remember, 0.48 == y)
+    ///   double w = function.Generate2(y: 0.48); // (random, between 0 and 1)
+    ///   
+    ///   
+    ///   // We can also compute the derivative of the sigmoid function
+    ///   double d = function.Derivative(x: 0.2); // 4.2 (the slope)
+    ///   
+    ///   // Or compute the derivative given the functions' output y
+    ///   double e = function.Derivative2(y: 0.2); // 4.2 (the slope)
+    /// </code>
+    /// </example>
+    /// 
+    /// <seealso cref="BernoulliFunction"/>
+    /// <seealso cref="NormalDistribution"/>
+    /// <seealso cref="DeepBeliefNetwork"/>
     ///
     [Serializable]
     public class GaussianFunction : IStochasticFunction
