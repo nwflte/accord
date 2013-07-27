@@ -92,7 +92,9 @@ namespace Accord.Imaging.Converters
         IConverter<Bitmap, double[,]>,
         IConverter<UnmanagedImage, double[,]>,
         IConverter<Bitmap, float[,]>,
-        IConverter<UnmanagedImage, float[,]>
+        IConverter<UnmanagedImage, float[,]>,
+        IConverter<Bitmap, byte[,]>,
+        IConverter<UnmanagedImage, byte[,]>
     {
 
         /// <summary>
@@ -199,6 +201,23 @@ namespace Accord.Imaging.Converters
         /// <param name="input">The input image to be converted.</param>
         /// <param name="output">The converted image.</param>
         /// 
+        public void Convert(Bitmap input, out byte[,] output)
+        {
+            BitmapData bitmapData = input.LockBits(new Rectangle(0, 0, input.Width, input.Height),
+                ImageLockMode.ReadOnly, input.PixelFormat);
+
+            Convert(new UnmanagedImage(bitmapData), out output);
+
+            input.UnlockBits(bitmapData);
+        }
+
+        /// <summary>
+        ///   Converts an image from one representation to another.
+        /// </summary>
+        /// 
+        /// <param name="input">The input image to be converted.</param>
+        /// <param name="output">The converted image.</param>
+        /// 
         public unsafe void Convert(UnmanagedImage input, out double[,] output)
         {
             int width = input.Width;
@@ -252,6 +271,41 @@ namespace Accord.Imaging.Converters
                     {
                         for (int x = 0; x < width; x++, src += pixelSize, dst++)
                             *dst = Accord.Math.Tools.Scale(0, 255, min, max, *src);
+                        src += offset;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        ///   Converts an image from one representation to another. When
+        ///   converting to byte, the <see cref="Max"/> and <see cref="Min"/>
+        ///   are ignored.
+        /// </summary>
+        /// 
+        /// <param name="input">The input image to be converted.</param>
+        /// <param name="output">The converted image.</param>
+        /// 
+        public void Convert(UnmanagedImage input, out byte[,] output)
+        {
+            int width = input.Width;
+            int height = input.Height;
+            int pixelSize = Bitmap.GetPixelFormatSize(input.PixelFormat) / 8;
+            int offset = input.Stride - input.Width * pixelSize;
+
+            output = new byte[height, width];
+
+            unsafe
+            {
+                fixed (byte* ptrData = output)
+                {
+                    byte* dst = ptrData;
+                    byte* src = (byte*)input.ImageData.ToPointer() + Channel;
+
+                    for (int y = 0; y < height; y++)
+                    {
+                        for (int x = 0; x < width; x++, src += pixelSize, dst++)
+                            *dst = *src;
                         src += offset;
                     }
                 }
