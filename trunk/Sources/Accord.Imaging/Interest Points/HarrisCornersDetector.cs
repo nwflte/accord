@@ -306,8 +306,8 @@ namespace Accord.Imaging
             // get source image size
             int width = grayImage.Width;
             int height = grayImage.Height;
-            int srcStride = grayImage.Stride;
-            int srcOffset = srcStride - width;
+            int stride = grayImage.Stride;
+            int offset = stride - width;
 
 
             // 1. Calculate partial differences
@@ -318,26 +318,31 @@ namespace Accord.Imaging
 
             fixed (float* pdx = diffx, pdy = diffy, pdxy = diffxy)
             {
-                byte* src = (byte*)grayImage.ImageData.ToPointer() + srcStride + 1;
-
-                // Skip first row and first column
-                float* dx = pdx + width + 1;
-                float* dy = pdy + width + 1;
-                float* dxy = pdxy + width + 1;
+                // Begin skipping first line
+                byte* src = (byte*)grayImage.ImageData.ToPointer() + stride;
+                float* dx = pdx + width;
+                float* dy = pdy + width;
+                float* dxy = pdxy + width;
 
                 // for each line
                 for (int y = 1; y < height - 1; y++)
                 {
-                    // for each pixel
+                    // skip first column
+                    dx++; dy++; dxy++; src++;
+
+                    // for each inner pixel in line (skipping first and last)
                     for (int x = 1; x < width - 1; x++, src++, dx++, dy++, dxy++)
                     {
-                        // Convolution with horizontal differentiation kernel mask
-                        float h = ((src[-srcStride + 1] + src[+1] + src[srcStride + 1]) -
-                                   (src[-srcStride - 1] + src[-1] + src[srcStride - 1])) * 0.166666667f;
+                        // Retrieve the pixel neighborhood
+                        byte a11 = src[+stride + 1], a12 = src[+1], a13 = src[-stride + 1];
+                        byte a21 = src[+stride + 0], /*  a22    */  a23 = src[-stride + 0];
+                        byte a31 = src[+stride - 1], a32 = src[-1], a33 = src[-stride - 1];
 
-                        // Convolution vertical differentiation kernel mask
-                        float v = ((src[+srcStride - 1] + src[+srcStride] + src[+srcStride + 1]) -
-                                   (src[-srcStride - 1] + src[-srcStride] + src[-srcStride + 1])) * 0.166666667f;
+                        // Convolution with horizontal differentiation kernel mask
+                        float h = ((a11 + a12 + a13) - (a31 + a32 + a33)) * 0.166666667f;
+
+                        // Convolution with vertical differentiation kernel mask
+                        float v = ((a11 + a21 + a31) - (a13 + a23 + a33)) * 0.166666667f;
 
                         // Store squared differences directly
                         *dx = h * h;
@@ -346,8 +351,8 @@ namespace Accord.Imaging
                     }
 
                     // Skip last column
-                    dx++; dy++; dxy++;
-                    src += srcOffset + 1;
+                    dx++; dy++; dxy++; 
+                    src += offset + 1;
                 }
 
                 // Free some resources which wont be needed anymore
@@ -487,7 +492,6 @@ namespace Accord.Imaging
                                 v += tmp[width * (k - radius)] * kernel[k];
                             *src = v;
                         }
-
                     }
                 }
             }
