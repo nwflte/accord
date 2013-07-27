@@ -149,6 +149,7 @@ namespace Accord.Vision.Detection
         private Size maxSize = new Size(500, 500);
         private float factor = 1.2f;
         private int channel = RGB.R;
+        private bool parallel;
 
         private Rectangle[] lastObjects;
         private int steadyThreshold = 2;
@@ -168,6 +169,7 @@ namespace Accord.Vision.Detection
         /// <summary>
         ///   Constructs a new Haar object detector.
         /// </summary>
+        /// 
         /// <param name="cascade">
         ///   The <see cref="HaarCascade"/> to use in the detector's classifier.
         ///   For the default face cascade, please take a look on
@@ -180,13 +182,14 @@ namespace Accord.Vision.Detection
         /// <summary>
         ///   Constructs a new Haar object detector.
         /// </summary>
+        /// 
         /// <param name="cascade">
         ///   The <see cref="HaarCascade"/> to use in the detector's classifier.
         ///   For the default face cascade, please take a look on
-        ///   <see cref="Cascades.FaceHaarCascade"/>.
-        /// </param>
-        /// <param name="minSize">Minimum window size to consider when searching
-        /// objects. Default value is <c>15</c>.</param>
+        ///   <see cref="Cascades.FaceHaarCascade"/>.</param>
+        /// <param name="minSize">
+        ///   Minimum window size to consider when searching for 
+        ///   objects. Default value is <c>15</c>.</param>
         /// 
         public HaarObjectDetector(HaarCascade cascade, int minSize)
             : this(cascade, minSize, ObjectDetectorSearchMode.NoOverlap) { }
@@ -194,16 +197,18 @@ namespace Accord.Vision.Detection
         /// <summary>
         ///   Constructs a new Haar object detector.
         /// </summary>
+        /// 
         /// <param name="cascade">
         ///   The <see cref="HaarCascade"/> to use in the detector's classifier.
         ///   For the default face cascade, please take a look on
         ///   <see cref="Cascades.FaceHaarCascade"/>.
         /// </param>
-        /// <param name="minSize">Minimum window size to consider when searching
-        /// objects. Default value is <c>15</c>.</param>
+        /// <param name="minSize">
+        ///   Minimum window size to consider when searching for
+        ///   objects. Default value is <c>15</c>.</param>
         /// <param name="searchMode">The <see cref="ObjectDetectorSearchMode"/> to use
-        /// during search. Please see documentation of <see cref="ObjectDetectorSearchMode"/>
-        /// for details. Default value is <see cref="ObjectDetectorSearchMode.NoOverlap"/></param>
+        ///   during search. Please see documentation of <see cref="ObjectDetectorSearchMode"/>
+        ///   for details. Default value is <see cref="ObjectDetectorSearchMode.NoOverlap"/></param>
         /// 
         public HaarObjectDetector(HaarCascade cascade, int minSize, ObjectDetectorSearchMode searchMode)
             : this(cascade, minSize, searchMode, 1.2f) { }
@@ -211,40 +216,46 @@ namespace Accord.Vision.Detection
         /// <summary>
         ///   Constructs a new Haar object detector.
         /// </summary>
+        /// 
         /// <param name="cascade">
         ///   The <see cref="HaarCascade"/> to use in the detector's classifier.
         ///   For the default face cascade, please take a look on
-        ///   <see cref="Cascades.FaceHaarCascade"/>.
-        /// </param>
-        /// <param name="minSize">Minimum window size to consider when searching
-        /// objects. Default value is <c>15</c>.</param>
-        /// <param name="searchMode">The <see cref="ObjectDetectorSearchMode"/> to use
-        /// during search. Please see documentation of <see cref="ObjectDetectorSearchMode"/>
-        /// for details. Default value is <see cref="ObjectDetectorSearchMode.NoOverlap"/></param>
+        ///   <see cref="Cascades.FaceHaarCascade"/>.</param>
+        /// <param name="minSize">
+        ///   Minimum window size to consider when searching for
+        ///   objects. Default value is <c>15</c>.</param>
+        /// <param name="searchMode">
+        ///   The <see cref="ObjectDetectorSearchMode"/> to use
+        ///   during search. Please see documentation of <see cref="ObjectDetectorSearchMode"/>
+        ///   for details. Default value is <see cref="ObjectDetectorSearchMode.NoOverlap"/></param>
         /// <param name="scaleFactor">The re-scaling factor to use when re-scaling the window during search.</param>
         /// 
-        public HaarObjectDetector(HaarCascade cascade, int minSize, ObjectDetectorSearchMode searchMode, float scaleFactor)
+        public HaarObjectDetector(HaarCascade cascade, int minSize,
+            ObjectDetectorSearchMode searchMode, float scaleFactor)
             : this(cascade, minSize, searchMode, scaleFactor, ObjectDetectorScalingMode.SmallerToGreater) { }
 
         /// <summary>
         ///   Constructs a new Haar object detector.
         /// </summary>
+        /// 
         /// <param name="cascade">
         ///   The <see cref="HaarCascade"/> to use in the detector's classifier.
         ///   For the default face cascade, please take a look on
-        ///   <see cref="Cascades.FaceHaarCascade"/>.
-        /// </param>
-        /// <param name="minSize">Minimum window size to consider when searching
-        /// objects. Default value is <c>15</c>.</param>
+        ///   <see cref="Cascades.FaceHaarCascade"/>. </param>
+        /// <param name="minSize">
+        ///   Minimum window size to consider when searching for
+        ///   objects. Default value is <c>15</c>.</param>
         /// <param name="searchMode">The <see cref="ObjectDetectorSearchMode"/> to use
-        /// during search. Please see documentation of <see cref="ObjectDetectorSearchMode"/>
-        /// for details. Default is <see cref="ObjectDetectorSearchMode.NoOverlap"/>.</param>
+        ///   during search. Please see documentation of <see cref="ObjectDetectorSearchMode"/>
+        ///   for details. Default is <see cref="ObjectDetectorSearchMode.NoOverlap"/>.</param>
         /// <param name="scaleFactor">The scaling factor to rescale the window
-        /// during search. Default value is <c>1.2f</c>.</param>
+        ///   during search. Default value is <c>1.2f</c>.</param>
         /// <param name="scalingMode">The <see cref="ObjectDetectorScalingMode"/> to use
-        /// when re-scaling the search window during search. Default is <see cref="ObjectDetectorScalingMode.SmallerToGreater"/>.</param>
+        ///   when re-scaling the search window during search. Default is
+        ///   <see cref="ObjectDetectorScalingMode.SmallerToGreater"/>.</param>
         /// 
-        public HaarObjectDetector(HaarCascade cascade, int minSize, ObjectDetectorSearchMode searchMode, float scaleFactor,
+        public HaarObjectDetector(HaarCascade cascade, int minSize,
+            ObjectDetectorSearchMode searchMode, float scaleFactor,
             ObjectDetectorScalingMode scalingMode)
         {
             this.classifier = new HaarClassifier(cascade);
@@ -258,19 +269,36 @@ namespace Accord.Vision.Detection
             this.baseHeight = cascade.Height;
 
             this.match = new GroupMatching(0, 0.2);
+
+#if NET35
+            this.parallel = false;
+#else
+            this.parallel = true;
+#endif
         }
         #endregion
 
         #region Properties
 
+
         /// <summary>
         ///   Gets or sets a value indicating whether this <see cref="HaarObjectDetector"/>
-        ///   should scan the image using multiple threads.
+        ///   should scan the image using multiple threads. This setting can only be changed
+        ///   to true on .NET version which support the Parallel Tasks framework (4.0+).
         /// </summary>
         /// 
         /// <value><c>true</c> to use multiple threads; otherwise, <c>false</c>.</value>
         /// 
-        public bool UseParallelProcessing { get; set; }
+        public bool UseParallelProcessing
+        {
+            get { return parallel; }
+            set
+            {
+#if !NET35
+                parallel = value;
+#endif
+            }
+        }
 
         /// <summary>
         ///   Minimum window size to consider when searching objects.
@@ -477,8 +505,8 @@ namespace Accord.Vision.Detection
                 int xEnd = width - window.Width;
                 int yEnd = height - window.Height;
 
-                // Check if we should run in parallel or sequential
-                if (!UseParallelProcessing)
+
+                if (!parallel)  // Check if we should run in parallel
                 {
                     // Sequential mode. Scan the integral image searching
                     // for objects in the window without parallelization.
@@ -509,11 +537,9 @@ namespace Accord.Vision.Detection
                     }
                 }
 
+#if !NET35
                 else // use parallel processing
                 {
-#if NET35
-                    throw new NotSupportedException("Parallel processing is not available on .NET 3.5");
-#else
                     // Parallel mode. Scan the integral image searching
                     // for objects in the window with parallelization.
                     var bag = new System.Collections.Concurrent.ConcurrentBag<Rectangle>();
@@ -570,8 +596,8 @@ namespace Accord.Vision.Detection
                         foreach (Rectangle obj in bag)
                             detectedObjects.Add(obj);
                     }
-#endif
                 }
+#endif
             }
 
 
