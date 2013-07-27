@@ -290,31 +290,32 @@ namespace FaceTracking
             this.statusBar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fpsLabel,
             this.objectsCountLabel});
-            this.statusBar.Location = new System.Drawing.Point(0, 334);
+            this.statusBar.Location = new System.Drawing.Point(0, 332);
             this.statusBar.Name = "statusBar";
-            this.statusBar.Size = new System.Drawing.Size(432, 22);
+            this.statusBar.Size = new System.Drawing.Size(432, 24);
             this.statusBar.TabIndex = 3;
             // 
             // fpsLabel
             // 
             this.fpsLabel.AutoSize = false;
-            this.fpsLabel.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Top)
-                        | System.Windows.Forms.ToolStripStatusLabelBorderSides.Right)
-                        | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
+            this.fpsLabel.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Top) 
+            | System.Windows.Forms.ToolStripStatusLabelBorderSides.Right) 
+            | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
             this.fpsLabel.BorderStyle = System.Windows.Forms.Border3DStyle.SunkenInner;
             this.fpsLabel.Name = "fpsLabel";
-            this.fpsLabel.Size = new System.Drawing.Size(150, 17);
+            this.fpsLabel.Size = new System.Drawing.Size(150, 19);
             this.fpsLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // objectsCountLabel
             // 
-            this.objectsCountLabel.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Top)
-                        | System.Windows.Forms.ToolStripStatusLabelBorderSides.Right)
-                        | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
+            this.objectsCountLabel.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Top) 
+            | System.Windows.Forms.ToolStripStatusLabelBorderSides.Right) 
+            | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
             this.objectsCountLabel.BorderStyle = System.Windows.Forms.Border3DStyle.SunkenInner;
             this.objectsCountLabel.Name = "objectsCountLabel";
-            this.objectsCountLabel.Size = new System.Drawing.Size(267, 17);
+            this.objectsCountLabel.Size = new System.Drawing.Size(267, 19);
             this.objectsCountLabel.Spring = true;
+            this.objectsCountLabel.Text = "Please select a capture device!";
             this.objectsCountLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // panel1
@@ -323,7 +324,7 @@ namespace FaceTracking
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 24);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(432, 310);
+            this.panel1.Size = new System.Drawing.Size(432, 308);
             this.panel1.TabIndex = 4;
             // 
             // videoSourcePlayer
@@ -331,13 +332,13 @@ namespace FaceTracking
             this.videoSourcePlayer.AutoSizeControl = true;
             this.videoSourcePlayer.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.videoSourcePlayer.ForeColor = System.Drawing.Color.White;
-            this.videoSourcePlayer.Location = new System.Drawing.Point(55, 34);
+            this.videoSourcePlayer.Location = new System.Drawing.Point(55, 33);
             this.videoSourcePlayer.Name = "videoSourcePlayer";
             this.videoSourcePlayer.Size = new System.Drawing.Size(322, 242);
             this.videoSourcePlayer.TabIndex = 0;
             this.videoSourcePlayer.VideoSource = null;
-            this.videoSourcePlayer.Click += new System.EventHandler(this.videoSourcePlayer_Click);
             this.videoSourcePlayer.NewFrame += new AForge.Controls.VideoSourcePlayer.NewFrameHandler(this.videoSourcePlayer_NewFrame);
+            this.videoSourcePlayer.Click += new System.EventHandler(this.videoSourcePlayer_Click);
             // 
             // MainForm
             // 

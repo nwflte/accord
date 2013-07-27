@@ -25,24 +25,23 @@
 //
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using Accord.Imaging;
 using Accord.Imaging.Filters;
+using Accord.Math.Geometry;
 using Accord.Vision.Tracking;
+using AForge;
 using AForge.Imaging;
 using AForge.Imaging.Filters;
+using AForge.Math.Geometry;
 using AForge.Video;
 using AForge.Video.DirectShow;
 using AForge.Video.VFW;
-using IPLab;
-using AForge;
-using System.Drawing.Imaging;
-using Accord.Imaging;
-using Accord.Math.Geometry;
-using System.Collections.Generic;
-using AForge.Math.Geometry;
-
 
 namespace GloveTracking
 {
@@ -164,11 +163,24 @@ namespace GloveTracking
                 VideoCaptureDevice videoSource = new VideoCaptureDevice(form.VideoDevice);
 
                 // set frame size
-                videoSource.DesiredFrameSize = new Size(320, 240);
+                videoSource.VideoResolution = selectResolution(videoSource);
 
                 // open it
                 OpenVideoSource(videoSource);
             }
+        }
+
+        private static VideoCapabilities selectResolution(VideoCaptureDevice device)
+        {
+            foreach (var cap in device.VideoCapabilities)
+            {
+                if (cap.FrameSize.Height == 240)
+                    return cap;
+                if (cap.FrameSize.Width == 320)
+                    return cap;
+            }
+
+            return device.VideoCapabilities.Last();
         }
 
         // Open video file using DirectShow

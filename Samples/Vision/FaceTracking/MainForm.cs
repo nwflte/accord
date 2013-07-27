@@ -27,6 +27,7 @@
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using Accord.Imaging.Filters;
@@ -163,11 +164,24 @@ namespace FaceTracking
                 VideoCaptureDevice videoSource = new VideoCaptureDevice(form.VideoDevice);
 
                 // set frame size
-                videoSource.DesiredFrameSize = new Size(320, 240);
+                videoSource.VideoResolution = selectResolution(videoSource);
 
                 // open it
                 OpenVideoSource(videoSource);
             }
+        }
+
+        private static VideoCapabilities selectResolution(VideoCaptureDevice device)
+        {
+            foreach (var cap in device.VideoCapabilities)
+            {
+                if (cap.FrameSize.Height == 240)
+                    return cap;
+                if (cap.FrameSize.Width == 320)
+                    return cap;
+            }
+
+            return device.VideoCapabilities.Last();
         }
 
         // Open video file using DirectShow
@@ -206,6 +220,8 @@ namespace FaceTracking
             videoSource = source;
 
             this.Cursor = Cursors.Default;
+
+            objectsCountLabel.Text = "Double-click the screen to find faces!";
         }
 
         // Close current video source
@@ -483,6 +499,7 @@ namespace FaceTracking
         private void autodetectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             detecting = true;
+            objectsCountLabel.Text = String.Empty;
         }
 
         private void rGBToolStripMenuItem_Click(object sender, EventArgs e)
