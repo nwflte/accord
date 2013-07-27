@@ -73,6 +73,12 @@ namespace Panorama
 
         private void btnCorrelation_Click(object sender, EventArgs e)
         {
+            if (harrisPoints1 == null)
+            {
+                MessageBox.Show("Please, click Harris button first! :-)");
+                return;
+            }
+
             // Step 2: Match feature points using a correlation measure
             CorrelationMatching matcher = new CorrelationMatching(9);
             IntPoint[][] matches = matcher.Match(img1, img2, harrisPoints1, harrisPoints2);
@@ -95,6 +101,12 @@ namespace Panorama
 
         private void btnRansac_Click(object sender, EventArgs e)
         {
+            if (correlationPoints1 == null)
+            {
+                MessageBox.Show("Please, click Correlation button first! :-)");
+                return;
+            }
+
             if (correlationPoints1.Length < 4 || correlationPoints2.Length < 4)
             {
                 MessageBox.Show("Insufficient points to attempt a fit.");
@@ -123,6 +135,12 @@ namespace Panorama
 
         private void btnBlend_Click(object sender, EventArgs e)
         {
+            if (homography == null)
+            {
+                MessageBox.Show("Please, click RANSAC button first! :-)");
+                return;
+            }
+
             // Step 4: Project and blend the second image using the homography
             Blend blend = new Blend(homography, img1);
             pictureBox.Image = blend.Apply(img2);
