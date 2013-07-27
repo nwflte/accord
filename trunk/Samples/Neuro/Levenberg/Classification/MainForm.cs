@@ -227,7 +227,7 @@ namespace Classification
             // iterations
             iteration = 1;
 
-            var ranges = Matrix.Range(sourceMatrix);
+            var ranges = Matrix.Range(sourceMatrix, 0);
             double[][] map = Matrix.Mesh(ranges[0], ranges[1], 0.05, 0.05);
             var sw = Stopwatch.StartNew();
 
