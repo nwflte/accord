@@ -130,6 +130,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GroupMatching.cs" />
     <Compile Include="Detection\Haar Cascade\Default\FaceHaarCascade.cs" />
     <Compile Include="Detection\Haar Cascade\Default\NoseHaarCascade.cs" />
     <Compile Include="Detection\Haar Cascade\HaarCascade.cs" />
@@ -141,7 +142,7 @@
     <Compile Include="Detection\Haar Cascade\HaarRectangle.cs" />
     <Compile Include="Detection\IObjectDetector.cs" />
     <Compile Include="Detection\HaarObjectDetector.cs" />
-    <Compile Include="GroupMatching.cs" />
+    <Compile Include="GroupMatching`1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tracking\MatchingTracker.cs" />
     <Compile Include="Tracking\Camshift.cs" />

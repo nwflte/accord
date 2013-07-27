@@ -30,7 +30,7 @@ namespace Accord.Vision.Detection
     using System.Drawing;
 
     /// <summary>
-    ///   Group matching algorithm for detection region averging.
+    ///   Group matching algorithm for detection region averaging.
     /// </summary>
     /// 
     /// <remarks>
@@ -39,18 +39,9 @@ namespace Accord.Vision.Detection
     ///   robust and smooth estimates of the detected regions.
     /// </remarks>
     /// 
-    public class GroupMatching
+    public class GroupMatching : GroupMatching<Rectangle>
     {
-
-        private double threshold = 0.2;
-        private int classCount;
-
-        private int minNeighbors;
-
-        private int[] labels;
-        private int[] equals;
-
-        private List<Rectangle> filter;
+        private double threshold;
 
         /// <summary>
         ///   Creates a new <see cref="GroupMatching"/> object.
@@ -64,59 +55,38 @@ namespace Accord.Vision.Detection
         ///   Default is 0.2.</param>
         /// 
         public GroupMatching(int minimumNeighbors = 2, double threshold = 0.2)
+            : base(minimumNeighbors)
         {
-            this.minNeighbors = minimumNeighbors;
-            this.threshold = threshold / 2.0;
-            this.filter = new List<Rectangle>();
+            this.threshold = threshold;
         }
 
         /// <summary>
-        ///   Gets or sets the minimum number of neighbors necessary to keep a detection.
-        ///   If a rectangle has less neighbors than this number, it will be discarded as
-        ///   a false positive.
+        ///   Gets the minimum distance threshold to consider
+        ///   two rectangles as neighbors. Default is 0.2.
         /// </summary>
         /// 
-        public int MinimumNeighbors
+        protected double Threshold
         {
-            get { return minNeighbors; }
-            set
-            {
-                if (minNeighbors < 0)
-                    throw new ArgumentOutOfRangeException("value", "Value must be equal to or higher than zero.");
-                minNeighbors = value;
-            }
+            get { return threshold; }
         }
 
         /// <summary>
-        ///   Groups possibly near rectangles into a smaller
-        ///   set of distinct and averaged rectangles.
+        ///   Checks if two rectangles are near.
         /// </summary>
         /// 
-        /// <param name="rectangles">The rectangles to group.</param>
-        /// 
-        public Rectangle[] Group(Rectangle[] rectangles)
+        protected override bool Near(Rectangle shape1, Rectangle shape2)
         {
-            // Start by classifying rectangles according to distance
-            classify(rectangles); // assign label for near rectangles
+            if (shape1.Contains(shape2) || shape2.Contains(shape1))
+                return true;
 
-            int[] neighborCount;
+            int minHeight = Math.Min(shape1.Height, shape2.Height);
+            int minWidth = Math.Min(shape1.Width, shape2.Width);
+            double delta = 0.5 * threshold * (minHeight + minWidth);
 
-            // Average the rectangles contained in each labelled group
-            Rectangle[] output = average(rectangles, out neighborCount);
-
-            // Check supression
-            if (minNeighbors > 0)
-            {
-                filter.Clear();
-
-                // Discard weak rectangles which don't have enough neighbors
-                for (int i = 0; i < output.Length; i++)
-                    if (neighborCount[i] >= minNeighbors) filter.Add(output[i]);
-
-                return filter.ToArray();
-            }
-
-            return output;
+            return Math.Abs(shape1.X - shape2.X) <= delta
+                && Math.Abs(shape1.Y - shape2.Y) <= delta
+                && Math.Abs(shape1.Right - shape2.Right) <= delta
+                && Math.Abs(shape1.Bottom - shape2.Bottom) <= delta;
         }
 
         /// <summary>
@@ -124,19 +94,19 @@ namespace Accord.Vision.Detection
         ///   same class (have the same class label)
         /// </summary>
         /// 
-        private Rectangle[] average(Rectangle[] rectangles, out int[] neighborCounts)
+        protected override Rectangle[] Average(int[] labels, Rectangle[] shapes, out int[] neighborCounts)
         {
-            neighborCounts = new int[classCount];
+            neighborCounts = new int[Classes];
 
-            Rectangle[] centroids = new Rectangle[classCount];
-            for (int i = 0; i < rectangles.Length; i++)
+            Rectangle[] centroids = new Rectangle[Classes];
+            for (int i = 0; i < shapes.Length; i++)
             {
                 int j = labels[i];
 
-                centroids[j].X += rectangles[i].X;
-                centroids[j].Y += rectangles[i].Y;
-                centroids[j].Width += rectangles[i].Width;
-                centroids[j].Height += rectangles[i].Height;
+                centroids[j].X += shapes[i].X;
+                centroids[j].Y += shapes[i].Y;
+                centroids[j].Width += shapes[i].Width;
+                centroids[j].Height += shapes[i].Height;
 
                 neighborCounts[j]++;
             }
@@ -154,113 +124,6 @@ namespace Accord.Vision.Detection
 
             return centroids;
         }
-
-        /// <summary>
-        ///   Detects rectangles which are near and 
-        ///   assigns similar class labels accordingly.
-        /// </summary>
-        /// 
-        private void classify(Rectangle[] rectangles)
-        {
-            equals = new int[rectangles.Length];
-            for (int i = 0; i < equals.Length; i++)
-                equals[i] = -1;
-
-            labels = new int[rectangles.Length];
-            for (int i = 0; i < labels.Length; i++)
-                labels[i] = i;
-
-            classCount = 0;
-
-            // If two rectangles are near, or contained in
-            // each other, merge then in a single rectangle
-            for (int i = 0; i < rectangles.Length - 1; i++)
-            {
-                for (int j = i + 1; j < rectangles.Length; j++)
-                {
-                    if (near(rectangles[i], rectangles[j]))
-                        merge(labels[i], labels[j]);
-                }
-            }
-
-            // Count the number of classes and centroids
-            int[] centroids = new int[rectangles.Length];
-            for (int i = 0; i < centroids.Length; i++)
-                if (equals[i] == -1) centroids[i] = classCount++;
-
-            // Classify all rectangles with their labels
-            for (int i = 0; i < rectangles.Length; i++)
-            {
-                int root = labels[i];
-                while (equals[root] != -1)
-                    root = equals[root];
-
-                labels[i] = centroids[root];
-            }
-        }
-
-        /// <summary>
-        ///   Merges two labels.
-        /// </summary>
-        /// 
-        private void merge(int label1, int label2)
-        {
-            int root1 = label1;
-            int root2 = label2;
-
-            // Get the roots associated with the two labels
-            while (equals[root1] != -1) root1 = equals[root1];
-            while (equals[root2] != -1) root2 = equals[root2];
-
-            if (root1 == root2) // labels are already connected
-                return;
-
-            int minRoot, maxRoot;
-            int labelWithMinRoot, labelWithMaxRoot;
-
-            if (root1 > root2)
-            {
-                maxRoot = root1;
-                minRoot = root2;
-
-                labelWithMaxRoot = label1;
-                labelWithMinRoot = label2;
-            }
-            else
-            {
-                maxRoot = root2;
-                minRoot = root1;
-
-                labelWithMaxRoot = label2;
-                labelWithMinRoot = label1;
-            }
-
-            equals[maxRoot] = minRoot;
-
-            for (int root = maxRoot + 1; root <= labelWithMaxRoot; root++)
-            {
-                if (equals[root] == maxRoot)
-                    equals[root] = minRoot;
-            }
-        }
-
-        /// <summary>
-        ///   Checks if two rectangles are near.
-        /// </summary>
-        /// 
-        private bool near(Rectangle r1, Rectangle r2)
-        {
-            if (r1.Contains(r2) || r2.Contains(r1))
-                return true;
-
-            int minHeight = Math.Min(r1.Height, r2.Height);
-            int minWidth = Math.Min(r1.Width, r2.Width);
-            double delta = threshold * (minHeight + minWidth);
-
-            return Math.Abs(r1.X - r2.X) <= delta
-                && Math.Abs(r1.Y - r2.Y) <= delta
-                && Math.Abs(r1.Right - r2.Right) <= delta
-                && Math.Abs(r1.Bottom - r2.Bottom) <= delta;
-        }
     }
+
 }
