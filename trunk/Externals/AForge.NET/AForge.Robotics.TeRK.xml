@@ -5,42 +5,44 @@
     </assembly>
     <members>
         <member name="T:AForge.Robotics.TeRK.Qwerk">
-            <summary>
-            Manipulation of Qwerk robotics board.
-            </summary>
-            
-            <remarks>
-            <para>The class allows to manipulate with Qwerk robotics board developed by
-            <a href="http://www.charmedlabs.com/">Charmed Labs</a> and supported by
-            <a href="http://www.terk.ri.cmu.edu/">TeRK project</a>. Using this class it is
-            possible to get access to different Qwerk's services, like digital inputs and outputs, 
-            motors and servos, analog inputs, on-board LEDs, video camera, etc.</para>
-            
-            <para><img src="img/robotics/qwerk_board.jpg" width="192" height="201" /></para>
-            
-            <para><note>Since TeRK project, which is the software core of Qwerk board, is
-            based on <a href="http://www.zeroc.com/ice.html">Internet Communication Engine (ICE)</a>,
-            the ICE runtime should be installed in order to use Qwerk classes.</note></para>
-            
-            <para>Sample usage:</para>
-            <code>
-            Qwerk qwerk = new Qwerk( );
-            // connect to Qwerk
-            qwerk.Connect( "192.168.0.5" );
-            // turn off all on-board LEDs
-            qwerk.GetLedsService( ).SetLedsState( Qwerk.LedState.Off );
-            // get digital output service
-            Qwerk.DigitalOut outputs = qwerk.GetDigitalOutService( );
-            // set all digital outputs to disabled state
-            outputs.SetOutputs( false );
-            // enable zero output
-            outputs.SetOutput( 0, true );
-            // get state of all analog inputs
-            short[] inputs = qwerk.GetAnalogInService( ).GetInputs( );
-            // get state of all digital inputs
-            bool[] inputs = qwerk.GetDigitalInService( ).GetInputs( );
-            </code>
-            </remarks>
+             <summary>
+             Manipulation of Qwerk robotics board.
+             </summary>
+             
+             <remarks>
+             <para>The class allows to manipulate with Qwerk robotics board developed by
+             <a href="http://www.charmedlabs.com/">Charmed Labs</a> and supported by
+             <a href="http://www.terk.ri.cmu.edu/">TeRK project</a>. Using this class it is
+             possible to get access to different Qwerk's services, like digital inputs and outputs, 
+             motors and servos, analog inputs, on-board LEDs, video camera, etc.</para>
+             
+             <para><img src="img/robotics/qwerk_board.jpg" width="192" height="201" /></para>
+             
+             <para><note>Since TeRK project, which is the software core of Qwerk board, is
+             based on <a href="http://www.zeroc.com/ice.html">Internet Communication Engine (ICE)</a>,
+             the ICE runtime should be installed in order to use Qwerk classes.</note></para>
+             
+             <para><note>The class is deprecated.</note></para>
+             
+             <para>Sample usage:</para>
+             <code>
+             Qwerk qwerk = new Qwerk( );
+             // connect to Qwerk
+             qwerk.Connect( "192.168.0.5" );
+             // turn off all on-board LEDs
+             qwerk.GetLedsService( ).SetLedsState( Qwerk.LedState.Off );
+             // get digital output service
+             Qwerk.DigitalOut outputs = qwerk.GetDigitalOutService( );
+             // set all digital outputs to disabled state
+             outputs.SetOutputs( false );
+             // enable zero output
+             outputs.SetOutput( 0, true );
+             // get state of all analog inputs
+             short[] inputs = qwerk.GetAnalogInService( ).GetInputs( );
+             // get state of all digital inputs
+             bool[] inputs = qwerk.GetDigitalInService( ).GetInputs( );
+             </code>
+             </remarks>
             
         </member>
         <member name="M:AForge.Robotics.TeRK.Qwerk.#ctor">
@@ -188,6 +190,8 @@
             in servo's physical moving in the [0, 255] range. However, of physical bound is set
             to [10, 20], for example, then physically the servo will move only in this range. But logical
             position is still may be set in [0, 255] range, which is mapped to physical range.</para>
+            
+            <para><note>The class is deprecated.</note></para>
             
             <para>Sample usage:</para>
             <code>
@@ -403,6 +407,8 @@
             them through <see cref="E:AForge.Robotics.TeRK.Qwerk.Video.NewFrame"/> event. The video frame rate can be configured
             using <see cref="P:AForge.Robotics.TeRK.Qwerk.Video.FrameInterval"/> property, which sets time interval between frames.</para>
             
+            <para><note>The class is deprecated.</note></para>
+            
             <para>Sample usage:</para>
             <code>
             // get Qwerk's video service
@@ -603,6 +609,8 @@
             <remarks><para>The class allows to manipulate Qwerk's on-boar LED's. The total number
             of available on-board LEDs equals to <see cref="F:AForge.Robotics.TeRK.Qwerk.Leds.Count"/>.</para>
             
+            <para><note>The class is deprecated.</note></para>
+            
             <para>Sample usage:</para>
             <code>
             // get Qwerk's LEDs service
@@ -698,6 +706,8 @@
             <remarks><para>The class allows to manipulate Qwerk's digital outputs. The total number
             of available digital outputs equals to <see cref="F:AForge.Robotics.TeRK.Qwerk.DigitalOut.Count"/>.</para>
             
+            <para><note>The class is deprecated.</note></para>
+            
             <para>Sample usage:</para>
             <code>
             // get Qwerk's digital outs service
@@ -789,6 +799,8 @@
             <remarks><para>The class allows to manipulate Qwerk's motors. The total number
             of available motors equals to <see cref="F:AForge.Robotics.TeRK.Qwerk.Motors.Count"/>.</para>
             
+            <para><note>The class is deprecated.</note></para>
+            
             <para>Sample usage:</para>
             <code>
             // get Qwerk's motors service
@@ -865,6 +877,8 @@
             <remarks><para>The class allows to retrieve state of Qwerk's digital inputs. The total
             number of available digital inputs equals to <see cref="F:AForge.Robotics.TeRK.Qwerk.DigitalIn.Count"/>.</para>
             
+            <para><note>The class is deprecated.</note></para>
+            
             <para>Sample usage:</para>
             <code>
             // get Qwerk's digital inputs service
@@ -929,6 +943,8 @@
             
             <remarks><para>The class allows to retrieve state of Qwerk's analog inputs. The total
             number of available analog inputs equals to <see cref="F:AForge.Robotics.TeRK.Qwerk.AnalogIn.Count"/>.</para>
+            
+            <para><note>The class is deprecated.</note></para>
             
             <para>Sample usage:</para>
             <code>

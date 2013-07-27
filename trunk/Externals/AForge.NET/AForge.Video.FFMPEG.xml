@@ -297,7 +297,7 @@ reader.Close( );
 
 </member>
         <member name="M:libffmpeg.sws_convertPalette8ToPacked24(System.Byte!System.Runtime.CompilerServices.IsConst*,System.Byte*,System.Int32,System.Byte!System.Runtime.CompilerServices.IsConst*)">
- Converts an 8bit paletted frame into a frame with a color depth of 24 bits.
+ Convert an 8-bit paletted frame into a frame with a color depth of 24 bits.
 
  With the palette format "ABCD", the destination frame ends up with the format "ABC".
 
@@ -308,7 +308,7 @@ reader.Close( );
 
 </member>
         <member name="M:libffmpeg.sws_convertPalette8ToPacked32(System.Byte!System.Runtime.CompilerServices.IsConst*,System.Byte*,System.Int32,System.Byte!System.Runtime.CompilerServices.IsConst*)">
- Converts an 8bit paletted frame into a frame with a color depth of 32-bits.
+ Convert an 8-bit paletted frame into a frame with a color depth of 32 bits.
 
  The output frame will have the same packed format as the palette.
 
@@ -319,35 +319,35 @@ reader.Close( );
 
 </member>
         <member name="M:libffmpeg.sws_cloneVec(libffmpeg.SwsVector*)">
-Allocates and returns a clone of the vector a, that is a vector
+Allocate and return a clone of the vector a, that is a vector
 with the same coefficients as a.
 
 </member>
         <member name="M:libffmpeg.sws_normalizeVec(libffmpeg.SwsVector*,System.Double)">
-Scales all the coefficients of a so that their sum equals height.
+Scale all the coefficients of a so that their sum equals height.
 
 </member>
         <member name="M:libffmpeg.sws_scaleVec(libffmpeg.SwsVector*,System.Double)">
-Scales all the coefficients of a by the scalar value.
+Scale all the coefficients of a by the scalar value.
 
 </member>
         <member name="M:libffmpeg.sws_getIdentityVec">
-Allocates and returns a vector with just one coefficient, with
+Allocate and return a vector with just one coefficient, with
 value 1.0.
 
 </member>
         <member name="M:libffmpeg.sws_getConstVec(System.Double,System.Int32)">
-Allocates and returns a vector with length coefficients, all
+Allocate and return a vector with length coefficients, all
 with the same value c.
 
 </member>
         <member name="M:libffmpeg.sws_getGaussianVec(System.Double,System.Double)">
-Returns a normalized Gaussian curve used to filter stuff
-quality=3 is high quality, lower is lower quality.
+Return a normalized Gaussian curve used to filter stuff
+quality = 3 is high quality, lower is lower quality.
 
 </member>
         <member name="M:libffmpeg.sws_allocVec(System.Int32)">
-Allocates and returns an uninitialized vector with length coefficients.
+Allocate and return an uninitialized vector with length coefficients.
 
 </member>
         <member name="M:libffmpeg.sws_getColorspaceDetails(libffmpeg.SwsContext*,System.Int32**,System.Int32*,System.Int32**,System.Int32*,System.Int32*,System.Int32*,System.Int32*)">
@@ -360,7 +360,7 @@ Allocates and returns an uninitialized vector with length coefficients.
 
 </member>
         <member name="M:libffmpeg.sws_scale(libffmpeg.SwsContext*,System.Byte!System.Runtime.CompilerServices.IsConst*!System.Runtime.CompilerServices.IsConst*,System.Int32!System.Runtime.CompilerServices.IsConst*,System.Int32,System.Int32,System.Byte*!System.Runtime.CompilerServices.IsConst*,System.Int32!System.Runtime.CompilerServices.IsConst*)">
- Scales the image slice in srcSlice and puts the resulting scaled
+ Scale the image slice in srcSlice and put the resulting scaled
  slice in the image in dst. A slice is a sequence of consecutive
  rows in an image.
 
@@ -387,24 +387,24 @@ Allocates and returns an uninitialized vector with length coefficients.
 
 </member>
         <member name="M:libffmpeg.sws_freeContext(libffmpeg.SwsContext*)">
-Frees the swscaler context swsContext.
+Free the swscaler context swsContext.
 If swsContext is NULL, then does nothing.
 
 </member>
         <member name="M:libffmpeg.sws_init_context(libffmpeg.SwsContext*,libffmpeg.SwsFilter*,libffmpeg.SwsFilter*)">
- Initializes the swscaler context sws_context.
+ Initialize the swscaler context sws_context.
 
  @return zero or positive value on success, a negative value on
  error
 
 </member>
         <member name="T:libffmpeg.SwsContext">
-Allocates an empty SwsContext. This must be filled and passed to
+Allocate an empty SwsContext. This must be filled and passed to
 sws_init_context(). For filling see AVOptions, options.c and
 sws_setColorspaceDetails().
 
 
- Allocates and returns a SwsContext. You need it to perform
+ Allocate and return an SwsContext. You need it to perform
  scaling/conversion operations using sws_scale().
 
  @param srcW the width of the source image
@@ -420,8 +420,7 @@ sws_setColorspaceDetails().
  @deprecated Use sws_getCachedContext() instead.
 
 
- Checks if context can be reused, otherwise reallocates a new
- one.
+ Check if context can be reused, otherwise reallocate a new one.
 
  If context is NULL, just calls sws_getContext() to get a new
  context. Otherwise, checks if the parameters are the ones already
@@ -434,24 +433,26 @@ sws_setColorspaceDetails().
 
 </member>
         <member name="M:libffmpeg.sws_isSupportedOutput(libffmpeg.PixelFormat)">
-Returns a positive value if pix_fmt is a supported output format, 0
+Return a positive value if pix_fmt is a supported output format, 0
 otherwise.
 
 </member>
         <member name="M:libffmpeg.sws_isSupportedInput(libffmpeg.PixelFormat)">
-Returns a positive value if pix_fmt is a supported input format, 0
+Return a positive value if pix_fmt is a supported input format, 0
 otherwise.
 
 </member>
         <member name="M:libffmpeg.swscale_license">
-Returns the libswscale license.
+Return the libswscale license.
 
 </member>
         <member name="M:libffmpeg.swscale_configuration">
-Returns the libswscale build-time configuration.
+Return the libswscale build-time configuration.
 
 </member>
         <member name="M:libffmpeg.swscale_version">
+@}
+
 @file
 @brief
     external api for the swscale stuff
@@ -459,27 +460,7 @@ Returns the libswscale build-time configuration.
 Those FF_API_* defines are not part of public API.
 They may change, break or disappear at any time.
 
-Returns the LIBSWSCALE_VERSION_INT constant.
-
-</member>
-        <member name="M:libffmpeg.avformat_network_deinit">
-Undo the initialization done by avformat_network_init.
-
-</member>
-        <member name="M:libffmpeg.avformat_network_init">
- Do global initialization of network components. This is optional,
- but recommended, since it avoids the overhead of implicitly
- doing the setup for each session.
-
- Calling this function will become mandatory if using network
- protocols at some major version bump.
-
-</member>
-        <member name="M:libffmpeg.avformat_get_class">
- Get the AVClass for AVFormatContext. It can be used in combination with
- AV_OPT_SEARCH_FAKE_OBJ for examining options.
-
- @see av_opt_find().
+Return the LIBSWSCALE_VERSION_INT constant.
 
 </member>
         <member name="M:libffmpeg.avformat_query_codec(libffmpeg.AVOutputFormat*,libffmpeg.CodecID,System.Int32)">
@@ -553,60 +534,6 @@ Get the current time in microseconds.
 @deprecated Deprecated in favor of av_dump_format().
 
 </member>
-        <member name="M:libffmpeg.av_get_output_timestamp(libffmpeg.AVFormatContext*,System.Int32,System.Int64*,System.Int64*)">
-Get timing information for the data currently output.
-The exact meaning of "currently output" depends on the format.
-It is mostly relevant for devices that have an internal buffer and/or
-work in real time.
-@param s          media file handle
-@param stream     stream in the media file
-@param dts[out]   DTS of the last packet output for the stream, in stream
-                  time_base units
-@param wall[out]  absolute time when that packet whas output,
-                  in microsecond
-@return  0 if OK, AVERROR(ENOSYS) if the format does not support it
-Note: some formats or devices may not allow to measure dts and wall
-atomically.
-
-</member>
-        <member name="M:libffmpeg.av_write_trailer(libffmpeg.AVFormatContext*)">
- Write the stream trailer to an output media file and free the
- file private data.
-
- May only be called after a successful call to av_write_header.
-
- @param s media file handle
- @return 0 if OK, AVERROR_xxx on error
-
-</member>
-        <member name="M:libffmpeg.av_write_header(libffmpeg.AVFormatContext*)">
- Allocate the stream private data and write the stream header to an
- output media file.
- @note: this sets stream time-bases, if possible to stream-&gt;codec-&gt;time_base
- but for some formats it might also be some other time base
-
- @param s media file handle
- @return 0 if OK, AVERROR_xxx on error
-
- @deprecated use avformat_write_header.
-
-</member>
-        <member name="M:libffmpeg.avformat_write_header(libffmpeg.AVFormatContext*,libffmpeg.AVDictionary**)">
- Allocate the stream private data and write the stream header to
- an output media file.
-
- @param s Media file handle, must be allocated with avformat_alloc_context().
-          Its oformat field must be set to the desired output format;
-          Its pb field must be set to an already openened AVIOContext.
- @param options  An AVDictionary filled with AVFormatContext and muxer-private options.
-                 On return this parameter will be destroyed and replaced with a dict containing
-                 options that were not found. May be NULL.
-
- @return 0 on success, negative AVERROR on failure.
-
- @see av_opt_find, av_dict_set, avio_open, av_oformat_next.
-
-</member>
         <member name="M:libffmpeg.av_url_split(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte*,System.Int32,System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte*,System.Int32,System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte*,System.Int32,System.Int32*,System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte*,System.Int32,System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*)">
  Split a URL string into components.
 
@@ -627,12 +554,6 @@ atomically.
  @param url the URL to split
 
 </member>
-        <member name="M:libffmpeg.av_set_parameters(libffmpeg.AVFormatContext*,libffmpeg.AVFormatParameters*)">
-media file output
-
-@deprecated pass the options to avformat_write_header directly.
-
-</member>
         <member name="M:libffmpeg.av_add_index_entry(libffmpeg.AVStream*,System.Int64,System.Int64,System.Int32,System.Int32,System.Int32)">
  Add an index entry into a sorted list. Update the entry if the list
  already contains it.
@@ -640,23 +561,173 @@ media file output
  @param timestamp timestamp in the time base of the given stream
 
 </member>
-        <member name="M:libffmpeg.avformat_new_stream(libffmpeg.AVFormatContext*,libffmpeg.AVCodec*)">
- Add a new stream to a media file.
+        <member name="M:libffmpeg.av_codec_get_tag(libffmpeg.AVCodecTag!System.Runtime.CompilerServices.IsConst*!System.Runtime.CompilerServices.IsConst*,libffmpeg.CodecID)">
+ Get the codec tag for the given codec id id.
+ If no codec tag is found returns 0.
 
- When demuxing, it is called by the demuxer in read_header(). If the
- flag AVFMTCTX_NOHEADER is set in s.ctx_flags, then it may also
- be called in read_packet().
+ @param tags list of supported codec_id-codec_tag pairs, as stored
+ in AVInputFormat.codec_tag and AVOutputFormat.codec_tag
 
- When muxing, should be called by the user before avformat_write_header().
+</member>
+        <member name="M:libffmpeg.av_pkt_dump_log2(System.Void*,System.Int32,libffmpeg.AVPacket*,System.Int32,libffmpeg.AVStream*)">
+ Send a nice dump of a packet to the log.
 
- @param c If non-NULL, the AVCodecContext corresponding to the new stream
- will be initialized to use this codec. This is needed for e.g. codec-specific
- defaults to be set, so codec should be provided if it is known.
+ @param avcl A pointer to an arbitrary struct of which the first field is a
+ pointer to an AVClass struct.
+ @param level The importance level of the message, lower values signifying
+ higher importance.
+ @param pkt packet to dump
+ @param dump_payload True if the payload must be displayed, too.
+ @param st AVStream that the packet belongs to
 
- @return newly created stream or NULL on error.
+</member>
+        <member name="M:libffmpeg.av_pkt_dump2(libffmpeg._iobuf*,libffmpeg.AVPacket*,System.Int32,libffmpeg.AVStream*)">
+ Send a nice dump of a packet to the specified file stream.
+
+ @param f The file stream pointer where the dump should be sent to.
+ @param pkt packet to dump
+ @param dump_payload True if the payload must be displayed, too.
+ @param st AVStream that the packet belongs to
+
+</member>
+        <member name="M:libffmpeg.av_hex_dump_log(System.Void*,System.Int32,System.Byte*,System.Int32)">
+ Send a nice hexadecimal dump of a buffer to the log.
+
+ @param avcl A pointer to an arbitrary struct of which the first field is a
+ pointer to an AVClass struct.
+ @param level The importance level of the message, lower values signifying
+ higher importance.
+ @param buf buffer
+ @param size buffer size
+
+ @see av_hex_dump, av_pkt_dump2, av_pkt_dump_log2
+
+</member>
+        <member name="M:libffmpeg.av_hex_dump(libffmpeg._iobuf*,System.Byte*,System.Int32)">
+@}
+
+ @defgroup lavf_misc Utility functions
+ @ingroup libavf
+ @{
+
+ Miscelaneous utility functions related to both muxing and demuxing
+ (or neither).
+
+ Send a nice hexadecimal dump of a buffer to the specified file stream.
+
+ @param f The file stream pointer where the dump should be sent to.
+ @param buf buffer
+ @param size buffer size
+
+ @see av_hex_dump_log, av_pkt_dump2, av_pkt_dump_log2
+
+</member>
+        <member name="M:libffmpeg.av_get_output_timestamp(libffmpeg.AVFormatContext*,System.Int32,System.Int64*,System.Int64*)">
+Get timing information for the data currently output.
+The exact meaning of "currently output" depends on the format.
+It is mostly relevant for devices that have an internal buffer and/or
+work in real time.
+@param s          media file handle
+@param stream     stream in the media file
+@param dts[out]   DTS of the last packet output for the stream, in stream
+                  time_base units
+@param wall[out]  absolute time when that packet whas output,
+                  in microsecond
+@return  0 if OK, AVERROR(ENOSYS) if the format does not support it
+Note: some formats or devices may not allow to measure dts and wall
+atomically.
+
+</member>
+        <member name="M:libffmpeg.av_guess_format(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*)">
+ Return the output format in the list of registered output formats
+ which best matches the provided parameters, or return NULL if
+ there is no match.
+
+ @param short_name if non-NULL checks if short_name matches with the
+ names of the registered formats
+ @param filename if non-NULL checks if filename terminates with the
+ extensions of the registered formats
+ @param mime_type if non-NULL checks if mime_type matches with the
+ MIME type of the registered formats
+
+</member>
+        <member name="M:libffmpeg.av_write_trailer(libffmpeg.AVFormatContext*)">
+ Write the stream trailer to an output media file and free the
+ file private data.
+
+ May only be called after a successful call to av_write_header.
+
+ @param s media file handle
+ @return 0 if OK, AVERROR_xxx on error
+
+</member>
+        <member name="M:libffmpeg.av_interleaved_write_frame(libffmpeg.AVFormatContext*,libffmpeg.AVPacket*)">
+ Write a packet to an output media file ensuring correct interleaving.
+
+ The packet must contain one audio or video frame.
+ If the packets are already correctly interleaved, the application should
+ call av_write_frame() instead as it is slightly faster. It is also important
+ to keep in mind that completely non-interleaved input will need huge amounts
+ of memory to interleave with this, so it is preferable to interleave at the
+ demuxer level.
+
+ @param s media file handle
+ @param pkt The packet containing the data to be written. Libavformat takes
+ ownership of the data and will free it when it sees fit using the packet's
+ @ref AVPacket.destruct "destruct" field. The caller must not access the data
+ after this function returns, as it may already be freed.
+ Packet's @ref AVPacket.stream_index "stream_index" field must be set to the
+ index of the corresponding stream in @ref AVFormatContext.streams
+ "s.streams".
+ It is very strongly recommended that timing information (@ref AVPacket.pts
+ "pts", @ref AVPacket.dts "dts" @ref AVPacket.duration "duration") is set to
+ correct values.
+
+ @return 0 on success, a negative AVERROR on error.
+
+</member>
+        <member name="M:libffmpeg.av_write_header(libffmpeg.AVFormatContext*)">
+ Allocate the stream private data and write the stream header to an
+ output media file.
+ @note: this sets stream time-bases, if possible to stream-&gt;codec-&gt;time_base
+ but for some formats it might also be some other time base
+
+ @param s media file handle
+ @return 0 if OK, AVERROR_xxx on error
+
+ @deprecated use avformat_write_header.
+
+</member>
+        <member name="M:libffmpeg.avformat_write_header(libffmpeg.AVFormatContext*,libffmpeg.AVDictionary**)">
+@addtogroup lavf_encoding
+@{
+
+ Allocate the stream private data and write the stream header to
+ an output media file.
+
+ @param s Media file handle, must be allocated with avformat_alloc_context().
+          Its oformat field must be set to the desired output format;
+          Its pb field must be set to an already openened AVIOContext.
+ @param options  An AVDictionary filled with AVFormatContext and muxer-private options.
+                 On return this parameter will be destroyed and replaced with a dict containing
+                 options that were not found. May be NULL.
+
+ @return 0 on success, negative AVERROR on failure.
+
+ @see av_opt_find, av_dict_set, avio_open, av_oformat_next.
+
+</member>
+        <member name="M:libffmpeg.av_set_parameters(libffmpeg.AVFormatContext*,libffmpeg.AVFormatParameters*)">
+@deprecated pass the options to avformat_write_header directly.
+
+</member>
+        <member name="M:libffmpeg.av_set_pts_info(libffmpeg.AVStream*,System.Int32,System.UInt32,System.UInt32)">
+@deprecated this function is not supposed to be called outside of lavf
 
 </member>
         <member name="M:libffmpeg.av_new_stream(libffmpeg.AVFormatContext*,System.Int32)">
+@}
+
  Add a new stream to a media file.
 
  Can only be called in the read_header() function. If the flag
@@ -667,12 +738,13 @@ media file output
  @param id file-format-dependent stream ID
 
 </member>
-        <member name="M:libffmpeg.avformat_free_context(libffmpeg.AVFormatContext*)">
-Free an AVFormatContext and all its streams.
-@param s context to free
+        <member name="M:libffmpeg.avformat_close_input(libffmpeg.AVFormatContext**)">
+Close an opened input AVFormatContext. Free it and all its contents
+and set *s to NULL.
 
 </member>
         <member name="M:libffmpeg.av_close_input_file(libffmpeg.AVFormatContext*)">
+ @deprecated use avformat_close_input()
  Close a media file (but not its codecs).
 
  @param s media file handle
@@ -681,6 +753,7 @@ Free an AVFormatContext and all its streams.
         <member name="M:libffmpeg.av_close_input_stream(libffmpeg.AVFormatContext*)">
 Free a AVFormatContext allocated by av_open_input_stream.
 @param s context to free
+@deprecated use av_close_input_file()
 
 </member>
         <member name="M:libffmpeg.av_read_pause(libffmpeg.AVFormatContext*)">
@@ -791,33 +864,6 @@ from AV_TIME_BASE units to the stream specific time_base.
  @deprecated use avformat_find_stream_info.
 
 </member>
-        <member name="M:libffmpeg.avformat_alloc_output_context2(libffmpeg.AVFormatContext**,libffmpeg.AVOutputFormat*,System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*)">
- Allocate an AVFormatContext for an output format.
- avformat_free_context() can be used to free the context and
- everything allocated by the framework within it.
-
- @param *ctx is set to the created format context, or to NULL in
- case of failure
- @param oformat format to use for allocating the context, if NULL
- format_name and filename are used instead
- @param format_name the name of output format to use for allocating the
- context, if NULL filename is used instead
- @param filename the name of the filename to use for allocating the
- context, may be NULL
- @return &gt;= 0 in case of success, a negative AVERROR code in case of
- failure
-
-</member>
-        <member name="M:libffmpeg.avformat_alloc_output_context(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,libffmpeg.AVOutputFormat*,System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*)">
-@deprecated deprecated in favor of avformat_alloc_output_context2()
-
-</member>
-        <member name="M:libffmpeg.avformat_alloc_context">
-Allocate an AVFormatContext.
-avformat_free_context() can be used to free the context and everything
-allocated by the framework within it.
-
-</member>
         <member name="M:libffmpeg.avformat_open_input(libffmpeg.AVFormatContext**,System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,libffmpeg.AVInputFormat*,libffmpeg.AVDictionary**)">
  Open an input stream and read the header. The codecs are not opened.
  The stream must be closed with av_close_input_file().
@@ -891,82 +937,65 @@ Allocate all the structures needed to read an input stream.
 
 </member>
         <member name="M:libffmpeg.av_find_input_format(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*)">
+@addtogroup lavf_decoding
+@{
+
 Find AVInputFormat based on the short name of the input format.
 
 </member>
-        <member name="M:libffmpeg.av_codec_get_tag(libffmpeg.AVCodecTag!System.Runtime.CompilerServices.IsConst*!System.Runtime.CompilerServices.IsConst*,libffmpeg.CodecID)">
- Get the codec tag for the given codec id id.
- If no codec tag is found returns 0.
+        <member name="M:libffmpeg.avformat_alloc_output_context2(libffmpeg.AVFormatContext**,libffmpeg.AVOutputFormat*,System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*)">
+ Allocate an AVFormatContext for an output format.
+ avformat_free_context() can be used to free the context and
+ everything allocated by the framework within it.
 
- @param tags list of supported codec_id-codec_tag pairs, as stored
- in AVInputFormat.codec_tag and AVOutputFormat.codec_tag
-
-</member>
-        <member name="M:libffmpeg.av_register_all">
- Initialize libavformat and register all the muxers, demuxers and
- protocols. If you do not call this function, then you can select
- exactly which formats you want to support.
-
- @see av_register_input_format()
- @see av_register_output_format()
- @see av_register_protocol()
-
-</member>
-        <member name="M:libffmpeg.av_pkt_dump_log2(System.Void*,System.Int32,libffmpeg.AVPacket*,System.Int32,libffmpeg.AVStream*)">
- Send a nice dump of a packet to the log.
-
- @param avcl A pointer to an arbitrary struct of which the first field is a
- pointer to an AVClass struct.
- @param level The importance level of the message, lower values signifying
- higher importance.
- @param pkt packet to dump
- @param dump_payload True if the payload must be displayed, too.
- @param st AVStream that the packet belongs to
+ @param *ctx is set to the created format context, or to NULL in
+ case of failure
+ @param oformat format to use for allocating the context, if NULL
+ format_name and filename are used instead
+ @param format_name the name of output format to use for allocating the
+ context, if NULL filename is used instead
+ @param filename the name of the filename to use for allocating the
+ context, may be NULL
+ @return &gt;= 0 in case of success, a negative AVERROR code in case of
+ failure
 
 </member>
-        <member name="M:libffmpeg.av_pkt_dump2(libffmpeg._iobuf*,libffmpeg.AVPacket*,System.Int32,libffmpeg.AVStream*)">
- Send a nice dump of a packet to the specified file stream.
-
- @param f The file stream pointer where the dump should be sent to.
- @param pkt packet to dump
- @param dump_payload True if the payload must be displayed, too.
- @param st AVStream that the packet belongs to
+        <member name="M:libffmpeg.avformat_alloc_output_context(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,libffmpeg.AVOutputFormat*,System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*)">
+@deprecated deprecated in favor of avformat_alloc_output_context2()
 
 </member>
-        <member name="M:libffmpeg.av_hex_dump_log(System.Void*,System.Int32,System.Byte*,System.Int32)">
- Send a nice hexadecimal dump of a buffer to the log.
+        <member name="M:libffmpeg.avformat_new_stream(libffmpeg.AVFormatContext*,libffmpeg.AVCodec*)">
+ Add a new stream to a media file.
 
- @param avcl A pointer to an arbitrary struct of which the first field is a
- pointer to an AVClass struct.
- @param level The importance level of the message, lower values signifying
- higher importance.
- @param buf buffer
- @param size buffer size
+ When demuxing, it is called by the demuxer in read_header(). If the
+ flag AVFMTCTX_NOHEADER is set in s.ctx_flags, then it may also
+ be called in read_packet().
 
- @see av_hex_dump, av_pkt_dump2, av_pkt_dump_log2
+ When muxing, should be called by the user before avformat_write_header().
 
-</member>
-        <member name="M:libffmpeg.av_hex_dump(libffmpeg._iobuf*,System.Byte*,System.Int32)">
- Send a nice hexadecimal dump of a buffer to the specified file stream.
+ @param c If non-NULL, the AVCodecContext corresponding to the new stream
+ will be initialized to use this codec. This is needed for e.g. codec-specific
+ defaults to be set, so codec should be provided if it is known.
 
- @param f The file stream pointer where the dump should be sent to.
- @param buf buffer
- @param size buffer size
-
- @see av_hex_dump_log, av_pkt_dump2, av_pkt_dump_log2
+ @return newly created stream or NULL on error.
 
 </member>
-        <member name="M:libffmpeg.av_guess_format(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*)">
- Return the output format in the list of registered output formats
- which best matches the provided parameters, or return NULL if
- there is no match.
+        <member name="M:libffmpeg.avformat_get_class">
+ Get the AVClass for AVFormatContext. It can be used in combination with
+ AV_OPT_SEARCH_FAKE_OBJ for examining options.
 
- @param short_name if non-NULL checks if short_name matches with the
- names of the registered formats
- @param filename if non-NULL checks if filename terminates with the
- extensions of the registered formats
- @param mime_type if non-NULL checks if mime_type matches with the
- MIME type of the registered formats
+ @see av_opt_find().
+
+</member>
+        <member name="M:libffmpeg.avformat_free_context(libffmpeg.AVFormatContext*)">
+Free an AVFormatContext and all its streams.
+@param s context to free
+
+</member>
+        <member name="M:libffmpeg.avformat_alloc_context">
+Allocate an AVFormatContext.
+avformat_free_context() can be used to free the context and everything
+allocated by the framework within it.
 
 </member>
         <member name="M:libffmpeg.av_oformat_next(libffmpeg.AVOutputFormat*)">
@@ -979,6 +1008,69 @@ or NULL if f is the last one.
 If f is NULL, returns the first registered input format,
 if f is non-NULL, returns the next registered input format after f
 or NULL if f is the last one.
+
+</member>
+        <member name="M:libffmpeg.avformat_network_deinit">
+Undo the initialization done by avformat_network_init.
+
+</member>
+        <member name="M:libffmpeg.avformat_network_init">
+ Do global initialization of network components. This is optional,
+ but recommended, since it avoids the overhead of implicitly
+ doing the setup for each session.
+
+ Calling this function will become mandatory if using network
+ protocols at some major version bump.
+
+</member>
+        <member name="M:libffmpeg.av_register_all">
+ Initialize libavformat and register all the muxers, demuxers and
+ protocols. If you do not call this function, then you can select
+ exactly which formats you want to support.
+
+ @see av_register_input_format()
+ @see av_register_output_format()
+ @see av_register_protocol()
+
+</member>
+        <member name="M:libffmpeg.avformat_license">
+Return the libavformat license.
+
+</member>
+        <member name="M:libffmpeg.avformat_configuration">
+Return the libavformat build-time configuration.
+
+</member>
+        <member name="M:libffmpeg.avformat_version">
+ @defgroup lavf_core Core functions
+ @ingroup libavf
+
+ Functions for querying libavformat capabilities, allocating core structures,
+ etc.
+ @{
+
+Return the LIBAVFORMAT_VERSION_INT constant.
+
+</member>
+        <member name="F:libffmpeg.AVFormatContext.max_chunk_size">
+Max chunk size in bytes
+Note, not all formats support this and unpredictable things may happen if it is used when not supported.
+- encoding: Set by user via AVOptions (NO direct access)
+- decoding: unused
+
+</member>
+        <member name="F:libffmpeg.AVFormatContext.max_chunk_duration">
+Max chunk time in microseconds.
+Note, not all formats support this and unpredictable things may happen if it is used when not supported.
+- encoding: Set by user via AVOptions (NO direct access)
+- decoding: unused
+
+</member>
+        <member name="F:libffmpeg.AVFormatContext.audio_preload">
+Audio preload in microseconds.
+Note, not all formats support this and unpredictable things may happen if it is used when not supported.
+- encoding: Set by user via AVOptions (NO direct access)
+- decoding: unused
 
 </member>
         <member name="F:libffmpeg.AVFormatContext.ts_id">
@@ -1076,7 +1168,7 @@ decoding: total file size, 0 if unknown
         <member name="F:libffmpeg.AVFormatContext.duration">
 Decoding: duration of the stream, in AV_TIME_BASE fractional
 seconds. Only set this value if you know none of the individual stream
-durations and also dont set any of them. This is deduced from the
+durations and also do not set any of them. This is deduced from the
 AVStream values if not set.
 
 </member>
@@ -1103,13 +1195,6 @@ It is deduced from the AVStream values.
         <member name="F:libffmpeg.AVFormatContext.priv_data">
 Format private data. This is an AVOptions-enabled struct
 if and only if iformat/oformat.priv_class is not NULL.
-
-</member>
-        <member name="T:libffmpeg.AVInputFormat">
- Can only be iformat or oformat, not both at the same time.
-
- decoding: set by avformat_open_input().
- encoding: set by the user.
 
 </member>
         <member name="F:libffmpeg.AVFormatContext.av_class">
@@ -1154,7 +1239,8 @@ Average framerate
 </member>
         <member name="T:libffmpeg.AVPacketList">
 last packet in packet_buffer for this stream when muxing.
-used internally, NOT PART OF PUBLIC API, dont read or write from outside of libav*
+Used internally, NOT PART OF PUBLIC API, do not read or
+write from outside of libav*
 
 
 This buffer is only needed when packets were already buffered but
@@ -1240,6 +1326,10 @@ version bump.
 sizeof(AVStream) must not be used outside libav*.
 
 </member>
+        <member name="T:libffmpeg.AVStreamParseType">
+@}
+
+</member>
         <member name="F:libffmpeg.AVInputFormat.read_pause">
 Pause playing - only meaningful if using a network-based format
 (RTSP).
@@ -1267,7 +1357,7 @@ AVFMT_NOGENSEARCH, AVFMT_NO_BYTE_SEEK.
 
 </member>
         <member name="F:libffmpeg.AVInputFormat.read_timestamp">
-Gets the next timestamp in stream[stream_index].time_base units.
+Get the next timestamp in stream[stream_index].time_base units.
 @return the timestamp or AV_NOPTS_VALUE if an error occurred
 
 </member>
@@ -1313,6 +1403,19 @@ A comma separated list of short names for the format. New names
 may be appended with a minor bump.
 
 </member>
+        <member name="T:libffmpeg.AVInputFormat">
+@}
+
+@addtogroup lavf_decoding
+@{
+
+
+ Can only be iformat or oformat, not both at the same time.
+
+ decoding: set by avformat_open_input().
+ encoding: set by the user.
+
+</member>
         <member name="F:libffmpeg.AVOutputFormat.query_codec">
  Test if the given codec can be stored in this container.
 
@@ -1328,7 +1431,15 @@ choice first". The arrays are all terminated by CODEC_ID_NONE.
         <member name="F:libffmpeg.AVOutputFormat.flags">
 can use flags: AVFMT_NOFILE, AVFMT_NEEDNUMBER, AVFMT_RAWPICTURE,
 AVFMT_GLOBALHEADER, AVFMT_NOTIMESTAMPS, AVFMT_VARIABLE_FPS,
-AVFMT_NODIMENSIONS, AVFMT_NOSTREAMS
+AVFMT_NODIMENSIONS, AVFMT_NOSTREAMS, AVFMT_ALLOW_FLUSH
+
+</member>
+        <member name="F:libffmpeg.AVOutputFormat.write_packet">
+Write a packet. If AVFMT_ALLOW_FLUSH is set in flags,
+pkt can be NULL in order to flush data buffered in the muxer.
+When flushing, return 0 if there still is more data to flush,
+or 1 if everything was flushed and there is no more buffered
+data.
 
 </member>
         <member name="F:libffmpeg.AVOutputFormat.priv_data_size">
@@ -1339,6 +1450,12 @@ size of private data so that it can be allocated in the wrapper
 Descriptive name for the format, meant to be more human-readable
 than name. You should use the NULL_IF_CONFIG_SMALL() macro
 to define it.
+
+</member>
+        <member name="T:libffmpeg.AVOutputFormat">
+Demuxer will use avio_open, no opened file should be provided by the caller.
+@addtogroup lavf_encoding
+@{
 
 </member>
         <member name="T:libffmpeg.AVProbeData">
@@ -1403,13 +1520,13 @@ Only meaningful if using a network streaming protocol (e.g. MMS.).
        If stream_index is (-1) the timestamp should be in AV_TIME_BASE
        units from the beginning of the presentation.
        If a stream_index &gt;= 0 is used and the protocol does not support
-       seeking based on component streams, the call will fail with ENOTSUP.
+       seeking based on component streams, the call will fail.
 @param timestamp timestamp in AVStream.time_base units
        or if there is no stream specified then in AV_TIME_BASE units.
 @param flags Optional combination of AVSEEK_FLAG_BACKWARD, AVSEEK_FLAG_BYTE
        and AVSEEK_FLAG_ANY. The protocol may silently ignore
        AVSEEK_FLAG_BACKWARD and AVSEEK_FLAG_ANY, but AVSEEK_FLAG_BYTE will
-       fail with ENOTSUP if used and not supported.
+       fail if used and not supported.
 @return &gt;= 0 on success
 @see AVInputFormat::read_seek
 
@@ -1619,6 +1736,7 @@ return the written or read size
 @defgroup old_url_f_funcs Old url_f* functions
 The following functions are deprecated, use the "avio_"-prefixed functions instead.
 @{
+@ingroup lavf_io
 
 </member>
         <member name="M:libffmpeg.av_url_read_fpause(libffmpeg.AVIOContext*,System.Int32)">
@@ -1629,6 +1747,7 @@ The following functions are deprecated, use the "avio_"-prefixed functions inste
 @defgroup old_avio_funcs Old put_/get_*() functions
 The following functions are deprecated. Use the "avio_"-prefixed functions instead.
 @{
+@ingroup lavf_io
 
 </member>
         <member name="D:libffmpeg.ByteIOContext">
@@ -1650,6 +1769,7 @@ NULL is given), or NULL if protocol is the last one.
 @defgroup old_url_funcs Old url_* functions
 The following functions are deprecated. Use the buffered API based on #AVIOContext instead.
 @{
+@ingroup lavf_io
 
 </member>
         <member name="D:libffmpeg.URLInterruptCB">
@@ -1684,51 +1804,6 @@ Removal, reordering and changes to existing fields require a major
 version bump.
 sizeof(URLContext) must not be used outside libav*.
 @deprecated This struct will be made private
-
-</member>
-        <member name="M:libffmpeg.avformat_license">
-Return the libavformat license.
-
-</member>
-        <member name="M:libffmpeg.avformat_configuration">
-Return the libavformat build-time configuration.
-
-</member>
-        <member name="M:libffmpeg.avformat_version">
- @defgroup libavf I/O and Muxing/Demuxing Library
- @{
-
- @defgroup lavf_decoding Demuxing
- @{
- @}
-
- @defgroup lavf_encoding Muxing
- @{
- @}
-
- @defgroup lavf_proto I/O Read/Write
- @{
- @}
-
- @defgroup lavf_codec Demuxers
- @{
- @defgroup lavf_codec_native Native Demuxers
- @{
- @}
- @defgroup lavf_codec_wrappers External library wrappers
- @{
- @}
- @}
- @defgroup lavf_protos I/O Protocols
- @{
- @}
- @defgroup lavf_internal Internal
- @{
- @}
- @}
-
-
-Return the LIBAVFORMAT_VERSION_INT constant.
 
 </member>
         <member name="M:AForge.Video.FFMPEG.VideoFileWriter.Close">
@@ -1929,6 +2004,13 @@ writer.Close( );
 </code>
             </remarks>
         </member>
+        <member name="M:libffmpeg.avcodec_get_frame_class">
+ Get the AVClass for AVFrame. It can be used in combination with
+ AV_OPT_SEARCH_FAKE_OBJ for examining options.
+
+ @see av_opt_find().
+
+</member>
         <member name="M:libffmpeg.avcodec_get_class">
  Get the AVClass for AVCodecContext. It can be used in combination with
  AV_OPT_SEARCH_FAKE_OBJ for examining options.
@@ -1974,7 +2056,7 @@ a pointer to an AVClass struct
 
 </member>
         <member name="M:libffmpeg.av_log_missing_feature(System.Void*,System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,System.Int32)">
-Logs a generic warning message about a missing feature. This function is
+Log a generic warning message about a missing feature. This function is
 intended to be used internally by FFmpeg (libavcodec, libavformat, etc.)
 only, and would normally not be used by applications.
 @param[in] avc a pointer to an arbitrary struct of which the first field is
@@ -2004,6 +2086,14 @@ Crop image top and left side.
 </member>
         <member name="M:libffmpeg.av_picture_copy(libffmpeg.AVPicture*,libffmpeg.AVPicture!System.Runtime.CompilerServices.IsConst*,libffmpeg.PixelFormat,System.Int32,System.Int32)">
 Copy image src to dst. Wraps av_picture_data_copy() above.
+
+</member>
+        <member name="M:libffmpeg.av_fast_padded_malloc(System.Void*,System.UInt32*,System.UInt32)">
+ Same behaviour av_fast_malloc but the buffer has additional
+ FF_INPUT_PADDING_SIZE at the end which will will always be 0.
+
+ In addition the whole buffer will initially and after resizes
+ be 0-initialized so that no uninitialized data will ever appear.
 
 </member>
         <member name="M:libffmpeg.av_fast_malloc(System.Void*,System.UInt32*,System.UInt32)">
@@ -2151,13 +2241,71 @@ Flush buffers, should be called when seeking or when switching to a different st
  of bytes used from the output buffer.
 
 </member>
+        <member name="M:libffmpeg.avcodec_fill_audio_frame(libffmpeg.AVFrame*,System.Int32,libffmpeg.AVSampleFormat,System.Byte!System.Runtime.CompilerServices.IsConst*,System.Int32,System.Int32)">
+ Fill audio frame data and linesize.
+ AVFrame extended_data channel pointers are allocated if necessary for
+ planar audio.
+
+ @param frame       the AVFrame
+                    frame-&gt;nb_samples must be set prior to calling the
+                    function. This function fills in frame-&gt;data,
+                    frame-&gt;extended_data, frame-&gt;linesize[0].
+ @param nb_channels channel count
+ @param sample_fmt  sample format
+ @param buf         buffer to use for frame data
+ @param buf_size    size of buffer
+ @param align       plane size sample alignment
+ @return            0 on success, negative error code on failure
+
+</member>
+        <member name="M:libffmpeg.avcodec_encode_audio2(libffmpeg.AVCodecContext*,libffmpeg.AVPacket*,libffmpeg.AVFrame!System.Runtime.CompilerServices.IsConst*,System.Int32*)">
+ Encode a frame of audio.
+
+ Takes input samples from frame and writes the next output packet, if
+ available, to avpkt. The output packet does not necessarily contain data for
+ the most recent frame, as encoders can delay, split, and combine input frames
+ internally as needed.
+
+ @param avctx     codec context
+ @param avpkt     output AVPacket.
+                  The user can supply an output buffer by setting
+                  avpkt-&gt;data and avpkt-&gt;size prior to calling the
+                  function, but if the size of the user-provided data is not
+                  large enough, encoding will fail. All other AVPacket fields
+                  will be reset by the encoder using av_init_packet(). If
+                  avpkt-&gt;data is NULL, the encoder will allocate it.
+                  The encoder will set avpkt-&gt;size to the size of the
+                  output packet.
+ @param[in] frame AVFrame containing the raw audio data to be encoded.
+                  May be NULL when flushing an encoder that has the
+                  CODEC_CAP_DELAY capability set.
+                  There are 2 codec capabilities that affect the allowed
+                  values of frame-&gt;nb_samples.
+                  If CODEC_CAP_SMALL_LAST_FRAME is set, then only the final
+                  frame may be smaller than avctx-&gt;frame_size, and all other
+                  frames must be equal to avctx-&gt;frame_size.
+                  If CODEC_CAP_VARIABLE_FRAME_SIZE is set, then each frame
+                  can have any number of samples.
+                  If neither is set, frame-&gt;nb_samples must be equal to
+                  avctx-&gt;frame_size for all frames.
+ @param[out] got_packet_ptr This field is set to 1 by libavcodec if the
+                            output packet is non-empty, and to 0 if it is
+                            empty. If the function returns an error, the
+                            packet can be assumed to be invalid, and the
+                            value of got_packet_ptr is undefined and should
+                            not be used.
+ @return          0 on success, negative error code on failure
+
+</member>
         <member name="M:libffmpeg.avcodec_encode_audio(libffmpeg.AVCodecContext*,System.Byte*,System.Int32,System.Int16!System.Runtime.CompilerServices.IsConst*)">
  Encode an audio frame from samples into buf.
 
+ @deprecated Use avcodec_encode_audio2 instead.
+
  @note The output buffer should be at least FF_MIN_BUFFER_SIZE bytes large.
- However, for PCM audio the user will know how much space is needed
- because it depends on the value passed in buf_size as described
- below. In that case a lower value can be used.
+ However, for codecs with avctx-&gt;frame_size equal to 0 (e.g. PCM) the user
+ will know how much space is needed because it depends on the value passed
+ in buf_size as described below. In that case a lower value can be used.
 
  @param avctx the codec context
  @param[out] buf the output buffer
@@ -2165,14 +2313,17 @@ Flush buffers, should be called when seeking or when switching to a different st
  @param[in] samples the input buffer containing the samples
  The number of samples read from this buffer is frame_size*channels,
  both of which are defined in avctx.
- For PCM audio the number of samples read from samples is equal to
- buf_size * input_sample_size / output_sample_size.
+ For codecs which have avctx-&gt;frame_size equal to 0 (e.g. PCM) the number of
+ samples read from samples is equal to:
+ buf_size * 8 / (avctx-&gt;channels * av_get_bits_per_sample(avctx-&gt;codec_id))
+ This also implies that av_get_bits_per_sample() must not return 0 for these
+ codecs.
  @return On error a negative value is returned, on success zero or the number
  of bytes used to encode the data read from the input buffer.
 
 </member>
         <member name="M:libffmpeg.avsubtitle_free(libffmpeg.AVSubtitle*)">
- Frees all allocated data in the given subtitle struct.
+ Free all allocated data in the given subtitle struct.
 
  @param sub AVSubtitle to free.
 
@@ -2194,7 +2345,45 @@ Flush buffers, should be called when seeking or when switching to a different st
  * @param[in] avpkt The input AVPacket containing the input buffer.
 
 </member>
+        <member name="M:libffmpeg.avcodec_decode_audio4(libffmpeg.AVCodecContext*,libffmpeg.AVFrame*,System.Int32*,libffmpeg.AVPacket*)">
+ Decode the audio frame of size avpkt-&gt;size from avpkt-&gt;data into frame.
+
+ Some decoders may support multiple frames in a single AVPacket. Such
+ decoders would then just decode the first frame. In this case,
+ avcodec_decode_audio4 has to be called again with an AVPacket containing
+ the remaining data in order to decode the second frame, etc...
+ Even if no frames are returned, the packet needs to be fed to the decoder
+ with remaining data until it is completely consumed or an error occurs.
+
+ @warning The input buffer, avpkt-&gt;data must be FF_INPUT_BUFFER_PADDING_SIZE
+          larger than the actual read bytes because some optimized bitstream
+          readers read 32 or 64 bits at once and could read over the end.
+
+ @note You might have to align the input buffer. The alignment requirements
+       depend on the CPU and the decoder.
+
+ @param      avctx the codec context
+ @param[out] frame The AVFrame in which to store decoded audio samples.
+                   Decoders request a buffer of a particular size by setting
+                   AVFrame.nb_samples prior to calling get_buffer(). The
+                   decoder may, however, only utilize part of the buffer by
+                   setting AVFrame.nb_samples to a smaller value in the
+                   output frame.
+ @param[out] got_frame_ptr Zero if no frame could be decoded, otherwise it is
+                           non-zero.
+ @param[in]  avpkt The input AVPacket containing the input buffer.
+                   At least avpkt-&gt;data and avpkt-&gt;size should be set. Some
+                   decoders might also require additional fields to be set.
+ @return A negative error code is returned if an error occurred during
+         decoding, otherwise the number of bytes consumed from the input
+         AVPacket is returned.
+
+</member>
         <member name="M:libffmpeg.avcodec_decode_audio3(libffmpeg.AVCodecContext*,System.Int16*,System.Int32*,libffmpeg.AVPacket*)">
+ Wrapper function which calls avcodec_decode_audio4.
+
+ @deprecated Use avcodec_decode_audio4 instead.
+
  Decode the audio frame of size avpkt-&gt;size from avpkt-&gt;data into samples.
  Some decoders may support multiple frames in a single AVPacket, such
  decoders would then just decode the first frame. In this case,
@@ -2214,6 +2403,11 @@ Flush buffers, should be called when seeking or when switching to a different st
  @warning The end of the input buffer avpkt-&gt;data should be set to 0 to ensure that
  no overreading happens for damaged MPEG streams.
 
+ @warning You must not provide a custom get_buffer() when using
+ avcodec_decode_audio3().  Doing so will override it with
+ avcodec_default_get_buffer.  Use avcodec_decode_audio4() instead,
+ which does allow the application to provide a custom get_buffer().
+
  @note You might have to align the input buffer avpkt-&gt;data and output buffer
  samples. The alignment requirements depend on the CPU: On some CPUs it isn't
  necessary at all, on others it won't work at all if not aligned and on others
@@ -2229,6 +2423,8 @@ Flush buffers, should be called when seeking or when switching to a different st
 
  @param avctx the codec context
  @param[out] samples the output buffer, sample type in avctx-&gt;sample_fmt
+                     If the sample format is planar, each channel plane will
+                     be the same size, with no padding between channels.
  @param[in,out] frame_size_ptr the output buffer size in bytes
  @param[in] avpkt The input AVPacket containing the input buffer.
             You can create such packet with av_init_packet() and by then setting
@@ -2585,7 +2781,7 @@ Resample an array of samples using a previously configured context.
  * @param linear           if 1 then the used FIR filter will be linearly interpolated
                            between the 2 closest, if 0 the closest will be used
  * @param cutoff           cutoff frequency, 1.0 corresponds to half the output sampling rate
- * @return allocated ReSampleContext, NULL if error occured
+ * @return allocated ReSampleContext, NULL if error occurred
 
 </member>
         <member name="M:libffmpeg.av_packet_get_side_data(libffmpeg.AVPacket*,libffmpeg.AVPacketSideDataType,System.Int32*)">
@@ -2748,6 +2944,9 @@ Forced subtitle codec_id.
 Demuxing: Set by user.
 
 
+@}
+
+
 Guess the codec ID based upon muxer and filename.
 
 
@@ -2762,6 +2961,17 @@ Guess the codec ID based upon muxer and filename.
 Name of the hardware accelerated codec.
 The name is globally unique among encoders and among decoders (but an
 encoder and a decoder can share the same name).
+
+</member>
+        <member name="F:libffmpeg.AVCodec.encode2">
+ Encode data to an AVPacket.
+
+ @param      avctx          codec context
+ @param      avpkt          output AVPacket (may contain a user-provided buffer)
+ @param[in]  frame          AVFrame containing the raw data to be encoded
+ @param[out] got_packet_ptr encoder sets to 0 or 1 to indicate that a
+                            non-empty packet was returned in avpkt.
+ @return 0 on success, negative error code on failure
 
 </member>
         <member name="F:libffmpeg.AVCodec.init_static_data">
@@ -2824,6 +3034,12 @@ AVProfile.
 Current statistics for PTS correction.
 - decoding: maintained and used by libavcodec, not intended to be used by user apps
 - encoding: unused
+
+</member>
+        <member name="T:libffmpeg.AVFieldOrder">
+Field order
+     * - encoding: set by libavcodec
+     * - decoding: Set by libavcodec
 
 </member>
         <member name="T:libffmpeg.AVCodecInternal">
@@ -3114,7 +3330,7 @@ LPC coefficient precision - used by FLAC encoder
 
 </member>
         <member name="F:libffmpeg.AVCodecContext.b_sensitivity">
-Adjusts sensitivity of b_frame_strategy 1.
+Adjust sensitivity of b_frame_strategy 1.
 - encoding: Set by user.
 - decoding: unused
 
@@ -3177,7 +3393,7 @@ trellis RD quantization
 
 </member>
         <member name="F:libffmpeg.AVCodecContext.bframebias">
-Influences how often B-frames are used.
+Influence how often B-frames are used.
 - encoding: Set by user.
 - decoding: unused
 
@@ -3815,18 +4031,59 @@ but not by more than one thread at once, so does not need to be reentrant.
 
 </member>
         <member name="F:libffmpeg.AVCodecContext.get_buffer">
-Called at the beginning of each frame to get a buffer for it.
-If pic.reference is set then the frame will be read later by libavcodec.
-avcodec_align_dimensions2() should be used to find the required width and
-height, as they normally need to be rounded up to the next multiple of 16.
-if CODEC_CAP_DR1 is not set then get_buffer() must call
-avcodec_default_get_buffer() instead of providing buffers allocated by
-some other means.
-If frame multithreading is used and thread_safe_callbacks is set,
-it may be called from a different thread, but not from more than one at once.
-Does not need to be reentrant.
-- encoding: unused
-- decoding: Set by libavcodec, user can override.
+ Called at the beginning of each frame to get a buffer for it.
+
+ The function will set AVFrame.data[], AVFrame.linesize[].
+ AVFrame.extended_data[] must also be set, but it should be the same as
+ AVFrame.data[] except for planar audio with more channels than can fit
+ in AVFrame.data[]. In that case, AVFrame.data[] shall still contain as
+ many data pointers as it can hold.
+
+ if CODEC_CAP_DR1 is not set then get_buffer() must call
+ avcodec_default_get_buffer() instead of providing buffers allocated by
+ some other means.
+
+ AVFrame.data[] should be 32- or 16-byte-aligned unless the CPU doesn't
+ need it. avcodec_default_get_buffer() aligns the output buffer properly,
+ but if get_buffer() is overridden then alignment considerations should
+ be taken into account.
+
+ @see avcodec_default_get_buffer()
+
+ Video:
+
+ If pic.reference is set then the frame will be read later by libavcodec.
+ avcodec_align_dimensions2() should be used to find the required width and
+ height, as they normally need to be rounded up to the next multiple of 16.
+
+ If frame multithreading is used and thread_safe_callbacks is set,
+ it may be called from a different thread, but not from more than one at
+ once. Does not need to be reentrant.
+
+ @see release_buffer(), reget_buffer()
+ @see avcodec_align_dimensions2()
+
+ Audio:
+
+ Decoders request a buffer of a particular size by setting
+ AVFrame.nb_samples prior to calling get_buffer(). The decoder may,
+ however, utilize only part of the buffer by setting AVFrame.nb_samples
+ to a smaller value in the output frame.
+
+ Decoders cannot use the buffer after returning from
+ avcodec_decode_audio4(), so they will not call release_buffer(), as it
+ is assumed to be released immediately upon return.
+
+ As a convenience, av_samples_get_buffer_size() and
+ av_samples_fill_arrays() in libavutil may be used by custom get_buffer()
+ functions to find the required data size and to fill data pointers and
+ linesize. In AVFrame.linesize, only linesize[0] may be set for audio
+ since all planes must be the same size.
+
+ @see av_samples_get_buffer_size(), av_samples_fill_arrays()
+
+ - encoding: unused
+ - decoding: Set by libavcodec, user can override.
 
 </member>
         <member name="F:libffmpeg.AVCodecContext.error_recognition">
@@ -4019,7 +4276,7 @@ Motion estimation algorithm used for video coding.
 Some codecs need additional format info. It is stored here.
 If any muxer uses this then ALL demuxers/parsers AND encoders for the
 specific codec MUST set it correctly otherwise stream copy breaks.
-In general use of this field by muxers is not recommanded.
+In general use of this field by muxers is not recommended.
 - encoding: Set by libavcodec.
 - decoding: Set by libavcodec. (FIXME: Is this OK?)
 
@@ -4048,10 +4305,26 @@ information on struct for av_log
 - set by avcodec_alloc_context3
 
 </member>
+        <member name="F:libffmpeg.AVFrame.pkt_pos">
+reordered pos from the last AVPacket that has been input into the decoder
+Code outside libavcodec should access this field using:
+ av_opt_ptr(avcodec_get_frame_class(), frame, "pkt_pos");
+- encoding: unused
+- decoding: Read by user.
+
+</member>
+        <member name="F:libffmpeg.AVFrame.best_effort_timestamp">
+frame timestamp estimated using various heuristics, in stream time base
+Code outside libavcodec should access this field using:
+ av_opt_ptr(avcodec_get_frame_class(), frame, "best_effort_timestamp");
+- encoding: unused
+- decoding: set by libavcodec, read by user.
+
+</member>
         <member name="F:libffmpeg.AVFrame.format">
 format of the frame, -1 if unknown or unset
-It should be cast to the corresponding enum (enum PixelFormat
-for video, enum AVSampleFormat for audio)
+Values correspond to enum PixelFormat for video frames,
+enum AVSampleFormat for audio)
 - encoding: unused
 - decoding: Read by user.
 
@@ -4063,21 +4336,34 @@ width and height of the video frame
 
 </member>
         <member name="F:libffmpeg.AVFrame.sample_aspect_ratio">
-reordered sample aspect ratio for the video frame, 0/1 if unknown\unspecified
+sample aspect ratio for the video frame, 0/1 if unknown\unspecified
 - encoding: unused
 - decoding: Read by user.
 
 </member>
-        <member name="F:libffmpeg.AVFrame.pkt_pos">
-reordered pos from the last AVPacket that has been input into the decoder
-- encoding: unused
-- decoding: Read by user.
+        <member name="F:libffmpeg.AVFrame.extended_data">
+ pointers to the data planes/channels.
+
+ For video, this should simply point to data[].
+
+ For planar audio, each channel has a separate data pointer, and
+ linesize[0] contains the size of each channel buffer.
+ For packed audio, there is just one data pointer, and linesize[0]
+ contains the total size of the buffer for all channels.
+
+ Note: Both data and extended_data will always be set by get_buffer(),
+ but for planar audio with more channels that can fit in data,
+ extended_data must be used by the decoder in order to access all
+ channels.
+
+ encoding: unused
+ decoding: set by AVCodecContext.get_buffer()
 
 </member>
-        <member name="F:libffmpeg.AVFrame.best_effort_timestamp">
-frame timestamp estimated using various heuristics, in stream time base
+        <member name="F:libffmpeg.AVFrame.nb_samples">
+number of audio samples (per channel) described by this frame
 - encoding: unused
-- decoding: set by libavcodec, read by user.
+- decoding: Set by libavcodec
 
 </member>
         <member name="F:libffmpeg.AVFrame.thread_opaque">
@@ -4230,10 +4516,7 @@ Set to 4 for delayed, non-reference frames.
 
 </member>
         <member name="F:libffmpeg.AVFrame.age">
-buffer age (1-&gt;was last buffer and dint change, 2-&gt;..., ...).
-Set to INT_MAX if the buffer has not been used yet.
-- encoding: unused
-- decoding: MUST be set by get_buffer().
+@deprecated unused
 
 </member>
         <member name="F:libffmpeg.AVFrame.quality">
@@ -4274,19 +4557,32 @@ This isn't used by libavcodec unless the default get/release_buffer() is used.
 - decoding:
 
 </member>
+        <member name="F:libffmpeg.AVFrame.linesize">
+ Size, in bytes, of the data for each picture/channel plane.
+
+ For audio, only linesize[0] may be set. For planar audio, each channel
+ plane must be the same size.
+
+ - encoding: Set by user (video only)
+ - decoding: set by AVCodecContext.get_buffer()
+
+</member>
         <member name="F:libffmpeg.AVFrame.data">
-pointer to the picture planes.
+pointer to the picture/channel planes.
 This might be different from the first allocated byte
-- encoding:
-- decoding:
+- encoding: Set by user
+- decoding: set by AVCodecContext.get_buffer()
 
 </member>
         <member name="T:libffmpeg.AVFrame">
 Audio Video Frame.
 New fields can be added to the end of AVFRAME with minor version
-bumps. Removal, reordering and changes to existing fields require
+bumps. Similarly fields that are marked as to be only accessed by
+av_opt_ptr() can be reordered. This allows 2 forks to add fields
+without breaking compatibility with each other.
+Removal, reordering and changes in the remaining cases require
 a major version bump.
-sizeof(AVFrame) must not be used outside libav*.
+sizeof(AVFrame) must not be used outside libavcodec.
 
 </member>
         <member name="F:libffmpeg.AVPacket.convergence_duration">
@@ -4365,10 +4661,27 @@ Codec uses get_buffer() for allocating buffers and supports custom allocators.
 If not set, it might not use get_buffer() at all or use operations that
 assume the buffer was allocated by avcodec_default_get_buffer.
 
-Codec has a nonzero delay and needs to be fed with avpkt-&gt;data=NULL,
-avpkt-&gt;size=0 at the end to get the delayed data until the decoder no longer
-returns frames. If this is not set, the codec is guaranteed to never be fed
-with NULL data.
+ Encoder or decoder requires flushing with NULL input at the end in order to
+ give the complete and correct output.
+
+ NOTE: If this flag is not set, the codec is guaranteed to never be fed with
+       with NULL data. The user can still send NULL data to the public encode
+       or decode function, but libavcodec will not pass it along to the codec
+       unless this flag is set.
+
+ Decoders:
+ The decoder has a non-zero delay and needs to be fed with avpkt-&gt;data=NULL,
+ avpkt-&gt;size=0 at the end to get the delayed data until the decoder no longer
+ returns frames.
+
+ Encoders:
+ The encoder needs to be fed with NULL data at the end of encoding until the
+ encoder no longer returns data.
+
+ NOTE: For encoders implementing the AVCodec.encode2() function, setting this
+       flag also means that the encoder must set the pts and duration for
+       each output packet. If this flag is not set, the pts and duration will
+       be determined by libavcodec from the input frame.
 
 Codec can be fed a final frame with a smaller size.
 This can be used to prevent truncation of the last audio samples.
@@ -4396,6 +4709,12 @@ Codec supports frame-level multithreading.
 
 Codec supports slice-based (or partition-based) multithreading.
 
+Codec supports changed parameters at any point.
+
+Codec supports avctx-&gt;thread_count == 0 (auto).
+
+Audio encoder supports receiving a different number of samples in each call.
+
 Codec is lossless.
 
 Pan Scan area.
@@ -4407,7 +4726,7 @@ Note there may be multiple such areas for one frame.
 LPC analysis type
 
 
-Determines which LPC analysis algorithm to use.
+Determine which LPC analysis algorithm to use.
 - encoding: Set by user
 - decoding: unused
 
@@ -4587,6 +4906,10 @@ desired sample format
 Decoder will decode to this format if it can.
 
 </member>
+        <member name="M:libffmpeg.av_x_if_null(System.Void!System.Runtime.CompilerServices.IsConst*,System.Void!System.Runtime.CompilerServices.IsConst*)">
+Return x default pointer in case p is NULL.
+
+</member>
         <member name="M:libffmpeg.av_log_set_flags(System.Int32)">
 av_dlog macros
 Useful to print debug messages that shouldn't get compiled in normally.
@@ -4597,6 +4920,14 @@ Skip repeated messages, this requires the user app to use av_log() instead of
 bad luck.
 Also to receive the last, "last repeated" line if any, the user app must
 call av_log(NULL, AV_LOG_QUIET, "%s", ""); at the end
+
+</member>
+        <member name="M:libffmpeg.av_log_format_line(System.Void*,System.Int32,System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte*,System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte*,System.Int32,System.Int32*)">
+Format a line of log the same way as the default callback.
+@param line          buffer to receive the formated line
+@param line_size     size of the buffer
+@param print_prefix  used to store whether the prefix must be printed;
+                     must point to a persistent integer initially set to 1
 
 </member>
         <member name="M:libffmpeg.av_log(System.Void*,System.Int32,System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte!System.Runtime.CompilerServices.IsConst*,BTEllipsis)">
@@ -4768,6 +5099,10 @@ Convert rational to double.
 @return (double) a
 
 </member>
+        <member name="M:libffmpeg.av_max_alloc(System.UInt32)">
+Set the maximum size that may me allocated in one block.
+
+</member>
         <member name="M:libffmpeg.av_size_mult(System.UInt32,System.UInt32,System.UInt32*)">
 Multiply two size_t values checking for overflow.
 @return  0 if success, AVERROR(EINVAL) if overflow.
@@ -4921,6 +5256,9 @@ error code definitions
 
  @{
 
+This is semantically identical to AVERROR_BUG
+it has been introduced in Libav after our AVERROR_BUG and with a modified value.
+
  Put a description of the AVERROR code errnum in errbuf.
  In case of failure the global variable errno is set to indicate the
  error. Even in case of failure av_strerror() will print a generic
@@ -4931,6 +5269,12 @@ error code definitions
  @param errbuf_size the size in bytes of errbuf
  @return 0 on success, a negative value if a description for errnum
  cannot be found
+
+</member>
+        <member name="M:libffmpeg.av_popcount64_c(System.UInt64)">
+Count number of bits set to one in x
+@param x value to count bits of
+@return the number of bits set to one in x
 
 </member>
         <member name="M:libffmpeg.av_popcount_c(System.UInt32)">
@@ -4990,6 +5334,17 @@ Clip a signed integer value into the 0-255 range.
 @return clipped value
 
 </member>
+        <member name="M:libffmpeg.av_clip_c(System.Int32,System.Int32,System.Int32)">
+@file
+common internal and external API header
+
+Clip a signed integer value into the amin-amax range.
+@param a value to clip
+@param amin minimum value of the clip range
+@param amax maximum value of the clip range
+@return clipped value
+
+</member>
         <member name="F:libffmpeg.ff_log2_tab">
 @file
 Macro definitions for various function/variable attributes
@@ -5004,14 +5359,10 @@ assembler without the compiler being aware.
 
 </member>
         <member name="T:libffmpeg._iobuf">
-@file
-common internal and external API header
-
-</member>
-        <member name="M:libffmpeg.av_x_if_null(System.Void!System.Runtime.CompilerServices.IsConst*,System.Void!System.Runtime.CompilerServices.IsConst*)">
 @}
 
-Return x default pointer in case p is NULL.
+@file
+common internal and external API header
 
 </member>
         <member name="M:libffmpeg.av_get_picture_type_char(libffmpeg.AVPictureType)">
@@ -5103,6 +5454,7 @@ external API header
  @li @ref libavc "libavcodec" encoding/decoding library
  @li @subpage libavfilter graph based frame editing library
  @li @ref libavf "libavformat" I/O and muxing/demuxing library
+ @li @ref lavd "libavdevice" special devices muxing/demuxing library
  @li @ref lavu "libavutil" common utility library
  @li @subpage libpostproc post processing library
  @li @subpage libswscale  color conversion and scaling library
@@ -5280,6 +5632,7 @@ Default video codec, which FFmpeg library selects for the specified file format.
         <!-- Discarding badly formed XML document comment for member 'T:libffmpeg.CodecID'. -->
         <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.av_get_channel_layout_string(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte*,System.Int32,System.Int32,System.UInt64)'. -->
         <!-- Discarding badly formed XML document comment for member 'T:libffmpeg.Motion_Est_ID'. -->
+        <!-- Discarding badly formed XML document comment for member 'T:libffmpeg.AVSideDataParamChangeFlags'. -->
         <!-- Discarding badly formed XML document comment for member 'F:libffmpeg.AVFrame.motion_val'. -->
         <!-- Discarding badly formed XML document comment for member 'F:libffmpeg.AVFrame.error'. -->
         <!-- Discarding badly formed XML document comment for member 'F:libffmpeg.AVFrame.type'. -->
@@ -5297,9 +5650,10 @@ Default video codec, which FFmpeg library selects for the specified file format.
         <!-- Discarding badly formed XML document comment for member 'T:libffmpeg.PixelFormat'. -->
         <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.avcodec_open(libffmpeg.AVCodecContext*,libffmpeg.AVCodec*)'. -->
         <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.avcodec_open2(libffmpeg.AVCodecContext*,libffmpeg.AVCodec*,libffmpeg.AVDictionary**)'. -->
-        <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.avcodec_decode_video2(libffmpeg.AVCodecContext*,libffmpeg.AVFrame*,System.Int32*,libffmpeg.AVPacket*)'. -->
+        <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.avcodec_decode_video2(libffmpeg.AVCodecContext*,libffmpeg.AVFrame*,System.Int32*,libffmpeg.AVPacket!System.Runtime.CompilerServices.IsConst*)'. -->
         <!-- Discarding badly formed XML document comment for member 'F:libffmpeg.AVCodecParserContext.dts_sync_point'. -->
         <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.av_parser_parse2(libffmpeg.AVCodecParserContext*,libffmpeg.AVCodecContext*,System.Byte**,System.Int32*,System.Byte!System.Runtime.CompilerServices.IsConst*,System.Int32,System.Int64,System.Int64,System.Int64)'. -->
+        <!-- Discarding badly formed XML document comment for member 'D:libffmpeg.clock_t'. -->
         <!-- Discarding badly formed XML document comment for member 'T:libffmpeg.AVRational'. -->
         <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.av_cmp_q(libffmpeg.AVRational,libffmpeg.AVRational)'. -->
         <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.av_reduce(System.Int32*,System.Int32*,System.Int64,System.Int64,System.Int64)'. -->
@@ -5312,6 +5666,7 @@ Default video codec, which FFmpeg library selects for the specified file format.
         <!-- Discarding badly formed XML document comment for member 'T:libffmpeg.CodecID'. -->
         <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.av_get_channel_layout_string(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte*,System.Int32,System.Int32,System.UInt64)'. -->
         <!-- Discarding badly formed XML document comment for member 'T:libffmpeg.Motion_Est_ID'. -->
+        <!-- Discarding badly formed XML document comment for member 'T:libffmpeg.AVSideDataParamChangeFlags'. -->
         <!-- Discarding badly formed XML document comment for member 'F:libffmpeg.AVFrame.motion_val'. -->
         <!-- Discarding badly formed XML document comment for member 'F:libffmpeg.AVFrame.error'. -->
         <!-- Discarding badly formed XML document comment for member 'F:libffmpeg.AVFrame.type'. -->
@@ -5329,7 +5684,7 @@ Default video codec, which FFmpeg library selects for the specified file format.
         <!-- Discarding badly formed XML document comment for member 'T:libffmpeg.PixelFormat'. -->
         <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.avcodec_open(libffmpeg.AVCodecContext*,libffmpeg.AVCodec*)'. -->
         <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.avcodec_open2(libffmpeg.AVCodecContext*,libffmpeg.AVCodec*,libffmpeg.AVDictionary**)'. -->
-        <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.avcodec_decode_video2(libffmpeg.AVCodecContext*,libffmpeg.AVFrame*,System.Int32*,libffmpeg.AVPacket*)'. -->
+        <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.avcodec_decode_video2(libffmpeg.AVCodecContext*,libffmpeg.AVFrame*,System.Int32*,libffmpeg.AVPacket!System.Runtime.CompilerServices.IsConst*)'. -->
         <!-- Discarding badly formed XML document comment for member 'F:libffmpeg.AVCodecParserContext.dts_sync_point'. -->
         <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.av_parser_parse2(libffmpeg.AVCodecParserContext*,libffmpeg.AVCodecContext*,System.Byte**,System.Int32*,System.Byte!System.Runtime.CompilerServices.IsConst*,System.Int32,System.Int64,System.Int64,System.Int64)'. -->
         <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.avio_seek(libffmpeg.AVIOContext*,System.Int64,System.Int32)'. -->
@@ -5345,13 +5700,12 @@ Default video codec, which FFmpeg library selects for the specified file format.
         <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.av_probe_input_format2(libffmpeg.AVProbeData*,System.Int32,System.Int32*)'. -->
         <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.av_read_frame(libffmpeg.AVFormatContext*,libffmpeg.AVPacket*)'. -->
         <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.avformat_seek_file(libffmpeg.AVFormatContext*,System.Int32,System.Int64,System.Int64,System.Int64,System.Int32)'. -->
-        <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.av_set_pts_info(libffmpeg.AVStream*,System.Int32,System.UInt32,System.UInt32)'. -->
-        <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.av_index_search_timestamp(libffmpeg.AVStream*,System.Int64,System.Int32)'. -->
         <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.av_write_frame(libffmpeg.AVFormatContext*,libffmpeg.AVPacket*)'. -->
-        <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.av_interleaved_write_frame(libffmpeg.AVFormatContext*,libffmpeg.AVPacket*)'. -->
         <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.av_interleave_packet_per_dts(libffmpeg.AVFormatContext*,libffmpeg.AVPacket*,libffmpeg.AVPacket*,System.Int32)'. -->
+        <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.av_index_search_timestamp(libffmpeg.AVStream*,System.Int64,System.Int32)'. -->
         <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.sws_getCoefficients(System.Int32)'. -->
         <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.sws_printVec2(libffmpeg.SwsVector*,libffmpeg.AVClass*,System.Int32)'. -->
+        <!-- Discarding badly formed XML document comment for member 'D:libffmpeg.clock_t'. -->
         <!-- Discarding badly formed XML document comment for member 'T:libffmpeg.AVRational'. -->
         <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.av_cmp_q(libffmpeg.AVRational,libffmpeg.AVRational)'. -->
         <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.av_reduce(System.Int32*,System.Int32*,System.Int64,System.Int64,System.Int64)'. -->
@@ -5364,6 +5718,7 @@ Default video codec, which FFmpeg library selects for the specified file format.
         <!-- Discarding badly formed XML document comment for member 'T:libffmpeg.CodecID'. -->
         <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.av_get_channel_layout_string(System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte*,System.Int32,System.Int32,System.UInt64)'. -->
         <!-- Discarding badly formed XML document comment for member 'T:libffmpeg.Motion_Est_ID'. -->
+        <!-- Discarding badly formed XML document comment for member 'T:libffmpeg.AVSideDataParamChangeFlags'. -->
         <!-- Discarding badly formed XML document comment for member 'F:libffmpeg.AVFrame.motion_val'. -->
         <!-- Discarding badly formed XML document comment for member 'F:libffmpeg.AVFrame.error'. -->
         <!-- Discarding badly formed XML document comment for member 'F:libffmpeg.AVFrame.type'. -->
@@ -5381,7 +5736,7 @@ Default video codec, which FFmpeg library selects for the specified file format.
         <!-- Discarding badly formed XML document comment for member 'T:libffmpeg.PixelFormat'. -->
         <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.avcodec_open(libffmpeg.AVCodecContext*,libffmpeg.AVCodec*)'. -->
         <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.avcodec_open2(libffmpeg.AVCodecContext*,libffmpeg.AVCodec*,libffmpeg.AVDictionary**)'. -->
-        <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.avcodec_decode_video2(libffmpeg.AVCodecContext*,libffmpeg.AVFrame*,System.Int32*,libffmpeg.AVPacket*)'. -->
+        <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.avcodec_decode_video2(libffmpeg.AVCodecContext*,libffmpeg.AVFrame*,System.Int32*,libffmpeg.AVPacket!System.Runtime.CompilerServices.IsConst*)'. -->
         <!-- Discarding badly formed XML document comment for member 'F:libffmpeg.AVCodecParserContext.dts_sync_point'. -->
         <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.av_parser_parse2(libffmpeg.AVCodecParserContext*,libffmpeg.AVCodecContext*,System.Byte**,System.Int32*,System.Byte!System.Runtime.CompilerServices.IsConst*,System.Int32,System.Int64,System.Int64,System.Int64)'. -->
         <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.avio_seek(libffmpeg.AVIOContext*,System.Int64,System.Int32)'. -->
@@ -5397,11 +5752,9 @@ Default video codec, which FFmpeg library selects for the specified file format.
         <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.av_probe_input_format2(libffmpeg.AVProbeData*,System.Int32,System.Int32*)'. -->
         <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.av_read_frame(libffmpeg.AVFormatContext*,libffmpeg.AVPacket*)'. -->
         <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.avformat_seek_file(libffmpeg.AVFormatContext*,System.Int32,System.Int64,System.Int64,System.Int64,System.Int32)'. -->
-        <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.av_set_pts_info(libffmpeg.AVStream*,System.Int32,System.UInt32,System.UInt32)'. -->
-        <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.av_index_search_timestamp(libffmpeg.AVStream*,System.Int64,System.Int32)'. -->
         <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.av_write_frame(libffmpeg.AVFormatContext*,libffmpeg.AVPacket*)'. -->
-        <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.av_interleaved_write_frame(libffmpeg.AVFormatContext*,libffmpeg.AVPacket*)'. -->
         <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.av_interleave_packet_per_dts(libffmpeg.AVFormatContext*,libffmpeg.AVPacket*,libffmpeg.AVPacket*,System.Int32)'. -->
+        <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.av_index_search_timestamp(libffmpeg.AVStream*,System.Int64,System.Int32)'. -->
         <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.sws_getCoefficients(System.Int32)'. -->
         <!-- Discarding badly formed XML document comment for member 'M:libffmpeg.sws_printVec2(libffmpeg.SwsVector*,libffmpeg.AVClass*,System.Int32)'. -->
     </members>
