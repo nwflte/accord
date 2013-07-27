@@ -48,15 +48,20 @@ namespace Accord.Imaging
     ///   </list></para>
     /// </remarks>
     /// 
-    public class HistogramsOfOrientedGradients
+    public class HistogramsOfOrientedGradients : IFeatureDetector<FeatureDescriptor>
     {
 
         int numberOfBins = 9;
         int cellSize = 6;  // size of the cell, in number of pixels
         int blockSize = 3; // size of the block, in number of cells
+        bool normalize = true;
 
         double epsilon = 1e-10;
         double binWidth;
+
+        float[,] direction;
+        float[,] magnitude;
+        double[,][] histograms;
 
 
         /// <summary>
@@ -77,6 +82,36 @@ namespace Accord.Imaging
         /// 
         public int NumberOfBins { get { return numberOfBins; } }
 
+        /// <summary>
+        ///   Gets the matrix of orientations generated in 
+        ///   the last call to <see cref="ProcessImage(Bitmap)"/>.
+        /// </summary>
+        /// 
+        public float[,] Direction { get { return direction; } }
+
+        /// <summary>
+        ///   Gets the matrix of magnitudes generated in 
+        ///   the last call to <see cref="ProcessImage(Bitmap)"/>.
+        /// </summary>
+        /// 
+        public float[,] Magnitude { get { return magnitude; } }
+
+        /// <summary>
+        ///   Gets the histogram computed at each cell.
+        /// </summary>
+        /// 
+        public double[,][] Histograms { get { return histograms; } }
+
+        /// <summary>
+        ///   Gets or sets whether to normalize final 
+        ///   histogram feature vectors. Default is true.
+        /// </summary>
+        /// 
+        public bool Normalize
+        {
+            get { return normalize; }
+            set { normalize = value; }
+        }
 
         /// <summary>
         ///   Initializes a new instance of the <see cref="HistogramsOfOrientedGradients"/> class.
@@ -96,12 +131,12 @@ namespace Accord.Imaging
 
 
         /// <summary>
-        ///   Process image looking for corners.
+        ///   Process image looking for interest points.
         /// </summary>
         /// 
         /// <param name="image">Source image data to process.</param>
         /// 
-        /// <returns>Returns list of found corners (X-Y coordinates).</returns>
+        /// <returns>Returns list of found interest points.</returns>
         /// 
         /// <exception cref="UnsupportedImageFormatException">
         ///   The source image has incorrect pixel format.
@@ -138,35 +173,40 @@ namespace Accord.Imaging
             // get source image size
             int width = grayImage.Width;
             int height = grayImage.Height;
-            int srcStride = grayImage.Stride;
-            int srcOffset = srcStride - width;
+            int stride = grayImage.Stride;
+            int offset = stride - width;
 
 
             // 1. Calculate partial differences
-            float[,] direction = new float[height, width];
-            float[,] magnitude = new float[height, width];
+            direction = new float[height, width];
+            magnitude = new float[height, width];
 
             fixed (float* ptrDir = direction, ptrMag = magnitude)
             {
-                byte* src = (byte*)grayImage.ImageData.ToPointer() + srcStride + 1;
-
-                // Skip first row and first column
-                float* dir = ptrDir + width + 1;
-                float* mag = ptrMag + width + 1;
+                // Begin skipping first line
+                byte* src = (byte*)grayImage.ImageData.ToPointer() + stride;
+                float* dir = ptrDir + width;
+                float* mag = ptrMag + width;
 
                 // for each line
                 for (int y = 1; y < height - 1; y++)
                 {
-                    // for each pixel
+                    // skip first column
+                    dir++; mag++; src++;
+
+                    // for each inner pixel in line (skipping first and last)
                     for (int x = 1; x < width - 1; x++, src++, dir++, mag++)
                     {
-                        // Convolution with horizontal differentiation kernel mask
-                        float h = ((src[-srcStride + 1] + src[+1] + src[srcStride + 1]) -
-                                  (src[-srcStride - 1] + src[-1] + src[srcStride - 1])) * 0.166666667f;
+                        // Retrieve the pixel neighborhood
+                        byte a11 = src[+stride + 1], a12 = src[+1], a13 = src[-stride + 1];
+                        byte a21 = src[+stride + 0], /*  a22    */  a23 = src[-stride + 0];
+                        byte a31 = src[+stride - 1], a32 = src[-1], a33 = src[-stride - 1];
 
-                        // Convolution vertical differentiation kernel mask
-                        float v = ((src[+srcStride - 1] + src[+srcStride] + src[+srcStride + 1]) -
-                                   (src[-srcStride - 1] + src[-srcStride] + src[-srcStride + 1])) * 0.166666667f;
+                        // Convolution with horizontal differentiation kernel mask
+                        float h = ((a11 + a12 + a13) - (a31 + a32 + a33)) * 0.166666667f;
+
+                        // Convolution with vertical differentiation kernel mask
+                        float v = ((a11 + a21 + a31) - (a13 + a23 + a33)) * 0.166666667f;
 
                         // Store angles and magnitudes directly
                         *dir = (float)Math.Atan2(v, h);
@@ -174,7 +214,7 @@ namespace Accord.Imaging
                     }
 
                     // Skip last column
-                    dir++; mag++; src += srcOffset + 1;
+                    dir++; mag++; src += offset + 1;
                 }
             }
 
@@ -184,10 +224,10 @@ namespace Accord.Imaging
 
 
 
-            // 3. Compute cell histograms
+            // 2. Compute cell histograms
             int cellCountX = (int)Math.Floor(width / (double)cellSize);
             int cellCountY = (int)Math.Floor(height / (double)cellSize);
-            double[,][] histograms = new double[cellCountX, cellCountY][];
+            histograms = new double[cellCountX, cellCountY][];
 
             // For each cell
             for (int i = 0; i < cellCountX; i++)
@@ -249,7 +289,8 @@ namespace Accord.Imaging
                         }
                     }
 
-                    double[] block = v.Divide(v.Euclidean() + epsilon);
+                    double[] block = (normalize) ?
+                        v.Divide(v.Euclidean() + epsilon) : v;
 
                     blocks.Add(block);
                 }
@@ -321,6 +362,22 @@ namespace Accord.Imaging
             }
 
             return blocks;
+        }
+
+
+        List<FeatureDescriptor> IFeatureDetector<FeatureDescriptor, double[]>.ProcessImage(Bitmap image)
+        {
+            return ProcessImage(image).ConvertAll(p => new FeatureDescriptor(p));
+        }
+
+        List<FeatureDescriptor> IFeatureDetector<FeatureDescriptor, double[]>.ProcessImage(BitmapData imageData)
+        {
+            return ProcessImage(imageData).ConvertAll(p => new FeatureDescriptor(p));
+        }
+
+        List<FeatureDescriptor> IFeatureDetector<FeatureDescriptor, double[]>.ProcessImage(UnmanagedImage image)
+        {
+            return ProcessImage(image).ConvertAll(p => new FeatureDescriptor(p));
         }
     }
 }
