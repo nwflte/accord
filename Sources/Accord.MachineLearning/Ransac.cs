@@ -147,7 +147,8 @@ namespace Accord.MachineLearning
         }
 
         /// <summary>
-        ///   Maximum number of attempts to select a non-degenerate data set.
+        ///   Maximum number of attempts to select a 
+        ///   non-degenerate data set. Default is 100.
         /// </summary>
         /// 
         /// <remarks>
@@ -161,7 +162,7 @@ namespace Accord.MachineLearning
         }
 
         /// <summary>
-        ///   Maximum number of iterations.
+        ///   Maximum number of iterations. Default is 1000.
         /// </summary>
         /// 
         /// <remarks>
@@ -177,6 +178,7 @@ namespace Accord.MachineLearning
         /// <summary>
         ///   Gets or sets the probability of obtaining a random
         ///   sample of the input points that contains no outliers.
+        ///   Default is 0.99.
         /// </summary>
         /// 
         public double Probability
@@ -241,8 +243,12 @@ namespace Accord.MachineLearning
         /// 
         public RANSAC(int minSamples, double threshold, double probability)
         {
-            if (minSamples < 0) throw new ArgumentOutOfRangeException("minSamples");
-            if (threshold < 0) throw new ArgumentOutOfRangeException("threshold");
+            if (minSamples < 0) 
+                throw new ArgumentOutOfRangeException("minSamples");
+
+            if (threshold < 0) 
+                throw new ArgumentOutOfRangeException("threshold");
+
             if (probability > 1.0 || probability < 0.0)
                 throw new ArgumentException("Probability should be a value between 0 and 1", "probability");
 
@@ -303,7 +309,7 @@ namespace Accord.MachineLearning
                     sample = Statistics.Tools.RandomSample(size, r);
 
                     // If the sampled points are not in a degenerate configuration,
-                    if (degenerate == null || !degenerate(sample)) 
+                    if (degenerate == null || !degenerate(sample))
                     {
                         // Fit model using the random selection of points
                         model = fitting(sample);
@@ -313,12 +319,15 @@ namespace Accord.MachineLearning
                     samplings++; // Increase the samplings counter
                 }
 
+                if (model == null)
+                    throw new ConvergenceException("A model could not be inferred from the data points");
+
                 // Now, evaluate the distances between total points and the model returning the
                 //  indices of the points that are inliers (according to a distance threshold t).
                 inliers = distances(model, t);
 
                 // Check if the model was the model which highest number of inliers:
-                if (inliers.Length > maxInliers)
+                if (bestInliers == null || inliers.Length > maxInliers)
                 {
                     // Yes, this model has the highest number of inliers.
 
