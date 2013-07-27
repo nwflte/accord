@@ -42,6 +42,7 @@
     <CodeAnalysisRules>
     </CodeAnalysisRules>
     <CodeAnalysisRuleSet>Migrated rules for Accord.Statistics.ruleset</CodeAnalysisRuleSet>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>..\..\Release\</OutputPath>
@@ -55,7 +56,7 @@
     </CodeAnalysisRules>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <CodeAnalysisRuleSet>..\Accord.NET.ruleset</CodeAnalysisRuleSet>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release 3.5|AnyCPU'">
@@ -77,6 +78,7 @@
     <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
   <ItemGroup>
@@ -168,7 +170,7 @@
     <Compile Include="Distributions\Univariate\Base\UnivariateDiscreteDistribution.cs" />
     <Compile Include="Distributions\Multivariate\Discrete\JointDistribution.cs" />
     <Compile Include="Distributions\Univariate\Continuous\WilcoxonDistribution.cs" />
-    <Compile Include="Distributions\Univariate\Discrete\NegativeBinomial.cs" />
+    <Compile Include="Distributions\Univariate\Discrete\NegativeBinomialDistribution.cs" />
     <Compile Include="Distributions\Univariate\Continuous\ParetoDistribution.cs" />
     <Compile Include="Distributions\Univariate\Discrete\UniformDiscreteDistribution.cs" />
     <Compile Include="Distributions\Univariate\Discrete\GeometricDistribution.cs" />

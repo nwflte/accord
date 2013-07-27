@@ -88,8 +88,10 @@ namespace Accord.Statistics.Filters
         /// 
         protected override DataTable ProcessFilter(DataTable data)
         {
-            // Currently works with only one column and for the binary case
+            if (Columns.Count == 0)
+                return data;
 
+            // Currently works with only one column and for the binary case
             int[] classes = Columns[0].Classes;
             string column = Columns[0].ColumnName;
 
