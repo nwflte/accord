@@ -27,6 +27,7 @@ namespace Accord.Tests.Statistics
     using Accord.Math;
     using Accord.Statistics.Distributions.Fitting;
     using Accord.Statistics;
+    using System.Globalization;
 
     [TestClass()]
     public class MultivariateNormalDistributionTest
@@ -77,6 +78,55 @@ namespace Accord.Tests.Statistics
         //
         #endregion
 
+
+        [TestMethod()]
+        public void ConstructorTest4()
+        {
+            // Create a multivariate Gaussian distribution 
+            var dist = new MultivariateNormalDistribution(
+
+                // mean vector mu
+                mean: new double[] 
+                {
+                    4, 2 
+                },
+
+                // covariance matrix sigma
+                covariance: new double[,] 
+                {
+                    { 0.3, 0.1 },
+                    { 0.1, 0.7 }
+                }
+            );
+
+            // Common measures
+            double[] mean = dist.Mean;     // { 4, 2 }
+            double[] median = dist.Median; // { 4, 2 }
+            double[] var = dist.Variance;  // { 0.3, 0.7 } (diagonal from cov)
+            double[,] cov = dist.Covariance; // { { 0.3, 0.1 }, { 0.1, 0.7 } }
+
+            // Probability mass functions
+            double pdf1 = dist.ProbabilityDensityFunction(new double[] { 2, 5 }); // 0.000000018917884164743237
+            double pdf2 = dist.ProbabilityDensityFunction(new double[] { 4, 2 }); // 0.35588127170858852
+            double pdf3 = dist.ProbabilityDensityFunction(new double[] { 3, 7 }); // 0.000000000036520107734505265
+            double lpdf = dist.LogProbabilityDensityFunction(new double[] { 3, 7 }); // -24.033158110192296
+
+
+            Assert.AreEqual(4, mean[0]);
+            Assert.AreEqual(2, mean[1]);
+            Assert.AreEqual(4, median[0]);
+            Assert.AreEqual(2, median[1]);
+            Assert.AreEqual(0.3, var[0]);
+            Assert.AreEqual(0.7, var[1]);
+            Assert.AreEqual(0.3, cov[0, 0]);
+            Assert.AreEqual(0.1, cov[0, 1]);
+            Assert.AreEqual(0.1, cov[1, 0]);
+            Assert.AreEqual(0.7, cov[1, 1]);
+            Assert.AreEqual(0.000000018917884164743237, pdf1);
+            Assert.AreEqual(0.35588127170858852, pdf2);
+            Assert.AreEqual(0.000000000036520107734505265, pdf3);
+            Assert.AreEqual(-24.033158110192296, lpdf);
+        }
 
         [TestMethod()]
         public void ProbabilityDensityFunctionTest()

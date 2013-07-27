@@ -76,6 +76,47 @@ namespace Accord.Tests.Statistics
         //
         #endregion
 
+        [TestMethod()]
+        public void ConstructorTest()
+        {
+            var chisq = new ChiSquareDistribution(degreesOfFreedom: 7);
+
+            double mean = chisq.Mean;     // 7
+            double median = chisq.Median; // 6.345811195595612
+            double var = chisq.Variance;  // 14
+
+            double cdf = chisq.DistributionFunction(x: 6.27); // 0.49139966433823956
+            double pdf = chisq.ProbabilityDensityFunction(x: 6.27); // 0.11388708001184455
+            double lpdf = chisq.LogProbabilityDensityFunction(x: 6.27); // -2.1725478476948092
+
+            double ccdf = chisq.ComplementaryDistributionFunction(x: 6.27); // 0.50860033566176044
+            double icdf = chisq.InverseDistributionFunction(p: cdf); // 6.2700000000852318
+
+            double hf = chisq.HazardFunction(x: 6.27); // 0.22392254197721179
+            double chf = chisq.CumulativeHazardFunction(x: 6.27); // 0.67609276602233315
+
+            string str = chisq.ToString(); // "χ²(x; df = 7)
+
+            Assert.AreEqual(7, mean);
+            Assert.AreEqual(6.345811195595612, median, 1e-6);
+            Assert.AreEqual(14, var);
+            Assert.AreEqual(0.67609276602233315, chf);
+            Assert.AreEqual(0.49139966433823956, cdf);
+            Assert.AreEqual(0.11388708001184455, pdf);
+            Assert.AreEqual(-2.1725478476948092, lpdf);
+            Assert.AreEqual(0.22392254197721179, hf);
+            Assert.AreEqual(0.50860033566176044, ccdf);
+            Assert.AreEqual(6.2700000000852318, icdf, 1e-6);
+            Assert.AreEqual("χ²(x; df = 7)", str);
+        }
+
+        [TestMethod()]
+        public void MedianTest()
+        {
+            var target = new ChiSquareDistribution(degreesOfFreedom: 4);
+
+            Assert.AreEqual(target.Median, target.InverseDistributionFunction(0.5));
+        }
 
         [TestMethod()]
         public void ProbabilityDensityFunctionTest()

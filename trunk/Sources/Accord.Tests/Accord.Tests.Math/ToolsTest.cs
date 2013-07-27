@@ -1,8 +1,4 @@
-﻿using Accord.Math;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-// Accord Unit Tests
+﻿// Accord Unit Tests
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
@@ -26,11 +22,10 @@ using System.Collections.Generic;
 
 namespace Accord.Tests.Math
 {
+    using System.Collections.Generic;
     using Accord.Math;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
     using AForge;
-    using System;
-
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass()]
     public class ToolsTest
@@ -336,7 +331,7 @@ namespace Accord.Tests.Math
         public void PermutationsTest()
         {
             int[] values = { 1, 2, 3 };
-            
+
             List<int[]> permutations = new List<int[]>();
             foreach (var p in Combinatorics.Permutations(values))
                 permutations.Add(p);

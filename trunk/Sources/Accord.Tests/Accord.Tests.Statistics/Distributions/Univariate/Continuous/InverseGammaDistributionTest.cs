@@ -25,6 +25,7 @@ namespace Accord.Tests.Statistics
     using Accord.Statistics.Distributions.Univariate;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
+    using System.Globalization;
 
     [TestClass()]
     public class InverseGammaDistributionTest
@@ -115,6 +116,50 @@ namespace Accord.Tests.Statistics
                 Assert.AreEqual(expected, actual, 1e-6);
                 Assert.IsFalse(Double.IsNaN(actual));
             }
+        }
+
+        [TestMethod()]
+        public void InverseGammaDistributionConstructorTest2()
+        {
+            var invGamma = new InverseGammaDistribution(shape: 0.42, scale: 0.5);
+
+            double mean = invGamma.Mean;     // -0.86206896551724133
+            double median = invGamma.Median; // 3.1072323347401709
+            double var = invGamma.Variance;  // -0.47035626665061164
+
+            double cdf = invGamma.DistributionFunction(x: 0.27); // 0.042243552114989695
+            double pdf = invGamma.ProbabilityDensityFunction(x: 0.27); // 0.35679850067181362
+            double lpdf = invGamma.LogProbabilityDensityFunction(x: 0.27); // -1.0305840804381006
+            double ccdf = invGamma.ComplementaryDistributionFunction(x: 0.27); // 0.95775644788501035
+            double icdf = invGamma.InverseDistributionFunction(p: cdf); // 0.26999994629410995
+
+            double hf = invGamma.HazardFunction(x: 0.27); // 0.3725357333377633
+            double chf = invGamma.CumulativeHazardFunction(x: 0.27); // 0.043161763098266373
+
+            string str = invGamma.ToString(CultureInfo.InvariantCulture); // Γ^(-1)(x; α = 0.42, β = 0.5)
+
+            Assert.AreEqual(-0.86206896551724133, mean);
+            Assert.AreEqual(3.1072323347401709, median, 1e-7);
+            Assert.AreEqual(-0.47035626665061164, var);
+            Assert.AreEqual(0.043161763098266373, chf);
+            Assert.AreEqual(0.042243552114989695, cdf, 1e-10);
+            Assert.AreEqual(0.35679850067181362, pdf);
+            Assert.AreEqual(-1.0305840804381006, lpdf);
+            Assert.AreEqual(0.3725357333377633, hf);
+            Assert.AreEqual(0.95775644788501035, ccdf);
+            Assert.AreEqual(0.27, icdf, 1e-8);
+            Assert.AreEqual("Γ^(-1)(x; α = 0.42, β = 0.5)", str);
+
+            double p05 = invGamma.DistributionFunction(median);
+            Assert.AreEqual(0.5, p05, 1e-6);
+        }
+
+        [TestMethod()]
+        public void MedianTest()
+        {
+            var target = new InverseGammaDistribution(shape: 4.2, scale: 7.8);
+
+            Assert.AreEqual(target.Median, target.InverseDistributionFunction(0.5));
         }
     }
 }

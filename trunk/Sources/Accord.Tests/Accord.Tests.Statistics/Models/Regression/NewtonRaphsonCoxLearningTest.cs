@@ -300,8 +300,8 @@ namespace Accord.Tests.Statistics
             int[] censor = outputs.GetRow(1).ToInt32();
 
 
-            string inputStr = inputs.Transpose().ToString(Accord.Math.Formats.DefaultMatrixFormatProvider.InvariantCulture);
-            string outputStr = outputs.Transpose().ToString(Accord.Math.Formats.DefaultMatrixFormatProvider.InvariantCulture);
+            string inputStr = inputs.Transpose().ToString(Accord.Math.DefaultMatrixFormatProvider.InvariantCulture);
+            string outputStr = outputs.Transpose().ToString(Accord.Math.DefaultMatrixFormatProvider.InvariantCulture);
 
             ProportionalHazards regression = new ProportionalHazards(2);
             ProportionalHazardsNewtonRaphson target = new ProportionalHazardsNewtonRaphson(regression);

@@ -505,7 +505,9 @@ namespace Accord.Tests.Statistics.Models.Fields
 
             for (int i = 0; i < actual.Length; i++)
             {
-                Assert.AreEqual(expected[i], actual[i], 1e-3);
+                double e = expected[i];
+                double a = actual[i];
+                Assert.AreEqual(e, a, 1e-3);
 
                 Assert.IsFalse(double.IsNaN(actual[i]));
                 Assert.IsFalse(double.IsNaN(expected[i]));

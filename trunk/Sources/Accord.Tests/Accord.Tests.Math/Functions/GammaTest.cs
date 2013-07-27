@@ -1,15 +1,31 @@
-﻿using Accord.Math;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
+﻿// Accord Unit Tests
+// The Accord.NET Framework
+// http://accord.googlecode.com
+//
+// Copyright © César Souza, 2009-2013
+// cesarsouza at gmail.com
+//
+//    This library is free software; you can redistribute it and/or
+//    modify it under the terms of the GNU Lesser General Public
+//    License as published by the Free Software Foundation; either
+//    version 2.1 of the License, or (at your option) any later version.
+//
+//    This library is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+//    Lesser General Public License for more details.
+//
+//    You should have received a copy of the GNU Lesser General Public
+//    License along with this library; if not, write to the Free Software
+//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+//
 
 namespace Accord.Tests.Math
 {
+    using Accord.Math;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System;
 
-
-    /// <summary>
-    ///This is a test class for GammaTest and is intended
-    ///to contain all GammaTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class GammaTest
     {
@@ -17,10 +33,6 @@ namespace Accord.Tests.Math
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -186,6 +198,140 @@ namespace Accord.Tests.Math
 
                 Assert.AreEqual(expectedi, actual, 1e-10);
             }
+        }
+
+        [TestMethod()]
+        public void GammaFunctionsTest()
+        {
+            double x = 0.17;
+            double gamma = Gamma.Function(x); // 5.4511741801042106
+            double gammap = Gamma.Multivariate(x, p: 2); // -39.473585841300675
+            double log = Gamma.Log(x);        // 1.6958310313607003
+            double logp = Gamma.Log(x, p: 2); // 3.6756317353404273
+            double stir = Gamma.Stirling(x);  // 24.040352622960743
+            double psi = Gamma.Digamma(x);    // -6.2100942259248626
+            double tri = Gamma.Trigamma(x);   // 35.915302055854525
+
+            double a = 4.2;
+            double lower = Gamma.LowerIncomplete(a, x); // 0.000015685073063633753
+            double upper = Gamma.UpperIncomplete(a, x); // 0.9999843149269364
+
+
+            Assert.AreEqual(0.9999843149269364, upper);
+            Assert.AreEqual(0.000015685073063633753, lower);
+
+            Assert.AreEqual(5.4511741801042106, gamma);
+            Assert.AreEqual(-39.473585841300675, gammap);
+            Assert.AreEqual(1.6958310313607003, log);
+            Assert.AreEqual(3.6756317353404273, logp);
+            Assert.AreEqual(24.040352622960743, stir);
+            Assert.AreEqual(-6.2100942259248626, psi);
+            Assert.AreEqual(35.915302055854525, tri);
+        }
+
+        [TestMethod()]
+        public void GammaTest2()
+        {
+            double x = 171;
+            double expected = 7.257415615308056e+306;
+            double actual = Gamma.Function(x);
+            Assert.AreEqual(expected, actual, 1e+293);
+        }
+
+        [TestMethod()]
+        public void LgammaTest()
+        {
+            double x = 57;
+            double expected = 172.35279713916282;
+
+            double actual = Gamma.Log(x);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod()]
+        public void DigammaTest2()
+        {
+            double x = 42;
+            double expected = 3.7257176179372822;
+            double actual = Gamma.Digamma(x);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod()]
+        public void MultivariateGammaTest()
+        {
+            double expected = 35.342917352885181;
+            double actual = Gamma.Multivariate(4, 2);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod()]
+        public void GammaUpperRTest()
+        {
+            // Example values from
+            // http://opensource.zyba.com/code/maths/special/gamma/gamma_upper_reg.php
+
+            double expected, actual;
+
+            actual = Gamma.UpperIncomplete(0.000000, 2);
+            expected = 1.000000;
+            Assert.AreEqual(expected, actual);
+            Assert.IsFalse(double.IsNaN(actual));
+
+            actual = Gamma.UpperIncomplete(0.250000, 2);
+            expected = 0.017286;
+            Assert.AreEqual(expected, actual, 1e-6);
+            Assert.IsFalse(double.IsNaN(actual));
+
+            actual = Gamma.UpperIncomplete(0.500000, 2);
+            expected = 0.045500;
+            Assert.AreEqual(expected, actual, 1e-6);
+            Assert.IsFalse(double.IsNaN(actual));
+
+            actual = Gamma.UpperIncomplete(0.750000, 2);
+            expected = 0.085056;
+            Assert.AreEqual(expected, actual, 1e-6);
+            Assert.IsFalse(double.IsNaN(actual));
+
+            actual = Gamma.UpperIncomplete(1.000000, 2);
+            expected = 0.135335;
+            Assert.AreEqual(expected, actual, 1e-6);
+            Assert.IsFalse(double.IsNaN(actual));
+
+            actual = Gamma.UpperIncomplete(1.250000, 2);
+            expected = 0.194847;
+            Assert.AreEqual(expected, actual, 1e-6);
+            Assert.IsFalse(double.IsNaN(actual));
+
+            actual = Gamma.UpperIncomplete(1.500000, 2);
+            expected = 0.261464;
+            Assert.AreEqual(expected, actual, 1e-6);
+            Assert.IsFalse(double.IsNaN(actual));
+
+            actual = Gamma.UpperIncomplete(1.750000, 2);
+            expected = 0.332706;
+            Assert.AreEqual(expected, actual, 1e-6);
+            Assert.IsFalse(double.IsNaN(actual));
+
+            actual = Gamma.UpperIncomplete(2.000000, 2);
+            expected = 0.406006;
+            Assert.AreEqual(expected, actual, 1e-6);
+            Assert.IsFalse(double.IsNaN(actual));
+
+            actual = Gamma.UpperIncomplete(2.250000, 2);
+            expected = 0.478944;
+            Assert.AreEqual(expected, actual, 1e-6);
+            Assert.IsFalse(double.IsNaN(actual));
+
+            actual = Gamma.UpperIncomplete(2.500000, 2);
+            expected = 0.549416;
+            Assert.AreEqual(expected, actual, 1e-6);
+            Assert.IsFalse(double.IsNaN(actual));
+
+            actual = Gamma.UpperIncomplete(2.750000, 2);
+            expected = 0.615734;
+            Assert.AreEqual(expected, actual, 1e-6);
+            Assert.IsFalse(double.IsNaN(actual));
         }
     }
 }

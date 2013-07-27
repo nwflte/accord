@@ -26,7 +26,6 @@ namespace Accord.Tests.Statistics
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Accord.Math;
     using System;
-    using Accord.Math.Formats;
 
     [TestClass()]
     public class IndependentComponentAnalysisTest

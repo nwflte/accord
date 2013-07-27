@@ -139,6 +139,12 @@
     <Compile Include="Analysis\ProportionalHazardsAnalysisTest.cs" />
     <Compile Include="Analysis\IndependentComponentAnalysisTest.cs" />
     <Compile Include="Analysis\DescriptiveAnalysisTest.cs" />
+    <Compile Include="Distributions\Multivariate\Continuous\MultivariateEmpiricalDistributionTest.cs" />
+    <Compile Include="Distributions\Multivariate\Continuous\InverseWishartDistributionTest.cs" />
+    <Compile Include="Distributions\Multivariate\Continuous\WishartDistributionTest.cs" />
+    <Compile Include="Distributions\Multivariate\Continuous\DirichletDistributionTest.cs" />
+    <Compile Include="Distributions\Univariate\Continuous\WrappedCauchyDistributionTest.cs" />
+    <Compile Include="Distributions\Univariate\Continuous\GompertzDistributionTest.cs" />
     <Compile Include="Models\Regression\ProbitRegressionTest.cs" />
     <Compile Include="Testing\BartlettTestTest.cs" />
     <Compile Include="Distributions\Univariate\Continuous\EmpiricalHazardDistributionTest.cs" />
@@ -208,7 +214,7 @@
     <Compile Include="Distributions\Univariate\Discrete\BernoulliDistributionTest.cs" />
     <Compile Include="Distributions\Univariate\Continuous\VonMisesDistributionTest.cs" />
     <Compile Include="Distributions\Univariate\Continuous\FDistributionTest.cs" />
-    <Compile Include="Distributions\Univariate\Discrete\MultinomialDistributionTest.cs" />
+    <Compile Include="Distributions\Multivariate\Discrete\MultinomialDistributionTest.cs" />
     <Compile Include="Distributions\Multivariate\MultivariateMixtureDistributionTest.cs" />
     <Compile Include="Distributions\Univariate\Discrete\GeneralDiscreteDistributionTest.cs" />
     <Compile Include="Distributions\Multivariate\Continuous\MultivariateContinuousDistributionTest.cs" />

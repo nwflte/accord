@@ -26,7 +26,6 @@ namespace Accord.Tests.Math
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System.Collections.Generic;
     using System;
-    using Accord.Math.Formats;
     using System.Data;
     using AForge;
     using System.Linq;
@@ -776,6 +775,65 @@ namespace Accord.Tests.Math
         #endregion
 
         #region Sum and Product
+        [TestMethod()]
+        public void ProductsTest1()
+        {
+            double[] u = { 1, 6, 3 };
+            double[] v = { 9, 4, 2 };
+
+            // products
+            double inner = u.InnerProduct(v);    // 39.0
+            double[,] outer = u.OuterProduct(v); // see below
+            double[] kronecker = u.KroneckerProduct(v); // { 9, 4, 2, 54, 24, 12, 27, 12, 6 }
+            double[][] cartesian = u.CartesianProduct(v); // all possible pair-wise combinations
+
+            Assert.AreEqual(39, inner);
+            Assert.IsTrue(new double[,] 
+            { 
+               {  9,  4,  2 },
+               { 54, 24, 12 },
+               { 27, 12,  6 },
+            }.IsEqual(outer));
+
+            Assert.IsTrue(new double[] { 9, 4, 2, 54, 24, 12, 27, 12, 6 }
+                .IsEqual(kronecker));
+
+
+            // addition
+            double[] addv = u.Add(v); // { 10, 10, 5 }
+            double[] add5 = u.Add(5); // {  6, 11, 8 }
+
+            Assert.IsTrue(addv.IsEqual(10, 10, 5));
+            Assert.IsTrue(add5.IsEqual(6, 11, 8));
+
+            double[] abs = u.Abs();   // { 1, 6, 3 }
+            double[] log = u.Log();   // { 0, 1.79, 1.09 }
+            double[] cos = u.Apply(Math.Cos); // { 0.54, 0.96, -0.989 }
+
+            Assert.IsTrue(abs.IsEqual(new double[] { 1, 6, 3 }));
+            Assert.IsTrue(log.IsEqual(new double[] { 0, 1.79, 1.09 }, 1e-2));
+            Assert.IsTrue(cos.IsEqual(new double[] { 0.54, 0.96, -0.989 }, 1e-2));
+
+            double[,] m = 
+            {
+                { 0, 5, 2 },
+                { 2, 1, 5 }
+            };
+
+            double[] vcut = v.Submatrix(0, 1); // { 9, 4 }
+            Assert.IsTrue(new double[] { 9, 4 }.IsEqual(vcut));
+
+            double[] mv = m.Multiply(v); // { 24, 32 }
+            double[] vm = vcut.Multiply(m); // { 8, 49, 38 }
+            double[,] md = m.MultiplyByDiagonal(v); // { { 0, 20, 4 }, { 18, 4, 10 } }
+            double[,] mmt = m.MultiplyByTranspose(m); // { { 29, 15 }, { 15, 30 } }
+
+            Assert.IsTrue(new double[] { 24, 32 }.IsEqual(mv));
+            Assert.IsTrue(new double[] { 8, 49, 38 }.IsEqual(vm));
+            Assert.IsTrue(new double[,] { { 0, 20, 4 }, { 18, 4, 10 } }.IsEqual(md));
+            Assert.IsTrue(new double[,] { { 29, 15 }, { 15, 30 } }.IsEqual(mmt));
+        }
+
         [TestMethod()]
         public void SumTest()
         {

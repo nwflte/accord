@@ -27,6 +27,7 @@ namespace Accord.Tests.Statistics
     using Accord.Statistics.Distributions.Univariate;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
+    using System.Globalization;
 
     [TestClass()]
     public class GeometricDistributionTest
@@ -77,6 +78,53 @@ namespace Accord.Tests.Statistics
         //
         #endregion
 
+
+        [TestMethod()]
+        public void ConstructorTest()
+        {
+            // Create a Geometric distribution with 42% success probability
+            var dist = new GeometricDistribution(probabilityOfSuccess: 0.42);
+
+            double mean = dist.Mean;     // 1.3809523809523812
+            double median = dist.Median; // 1
+            double var = dist.Variance;  // 3.2879818594104315
+            double mode = dist.Mode;     // 0
+
+            double cdf = dist.DistributionFunction(k: 2);               // 0.80488799999999994
+            double ccdf = dist.ComplementaryDistributionFunction(k: 2); // 0.19511200000000006
+
+            double pdf1 = dist.ProbabilityMassFunction(k: 0); // 0.42
+            double pdf2 = dist.ProbabilityMassFunction(k: 1); // 0.2436
+            double pdf3 = dist.ProbabilityMassFunction(k: 2); // 0.141288
+
+            double lpdf = dist.LogProbabilityMassFunction(k: 2); // -1.956954918588067
+
+            int icdf1 = dist.InverseDistributionFunction(p: 0.17); // 0
+            int icdf2 = dist.InverseDistributionFunction(p: 0.46); // 1
+            int icdf3 = dist.InverseDistributionFunction(p: 0.87); // 3
+
+            double hf = dist.HazardFunction(x: 0); // 0.72413793103448265
+            double chf = dist.CumulativeHazardFunction(x: 0); // 0.54472717544167193
+
+            string str = dist.ToString(CultureInfo.InvariantCulture); // "Geometric(x; p = 0.42)"
+
+            Assert.AreEqual(1.3809523809523812, mean);
+            Assert.AreEqual(1, median);
+            Assert.AreEqual(0, mode);
+            Assert.AreEqual(3.2879818594104315, var);
+            Assert.AreEqual(0.54472717544167193, chf, 1e-10);
+            Assert.AreEqual(0.80488799999999994, cdf);
+            Assert.AreEqual(0.42, pdf1);
+            Assert.AreEqual(0.2436, pdf2);
+            Assert.AreEqual(0.14128800000000002, pdf3);
+            Assert.AreEqual(-1.956954918588067, lpdf);
+            Assert.AreEqual(0.72413793103448265, hf);
+            Assert.AreEqual(0.19511200000000006, ccdf);
+            Assert.AreEqual(0, icdf1);
+            Assert.AreEqual(1, icdf2);
+            Assert.AreEqual(3, icdf3);
+            Assert.AreEqual("Geometric(x; p = 0.42)", str);
+        }
 
         [TestMethod()]
         public void GeometricDistributionConstructorTest()
@@ -167,5 +215,28 @@ namespace Accord.Tests.Statistics
             }
         }
 
+        [TestMethod()]
+        public void MedianTest()
+        {
+            {
+                var target = new GeometricDistribution(0.2);
+                Assert.AreEqual(target.Median, target.InverseDistributionFunction(0.5));
+            }
+
+            {
+                var target = new GeometricDistribution(0.6);
+                Assert.AreEqual(target.Median, target.InverseDistributionFunction(0.5));
+            }
+
+            {
+                var target = new GeometricDistribution(0.000001);
+                Assert.AreEqual(target.Median, target.InverseDistributionFunction(0.5));
+            }
+
+            {
+                var target = new GeometricDistribution(0.99999);
+                Assert.AreEqual(target.Median, target.InverseDistributionFunction(0.5));
+            }
+        }
     }
 }

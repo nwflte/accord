@@ -20,20 +20,15 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Statistics.Distributions.Univariate;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Accord.Statistics.Distributions;
-using System;
-using Accord.Statistics.Distributions.Fitting;
-
 namespace Accord.Tests.Statistics
 {
+    using Accord.Statistics.Distributions.Univariate;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Accord.Statistics.Distributions;
+    using System;
+    using Accord.Statistics.Distributions.Fitting;
+    using System.Globalization;
 
-
-    /// <summary>
-    ///This is a test class for UnivariateDiscreteDistributionTest and is intended
-    ///to contain all UnivariateDiscreteDistributionTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class UnivariateDiscreteDistributionTest
     {
@@ -41,10 +36,7 @@ namespace Accord.Tests.Statistics
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
+       
         public TestContext TestContext
         {
             get
@@ -87,6 +79,56 @@ namespace Accord.Tests.Statistics
         //
         #endregion
 
+
+        [TestMethod()]
+        public void ConstructorTest()
+        {
+            // Create an uniform (discrete) distribution in [2, 6] 
+            var dist = new UniformDiscreteDistribution(a: 2, b: 6);
+
+            // Common measures
+            double mean = dist.Mean;     // 4.0
+            double median = dist.Median; // 4.0
+            double var = dist.Variance;  // 1.3333333333333333
+
+            // Cumulative distribution functions
+            double cdf = dist.DistributionFunction(k: 2);               // 0.2
+            double ccdf = dist.ComplementaryDistributionFunction(k: 2); // 0.8
+
+            // Probability mass functions
+            double pmf1 = dist.ProbabilityMassFunction(k: 4); // 0.2
+            double pmf2 = dist.ProbabilityMassFunction(k: 5); // 0.2
+            double pmf3 = dist.ProbabilityMassFunction(k: 6); // 0.2
+            double lpmf = dist.LogProbabilityMassFunction(k: 2); // -1.6094379124341003
+
+            // Quantile function
+            int icdf1 = dist.InverseDistributionFunction(p: 0.17); // 2
+            int icdf2 = dist.InverseDistributionFunction(p: 0.46); // 4
+            int icdf3 = dist.InverseDistributionFunction(p: 0.87); // 6
+
+            // Hazard (failure rate) functions
+            double hf = dist.HazardFunction(x: 4); // 0.5
+            double chf = dist.CumulativeHazardFunction(x: 4); // 0.916290731874155
+
+            // String representation
+            string str = dist.ToString(CultureInfo.InvariantCulture); // "U(x; a = 2, b = 6)"
+
+            Assert.AreEqual(4.0, mean);
+            Assert.AreEqual(4.0, median);
+            Assert.AreEqual(1.3333333333333333, var);
+            Assert.AreEqual(0.916290731874155, chf, 1e-10);
+            Assert.AreEqual(0.2, cdf);
+            Assert.AreEqual(0.2, pmf1);
+            Assert.AreEqual(0.2, pmf2);
+            Assert.AreEqual(0.2, pmf3);
+            Assert.AreEqual(-1.6094379124341003, lpmf);
+            Assert.AreEqual(0.5, hf);
+            Assert.AreEqual(0.8, ccdf);
+            Assert.AreEqual(2, icdf1);
+            Assert.AreEqual(4, icdf2);
+            Assert.AreEqual(6, icdf3);
+            Assert.AreEqual("U(x; a = 2, b = 6)", str);
+        }
 
         internal virtual UnivariateDiscreteDistribution CreateUnivariateDiscreteDistribution()
         {

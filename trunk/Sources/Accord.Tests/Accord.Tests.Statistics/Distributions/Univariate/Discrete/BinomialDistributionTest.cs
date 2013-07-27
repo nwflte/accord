@@ -27,6 +27,7 @@ namespace Accord.Tests.Statistics
     using Accord.Statistics.Distributions.Fitting;
     using Accord.Statistics.Distributions.Univariate;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System.Globalization;
 
     [TestClass()]
     public class BinomialDistributionTest
@@ -77,6 +78,48 @@ namespace Accord.Tests.Statistics
         //
         #endregion
 
+
+        [TestMethod()]
+        public void ConstructorTest()
+        {
+            var bin = new BinomialDistribution(trials: 16, probability: 0.12);
+
+            double mean = bin.Mean;     // 1.92
+            double median = bin.Median; // 2
+            double var = bin.Variance;  // 1.6896
+            double mode = bin.Mode;     // 2
+
+            double cdf = bin.DistributionFunction(k: 0);    // 0.12933699143209909
+            double pdf = bin.ProbabilityMassFunction(k: 1); // 0.28218979948821621
+            double lpdf = bin.LogProbabilityMassFunction(k: 0); // -2.0453339441581582
+
+            double ccdf = bin.ComplementaryDistributionFunction(k: 0); // 0.87066300856790091
+            int icdf0 = bin.InverseDistributionFunction(p: 0.37); // 1
+            int icdf1 = bin.InverseDistributionFunction(p: 0.50); // 2
+            int icdf2 = bin.InverseDistributionFunction(p: 0.99); // 5
+            int icdf3 = bin.InverseDistributionFunction(p: 0.999); // 7
+
+            double hf = bin.HazardFunction(x: 0); // 1.3809523809523814
+            double chf = bin.CumulativeHazardFunction(x: 0); // 0.86750056770472328
+
+            string str = bin.ToString(CultureInfo.InvariantCulture); // "Binomial(x; n = 16, p = 0.12)"
+
+            Assert.AreEqual(1.92, mean);
+            Assert.AreEqual(2, median);
+            Assert.AreEqual(2, mode);
+            Assert.AreEqual(1.6896, var);
+            Assert.AreEqual(0.13850027875444251, chf, 1e-10);
+            Assert.AreEqual(0.12933699143209909, cdf, 1e-10);
+            Assert.AreEqual(0.28218979948821621, pdf);
+            Assert.AreEqual(-2.0453339441581582, lpdf);
+            Assert.AreEqual(0.14855000173354949, hf, 1e-10);
+            Assert.AreEqual(0.87066300856790091, ccdf, 1e-10);
+            Assert.AreEqual(1, icdf0);
+            Assert.AreEqual(2, icdf1);
+            Assert.AreEqual(5, icdf2);
+            Assert.AreEqual(7, icdf3);
+            Assert.AreEqual("Binomial(x; n = 16, p = 0.12)", str);
+        }
 
         [TestMethod()]
         public void ProbabilityMassFunctionTest()
@@ -233,7 +276,7 @@ namespace Accord.Tests.Statistics
                 double p = pvalues[i] + 1e-4;
                 double actual = target.InverseDistributionFunction(p);
 
-                Assert.AreEqual(i, actual);
+                Assert.AreEqual(i + 1, actual);
             }
         }
 
@@ -255,5 +298,36 @@ namespace Accord.Tests.Statistics
 
         }
 
+
+        [TestMethod()]
+        public void MedianTest()
+        {
+            int trials = 5;
+
+            {
+                BinomialDistribution target = new BinomialDistribution(trials, 0.0);
+                Assert.AreEqual(target.Median, target.InverseDistributionFunction(0.5));
+            }
+
+            {
+                BinomialDistribution target = new BinomialDistribution(trials, 0.2);
+                Assert.AreEqual(target.Median, target.InverseDistributionFunction(0.5));
+            }
+
+            {
+                BinomialDistribution target = new BinomialDistribution(trials, 0.6);
+                Assert.AreEqual(target.Median, target.InverseDistributionFunction(0.5));
+            }
+
+            {
+                BinomialDistribution target = new BinomialDistribution(trials, 0.8);
+                Assert.AreEqual(target.Median, target.InverseDistributionFunction(0.5));
+            }
+
+            {
+                BinomialDistribution target = new BinomialDistribution(trials, 1.0);
+                Assert.AreEqual(target.Median, target.InverseDistributionFunction(0.5));
+            }
+        }
     }
 }

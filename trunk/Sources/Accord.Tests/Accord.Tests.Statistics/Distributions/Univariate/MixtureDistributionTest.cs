@@ -27,6 +27,7 @@ namespace Accord.Tests.Statistics
     using Accord.Math;
     using Accord.Statistics.Distributions.Fitting;
     using Accord.MachineLearning;
+    using System.Globalization;
 
     [TestClass()]
     public class MixtureDistributionTest
@@ -78,6 +79,61 @@ namespace Accord.Tests.Statistics
         #endregion
 
 
+
+        [TestMethod()]
+        public void ConstructorTest()
+        {
+            // Create a new mixture containing two Normal distributions
+            Mixture<NormalDistribution> mix = new Mixture<NormalDistribution>(
+                new NormalDistribution(2, 1), new NormalDistribution(5, 1));
+
+            // Common measures
+            double mean   = mix.Mean;     // 3.5
+            double median = mix.Median;   // 3.4999998506015895
+            double var    = mix.Variance; // 3.25
+
+            // Cumulative distribution functions
+            double cdf = mix.DistributionFunction(x: 4.2);              // 0.59897597553494908
+            double ccdf = mix.ComplementaryDistributionFunction(x: 4.2); // 0.40102402446505092
+
+            // Probability mass functions
+            double pmf1 = mix.ProbabilityDensityFunction(x: 1.2); // 0.14499174984363708
+            double pmf2 = mix.ProbabilityDensityFunction(x: 2.3); // 0.19590437513747333
+            double pmf3 = mix.ProbabilityDensityFunction(x: 3.7); // 0.13270883471234715
+            double lpmf = mix.LogProbabilityDensityFunction(x: 4.2); // -1.8165661905848629
+
+            // Quantile function
+            double icdf1 = mix.InverseDistributionFunction(p: 0.17); // 1.5866611690305095
+            double icdf2 = mix.InverseDistributionFunction(p: 0.46); // 3.1968506765456883
+            double icdf3 = mix.InverseDistributionFunction(p: 0.87); // 5.6437596300843076
+
+            // Hazard (failure rate) functions
+            double hf = mix.HazardFunction(x: 4.2); // 0.40541978256972522
+            double chf = mix.CumulativeHazardFunction(x: 4.2); // 0.91373394208601633
+
+            // String representation:
+
+            // Mixture(x; 0.5 * N(x; μ = 5, σ² = 1) + 0.5 * N(x; μ = 5, σ² = 1))
+            string str = mix.ToString(CultureInfo.InvariantCulture);
+
+
+
+            Assert.AreEqual(3.5, mean);
+            Assert.AreEqual(3.4999998506015895, median);
+            Assert.AreEqual(3.25, var);
+            Assert.AreEqual(0.91373394208601633, chf, 1e-10);
+            Assert.AreEqual(0.59897597553494908, cdf);
+            Assert.AreEqual(0.14499174984363708, pmf1);
+            Assert.AreEqual(0.19590437513747333, pmf2);
+            Assert.AreEqual(0.13270883471234715, pmf3);
+            Assert.AreEqual(-1.8165661905848629, lpmf);
+            Assert.AreEqual(0.40541978256972522, hf);
+            Assert.AreEqual(0.40102402446505092, ccdf);
+            Assert.AreEqual(1.5866611690305095, icdf1);
+            Assert.AreEqual(3.1968506765456883, icdf2);
+            Assert.AreEqual(5.6437596300843076, icdf3);
+            Assert.AreEqual("Mixture(x; 0.5*N(x; μ = 5, σ² = 1) + 0.5*N(x; μ = 5, σ² = 1))", str);
+        }
 
         [TestMethod()]
         public void ConstructorTest1()

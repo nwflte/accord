@@ -128,6 +128,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ContrastiveDivergenceLearningTest.cs" />
+    <Compile Include="BernoulliFunctionTest.cs" />
+    <Compile Include="GaussianFunctionTest.cs" />
     <Compile Include="DeepBeliefNetworkTest.cs" />
     <Compile Include="ResilientPropagationLearningTest.cs" />
     <Compile Include="LevenbergMarquardtLearningTest.cs" />

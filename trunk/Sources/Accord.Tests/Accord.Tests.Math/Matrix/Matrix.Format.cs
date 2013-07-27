@@ -26,7 +26,6 @@ namespace Accord.Tests.Math
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System.Collections.Generic;
     using System;
-    using Accord.Math.Formats;
 
     [TestClass()]
     public class MatrixFormatTest

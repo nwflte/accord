@@ -20,16 +20,11 @@
 //    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 //
 
-using Accord.Math;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 namespace Accord.Tests.Math
 {
+    using Accord.Math;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-    /// <summary>
-    ///This is a test class for SpecialTest and is intended
-    ///to contain all SpecialTest Unit Tests
-    ///</summary>
     [TestClass()]
     public class SpecialTest
     {
@@ -37,10 +32,6 @@ namespace Accord.Tests.Math
 
         private TestContext testContextInstance;
 
-        /// <summary>
-        ///Gets or sets the test context which provides
-        ///information about and functionality for the current test run.
-        ///</summary>
         public TestContext TestContext
         {
             get
@@ -84,9 +75,6 @@ namespace Accord.Tests.Math
         #endregion
 
 
-        /// <summary>
-        ///A test for Binomial
-        ///</summary>
         [TestMethod()]
         public void BinomialTest()
         {
@@ -108,9 +96,6 @@ namespace Accord.Tests.Math
         }
 
 
-        /// <summary>
-        ///A test for Log1p
-        ///</summary>
         [TestMethod()]
         public void Log1pTest()
         {
@@ -132,21 +117,6 @@ namespace Accord.Tests.Math
         }
 
 
-        /// <summary>
-        ///A test for Gamma
-        ///</summary>
-        [TestMethod()]
-        public void GammaTest()
-        {
-            double x = 171;
-            double expected = 7.257415615308056e+306;
-            double actual = Gamma.Function(x);
-            Assert.AreEqual(expected, actual, 1e+293);
-        }
-
-        /// <summary>
-        ///A test for Factorial
-        ///</summary>
         [TestMethod()]
         public void FactorialTest()
         {
@@ -161,9 +131,6 @@ namespace Accord.Tests.Math
             Assert.AreEqual(expected, actual, 1e27);
         }
 
-        /// <summary>
-        ///A test for LnFactorial
-        ///</summary>
         [TestMethod()]
         public void LnFactorialTest()
         {
@@ -178,9 +145,6 @@ namespace Accord.Tests.Math
             Assert.AreEqual(expected, actual, 0.0000000001);
         }
 
-        /// <summary>
-        ///A test for Epsilon
-        ///</summary>
         [TestMethod()]
         public void EpsilonTest()
         {
@@ -200,9 +164,6 @@ namespace Accord.Tests.Math
             Assert.AreEqual(expected, actual);
         }
 
-        /// <summary>
-        ///A test for Binomial
-        ///</summary>
         [TestMethod()]
         public void BinomialTest2()
         {
@@ -219,209 +180,6 @@ namespace Accord.Tests.Math
             Assert.AreEqual(expected, actual, 1e+16);
         }
 
-        /// <summary>
-        ///A test for Lgamma
-        ///</summary>
-        [TestMethod()]
-        public void LgammaTest()
-        {
-            double x = 57;
-            double expected = 172.35279713916282;
 
-            double actual = Gamma.Log(x);
-            Assert.AreEqual(expected, actual);
-        }
-
-        /// <summary>
-        ///A test for BesselY0
-        ///</summary>
-        [TestMethod()]
-        public void BesselY0Test()
-        {
-            double actual;
-
-            actual = Bessel.Y0(64);
-            Assert.AreEqual(0.037067103232088, actual, 0.000001);
-        }
-
-        /// <summary>
-        ///A test for BesselJ
-        ///</summary>
-        [TestMethod()]
-        public void BesselJTest()
-        {
-            double actual;
-
-            actual = Bessel.J(0, 1);
-            Assert.AreEqual(0.765197686557967, actual, 0.000001);
-
-            actual = Bessel.J(0, 5);
-            Assert.AreEqual(-0.177596771314338, actual, 0.000001);
-
-            actual = Bessel.J(2, 17.3);
-            Assert.AreEqual(0.117351128521774, actual, 0.000001);
-        }
-
-        /// <summary>
-        ///A test for BesselY
-        ///</summary>
-        [TestMethod()]
-        public void BesselYTest()
-        {
-            double actual;
-
-            actual = Bessel.Y(2, 4);
-            Assert.AreEqual(0.215903594603615, actual, 0.000001);
-
-            actual = Bessel.Y(0, 64);
-            Assert.AreEqual(0.037067103232088, actual, 0.000001);
-        }
-
-        /// <summary>
-        ///A test for BesselJ0
-        ///</summary>
-        [TestMethod()]
-        public void BesselJ0Test()
-        {
-            double actual;
-
-            actual = Bessel.J0(1);
-            Assert.AreEqual(0.765197686557967, actual, 0.000001);
-
-            actual = Bessel.J0(5);
-            Assert.AreEqual(-0.177596771314338, actual, 0.000001);
-        }
-
-        /// <summary>
-        ///A test for Digamma
-        ///</summary>
-        [TestMethod()]
-        public void DigammaTest()
-        {
-            double x = 42;
-            double expected = 3.7257176179372822;
-            double actual = Gamma.Digamma(x);
-            Assert.AreEqual(expected, actual);
-        }
-
-        /// <summary>
-        ///A test for Ibeta
-        ///</summary>
-        [TestMethod()]
-        public void IbetaTest()
-        {
-            double xx = 0.42;
-            double aa = 2;
-            double bb = 4;
-            double expected = 0.696717907200000;
-
-            double actual = Beta.Incomplete(aa, bb, xx);
-            Assert.AreEqual(expected, actual, 0.0000001);
-        }
-
-
-        /// <summary>
-        ///A test for Beta
-        ///</summary>
-        [TestMethod()]
-        public void BetaTest()
-        {
-            double a = 4.2;
-            double b = 3.0;
-            double expected = 0.014770176060499;
-            double actual = Beta.Function(a, b);
-            Assert.AreEqual(expected, actual, 1e-6);
-        }
-
-        /// <summary>
-        ///A test for Normal
-        ///</summary>
-        [TestMethod()]
-        public void NormalTest()
-        {
-            // p = 0.5 * erfc(-z ./ sqrt(2))
-            double value = 0.42;
-            double expected = 0.662757273151751;
-            double actual = Normal.Function(value);
-            Assert.AreEqual(expected, actual, 1e-10);
-        }
-
-        [TestMethod()]
-        public void NormalInverseTest()
-        {
-            double value = 0.662757273151751;
-            double expected = 0.42;
-            double actual = Normal.Inverse(value);
-            Assert.AreEqual(expected, actual, 1e-10);
-        }
-
-        [TestMethod()]
-        public void GammaUpperRTest()
-        {
-            // Example values from
-            // http://opensource.zyba.com/code/maths/special/gamma/gamma_upper_reg.php
-
-            double expected, actual;
-
-            actual = Gamma.UpperIncomplete(0.000000, 2);
-            expected = 1.000000;
-            Assert.AreEqual(expected, actual);
-            Assert.IsFalse(double.IsNaN(actual));
-
-            actual = Gamma.UpperIncomplete(0.250000, 2);
-            expected = 0.017286;
-            Assert.AreEqual(expected, actual, 1e-6);
-            Assert.IsFalse(double.IsNaN(actual));
-
-            actual = Gamma.UpperIncomplete(0.500000, 2);
-            expected = 0.045500;
-            Assert.AreEqual(expected, actual, 1e-6);
-            Assert.IsFalse(double.IsNaN(actual));
-
-            actual = Gamma.UpperIncomplete(0.750000, 2);
-            expected = 0.085056;
-            Assert.AreEqual(expected, actual, 1e-6);
-            Assert.IsFalse(double.IsNaN(actual));
-
-            actual = Gamma.UpperIncomplete(1.000000, 2);
-            expected = 0.135335;
-            Assert.AreEqual(expected, actual, 1e-6);
-            Assert.IsFalse(double.IsNaN(actual));
-
-            actual = Gamma.UpperIncomplete(1.250000, 2);
-            expected = 0.194847;
-            Assert.AreEqual(expected, actual, 1e-6);
-            Assert.IsFalse(double.IsNaN(actual));
-
-            actual = Gamma.UpperIncomplete(1.500000, 2);
-            expected = 0.261464;
-            Assert.AreEqual(expected, actual, 1e-6);
-            Assert.IsFalse(double.IsNaN(actual));
-
-            actual = Gamma.UpperIncomplete(1.750000, 2);
-            expected = 0.332706;
-            Assert.AreEqual(expected, actual, 1e-6);
-            Assert.IsFalse(double.IsNaN(actual));
-
-            actual = Gamma.UpperIncomplete(2.000000, 2);
-            expected = 0.406006;
-            Assert.AreEqual(expected, actual, 1e-6);
-            Assert.IsFalse(double.IsNaN(actual));
-
-            actual = Gamma.UpperIncomplete(2.250000, 2);
-            expected = 0.478944;
-            Assert.AreEqual(expected, actual, 1e-6);
-            Assert.IsFalse(double.IsNaN(actual));
-
-            actual = Gamma.UpperIncomplete(2.500000, 2);
-            expected = 0.549416;
-            Assert.AreEqual(expected, actual, 1e-6);
-            Assert.IsFalse(double.IsNaN(actual));
-
-            actual = Gamma.UpperIncomplete(2.750000, 2);
-            expected = 0.615734;
-            Assert.AreEqual(expected, actual, 1e-6);
-            Assert.IsFalse(double.IsNaN(actual));
-        }
     }
 }

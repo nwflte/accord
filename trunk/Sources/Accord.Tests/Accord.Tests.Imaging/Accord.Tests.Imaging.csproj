@@ -152,6 +152,14 @@
     <Compile Include="ConvexityDefectsTest.cs" />
     <Compile Include="BorderFollowingTest.cs" />
     <Compile Include="CentralMomentsTest.cs" />
+    <Compile Include="Filters\KuwaharaTest.cs" />
+    <Compile Include="Filters\LogExpTest.cs" />
+    <Compile Include="Filters\VarianceTest.cs" />
+    <Compile Include="HaralickTest.cs" />
+    <Compile Include="Filters\KirschEdgeDetectorTest.cs" />
+    <Compile Include="LocalBinaryPatternsTest.cs" />
+    <Compile Include="Filters\GaborTest.cs" />
+    <Compile Include="HistogramsOfOrientedGradientsTest.cs" />
     <Compile Include="KNearestNeighborMatchingTest.cs" />
     <Compile Include="FastRetinaKeypointDetectorTest.cs" />
     <Compile Include="HuMomentsTest.cs" />
@@ -177,6 +185,7 @@
     </Compile>
     <Compile Include="RansacHomographyEstimatorTest.cs" />
     <Compile Include="RawMomentsTest.cs" />
+    <Compile Include="Filters\RobinsonEdgeDetectorTest.cs" />
     <Compile Include="SpeededUpRobustFeaturesDescriptorTest.cs" />
     <Compile Include="SpeededUpRobustFeaturesDetectorTest.cs" />
     <Compile Include="ToolsTest.cs" />
@@ -239,6 +248,8 @@
     <Content Include="Resources\dct.bmp" />
     <None Include="Resources\new.png" />
     <None Include="Resources\old.png" />
+    <None Include="Resources\lines.png" />
+    <None Include="Resources\lena_color.jpg" />
     <Content Include="Resources\SURF\flower01.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

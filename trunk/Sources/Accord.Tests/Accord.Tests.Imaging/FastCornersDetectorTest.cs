@@ -92,13 +92,6 @@ namespace Accord.Tests.Imaging
             target.Threshold = 20;
 
             List<IntPoint> actual = target.ProcessImage(image);
-            /*
-                        PointsMarker marker = new PointsMarker(actual.ToArray());
-                        marker.Width = 3;
-                        marker.MarkerColor = Color.FromArgb(255, 0, 0);
-                        var markers = marker.Apply(image);
-                        ImageBox.Show(markers.ToManagedImage(), PictureBoxSizeMode.Zoom);
-                        */
 
             Assert.AreEqual(237, actual.Count);
             Assert.AreEqual(404, actual[0].X);
@@ -123,14 +116,6 @@ namespace Accord.Tests.Imaging
             target.Threshold = 40;
 
             List<IntPoint> actual = target.ProcessImage(image);
-
-            /*
-                        PointsMarker marker = new PointsMarker(actual.ToArray());
-                        marker.Width = 3;
-                        marker.MarkerColor = Color.FromArgb(255, 0, 0);
-                        var markers = marker.Apply(image);
-                        ImageBox.Show(markers.ToManagedImage(), PictureBoxSizeMode.Zoom);
-            */
 
             Assert.AreEqual(324, actual.Count);
             Assert.AreEqual(506, actual[0].X);

@@ -26,6 +26,7 @@ namespace Accord.Tests.Statistics
     using Accord.Statistics.Distributions.Univariate;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
+    using System.Globalization;
 
     [TestClass()]
     public class NoncentralTDistributionTest
@@ -78,6 +79,40 @@ namespace Accord.Tests.Statistics
         #endregion
 
 
+        [TestMethod()]
+        public void ConstructorTest2()
+        {
+            var distribution = new NoncentralTDistribution(
+                degreesOfFreedom: 4, noncentrality: 2.42);
+
+            double mean = distribution.Mean;     // 3.0330202123035104
+            double median = distribution.Median; // 2.6034842414893795
+            double var = distribution.Variance;  // 4.5135883917583683
+
+            double cdf = distribution.DistributionFunction(x: 1.4); // 0.15955740661144721
+            double pdf = distribution.ProbabilityDensityFunction(x: 1.4); // 0.23552141805184526
+            double lpdf = distribution.LogProbabilityDensityFunction(x: 1.4); // -1.4459534225195116
+
+            double ccdf = distribution.ComplementaryDistributionFunction(x: 1.4); // 0.84044259338855276
+            double icdf = distribution.InverseDistributionFunction(p: cdf); // 1.4000000000123853
+
+            double hf = distribution.HazardFunction(x: 1.4); // 0.28023498559521387
+            double chf = distribution.CumulativeHazardFunction(x: 1.4); // 0.17382662901507062
+
+            string str = distribution.ToString(CultureInfo.InvariantCulture); // T(x; df = 4, μ = 2.42)
+
+            Assert.AreEqual(3.0330202123035104, mean);
+            Assert.AreEqual(2.6034842414893795, median);
+            Assert.AreEqual(4.5135883917583683, var);
+            Assert.AreEqual(0.17382662901507062, chf);
+            Assert.AreEqual(0.15955740661144721, cdf);
+            Assert.AreEqual(0.23552141805184526, pdf);
+            Assert.AreEqual(-1.4459534225195116, lpdf);
+            Assert.AreEqual(0.28023498559521387, hf);
+            Assert.AreEqual(0.84044259338855276, ccdf);
+            Assert.AreEqual(1.4000000000123853, icdf);
+            Assert.AreEqual("T(x; df = 4, μ = 2.42)", str);
+        }
 
         [TestMethod()]
         public void DistributionFunctionTest()
@@ -199,6 +234,14 @@ namespace Accord.Tests.Statistics
             target = new NoncentralTDistribution(5.97, -42);
             Assert.AreEqual(-48.390832208385575, target.Mean);
             Assert.AreEqual(312.49612392294557, target.Variance);
+        }
+
+        [TestMethod()]
+        public void MedianTest()
+        {
+            NoncentralTDistribution target = new NoncentralTDistribution(3.2, 4.57);
+
+            Assert.AreEqual(target.Median, target.InverseDistributionFunction(0.5));
         }
 
     }

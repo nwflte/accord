@@ -24,11 +24,10 @@ namespace Accord.Tests.Math
 {
     using Accord.Math;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using System;
-    using Accord.Math.Comparers;
-
+    using System;    
+    
     [TestClass()]
-    public class GeneralComparerTest
+    public class RelativeConvergenceTest
     {
 
 
@@ -78,24 +77,33 @@ namespace Accord.Tests.Math
 
 
         [TestMethod()]
-        public void GeneralComparerConstructorTest()
+        public void RelativeConvergenceConstructorTest()
         {
-            double[] actual, expected;
+            var criteria = new RelativeConvergence(iterations: 0, tolerance: 0.1);
 
-            actual = new double[] { 0, -1, 2, Double.PositiveInfinity, Double.NegativeInfinity };
-            expected = new double[] { Double.NegativeInfinity, -1, 0, 2, Double.PositiveInfinity };
-            Array.Sort(actual, new GeneralComparer(ComparerDirection.Ascending, false));
-            Assert.IsTrue(Matrix.IsEqual(actual, expected));
+            int progress = 1;
 
-            actual = new double[] { 0, -1, 2, Double.PositiveInfinity, Double.NegativeInfinity };
-            expected = new double[] { Double.PositiveInfinity, 2, 0, -1, Double.NegativeInfinity };
-            Array.Sort(actual, new GeneralComparer(ComparerDirection.Descending, false));
-            Assert.IsTrue(Matrix.IsEqual(actual, expected));
+            do
+            {
+                // Do some processing...
 
-            actual = new double[]   { 0, -1, 2, Double.PositiveInfinity, Double.NegativeInfinity };
-            expected = new double[] { Double.PositiveInfinity, Double.NegativeInfinity, 2, -1, 0 };
-            Array.Sort(actual, new GeneralComparer(ComparerDirection.Descending, true));
-            Assert.IsTrue(Matrix.IsEqual(actual, expected));
+
+                // Update current iteration information:
+                criteria.NewValue = 12345.6 / progress++;
+
+            } while (!criteria.HasConverged);
+
+
+            // The method will converge after reaching the 
+            // maximum of 11 iterations with a final value
+            // of 1234.56:
+
+            int iterations = criteria.CurrentIteration; // 11
+            double value = criteria.OldValue; // 1234.56
+
+
+            Assert.AreEqual(11, criteria.CurrentIteration);
+            Assert.AreEqual(1234.56, criteria.OldValue);
         }
     }
 }
