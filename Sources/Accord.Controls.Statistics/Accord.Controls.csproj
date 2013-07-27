@@ -130,6 +130,7 @@
     <Compile Include="Boxes\DataGridBox.Designer.cs">
       <DependentUpon>DataGridBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="DenavitHartenbergViewer.cs" />
     <Compile Include="Editors\NumericCollectionEditor.cs" />
     <Compile Include="Editors\NumericCollectionEditorForm.cs">
       <SubType>Form</SubType>

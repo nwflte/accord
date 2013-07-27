@@ -72,6 +72,15 @@ namespace Accord.Controls
         ///   Initializes a new instance of the <see cref="ColorSequenceCollection"/> class.
         /// </summary>
         /// 
+        public ColorSequenceCollection()
+            : this(Colors.Length - 1, true, false)
+        {
+        }
+
+        /// <summary>
+        ///   Initializes a new instance of the <see cref="ColorSequenceCollection"/> class.
+        /// </summary>
+        /// 
         /// <param name="number">The number of colors to generate.</param>
         /// 
         public ColorSequenceCollection(int number)
@@ -90,7 +99,7 @@ namespace Accord.Controls
         {
             int start = (skipWhite) ? 1 : 0;
 
-            if (number <= 0 || number >= Colors.Length - start)
+            if (number <= 0 || number >= Colors.Length - start + 1)
                 throw new ArgumentOutOfRangeException("number", "The number of colors must be between 1 and 32.");
 
             sequence = new Color[number];
@@ -118,7 +127,14 @@ namespace Accord.Controls
         /// 
         public Color this[int i]
         {
-            get { return sequence[i]; }
+            get
+            {
+                if (i < 0 || i >= Count)
+                    throw new ArgumentOutOfRangeException("i",
+                        "Index must be between 0 and " + Count + ".");
+
+                return sequence[i];
+            }
         }
 
         /// <summary>
@@ -127,6 +143,10 @@ namespace Accord.Controls
         /// 
         public Color GetColor(int i)
         {
+            if (i < 0 || i >= Count)
+                throw new ArgumentOutOfRangeException("i",
+                    "Index must be between 0 and " + Count + ".");
+
             return sequence[i];
         }
 
@@ -154,5 +174,13 @@ namespace Accord.Controls
             return GetEnumerator();
         }
 
+        /// <summary>
+        ///   Gets the number of colors in this sequence.
+        /// </summary>
+        /// 
+        public int Count
+        {
+            get { return sequence.Length; }
+        }
     }
 }
