@@ -2,9 +2,6 @@
 // The Accord.NET Framework
 // http://accord.googlecode.com
 //
-// Copyright © Christopher Evans, 2009-2011
-// http://www.chrisevansdev.com/
-//
 // Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
 //
@@ -35,7 +32,7 @@ namespace Accord.Imaging
     /// </summary>
     /// 
     public interface IFeatureDetector<TPoint> : IFeatureDetector<TPoint, double[]>
-        where TPoint : IFeaturePoint<double[]>
+        where TPoint : IFeatureDescriptor<double[]>
     {
         // This class exists to maintain backward compatibility with
         // the non-generic version of IFeaturePoint (and to provide
@@ -47,7 +44,8 @@ namespace Accord.Imaging
     ///   Common interface for feature detectors.
     /// </summary>
     /// 
-    public interface IFeatureDetector<TPoint, TFeature> where TPoint : IFeaturePoint<TFeature>
+    public interface IFeatureDetector<TPoint, TFeature> 
+        where TPoint : IFeatureDescriptor<TFeature>
     {
         /// <summary>
         ///   Process image looking for interest points.
