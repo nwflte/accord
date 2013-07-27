@@ -89,6 +89,28 @@ namespace Accord.Statistics.Filters
         /// 
         protected abstract DataTable ProcessFilter(DataTable data);
 
+
+        /// <summary>
+        ///   Gets options associated with a given variable (data column).
+        /// </summary>
+        /// 
+        /// <param name="columnName">The name of the variable.</param>
+        /// 
+        public T this[string columnName]
+        {
+            get { return Columns[columnName]; }
+        }
+
+        /// <summary>
+        ///   Gets options associated with a given variable (data column).
+        /// </summary>
+        /// 
+        /// <param name="index">The column's index for the variable.</param>
+        /// 
+        public T this[int index]
+        {
+            get { return Columns[index]; }
+        }
     }
 
     /// <summary>

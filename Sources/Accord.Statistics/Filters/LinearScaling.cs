@@ -114,40 +114,6 @@ namespace Accord.Statistics.Filters
         }
 
         /// <summary>
-        ///   Gets options, including mappings and dictionaries
-        ///   associated with a given variable (data column).
-        /// </summary>
-        /// 
-        /// <param name="index">The column's index for the variable.</param>
-        /// 
-        /// <returns>
-        ///   An <see cref="Options"/> object listing the main
-        ///   properties, such as number of possible symbols and
-        ///   symbol-value mapping for the given column.</returns>
-        /// 
-        public Options this[int index]
-        {
-            get { return Columns[index]; }
-        }
-
-        /// <summary>
-        ///   Gets options, including mappings and dictionaries
-        ///   associated with a given variable (data column).
-        /// </summary>
-        /// 
-        /// <param name="columnName">The name of the variable.</param>
-        /// 
-        /// <returns>
-        ///   An <see cref="Options"/> object listing the main
-        ///   properties, such as number of possible symbols and
-        ///   symbol-value mapping for the given column.</returns>
-        /// 
-        public Options this[string columnName]
-        {
-            get { return Columns[columnName]; }
-        }
-
-        /// <summary>
         ///   Auto detects the filter options by analyzing a given <see cref="System.Data.DataTable"/>.
         /// </summary>  
         /// 

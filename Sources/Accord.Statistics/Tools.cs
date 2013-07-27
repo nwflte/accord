@@ -1140,6 +1140,74 @@ namespace Accord.Statistics
         ///   Computes the entropy for the given values.
         /// </summary>
         /// 
+        /// <param name="values">A number array containing the vector values.</param>
+        /// 
+        /// <returns>The calculated entropy for the given values.</returns>
+        /// 
+        public static double Entropy(this double[] values)
+        {
+            double sum = 0;
+            foreach (double v in values)
+                sum += v * Math.Log(v);
+            return -sum;
+        }
+
+        /// <summary>
+        ///   Computes the entropy for the given values.
+        /// </summary>
+        /// 
+        /// <param name="values">A number array containing the vector values.</param>
+        /// <param name="eps">A small constant to avoid <see cref="Double.NaN"/>s in
+        ///   case the there is a zero between the given <paramref name="values"/>.</param>
+        /// 
+        /// <returns>The calculated entropy for the given values.</returns>
+        /// 
+        public static double Entropy(this double[] values, double eps = 0)
+        {
+            double sum = 0;
+            foreach (double v in values)
+                sum += v * Math.Log(v + eps);
+            return -sum;
+        }
+
+        /// <summary>
+        ///   Computes the entropy for the given values.
+        /// </summary>
+        /// 
+        /// <param name="values">A number matrix containing the matrix values.</param>
+        /// <param name="eps">A small constant to avoid <see cref="Double.NaN"/>s in
+        ///   case the there is a zero between the given <paramref name="values"/>.</param>
+        /// 
+        /// <returns>The calculated entropy for the given values.</returns>
+        /// 
+        public static double Entropy(this double[,] values, double eps = 0)
+        {
+            double sum = 0;
+            foreach (double v in values)
+                sum += v * Math.Log(v + eps);
+            return -sum;
+        }
+
+        /// <summary>
+        ///   Computes the entropy for the given values.
+        /// </summary>
+        /// 
+        /// <param name="values">A number matrix containing the matrix values.</param>
+        /// 
+        /// <returns>The calculated entropy for the given values.</returns>
+        /// 
+        public static double Entropy(this double[,] values)
+        {
+            double sum = 0;
+            foreach (double v in values)
+                sum += v * Math.Log(v);
+            return -sum;
+        }
+
+        /// <summary>
+        ///   Computes the entropy for the given values.
+        /// </summary>
+        /// 
         /// <param name="values">An array of integer symbols.</param>
         /// <param name="startValue">The starting symbol.</param>
         /// <param name="endValue">The ending symbol.</param>
@@ -2273,16 +2341,18 @@ namespace Accord.Statistics
                     s4 += dev * dev * dev * dev;
                 }
 
+                double dn = (double)n;
                 double m2 = s2 / n;
                 double m4 = s4 / n;
 
                 if (unbiased)
                 {
-                    double v = s2 / (n - 1);
+                    double v = s2 / (dn - 1);
 
-                    double a = (n * (n + 1)) / (double)((n - 1) * (n - 2) * (n - 3));
+
+                    double a = (dn * (dn + 1)) / ((dn - 1) * (dn - 2) * (dn - 3));
                     double b = s4 / (v * v);
-                    double c = ((n - 1) * (n - 1)) / (double)((n - 2) * (n - 3));
+                    double c = ((dn - 1) * (dn - 1)) / ((dn - 2) * (dn - 3));
 
                     kurtosis[j] = a * b - 3 * c;
                 }
@@ -3747,6 +3817,31 @@ namespace Accord.Statistics
         }
 
 
+        /// <summary>
+        ///   Generates a random <see cref="Covariance(double[], double[], bool)"/> matrix.
+        /// </summary>
+        /// 
+        /// <param name="size">The size of the square matrix.</param>
+        /// <param name="minValue">The minimum value for a diagonal element.</param>
+        /// <param name="maxValue">The maximum size for a diagonal element.</param>
+        /// 
+        /// <returns>A square, positive-definite matrix which 
+        ///   can be interpreted as a covariance matrix.</returns>
+        /// 
+        public static double[,] RandomCovariance(int size, double minValue, double maxValue)
+        {
+            double[,] A = Accord.Math.Matrix.Random(size, true, minValue, maxValue);
+
+            var gso = new GramSchmidtOrthogonalization(A);
+            double[,] Q = gso.OrthogonalFactor;
+
+            double[] diagonal = Matrix.Random(size, minValue, maxValue).Abs();
+            double[,] psd = Q.TransposeAndMultiplyByDiagonal(diagonal).Multiply(Q);
+
+            System.Diagnostics.Debug.Assert(psd.IsPositiveDefinite());
+
+            return psd;
+        }
     }
 }
 
