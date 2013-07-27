@@ -296,6 +296,7 @@ namespace Gestures
                 lbHaveYouDrawn.Text = String.Format("Have you drawn a {0}?", label);
                 panelClassification.Visible = true;
                 panelUserLabeling.Visible = false;
+                cbClasses.SelectedItem = label;
             }
         }
 
