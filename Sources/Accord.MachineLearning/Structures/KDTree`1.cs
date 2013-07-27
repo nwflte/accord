@@ -212,6 +212,23 @@ namespace Accord.MachineLearning.Structures
         /// 
         /// <param name="position">The queried point.</param>
         /// <param name="radius">The search radius.</param>
+        /// <param name="maximum">The maximum number of neighbors to retrieve.</param>
+        /// 
+        /// <returns>A list of neighbor points, ordered by distance.</returns>
+        /// 
+        public KDTreeNodeCollection<T> Nearest(double[] position, double radius, int maximum)
+        {
+            var list = new KDTreeNodeCollection<T>(maximum);
+            if (root != null) find(root, position, radius, list);
+            return list;
+        }
+
+        /// <summary>
+        ///   Retrieves the nearest points to a given point within a given radius.
+        /// </summary>
+        /// 
+        /// <param name="position">The queried point.</param>
+        /// <param name="radius">The search radius.</param>
         /// 
         /// <returns>A list of neighbor points, ordered by distance.</returns>
         /// 
