@@ -1,6 +1,6 @@
 ; Accord.NET setup project
 
-#define VERSION "2.9.0"
+#define VERSION "2.10.0"
 
 [Setup]
 AppName=Accord.NET Framework
