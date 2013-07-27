@@ -32,14 +32,24 @@ namespace Accord.Imaging
     /// </summary>
     /// 
     /// <remarks>
+    /// <para>
     ///   The bag-of-words (BoW) model can be used to extract finite
     ///   length features from otherwise varying length representations.
     ///   This class uses the <see cref="SpeededUpRobustFeaturesDetector">
     ///   SURF features detector</see> to determine a coded representation
-    ///   for a given image.
+    ///   for a given image.</para>
+    ///   
+    /// <para>
+    ///   It is also possible to use other feature detectors with this
+    ///   class. For this, please refer to <see cref="BagOfVisualWords{TPoint}"/>
+    ///   for more details and examples.</para>
     /// </remarks>
     /// 
     /// <example>
+    /// <para>  
+    ///   The following example shows how to create and use a BoW with
+    ///   default parameters. </para>
+    ///   
     /// <code>
     ///   int numberOfWords = 32;
     ///   
@@ -52,7 +62,31 @@ namespace Accord.Imaging
     ///   // Create a fixed-length feature vector for a new image
     ///   double[] featureVector = bow.GetFeatureVector(image);
     /// </code>
+    /// 
+    /// <para>  
+    ///   By default, the BoW uses K-Means to cluster feature vectors. The next
+    ///   example demonstrates how to use a different clustering algorithm when
+    ///   computing the BoW. The example will be given using the <see cref="BinarySplit">
+    ///   Binary Split</see> clustering algorithm.</para>
+    ///   
+    /// <code>
+    ///   int numberOfWords = 32;
+    ///   
+    ///   // Create an alternative clustering algorithm
+    ///   BinarySplit binarySplit = new BinarySplit(numberOfWords);
+    ///   
+    ///   // Create bag-of-words (BoW) with the clustering algorithm
+    ///   BagOfVisualWords bow = new BagOfVisualWords(binarySplit);
+    ///   
+    ///   // Create the BoW codebook using a set of training images
+    ///   bow.Compute(imageArray);
+    ///   
+    ///   // Create a fixed-length feature vector for a new image
+    ///   double[] featureVector = bow.GetFeatureVector(image);
+    /// </code>
     /// </example>
+    /// 
+    /// <seealso cref="BagOfVisualWords{TPoint}"/>
     /// 
     [Serializable]
     public class BagOfVisualWords : BagOfVisualWords<SpeededUpRobustFeaturePoint>
@@ -76,7 +110,9 @@ namespace Accord.Imaging
         /// <param name="numberOfWords">The number of codewords.</param>
         /// 
         public BagOfVisualWords(int numberOfWords)
-            : base(new SpeededUpRobustFeaturesDetector(), numberOfWords) { }
+            : base(new SpeededUpRobustFeaturesDetector(), numberOfWords)
+        {
+        }
 
         /// <summary>
         ///   Constructs a new <see cref="BagOfVisualWords"/> using a
@@ -87,10 +123,9 @@ namespace Accord.Imaging
         /// <param name="algorithm">The clustering algorithm to use.</param>
         /// 
         public BagOfVisualWords(IClusteringAlgorithm<double[]> algorithm)
-            : base(new SpeededUpRobustFeaturesDetector(), algorithm) { }
-
-
-
+            : base(new SpeededUpRobustFeaturesDetector(), algorithm) 
+        {
+        }
 
 
         /// <summary>
@@ -152,6 +187,38 @@ namespace Accord.Imaging
             using (FileStream fs = new FileStream(path, FileMode.Open))
             {
                 return Load<TPoint>(fs);
+            }
+        }
+
+        /// <summary>
+        ///   Loads a bag of words from a stream.
+        /// </summary>
+        /// 
+        /// <param name="stream">The stream from which the bow is to be deserialized.</param>
+        /// 
+        /// <returns>The deserialized bag of words.</returns>
+        /// 
+        public static BagOfVisualWords<TPoint, TFeature> Load<TPoint, TFeature>(Stream stream)
+            where TPoint : IFeaturePoint<TFeature>
+        {
+            BinaryFormatter b = new BinaryFormatter();
+            return (BagOfVisualWords<TPoint, TFeature>)b.Deserialize(stream);
+        }
+
+        /// <summary>
+        ///   Loads a bag of words from a file.
+        /// </summary>
+        /// 
+        /// <param name="path">The path to the file from which the bow is to be deserialized.</param>
+        /// 
+        /// <returns>The deserialized bag of words.</returns>
+        /// 
+        public static BagOfVisualWords<TPoint, TFeature> Load<TPoint, TFeature>(string path)
+            where TPoint : IFeaturePoint<TFeature>
+        {
+            using (FileStream fs = new FileStream(path, FileMode.Open))
+            {
+                return Load<TPoint, TFeature>(fs);
             }
         }
     }
