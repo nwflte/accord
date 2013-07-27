@@ -27,6 +27,7 @@ namespace Accord.Controls.Vision
     using System.ComponentModel.Design;
     using System.Drawing;
     using System.Drawing.Imaging;
+    using System.Linq;
     using System.Windows.Forms;
     using Accord.Math;
     using Accord.Vision.Detection;
@@ -55,7 +56,6 @@ namespace Accord.Controls.Vision
         private HaarObjectDetector detector;
         private Camshift tracker;
 
-        private Size frameSize = new Size(320, 240);
         private ResizeNearestNeighbor resize = new ResizeNearestNeighbor(160, 120);
 
         private volatile bool requestedToStop;
@@ -76,6 +76,7 @@ namespace Accord.Controls.Vision
         ///   Gets the <see cref="IObjectTracker"/> used to
         ///   track the head object in the video stream.
         /// </summary>
+        /// 
         /// <value>The active object tracker.</value>
         /// 
         [Browsable(false)]
@@ -88,6 +89,7 @@ namespace Accord.Controls.Vision
         ///   Gets the <see cref="IObjectDetector"/> used to
         ///   detect the head object in the video stream.
         /// </summary>
+        /// 
         /// <value>The active object detector.</value>
         /// 
         [Browsable(false)]
@@ -130,6 +132,7 @@ namespace Accord.Controls.Vision
         ///   Gets or sets the maximum position
         ///   for horizontal scale calibration.
         /// </summary>
+        /// 
         [Category("Calibration"), DefaultValue(128)]
         public int XAxisMax
         {
@@ -145,6 +148,7 @@ namespace Accord.Controls.Vision
         ///   Gets or sets the minimum position
         ///   for horizontal scale calibration.
         /// </summary>
+        /// 
         [Category("Calibration"), DefaultValue(180)]
         public int XAxisMin
         {
@@ -160,6 +164,7 @@ namespace Accord.Controls.Vision
         ///   Gets or sets the maximum position
         ///   for vertical scale calibration.
         /// </summary>
+        /// 
         [Category("Calibration"), DefaultValue(100)]
         public int YAxisMax
         {
@@ -175,6 +180,7 @@ namespace Accord.Controls.Vision
         ///   Gets or sets the minimum position
         ///   for vertical scale calibration.
         /// </summary>
+        /// 
         [Category("Calibration"), DefaultValue(150)]
         public int YAxisMin
         {
@@ -190,6 +196,7 @@ namespace Accord.Controls.Vision
         ///   Gets or sets the maximum area
         ///   for proximity scale calibration.
         /// </summary>
+        /// 
         [Category("Calibration"), DefaultValue(140)]
         public double ScaleMax
         {
@@ -205,6 +212,7 @@ namespace Accord.Controls.Vision
         ///   Gets or sets the minimum area
         ///   for proximity scale calibration.
         /// </summary>
+        /// 
         [Category("Calibration"), DefaultValue(90)]
         public double ScaleMin
         {
@@ -220,6 +228,7 @@ namespace Accord.Controls.Vision
         ///    Gets or sets the maximum angle
         ///    for head tilting calibration.
         /// </summary>
+        /// 
         [Category("Calibration"), DefaultValue(1.3290820121765137)]
         public double AngleMax
         {
@@ -235,6 +244,7 @@ namespace Accord.Controls.Vision
         ///    Gets or sets the minimum angle
         ///    for head tilting calibration.
         /// </summary>
+        /// 
         [Category("Calibration"), DefaultValue(1.83104407787323)]
         public double AngleMin
         {
@@ -251,9 +261,11 @@ namespace Accord.Controls.Vision
         ///   Gets or sets the object used to marshal event-handler calls that
         ///   are issued when the head object position has been updated.
         /// </summary>
+        /// 
         /// <value>The <see cref="ISynchronizeInvoke"/> representing the object
         /// used to marshal the event-handler calls that are issued when the head
         /// position has been updated. The default is null.</value>
+        /// 
         [Browsable(false), DefaultValue(null)]
         public ISynchronizeInvoke SynchronizingObject
         {
@@ -282,7 +294,9 @@ namespace Accord.Controls.Vision
         /// <summary>
         ///   Gets or sets the video device used to track objects.
         /// </summary>
+        /// 
         /// <value>The <see cref="VideoCaptureDevice"/> used to track objects.</value>
+        /// 
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public IVideoSource Device
         {
@@ -304,15 +318,31 @@ namespace Accord.Controls.Vision
                     videoSource.VideoSourceError += videoSource_VideoSourceError;
 
                     VideoCaptureDevice captureDevice = videoSource as VideoCaptureDevice;
-                    if (captureDevice != null) captureDevice.DesiredFrameSize = frameSize;
+
+                    if (captureDevice != null)
+                        captureDevice.VideoResolution = selectResolution(captureDevice);
                 }
             }
+        }
+
+        private static VideoCapabilities selectResolution(VideoCaptureDevice device)
+        {
+            foreach (var cap in device.VideoCapabilities)
+            {
+                if (cap.FrameSize.Height == 240)
+                    return cap;
+                if (cap.FrameSize.Width == 320)
+                    return cap;
+            }
+
+            return device.VideoCapabilities.Last();
         }
 
         /// <summary>
         ///   Gets a value indicating whether this instance is
         ///   attempting to detect faces in the video stream.
         /// </summary>
+        /// 
         /// <value>
         /// 	<c>true</c> if this instance is detecting; otherwise, <c>false</c>.
         /// </value>
@@ -324,6 +354,7 @@ namespace Accord.Controls.Vision
         ///   Gets a value indicating whether this instance is
         ///   actually tracking an object in the video stream.
         /// </summary>
+        /// 
         /// <value>
         /// 	<c>true</c> if this instance is tracking; otherwise, <c>false</c>.
         /// </value>
