@@ -179,7 +179,7 @@ namespace SVMs
             // Plot support vectors
             CreateScatterplot(graphSupportVectors, graph);
 
-            var ranges = Matrix.Range(sourceMatrix);
+            var ranges = Matrix.Range(sourceMatrix, 0);
             double[][] map = Matrix.CartesianProduct(
                 Matrix.Interval(ranges[0], 0.05),
                 Matrix.Interval(ranges[1], 0.05));
@@ -474,7 +474,10 @@ namespace SVMs
 
             var g = Sigmoid.Estimate(inputs.ToArray(), labels.Length, out range);
 
-            numSigAlpha.Value = (decimal)g.Alpha;
+            if (g.Alpha < (double)Decimal.MaxValue && g.Alpha > (double)Decimal.MinValue)
+                numSigAlpha.Value = (decimal)g.Alpha;
+
+            if (g.Constant < (double)Decimal.MaxValue && g.Constant > (double)Decimal.MinValue)
             numSigB.Value = (decimal)g.Constant;
         }
 

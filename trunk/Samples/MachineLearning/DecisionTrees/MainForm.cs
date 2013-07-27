@@ -139,7 +139,7 @@ namespace DecisionTrees
 
 
             // Draw the separating surface
-            var ranges = Matrix.Range(sourceMatrix);
+            var ranges = Matrix.Range(sourceMatrix, 0);
             double[][] map = Matrix.CartesianProduct(
                 Matrix.Interval(ranges[0], 0.05),
                 Matrix.Interval(ranges[1], 0.05));

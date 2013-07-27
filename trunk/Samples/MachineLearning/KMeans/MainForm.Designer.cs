@@ -1,4 +1,4 @@
-﻿namespace KMeansClustering
+﻿namespace Clustering
 {
     partial class MainForm
     {
@@ -32,14 +32,17 @@
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.numClusters = new System.Windows.Forms.NumericUpDown();
-            this.label1 = new System.Windows.Forms.Label();
+            this.numBandwidth = new System.Windows.Forms.NumericUpDown();
+            this.radioClusters = new System.Windows.Forms.RadioButton();
+            this.radioRadius = new System.Windows.Forms.RadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numClusters)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numBandwidth)).BeginInit();
             this.SuspendLayout();
             // 
             // pictureBox
             // 
-            this.pictureBox.Image = global::KMeansClustering.Properties.Resources.leaf;
+            this.pictureBox.Image = global::Clustering.Properties.Resources.leaf;
             this.pictureBox.Location = new System.Drawing.Point(12, 12);
             this.pictureBox.Name = "pictureBox";
             this.pictureBox.Size = new System.Drawing.Size(500, 333);
@@ -68,7 +71,7 @@
             // 
             // numClusters
             // 
-            this.numClusters.Location = new System.Drawing.Point(377, 354);
+            this.numClusters.Location = new System.Drawing.Point(208, 354);
             this.numClusters.Maximum = new decimal(new int[] {
             25,
             0,
@@ -88,29 +91,64 @@
             0,
             0});
             // 
-            // label1
+            // numBandwidth
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(324, 356);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(47, 13);
-            this.label1.TabIndex = 4;
-            this.label1.Text = "Clusters:";
+            this.numBandwidth.DecimalPlaces = 2;
+            this.numBandwidth.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            131072});
+            this.numBandwidth.Location = new System.Drawing.Point(356, 354);
+            this.numBandwidth.Name = "numBandwidth";
+            this.numBandwidth.Size = new System.Drawing.Size(50, 20);
+            this.numBandwidth.TabIndex = 3;
+            this.numBandwidth.Value = new decimal(new int[] {
+            6,
+            0,
+            0,
+            131072});
+            // 
+            // radioClusters
+            // 
+            this.radioClusters.AutoSize = true;
+            this.radioClusters.Checked = true;
+            this.radioClusters.Location = new System.Drawing.Point(137, 354);
+            this.radioClusters.Name = "radioClusters";
+            this.radioClusters.Size = new System.Drawing.Size(65, 17);
+            this.radioClusters.TabIndex = 5;
+            this.radioClusters.TabStop = true;
+            this.radioClusters.Text = "Clusters:";
+            this.radioClusters.UseVisualStyleBackColor = true;
+            // 
+            // radioRadius
+            // 
+            this.radioRadius.AutoSize = true;
+            this.radioRadius.Location = new System.Drawing.Point(289, 354);
+            this.radioRadius.Name = "radioRadius";
+            this.radioRadius.Size = new System.Drawing.Size(61, 17);
+            this.radioRadius.TabIndex = 5;
+            this.radioRadius.TabStop = true;
+            this.radioRadius.Text = "Radius:";
+            this.radioRadius.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(520, 386);
-            this.Controls.Add(this.label1);
+            this.ClientSize = new System.Drawing.Size(520, 381);
+            this.Controls.Add(this.radioRadius);
+            this.Controls.Add(this.radioClusters);
+            this.Controls.Add(this.numBandwidth);
             this.Controls.Add(this.numClusters);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.pictureBox);
             this.Name = "MainForm";
-            this.Text = "K-Means Clustering";
+            this.Text = "K-Means and Mean-Shift Clustering";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numClusters)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numBandwidth)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -122,7 +160,9 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.NumericUpDown numClusters;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.NumericUpDown numBandwidth;
+        private System.Windows.Forms.RadioButton radioClusters;
+        private System.Windows.Forms.RadioButton radioRadius;
     }
 }
 
