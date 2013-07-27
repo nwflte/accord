@@ -1,3 +1,70 @@
+Accord.NET Framework 2.10.0 release notes
+-----------------------------------------
+xx.07.2013.    
+
+Version updates and fixes:
+
+* General
+  - This release aimed to provide improvements to the documentation. 
+    Most of the Univariate Distributions now include proper examples
+	for all main functions and measures in their summary page.
+
+* Accord.Imaging
+  - Adding Haralick's set of textural features;
+  - Adding Local Binary Pattern (LBP) features;
+  - Adding Gabor, Variance and Kuwahara filters;
+  - Adding Gray-World, WhitePatch filters;
+  - Adding Kirsch and Robinson edge detectors;
+  - Adding Gray-Level Co-occurrence Matrices (GLCM);
+  - Adding Gray-Level Run-length Matrices (GLRLM);
+  - Adding Gray-Level Difference Method (GLDM);
+  - Updating IFeaturePoint's to include better conversion operators.
+
+* Accord.Statistics
+  - Adding random Covariance matrix generation methods;
+  - Adding Von-Mises cumulative distribution function;
+  - Adding Poisson inverse cumulative distribution function;
+  - Adding Support information for all distributions;
+  - Adding default support computing the true Median and Quantile 
+    functions (inverse cumulative distribution function) for all 
+	univariate continuous distributions;
+  - Improving ToString methods for linear/polynomial regressions;
+  - Updating all regression methods to use SVD by default;
+  - Correcting Wishart and Inverse Wishart distributions.
+
+* Accord.MachineLearning
+  - Adding simple Minimum (Mean) Distance Classifier;
+  - Adding RANSAC methods for plane and line fitting;
+  - Adding options to trade speed vs. accuracy in Mean-Shift; 
+  - Updating Bag-of-Words to support any feature point type;
+  - Fixing Grid-Search issue when one of the models returns NaN;
+  - Fixing issue when k-Nearest Neighbors Matching is called 
+    with less than k points on its second argument;
+  - Improving the performance of KD-Trees and Mean Shift;
+  - Updating Gaussian Mixture Model methods to report the 
+    classification strength (score) as an out parameter.
+
+* Accord.Math
+  - Adding the first version of the Math.Kinematics
+    namespace with Denavit-Hartenberg joint models;
+  - Adding Binary Search root finding algorithm;
+  - Adding missing Gamma.Inverse special function;
+  - Adding Mixture Distribution's Distribution functions;
+  - Adding dedicated class for Gram-Schmidt Orthogonalization;
+  - Updating FiniteDifferences to support configurable step sizes;
+  - Updating Matrix.Range methods to require a dimension parameter;
+  - Moving matrix formatters from Accord.Math.Formats to 
+    Accord.Math in order to improve their discoverability.
+
+* Sample applications
+  - Adding sample application for Denavit-Hartenberg joint models;
+  - Adding sample application for Eigenfaces, PCA for images;
+  - Adding sample application for mouse gesture classification 
+    using Dynamic Time Warping Kernel Support Vector Machines. 
+  
+
+
+
 Accord.NET Framework 2.9.0 release notes
 -----------------------------------------
 20.04.2013.    
