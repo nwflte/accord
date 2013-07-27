@@ -111,15 +111,18 @@ namespace Accord.Imaging
                 throw new ArgumentException("Insufficient number of points to produce a matching.");
 
 
+            bool swap = false;
+
             // We should build the classifiers with the highest number
             // of training points. Thus, if we have more points in the
             // second image than in the first, we'll have to swap them
-
+            
             if (points2.Length > points1.Length)
             {
                 var aux = points1;
                 points1 = points2;
                 points2 = aux;
+                swap = true;
             }
 
 
@@ -172,8 +175,8 @@ namespace Accord.Imaging
                 if (bestScore[i] != Double.PositiveInfinity)
                 {
                     int j = bestMatch[i];
-                    var pi = points1[i];
-                    var pj = points2[j];
+                    IFeaturePoint<T> pi = points1[i];
+                    IFeaturePoint<T> pj = points2[j];
                     p1.Add(new IntPoint((int)pi.X, (int)pi.Y));
                     p2.Add(new IntPoint((int)pj.X, (int)pj.Y));
                 }
@@ -183,6 +186,10 @@ namespace Accord.Imaging
             IntPoint[] m2 = p2.ToArray();
 
             // Create matching point pairs
+
+            if (swap)
+                return new IntPoint[][] { m2, m1 };
+
             return new IntPoint[][] { m1, m2 };
         }
 
