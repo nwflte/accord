@@ -101,6 +101,41 @@ namespace Accord.Imaging
     /// </para>
     /// </remarks>
     /// 
+    /// <example>
+    /// <code>
+    /// 
+    ///   Bitmap image = ... // Lena's famous picture
+    /// 
+    ///   // Create a new FAST Corners Detector
+    ///   FastCornersDetector fast = new FastCornersDetector()
+    ///   {
+    ///       Suppress = true, // suppress non-maximum points
+    ///       Threshold = 40   // less leads to more corners
+    ///   };
+    /// 
+    ///   // Process the image looking for corners
+    ///   List&lt;IntPoint> points = fast.ProcessImage(image);
+    /// 
+    ///   // Create a filter to mark the corners
+    ///   PointsMarker marker = new PointsMarker(points);
+    ///             
+    ///   // Apply the corner-marking filter
+    ///   Bitmap markers = marker.Apply(image);
+    /// 
+    ///   // Show on the screen
+    ///   ImageBox.Show(markers);
+    /// </code>
+    /// 
+    /// <para>
+    ///   The resulting image is shown below:</para>
+    /// 
+    ///   <img src="..\images\fast.png" />
+    ///   
+    /// </example>
+    /// 
+    /// <seealso cref="SpeededUpRobustFeaturesDetector"/>
+    /// <seealso cref="FastRetinaKeypointDetector"/>
+    /// 
     [SuppressMessage("Microsoft.Maintainability", "CA1505:AvoidUnmaintainableCode")]
     public class FastCornersDetector : ICornersDetector
     {
@@ -112,16 +147,20 @@ namespace Accord.Imaging
 
         #region Constructors
         /// <summary>
-        /// Initializes a new instance of the <see cref="FastCornersDetector"/> class.
+        ///   Initializes a new instance of the <see cref="FastCornersDetector"/> class.
         /// </summary>
+        /// 
         public FastCornersDetector()
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FastCornersDetector"/> class.
+        ///   Initializes a new instance of the <see cref="FastCornersDetector"/> class.
         /// </summary>
-        /// <param name="threshold">The threshold.</param>
+        /// 
+        /// <param name="threshold">The suppression threshold. Decreasing this value
+        ///   increases the number of points detected by the algorithm. Default is 20.</param>
+        /// 
         public FastCornersDetector(int threshold)
         {
             this.threshold = threshold;
@@ -134,8 +173,10 @@ namespace Accord.Imaging
         ///   Gets or sets a value indicating whether non-maximum
         ///   points should be suppressed. Default is true.
         /// </summary>
+        /// 
         /// <value><c>true</c> if non-maximum points should
         ///   be suppressed; otherwise, <c>false</c>.</value>
+        ///   
         public bool Suppress
         {
             get { return suppress; }
@@ -143,11 +184,12 @@ namespace Accord.Imaging
         }
 
         /// <summary>
-        ///   Gets or sets the corner detection threshold.
-        ///   Higher values result in more corners detected
-        ///   by the algorithm.
+        ///   Gets or sets the corner detection threshold. Increasing this value results in less corners,
+        ///   whereas decreasing this value will result in more corners detected by the algorithm.
         /// </summary>
+        /// 
         /// <value>The corners threshold.</value>
+        /// 
         public int Threshold
         {
             get { return threshold; }
@@ -158,7 +200,9 @@ namespace Accord.Imaging
         ///   Gets the scores of the each corner detected in
         ///   the previous call to <see cref="ProcessImage(Bitmap)"/>.
         /// </summary>
+        /// 
         /// <value>The scores of each last computed corner.</value>
+        /// 
         public int[] Scores
         {
             get { return scores; }
@@ -392,7 +436,7 @@ namespace Accord.Imaging
 
                 // The current point is a local maximum.
                 // Add its index to the list of indices.
-                maximum.Add(i); 
+                maximum.Add(i);
 
             next_corner:
                 continue;

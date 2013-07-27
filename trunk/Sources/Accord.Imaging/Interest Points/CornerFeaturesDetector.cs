@@ -32,6 +32,19 @@ namespace Accord.Imaging
     ///   Feature detector based on corners.
     /// </summary>
     /// 
+    /// <remarks>
+    ///   This class can be used as an adapter for classes implementing
+    ///   AForge.NET's ICornersDetector interface, so they can be used
+    ///   where an <see cref="IFeatureDetector{T}"/> is needed.
+    /// </remarks>
+    /// 
+    /// <example>
+    ///   For an example on how to use this class, please take a look
+    ///   on the example section for <see cref="BagOfVisualWords{T}"/>.
+    /// </example>
+    /// 
+    /// <seealso cref="BagOfVisualWords{T}"/>
+    /// 
     public class CornerFeaturesDetector : IFeatureDetector<CornerFeaturePoint>
     {
 

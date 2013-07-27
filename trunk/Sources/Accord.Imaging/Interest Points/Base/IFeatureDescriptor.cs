@@ -24,34 +24,16 @@ namespace Accord.Imaging
 {
 
     /// <summary>
-    ///   Common interface for feature points.
+    ///   Common interface for feature descriptors.
     /// </summary>
     /// 
-    public interface IFeaturePoint : IFeaturePoint<double[]>
-    {
-        // This class exists to maintain backward compatibility with
-        // the non-generic version of IFeaturePoint (and to provide
-        // a more intuitive way of handling standard, double valued
-        // feature description vectors.
-    }
-
-    /// <summary>
-    ///   Common interface for feature points.
-    /// </summary>
-    /// 
-    public interface IFeaturePoint<out T> : IFeatureDescriptor<T>
+    public interface IFeatureDescriptor<out T>
     {
         /// <summary>
-        ///   Gets or sets the x-coordinate of this point.
+        ///   Gets or sets the descriptor vector
+        ///   associated with this point.
         /// </summary>
         /// 
-        double X { get; }
-
-        /// <summary>
-        ///   Gets or sets the y-coordinate of this point.
-        /// </summary>
-        /// 
-        double Y { get; }
+        T Descriptor { get; }
     }
-
 }
