@@ -24,6 +24,7 @@ namespace Accord.MachineLearning.Structures
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     ///   Collection of k-dimensional tree nodes.
@@ -37,11 +38,17 @@ namespace Accord.MachineLearning.Structures
     /// </remarks>
     /// 
     /// <seealso cref="KDTree{T}"/>
+    /// <seealso cref="KDTreeNodeDistance{T}"/>
     /// 
     [Serializable]
     public class KDTreeNodeCollection<T> : ICollection<KDTreeNodeDistance<T>>
     {
-        private List<KDTreeNodeDistance<T>> list;
+        private LinkedList<KDTreeNodeDistance<T>> list;
+
+        [NonSerialized]
+        private LinkedListNode<KDTreeNodeDistance<T>> farthest;
+        [NonSerialized]
+        private LinkedListNode<KDTreeNodeDistance<T>> nearest;
 
         /// <summary>
         ///   Gets or sets the maximum number of elements on this 
@@ -55,13 +62,19 @@ namespace Accord.MachineLearning.Structures
         ///   Gets the farthest node in the collection (with greatest distance).
         /// </summary>
         /// 
-        public KDTreeNodeDistance<T> Farthest { get; private set; }
+        public KDTreeNodeDistance<T> Farthest
+        {
+            get { return (farthest == null) ? (KDTreeNodeDistance<T>)null : farthest.Value; }
+        }
 
         /// <summary>
         ///   Gets the nearest node in the collection (with smallest distance).
         /// </summary>
         /// 
-        public KDTreeNodeDistance<T> Nearest { get; private set; }
+        public KDTreeNodeDistance<T> Nearest
+        {
+            get { return (nearest == null) ? (KDTreeNodeDistance<T>)null : nearest.Value; }
+        }
 
         /// <summary>
         ///   Gets whether this collection has any upper limit
@@ -76,7 +89,7 @@ namespace Accord.MachineLearning.Structures
         /// 
         public KDTreeNodeCollection()
         {
-            list = new List<KDTreeNodeDistance<T>>();
+            list = new LinkedList<KDTreeNodeDistance<T>>();
         }
 
         /// <summary>
@@ -112,20 +125,19 @@ namespace Accord.MachineLearning.Structures
                 // to be added is closer than the current
                 // farthest point.
 
-                if (distance < Farthest.Distance)
+                if (distance < farthest.Value.Distance)
                 {
                     // Yes, it is closer. Remove the previous
                     // farthest point and replace with this
-                    list.RemoveAt(list.Count - 1);
+                    list.Remove(farthest);
 
                     // Insert at the right place
-                    int i = 0;
-                    while (i < list.Count && distance > list[i].Distance) i++;
-                    list.Insert(i, new KDTreeNodeDistance<T>(value, distance));
+                    var node = list.AddLast(new KDTreeNodeDistance<T>(value, distance));
 
-                    // Update node information
-                    Farthest = list[list.Count - 1];
-                    Nearest = list[0];
+                    farthest = node;
+
+                    if (distance < nearest.Value.Distance)
+                        nearest = farthest;
 
                     return true; // a value has been added
                 }
@@ -140,13 +152,11 @@ namespace Accord.MachineLearning.Structures
                 // The list still has room for new elements. 
                 // Just add the value at the right position.
 
-                int i = 0;
-                while (i < list.Count && distance > list[i].Distance) i++;
-                list.Insert(i, new KDTreeNodeDistance<T>(value, distance));
+                var node = list.AddLast(new KDTreeNodeDistance<T>(value, distance));
 
                 // Update node information
-                Farthest = list[list.Count - 1];
-                Nearest = list[0];
+                if (farthest == null || distance > farthest.Value.Distance) farthest = node;
+                if (nearest == null || distance < nearest.Value.Distance) nearest = node;
 
                 return true; // a value has been added
             }
@@ -158,9 +168,8 @@ namespace Accord.MachineLearning.Structures
         /// 
         public KDTreeNodeDistance<T> this[int index]
         {
-            get { return list[index]; }
+            get { return list.ElementAt(index); }
         }
-
         /// <summary>
         ///   Removes all elements from this collection.
         /// </summary>
@@ -168,7 +177,8 @@ namespace Accord.MachineLearning.Structures
         public void Clear()
         {
             list.Clear();
-            Farthest = Nearest = default(KDTreeNodeDistance<T>);
+            farthest = null;
+            nearest = null;
         }
 
         /// <summary>
@@ -228,16 +238,13 @@ namespace Accord.MachineLearning.Structures
         /// 
         public void Add(KDTreeNodeDistance<T> item)
         {
-            KDTreeNode<T> value = item.Node;
-            double distance = item.Distance;
-
-            int i = 0;
-            while (list[i].Distance > distance && i < list.Count) ;
-            list.Insert(i, new KDTreeNodeDistance<T>(value, distance));
+            var node = list.AddLast(item);
 
             // Update node information
-            Farthest = list[list.Count - 1];
-            Nearest = list[0];
+            if (farthest == null || item.Distance > farthest.Value.Distance)
+                farthest = node;
+            if (nearest == null || item.Distance < nearest.Value.Distance)
+                nearest = node;
         }
 
 
@@ -283,11 +290,15 @@ namespace Accord.MachineLearning.Structures
         /// 
         public bool Remove(KDTreeNodeDistance<T> item)
         {
-            if (list.Remove(item))
+            var node = list.Find(item);
+
+            if (node != null)
             {
+                list.Remove(node);
+
                 // Update node information
-                Farthest = list[list.Count - 1];
-                Nearest = list[0];
+                if (farthest == node) farthest = null;
+                if (nearest == node) nearest = null;
                 return true;
             }
 

@@ -31,7 +31,7 @@ namespace Accord.MachineLearning.Structures
     /// <typeparam name="T">The type of the value being stored, if any.</typeparam>
     /// 
     [Serializable]
-    public struct KDTreeNodeDistance<T>
+    public class KDTreeNodeDistance<T>
     {
         private KDTreeNode<T> node;
         private double distance;
