@@ -24,6 +24,9 @@ namespace Accord.MachineLearning.Bayes
 {
     using System;
     using Accord.Math;
+    using System.Runtime.Serialization.Formatters.Binary;
+    using System.IO;
+    using Accord.Statistics.Distributions;
 
 
     /// <summary>
@@ -395,6 +398,96 @@ namespace Accord.MachineLearning.Bayes
             }
 
             return p;
+        }
+
+
+
+        /// <summary>
+        ///   Saves the Naïve Bayes model to a stream.
+        /// </summary>
+        /// 
+        /// <param name="stream">The stream to which the Naïve Bayes model is to be serialized.</param>
+        /// 
+        public virtual void Save(Stream stream)
+        {
+            BinaryFormatter b = new BinaryFormatter();
+            b.Serialize(stream, this);
+        }
+
+        /// <summary>
+        ///   Saves the Naïve Bayes model to a stream.
+        /// </summary>
+        /// 
+        /// <param name="path">The path to the file to which the Naïve Bayes model is to be serialized.</param>
+        /// 
+        public void Save(string path)
+        {
+            using (FileStream fs = new FileStream(path, FileMode.Create))
+            {
+                Save(fs);
+            }
+        }
+
+        /// <summary>
+        ///   Loads a machine from a stream.
+        /// </summary>
+        /// 
+        /// <param name="stream">The stream from which the Naïve Bayes model is to be deserialized.</param>
+        /// 
+        /// <returns>The deserialized machine.</returns>
+        /// 
+        public static NaiveBayes Load(Stream stream)
+        {
+            BinaryFormatter b = new BinaryFormatter();
+            return (NaiveBayes)b.Deserialize(stream);
+        }
+
+        /// <summary>
+        ///   Loads a machine from a file.
+        /// </summary>
+        /// 
+        /// <param name="path">The path to the file from which the Naïve Bayes model is to be deserialized.</param>
+        /// 
+        /// <returns>The deserialized machine.</returns>
+        /// 
+        public static NaiveBayes Load(string path)
+        {
+            using (FileStream fs = new FileStream(path, FileMode.Open))
+            {
+                return Load(fs);
+            }
+        }
+
+        /// <summary>
+        ///   Loads a machine from a stream.
+        /// </summary>
+        /// 
+        /// <param name="stream">The stream from which the Naïve Bayes model is to be deserialized.</param>
+        /// 
+        /// <returns>The deserialized machine.</returns>
+        /// 
+        public static NaiveBayes<TDistribution> Load<TDistribution>(Stream stream)
+            where TDistribution : IUnivariateDistribution
+        {
+            BinaryFormatter b = new BinaryFormatter();
+            return (NaiveBayes<TDistribution>)b.Deserialize(stream);
+        }
+
+        /// <summary>
+        ///   Loads a machine from a file.
+        /// </summary>
+        /// 
+        /// <param name="path">The path to the file from which the Naïve Bayes model is to be deserialized.</param>
+        /// 
+        /// <returns>The deserialized machine.</returns>
+        /// 
+        public static NaiveBayes<TDistribution> Load<TDistribution>(string path)
+            where TDistribution : IUnivariateDistribution
+        {
+            using (FileStream fs = new FileStream(path, FileMode.Open))
+            {
+                return Load<TDistribution>(fs);
+            }
         }
     }
 }
