@@ -205,6 +205,31 @@ namespace Accord.MachineLearning
         /// </summary>
         /// 
         /// <param name="point">The input vector.</param>
+        /// <param name="response">A value between 0 and 1 representing
+        ///   the confidence in the generated classification.</param>
+        /// 
+        /// <returns>
+        ///   The index of the nearest cluster
+        ///   to the given data point. </returns>
+        ///   
+        public int Nearest(double[] point, out double response)
+        {
+            if (point == null)
+                throw new ArgumentNullException("point");
+
+            double[] responses;
+            int index = Nearest(point, out responses);
+
+            double sum = responses.Sum();
+            response = responses[index] / sum;
+            return index;
+        }
+
+        /// <summary>
+        ///   Returns the closest cluster to an input point.
+        /// </summary>
+        /// 
+        /// <param name="point">The input vector.</param>
         /// <param name="responses">The likelihood for each of the classes.</param>
         /// 
         /// <returns>

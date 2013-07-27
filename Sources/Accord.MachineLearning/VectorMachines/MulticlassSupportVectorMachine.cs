@@ -144,14 +144,37 @@ namespace Accord.MachineLearning.VectorMachines
         private ThreadLocal<Cache> vectorCache;
 
 
+        /// <summary>
+        ///   Constructs a new Multi-class Kernel Support Vector Machine
+        /// </summary>
+        /// 
+        /// <param name="inputs">The number of inputs for the machine. If sequences have
+        ///   varying length, pass zero to this parameter and pass a suitable sequence 
+        ///   kernel to this constructor, such as <see cref="DynamicTimeWarping"/>.</param>
+        /// <param name="classes">The number of classes in the classification problem.</param>
+        /// 
+        /// <remarks>
+        ///   If the number of inputs is zero, this means the machine
+        ///   accepts a indefinite number of inputs. This is often the
+        ///   case for kernel vector machines using a sequence kernel.
+        /// </remarks>
+        /// 
+        public MulticlassSupportVectorMachine(int inputs, int classes)
+            : this(inputs, new Linear(), classes)
+        {
+        }
 
         /// <summary>
         ///   Constructs a new Multi-class Kernel Support Vector Machine
         /// </summary>
         /// 
-        /// <param name="kernel">The chosen kernel for the machine.</param>
-        /// <param name="inputs">The number of inputs for the machine.</param>
+        /// <param name="kernel">The chosen kernel for the machine. Default is to
+        ///   use the <see cref="Linear"/> kernel.</param>
+        /// <param name="inputs">The number of inputs for the machine. If sequences have
+        ///   varying length, pass zero to this parameter and pass a suitable sequence 
+        ///   kernel to this constructor, such as <see cref="DynamicTimeWarping"/>.</param>
         /// <param name="classes">The number of classes in the classification problem.</param>
+        /// 
         /// <remarks>
         ///   If the number of inputs is zero, this means the machine
         ///   accepts a indefinite number of inputs. This is often the
@@ -359,7 +382,7 @@ namespace Accord.MachineLearning.VectorMachines
         /// 
         /// <returns>The decision label for the given input.</returns>
         ///
-        public int Compute(double[] inputs)
+        public int Compute(params double[] inputs)
         {
             double output; // Compute using elimination method as default.
             return Compute(inputs, MulticlassComputeMethod.Elimination, out output);
