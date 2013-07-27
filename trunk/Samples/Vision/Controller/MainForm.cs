@@ -21,10 +21,10 @@
 
 using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Forms;
 using Accord.Controls.Vision;
 using AForge.Video.DirectShow;
-using System.Drawing;
 
 namespace Controller
 {
@@ -86,13 +86,27 @@ namespace Controller
             if (form.ShowDialog() == DialogResult.OK)
             {
                 VideoCaptureDevice device = new VideoCaptureDevice(form.VideoDevice);
-                device.DesiredFrameSize = new Size(320, 240);
+
+                device.VideoResolution = selectResolution(device);
 
                 controller.Device = device;
                 controller.Start();
 
                 toolStripStatusLabel1.Text = "Initializing...";
             }
+        }
+
+        private static VideoCapabilities selectResolution(VideoCaptureDevice device)
+        {
+            foreach (var cap in device.VideoCapabilities)
+            {
+                if (cap.FrameSize.Height == 240)
+                    return cap;
+                if (cap.FrameSize.Width == 320)
+                    return cap;
+            }
+
+            return device.VideoCapabilities.Last();
         }
 
         private void btnReset_Click(object sender, EventArgs e)
