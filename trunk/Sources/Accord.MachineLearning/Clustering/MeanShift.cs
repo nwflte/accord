@@ -23,6 +23,7 @@
 namespace Accord.MachineLearning
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Accord.MachineLearning.Structures;
@@ -100,6 +101,54 @@ namespace Accord.MachineLearning
     /// //  same cluster (thus having the same label). The same should
     /// //  happen to the next four observations and to the last three.
     /// </code>
+    /// 
+    /// <para>
+    ///   The following example demonstrates how to use the Mean Shift algorithm
+    ///   for color clustering. It is the same code which can be found in the
+    ///   <a href="">color clustering sample application</a>.</para>
+    ///   
+    /// <code>
+    /// 
+    ///  int pixelSize = 3;   // RGB color pixel
+    ///  double sigma = 0.06; // kernel bandwith
+    /// 
+    ///  // Load a test image (shown below)
+    ///  Bitmap image = ...
+    /// 
+    ///  // Create conversors
+    ///  ImageToArray imageToArray = new ImageToArray(min: -1, max: +1);
+    ///  ArrayToImage arrayToImage = new ArrayToImage(image.Width, image.Height, min: -1, max: +1);
+    /// 
+    ///  // Transform the image into an array of pixel values
+    ///  double[][] pixels; imageToArray.Convert(image, out pixels);
+    ///  
+    ///  // Create a MeanShift algorithm using given bandwidth
+    ///  //   and a Gaussian density kernel as kernel function.
+    ///  MeanShift meanShift = new MeanShift(pixelSize, new GaussianKernel(3), sigma);
+    /// 
+    /// 
+    ///  // Compute the mean-shift algorithm until the difference in
+    ///  //  shifting means between two iterations is below 0.05
+    ///  int[] idx = meanShift.Compute(pixels, 0.05, maxIterations: 10);
+    /// 
+    /// 
+    ///  // Replace every pixel with its corresponding centroid
+    ///  pixels.ApplyInPlace((x, i) => meanShift.Clusters.Modes[idx[i]]);
+    /// 
+    ///  // Retrieve the resulting image in a picture box
+    ///  Bitmap result; arrayToImage.Convert(pixels, out result);
+    /// </code>
+    /// 
+    /// <para>
+    ///   The original image is shown below:</para>
+    /// 
+    ///   <img src="..\images\mean-shift-start.png" />
+    ///   
+    /// <para>
+    ///   The resulting image will be:</para>
+    /// 
+    ///   <img src="..\images\mean-shift-end.png" />
+    /// 
     /// </example>
     ///     
     /// <see cref="KMeans"/>
@@ -111,6 +160,8 @@ namespace Accord.MachineLearning
 
         private int dimension;
         private double bandwidth;
+        private int maximum;
+        private bool cut = true;
 
         private KDTree<int> tree;
 
@@ -136,7 +187,43 @@ namespace Accord.MachineLearning
         public double Bandwidth
         {
             get { return bandwidth; }
-            set { bandwidth = value; }
+            set
+            {
+                if (value <= 0)
+                    throw new ArgumentOutOfRangeException("value",
+                        "Value must be positive and higher than zero.");
+                bandwidth = value;
+            }
+        }
+
+        /// <summary>
+        ///   Gets or sets the maximum number of neighbors which should be
+        ///   used to determine the direction of the mean-shift during the
+        ///   computations. Default is zero (unlimited number of neighbors).
+        /// </summary>
+        /// 
+        public int Maximum
+        {
+            get { return maximum; }
+            set
+            {
+                if (value < 0)
+                    throw new ArgumentOutOfRangeException("value",
+                        "Value most be non-negative.");
+                maximum = value;
+            }
+        }
+
+        /// <summary>
+        ///   Gets or sets whether the mean-shift can be shortcut
+        ///   as soon as a mean enters the neighborhood of a local
+        ///   maxima candidate. Default is true.
+        /// </summary>
+        /// 
+        public bool Agglomerate
+        {
+            get { return cut; }
+            set { cut = value; }
         }
 
         /// <summary>
@@ -190,9 +277,9 @@ namespace Accord.MachineLearning
         /// 
         public int[] Compute(double[][] points, double threshold, int maxIterations = 100)
         {
-
             // first, select initial points
             double[][] seeds = createSeeds(points, 2 * Bandwidth);
+            var maxcandidates = new ConcurrentStack<double[]>();
 
             // construct map of the data
             tree = KDTree.FromData<int>(points, distance);
@@ -202,43 +289,58 @@ namespace Accord.MachineLearning
 #if DEBUG
  new ParallelOptions() { MaxDegreeOfParallelism = 1 },
 #endif
- i =>
+
+            (index) =>
+            {
+                double[] point = seeds[index];
+                double[] mean = new double[point.Length];
+                double[] delta = new double[point.Length];
+
+                // we will keep moving it in the
+                // direction of the density modes
+
+                int iterations = 0;
+
+                // until convergence or max iterations reached
+                while (iterations < maxIterations)
                 {
-                    double[] point = seeds[i];
-                    double[] mean = new double[point.Length];
-                    double[] delta = new double[point.Length];
+                    iterations++;
 
-                    // we will keep moving it in the
-                    // direction of the density modes
+                    // compute the shifted mean 
+                    computeMeanShift(point, mean);
 
-                    int iterations = 0;
+                    // extract the mean shift vector
+                    for (int j = 0; j < mean.Length; j++)
+                        delta[j] = point[j] - mean[j];
 
-                    // until convergence or max iterations reached
-                    while (iterations < maxIterations)
-                    {
-                        iterations++;
+                    // update the point towards a mode
+                    for (int j = 0; j < mean.Length; j++)
+                        point[j] = mean[j];
 
-                        // compute the shifted mean 
-                        computeMeanShift(point, mean);
+                    // Check if we are already near any maximum point
+                    if (cut && nearest(point, maxcandidates) != null)
+                        break;
 
-                        // extract the mean shift vector
-                        for (int j = 0; j < mean.Length; j++)
-                            delta[j] = point[j] - mean[j];
+                    // check for convergence: magnitude of the mean shift
+                    // vector converges to zero (Comaniciu 2002, page 606)
+                    if (Norm.Euclidean(delta) < threshold * Bandwidth)
+                        break;
+                }
 
-                        // update the point towards a mode
-                        for (int j = 0; j < mean.Length; j++)
-                            point[j] = mean[j];
+                if (cut)
+                {
+                    double[] match = nearest(point, maxcandidates);
 
-                        // check for convergence: magnitude of the mean shift
-                        // vector converges to zero (Comaniciu 2002, page 606)
-                        if (Norm.Euclidean(delta) < threshold * Bandwidth)
-                            break;
-                    }
-                });
+                    if (match != null)
+                        seeds[index] = match;
+
+                    else maxcandidates.Push(point);
+                }
+            });
 
 
             // suppress non-maximum points
-            double[][] maximum = supress(seeds);
+            double[][] maximum = cut ? maxcandidates.ToArray() : supress(seeds);
 
             // create a decision map using seeds
             int[] seedLabels = classifySeeds(seeds, maximum);
@@ -251,11 +353,24 @@ namespace Accord.MachineLearning
             return clusters.Nearest(points);
         }
 
+        private double[] nearest(double[] point, ConcurrentStack<double[]> candidates)
+        {
+            foreach (double[] seed in candidates)
+            {
+                // compute the distance between points
+                // if they are near, they are duplicates
+                if (distance(point, seed) < Bandwidth)
+                    return seed;
+            }
+
+            return null;
+        }
+
         private void computeMeanShift(double[] x, double[] shift)
         {
             // Get points near the current point
             KDTreeNodeCollection<int> neighbors =
-                tree.Nearest(x, Bandwidth * 3);
+                tree.Nearest(x, Bandwidth * 3, maximum);
 
             double sum = 0;
             Array.Clear(shift, 0, shift.Length);
@@ -310,15 +425,15 @@ namespace Accord.MachineLearning
                 // with this key. The comparer tells the dictionary how to compare
                 // integer vectors on an element-by-element basis.
 
-                var bins = new Dictionary<int[], int>(new IntegerArrayComparer());
+                var bins = new Dictionary<int[], int>(new ArrayComparer<int>());
 
                 // for each point
-                for (int i = 0; i < points.Length; i++)
+                foreach (var point in points)
                 {
                     // create a indexing key
                     int[] key = new int[Dimension];
-                    for (int j = 0; j < points[i].Length; j++)
-                        key[j] = (int)(points[i][j] / binSize);
+                    for (int j = 0; j < point.Length; j++)
+                        key[j] = (int)(point[j] / binSize);
 
                     // increase the counter in the key
                     int previous;
@@ -412,7 +527,6 @@ namespace Accord.MachineLearning
 
             return maximum.ToArray();
         }
-
 
         IClusterCollection<double[]> IClusteringAlgorithm<double[]>.Clusters
         {

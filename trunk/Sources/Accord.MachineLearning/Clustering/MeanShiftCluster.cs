@@ -129,7 +129,7 @@ namespace Accord.MachineLearning
         {
             var result = tree.Nearest(point, 1);
             if (result.Count > 0)
-                return result[0].Node.Value;
+                return result.Nearest.Node.Value;
             return -1;
         }
 
