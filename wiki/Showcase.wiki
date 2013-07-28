@@ -30,8 +30,7 @@ The following papers include at least a citation to the framework, reference mat
 
  * Souza, C. R., Pizzolato, E. B; Sign Language Recognition with Support Vector Machines and Hidden Conditional Random Fields: Going from Fingerspelling to Natural Articulated Words. Machine Learning and Data Mining in Pattern Recognition, Lecture Notes in Computer Science Volume 7988, 2013, pp 84-98. DOI: http://dx.doi.org/10.1007/978-3-642-39712-7_7 
 
- * M. H. Afif, A-R. Hedar, T. H. A. Hamid, Y. B. Mahdy; SS-SVM (3SVM): A New Classification Method for Hepatitis Disease Diagnosis; International Journal of Advanced Computer Science and Applications, 
-Vol. 4, No. 2, 2013
+ * M. H. Afif, A-R. Hedar, T. H. A. Hamid, Y. B. Mahdy; SS-SVM (3SVM): A New Classification Method for Hepatitis Disease Diagnosis; International Journal of Advanced Computer Science and Applications, Vol. 4, No. 2, 2013
 
  * Caon, M.; Tscherrig, J.; Yong Yue; Khaled, O.A.; Mugellini, E., "Extending the interaction area for view-invariant 3D gesture recognition," Image Processing Theory, Tools and Applications (IPTA), 2012 3rd International Conference on , vol., no., pp.293,298, 15-18 Oct. 2012
 
