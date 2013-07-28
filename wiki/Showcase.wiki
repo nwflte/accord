@@ -28,6 +28,13 @@ This page enlists several works which have used Accord.NET in some point of thei
 
 The following papers include at least a citation to the framework, reference material published based on the framework or have used standalone code which now has been incorporated in the framework. Some of those have been found using search engines or automatic alerts. If your paper has been incorrectly incorporated in this collection, please let me know.
 
+ * Souza, C. R., Pizzolato, E. B; Sign Language Recognition with Support Vector Machines and Hidden Conditional Random Fields: Going from Fingerspelling to Natural Articulated Words. Machine Learning and Data Mining in Pattern Recognition, Lecture Notes in Computer Science Volume 7988, 2013, pp 84-98. DOI: http://dx.doi.org/10.1007/978-3-642-39712-7_7 
+
+ * M. H. Afif, A-R. Hedar, T. H. A. Hamid, Y. B. Mahdy; SS-SVM (3SVM): A New Classification Method for Hepatitis Disease Diagnosis; International Journal of Advanced Computer Science and Applications, 
+Vol. 4, No. 2, 2013
+
+ * Caon, M.; Tscherrig, J.; Yong Yue; Khaled, O.A.; Mugellini, E., "Extending the interaction area for view-invariant 3D gesture recognition," Image Processing Theory, Tools and Applications (IPTA), 2012 3rd International Conference on , vol., no., pp.293,298, 15-18 Oct. 2012
+
  * M. Afif, A-R. Hedar, Data Classification Using Support Vector Machine Integrated With Scatter Search Method, Proceedings of the 2012 Japan-Egypt Conference on Electronics, Communications and Computers (JEC-ECC 2012), Article number 6186977, Pages 168-172, Alexandria, 6-9 March 2012.
 
  * M. Afif,  A-R. Hedar, T. H. Abdel Hamid, Y.  B. Mahdy, Support Vector Machines With Weighted Powered Kernels For  Data Classification, The first International Conference on Advanced Machine Learning Technologies and Applications (AMLTA12), 2012. Available on http://link.springer.com/chapter/10.1007/978-3-642-35326-0_37
