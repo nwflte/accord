@@ -4,7 +4,7 @@ Due the high number of user contributions submitted lately, and the increased fa
 
   https://github.com/accord-net/framework
 
-The updated project page will also being gradually relocated to:
+The updated project page will also be gradually relocated to:
 
   http://accord-net.github.io/
 
