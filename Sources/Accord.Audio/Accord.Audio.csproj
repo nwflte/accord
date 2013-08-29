@@ -104,9 +104,6 @@
       <HintPath>..\..\Externals\AForge.NET\AForge.Math.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="SlimDX">
-      <HintPath>..\..\Externals\SlimDX\net40\x86\SlimDX.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -123,7 +120,6 @@
     <Compile Include="Events\NewFrameEventArgs.cs" />
     <Compile Include="Exceptions\AudioException.cs" />
     <Compile Include="Exceptions\UnsupportedSampleFormatException.cs" />
-    <Compile Include="Extensions.cs" />
     <Compile Include="Filters\Base\BaseFilter.cs" />
     <Compile Include="Exceptions\InvalidSignalPropertiesException.cs" />
     <Compile Include="Events\AudioSourceErrorEventArgs.cs">
