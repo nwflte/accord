@@ -48,30 +48,29 @@
 namespace Accord.MachineLearning.Geometry
 {
     using System;
-    using Accord.MachineLearning;
+    using System.Collections.Generic;
+    using System.Linq;
     using Accord.Math;
-    using AForge;
     using Accord.Math.Geometry;
-    using Accord.Math.Decompositions;
+    using AForge;
 
     /// <summary>
-    ///   Robust plane estimator with RANSAC.
+    ///   Robust circle estimator with RANSAC.
     /// </summary>
     /// 
-    public class RansacPlane
+    public class RansacCircle
     {
-        private RANSAC<Plane> ransac;
+        private RANSAC<Circle> ransac;
         private int[] inliers;
 
-        private Point3[] points;
+        private Point[] points;
         private double[] d2;
-
 
         /// <summary>
         ///   Gets the RANSAC estimator used.
         /// </summary>
         /// 
-        public RANSAC<Plane> Ransac
+        public RANSAC<Circle> Ransac
         {
             get { return this.ransac; }
         }
@@ -85,126 +84,147 @@ namespace Accord.MachineLearning.Geometry
             get { return inliers; }
         }
 
-
         /// <summary>
-        ///   Creates a new RANSAC 3D plane estimator.
+        ///   Creates a new RANSAC 2D circle estimator.
         /// </summary>
         /// 
         /// <param name="threshold">Inlier threshold.</param>
         /// <param name="probability">Inlier probability.</param>
         /// 
-        public RansacPlane(double threshold, double probability)
+        public RansacCircle(double threshold, double probability)
         {
-            // Create a new RANSAC with the selected threshold
-            ransac = new RANSAC<Plane>(3, threshold, probability);
-
-            // Set RANSAC functions
+            ransac = new RANSAC<Circle>(3, threshold, probability);
             ransac.Fitting = define;
             ransac.Distances = distance;
             ransac.Degenerate = degenerate;
         }
 
-
         /// <summary>
-        ///   Produces a robust estimation of the plane
+        ///   Produces a robust estimation of the circle
         ///   passing through the given (noisy) points.
         /// </summary>
         /// 
         /// <param name="points">A set of (possibly noisy) points.</param>
         /// 
-        /// <returns>The plane passing through the points.</returns>
+        /// <returns>The circle passing through the points.</returns>
         /// 
-        public Plane Estimate(Point3[] points)
+        public Circle Estimate(IEnumerable<IntPoint> points)
         {
-            // Initial argument checks
+            return Estimate(points.Select(p => new Point(p.X, p.Y)).ToArray());
+        }
+
+        /// <summary>
+        ///   Produces a robust estimation of the circle
+        ///   passing through the given (noisy) points.
+        /// </summary>
+        /// 
+        /// <param name="points">A set of (possibly noisy) points.</param>
+        /// 
+        /// <returns>The circle passing through the points.</returns>
+        /// 
+        public Circle Estimate(IEnumerable<Point> points)
+        {
+            return Estimate(points.ToArray());
+        }
+
+        /// <summary>
+        ///   Produces a robust estimation of the circle
+        ///   passing through the given (noisy) points.
+        /// </summary>
+        /// 
+        /// <param name="points">A set of (possibly noisy) points.</param>
+        /// 
+        /// <returns>The circle passing through the points.</returns>
+        /// 
+        public Circle Estimate(IntPoint[] points)
+        {
+            return Estimate(points.Apply(p => new Point(p.X, p.Y)));
+        }
+
+        /// <summary>
+        ///   Produces a robust estimation of the circle
+        ///   passing through the given (noisy) points.
+        /// </summary>
+        /// 
+        /// <param name="points">A set of (possibly noisy) points.</param>
+        /// 
+        /// <returns>The circle passing through the points.</returns>
+        /// 
+        public Circle Estimate(Point[] points)
+        {
             if (points.Length < 3)
-                throw new ArgumentException("At least three points are required to fit a plane");
+                throw new ArgumentException("At least three points are required to fit a circle");
 
             this.d2 = new double[points.Length];
             this.points = points;
 
-            // Compute RANSAC and find the inlier points
             ransac.Compute(points.Length, out inliers);
 
-            if (inliers.Length == 0)
-                return null;
+            Circle circle = fitting(points.Submatrix(inliers));
 
-            // Compute the final plane
-            Plane plane = fitting(points.Submatrix(inliers));
-
-            return plane;
+            return circle;
         }
 
 
 
-        private Plane define(int[] x)
+        private Circle define(int[] x)
         {
-            Point3 p1 = points[x[0]];
-            Point3 p2 = points[x[1]];
-            Point3 p3 = points[x[2]];
-
-            return Plane.FromPoints(p1, p2, p3);
+            System.Diagnostics.Debug.Assert(x.Length == 3);
+            return new Circle(points[x[0]], points[x[1]], points[x[2]]);
         }
 
-        private int[] distance(Plane p, double t)
+        private int[] distance(Circle c, double t)
         {
             for (int i = 0; i < points.Length; i++)
-                d2[i] = p.DistanceToPoint(points[i]);
+                d2[i] = c.DistanceToPoint(points[i]);
 
             return Matrix.Find(d2, z => z < t);
         }
 
         private bool degenerate(int[] indices)
         {
-            Point3 p1 = points[indices[0]];
-            Point3 p2 = points[indices[1]];
-            Point3 p3 = points[indices[2]];
+            System.Diagnostics.Debug.Assert(indices.Length == 3);
 
-            return Point3.Collinear(p1, p2, p3);
+            Point p1 = points[indices[0]];
+            Point p2 = points[indices[1]];
+            Point p3 = points[indices[2]];
+
+            return p1 == p2 || p2 == p3 || p1 == p3;
         }
 
-        static Plane fitting(Point3[] points)
+        static Circle fitting(Point[] points)
         {
-            // Set up constraint equations of the form  AB = 0,
-            // where B is a column vector of the plane coefficients
-            // in the form   b(1)*X + b(2)*Y +b(3)*Z + b(4) = 0.
-            //
-            // A = [XYZ' ones(npts,1)]; % Build constraint matrix
-            if (points.Length < 3)
-                return null;
-
             if (points.Length == 3)
-                return Plane.FromPoints(points[0], points[1], points[2]);
+                return new Circle(points[0], points[1], points[2]);
 
-            float[,] A = new float[points.Length, 4];
-            for (int i = 0; i < points.Length; i++)
+            double[,] A = new double[points.Length, 3];
+            double[,] Y = new double[points.Length, 1];
+
+            // setup the matrices
+            for (int i = 0; i < points.Length; ++i)
             {
+                // we solve for [ 2*c1 2*c2 c3 ] here,
+                // avoid doing 2*xn / 2*yn in the loop.
                 A[i, 0] = points[i].X;
                 A[i, 1] = points[i].Y;
-                A[i, 2] = points[i].Z;
-                A[i, 3] = -1;
+                A[i, 2] = 1;
+                Y[i, 0] = points[i].X * points[i].X + points[i].Y * points[i].Y;
             }
 
-            SingularValueDecompositionF svd = new SingularValueDecompositionF(A,
-                computeLeftSingularVectors: false, computeRightSingularVectors: true,
-                autoTranspose: true, inPlace: true);
+            // get AT * A and AT * Y
+            double[,] AT = A.Transpose();
+            double[,] B = AT.Multiply(A);
+            double[,] Z = AT.Multiply(Y);
 
-            float[,] v = svd.RightSingularVectors;
+            // solve for c
+            double[,] c = Matrix.Solve(B, Z, true);
 
-            float a = v[0, 3];
-            float b = v[1, 3];
-            float c = v[2, 3];
-            float d = v[3, 3];
+            // okay now we get the circle :-D
+            double x = c[0, 0] * 0.5;
+            double y = c[1, 0] * 0.5;
+            double r = System.Math.Sqrt(c[2, 0] + x * x + y * y);
 
-            float norm = (float)Math.Sqrt(a * a + b * b + c * c);
-
-            a /= norm;
-            b /= norm;
-            c /= norm;
-            d /= norm;
-
-            return new Plane(a, b, c, -d);
+            return new Circle(x, y, r);
         }
-
     }
 }
