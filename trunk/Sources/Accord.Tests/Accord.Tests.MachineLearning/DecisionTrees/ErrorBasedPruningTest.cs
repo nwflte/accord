@@ -22,7 +22,7 @@
 
 namespace Accord.Tests.MachineLearning
 {
-    using Accord.MachineLearning.DecisionTrees.Prunning;
+    using Accord.MachineLearning.DecisionTrees.Pruning;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using System;
     using Accord.MachineLearning.DecisionTrees;
@@ -31,10 +31,10 @@ namespace Accord.Tests.MachineLearning
     using Accord.Math;
     using Accord.Tests.MachineLearning.Properties;
     using Accord.MachineLearning.DecisionTrees.Learning;
-
-
+    
+    
     [TestClass()]
-    public class ReducedErrorPrunningTest
+    public class ErrorBasedpruningTest
     {
 
 
@@ -90,68 +90,33 @@ namespace Accord.Tests.MachineLearning
             int[] outputs;
 
             int training = 6000;
-            DecisionTree tree = createNurseryExample(out inputs, out outputs, training);
+            DecisionTree tree = ReducedErrorPruningTest.createNurseryExample(out inputs, out outputs, training);
 
             int nodeCount = 0;
             foreach (var node in tree)
                 nodeCount++;
 
-            var prunningInputs = inputs.Submatrix(training, inputs.Length - 1);
-            var prunningOutputs = outputs.Submatrix(training, inputs.Length - 1);
-            var prune = new ReducedErrorPrunning(tree, prunningInputs, prunningOutputs);
+            var pruningInputs = inputs.Submatrix(training, inputs.Length - 1);
+            var pruningOutputs = outputs.Submatrix(training, inputs.Length - 1);
+            ErrorBasedPruning prune = new ErrorBasedPruning(tree, pruningInputs, pruningOutputs);
+
+            prune.Threshold = 0.1;
 
             double lastError, error = Double.PositiveInfinity;
             do
             {
                 lastError = error;
                 error = prune.Run();
-            } while (error <= lastError);
+            } while (error < lastError);
 
             int nodeCount2 = 0;
             foreach (var node in tree)
                 nodeCount2++;
 
-            Assert.AreEqual(0.19454022988505748, error);
+            Assert.AreEqual(0.25459770114942532, error);
             Assert.AreEqual(447, nodeCount);
-            Assert.AreEqual(4, nodeCount2);
+            Assert.AreEqual(193, nodeCount2);
         }
 
-        public static DecisionTree createNurseryExample(out double[][] inputs, out int[] outputs, int first)
-        {
-            string nurseryData = Resources.nursery;
-
-            string[] inputColumns = 
-            {
-                "parents", "has_nurs", "form", "children",
-                "housing", "finance", "social", "health"
-            };
-
-            string outputColumn = "output";
-
-            DataTable table = new DataTable("Nursery");
-            table.Columns.Add(inputColumns);
-            table.Columns.Add(outputColumn);
-
-            string[] lines = nurseryData.Split(
-                new[] { Environment.NewLine }, StringSplitOptions.None);
-
-            foreach (var line in lines)
-                table.Rows.Add(line.Split(','));
-
-            Codification codebook = new Codification(table);
-            DataTable symbols = codebook.Apply(table);
-            inputs = symbols.ToArray(inputColumns);
-            outputs = symbols.ToArray<int>(outputColumn);
-
-            var attributes = DecisionVariable.FromCodebook(codebook, inputColumns);
-            var tree = new DecisionTree(attributes, outputClasses: 5);
-
-            C45Learning c45 = new C45Learning(tree);
-            double error = c45.Run(inputs.Submatrix(first), outputs.Submatrix(first));
-
-            Assert.AreEqual(0, error);
-
-            return tree;
-        }
     }
 }
