@@ -94,6 +94,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Accord.Core\Properties\VersionInfo.cs">
+      <Link>Properties\VersionInfo.cs</Link>
+    </Compile>
     <Compile Include="AudioCaptureDevice.cs" />
     <Compile Include="AudioDeviceCollection.cs" />
     <Compile Include="AudioOutputDevice.cs" />
