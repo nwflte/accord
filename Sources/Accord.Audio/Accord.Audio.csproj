@@ -113,6 +113,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Accord.Core\Properties\VersionInfo.cs">
+      <Link>Properties\VersionInfo.cs</Link>
+    </Compile>
     <Compile Include="AudioSourceMixer.cs" />
     <Compile Include="Events\AudioOutputErrorEventArgs.cs" />
     <Compile Include="Events\PlayFrameEventArgs.cs" />
