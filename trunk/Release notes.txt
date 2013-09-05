@@ -1,6 +1,6 @@
 Accord.NET Framework 2.10.0 release notes
 -----------------------------------------
-01.09.2013.    
+07.09.2013.    
 
 Version updates and fixes:
 
