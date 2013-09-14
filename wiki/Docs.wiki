@@ -1,11 +1,11 @@
 #summary Initial wiki page with several links to documentation sources.
 
-Accord.NET used to be hosted on Origo, and is now being gradually migrated to Google Code. Some of the documentation is still missing, but will be completed once migration is complete.
+Those links will redirect you to the [http://accord-framework.net official project page].
 
 <table width="800px"><tr><td width="70px">
 <img width="64" height="64" src="http://accord.googlecode.com/svn/wiki/images/start.png"/>
 </td><td width="150">
-<font size="3">[http://code.google.com/p/accord/wiki/GettingStarted?tm=6 Getting Started]</font>
+<font size="3">[http://accord-framework.net/get-started.html Getting Started]</font>
 </td><td>
 How to download, install and develop a simple application using Accord.NET.</td>
 </tr>
@@ -13,7 +13,7 @@ How to download, install and develop a simple application using Accord.NET.</td>
 <tr><td width="70px">
 <img width="64" height="64" src="http://accord.googlecode.com/svn/wiki/images/help.png"/>
 </td><td>
-<font size="3">[http://accord.googlecode.com/svn/docs/Index.html Reference Manual]</font>
+<font size="3">[http://accord-framework.net/docs/Index.html Reference Manual]</font>
 </td><td>
 Complete class reference, MSDN-style. Contains example source code and code snippets [Features for the many features of the framework].</td>
 </tr>
@@ -21,7 +21,7 @@ Complete class reference, MSDN-style. Contains example source code and code snip
 <tr><td width="70px">
 <img width="64" height="64" src="http://accord.googlecode.com/svn/wiki/images/samples.png"/>
 </td><td>
-<font size="3">[http://code.google.com/p/accord/wiki/SampleApplications?tm=6 Sample Apps]</font>
+<font size="3">[http://accord-framework.net/samples.html Sample Apps]</font>
 </td><td>
 A complete list of the more than 25+ sample applications available within the framework. Some have companion articles exposing how they work and details of the techniques involved.</td>
 </tr>
@@ -29,7 +29,7 @@ A complete list of the more than 25+ sample applications available within the fr
 <tr><td width="70px">
 <img width="64" height="64" src="http://accord.googlecode.com/svn/wiki/images/internet.png"/>
 </td><td>
-<font size="3">[http://code.google.com/p/accord/wiki/Publications?tm=6 Publications]</font>
+<font size="3">[http://accord-framework.net/publications.html Publications]</font>
 </td><td>
 Publications, papers and technical reports describing the framework. You may also want to check what [Showcase others have done using the framework] (including academic publications).</td>
 </tr>
@@ -37,17 +37,9 @@ Publications, papers and technical reports describing the framework. You may als
 <tr><td width="70px">
 <img width="64" height="64" src="http://accord.googlecode.com/svn/wiki/images/design.png"/>
 </td><td>
-<font size="3">[http://code.google.com/p/accord/wiki/DevelopmentGuide?tm=6 Development]</font>
+<font size="3">[http://accord-framework.net/contribute.html Development]</font>
 </td><td>
 How to contribute and help in the framework's development. If you have suggestions and contributions, don't forget to register then in the [http://code.google.com/p/accord/issues/list issue tracker].</td>
 </tr>
 
-</table>
-
-<br />
-
-<table align="right"><tr>
-<td><img width="22" height="22" src="http://accord.googlecode.com/svn/wiki/images/uses22.png"/></td>
-<td valign="top">[http://code.google.com/p/accord/wiki/Showcase?tm=6 Who is using the framework]?</td>
-</tr>
 </table>
