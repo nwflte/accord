@@ -1,6 +1,6 @@
 ﻿// Accord Unit Tests
 // The Accord.NET Framework
-// http://accord.googlecode.com
+// http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
@@ -48,41 +48,14 @@ namespace Accord.Tests.Math
             }
         }
 
-        #region Additional test attributes
-        // 
-        //You can use the following additional attributes as you write your tests:
-        //
-        //Use ClassInitialize to run code before running the first test in the class
-        //[ClassInitialize()]
-        //public static void MyClassInitialize(TestContext testContext)
-        //{
-        //}
-        //
-        //Use ClassCleanup to run code after all tests in a class have run
-        //[ClassCleanup()]
-        //public static void MyClassCleanup()
-        //{
-        //}
-        //
-        //Use TestInitialize to run code before running each test
-        //[TestInitialize()]
-        //public void MyTestInitialize()
-        //{
-        //}
-        //
-        //Use TestCleanup to run code after each test has run
-        //[TestCleanup()]
-        //public void MyTestCleanup()
-        //{
-        //}
-        //
-        #endregion
 
 
 
         [TestMethod()]
         public void AugmentedLagrangianSolverConstructorTest1()
         {
+            Accord.Math.Tools.SetupGenerator(0);
+
             // min 100(y-x*x)²+(1-x)²
             //
             // s.t.  x <= 0
@@ -357,7 +330,7 @@ namespace Accord.Tests.Math
             // Add the non-negativity constraint for x
             constraints.Add(new NonlinearConstraint(f,
 
-                // 1st contraint: x should be greater than or equal to 0
+                // 1st constraint: x should be greater than or equal to 0
                 function: () => x, shouldBe: ConstraintType.GreaterThanOrEqualTo, value: 0,
 
                 gradient: () => new[] { 1.0, 0.0 }

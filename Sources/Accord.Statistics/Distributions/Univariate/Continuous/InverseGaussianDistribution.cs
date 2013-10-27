@@ -1,6 +1,6 @@
 ﻿// Accord Statistics Library
 // The Accord.NET Framework
-// http://accord.googlecode.com
+// http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
@@ -98,8 +98,11 @@ namespace Accord.Statistics.Distributions.Univariate
         /// 
         public InverseGaussianDistribution(double mean, double shape)
         {
-            if (mean <= 0) throw new ArgumentOutOfRangeException("mean");
-            if (shape <= 0) throw new ArgumentOutOfRangeException("shape");
+            if (mean <= 0)
+                throw new ArgumentOutOfRangeException("mean");
+
+            if (shape <= 0) 
+                throw new ArgumentOutOfRangeException("shape");
 
             init(mean, shape);
         }

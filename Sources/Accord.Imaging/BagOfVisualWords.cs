@@ -1,6 +1,6 @@
 ﻿// Accord Imaging Library
 // The Accord.NET Framework
-// http://accord.googlecode.com
+// http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
@@ -23,9 +23,9 @@
 namespace Accord.Imaging
 {
     using System;
-    using Accord.MachineLearning;
     using System.IO;
     using System.Runtime.Serialization.Formatters.Binary;
+    using Accord.MachineLearning;
 
     /// <summary>
     ///   Bag of Visual Words

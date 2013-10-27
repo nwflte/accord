@@ -1,6 +1,6 @@
 ﻿// Accord Statistics Library
 // The Accord.NET Framework
-// http://accord.googlecode.com
+// http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
@@ -25,8 +25,8 @@ namespace Accord.Statistics.Distributions.Multivariate
     using System;
     using Accord.Math;
     using Accord.Math.Decompositions;
-    using Accord.Statistics.Distributions.Fitting;
     using Accord.Statistics.Distributions;
+    using Accord.Statistics.Distributions.Fitting;
     using Accord.Statistics.Distributions.Univariate;
     using AForge.Math.Random;
 

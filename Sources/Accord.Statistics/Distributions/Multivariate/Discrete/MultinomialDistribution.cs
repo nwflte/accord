@@ -1,6 +1,6 @@
 ﻿// Accord Statistics Library
 // The Accord.NET Framework
-// http://accord.googlecode.com
+// http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
@@ -23,9 +23,9 @@
 namespace Accord.Statistics.Distributions.Multivariate
 {
     using System;
+    using System.Globalization;
     using Accord.Math;
     using Accord.Statistics.Distributions.Fitting;
-    using System.Globalization;
 
     /// <summary>
     ///   Multinomial probability distribution.

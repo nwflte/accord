@@ -63,7 +63,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release 3.5|AnyCPU'">
     <OutputPath>..\..\Release (3.5)\</OutputPath>
-    <DefineConstants>CODE_ANALYSIS;TRACE;NET35</DefineConstants>
+    <DefineConstants>TRACE;CODE_ANALYSIS;NET35</DefineConstants>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
@@ -158,6 +158,7 @@
     <Compile Include="Ransac.cs" />
     <Compile Include="Geometry\RansacLine.cs" />
     <Compile Include="Geometry\RansacPlane.cs" />
+    <Compile Include="Structures\KDTreeNodeList.cs" />
     <Compile Include="Structures\KDTreeTraversal.cs" />
     <Compile Include="Structures\KDTreeNodeDistance.cs" />
     <Compile Include="Structures\KDTree`1.cs" />
