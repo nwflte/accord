@@ -1,6 +1,6 @@
 ﻿// Accord Statistics Library
 // The Accord.NET Framework
-// http://accord.googlecode.com
+// http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
@@ -44,9 +44,15 @@ namespace Accord.Statistics.Models.Markov
     ///   <see cref="HiddenMarkovClassifierLearning{TDistribution}"/>.</para>
     ///   
     /// <para>
-    ///   For the discrete version of this classifier, please see its non-generic conterpart 
+    ///   For the discrete version of this classifier, please see its non-generic counterpart 
     ///   <see cref="HiddenMarkovClassifier"/>.</para>
     /// </remarks>
+    /// 
+    /// <example>
+    /// <para>
+    ///   Examples are available at the respective learning algorithm pages. For 
+    ///   example, see <see cref="HiddenMarkovClassifierLearning{TDistribution}"/>. </para>
+    /// </example>
     /// 
     /// <seealso cref="HiddenMarkovClassifierLearning{TDistribution}"/>
     /// <seealso cref="HiddenMarkovClassifier"/>

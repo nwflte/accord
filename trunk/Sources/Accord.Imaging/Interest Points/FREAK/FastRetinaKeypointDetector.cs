@@ -1,6 +1,6 @@
 ﻿// Accord Imaging Library
 // The Accord.NET Framework
-// http://accord.googlecode.com
+// http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
@@ -59,6 +59,7 @@ namespace Accord.Imaging
     ///   Fast Retina Keypoint (FREAK) detector.
     /// </summary>
     /// 
+    [Serializable]
     public class FastRetinaKeypointDetector : IFeatureDetector<FastRetinaKeypoint, byte[]>
     {
 

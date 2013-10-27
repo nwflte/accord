@@ -1,6 +1,6 @@
 ﻿// Accord Machine Learning Library
 // The Accord.NET Framework
-// http://accord.googlecode.com
+// http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
@@ -67,7 +67,7 @@ namespace Accord.MachineLearning
     ///   </list></para>
     /// 
     /// <para>
-    ///   This particular implementation uses the squared euclidean distance
+    ///   This particular implementation uses the squared Euclidean distance
     ///   as a similarity measure in order to form clusters. </para>
     ///   
     /// <para>
@@ -108,6 +108,10 @@ namespace Accord.MachineLearning
     ///   // As result, the first two observations should belong to the
     ///   // same cluster (thus having the same label). The same should
     ///   // happen to the next four observations and to the last three.
+    ///   
+    ///   // In order to classify new, unobserved instances, you can
+    ///   // use the kmeans.Clusters.Nearest method, as shown below:
+    ///   int c = kmeans.Clusters.Nearest(new double[] { 4, 1, 9) });
     ///   </code>
     ///   
     /// <para>
@@ -122,7 +126,7 @@ namespace Accord.MachineLearning
     ///  // Load a test image (shown below)
     ///  Bitmap image = ...
     ///  
-    ///  // Create conversors
+    ///  // Create converters
     ///  ImageToArray imageToArray = new ImageToArray(min: -1, max: +1);
     ///  ArrayToImage arrayToImage = new ArrayToImage(image.Width, image.Height, min: -1, max: +1);
     ///  
@@ -131,7 +135,7 @@ namespace Accord.MachineLearning
     ///  
     ///  
     ///  // Create a K-Means algorithm using given k and a
-    ///  //  square euclidean distance as distance metric.
+    ///  //  square Euclidean distance as distance metric.
     ///  KMeans kmeans = new KMeans(k, Distance.SquareEuclidean);
     ///  
     ///  // Compute the K-Means algorithm until the difference in
@@ -160,6 +164,7 @@ namespace Accord.MachineLearning
     /// 
     /// <seealso cref="KModes{T}"/>
     /// <seealso cref="MeanShift"/>
+    /// <seealso cref="GaussianMixtureModel"/>
     ///
     [Serializable]
     public class KMeans : IClusteringAlgorithm<double[]>
@@ -225,8 +230,10 @@ namespace Accord.MachineLearning
         /// 
         public KMeans(int k, Func<double[], double[], double> distance)
         {
-            if (k <= 0) throw new ArgumentOutOfRangeException("k");
-            if (distance == null) throw new ArgumentNullException("distance");
+            if (k <= 0) 
+                throw new ArgumentOutOfRangeException("k");
+            if (distance == null)
+                throw new ArgumentNullException("distance");
 
             // Create the object-oriented structure to hold
             //  information about the k-means' clusters.
@@ -243,7 +250,8 @@ namespace Accord.MachineLearning
         /// 
         public void Randomize(double[][] points, bool useSeeding = true)
         {
-            if (points == null) throw new ArgumentNullException("points");
+            if (points == null) 
+                throw new ArgumentNullException("points");
 
             double[][] centroids = clusters.Centroids;
 

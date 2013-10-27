@@ -1,6 +1,6 @@
 ﻿// Accord Unit Tests
 // The Accord.NET Framework
-// http://accord.googlecode.com
+// http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
@@ -44,36 +44,6 @@ namespace Accord.Tests.Statistics
                 testContextInstance = value;
             }
         }
-
-        #region Additional test attributes
-        // 
-        //You can use the following additional attributes as you write your tests:
-        //
-        //Use ClassInitialize to run code before running the first test in the class
-        //[ClassInitialize()]
-        //public static void MyClassInitialize(TestContext testContext)
-        //{
-        //}
-        //
-        //Use ClassCleanup to run code after all tests in a class have run
-        //[ClassCleanup()]
-        //public static void MyClassCleanup()
-        //{
-        //}
-        //
-        //Use TestInitialize to run code before running each test
-        //[TestInitialize()]
-        //public void MyTestInitialize()
-        //{
-        //}
-        //
-        //Use TestCleanup to run code after each test has run
-        //[TestCleanup()]
-        //public void MyTestCleanup()
-        //{
-        //}
-        //
-        #endregion
 
 
 
@@ -125,7 +95,7 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(0.75, matrix.Specificity);
             Assert.AreEqual((0.5 + 0.75) / 2.0, matrix.Efficiency);
 
-            Assert.AreEqual(0.3273268353539886, matrix.MatthewsCorrelationCoefficient);
+            Assert.AreEqual(0.21821789023599239, matrix.MatthewsCorrelationCoefficient);
         }
 
         [TestMethod()]
@@ -295,8 +265,7 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(0.75, matrix.Specificity);
             Assert.AreEqual((0.5 + 0.75) / 2.0, matrix.Efficiency);
 
-            Assert.AreEqual(0.3273268353539886, matrix.MatthewsCorrelationCoefficient);
-
+            Assert.AreEqual(0.21821789023599239, matrix.MatthewsCorrelationCoefficient);
         }
 
         [TestMethod()]
@@ -318,6 +287,20 @@ namespace Accord.Tests.Statistics
             Assert.AreEqual(0.20, matrix.PositivePredictiveValue);
             Assert.AreEqual(0.90, matrix.NegativePredictiveValue);
 
+        }
+
+        [TestMethod]
+        public void MatthewsCorrelationCoefficientTest()
+        {
+            ConfusionMatrix matrix = new ConfusionMatrix(1, 1, 2, 6);
+            Assert.AreEqual(0.21821789023599239, matrix.MatthewsCorrelationCoefficient);
+        }
+
+        [TestMethod]
+        public void MatthewsCorrelationCoefficientTest2()
+        {
+            ConfusionMatrix matrix = new ConfusionMatrix(100, 100, 200, 600);
+            Assert.AreEqual(0.21821789023599236, matrix.MatthewsCorrelationCoefficient);
         }
 
         [TestMethod()]

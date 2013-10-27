@@ -1,6 +1,6 @@
 // Accord Control Library
 // The Accord.NET Framework
-// http://accord.googlecode.com
+// http://accord-framework.net
 //
 // Copyright © César Souza, 2009-2013
 // cesarsouza at gmail.com
@@ -60,7 +60,8 @@ namespace Accord.Controls
         {
             get
             {
-                if (RowIndex == -1) return Owner.RowNames[Owner.Matrix.Classes];
+                if (RowIndex == -1) 
+                    return Owner.RowNames[Owner.Matrix.Classes];
                 return Owner.RowNames[RowIndex];
             }
         }
