@@ -5,18 +5,16 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Denavit-Hartenberg model for kinematic chains")]
+[assembly: AssemblyTitle("Matrix operations sample application")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Accord.NET")]
 [assembly: AssemblyProduct("Accord.NET Framework")]
-[assembly: AssemblyCopyright("Copyright © Rémy Dispagne, César Souza; 2009-2013")]
+[assembly: AssemblyCopyright("Copyright © César Souza, 2009-2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
 [assembly: AssemblyDescription(
-@"This sample application shows how to use Denavit-Hartenberg equations to model kinematic chains. All animations performed by the application have been specified in terms of simple joint movements, and the interaction between the joints to result in the specified animation have been automatically computed by the framework.
-
-This application originated in a code contribution by Remi Dispagne.")]
+@"This sample application demonstrates how to create, use and operate matrices in the Accord.NET Framework.")]
 
 
 
