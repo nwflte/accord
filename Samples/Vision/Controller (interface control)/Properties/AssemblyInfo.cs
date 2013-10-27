@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Dynamic Virtual Wall generation using Kinect")]
+[assembly: AssemblyTitle("User interface controller based on face movements")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Accord.NET")]
 [assembly: AssemblyProduct("Accord.NET Framework")]
@@ -14,7 +14,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCulture("")]
 
 [assembly: AssemblyDescription(
-@"This sample application shows how create a Dynamic Virtual Wall using Microsoft's Kinect.")]
+@"This sample application shows how to use Accord.NET controller components to implement interfaces which can be controlled solely with face movements from the user. Those controls can be drag-and-dropped inside standard Windows Forms applications and its events can be used to register user movements captured through a standard webcam.")]
 
 
 

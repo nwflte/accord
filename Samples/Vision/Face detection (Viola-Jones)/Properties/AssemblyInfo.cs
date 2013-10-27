@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Dynamic Virtual Wall generation using Kinect")]
+[assembly: AssemblyTitle("Face detection with the Viola-Jones algorithm")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Accord.NET")]
 [assembly: AssemblyProduct("Accord.NET Framework")]
@@ -14,7 +14,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCulture("")]
 
 [assembly: AssemblyDescription(
-@"This sample application shows how create a Dynamic Virtual Wall using Microsoft's Kinect.")]
+@"This sample application shows the Haar cascade object detection algorithm. For a complete discussion about the method, the application and the history behind this method is also shown in the CodeProject competition winner article Haar-feature Object Detection in C#:
+
+http://www.codeproject.com/Articles/441226/Haar-feature-Object-Detection-in-Csharp")]
 
 
 

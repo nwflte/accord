@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Dynamic Virtual Wall generation using Kinect")]
+[assembly: AssemblyTitle("Face tracking with the Camshift algorithm")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Accord.NET")]
 [assembly: AssemblyProduct("Accord.NET Framework")]
@@ -14,7 +14,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCulture("")]
 
 [assembly: AssemblyDescription(
-@"This sample application shows how create a Dynamic Virtual Wall using Microsoft's Kinect.")]
+@"This sample application shows the Camshift face tracking algorithm working in real-time using your webcam or any other video source.")]
 
 
 
