@@ -1,36 +1,47 @@
 ﻿// Accord.NET Sample Applications
-// http://accord.googlecode.com
+// http://accord-framework.net
 //
-// Copyright © César Souza, 2009-2013
-// cesarsouza at gmail.com
+// Copyright © 2009-2013, César Souza
+// All rights reserved. 3-BSD License:
 //
-//    This library is free software; you can redistribute it and/or
-//    modify it under the terms of the GNU Lesser General Public
-//    License as published by the Free Software Foundation; either
-//    version 2.1 of the License, or (at your option) any later version.
+//   Redistribution and use in source and binary forms, with or without
+//   modification, are permitted provided that the following conditions are met:
 //
-//    This library is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//    Lesser General Public License for more details.
+//      * Redistributions of source code must retain the above copyright
+//        notice, this list of conditions and the following disclaimer.
 //
-//    You should have received a copy of the GNU Lesser General Public
-//    License along with this library; if not, write to the Free Software
-//    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+//      * Redistributions in binary form must reproduce the above copyright
+//        notice, this list of conditions and the following disclaimer in the
+//        documentation and/or other materials provided with the distribution.
 //
+//      * Neither the name of the Accord.NET Framework authors nor the
+//        names of its contributors may be used to endorse or promote products
+//        derived from this software without specific prior written permission.
+// 
+//  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+//  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+//  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+//  DISCLAIMED. IN NO EVENT SHALL <COPYRIGHT HOLDER> BE LIABLE FOR ANY
+//  DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+//  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+//  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+//  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+//  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+//  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+// 
 
-using Accord.Audio;
-using Accord.Audio.Formats;
-using Accord.DirectSound;
 using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using Accord.Audio;
+using Accord.Audio.Formats;
+using Accord.DirectSound;
 
-namespace Recording
+namespace Recorder
 {
     /// <summary>
-    ///   Description of MainForm.
+    ///   Audio recorder sample application.
     /// </summary>
     /// 
     public partial class MainForm : Form
@@ -54,63 +65,32 @@ namespace Recording
         {
             InitializeComponent();
 
+            // Configure the wavechart
             chart.SimpleMode = true;
             chart.AddWaveform("wave", Color.Green, 1, false);
 
             updateButtons();
         }
 
-        private void btnStop_Click(object sender, EventArgs e)
-        {
-            if (source != null)
-            {
-                source.SignalToStop();
-                source.WaitForStop();
-            }
-            if (output != null)
-            {
-                output.SignalToStop();
-                output.WaitForStop();
-            }
 
-            updateButtons();
-
-            Array.Clear(current, 0, current.Length);
-            updateWaveform(current, current.Length);
-        }
-
-        private void btnPlay_Click(object sender, EventArgs e)
-        {
-            stream.Seek(0, SeekOrigin.Begin);
-            decoder = new WaveDecoder(stream);
-
-            if (trackBar1.Value < decoder.Frames)
-                decoder.Seek(trackBar1.Value);
-            trackBar1.Maximum = decoder.Samples;
-
-            output = new AudioOutputDevice(this.Handle, decoder.SampleRate, decoder.Channels);
-
-            output.FramePlayingStarted += output_FramePlayingStarted;
-            output.NewFrameRequested += output_NewFrameRequested;
-            output.Stopped += output_PlayingFinished;
-
-            output.Play();
-
-            updateButtons();
-        }
-
-
-        // Recording related functions
+        /// <summary>
+        ///   Starts recording audio from the sound card
+        /// </summary>
+        /// 
         private void btnRecord_Click(object sender, EventArgs e)
         {
             // Create capture device
             source = new AudioCaptureDevice()
             {
+                // Listen on 22050 Hz
                 DesiredFrameSize = 4096,
                 SampleRate = 22050,
+
+                // We will be reading 16-bit PCM
                 Format = SampleFormat.Format16Bit
             };
 
+            // Wire up some events
             source.NewFrame += source_NewFrame;
             source.AudioSourceError += source_AudioSourceError;
 
@@ -126,11 +106,84 @@ namespace Recording
             updateButtons();
         }
 
+        /// <summary>
+        ///   Plays the recorded audio stream.
+        /// </summary>
+        /// 
+        private void btnPlay_Click(object sender, EventArgs e)
+        {
+            // First, we rewind the stream
+            stream.Seek(0, SeekOrigin.Begin);
+
+            // Then we create a decoder for it
+            decoder = new WaveDecoder(stream);
+
+            // Configure the track bar so the cursor
+            // can show the proper current position
+            if (trackBar1.Value < decoder.Frames)
+                decoder.Seek(trackBar1.Value);
+            trackBar1.Maximum = decoder.Samples;
+
+            // Here we can create the output audio device that will be playing the recording
+            output = new AudioOutputDevice(this.Handle, decoder.SampleRate, decoder.Channels);
+
+            // Wire up some events
+            output.FramePlayingStarted += output_FramePlayingStarted;
+            output.NewFrameRequested += output_NewFrameRequested;
+            output.Stopped += output_PlayingFinished;
+
+            // Start playing!
+            output.Play();
+
+            updateButtons();
+        }
+
+        /// <summary>
+        ///   Stops recording or playing a stream.
+        /// </summary>
+        /// 
+        private void btnStop_Click(object sender, EventArgs e)
+        {
+            // Stops both cases
+            if (source != null)
+            {
+                // If we were recording
+                source.SignalToStop();
+                source.WaitForStop();
+            }
+            if (output != null)
+            {
+                // If we were playing
+                output.SignalToStop();
+                output.WaitForStop();
+            }
+
+            updateButtons();
+
+            // Also zero out the buffers and screen
+            Array.Clear(current, 0, current.Length);
+            updateWaveform(current, current.Length);
+        }
+
+
+
+        /// <summary>
+        ///   This callback will be called when there is some error with the audio 
+        ///   source. It can be used to route exceptions so they don't compromise 
+        ///   the audio processing pipeline.
+        /// </summary>
+        /// 
         private void source_AudioSourceError(object sender, AudioSourceErrorEventArgs e)
         {
             throw new Exception(e.Description);
         }
 
+        /// <summary>
+        ///   This method will be called whenever there is a new input audio frame 
+        ///   to be processed. This would be the case for samples arriving at the 
+        ///   computer's microphone
+        /// </summary>
+        /// 
         private void source_NewFrame(object sender, NewFrameEventArgs eventArgs)
         {
             // Save current frame
@@ -149,8 +202,12 @@ namespace Recording
         }
 
 
-
-        // Playing related functions
+        /// <summary>
+        ///   This event will be triggered as soon as the audio starts playing in the 
+        ///   computer speakers. It can be used to update the UI and to notify that soon
+        ///   we will be requesting additional frames.
+        /// </summary>
+        /// 
         private void output_FramePlayingStarted(object sender, PlayFrameEventArgs e)
         {
             updateTrackbar(e.FrameIndex);
@@ -167,6 +224,11 @@ namespace Recording
             }
         }
 
+        /// <summary>
+        ///   This event will be triggered when the output device finishes
+        ///   playing the audio stream. Again we can use it to update the UI.
+        /// </summary>
+        /// 
         private void output_PlayingFinished(object sender, EventArgs e)
         {
             updateButtons();
@@ -175,8 +237,15 @@ namespace Recording
             updateWaveform(current, current.Length);
         }
 
+        /// <summary>
+        ///   This event is triggered when the sound card needs more samples to be
+        ///   played. When this happens, we have to feed it additional frames so it
+        ///   can continue playing.
+        /// </summary>
+        /// 
         private void output_NewFrameRequested(object sender, NewFrameRequestedEventArgs e)
         {
+            // This is the next frame index
             e.FrameIndex = decoder.Position;
 
             // Attempt to decode the requested number of frames from the stream
@@ -184,21 +253,27 @@ namespace Recording
 
             if (signal == null)
             {
+                // We could not get the requested number of frames. When
+                // this happens, this is an indication we need to stop.
                 e.Stop = true;
+                return;
             }
-            else
-            {
-                // Inform the number of frames
-                // actually read from source
-                e.Frames = signal.Length;
 
-                // Copy the signal to the buffer
-                signal.CopyTo(e.Buffer);
-            }
+            // Inform the number of frames
+            // actually read from source
+            e.Frames = signal.Length;
+
+            // Copy the signal to the buffer
+            signal.CopyTo(e.Buffer);
         }
 
 
 
+
+        /// <summary>
+        ///   Updates the audio display in the wave chart
+        /// </summary>
+        /// 
         private void updateWaveform(float[] samples, int length)
         {
             if (InvokeRequired)
@@ -214,6 +289,10 @@ namespace Recording
             }
         }
 
+        /// <summary>
+        ///   Updates the current position at the trackbar.
+        /// </summary>
+        /// 
         private void updateTrackbar(int value)
         {
             if (InvokeRequired)
@@ -289,6 +368,16 @@ namespace Recording
         private void updateTimer_Tick(object sender, EventArgs e)
         {
             lbLength.Text = String.Format("Length: {0:00.00} sec.", duration / 1000.0);
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new AboutBox().ShowDialog(this);
+        }
+
+        private void closeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
         }
 
 
