@@ -1,6 +1,6 @@
 = Downloads = 
 
-== Releases can now be found at https://github.com/accord-net/framework/releases ==
+== Releases can be found at https://github.com/accord-net/framework/releases ==
 
 In January 2014, Google started disabling the ability for project owners to create new software releases through Google Code, without offering any suitable alternative for this system.
 
