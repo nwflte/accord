@@ -1,5 +1,4 @@
 #summary Getting started guide for using the framework.
-#labels Featured
 
 Accord.NET is an extension to AForge.NET, a popular C# framework for computer vision and machine learning. Currently, Accord.NET provides many statistical analysis and processing functions, as well as audio, video and image processing routines. 
 
