@@ -1,5 +1,4 @@
 #summary Who is using the framework.
-#labels Featured
 
 =Project Showcase=
 
