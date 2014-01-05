@@ -1,3 +1,3 @@
-As of January 2014, Google is disabling the ability to create new project releases in Google Code. Further releases of the framework, including [https://github.com/accord-net/framework/releases|self-extracting installers, binaries and source packages] are now available through GitHub at
+Google has disabled to create new project releases. Thus, the framework is now available through GitHub. The project's official page now lists the [https://github.com/accord-net/framework/releases same installer executables, binaries and source packages previously offered here].
 
  https://github.com/accord-net/framework/releases
