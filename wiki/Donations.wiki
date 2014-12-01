@@ -1,9 +1,0 @@
-#summary Donations and development requests
-
-As requested, here is the donation button for the framework. The Accord.NET Framework is absolutely free and will always be free of charge. However, more than once people have asked for a way to drive development resources into the project, and here is a way for it.
-
-If you are interested in the implementation of a particular feature, feel free to specify it in the donation box - features which are requested the most will receive priority in the next updates. And keep in mind you can donate _any value you would like_!
-
-
- [https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=N4Q6YQSPWN8BG https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif]
-
