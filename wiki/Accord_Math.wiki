@@ -16,7 +16,7 @@ http://accord.googlecode.com/svn/wiki/samples/accord-math-matrixoperations-img.p
 
 == Decompositions ==
 
-The framework comes with a wide range of numerical [http://en.wikipedia.org/wiki/Matrix_decomposition matrix decompositions], which dedicated versions for different .NET datatypes. Those decompositions can be used to solve linear system, compute matrix inverses and pseudo-inverses and extract other useful information about the decomposed matrices.
+The framework comes with a wide range of numerical [http://en.wikipedia.org/wiki/Matrix_decomposition matrix decompositions], with dedicated versions for different .NET datatypes. Those decompositions can be used to solve linear system, compute matrix inverses and pseudo-inverses and extract other useful information about the decomposed matrices.
 
 <table border="0" width="600px">
 <tbody align="left">
