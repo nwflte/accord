@@ -1,20 +1,2 @@
-#summary Sample Application: Image Classification
 #labels Type-SampleApps
-
- * Download [http://dl.dropbox.com/u/32601472/accord/samples/accord-imaging-classification-bin.zip application]
- * Download [http://dl.dropbox.com/u/32601472/accord/samples/accord-imaging-classification-src.zip source code]
- * Browse [https://code.google.com/p/accord/source/browse/trunk#trunk%2FSamples%2FImaging%2FClassification source code online]
-
-The Image Classification sample application shows how to perform image classification using the [http://accord.googlecode.com/svn/docs/html/T_Accord_Imaging_BagOfVisualWords.htm Bag of Visual Words (BoW) model] with [http://accord.googlecode.com/svn/docs/html/T_Accord_Imaging_SpeededUpRobustFeaturesDetector.htm SURF] and [http://accord.googlecode.com/svn/docs/html/T_Accord_MachineLearning_KMeans.htm K-Means]. 
-
-<br /><p align="center">
-http://accord.googlecode.com/svn/wiki/samples/accord-imaging-classification-img.png
-<br />Image classification sample application
-</p><br />
-
-The BoW model is used to transform the many SURF feature points in a image in a single, fixed-length feature vector. The feature vector is then used to train a [http://accord.googlecode.com/svn/docs/html/N_Accord_MachineLearning_VectorMachines.htm Support Vector Machine (SVM)] using a [http://accord.googlecode.com/svn/docs/html/N_Accord_Statistics_Kernels.htm variety of kernels].
-
-<br /><p align="center">
-<img src="http://accord.googlecode.com/svn/wiki/samples/accord-imaging-classification-img2.png" width="500px"/>
-<br />SURF feature points detected in the image.
-</p>
+https://github.com/accord-net/framework/wiki/Sample-applications
