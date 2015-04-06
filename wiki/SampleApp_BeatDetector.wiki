@@ -1,13 +1,2 @@
-#summary Sample Application: Beat Detector
 #labels Type-SampleApps
-
- * Download [http://dl.dropbox.com/u/32601472/accord/samples/accord-audio-tempodetector-bin.zip application]
- * Download [http://dl.dropbox.com/u/32601472/accord/samples/accord-audio-tempodetector-src.zip source code]
- * Browse the [https://code.google.com/p/accord/source/browse/trunk#trunk%2FSamples%2FAudio%2FTempoDetector source code online]
-
-A simple beat detector which listens to a input device and tries to detect peaks in the audio signal. It is a statistics based beat detector in the sense it searches local energy peaks which may contain a beat. 
-
-<br /><p align="center">
-http://accord.googlecode.com/svn/wiki/samples/accord-audio-tempodetector-img.png
-<br />Beat detector sample application
-</p><br />
+https://github.com/accord-net/framework/wiki/Sample-applications
