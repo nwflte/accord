@@ -1,14 +1,2 @@
-#summary Sample Application: Gaussian Mixture Models
 #labels Type-SampleApps
-
- * Download [http://dl.dropbox.com/u/32601472/accord/samples/accord-machinelearning-gmm-bin.zip application]
- * Download [http://dl.dropbox.com/u/32601472/accord/samples/accord-machinelearning-gmm-src.zip source code]
- * Browse the [https://code.google.com/p/accord/source/browse/trunk#trunk%2FSamples%2FMachineLearning%2FGMM source code online]
-
-<br />
-This sample application shows how to use [http://accord.googlecode.com/svn/docs/html/T_Accord_MachineLearning_GaussianMixtureModel.htm Gaussian Mixture Models] to perform [http://crsouza.blogspot.com.br/2010/10/gaussian-mixture-models-and-expectation.html clustering and classification using soft-decision margins].
-
-<br /><p align="center">
-http://accord.googlecode.com/svn/wiki/samples/accord-machinelearning-gmm-img.png
-<br />Gaussian Mixture Model clustering.
-</p><br />
+https://github.com/accord-net/framework/wiki/Sample-applications
