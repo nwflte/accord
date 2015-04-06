@@ -1,15 +1,2 @@
-#summary Sample Application: Fourier Transform Audio Analysis
 #labels Type-SampleApps
-
- * Download [http://dl.dropbox.com/u/32601472/accord/samples/accord-audio-fourier-bin.zip application]
- * Download [http://dl.dropbox.com/u/32601472/accord/samples/accord-audio-fourier-src.zip source code]
- * Browse the [https://code.google.com/p/accord/source/browse/trunk#trunk%2FSamples%2FAudio%2FFourier source code online]
-
-The Fourier sample application shows how to capture sounds from a capture device (such as the soundcard's microphone jack) using the Accord.NET Framework. The sound can then be analyzed using the AForge.NET [http://www.aforgenet.com/framework/docs/html/a233a2c8-37ef-459d-f3dd-4088592f458a.htm FourierTransform functions].
-
-<br /><p align="center">
-http://accord.googlecode.com/svn/wiki/samples/accord-audio-fourier-img.png
-<br />Fourier sample application
-</p><br />
-
-The sample application can also show how to apply one of the [http://accord.googlecode.com/svn/docs/html/N_Accord_Audio_Windows.htm audio windows] to the [http://accord.googlecode.com/svn/docs/html/T_Accord_Audio_Signal.htm input signal]. In the picture above, the [http://accord.googlecode.com/svn/docs/html/M_Accord_Audio_Windows_RaisedCosineWindow_Hamming.htm Hamming window], a special case of the [http://accord.googlecode.com/svn/docs/html/AllMembers_T_Accord_Audio_Windows_RaisedCosineWindow.htm raised cosine] family of window functions, is being applied.
+https://github.com/accord-net/framework/wiki/Sample-applications
