@@ -1,0 +1,1 @@
+> _This page is about the Audio module of Accord.NET. For general descriptions on Audio, please see [Audio (Wikipedia)](http://en.wikipedia.org/wiki/Audio)._
